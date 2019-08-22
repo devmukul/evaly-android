@@ -29,9 +29,10 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.util.ProductListItem;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 
 
-public class ProductGrid{
+public class ProductGrid {
 
     RecyclerView recyclerView;
     StaggeredGridLayoutManager mLayoutManager;
@@ -40,9 +41,9 @@ public class ProductGrid{
     public HomeFragment main;
     public Context context;
     ArrayList<ProductListItem> products;
-    Map<String,String> mp;
-    Map<String,ProductListItem> map;
-    int current = 1,type=0,maxPrice=0,minPrice=0;
+    Map<String, String> mp;
+    Map<String, ProductListItem> map;
+    int current = 1, type = 0, maxPrice = 0, minPrice = 0;
     private ProductGridAdapter adapterViewAndroid;
     private ProgressBar progressBar;
     RequestQueue rq;
@@ -61,7 +62,7 @@ public class ProductGrid{
     }
 
 
-    public ProductGrid(Context contextz, RecyclerView recyclerView, ProgressBar progressBar){
+    public ProductGrid(Context contextz, RecyclerView recyclerView, ProgressBar progressBar) {
         this.context = contextz;
         this.recyclerView = recyclerView;
         this.progressBar = progressBar;
@@ -72,8 +73,7 @@ public class ProductGrid{
     }
 
 
-
-    public ProductGrid(Context contextz, RecyclerView recyclerView, String categorySlug, ProgressBar progressBar, ProductListener productListener){
+    public ProductGrid(Context contextz, RecyclerView recyclerView, String categorySlug, ProgressBar progressBar, ProductListener productListener) {
         this.context = contextz;
         this.recyclerView = recyclerView;
         this.categorySlug = categorySlug;
@@ -92,7 +92,7 @@ public class ProductGrid{
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(null);
         recyclerView.setNestedScrollingEnabled(false);
-        adapterViewAndroid = new ProductGridAdapter(context,products);
+        adapterViewAndroid = new ProductGridAdapter(context, products);
         products.clear();
         adapterViewAndroid.notifyDataSetChanged();
         adapterViewAndroid.setHasStableIds(true);
@@ -101,10 +101,9 @@ public class ProductGrid{
         recyclerView.setAdapter(adapterViewAndroid);
 
 
-
     }
 
-    public ProductGrid(Context contextz, RecyclerView recyclerView, String categorySlug, ProgressBar progressBar){
+    public ProductGrid(Context contextz, RecyclerView recyclerView, String categorySlug, ProgressBar progressBar) {
         this.context = contextz;
         this.recyclerView = recyclerView;
         this.categorySlug = categorySlug;
@@ -113,36 +112,6 @@ public class ProductGrid{
 
         rq = Volley.newRequestQueue(context);
 
-        products = new ArrayList<>();
-        map = new HashMap<>();
-        mp = new HashMap<>();
-       // recyclerView.setHasFixedSize(true);
-       // recyclerView.getItemAnimator().setChangeDuration(0);
-        mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(null);
-        recyclerView.setNestedScrollingEnabled(false);
-        adapterViewAndroid = new ProductGridAdapter(context,products);
-        products.clear();
-        adapterViewAndroid.notifyDataSetChanged();
-        adapterViewAndroid.setHasStableIds(true);
-        progressBar.setVisibility(View.VISIBLE);
-        getCategoryProducts(categorySlug, 1);
-        recyclerView.setAdapter(adapterViewAndroid);
-
-
-
-    }
-
-    public ProductGrid(Context contextz, RecyclerView recyclerView, String categorySlug, ProgressBar progressBar,int type,int minPrice,int maxPrice){
-        this.context = contextz;
-        this.recyclerView = recyclerView;
-        this.categorySlug = categorySlug;
-        this.progressBar = progressBar;
-        this.type=type;
-        this.maxPrice=maxPrice;
-        this.minPrice=minPrice;
-        rq = Volley.newRequestQueue(context);
         products = new ArrayList<>();
         map = new HashMap<>();
         mp = new HashMap<>();
@@ -152,78 +121,72 @@ public class ProductGrid{
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(null);
         recyclerView.setNestedScrollingEnabled(false);
-        adapterViewAndroid = new ProductGridAdapter(context,products);
+        adapterViewAndroid = new ProductGridAdapter(context, products);
         products.clear();
         adapterViewAndroid.notifyDataSetChanged();
         adapterViewAndroid.setHasStableIds(true);
         progressBar.setVisibility(View.VISIBLE);
-        getCategoryProductsWithPrice(categorySlug, 1);
+        getCategoryProducts(categorySlug, 1);
         recyclerView.setAdapter(adapterViewAndroid);
-    }
 
+
+    }
 
     // product grid constructer for shop and brand only
-    public ProductGrid(Context contextz, RecyclerView recyclerView, String shopSlug, String categorySlug, int type2, ProgressBar progressBar){
+    public ProductGrid(Context contextz, RecyclerView recyclerView, String shopSlug, String categorySlug, int type2, ProgressBar progressBar) {
 
-            this.context = contextz;
-            this.recyclerView = recyclerView;
-            this.categorySlug = categorySlug;
-            this.shopSlug = shopSlug;
-            this.progressBar = progressBar;
+        this.context = contextz;
+        this.recyclerView = recyclerView;
+        this.categorySlug = categorySlug;
+        this.shopSlug = shopSlug;
+        this.progressBar = progressBar;
 
 
-            rq = Volley.newRequestQueue(context);
+        rq = Volley.newRequestQueue(context);
 
-            products = new ArrayList<>();
+        products = new ArrayList<>();
 
 //            recyclerView.setHasFixedSize(true);
-            mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-            recyclerView.setLayoutManager(mLayoutManager);
+        mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(mLayoutManager);
 
-            recyclerView.setAdapter(null);
-
-
-            recyclerView.setNestedScrollingEnabled(false);
-
-            adapterViewAndroid = new ProductGridAdapter(context,products);
+        recyclerView.setAdapter(null);
 
 
-            adapterViewAndroid.setHasStableIds(true);
-            products.clear();
-            adapterViewAndroid.notifyDataSetChanged();
+        recyclerView.setNestedScrollingEnabled(false);
 
-            if(type2 == 1)
-                getShopProducts(shopSlug, categorySlug, 1);
-            else
-                getBrandProducts(shopSlug, categorySlug, 1);
-
-            recyclerView.setAdapter(adapterViewAndroid);
+        adapterViewAndroid = new ProductGridAdapter(context, products);
 
 
+        adapterViewAndroid.setHasStableIds(true);
+        products.clear();
+        adapterViewAndroid.notifyDataSetChanged();
+
+        if (type2 == 1)
+            getShopProducts(shopSlug, categorySlug, 1);
+        else
+            getBrandProducts(shopSlug, categorySlug, 1);
+
+        recyclerView.setAdapter(adapterViewAndroid);
 
 
     }
 
-    public void loadNextPage(){
+    public void loadNextPage() {
 
         if (!isLoading)
             getCategoryProducts(categorySlug, ++current);
     }
 
-    public void loadNextPageWithPrice(){
 
-        if (!isLoading)
-            getCategoryProductsWithPrice(categorySlug, ++current);
-    }
-
-    public void loadNextShopProducts(){
+    public void loadNextShopProducts() {
 
         if (!isLoading)
             getShopProducts(shopSlug, categorySlug, ++current);
 
     }
 
-    public void loadNextBrandProducts(){
+    public void loadNextBrandProducts() {
 
         if (!isLoading)
             getBrandProducts(shopSlug, categorySlug, ++current);
@@ -231,7 +194,7 @@ public class ProductGrid{
     }
 
 
-    public void getShopProducts(String slug, String categorySlug, int currentPage){
+    public void getShopProducts(String slug, String categorySlug, int currentPage) {
 
 
         isLoading = true;
@@ -241,16 +204,16 @@ public class ProductGrid{
         current = currentPage;
         String url;
 
-        if(categorySlug.equals(""))
-            url = "https://api.evaly.com.bd/core/public/shops/items/"+slug+"/?page="+currentPage;
+        if (categorySlug.equals(""))
+            url = UrlUtils.SHOP_ITEMS + slug + "/?page=" + currentPage;
         else
-            url= "https://api.evaly.com.bd/core/public/shops/items/"+slug+"/?page="+currentPage+"&category_slug="+categorySlug;
+            url = UrlUtils.SHOP_ITEMS + slug + "/?page=" + currentPage + "&category_slug=" + categorySlug;
 
         Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
                     try {
-                        Log.d("shop_products",response.toString());
+                        Log.d("shop_products", response.toString());
 
                         JSONObject data = response.getJSONObject("data");
 
@@ -291,12 +254,13 @@ public class ProductGrid{
 
                         progressBar.setVisibility(View.INVISIBLE);
 
-                        if(products.size() < 10)
+                        if (products.size() < 10)
                             progressBar.setVisibility(View.GONE);
 
-                       // Log.d("json","dataset changed");
+                        // Log.d("json","dataset changed");
                     } catch (JSONException e) {
-                        e.printStackTrace(); progressBar.setVisibility(View.GONE);
+                        e.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -325,7 +289,7 @@ public class ProductGrid{
 
             }
         });
-        if(currentPage>2) {
+        if (currentPage > 2) {
             request.setShouldCache(false);
             //rq.getCache().clear();
         }
@@ -333,8 +297,7 @@ public class ProductGrid{
     }
 
 
-
-    public void getBrandProducts(String slug, String categorySlug, int currentPage){
+    public void getBrandProducts(String slug, String categorySlug, int currentPage) {
         current = currentPage;
         String url;
 
@@ -343,16 +306,16 @@ public class ProductGrid{
         isLoading = true;
 
         if (categorySlug.equals("root"))
-            url = "https://api.evaly.com.bd/core/public/products/?page="+currentPage+"&limit=12&brand="+slug;
+            url = UrlUtils.PUBLIC_PRODUCTS + "?page=" + currentPage + "&limit=12&brand=" + slug;
         else
-            url = "https://api.evaly.com.bd/core/public/products/?page="+currentPage+"&limit=12&brand="+slug+"&category="+categorySlug;
+            url = UrlUtils.PUBLIC_PRODUCTS + "?page=" + currentPage + "&limit=12&brand=" + slug + "&category=" + categorySlug;
 
         Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
                     try {
-                        Log.d("shop_products",response.toString());
-                        if(response.getInt("count")==0){
+                        Log.d("shop_products", response.toString());
+                        if (response.getInt("count") == 0) {
                             progressBar.setVisibility(View.GONE);
                             Toast.makeText(context, "Sorry no product available in this shop", Toast.LENGTH_SHORT).show();
                         }
@@ -360,8 +323,6 @@ public class ProductGrid{
 
 
                         for (int i = 0; i < jsonArray.length(); i++) {
-
-
 
 
                             JSONObject response2 = jsonArray.getJSONObject(i);
@@ -388,23 +349,24 @@ public class ProductGrid{
 
                         }
 
-                            isLoading = false;
+                        isLoading = false;
 
-                            if (listener != null)
-                                listener.onSuccess(products.size());
+                        if (listener != null)
+                            listener.onSuccess(products.size());
 
-                           // adapterViewAndroid.notifyDataSetChanged();
-
-
-                            progressBar.setVisibility(View.INVISIBLE);
-
-                            if(products.size() < 10)
-                                progressBar.setVisibility(View.GONE);
+                        // adapterViewAndroid.notifyDataSetChanged();
 
 
-                       // Log.d("json","dataset changed");
+                        progressBar.setVisibility(View.INVISIBLE);
+
+                        if (products.size() < 10)
+                            progressBar.setVisibility(View.GONE);
+
+
+                        // Log.d("json","dataset changed");
                     } catch (JSONException e) {
-                        e.printStackTrace(); progressBar.setVisibility(View.GONE);
+                        e.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -415,9 +377,6 @@ public class ProductGrid{
                     listener.onSuccess(0);
             }
         });
-
-
-
 
 
         request.setRetryPolicy(new RetryPolicy() {
@@ -436,14 +395,14 @@ public class ProductGrid{
 
             }
         });
-        if(currentPage>2) {
+        if (currentPage > 2) {
             request.setShouldCache(false);
             //rq.getCache().clear();
         }
         rq.add(request);
     }
 
-    public void getCategoryProducts(String slug, int currentPage){
+    public void getCategoryProducts(String slug, int currentPage) {
         current = currentPage;
         progressBar.setVisibility(View.VISIBLE);
 
@@ -453,164 +412,63 @@ public class ProductGrid{
         String url;
 
         if (slug.equals("root"))
-            url = "https://api.evaly.com.bd/core/public/products/?limit=20&&page="+currentPage;
+            url = UrlUtils.PUBLIC_PRODUCTS + "?limit=20&&page=" + currentPage;
         else
-            url = "https://api.evaly.com.bd/core/public/products/?limit=20&category="+slug+"&page="+currentPage;
+            url = UrlUtils.PUBLIC_PRODUCTS + "?limit=20&category=" + slug + "&page=" + currentPage;
 
         Log.d("json", url);
-        if(products.size()>0 && type!=0){
+        if (products.size() > 0 && type != 0) {
             products.clear();
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
                     try {
-                        Log.d("product_json",response.toString());
+                        Log.d("product_json", response.toString());
                         JSONArray jsonArray = response.getJSONArray("results");
                         for (int i = 0; i < jsonArray.length(); i++) {
 
 
-
-
-                                JSONObject response2 = jsonArray.getJSONObject(i);
-
-                                int priceMin = 0, priceMax = 0;
-                                try {
-                                    priceMin = (int) Double.parseDouble(response2.getString("min_price"));
-                                    priceMax = (int) Double.parseDouble(response2.getString("max_price"));
-
-
-                                } catch (Exception e) {
-
-                                    Log.d("json exc", e.toString());
-                                }
-                                ProductListItem item = new ProductListItem();
-                                item.setThumbnailSM(response2.getJSONArray("image_urls").get(0).toString());
-                                item.setSlug(response2.getString("slug"));
-                                item.setName(response2.getString("name"));
-                                item.setPriceMax(priceMax);
-                                item.setPriceMin(priceMin);
-                                products.add(item);
-
-                                adapterViewAndroid.notifyItemInserted(products.size());
-
-                            }
-
-
-                        isLoading = false;
-
-
-                        progressBar.setVisibility(View.INVISIBLE);
-
-                        if (listener != null)
-                            listener.onSuccess(products.size());
-
-                        if(products.size() < 10)
-                            progressBar.setVisibility(View.GONE);
-
-
-                        //Log.d("json","dataset changed");
-                    } catch (JSONException e) {
-                        e.printStackTrace(); progressBar.setVisibility(View.GONE);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressBar.setVisibility(View.GONE);
-
-                if (listener != null)
-                    listener.onSuccess(0);
-            }
-        });
-
-
-
-
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-        if(currentPage>2) {
-            request.setShouldCache(false);
-            //rq.getCache().clear();
-        }
-        rq.add(request);
-    }
-
-    public void getCategoryProductsWithPrice(String slug, int currentPage){
-        current = currentPage;
-        progressBar.setVisibility(View.VISIBLE);
-        isLoading = true;
-        String url = "https://api-prod.evaly.com.bd/api/product/?shadow_category__slug="+slug+"&page="+currentPage;
-        Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
-                response -> {
-                    try {
-                        Log.d("product_json2",response.toString());
-                        JSONArray jsonArray = response.getJSONArray("results");
-                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject response2 = jsonArray.getJSONObject(i);
-                            JSONObject category = response2.getJSONObject("category");
-                            JSONObject brand = response2.getJSONObject("brand");
-                            JSONObject price = response2.getJSONObject("price_range");
-                            if (response2.getBoolean("approved")) {
-                                int priceMin = 0, priceMax = 0;
-                                try {
-                                    priceMin = price.getInt("price__min");
-                                    priceMax = price.getInt("price__max");
-                                } catch (Exception e) {
 
-                                }
-                                ProductListItem item = new ProductListItem();
-                                item.setThumbnailSM(response2.getString("thumbnail_sm"));
-                                item.setSlug(response2.getString("slug"));
-                                item.setName(response2.getString("name"));
-                                item.setCategoryName(category.getString("name"));
-                                item.setCategorySlug(category.getString("slug"));
-                                item.setBrandName(brand.getString("name"));
-                                item.setBrandSlug(brand.getString("slug"));
-                                item.setPriceMax(priceMax);
-                                item.setPriceMin(priceMin);
-                                if(minPrice==0){
-                                    if(priceMin<=maxPrice){
-                                        products.add(item);
-                                        adapterViewAndroid.notifyItemInserted(products.size());
-                                    }
-                                }else if(maxPrice==0){
-                                    if(priceMin>=minPrice){
-                                        products.add(item);
-                                        adapterViewAndroid.notifyItemInserted(products.size());
-                                    }
-                                }else{
-                                    if(priceMin>=minPrice && priceMin<=maxPrice){
-                                        products.add(item);
-                                        adapterViewAndroid.notifyItemInserted(products.size());
-                                    }
-                                }
+                            int priceMin = 0, priceMax = 0;
+                            try {
+                                priceMin = (int) Double.parseDouble(response2.getString("min_price"));
+                                priceMax = (int) Double.parseDouble(response2.getString("max_price"));
+
+
+                            } catch (Exception e) {
+
+                                Log.d("json exc", e.toString());
                             }
+                            ProductListItem item = new ProductListItem();
+                            item.setThumbnailSM(response2.getJSONArray("image_urls").get(0).toString());
+                            item.setSlug(response2.getString("slug"));
+                            item.setName(response2.getString("name"));
+                            item.setPriceMax(priceMax);
+                            item.setPriceMin(priceMin);
+                            products.add(item);
+
+                            adapterViewAndroid.notifyItemInserted(products.size());
+
                         }
+
+
                         isLoading = false;
+
+
                         progressBar.setVisibility(View.INVISIBLE);
+
                         if (listener != null)
                             listener.onSuccess(products.size());
-                        if(products.size() < 10){
+
+                        if (products.size() < 10)
                             progressBar.setVisibility(View.GONE);
-                            getCategoryProductsWithPrice(slug,++current);
-                        }
+
+
                         //Log.d("json","dataset changed");
                     } catch (JSONException e) {
-                        e.printStackTrace(); progressBar.setVisibility(View.GONE);
+                        e.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -621,107 +479,6 @@ public class ProductGrid{
                     listener.onSuccess(0);
             }
         });
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-        if(currentPage>2) {
-            request.setShouldCache(false);
-            //rq.getCache().clear();
-        }
-        rq.add(request);
-    }
-
-    public void getSortedCategoryProducts(String slug, int currentPage,int type){
-        current = currentPage;
-        progressBar.setVisibility(View.VISIBLE);
-
-
-        isLoading = true;
-
-        String url = "https://api-prod.evaly.com.bd/api/product/?shadow_category__slug="+slug+"&page="+currentPage;
-        Log.d("json", url);
-        products.clear();
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
-                response -> {
-                    try {
-                        Log.d("json",response.toString());
-                        JSONArray jsonArray = response.getJSONArray("results");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject response2 = jsonArray.getJSONObject(i);
-                            JSONObject category = response2.getJSONObject("category");
-                            JSONObject brand = response2.getJSONObject("brand");
-                            JSONObject price = response2.getJSONObject("price_range");
-                            if (response2.getBoolean("approved")) {
-                                int priceMin = 0, priceMax = 0;
-                                try {
-                                    priceMin = price.getInt("price__min");
-                                    priceMax = price.getInt("price__max");
-                                } catch (Exception e) {
-
-                                }
-                                ProductListItem item = new ProductListItem();
-                                item.setThumbnailSM(response2.getString("thumbnail_sm"));
-                                item.setSlug(response2.getString("slug"));
-                                item.setName(response2.getString("name"));
-                                item.setCategoryName(category.getString("name"));
-                                item.setCategorySlug(category.getString("slug"));
-                                item.setBrandName(brand.getString("name"));
-                                item.setBrandSlug(brand.getString("slug"));
-                                item.setPriceMax(priceMax);
-                                item.setPriceMin(priceMin);
-                                products.add(item);
-
-                                adapterViewAndroid.notifyItemInserted(products.size());
-                            }
-                        }
-                        Collections.sort(products, new Comparator<ProductListItem>() {
-                            @Override
-                            public int compare(ProductListItem lhs, ProductListItem rhs) {
-                                if(lhs.getPriceMin()>rhs.getPriceMin()){
-                                    return lhs.getPriceMin();
-                                }else{
-                                    return rhs.getPriceMin();
-                                }
-                            }
-                        });
-
-                        if (listener != null)
-                            listener.onSuccess(products.size());
-
-                        isLoading = false;
-
-
-                        progressBar.setVisibility(View.INVISIBLE);
-                        if(products.size() < 10)
-                            progressBar.setVisibility(View.GONE);
-                        //Log.d("json","dataset changed");
-                    } catch (JSONException e) {
-                        e.printStackTrace(); progressBar.setVisibility(View.GONE);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressBar.setVisibility(View.GONE);
-
-                if (listener != null)
-                    listener.onSuccess(0);
-            }
-        });
-
-
 
 
         request.setRetryPolicy(new RetryPolicy() {
@@ -740,20 +497,219 @@ public class ProductGrid{
 
             }
         });
-        if(currentPage>2) {
+        if (currentPage > 2) {
             request.setShouldCache(false);
             //rq.getCache().clear();
         }
         rq.add(request);
     }
 
-    public void sortByPriceHigh(){
+//    public void getCategoryProductsWithPrice(String slug, int currentPage) {
+//        current = currentPage;
+//        progressBar.setVisibility(View.VISIBLE);
+//        isLoading = true;
+//        String url = "https://api-prod.evaly.com.bd/api/product/?shadow_category__slug=" + slug + "&page=" + currentPage;
+//        Log.d("json", url);
+//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
+//                response -> {
+//                    try {
+//                        Log.d("product_json2", response.toString());
+//                        JSONArray jsonArray = response.getJSONArray("results");
+//                        for (int i = 0; i < jsonArray.length(); i++) {
+//                            JSONObject response2 = jsonArray.getJSONObject(i);
+//                            JSONObject category = response2.getJSONObject("category");
+//                            JSONObject brand = response2.getJSONObject("brand");
+//                            JSONObject price = response2.getJSONObject("price_range");
+//                            if (response2.getBoolean("approved")) {
+//                                int priceMin = 0, priceMax = 0;
+//                                try {
+//                                    priceMin = price.getInt("price__min");
+//                                    priceMax = price.getInt("price__max");
+//                                } catch (Exception e) {
+//
+//                                }
+//                                ProductListItem item = new ProductListItem();
+//                                item.setThumbnailSM(response2.getString("thumbnail_sm"));
+//                                item.setSlug(response2.getString("slug"));
+//                                item.setName(response2.getString("name"));
+//                                item.setCategoryName(category.getString("name"));
+//                                item.setCategorySlug(category.getString("slug"));
+//                                item.setBrandName(brand.getString("name"));
+//                                item.setBrandSlug(brand.getString("slug"));
+//                                item.setPriceMax(priceMax);
+//                                item.setPriceMin(priceMin);
+//                                if (minPrice == 0) {
+//                                    if (priceMin <= maxPrice) {
+//                                        products.add(item);
+//                                        adapterViewAndroid.notifyItemInserted(products.size());
+//                                    }
+//                                } else if (maxPrice == 0) {
+//                                    if (priceMin >= minPrice) {
+//                                        products.add(item);
+//                                        adapterViewAndroid.notifyItemInserted(products.size());
+//                                    }
+//                                } else {
+//                                    if (priceMin >= minPrice && priceMin <= maxPrice) {
+//                                        products.add(item);
+//                                        adapterViewAndroid.notifyItemInserted(products.size());
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        isLoading = false;
+//                        progressBar.setVisibility(View.INVISIBLE);
+//                        if (listener != null)
+//                            listener.onSuccess(products.size());
+//                        if (products.size() < 10) {
+//                            progressBar.setVisibility(View.GONE);
+//                            getCategoryProductsWithPrice(slug, ++current);
+//                        }
+//                        //Log.d("json","dataset changed");
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        progressBar.setVisibility(View.GONE);
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                progressBar.setVisibility(View.GONE);
+//
+//                if (listener != null)
+//                    listener.onSuccess(0);
+//            }
+//        });
+//        request.setRetryPolicy(new RetryPolicy() {
+//            @Override
+//            public int getCurrentTimeout() {
+//                return 50000;
+//            }
+//
+//            @Override
+//            public int getCurrentRetryCount() {
+//                return 50000;
+//            }
+//
+//            @Override
+//            public void retry(VolleyError error) throws VolleyError {
+//
+//            }
+//        });
+//        if (currentPage > 2) {
+//            request.setShouldCache(false);
+//            //rq.getCache().clear();
+//        }
+//        rq.add(request);
+//    }
+
+//    public void getSortedCategoryProducts(String slug, int currentPage, int type) {
+//        current = currentPage;
+//        progressBar.setVisibility(View.VISIBLE);
+//
+//
+//        isLoading = true;
+//
+//        String url = "https://api-prod.evaly.com.bd/api/product/?shadow_category__slug=" + slug + "&page=" + currentPage;
+//        Log.d("json", url);
+//        products.clear();
+//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
+//                response -> {
+//                    try {
+//                        Log.d("json", response.toString());
+//                        JSONArray jsonArray = response.getJSONArray("results");
+//                        for (int i = 0; i < jsonArray.length(); i++) {
+//                            JSONObject response2 = jsonArray.getJSONObject(i);
+//                            JSONObject category = response2.getJSONObject("category");
+//                            JSONObject brand = response2.getJSONObject("brand");
+//                            JSONObject price = response2.getJSONObject("price_range");
+//                            if (response2.getBoolean("approved")) {
+//                                int priceMin = 0, priceMax = 0;
+//                                try {
+//                                    priceMin = price.getInt("price__min");
+//                                    priceMax = price.getInt("price__max");
+//                                } catch (Exception e) {
+//
+//                                }
+//                                ProductListItem item = new ProductListItem();
+//                                item.setThumbnailSM(response2.getString("thumbnail_sm"));
+//                                item.setSlug(response2.getString("slug"));
+//                                item.setName(response2.getString("name"));
+//                                item.setCategoryName(category.getString("name"));
+//                                item.setCategorySlug(category.getString("slug"));
+//                                item.setBrandName(brand.getString("name"));
+//                                item.setBrandSlug(brand.getString("slug"));
+//                                item.setPriceMax(priceMax);
+//                                item.setPriceMin(priceMin);
+//                                products.add(item);
+//
+//                                adapterViewAndroid.notifyItemInserted(products.size());
+//                            }
+//                        }
+//                        Collections.sort(products, new Comparator<ProductListItem>() {
+//                            @Override
+//                            public int compare(ProductListItem lhs, ProductListItem rhs) {
+//                                if (lhs.getPriceMin() > rhs.getPriceMin()) {
+//                                    return lhs.getPriceMin();
+//                                } else {
+//                                    return rhs.getPriceMin();
+//                                }
+//                            }
+//                        });
+//
+//                        if (listener != null)
+//                            listener.onSuccess(products.size());
+//
+//                        isLoading = false;
+//
+//
+//                        progressBar.setVisibility(View.INVISIBLE);
+//                        if (products.size() < 10)
+//                            progressBar.setVisibility(View.GONE);
+//                        //Log.d("json","dataset changed");
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        progressBar.setVisibility(View.GONE);
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                progressBar.setVisibility(View.GONE);
+//
+//                if (listener != null)
+//                    listener.onSuccess(0);
+//            }
+//        });
+//
+//
+//        request.setRetryPolicy(new RetryPolicy() {
+//            @Override
+//            public int getCurrentTimeout() {
+//                return 50000;
+//            }
+//
+//            @Override
+//            public int getCurrentRetryCount() {
+//                return 50000;
+//            }
+//
+//            @Override
+//            public void retry(VolleyError error) throws VolleyError {
+//
+//            }
+//        });
+//        if (currentPage > 2) {
+//            request.setShouldCache(false);
+//            //rq.getCache().clear();
+//        }
+//        rq.add(request);
+//    }
+
+    public void sortByPriceHigh() {
         Collections.sort(products, new Comparator<ProductListItem>() {
             @Override
             public int compare(ProductListItem lhs, ProductListItem rhs) {
-                if(lhs.getPriceMin()>rhs.getPriceMin()){
+                if (lhs.getPriceMin() > rhs.getPriceMin()) {
                     return lhs.getPriceMin();
-                }else{
+                } else {
                     return rhs.getPriceMin();
                 }
             }

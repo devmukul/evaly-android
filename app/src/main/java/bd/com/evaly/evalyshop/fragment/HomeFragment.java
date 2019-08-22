@@ -62,6 +62,7 @@ import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.SliderAdapter;
 import bd.com.evaly.evalyshop.util.Data;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.SliderViewPager;
@@ -510,8 +511,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void getSliderImage(){
-        String url = "https://api.evaly.com.bd/core/banners/";
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, (String) null,
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, UrlUtils.BANNER, (String) null,
                 responsez -> {
 
 

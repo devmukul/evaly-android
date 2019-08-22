@@ -725,7 +725,7 @@ public class ViewProductActivity extends BaseActivity {
                         sku.setText(firstVariant.getString("variant_id"));
 
 
-                        getProductRating(firstVariant.getString("variant_id"));
+//                        getProductRating(firstVariant.getString("variant_id"));
 
 
 //                        if(firstVariant.getString("description").equals("")){

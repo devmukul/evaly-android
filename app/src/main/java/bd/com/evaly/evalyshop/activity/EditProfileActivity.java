@@ -33,17 +33,19 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class EditProfileActivity extends BaseActivity {
 
-    EditText firstname,lastName, email, phone;
+    EditText firstname, lastName, email, phone;
     Button update;
-    String username="",token="";
+    String username = "", token = "";
     UserDetails userDetails;
 
     String userAgent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,12 +58,12 @@ public class EditProfileActivity extends BaseActivity {
         } catch (Exception e) {
             userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
         }
-        firstname=findViewById(R.id.firstName);
-        lastName=findViewById(R.id.lastName);
+        firstname = findViewById(R.id.firstName);
+        lastName = findViewById(R.id.lastName);
         email = findViewById(R.id.email);
         phone = findViewById(R.id.phone);
-        update=findViewById(R.id.update);
-        userDetails=new UserDetails(this);
+        update = findViewById(R.id.update);
+        userDetails = new UserDetails(this);
 
         firstname.setText(userDetails.getFirstName());
         lastName.setText(userDetails.getLastName());
@@ -79,18 +81,18 @@ public class EditProfileActivity extends BaseActivity {
 
     }
 
-    public void getUserData(){
+    public void getUserData() {
         final ViewDialog alert = new ViewDialog(this);
 
         alert.showDialog();
 
-        String url="https://api.evaly.com.bd/core/refresh-auth-token/"+userDetails.getUserName()+"/";
+        String url = UrlUtils.REFRESH_AUTH_TOKEN + userDetails.getUserName() + "/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
         } catch (Exception e) {
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("onResponse", response.toString());
@@ -135,13 +137,13 @@ public class EditProfileActivity extends BaseActivity {
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(EditProfileActivity.this);
+        RequestQueue queue = Volley.newRequestQueue(EditProfileActivity.this);
         queue.add(request);
     }
 
-    public void setUserData(JSONObject payload, ViewDialog alert){
+    public void setUserData(JSONObject payload, ViewDialog alert) {
 
-        String url="https://api.evaly.com.bd/core/user-info-update/";
+        String url = "https://api.evaly.com.bd/core/user-info-update/";
 
         Log.d("json user info url", url);
 
@@ -154,7 +156,7 @@ public class EditProfileActivity extends BaseActivity {
 
                 Log.d("json user info response", response.toString());
 
-                Toast.makeText(EditProfileActivity.this,"Profile Updated!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
 
                 EditProfileActivity.this.finish();
 
@@ -174,11 +176,11 @@ public class EditProfileActivity extends BaseActivity {
                 headers.put("Origin", "https://evaly.com.bd");
                 headers.put("Referer", "https://evaly.com.bd/");
                 headers.put("User-Agent", userAgent);
-               // headers.put("Content-Length", data.length()+"");
+                // headers.put("Content-Length", data.length()+"");
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(EditProfileActivity.this);
+        RequestQueue queue = Volley.newRequestQueue(EditProfileActivity.this);
         request.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
