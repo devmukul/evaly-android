@@ -1,0 +1,24 @@
+<vector android:height="24dp" android:viewportHeight="96"
+    android:viewportWidth="96" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillAlpha="1" android:fillColor="#607D8B"
+        android:fillType="nonZero"
+        android:pathData="M58,12L58,10L38,10L38,12C38,16.8008 34.8008,20.8008 30,21.8008L10,26C10,56 24,86 24,86L72,86C72,86 86,56 86,26L66,21.6016C61.1992,20.8008 58,16.6016 58,12Z" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#FFB300"
+        android:fillType="nonZero"
+        android:pathData="M64,18.8008C63,18.8008 62,19.6016 61.8008,20.6016C61.3984,28 55.1992,33.8008 47.8008,33.8008C40.3984,33.8008 34.1992,28 33.8008,20.6016C33.8008,19.3984 32.8008,18.6016 31.6016,18.8008C30.3984,18.8008 29.6016,19.8008 29.8008,21C30.3984,30.3984 38.1992,38 47.8008,38C57.3984,38 65.1992,30.6016 65.8008,21C66,19.8008 65.1992,19 64,18.8008Z" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#FFB300"
+        android:fillType="nonZero"
+        android:pathData="M48,58.6016L40,48L48,40L56,48Z" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#FFC107"
+        android:fillType="nonZero"
+        android:pathData="M48,40C46.8008,40 46,39.1992 46,38L46,34C46,32.8008 46.8008,32 48,32C49.1992,32 50,32.8008 50,34L50,38C50,39.1992 49.1992,40 48,40Z" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#F44336"
+        android:fillType="nonZero"
+        android:pathData="M48,42L54,48L48,56L42,48Z" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#B71C1C"
+        android:fillType="nonZero"
+        android:pathData="M54,48L48,56L48,48Z" android:strokeColor="#00000000"/>
+    <path android:fillAlpha="1" android:fillColor="#E57373"
+        android:fillType="nonZero"
+        android:pathData="M48,42L42,48L48,48Z" android:strokeColor="#00000000"/>
+</vector>

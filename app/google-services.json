@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "391591112529",
+    "firebase_url": "https://evaly-cc047.firebaseio.com",
+    "project_id": "evaly-cc047",
+    "storage_bucket": "evaly-cc047.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391591112529:android:934c27d15451eb6b",
+        "android_client_info": {
+          "package_name": "bd.com.evaly.evalyshop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391591112529-7nbqfsgbtpmqcboh0q7mp41vhi9k03fm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bd.com.evaly.evalyshop",
+            "certificate_hash": "8e94f8adc547553dce02d44613a319b3e4113ca5"
+          }
+        },
+        {
+          "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGxaFJJXIr1k3aLl2POkxzZKhULbScpvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391591112529-j8np8lk8uc8go50mjc6aga4sthmi23qp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

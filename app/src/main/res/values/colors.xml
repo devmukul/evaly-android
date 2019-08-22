@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fff</color>
+    <color name="colorPrimaryDark">#fff</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccentBlue">#6c81f7</color>
+
+    <color name="fff">#fff</color>
+
+    <color name="transparent">@android:color/transparent</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <color name="app_bg">#FFFFFF</color>
+
+    <color name="app_bg_2nd">#FAFAFA</color>
+
+
+    <color name="menu_bg">#F1F3F4</color>
+
+
+    <color name="grey_text">#555555</color>
+
+    <color name="border_color">#eee</color>
+
+
+    <color name="c333">#333</color>
+    <color name="c666">#666</color>
+
+    <color name="c777">#777</color>
+
+    <color name="marked_text">#74B876</color>
+
+
+    <color name="separator">#F1F3F4</color>
+
+
+    <color name="fafafa">#fafafa</color>
+
+
+    <color name="separator_light">#FAFAFA</color>
+
+
+    <color name="separator_lighter">#FEFEFE</color>
+
+
+    <color name="evaly_color">#bd1f26</color>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    Button Focused
+    <item   android:state_focused="true"
+        android:state_pressed="false">
+        <shape android:shape="rectangle">
+            <solid android:color="#fff" />
+            <stroke android:width="1.5dp"
+                android:color="@color/colorAccent"/>
+            <padding android:left="13dp"
+                android:right="13dp"
+                android:bottom="13dp"
+                android:top="13dp"/>
+        </shape>
+    </item>
+
+    <!-- Button Default Image-->
+    <item>
+        <shape android:shape="rectangle">
+            <stroke android:width="0.8dp"
+                android:color="#ddd"/>
+
+            <solid android:color="#fff" />
+            <padding android:left="13dp"
+                android:right="13dp"
+                android:bottom="13dp"
+                android:top="13dp"/>
+        </shape>
+
+    </item>
+
+</selector>
