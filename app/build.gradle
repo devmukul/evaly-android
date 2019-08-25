@@ -74,6 +74,8 @@ dependencies {
     implementation 'com.facebook.android:facebook-core:5.0.0'
 
     implementation 'com.github.MikeOrtiz:TouchImageView:1.4.0'
+    implementation 'com.orhanobut:logger:2.2.0'
+
 
 
 }

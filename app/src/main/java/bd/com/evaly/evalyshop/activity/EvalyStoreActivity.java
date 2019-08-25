@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.util.TabsItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 
@@ -52,7 +53,7 @@ public class EvalyStoreActivity extends AppCompatActivity {
         getSupportActionBar().setElevation(4f);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("Evaly Stores");
+        getSupportActionBar().setTitle("19:19 Shops");
 
         nestedSV = findViewById(R.id.sticky);
         progressBar = findViewById(R.id.progressBar);
@@ -72,25 +73,25 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        if (nestedSV != null) {
-            nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    String TAG = "nested_sync";
-                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                        Log.i(TAG, "BOTTOM SCROLL");
-                        try {
-
-                            if(!isLoading)
-                                loadNextShops();
-
-                        } catch (Exception e) {
-                            Log.e("load more product", e.toString());
-                        }
-                    }
-                }
-            });
-        }
+//        if (nestedSV != null) {
+//            nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+//                @Override
+//                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//                    String TAG = "nested_sync";
+//                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+//                        Log.i(TAG, "BOTTOM SCROLL");
+//                        try {
+//
+//                            if(!isLoading)
+//                                loadNextShops();
+//
+//                        } catch (Exception e) {
+//                            Log.e("load more product", e.toString());
+//                        }
+//                    }
+//                }
+//            });
+//        }
 
 
 
@@ -102,36 +103,28 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        String url="https://api.evaly.com.bd/core/custom/shops/?&search=evaly&page="+p;
-        Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, UrlUtils.OFFER_19_19,(String) null,
                 response -> {
                     try {
 
                         isLoading = false;
 
-                        JSONArray jsonArray = response.getJSONArray("data");
-                        Log.d("search_result",response.toString());
+                        JSONArray jsonArray = response.getJSONArray("shops");
                         boolean b=false;
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
-                            if(ob.getInt("total_shop_items")>0){
                                 TabsItem tabsItem = new TabsItem();
-                                tabsItem.setTitle(ob.getString("shop_name"));
-                                tabsItem.setImage(ob.getString("shop_image"));
+                                tabsItem.setTitle(ob.getString("name"));
+                                tabsItem.setImage(ob.getString("logo_image"));
                                 tabsItem.setSlug(ob.getString("slug"));
                                 tabsItem.setCategory("root");
                                 itemList.add(tabsItem);
                                 adapter.notifyItemInserted(itemList.size());
-                                b=true;
-                            }
+
                         }
 
                        // dialog.hideDialog();
-
-
-                        if(p == 1)
-                            loadNextShops();
 
                         progressBar.setVisibility(View.INVISIBLE);
 

@@ -45,6 +45,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,9 +68,9 @@ import bd.com.evaly.evalyshop.views.StickyScrollView;
 
 public class ShopFragment extends Fragment {
 
-    String slug="", title="";
+    String slug="", title="", groups="";
     ImageView logo;
-    TextView name,address,number;
+    TextView name,address,number,tvOffer;
     StickyScrollView nestedSV;
 
     ShimmerFrameLayout shimmer;
@@ -139,6 +140,7 @@ public class ShopFragment extends Fragment {
             }
         });
         name = view.findViewById(R.id.name);
+        tvOffer = view.findViewById(R.id.tvOffer);
         address = view.findViewById(R.id.address);
         number = view.findViewById(R.id.number);
         logo = view.findViewById(R.id.logo);
@@ -208,10 +210,15 @@ public class ShopFragment extends Fragment {
 
         adapter = new ShopCategoryAdapter(context,itemList, this);
         recyclerView.setAdapter(adapter);
-
-
+        Logger.d(getArguments());
 
         slug = getArguments().getString("shop_slug");
+
+        if (groups != null && groups.equalsIgnoreCase("evaly1919")){
+            tvOffer.setVisibility(View.VISIBLE);
+        }else {
+            tvOffer.setVisibility(View.GONE);
+        }
         getShopProductCount();
 
 
@@ -499,6 +506,18 @@ public class ShopFragment extends Fragment {
 
                            // Toast.makeText(context, "No product is available", Toast.LENGTH_SHORT).show();
                         }
+
+                        JSONArray jsonArray = data.getJSONArray("groups");
+                        if (jsonArray.length()>0){
+                            JSONObject ob = jsonArray.getJSONObject(0);
+                            String offers = ob.getString("slug");
+                            if (offers != null && offers.equalsIgnoreCase("evaly1919")){
+                                tvOffer.setVisibility(View.VISIBLE);
+                            }else {
+                                tvOffer.setVisibility(View.GONE);
+                            }
+                        }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

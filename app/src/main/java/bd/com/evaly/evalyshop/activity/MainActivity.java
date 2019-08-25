@@ -209,6 +209,7 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_cart:
                         startActivity(new Intent(MainActivity.this,CartActivity.class));
                         break;
+
                 }
                 new Handler().postDelayed(() -> drawer.closeDrawer(GravityCompat.START), 150);
                 return true;
@@ -295,6 +296,7 @@ public class MainActivity extends BaseActivity {
                 bundle.putString("shop_slug", data.getStringExtra("shop_slug"));
                 bundle.putString("shop_name", data.getStringExtra("shop_name"));
                 bundle.putString("category", data.getStringExtra("category"));
+                bundle.putString("groups", data.getStringExtra("groups"));
 
                 Fragment fragment3 = new ShopFragment();
                 fragment3.setArguments(bundle);

@@ -54,8 +54,6 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         itemlist = item;
         this.type=type;
         this.activity = activity;
-
-
     }
 
     View.OnClickListener productListener = new View.OnClickListener() {
@@ -140,7 +138,6 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                     intent.putExtra("type", 3);
                     intent.putExtra("shop_slug", itemlist.get(position).getSlug());
                     intent.putExtra("category", itemlist.get(position).getCategory());
-
                     context.startActivity(intent);
 
                 }
