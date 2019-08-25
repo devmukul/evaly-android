@@ -32,8 +32,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.FacebookSdk;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.orhanobut.logger.Logger;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
@@ -42,7 +55,9 @@ import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.util.Token;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 
@@ -128,7 +143,9 @@ public class MainActivity extends BaseActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-
+        if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()){
+            refreshToken();
+        }
 
 
 
@@ -509,6 +526,57 @@ public class MainActivity extends BaseActivity {
         // Glide.with(getApplicationContext()).pauseRequests();
 
 
+    }
+
+    public void refreshToken() {
+
+        String url = UrlUtils.REFRESH_AUTH_TOKEN;
+        JSONObject parameters = new JSONObject();
+        try {
+            parameters.put("key", "value");
+        } catch (Exception e) {
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("onResponse", response.toString());
+                try {
+
+                    JSONObject userJson = response.getJSONObject("data");
+                    String token = userJson.getString("token");
+                    Logger.d(token);
+                    userDetails.setToken(token);
+
+
+                    Log.d("json user info", userJson.toString());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                try {
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    // headers.put("Host", "api-prod.evaly.com.bd");
+                    headers.put("Content-Type", "application/json");
+                    headers.put("Origin", "https://evaly.com.bd");
+                    headers.put("Referer", "https://evaly.com.bd/");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                return headers;
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        queue.add(request);
     }
 
 
