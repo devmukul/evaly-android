@@ -78,5 +78,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="required">Required</string>
+    <string name="something_wrong">Something went wrong, please try again!</string>
 
 </resources>

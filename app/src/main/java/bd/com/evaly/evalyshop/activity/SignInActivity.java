@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -36,6 +37,7 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -44,11 +46,11 @@ public class SignInActivity extends BaseActivity {
 
     TextView forgot;
     LinearLayout signUp;
-    ImageView close,showPassword;
-    EditText phoneNumber,password;
+    ImageView close, showPassword;
+    EditText phoneNumber, password;
     Button signIn;
-    String token="",userNamePhone="";
-    boolean isShowing=false;
+    String token = "", userNamePhone = "";
+    boolean isShowing = false;
     UserDetails userDetails;
     ViewDialog alert;
     String userAgent;
@@ -61,15 +63,14 @@ public class SignInActivity extends BaseActivity {
         setContentView(R.layout.activity_sign_in);
 
 
-
-        signUp=findViewById(R.id.signup);
-        close=findViewById(R.id.closeBtn);
-        phoneNumber=findViewById(R.id.phone_number);
-        password=findViewById(R.id.password);
-        signIn=findViewById(R.id.sign_in);
-        showPassword=findViewById(R.id.show_pass);
-        forgot=findViewById(R.id.forgot);
-        userDetails=new UserDetails(this);
+        signUp = findViewById(R.id.signup);
+        close = findViewById(R.id.closeBtn);
+        phoneNumber = findViewById(R.id.phone_number);
+        password = findViewById(R.id.password);
+        signIn = findViewById(R.id.sign_in);
+        showPassword = findViewById(R.id.show_pass);
+        forgot = findViewById(R.id.forgot);
+        userDetails = new UserDetails(this);
         alert = new ViewDialog(this);
 
         close.setOnClickListener(v -> onBackPressed());
@@ -87,14 +88,14 @@ public class SignInActivity extends BaseActivity {
 
         Intent data = getIntent();
 
-        if(data.hasExtra("phone")){
+        if (data.hasExtra("phone")) {
 
             phoneNumber.setText(data.getStringExtra("phone"));
 
             phoneNumber.clearFocus();
             password.clearFocus();
 
-            if(data.hasExtra("type")){
+            if (data.hasExtra("type")) {
 
                 if (data.getStringExtra("type").equals("forgetpassword"))
                     Toast.makeText(SignInActivity.this, "Password sent to your mobile. Please login using the new password", Toast.LENGTH_LONG).show();
@@ -112,19 +113,19 @@ public class SignInActivity extends BaseActivity {
         }
 
         signUp.setOnClickListener(v -> {
-            startActivity(new Intent(SignInActivity.this,SignUpActivity.class));
+            startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
             finish();
         });
 
         showPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isShowing){
-                    isShowing=!isShowing;
+                if (!isShowing) {
+                    isShowing = !isShowing;
                     password.setInputType(InputType.TYPE_CLASS_TEXT);
                     showPassword.setImageResource(R.drawable.ic_visibility_off);
-                }else{
-                    isShowing=!isShowing;
+                } else {
+                    isShowing = !isShowing;
                     password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     showPassword.setImageResource(R.drawable.ic_visibility);
                 }
@@ -134,7 +135,7 @@ public class SignInActivity extends BaseActivity {
         forgot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SignInActivity.this,ForgotPasswordActivity.class));
+                startActivity(new Intent(SignInActivity.this, ForgotPasswordActivity.class));
                 finish();
             }
         });
@@ -142,13 +143,13 @@ public class SignInActivity extends BaseActivity {
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TextUtils.isEmpty(phoneNumber.getText().toString())){
+                if (TextUtils.isEmpty(phoneNumber.getText().toString())) {
                     Toast.makeText(SignInActivity.this, "Please enter your phone number", Toast.LENGTH_SHORT).show();
-                }else if(TextUtils.isEmpty(password.getText().toString())){
+                } else if (TextUtils.isEmpty(password.getText().toString())) {
                     Toast.makeText(SignInActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
-                }else if(phoneNumber.getText().toString().length()!=11){
+                } else if (phoneNumber.getText().toString().length() != 11) {
                     Toast.makeText(SignInActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     alert.showDialog();
                     signInUser();
                 }
@@ -156,7 +157,7 @@ public class SignInActivity extends BaseActivity {
         });
     }
 
-    public void signInUser(){
+    public void signInUser() {
 
 
         // String url="https://api-dev.evaly.com.bd/api/api-token-auth/"; // dev mode, don't use it
@@ -171,13 +172,13 @@ public class SignInActivity extends BaseActivity {
 
             userNamePhone = phoneNumber.getText().toString();
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
 
-        String url="https://api.evaly.com.bd/core/login";
-        JsonObjectRequest request=new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
+        String url = UrlUtils.BASE_URL + "login/";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
@@ -191,30 +192,28 @@ public class SignInActivity extends BaseActivity {
                     token = data.getString("token");
 
 
+                    JSONObject ob = data.getJSONObject("user_info");
+                    userDetails.setToken(token);
+                    userDetails.setUserName(ob.getString("username"));
+                    userDetails.setFirstName(ob.getString("first_name"));
+                    userDetails.setLastName(ob.getString("last_name"));
 
+                    userDetails.setEmail(ob.getString("email"));
+                    userDetails.setPhone(ob.getString("contact"));
 
-                        JSONObject ob= data.getJSONObject("user_info");
-                        userDetails.setToken(token);
-                        userDetails.setUserName(ob.getString("username"));
-                        userDetails.setFirstName(ob.getString("first_name"));
-                        userDetails.setLastName(ob.getString("last_name"));
+                    userDetails.setUserID(ob.getInt("id"));
 
-                        userDetails.setEmail(ob.getString("email"));
-                        userDetails.setPhone(ob.getString("contact"));
-
-                        userDetails.setUserID(ob.getInt("id"));
-
-                        userDetails.setJsonAddress(ob.getString("address"));
+                    userDetails.setJsonAddress(ob.getString("address"));
 
 
                     Toast.makeText(SignInActivity.this, "Successfully signed in", Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(SignInActivity.this, UserDashboardActivity.class);
-                    intent.putExtra("from","signin");
+                    Intent intent = new Intent(SignInActivity.this, UserDashboardActivity.class);
+                    intent.putExtra("from", "signin");
                     startActivity(intent);
                     finish();
 
 
-                }catch (Exception e){
+                } catch (Exception e) {
 
                     Toast.makeText(SignInActivity.this, "Incorrect phone number or password. Please try again! ", Toast.LENGTH_SHORT).show();
 
@@ -227,7 +226,7 @@ public class SignInActivity extends BaseActivity {
             public void onErrorResponse(VolleyError error) {
 
                 error.printStackTrace();
-                if(attempt<2){
+                if (attempt < 2) {
 
                     signInUser();
 
@@ -236,8 +235,7 @@ public class SignInActivity extends BaseActivity {
                 } else {
 
 
-
-                    try{
+                    try {
 
 
                         alert.hideDialog();
@@ -247,12 +245,12 @@ public class SignInActivity extends BaseActivity {
                         JSONObject jsonObject;
 
                         NetworkResponse response = error.networkResponse;
-                        if(response != null && response.data != null){
-                            switch(response.statusCode){
+                        if (response != null && response.data != null) {
+                            switch (response.statusCode) {
                                 case 400:
                                     json = new String(response.data);
                                     jsonObject = new JSONObject(json);
-                                    if(jsonObject.getString("status") != null)
+                                    if (jsonObject.getString("status") != null)
                                         Toast.makeText(SignInActivity.this, jsonObject.getString("status"), Toast.LENGTH_SHORT).show();
                                     break;
                                 case 500:
@@ -261,12 +259,12 @@ public class SignInActivity extends BaseActivity {
                             //Additional cases
                         }
 
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
-        }){
+        }) {
 
 
             @Override
@@ -284,7 +282,7 @@ public class SignInActivity extends BaseActivity {
 
         };
         request.setShouldCache(false);
-        RequestQueue queue= Volley.newRequestQueue(SignInActivity.this);
+        RequestQueue queue = Volley.newRequestQueue(SignInActivity.this);
         request.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
@@ -303,15 +301,6 @@ public class SignInActivity extends BaseActivity {
         });
         queue.add(request);
     }
-
-
-
-
-
-
-
-
-
 
 
 //    public void getUserData(){

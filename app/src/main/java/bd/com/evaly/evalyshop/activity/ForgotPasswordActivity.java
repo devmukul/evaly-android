@@ -30,6 +30,8 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.password.PasswordActivity;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class ForgotPasswordActivity extends BaseActivity {
@@ -40,6 +42,7 @@ public class ForgotPasswordActivity extends BaseActivity {
     ViewDialog dialog;
 
     String userAgent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,19 +52,19 @@ public class ForgotPasswordActivity extends BaseActivity {
         } catch (Exception e) {
             userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
         }
-        number=findViewById(R.id.phone);
-        reset=findViewById(R.id.reset);
-        close=findViewById(R.id.closeBtn);
-        dialog=new ViewDialog(ForgotPasswordActivity.this);
+        number = findViewById(R.id.phone);
+        reset = findViewById(R.id.reset);
+        close = findViewById(R.id.closeBtn);
+        dialog = new ViewDialog(ForgotPasswordActivity.this);
 
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(number.getText().toString().equals("")){
+                if (number.getText().toString().equals("")) {
                     Toast.makeText(ForgotPasswordActivity.this, "Please enter number", Toast.LENGTH_SHORT).show();
-                }else if(number.getText().toString().length()!=11){
+                } else if (number.getText().toString().length() != 11) {
                     Toast.makeText(ForgotPasswordActivity.this, "The length of number must be 11", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     dialog.showDialog();
                     resetPassword();
                 }
@@ -76,39 +79,36 @@ public class ForgotPasswordActivity extends BaseActivity {
         });
     }
 
-    public void resetPassword(){
+    public void resetPassword() {
 
 
         JSONObject params = new JSONObject();
         try {
             params.put("phone_number", number.getText().toString());
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
-        String url="https://api.evaly.com.bd/core/forgot-password";
-        JsonObjectRequest request=new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        String url = UrlUtils.BASE_URL + "forgot-password";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 dialog.hideDialog();
 
-                Intent il = new Intent(ForgotPasswordActivity.this,SignInActivity.class);
-                il.putExtra("phone",number.getText().toString().toString());
-                il.putExtra("type","forgetpassword");
+                Intent il = new Intent(ForgotPasswordActivity.this, PasswordActivity.class);
+                il.putExtra("phone", number.getText().toString());
                 finish();
                 startActivity(il);
 
 
-
-
-                Log.d("change_password",response.toString());
+                Log.d("change_password", response.toString());
             }
 
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try{
+                try {
 
                     dialog.hideDialog();
 
@@ -117,12 +117,12 @@ public class ForgotPasswordActivity extends BaseActivity {
                     JSONObject jsonObject;
 
                     NetworkResponse response = error.networkResponse;
-                    if(response != null && response.data != null){
-                        switch(response.statusCode){
+                    if (response != null && response.data != null) {
+                        switch (response.statusCode) {
                             case 400:
                                 json = new String(response.data);
                                 jsonObject = new JSONObject(json);
-                                if(jsonObject.getString("success") != null)
+                                if (jsonObject.getString("success") != null)
                                     Toast.makeText(ForgotPasswordActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                                 break;
                             case 500:
@@ -133,14 +133,14 @@ public class ForgotPasswordActivity extends BaseActivity {
                     }
 
                     error.printStackTrace();
-                }catch(Exception e){
+                } catch (Exception e) {
 
                     Toast.makeText(ForgotPasswordActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
 
 
                 }
             }
-        }){
+        }) {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -153,7 +153,7 @@ public class ForgotPasswordActivity extends BaseActivity {
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(ForgotPasswordActivity.this);
+        RequestQueue queue = Volley.newRequestQueue(ForgotPasswordActivity.this);
         request.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
@@ -175,7 +175,7 @@ public class ForgotPasswordActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(ForgotPasswordActivity.this,SignInActivity.class));
+        startActivity(new Intent(ForgotPasswordActivity.this, SignInActivity.class));
         finish();
     }
 }
