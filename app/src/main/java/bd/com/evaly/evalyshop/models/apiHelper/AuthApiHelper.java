@@ -15,7 +15,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AuthApiHelper {
-    public static void setPassword(SetPasswordModel model, DataFetchingListener<Response<JsonObject>> listener){
+    public static void setPassword(HashMap<String, String> model, DataFetchingListener<Response<JsonObject>> listener){
 
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call = iApiClient.setPassword(model);

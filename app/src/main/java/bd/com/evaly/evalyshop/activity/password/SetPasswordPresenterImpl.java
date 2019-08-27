@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.SetPasswordModel;
@@ -45,7 +47,13 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
             }
         }else {
             SetPasswordModel model = new SetPasswordModel(otp, password, phoneNumber);
-            AuthApiHelper.setPassword(model, new DataFetchingListener<Response<JsonObject>>() {
+
+            HashMap<String, String> data = new HashMap<>();
+            data.put("otp_token", otp);
+            data.put("password", password);
+            data.put("phone_number", phoneNumber);
+
+            AuthApiHelper.setPassword(data, new DataFetchingListener<Response<JsonObject>>() {
                 @Override
                 public void onDataFetched(Response<JsonObject> response) {
                     if (response.code() == 201){
