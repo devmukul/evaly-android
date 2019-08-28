@@ -34,16 +34,17 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.util.TabsItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class ChangePasswordActivity extends BaseActivity {
 
-    EditText oldPassword,newPassword,confirmPassword;
+    EditText oldPassword, newPassword, confirmPassword;
     Button changePassword;
     UserDetails userDetails;
-    ImageView showCurrent,showNew,showNewConfirm;
-    boolean isCurrentShowing,isNewShowing,isNewConfirmShowing;
+    ImageView showCurrent, showNew, showNewConfirm;
+    boolean isCurrentShowing, isNewShowing, isNewConfirmShowing;
 
     String userAgent;
     ViewDialog dialog;
@@ -61,28 +62,28 @@ public class ChangePasswordActivity extends BaseActivity {
         } catch (Exception e) {
             userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
         }
-        oldPassword=findViewById(R.id.currentPassword);
-        newPassword=findViewById(R.id.newPassword);
-        confirmPassword=findViewById(R.id.newPasswordConfirmation);
-        changePassword=findViewById(R.id.change);
-        showCurrent=findViewById(R.id.show_current_pass);
-        showNew=findViewById(R.id.show_new_pass);
-        showNewConfirm=findViewById(R.id.show_new_pass_confirm);
-        userDetails=new UserDetails(this);
+        oldPassword = findViewById(R.id.currentPassword);
+        newPassword = findViewById(R.id.newPassword);
+        confirmPassword = findViewById(R.id.newPasswordConfirmation);
+        changePassword = findViewById(R.id.change);
+        showCurrent = findViewById(R.id.show_current_pass);
+        showNew = findViewById(R.id.show_new_pass);
+        showNewConfirm = findViewById(R.id.show_new_pass_confirm);
+        userDetails = new UserDetails(this);
 
-        Log.d("token",userDetails.getToken());
+        Log.d("token", userDetails.getToken());
 
         dialog = new ViewDialog(this);
 
         showNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isNewShowing){
-                    isNewShowing=!isNewShowing;
+                if (!isNewShowing) {
+                    isNewShowing = !isNewShowing;
                     newPassword.setInputType(InputType.TYPE_CLASS_TEXT);
                     showNew.setImageResource(R.drawable.ic_visibility_off);
-                }else{
-                    isNewShowing=!isNewShowing;
+                } else {
+                    isNewShowing = !isNewShowing;
                     newPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     showNew.setImageResource(R.drawable.ic_visibility);
                 }
@@ -92,12 +93,12 @@ public class ChangePasswordActivity extends BaseActivity {
         showCurrent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isCurrentShowing){
-                    isCurrentShowing=!isCurrentShowing;
+                if (!isCurrentShowing) {
+                    isCurrentShowing = !isCurrentShowing;
                     oldPassword.setInputType(InputType.TYPE_CLASS_TEXT);
                     showCurrent.setImageResource(R.drawable.ic_visibility_off);
-                }else{
-                    isCurrentShowing=!isCurrentShowing;
+                } else {
+                    isCurrentShowing = !isCurrentShowing;
                     oldPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     showCurrent.setImageResource(R.drawable.ic_visibility);
                 }
@@ -107,12 +108,12 @@ public class ChangePasswordActivity extends BaseActivity {
         showNewConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isNewConfirmShowing){
-                    isNewConfirmShowing=!isNewConfirmShowing;
+                if (!isNewConfirmShowing) {
+                    isNewConfirmShowing = !isNewConfirmShowing;
                     confirmPassword.setInputType(InputType.TYPE_CLASS_TEXT);
                     showNewConfirm.setImageResource(R.drawable.ic_visibility_off);
-                }else{
-                    isNewConfirmShowing=!isNewConfirmShowing;
+                } else {
+                    isNewConfirmShowing = !isNewConfirmShowing;
                     confirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     showNewConfirm.setImageResource(R.drawable.ic_visibility);
                 }
@@ -123,67 +124,68 @@ public class ChangePasswordActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 System.out.println(userDetails.getToken());
-                Log.d("old_password",oldPassword.getText().toString());
-                Log.d("new_password",newPassword.getText().toString());
-                if(oldPassword.getText().toString().equals("")){
+                Log.d("old_password", oldPassword.getText().toString());
+                Log.d("new_password", newPassword.getText().toString());
+                if (oldPassword.getText().toString().equals("")) {
                     Toast.makeText(ChangePasswordActivity.this, "Please enter your current password", Toast.LENGTH_SHORT).show();
-                }else if(newPassword.getText().toString().equals("")){
+                } else if (newPassword.getText().toString().equals("")) {
                     Toast.makeText(ChangePasswordActivity.this, "Please enter your new password", Toast.LENGTH_SHORT).show();
-                }else if(confirmPassword.getText().toString().equals("")){
+                } else if (confirmPassword.getText().toString().equals("")) {
                     Toast.makeText(ChangePasswordActivity.this, "Please confirm your new password", Toast.LENGTH_SHORT).show();
-                }else if(!confirmPassword.getText().toString().equals(newPassword.getText().toString())){
+                } else if (!confirmPassword.getText().toString().equals(newPassword.getText().toString())) {
                     Toast.makeText(ChangePasswordActivity.this, "Password didn't match. Please enter your new password again.", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
 
 
                     dialog.showDialog();
-
-                    String url="https://api-prod.evaly.com.bd/api/users/reset_password";
 
 
                     JSONObject parameters = new JSONObject();
                     try {
 
-                        parameters.put("new_password",newPassword.getText().toString());
-                        parameters.put("old_password",oldPassword.getText().toString());
+                        parameters.put("new_password", newPassword.getText().toString());
+                        parameters.put("old_password", oldPassword.getText().toString());
                     } catch (Exception e) {
 
                     }
 
                     Log.d("json", parameters.toString());
 
-                    JsonObjectRequest request=new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
+                    JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, UrlUtils.CHANGE_PASSWORD, parameters, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             Toast.makeText(ChangePasswordActivity.this, "Password changed successfully", Toast.LENGTH_SHORT).show();
 
                             dialog.hideDialog();
 
-                            Log.d("change_password",response.toString());
+                            Log.d("change_password", response.toString());
 
                             try {
 
                                 userDetails.setToken(response.getString("token"));
 
-                            }catch (Exception e){
+                            } catch (Exception e) {
 
                             }
+                            userDetails.clearAll();
+                            startActivity(new Intent(ChangePasswordActivity.this, MainActivity.class));
+                            finish();
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            try{
+                            try {
 
                                 dialog.hideDialog();
-                                Toast.makeText(ChangePasswordActivity.this,"Couldn't change password.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ChangePasswordActivity.this, "Couldn't change password.", Toast.LENGTH_SHORT).show();
 
 
                                 error.printStackTrace();
-                            }catch(Exception e){
+                            } catch (Exception e) {
 
                             }
                         }
-                    }){
+                    }) {
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
 
@@ -218,7 +220,7 @@ public class ChangePasswordActivity extends BaseActivity {
 
                         }
                     });
-                    RequestQueue queue= Volley.newRequestQueue(ChangePasswordActivity.this);
+                    RequestQueue queue = Volley.newRequestQueue(ChangePasswordActivity.this);
                     queue.add(request);
                 }
             }

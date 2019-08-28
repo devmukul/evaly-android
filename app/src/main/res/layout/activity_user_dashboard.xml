@@ -184,7 +184,6 @@
             android:paddingBottom="15dp">
 
             <ImageView
-                android:id="@+id/imageView3"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_weight="0"
@@ -192,7 +191,6 @@
                 app:srcCompat="@drawable/ic_user" />
 
             <TextView
-                android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -213,10 +211,9 @@
             android:paddingTop="15dp"
             android:paddingRight="20dp"
             android:paddingBottom="15dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <ImageView
-                android:id="@+id/imageView3"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_weight="0"
@@ -224,7 +221,6 @@
                 app:srcCompat="@drawable/ic_input_lock" />
 
             <TextView
-                android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"

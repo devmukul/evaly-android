@@ -96,7 +96,8 @@ public class HomeFragment extends Fragment {
 
     Context context;
 
-
+    public HomeFragment() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
