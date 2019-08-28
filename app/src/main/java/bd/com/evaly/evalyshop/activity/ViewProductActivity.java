@@ -73,6 +73,7 @@ import bd.com.evaly.evalyshop.models.ProductVariants;
 import bd.com.evaly.evalyshop.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.reviewratings.RatingReviews;
 import bd.com.evaly.evalyshop.util.Data;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.WishList;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 import bd.com.evaly.evalyshop.views.AvailableShop;
@@ -97,8 +98,8 @@ import bd.com.evaly.evalyshop.reviewratings.RatingReviews;
 public class ViewProductActivity extends BaseActivity {
 
     ImageView back;
-    TextView productName,sku,description;
-    String slug="",category="",name="";
+    TextView productName, sku, description;
+    String slug = "", category = "", name = "";
     ArrayList<Products> products;
     NestedScrollView nestedSV;
     ArrayList<AvailableShop> availableShops;
@@ -109,7 +110,7 @@ public class ViewProductActivity extends BaseActivity {
     ArrayList<String> sliderImages;
     ViewProductSliderAdapter sliderAdapter;
     RadioGroup ll;
-    Map<String,String> map,shopMap;
+    Map<String, String> map, shopMap;
     LinearLayout colorRel;
 
 
@@ -118,8 +119,8 @@ public class ViewProductActivity extends BaseActivity {
     AppBarLayout appBarLayout;
 
 
-    View specView,descriptionView;
-    RelativeLayout specRel,descriptionRel;
+    View specView, descriptionView;
+    RelativeLayout specRel, descriptionRel;
     DbHelperCart db;
 
     CartItem cartItem;
@@ -140,25 +141,25 @@ public class ViewProductActivity extends BaseActivity {
     RatingReviews ratingReviews;
     int raters[];
     RecyclerView specList;
-    ArrayList<String> specTitle,specValue;
+    ArrayList<String> specTitle, specValue;
     SpecificationAdapter specificationAdapter;
     String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
 
     TextView viewAllReviews;
 
-    boolean isShopLoading = false,callFirst=false;
+    boolean isShopLoading = false, callFirst = false;
 
 
     String shareURL = "https://evaly.com.bd";
-    TreeMap<String, TreeMap<String,String>> varyingMap;
+    TreeMap<String, TreeMap<String, String>> varyingMap;
     LinearLayout variationParentLayout;
-    int buttonID=0;
-    String shopURL="";
-    ArrayList<String> parameters,values;
+    int buttonID = 0;
+    String shopURL = "";
+    ArrayList<String> parameters, values;
     RequestQueue rqShop;
 
     RequestQueue rq;
-    Map<Integer,ProductVariants> productVariantsMap;
+    Map<Integer, ProductVariants> productVariantsMap;
     ArrayList<Integer> buttonIDs;
 
     @Override
@@ -166,11 +167,11 @@ public class ViewProductActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_product);
 
-        ratingReviews =  findViewById(R.id.rating_reviews);
+        ratingReviews = findViewById(R.id.rating_reviews);
         viewAllReviews = findViewById(R.id.viewAllReviews);
 
         context = this;
-        
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.z_toolbar);
         setSupportActionBar(toolbar);
 
@@ -191,7 +192,7 @@ public class ViewProductActivity extends BaseActivity {
                     sharingIntent.setType("text/plain");
                     sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareURL);
                     startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_via)));
-                } catch (Exception e){
+                } catch (Exception e) {
                     Toast.makeText(context, "Can't share the product.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -203,12 +204,12 @@ public class ViewProductActivity extends BaseActivity {
         db = new DbHelperCart(context);
 
         dbWish = new DbHelperWishList(context);
-        varyingMap=new TreeMap<>(Collections.reverseOrder());
-        parameters=new ArrayList<>();
-        values=new ArrayList<>();
-        shopMap=new HashMap<>();
-        productVariantsMap=new HashMap<>();
-        buttonIDs=new ArrayList<>();
+        varyingMap = new TreeMap<>(Collections.reverseOrder());
+        parameters = new ArrayList<>();
+        values = new ArrayList<>();
+        shopMap = new HashMap<>();
+        productVariantsMap = new HashMap<>();
+        buttonIDs = new ArrayList<>();
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         //make fully Android Transparent Status bar
@@ -220,42 +221,42 @@ public class ViewProductActivity extends BaseActivity {
         appBarLayout = findViewById(R.id.appBar);
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
         coordinatorLayout = findViewById(R.id.rootView);
-        variationParentLayout=findViewById(R.id.variationParent);
+        variationParentLayout = findViewById(R.id.variationParent);
 
-        specList=findViewById(R.id.spec_list);
+        specList = findViewById(R.id.spec_list);
         specList.setLayoutManager(new LinearLayoutManager(this));
-        specTitle=new ArrayList<>();
-        specValue=new ArrayList<>();
-        specificationAdapter=new SpecificationAdapter(this,specTitle,specValue);
+        specTitle = new ArrayList<>();
+        specValue = new ArrayList<>();
+        specificationAdapter = new SpecificationAdapter(this, specTitle, specValue);
         specList.setAdapter(specificationAdapter);
 
         // productImage=findViewById(R.id.image);
-        productName=findViewById(R.id.product_name);
-        recyclerView=findViewById(R.id.available);
+        productName = findViewById(R.id.product_name);
+        recyclerView = findViewById(R.id.available);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        sku=findViewById(R.id.sku);
-        description=findViewById(R.id.specText);
-        nestedSV=findViewById(R.id.sticky_scroll);
-        sliderPager =  findViewById(R.id.sliderPager);
-        sliderIndicator=findViewById(R.id.sliderIndicator);
-        colorRel=findViewById(R.id.color_rel);
-        back=findViewById(R.id.back);
-        specView=findViewById(R.id.spec_view);
-        specRel=findViewById(R.id.spec_rel);
-        descriptionRel=findViewById(R.id.description_rel);
-        descriptionView=findViewById(R.id.description_view);
-        products=new ArrayList<>();
-        availableShops=new ArrayList<>();
-        sliderImages=new ArrayList<>();
-        map=new TreeMap<>();
+        sku = findViewById(R.id.sku);
+        description = findViewById(R.id.specText);
+        nestedSV = findViewById(R.id.sticky_scroll);
+        sliderPager = findViewById(R.id.sliderPager);
+        sliderIndicator = findViewById(R.id.sliderIndicator);
+        colorRel = findViewById(R.id.color_rel);
+        back = findViewById(R.id.back);
+        specView = findViewById(R.id.spec_view);
+        specRel = findViewById(R.id.spec_rel);
+        descriptionRel = findViewById(R.id.description_rel);
+        descriptionView = findViewById(R.id.description_view);
+        products = new ArrayList<>();
+        availableShops = new ArrayList<>();
+        sliderImages = new ArrayList<>();
+        map = new TreeMap<>();
 
         productHolder = findViewById(R.id.productInfo);
         stickyButtons = findViewById(R.id.stickyButtons);
         relatedTitle = findViewById(R.id.relatedTitle);
 
 
-        sliderAdapter = new ViewProductSliderAdapter(context,this, sliderImages,new ArrayList<>());
+        sliderAdapter = new ViewProductSliderAdapter(context, this, sliderImages, new ArrayList<>());
         sliderPager.setAdapter(sliderAdapter);
         sliderIndicator.setupWithViewPager(sliderPager, true);
 
@@ -263,11 +264,11 @@ public class ViewProductActivity extends BaseActivity {
         //adapter = new AvailableShopAdapter(context, findViewById(R.id.rootView),availableShops, db, cartItem);
         //recyclerView.setAdapter(adapter);
 
-        Bundle extras=getIntent().getExtras();
-        if(extras!=null){
-            slug=extras.getString("product_slug");
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            slug = extras.getString("product_slug");
 
-            name=extras.getString("product_name");
+            name = extras.getString("product_name");
 
 
             productName.setVisibility(View.GONE);
@@ -314,7 +315,7 @@ public class ViewProductActivity extends BaseActivity {
 
         });
 
-        final  ImageView addToWishList = findViewById(R.id.addToWishlist);
+        final ImageView addToWishList = findViewById(R.id.addToWishlist);
         addToWishList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -324,17 +325,16 @@ public class ViewProductActivity extends BaseActivity {
 
                 int price = 0;
 
-                try{
-                   price = Integer.parseInt(wishListItem.getPrice());
+                try {
+                    price = Integer.parseInt(wishListItem.getPrice());
 
 
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
 
 
-
-                if(isAddedToWishList) {
+                if (isAddedToWishList) {
 
                     addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
                     dbWish.deleteDataBySlug(wishListItem.getProductSlug());
@@ -386,11 +386,11 @@ public class ViewProductActivity extends BaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        try{
+        try {
             dbWish.close();
             db.close();
-           // finish();
-        }catch (Exception e){
+            // finish();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -402,7 +402,7 @@ public class ViewProductActivity extends BaseActivity {
             cartCount();
             dbWish = new DbHelperWishList(context);
             db = new DbHelperCart(context);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -414,19 +414,18 @@ public class ViewProductActivity extends BaseActivity {
         // destroy data here
 
 
-
         dbWish.close();
         db.close();
 
     }
 
 
-    public void cartCount(){
+    public void cartCount() {
 
-        if(db.size()>0){
+        if (db.size() > 0) {
 
             TextView cartCounter = findViewById(R.id.cartCount);
-            cartCounter.setText(db.size()+"");
+            cartCounter.setText(db.size() + "");
 
         }
 
@@ -434,8 +433,7 @@ public class ViewProductActivity extends BaseActivity {
     }
 
 
-
-    public void hideProductHolder(){
+    public void hideProductHolder() {
 
         productHolder.setVisibility(View.GONE);
         relatedTitle.setVisibility(View.GONE);
@@ -445,7 +443,7 @@ public class ViewProductActivity extends BaseActivity {
     }
 
 
-    public void showProductHolder(){
+    public void showProductHolder() {
 
         productHolder.setVisibility(View.VISIBLE);
         relatedTitle.setVisibility(View.VISIBLE);
@@ -453,7 +451,6 @@ public class ViewProductActivity extends BaseActivity {
         ((ProgressBar) findViewById(R.id.progressBar)).setBackgroundColor(Color.parseColor("#fafafa"));
 
     }
-
 
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
@@ -473,24 +470,21 @@ public class ViewProductActivity extends BaseActivity {
             int flags = activity.getWindow().getDecorView().getSystemUiVisibility(); // get current flag
             flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;   // add LIGHT_STATUS_BAR to flag
             activity.getWindow().getDecorView().setSystemUiVisibility(flags);
-        } else{
+        } else {
 
             activity.getWindow().setStatusBarColor(Color.BLACK);
-
 
 
         }
     }
 
 
-
     public void getProductRating(final String sku) {
 
 
-
-        String url="https://nsuer.club/evaly/reviews/?sku="+sku+"&type=product&isRating=true";
+        String url = "https://nsuer.club/evaly/reviews/?sku=" + sku + "&type=product&isRating=true";
         Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
                     Log.d("json varying", response.toString());
                     try {
@@ -500,7 +494,7 @@ public class ViewProductActivity extends BaseActivity {
 
                         viewAllReviews.setClickable(true);
 
-                        ratingReviews =  findViewById(R.id.rating_reviews);
+                        ratingReviews = findViewById(R.id.rating_reviews);
 
                         int total_ratings = response.getInt("total_ratings");
                         double avg_ratings = response.getDouble("avg_ratings");
@@ -526,12 +520,12 @@ public class ViewProductActivity extends BaseActivity {
                         };
 
 
-                        ((TextView)findViewById(R.id.rating_average)).setText(avg_ratings+"");
-                        ((TextView)findViewById(R.id.rating_counter)).setText(total_ratings+" ratings");
-                        ((RatingBar)findViewById(R.id.ratingBar)).setRating((float) avg_ratings);
+                        ((TextView) findViewById(R.id.rating_average)).setText(avg_ratings + "");
+                        ((TextView) findViewById(R.id.rating_counter)).setText(total_ratings + " ratings");
+                        ((RatingBar) findViewById(R.id.ratingBar)).setRating((float) avg_ratings);
 
 
-                        if (total_ratings==0)
+                        if (total_ratings == 0)
                             total_ratings = 1;
 
 
@@ -553,12 +547,8 @@ public class ViewProductActivity extends BaseActivity {
                                 startActivity(intent);
 
 
-
-
                             }
                         });
-
-
 
 
                     } catch (JSONException e) {
@@ -596,36 +586,49 @@ public class ViewProductActivity extends BaseActivity {
     }
 
 
-    public void getProductData(String slug){
-        String url="https://api.evaly.com.bd/core/public/products/"+slug+"/";
-        Log.d("json",url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+    public void getProductData(String slug) {
+        String url = UrlUtils.BASE_URL + "public/products/" + slug + "/";
+        Log.d("json", url);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 responseMain -> {
                     productName.setVisibility(View.VISIBLE);
                     collapsingToolbarLayout.setVisibility(View.VISIBLE);
                     try {
-                        Log.d("product_details",responseMain.toString());
+                        Log.d("product_details", responseMain.toString());
                         JSONObject response = responseMain.getJSONObject("data");
                         JSONArray product_variants = response.getJSONArray("product_variants");
 
-                        for(int i=0;i<product_variants.length();i++){
-                            if(response.getJSONArray("attributes").length()==0){
-                                JSONArray variantArr=product_variants.getJSONObject(i).getJSONArray("product_images");
-                                for(int j=0;j<variantArr.length();j++){
+                        for (int i = 0; i < product_variants.length(); i++) {
+                            if (response.getJSONArray("attributes").length() == 0) {
+
+                            } else {
+
+                                int attr = product_variants.getJSONObject(i).getJSONArray("attribute_values").length();
+                                if (attr == 0) {
+                                    product_variants.remove(i);
+                                }
+
+                            }
+                        }
+
+                        for (int i = 0; i < product_variants.length(); i++) {
+                            if (response.getJSONArray("attributes").length() == 0) {
+                                JSONArray variantArr = product_variants.getJSONObject(i).getJSONArray("product_images");
+                                for (int j = 0; j < variantArr.length(); j++) {
                                     sliderImages.add(variantArr.getString(j));
                                     sliderAdapter.notifyDataSetChanged();
                                 }
                                 getAvailableShops(product_variants.getJSONObject(i).getInt("variant_id"));
-                            }else{
-                                JSONArray variantArr=product_variants.getJSONObject(i).getJSONArray("product_images");
-                                int variantID=product_variants.getJSONObject(i).getInt("variant_id");
-                                String name=product_variants.getJSONObject(i).getString("product_name");
-                                int minPrice=product_variants.getJSONObject(i).getInt("min_price");
-                                int maxPrice=product_variants.getJSONObject(i).getInt("max_price");
-                                String description=product_variants.getJSONObject(i).getString("product_description");
-                                String brandName=product_variants.getJSONObject(i).getString("brand_name");
-                                ArrayList<String> productImages=new ArrayList<>();
-                                for(int j=0;j<variantArr.length();j++){
+                            } else {
+                                JSONArray variantArr = product_variants.getJSONObject(i).getJSONArray("product_images");
+                                int variantID = product_variants.getJSONObject(i).getInt("variant_id");
+                                String name = product_variants.getJSONObject(i).getString("product_name");
+                                int minPrice = product_variants.getJSONObject(i).getInt("min_price");
+                                int maxPrice = product_variants.getJSONObject(i).getInt("max_price");
+                                String description = product_variants.getJSONObject(i).getString("product_description");
+                                String brandName = product_variants.getJSONObject(i).getString("brand_name");
+                                ArrayList<String> productImages = new ArrayList<>();
+                                for (int j = 0; j < variantArr.length(); j++) {
                                     productImages.add(variantArr.getString(j));
                                 }
 
@@ -637,41 +640,41 @@ public class ViewProductActivity extends BaseActivity {
                                             description, brandName, colorImage, productImages);
                                     productVariantsMap.put(attribute, productVariants);
 
-                                }catch (Exception e){
+                                } catch (Exception e) {
 
                                 }
                             }
                         }
 
-                        JSONArray attributes=response.getJSONArray("attributes");
-                        for(int i=0;i<attributes.length();i++){
-                            String caption=attributes.getJSONObject(i).getString("attribute_name");
-                            JSONArray attributeValues=attributes.getJSONObject(i).getJSONArray("attribute_values");
-                            ArrayList<String> attributeValuesArr=new ArrayList<>();
-                            ArrayList<Integer> attributeKeysArr=new ArrayList<>();
-                            for(int j=0;j<attributeValues.length();j++){
+                        JSONArray attributes = response.getJSONArray("attributes");
+                        for (int i = 0; i < attributes.length(); i++) {
+                            String caption = attributes.getJSONObject(i).getString("attribute_name");
+                            JSONArray attributeValues = attributes.getJSONObject(i).getJSONArray("attribute_values");
+                            ArrayList<String> attributeValuesArr = new ArrayList<>();
+                            ArrayList<Integer> attributeKeysArr = new ArrayList<>();
+                            for (int j = 0; j < attributeValues.length(); j++) {
                                 attributeValuesArr.add(attributeValues.getJSONObject(j).getString("value"));
                                 attributeKeysArr.add(attributeValues.getJSONObject(j).getInt("key"));
                             }
-                            addButtons(caption,attributeValuesArr,attributeKeysArr);
+                            addButtons(caption, attributeValuesArr, attributeKeysArr);
                             colorRel.setVisibility(View.VISIBLE);
                         }
 
                         JSONObject firstVariant = product_variants.getJSONObject(0);
                         productName.setText(Html.fromHtml(firstVariant.getString("product_name")));
-                        if(firstVariant.getString("product_description").equals("")){
+                        if (firstVariant.getString("product_description").equals("")) {
                             descriptionView.setVisibility(View.GONE);
                             descriptionRel.setVisibility(View.GONE);
-                        }else{
+                        } else {
                             description.setText(firstVariant.getString("product_description"));
                         }
 
-                        JSONArray productSpecifications=response.getJSONArray("product_specifications");
-                        if(productSpecifications.length()==0){
+                        JSONArray productSpecifications = response.getJSONArray("product_specifications");
+                        if (productSpecifications.length() == 0) {
                             specView.setVisibility(View.GONE);
                             specRel.setVisibility(View.GONE);
                         }
-                        for(int i=0;i<productSpecifications.length();i++){
+                        for (int i = 0; i < productSpecifications.length(); i++) {
                             specTitle.add(productSpecifications.getJSONObject(i).getString("specification_name"));
                             specValue.add(productSpecifications.getJSONObject(i).getString("specification_value"));
                             specificationAdapter.notifyItemInserted(specTitle.size());
@@ -680,9 +683,7 @@ public class ViewProductActivity extends BaseActivity {
                         Log.d("json product", responseMain.toString());
 
 
-
-
-                        if(dbWish.isSlugExist(slug)){
+                        if (dbWish.isSlugExist(slug)) {
 
                             ImageView addToWishList = findViewById(R.id.addToWishlist);
                             addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
@@ -696,7 +697,6 @@ public class ViewProductActivity extends BaseActivity {
                         showProductHolder();
 
 
-
                         // for cart order
                         cartItem.setId("0");
                         cartItem.setName(firstVariant.getString("product_name"));
@@ -706,9 +706,9 @@ public class ViewProductActivity extends BaseActivity {
                         // for wishlist
 
                         int price = 0;
-                        try{
+                        try {
                             price = (int) Double.parseDouble(firstVariant.getString("min_price"));
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
 
@@ -750,7 +750,7 @@ public class ViewProductActivity extends BaseActivity {
                         //JSONObject obBrand=response.getJSONObject("brand");
                         //String brand =ob.getString("slug");
 
-                        shareURL = "https://evaly.com.bd/products/"+slug;
+                        shareURL = "https://evaly.com.bd/products/" + slug;
 
 
 //                        JSONArray varyingOptions=response.getJSONArray("varying_options");
@@ -772,14 +772,9 @@ public class ViewProductActivity extends BaseActivity {
 //                        }
 
 
-
-
                         Random Dice = new Random();
                         int n = Dice.nextInt(Data.homeRandomCategory.length);
                         String defaultCategory = Data.homeRandomCategory[n];
-
-
-
 
 
                         ProductGrid productGrid = new ProductGrid(context, findViewById(R.id.products), defaultCategory, findViewById(R.id.progressBar));
@@ -798,7 +793,7 @@ public class ViewProductActivity extends BaseActivity {
                                             ((ProgressBar) findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
 
                                             productGrid.loadNextPage();
-                                        } catch (Exception e){
+                                        } catch (Exception e) {
 
 
                                         }
@@ -839,29 +834,29 @@ public class ViewProductActivity extends BaseActivity {
     }
 
 
-    public void addButtons(String caption,ArrayList<String> name,ArrayList<Integer> id){
-        Log.d("buttons_called",caption+"   "+name.size());
-        TextView tv=new TextView(getApplicationContext());
-        LinearLayout.LayoutParams textParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 3f);
-        textParams.setMargins(10,10,10,10);
+    public void addButtons(String caption, ArrayList<String> name, ArrayList<Integer> id) {
+        Log.d("buttons_called", caption + "   " + name.size());
+        TextView tv = new TextView(getApplicationContext());
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 3f);
+        textParams.setMargins(10, 10, 10, 10);
         tv.setLayoutParams(textParams);
         tv.setText(caption);
         tv.setTextColor(Color.BLACK);
         tv.setTextSize(16f);
         LinearLayout layout2 = new LinearLayout(getApplicationContext());
-        LinearLayout.LayoutParams layParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layParams.setMargins(20,20,20,20);
+        LinearLayout.LayoutParams layParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layParams.setMargins(20, 20, 20, 20);
         layout2.setLayoutParams(layParams);
         layout2.setOrientation(LinearLayout.HORIZONTAL);
         layout2.addView(tv);
         LinearLayout layout3 = new LinearLayout(getApplicationContext());
-        layout3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,1f));
+        layout3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         layout3.setOrientation(LinearLayout.VERTICAL);
-        for(int i=0;i<name.size();i++){
-            Button button=new Button(getApplicationContext());
+        for (int i = 0; i < name.size(); i++) {
+            Button button = new Button(getApplicationContext());
             button.setText(name.get(i));
-            LinearLayout.LayoutParams buttonsParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1f);
-            buttonsParams.setMargins(10,10,10,10);
+            LinearLayout.LayoutParams buttonsParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+            buttonsParams.setMargins(10, 10, 10, 10);
             button.setLayoutParams(buttonsParams);
             button.setTypeface(null, Typeface.NORMAL);
             button.setFocusable(true);
@@ -882,13 +877,13 @@ public class ViewProductActivity extends BaseActivity {
                 public void onClick(View v) {
 
 
-                    ProductVariants productVariants=productVariantsMap.get(button.getId());
+                    ProductVariants productVariants = productVariantsMap.get(button.getId());
                     sliderImages.clear();
                     sliderAdapter.notifyDataSetChanged();
 
                     sliderPager.setAdapter(null);
 
-                    for(int j=0;j<productVariants.getImages().size();j++){
+                    for (int j = 0; j < productVariants.getImages().size(); j++) {
                         sliderImages.add(productVariants.getImages().get(j));
                         sliderAdapter.notifyDataSetChanged();
 
@@ -899,14 +894,14 @@ public class ViewProductActivity extends BaseActivity {
 
                     sliderAdapter.notifyDataSetChanged();
 
-                    for(int k=0;k<buttonIDs.size();k++){
-                        try{
-                            Button btn=findViewById(buttonIDs.get(k));
-                            if(btn.getTag().equals(button.getTag())){
+                    for (int k = 0; k < buttonIDs.size(); k++) {
+                        try {
+                            Button btn = findViewById(buttonIDs.get(k));
+                            if (btn.getTag().equals(button.getTag())) {
                                 GradientDrawable drawable = (GradientDrawable) btn.getBackground();
                                 drawable.setColor(Color.parseColor("#eeeeee"));
                             }
-                        }catch(Exception e){
+                        } catch (Exception e) {
 
                         }
                     }
@@ -922,9 +917,9 @@ public class ViewProductActivity extends BaseActivity {
                     }
                 }
             });
-            if(!callFirst){
+            if (!callFirst) {
                 button.performClick();
-                callFirst=true;
+                callFirst = true;
             }
             layout3.addView(button);
             //buttonID++;
@@ -935,7 +930,7 @@ public class ViewProductActivity extends BaseActivity {
     }
 
 
-    public void getAvailableShops(int variationID){
+    public void getAvailableShops(int variationID) {
 
 
         if (rqShop != null) {
@@ -943,9 +938,7 @@ public class ViewProductActivity extends BaseActivity {
         }
 
 
-
         ((ProgressBar) findViewById(R.id.progressBarShop)).setVisibility(View.VISIBLE);
-
 
 
         availableShops.clear();
@@ -955,17 +948,17 @@ public class ViewProductActivity extends BaseActivity {
         isShopLoading = true;
 
         Log.d("json_shop", shopURL);
-        shopURL="https://api.evaly.com.bd/core/public/product/shops/"+variationID+"/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, shopURL,(String) null,
+        shopURL = "https://api.evaly.com.bd/core/public/product/shops/" + variationID + "/";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, shopURL, (String) null,
                 response -> {
-                    Log.d("shop_details",response.toString());
+                    Log.d("shop_details", response.toString());
                     isShopLoading = false;
                     //adapter.notifyItemRangeRemoved(0, availableShops.size());
                     availableShops.clear();
-                    AvailableShopAdapter adapterm = new AvailableShopAdapter(context, findViewById(R.id.rootView),availableShops, db, cartItem);
+                    AvailableShopAdapter adapterm = new AvailableShopAdapter(context, findViewById(R.id.rootView), availableShops, db, cartItem);
                     //recyclerView.setAdapter(null);
                     recyclerView.setAdapter(adapterm);
-                    ArrayList<String> shopname=new ArrayList<>();
+                    ArrayList<String> shopname = new ArrayList<>();
                     ((ProgressBar) findViewById(R.id.progressBarShop)).setVisibility(View.GONE);
                     try {
                         JSONArray jsonArray = response.getJSONArray("data");
@@ -975,18 +968,18 @@ public class ViewProductActivity extends BaseActivity {
                                 String phone = "";
                                 try {
                                     phone = ob.getString("contact_number");
-                                } catch (Exception e){
+                                } catch (Exception e) {
                                     phone = "Not Given";
                                 }
-                                boolean duplicateShop=false;
-                                for(int j=0;j<shopname.size();j++){
-                                    if(shopname.get(j).equals(ob.getString("shop_name"))){
-                                        duplicateShop=true;
+                                boolean duplicateShop = false;
+                                for (int j = 0; j < shopname.size(); j++) {
+                                    if (shopname.get(j).equals(ob.getString("shop_name"))) {
+                                        duplicateShop = true;
                                         break;
                                     }
                                 }
-                                if(!duplicateShop){
-                                    Log.d("check_shop",ob.toString());
+                                if (!duplicateShop) {
+                                    Log.d("check_shop", ob.toString());
                                     AvailableShop item = new AvailableShop();
                                     shopname.add(ob.getString("shop_name"));
                                     item.setName(ob.getString("shop_name"));
@@ -1010,7 +1003,7 @@ public class ViewProductActivity extends BaseActivity {
 //                                    Toast.makeText(this, ""+availableShops.size(), Toast.LENGTH_SHORT).show();
 //                                    adapterm.notifyDataSetChanged();
 //                                }
-                            } catch (Exception e){
+                            } catch (Exception e) {
 
                                 Log.e("json expection", e.toString());
 
