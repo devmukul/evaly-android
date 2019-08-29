@@ -154,10 +154,6 @@ public class ShopFragment extends Fragment {
         categoryTitle = view.findViewById(R.id.categoryTitle);
 
 
-
-
-
-
         try {
 
             shimmer.startShimmer();
@@ -245,21 +241,6 @@ public class ShopFragment extends Fragment {
                     String TAG = "nested_sync";
 
 
-//                    if (oldScrollY-scrollY >= 300) {
-//                        // Log.i(TAG, "Scroll UP");
-//
-//
-//                        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-//                        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
-//                        if (behavior != null && behavior.getTopAndBottomOffset() !=0) {
-//                            behavior.setTopAndBottomOffset(0);
-//                            appBarLayout.setExpanded(true, true);
-//                        }
-//
-//                    }
-
-
-
                     if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
                         Log.i(TAG, "BOTTOM SCROLL");
 
@@ -286,10 +267,6 @@ public class ShopFragment extends Fragment {
                 reset.setVisibility(View.GONE);
             }
         });
-
-
-
-
 
 
     }

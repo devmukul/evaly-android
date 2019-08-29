@@ -61,6 +61,7 @@ import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.SliderAdapter;
+import bd.com.evaly.evalyshop.util.BannerItem;
 import bd.com.evaly.evalyshop.util.Data;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -75,7 +76,7 @@ public class HomeFragment extends Fragment {
     HomeTabPagerAdapter pager;
     SliderViewPager sliderPager;
     TabLayout sliderIndicator;
-    List<String> sliderImages,productSlug;
+    List<BannerItem> sliderImages;
     LinearLayout homeSearch,evalyStore;
     TabLayout tabLayout;
     LinearLayout voucher;
@@ -246,7 +247,6 @@ public class HomeFragment extends Fragment {
         sliderIndicator=view.findViewById(R.id.sliderIndicator);
 
         sliderImages = new ArrayList<>();
-        productSlug=new ArrayList<>();
         getSliderImage();
 
         //timer = new Timer();
@@ -266,34 +266,8 @@ public class HomeFragment extends Fragment {
                 public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                     String TAG = "nested_sync";
 
-//
-//                    if (oldScrollY-scrollY >= 300) {
-//                       // Log.i(TAG, "Scroll UP");
-//
-//
-//                            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-//                            AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
-//                            if (behavior != null && behavior.getTopAndBottomOffset() !=0) {
-//                                behavior.setTopAndBottomOffset(0);
-//                                appBarLayout.setExpanded(true, true);
-//                            }
-//
-//                    }
-
-
-
-
-
                     if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
                         Log.i(TAG, "BOTTOM SCROLL");
-//                        if (!isRecyclerViewWaitingtoLaadData) //check for scroll down
-//                        {
-//
-//                            if (!loadedAllItems) {
-//                                showUnSentData();
-//                            }
-//                        }
-
 
                         try {
 
@@ -336,23 +310,14 @@ public class HomeFragment extends Fragment {
 
         if (!userDetails.getRef().equals("")){
 
-
-            //String url = "https://nsuer.club/evaly/referral/submit-referral.php?token="+userDetails.getToken()+"referred_by="+userDetails.getRef()+"device_id="+ Utils.getDeviceID(context);
-
             String url = "https://nsuer.club/evaly/referral/submit-referral.php";
-
-
-            //Log.d("json url", url);
 
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     //Log.d("json", response);
 
-
-
                     try{
-
 
                         JSONObject jsonObject = new JSONObject(response);
 
@@ -365,17 +330,10 @@ public class HomeFragment extends Fragment {
 
                         }
 
-
-
-
                     } catch (Exception e){
 
                         Toast.makeText(context, "Couldn't verify invitation code.", Toast.LENGTH_LONG).show();
-
-
                     }
-
-
                 }
 
             }, new Response.ErrorListener() {
@@ -384,8 +342,6 @@ public class HomeFragment extends Fragment {
                     Log.e("onErrorResponse", error.toString());
 
                     Toast.makeText(context, "Server error occurred, couldn't verify invitation code.", Toast.LENGTH_LONG).show();
-
-
 
                 }
             }) {
@@ -436,29 +392,10 @@ public class HomeFragment extends Fragment {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public void onResume() {
         Log.e("DEBUG", "onResume of HomeFragment");
         super.onResume();
-
-//
-//        shimmer.setVisibility(View.VISIBLE);
-//        shimmer.startShimmer();
-//
-//        isShimmerShowed = false;
-
 
 
     }
@@ -467,7 +404,6 @@ public class HomeFragment extends Fragment {
     public void onPause() {
         Log.e("DEBUG", "OnPause of HomeFragment");
         super.onPause();
-//        timer.cancel();
     }
 
 
@@ -537,20 +473,25 @@ public class HomeFragment extends Fragment {
 
                     for(int i=0;i<response.length();i++){
                         try {
-                            JSONObject ob = response.getJSONObject(i);
-                            sliderImages.add(ob.getString("image"));
-                            if(ob.getString("url").equals("https://evaly.com.bd/")){
-                                productSlug.add("evaly");
-                            }else{
 
-                                productSlug.add(ob.getString("url"));
-                            }
-                            Log.d("slider_image",ob.toString());
+                            JSONObject ob = response.getJSONObject(i);
+
+                            BannerItem bannerItem = new BannerItem();
+                            bannerItem.setImage(ob.getString("image"));
+                            bannerItem.setName(ob.getString("name"));
+                            bannerItem.setSlug(ob.getString("slug"));
+                            bannerItem.setStatus(ob.getString("status"));
+                            bannerItem.setType(ob.getString("type"));
+                            bannerItem.setUrl(ob.getString("url"));
+
+                            sliderImages.add(bannerItem);
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
-                    sliderPager.setAdapter(new SliderAdapter(context, activity, sliderImages,productSlug));
+                    sliderPager.setAdapter(new SliderAdapter(context, activity, sliderImages));
                     sliderIndicator.setupWithViewPager(sliderPager, true);
                 },
                 error -> Log.d("Error.Response", error.toString())

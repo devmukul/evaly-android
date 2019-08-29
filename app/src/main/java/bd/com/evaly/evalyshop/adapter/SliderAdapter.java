@@ -28,40 +28,34 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.fragment.BrandFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
+import bd.com.evaly.evalyshop.util.BannerItem;
 
 public class SliderAdapter extends PagerAdapter {
 
     private Context context;
-    private List<String> img,url;
+    private List<BannerItem> itemList;
     private int type = 1;
     FragmentTransaction ft;
     AppCompatActivity activity;
 
-    public SliderAdapter(Context context, AppCompatActivity activity, List<String> img, List<String> url) {
+    public SliderAdapter(Context context, AppCompatActivity activity, List<BannerItem> itemList) {
         this.context = context;
-        this.img = img;
-        this.url=url;
+        this.itemList = itemList;
         this.activity = activity;
-
         ft = activity.getSupportFragmentManager().beginTransaction();
-
-
-
     }
 
-    public SliderAdapter(Context context, AppCompatActivity activity, List<String> img, List<String> url, int type) {
+    public SliderAdapter(Context context, AppCompatActivity activity, List<BannerItem> itemList, int type) {
         this.context = context;
-        this.img = img;
-        this.url=url;
+        this.itemList = itemList;
         this.type = type;
         this.activity = activity;
-
         ft = activity.getSupportFragmentManager().beginTransaction();
     }
 
     @Override
     public int getCount() {
-        return img.size();
+        return itemList.size();
     }
 
     @Override
@@ -82,7 +76,7 @@ public class SliderAdapter extends PagerAdapter {
         if(activity instanceof ViewProductActivity){
             Glide.with(context)
                     .asBitmap()
-                    .load(img.get(position))
+                    .load(itemList.get(position).getImage())
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(900, 900))
@@ -92,7 +86,7 @@ public class SliderAdapter extends PagerAdapter {
 
             Glide.with(context)
                     .asBitmap()
-                    .load(img.get(position))
+                    .load(itemList.get(position).getImage())
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(3000, 900))
@@ -107,9 +101,9 @@ public class SliderAdapter extends PagerAdapter {
             public void onClick(View v) {
 
 
-                if(url.size()==0){
+                if(itemList.get(position).getSlug().equals("")){
                     return;
-                }else if(url.get(position).equals("https://evaly.com.bd")){
+                }else if(itemList.get(position).getUrl().equals("https://evaly.com.bd")){
 
                     Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
 
@@ -117,53 +111,28 @@ public class SliderAdapter extends PagerAdapter {
                 }
 
 
-                String su[] = url.get(position).split("/");
-                String extractedUrl = su[su.length-1]+"::"+su[su.length-2];
 
-                String s[]= extractedUrl.split("::");
+                if (itemList.get(position).getUrl().contains("evaly.com.bd/shops")) {
 
-
-                if (s.length>1 && url.get(position).contains("evaly.com.bd")) {
-
-                    if (s[1].equals("products")) {
-                        Intent intent = new Intent(context, ViewProductActivity.class);
-                        intent.putExtra("product_slug", s[0]);
-                        context.startActivity(intent);
-                    } else if (s[1].equals("shop")) {
 
                         Fragment fragment3 = new ShopFragment();
 
                         Bundle bundle = new Bundle();
                         bundle.putInt("type", 1);
 
-                        bundle.putString("shop_name", s[0]);
-
-                        bundle.putString("shop_slug", s[0]);
-                        bundle.putString("category", s[0]);
+                        bundle.putString("shop_name", itemList.get(position).getName());
+                        bundle.putString("shop_slug", itemList.get(position).getSlug());
+                        bundle.putString("category", "root");
 
                         fragment3.setArguments(bundle);
 
                         ft.setCustomAnimations(R.animator.slide_in_left, R.animator.abc_popup_exit, 0, 0);
-                        ft.replace(R.id.fragment_container, fragment3, s[0]);
-                        ft.addToBackStack(s[0]);
+                        ft.replace(R.id.fragment_container, fragment3, itemList.get(position).getName());
+                        ft.addToBackStack(itemList.get(position).getName());
                         ft.commit();
-                    } else if (s[1].equals("brands")) {
-
-                        Fragment fragment3 = new BrandFragment();
-
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("type", 1);
-                        bundle.putString("brand_slug", s[0]);
-                        bundle.putString("category", s[0]);
-
-                        fragment3.setArguments(bundle);
 
 
-                        ft.setCustomAnimations(R.animator.slide_in_left, R.animator.abc_popup_exit, 0, 0);
-                        ft.replace(R.id.fragment_container, fragment3, s[0]);
-                        ft.addToBackStack(s[0]);
-                        ft.commit();
-                    }
+
                 } else {
 
 
@@ -175,12 +144,15 @@ public class SliderAdapter extends PagerAdapter {
                             .dividerHeight(0)
                             .gradientDivider(false)
                             .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit, R.anim.activity_close_enter, R.anim.activity_close_exit)
-                            .show(url.get(position));
+                            .show(itemList.get(position).getUrl());
 
 
                 }
 
             }
+
+
+
         });
 
         return view;
