@@ -55,8 +55,9 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         setContentView(R.layout.activity_password);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setTitle("Set Password");
+        getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setElevation(0);
 
         dialog = new ViewDialog(this);
 
