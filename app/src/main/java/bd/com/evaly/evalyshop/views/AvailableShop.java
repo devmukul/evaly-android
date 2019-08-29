@@ -2,7 +2,7 @@ package bd.com.evaly.evalyshop.views;
 
 public class AvailableShop {
 
-    String name,logo,price,slug,phone,address,shopJson,maximumPrice;
+    String name,logo,price,slug,contact_number,address,shopJson,maximumPrice;
     boolean stock;
 
 
@@ -15,7 +15,7 @@ public class AvailableShop {
         this.logo = logo;
         this.price = price;
         this.slug = slug;
-        this.phone = phone;
+        this.contact_number = phone;
         this.address = address;
         this.shopJson = shopJson;
         this.stock=stock;
@@ -24,11 +24,11 @@ public class AvailableShop {
 
 
     public String getPhone() {
-        return phone;
+        return contact_number;
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        this.contact_number = phone;
     }
 
     public String getAddress() {

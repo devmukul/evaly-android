@@ -30,6 +30,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -76,11 +77,11 @@ public class OrderListFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-    public OrderListFragment(String statusType) {
-        this.statusType = statusType;
+    @Override
+    public void setArguments(@Nullable Bundle args) {
+        this.statusType = args.getString("type");
+        Logger.d(statusType);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

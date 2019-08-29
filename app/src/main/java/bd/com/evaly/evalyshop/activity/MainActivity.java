@@ -98,7 +98,7 @@ public class MainActivity extends BaseActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         userNameNavHeader=headerView.findViewById(R.id.userNameNavHeader);
         phoneNavHeader = headerView.findViewById(R.id.phone);
-        homeFragment = new HomeFragment();
+//        homeFragment = new HomeFragment();
         userDetails=new UserDetails(this);
 
         dbHelperWishList=new DbHelperWishList(this);
@@ -397,13 +397,17 @@ public class MainActivity extends BaseActivity {
 
 
     public void showHomeFragment() {
-        Fragment fragment3 = new HomeFragment();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-        ft.replace(R.id.fragment_container, fragment3, "Home");
-        ft.setReorderingAllowed(true);
-        ft.addToBackStack("home");
-        ft.commit();
+       try {
+           Fragment fragment3 = new HomeFragment();
+           FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+           // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
+           ft.replace(R.id.fragment_container, fragment3, "Home");
+           ft.setReorderingAllowed(true);
+           ft.addToBackStack("home");
+           ft.commit();
+       }catch (Exception e){
+
+       }
 
         Token.update(this);
 

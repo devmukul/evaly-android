@@ -135,7 +135,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
             }
 
 
-            if(actualPrice.equals("0")){
+            if(discountPrice.equals("0")){
 
                 myViewHolder.price.setVisibility(View.INVISIBLE);
                 myViewHolder.buyBtn.setText("Call For Price");

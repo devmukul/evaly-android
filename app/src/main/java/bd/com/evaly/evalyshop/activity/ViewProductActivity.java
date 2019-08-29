@@ -49,6 +49,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -951,7 +952,8 @@ public class ViewProductActivity extends BaseActivity {
         shopURL = "https://api.evaly.com.bd/core/public/product/shops/" + variationID + "/";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, shopURL, (String) null,
                 response -> {
-                    Log.d("shop_details", response.toString());
+
+                    Logger.json(String.valueOf(response));
                     isShopLoading = false;
                     //adapter.notifyItemRangeRemoved(0, availableShops.size());
                     availableShops.clear();

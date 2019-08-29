@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.auth.ChangePasswordActivity"></activity>
+        <activity android:name=".activity.auth.ChangePasswordActivity"/>
         <activity android:name=".activity.offers.OffersActivity" />
         <activity
             android:name=".activity.InviteEarn"

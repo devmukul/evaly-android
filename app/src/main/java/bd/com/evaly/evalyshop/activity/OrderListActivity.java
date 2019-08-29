@@ -76,14 +76,54 @@ public class OrderListActivity extends BaseActivity {
 
         viewPager.setAdapter(pager);
 
-        pager.addFragment(new OrderListFragment("all"),"All");
-        pager.addFragment(new OrderListFragment("pending"),"Pending");
-        pager.addFragment(new OrderListFragment("confirmed"),"Confirmed");
-        pager.addFragment(new OrderListFragment("processing"),"Processing");
-        pager.addFragment(new OrderListFragment("picked"),"Picked");
-        pager.addFragment(new OrderListFragment("shipped"),"Shipped");
-        pager.addFragment(new OrderListFragment("delivered"),"Delivered");
-        pager.addFragment(new OrderListFragment("cancel"),"Cancelled");
+        OrderListFragment all = new OrderListFragment();
+        Bundle ab = new Bundle();
+        ab.putString("type", "all");
+        all.setArguments(ab);
+
+        OrderListFragment pending = new OrderListFragment();
+        Bundle ap = new Bundle();
+        ap.putString("type", "pending");
+        pending.setArguments(ap);
+
+        OrderListFragment confirmed = new OrderListFragment();
+        Bundle ac = new Bundle();
+        ac.putString("type", "confirmed");
+        confirmed.setArguments(ac);
+
+        OrderListFragment processing = new OrderListFragment();
+        Bundle apr = new Bundle();
+        apr.putString("type", "processing");
+        processing.setArguments(apr);
+
+        OrderListFragment picked = new OrderListFragment();
+        Bundle apk = new Bundle();
+        apk.putString("type", "picked");
+        picked.setArguments(apk);
+
+        OrderListFragment shipped = new OrderListFragment();
+        Bundle as = new Bundle();
+        as.putString("type", "shipped");
+        shipped.setArguments(as);
+
+        OrderListFragment delivered = new OrderListFragment();
+        Bundle ad = new Bundle();
+        ad.putString("type", "delivered");
+        delivered.setArguments(ad);
+
+        OrderListFragment cancel = new OrderListFragment();
+        Bundle acan = new Bundle();
+        acan.putString("type", "cancel");
+        cancel.setArguments(acan);
+
+        pager.addFragment(all,"All");
+        pager.addFragment(pending,"Pending");
+        pager.addFragment(confirmed,"Confirmed");
+        pager.addFragment(processing,"Processing");
+        pager.addFragment(picked,"Picked");
+        pager.addFragment(shipped,"Shipped");
+        pager.addFragment(delivered,"Delivered");
+        pager.addFragment(cancel,"Cancelled");
 
         pager.notifyDataSetChanged();
 
