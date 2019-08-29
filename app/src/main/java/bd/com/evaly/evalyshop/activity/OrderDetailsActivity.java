@@ -687,7 +687,7 @@ public class OrderDetailsActivity extends BaseActivity {
                             if(response.getString("payment_method").equals("cod")){
                                 paymentMethods.setText("Cash on Delivery");
                             }else{
-                                paymentMethods.setText(response.getString("payment_method"));
+                                paymentMethods.setText(response.getString("Evaly Pay"));
                             }
                         }catch(Exception e){
 
