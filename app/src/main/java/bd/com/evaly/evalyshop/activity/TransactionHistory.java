@@ -14,6 +14,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -51,8 +52,10 @@ public class TransactionHistory extends AppCompatActivity {
     int currentPage = 0;
 
     NestedScrollView nestedSV;
+    TextView balance;
 
 
+    RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,10 @@ public class TransactionHistory extends AppCompatActivity {
         }
 
 
+        balance = findViewById(R.id.balance);
+
+
+
         nestedSV = findViewById(R.id.stickyScrollView);
         progressBar = findViewById(R.id.progressBar);
         recyclerView=findViewById(R.id.recycle);
@@ -81,7 +88,11 @@ public class TransactionHistory extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         userDetails = new UserDetails(this);
 
+        balance.setText("৳ " +userDetails.getBalance());
 
+        queue = Volley.newRequestQueue(this);
+
+        getBalance();
         getTransactionHistory(++currentPage);
 
 
@@ -175,7 +186,6 @@ public class TransactionHistory extends AppCompatActivity {
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(this);
         request.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
@@ -196,7 +206,58 @@ public class TransactionHistory extends AppCompatActivity {
     }
 
 
+    public void getBalance(){
+        String url="https://api.evaly.com.bd/core/user-info-pay/"+userDetails.getUserName()+"/";
 
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("onResponse", response.toString());
+
+                try {
+                    response = response.getJSONObject("data");
+                    userDetails.setBalance(response.getString("balance"));
+                    balance.setText("৳ " + response.getString("balance"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                //headers.put("Content-Type", "application/json");
+                headers.put("Origin", "https://evaly.com.bd");
+                headers.put("Referer", "https://evaly.com.bd/");
+                headers.put("User-Agent", userAgent);
+                return headers;
+            }
+        };
+        request.setShouldCache(false);
+        request.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+        queue.add(request);
+    }
 
 
 

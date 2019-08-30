@@ -49,6 +49,8 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
 
         myViewHolder.time.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM", itemList.get(i).getDate_time()));
 
+        myViewHolder.amount.setText("৳ " + itemList.get(i).getAmount() + i + (i+1));
+
     }
 
     @Override
@@ -57,7 +59,7 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView messages, time;
+        TextView messages, time, amount;
         ImageView shopImage;
         View view;
         public MyViewHolder(final View itemView) {
@@ -65,6 +67,7 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
             messages=itemView.findViewById(R.id.message);
             time=itemView.findViewById(R.id.time);
             shopImage=itemView.findViewById(R.id.shop_image);
+            amount = itemView.findViewById(R.id.amount);
             view = itemView;
         }
     }
