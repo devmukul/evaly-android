@@ -4,21 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.CallSuper;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -48,7 +41,8 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.SearchCategory;
 import bd.com.evaly.evalyshop.adapter.HomeCategoryAdapter2;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
-import bd.com.evaly.evalyshop.util.TabsItem;
+import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.TransactionItem;
 
 public class TabsFragment extends Fragment {
 
@@ -57,25 +51,14 @@ public class TabsFragment extends Fragment {
     Context context;
     Map<String,Integer> categoryMap;
     HomeCategoryAdapter2 adapter2;
-
     ArrayList<TabsItem> itemList;
-
-
     int type = 1;
     String slug = "root";
     String category;
-
-
-
     EditText search;
     Button showMore;
-
-
     Fragment parentIntance;
-
-
     private View view;
-
     boolean isEmpty = false;
     int brandCounter=1,shopCounter=1;
     ArrayList<String> titleCategory2;

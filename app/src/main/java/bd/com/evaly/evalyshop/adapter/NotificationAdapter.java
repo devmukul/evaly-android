@@ -25,7 +25,7 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.OrderListActivity;
-import bd.com.evaly.evalyshop.util.Notifications;
+import bd.com.evaly.evalyshop.models.Notifications;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder>{

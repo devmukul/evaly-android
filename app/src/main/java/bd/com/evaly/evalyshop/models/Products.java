@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.util;
+package bd.com.evaly.evalyshop.models;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

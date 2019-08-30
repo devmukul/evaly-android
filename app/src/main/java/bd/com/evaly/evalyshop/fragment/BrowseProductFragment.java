@@ -52,8 +52,7 @@ import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
-import bd.com.evaly.evalyshop.util.ProductListItem;
-import bd.com.evaly.evalyshop.views.WrapContentHeightViewPager;
+import bd.com.evaly.evalyshop.models.ProductListItem;
 
 public class BrowseProductFragment extends Fragment {
 

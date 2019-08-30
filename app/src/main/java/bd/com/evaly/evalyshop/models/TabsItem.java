@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.util;
+package bd.com.evaly.evalyshop.models;
 
 public class TabsItem {
 
@@ -9,17 +9,17 @@ public class TabsItem {
 
     private String category;
 
-//    private String categoryTitle;
-//    private String brandTitle;
-//    private String shopTitle;
-//
-//    private String categoryImage;
-//    private String brandImage;
-//    private String shopImage;
-//
-//    private String categorySlug;
-//    private String brandSlug;
-//    private String shopSlug;
+    //    private String categoryTitle;
+    //    private String brandTitle;
+    //    private String shopTitle;
+    //
+    //    private String categoryImage;
+    //    private String brandImage;
+    //    private String shopImage;
+    //
+    //    private String categorySlug;
+    //    private String brandSlug;
+    //    private String shopSlug;
 
 
     public String getTitle() {

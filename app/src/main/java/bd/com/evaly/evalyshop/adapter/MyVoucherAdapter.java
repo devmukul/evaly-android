@@ -1,29 +1,21 @@
 package bd.com.evaly.evalyshop.adapter;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
-import java.util.TimeZone;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.fragment.VoucherMyListFragment;
-import bd.com.evaly.evalyshop.util.MyVoucherInfo;
+import bd.com.evaly.evalyshop.models.MyVoucherInfo;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class MyVoucherAdapter extends RecyclerView.Adapter<MyVoucherAdapter.MyViewHolder>{

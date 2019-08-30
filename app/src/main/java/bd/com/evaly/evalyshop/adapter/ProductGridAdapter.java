@@ -2,11 +2,8 @@ package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +20,7 @@ import java.util.regex.Pattern;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
-import bd.com.evaly.evalyshop.util.ProductListItem;
-import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.models.ProductListItem;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 
 public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.MyViewHolder> {

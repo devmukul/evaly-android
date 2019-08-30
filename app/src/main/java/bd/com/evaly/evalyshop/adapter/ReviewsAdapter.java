@@ -7,13 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.util.ReviewItem;
+import bd.com.evaly.evalyshop.models.ReviewItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHolder>{

@@ -28,7 +28,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
-import bd.com.evaly.evalyshop.util.WishList;
+import bd.com.evaly.evalyshop.models.WishList;
 
 public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyViewHolder>{
 

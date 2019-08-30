@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.views;
+package bd.com.evaly.evalyshop.models;
 
 public class AvailableShop {
 

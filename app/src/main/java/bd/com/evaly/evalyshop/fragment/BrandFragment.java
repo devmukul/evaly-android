@@ -54,8 +54,8 @@ import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.adapter.ShopCategoryAdapter;
-import bd.com.evaly.evalyshop.util.ProductListItem;
-import bd.com.evaly.evalyshop.util.TabsItem;
+import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 

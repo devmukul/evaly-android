@@ -17,12 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,11 +39,9 @@ import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
-import bd.com.evaly.evalyshop.util.CartItem;
+import bd.com.evaly.evalyshop.models.CartItem;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
-import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
-import bd.com.evaly.evalyshop.util.WishList;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 

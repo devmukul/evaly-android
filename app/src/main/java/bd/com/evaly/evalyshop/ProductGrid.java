@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
-import bd.com.evaly.evalyshop.util.ProductListItem;
+import bd.com.evaly.evalyshop.models.ProductListItem;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 

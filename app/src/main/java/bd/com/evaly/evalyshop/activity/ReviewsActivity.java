@@ -38,17 +38,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.adapter.ReviewsAdapter;
 import bd.com.evaly.evalyshop.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.reviewratings.RatingReviews;
-import bd.com.evaly.evalyshop.util.Notifications;
-import bd.com.evaly.evalyshop.util.ReviewItem;
+import bd.com.evaly.evalyshop.models.ReviewItem;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class ReviewsActivity extends AppCompatActivity {

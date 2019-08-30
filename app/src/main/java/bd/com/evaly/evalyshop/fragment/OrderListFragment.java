@@ -40,9 +40,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.OrderListActivity;
 import bd.com.evaly.evalyshop.adapter.OrderAdapter;
-import bd.com.evaly.evalyshop.util.Orders;
+import bd.com.evaly.evalyshop.models.Orders;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 

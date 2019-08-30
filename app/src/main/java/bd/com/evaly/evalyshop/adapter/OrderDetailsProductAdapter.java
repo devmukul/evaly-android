@@ -11,15 +11,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
-import bd.com.evaly.evalyshop.util.OrderDetailsProducts;
+import bd.com.evaly.evalyshop.models.OrderDetailsProducts;
 
 public class OrderDetailsProductAdapter extends RecyclerView.Adapter<OrderDetailsProductAdapter.MyViewHolder>{
 

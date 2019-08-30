@@ -1,15 +1,12 @@
 package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +20,9 @@ import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.util.List;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
-import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
-import bd.com.evaly.evalyshop.fragment.BrandFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
-import bd.com.evaly.evalyshop.util.BannerItem;
+import bd.com.evaly.evalyshop.models.BannerItem;
 
 public class SliderAdapter extends PagerAdapter {
 

@@ -9,13 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.fragment.VoucherListFragment;
-import bd.com.evaly.evalyshop.util.VoucherDetails;
+import bd.com.evaly.evalyshop.models.VoucherDetails;
 
 public class VoucherDetailsAdapter extends RecyclerView.Adapter<VoucherDetailsAdapter.MyViewHolder>{
 

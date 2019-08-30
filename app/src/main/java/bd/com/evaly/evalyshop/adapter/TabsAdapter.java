@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,10 +7,8 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -32,14 +28,13 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.fragment.BrandFragment;
 import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
-import bd.com.evaly.evalyshop.util.TabsItem;
+import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 

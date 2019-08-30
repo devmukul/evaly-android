@@ -1,14 +1,10 @@
 package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +21,9 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
-import bd.com.evaly.evalyshop.util.TabsItem;
+import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.TransactionItem;
 
 public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapter.MyViewHolder>{
 

@@ -2,12 +2,9 @@ package bd.com.evaly.evalyshop.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +24,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
-import bd.com.evaly.evalyshop.util.TabsItem;
+import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
@@ -42,7 +40,6 @@ public class EvalyStoreActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ViewDialog dialog;
     Button loadMore;
-
     boolean isLoading = false;
     
     @Override

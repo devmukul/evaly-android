@@ -60,9 +60,8 @@ import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.ReviewsActivity;
 import bd.com.evaly.evalyshop.adapter.ShopCategoryAdapter;
-import bd.com.evaly.evalyshop.reviewratings.BarLabels;
-import bd.com.evaly.evalyshop.reviewratings.RatingReviews;
-import bd.com.evaly.evalyshop.util.TabsItem;
+import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 
@@ -72,36 +71,23 @@ public class ShopFragment extends Fragment {
     ImageView logo;
     TextView name,address,number,tvOffer;
     StickyScrollView nestedSV;
-
     ShimmerFrameLayout shimmer;
-
-
     RecyclerView recyclerView;
     ShopCategoryAdapter adapter;
     ArrayList<TabsItem> itemList;
-
     TextView callButton,location,link;
-
     View view;
-
     Context context;
     MainActivity mainActivity;
-
     ProductGrid productGrid;
-
     private TextView categoryTitle;
-
     private TextView reset;
-
     int currentPage = 1;
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     ImageView placeholder;
     ProgressBar progressBar;
-
     String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
-
-
     RequestQueue rq;
 
     @Override

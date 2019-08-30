@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activity.TransactionHistory"></activity>
         <activity android:name=".activity.offers.OffersActivity" />
         <activity
             android:name=".activity.InviteEarn"
@@ -78,7 +79,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.password.PasswordActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.UserDashboardActivity"
             android:label="@string/title_activity_user_profile"

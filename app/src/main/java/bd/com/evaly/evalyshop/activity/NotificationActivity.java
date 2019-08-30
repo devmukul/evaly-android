@@ -1,15 +1,12 @@
 package bd.com.evaly.evalyshop.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -30,7 +27,7 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.NotificationAdapter;
-import bd.com.evaly.evalyshop.util.Notifications;
+import bd.com.evaly.evalyshop.models.Notifications;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class NotificationActivity extends BaseActivity {

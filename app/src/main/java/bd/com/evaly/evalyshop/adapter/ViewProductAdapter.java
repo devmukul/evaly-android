@@ -11,12 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.util.Products;
+import bd.com.evaly.evalyshop.models.Products;
 
 public class ViewProductAdapter extends RecyclerView.Adapter<ViewProductAdapter.MyViewHolder>{
 
