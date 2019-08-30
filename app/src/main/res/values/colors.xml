@@ -46,4 +46,5 @@
 
 
     <color name="evaly_color">#bd1f26</color>
+    <color name="transaction_color">#666ee4</color>
 </resources>

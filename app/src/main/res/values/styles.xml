@@ -10,6 +10,13 @@
 
     </style>
 
+    <style name="ThemeTransaction" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">@color/transaction_color</item>
+        <item name="colorPrimaryDark">@color/transaction_color</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
 
 
     <style name="OrderListTabItem" parent="@android:style/TextAppearance.Widget.TabWidget">
