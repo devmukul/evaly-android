@@ -74,7 +74,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         });
 
 
-        myViewHolder.time.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM  yyyy", notifications.get(i).getTime()));
+        myViewHolder.time.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM", notifications.get(i).getTime()));
 
     }
 

@@ -26,7 +26,7 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_notification,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_transaction,viewGroup,false);
         return new MyViewHolder(view);
     }
 
@@ -47,7 +47,7 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
 //        });
 
 
-        myViewHolder.time.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM  yyyy", itemList.get(i).getDate_time()));
+        myViewHolder.time.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM", itemList.get(i).getDate_time()));
 
     }
 

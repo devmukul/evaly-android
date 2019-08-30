@@ -2,24 +2,25 @@ package bd.com.evaly.evalyshop.models;
 
 public class TransactionItem {
 
-    String amount,date_time,event;
+    private int amount;
+    private String date_time,event;
 
 
     public TransactionItem(){
 
     }
 
-    public TransactionItem(String amount, String date_time, String event) {
+    public TransactionItem(int amount, String date_time, String event) {
         this.amount = amount;
         this.date_time = date_time;
         this.event = event;
     }
 
-    public String getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
