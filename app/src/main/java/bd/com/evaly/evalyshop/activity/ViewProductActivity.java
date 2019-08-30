@@ -604,6 +604,7 @@ public class ViewProductActivity extends BaseActivity {
                                 JSONArray variantArr = product_variants.getJSONObject(i).getJSONArray("product_images");
                                 int variantID = product_variants.getJSONObject(i).getInt("variant_id");
                                 String name = product_variants.getJSONObject(i).getString("product_name");
+                                category = product_variants.getJSONObject(i).getString("category_slug");
                                 int minPrice = product_variants.getJSONObject(i).getInt("min_price");
                                 int maxPrice = product_variants.getJSONObject(i).getInt("max_price");
                                 String description = product_variants.getJSONObject(i).getString("product_description");
@@ -753,12 +754,9 @@ public class ViewProductActivity extends BaseActivity {
 //                        }
 
 
-                        Random Dice = new Random();
-                        int n = Dice.nextInt(Data.homeRandomCategory.length);
-                        String defaultCategory = Data.homeRandomCategory[n];
 
 
-                        ProductGrid productGrid = new ProductGrid(context, findViewById(R.id.products), defaultCategory, findViewById(R.id.progressBar));
+                        ProductGrid productGrid = new ProductGrid(context, findViewById(R.id.products), firstVariant.getString("category_slug"), findViewById(R.id.progressBar));
                         if (nestedSV != null) {
                             nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
                                 @Override
