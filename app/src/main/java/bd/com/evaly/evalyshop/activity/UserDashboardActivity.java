@@ -179,6 +179,20 @@ public class UserDashboardActivity extends BaseActivity {
 
             }
         });
+
+
+        LinearLayout transactionHistory = findViewById(R.id.transaction_history);
+        transactionHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(context, TransactionHistory.class);
+                startActivity(intent);
+
+
+            }
+        });
+
         
         
         LinearLayout editProfile = findViewById(R.id.editProfile);

@@ -136,7 +136,7 @@ public class TransactionHistory extends AppCompatActivity {
             public void onResponse(JSONObject response) {
 
 
-                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.INVISIBLE);
 
                 Log.d("notifications_response", response.toString());
                 try {

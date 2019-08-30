@@ -172,6 +172,36 @@
 
 
         <LinearLayout
+            android:id="@+id/transaction_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingTop="15dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="15dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="22dp"
+                android:layout_weight="0"
+                android:tint="#333"
+                app:srcCompat="@drawable/ic_transactions_list" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="0"
+                android:text="Transaction History"
+                android:textColor="#333"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+
+        <LinearLayout
             android:id="@+id/editProfile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
