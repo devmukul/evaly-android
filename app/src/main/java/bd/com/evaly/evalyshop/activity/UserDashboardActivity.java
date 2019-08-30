@@ -266,7 +266,7 @@ public class UserDashboardActivity extends BaseActivity {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
 // ...Irrelevant code for customizing the buttons and title
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.custom_add_address, null);
+        View dialogView = inflater.inflate(R.layout.item_add_address, null);
         dialogBuilder.setView(dialogView);
         addressET = dialogView.findViewById(R.id.addressET);
         Button addressAdd=dialogView.findViewById(R.id.addressAdd);

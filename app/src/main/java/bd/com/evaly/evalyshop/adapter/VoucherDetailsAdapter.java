@@ -29,7 +29,7 @@ public class VoucherDetailsAdapter extends RecyclerView.Adapter<VoucherDetailsAd
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.custom_voucher_list,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_voucher_list,viewGroup,false);
         return new MyViewHolder(view);
     }
 

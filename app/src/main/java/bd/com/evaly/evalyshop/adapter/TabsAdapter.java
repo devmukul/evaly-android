@@ -33,7 +33,6 @@ import bd.com.evaly.evalyshop.fragment.BrandFragment;
 import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.models.TabsItem;
-import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
@@ -150,7 +149,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_home_brands,parent,false);
+        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home_brands,parent,false);
 
         return new MyViewHolder(view);
     }

@@ -32,7 +32,7 @@ public class OrderDetailsProductAdapter extends RecyclerView.Adapter<OrderDetail
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.custom_order_details_products,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_order_details_products,viewGroup,false);
         return new MyViewHolder(view);
     }
 

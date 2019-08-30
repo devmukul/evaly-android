@@ -9,6 +9,11 @@ public class TransactionItem {
 
     }
 
+    public TransactionItem(String amount, String date_time, String event) {
+        this.amount = amount;
+        this.date_time = date_time;
+        this.event = event;
+    }
 
     public String getAmount() {
         return amount;
