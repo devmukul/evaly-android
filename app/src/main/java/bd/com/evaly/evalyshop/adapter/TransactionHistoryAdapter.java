@@ -49,7 +49,7 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
 
         myViewHolder.time.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM", itemList.get(i).getDate_time()));
 
-        myViewHolder.amount.setText("৳ " + itemList.get(i).getAmount() + i + (i+1));
+        myViewHolder.amount.setText("৳ " + itemList.get(i).getAmount());
 
     }
 
