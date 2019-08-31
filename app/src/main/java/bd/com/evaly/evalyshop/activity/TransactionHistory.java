@@ -127,7 +127,7 @@ public class TransactionHistory extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        String url="https://api.evaly.com.bd/pay/wallet-history/01751977045?page="+page;
+        String url="https://api.evaly.com.bd/pay/wallet-history/"+userDetails.getUserName()+"?page="+page;
 
         Log.d("json url", url);
 

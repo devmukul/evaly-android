@@ -59,7 +59,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
-                    android:text="৳ 9780"
+                    android:text="৳ 0.0"
                     android:textColor="#000333"
                     android:textSize="34sp" />
             </LinearLayout>
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginBottom="15dp"
-            android:text="Recent Transaction"
+            android:text="Recent Transactions"
             android:textSize="20sp"
             android:textStyle="bold" />
 

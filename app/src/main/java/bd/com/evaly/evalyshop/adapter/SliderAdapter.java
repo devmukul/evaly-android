@@ -109,13 +109,17 @@ public class SliderAdapter extends PagerAdapter {
                 if (itemList.get(position).getUrl().contains("evaly.com.bd/shops")) {
 
 
+                        String[] ar = itemList.get(position).getUrl().split("/shops/");
+
+                        String slug = ar[1];
+
+
                         Fragment fragment3 = new ShopFragment();
 
                         Bundle bundle = new Bundle();
                         bundle.putInt("type", 1);
-
                         bundle.putString("shop_name", itemList.get(position).getName());
-                        bundle.putString("shop_slug", itemList.get(position).getSlug());
+                        bundle.putString("shop_slug", slug);
                         bundle.putString("category", "root");
 
                         fragment3.setArguments(bundle);
