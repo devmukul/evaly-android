@@ -1,226 +1,220 @@
 <html>
-<head>
-    <script src="jquery-3.3.1.min.js"></script>
-    <script src="https://scripts.pay.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout.js"></script>
-</head>
+    <head>
+        <script src="jquery-3.3.1.min.js"></script>
+        <script src="https://scripts.pay.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout.js"></script>
+    </head>
 
-<body>
+    <body>
 
-<div class="opacity_window" id="loader_window">
-    <div class="loader"></div>
-</div>
-
-
-<button class="try_btn" id="bKash_button">Try Again</button>
+        <div class="opacity_window" id="loader_window">
+            <div class="loader"></div>
+        </div>
 
 
-
-<style>
-
-
-			.opacity_window{
-				background-color: #000000;
-				opacity: 0.60;
-				width: 100%;
-				height: 100%;
-				z-index: 99;
-				position: relative;
+        <button class="try_btn" id="bKash_button">Try Again</button>
 
 
-			}
+        <style>
+               .opacity_window {
+                    background-color: #000000;
+                    opacity: 0.60;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 99;
+                    position: relative;
+                }
 
-			body{
+                body {}
 
+                * {
+                    padding: 0;
+                    margin: 0;
+                }
 
-			}
+                .try_btn {
+                    background: #0095ff;
+                    color: #fff;
+                    border: 0px;
+                    padding: 10px 15px;
+                    border-radius: 5px;
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    -webkit-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);
+                    z-index: 1;
+                    display: none;
+                }
 
-			*{
-				padding: 0;
-				margin: 0;
-			}
+                .loader {
+                    border: 6px solid #f3f3f3;
+                    /* Light grey */
+                    border-top: 6px solid #3498db;
+                    /* Blue */
+                    border-radius: 50%;
+                    width: 30px;
+                    height: 30px;
+                    animation: spin 2s linear infinite;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    -webkit-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);
+                    margin: auto;
+                }
 
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
 
-			.try_btn{
-
-				background: #0095ff;
-				color: #fff;
-				border: 0px;
-				padding: 10px 15px;
-				border-radius: 5px;
-				position: absolute;
-				left: 50%;
-				top: 50%;
-				-webkit-transform: translate(-50%, -50%);
-				transform: translate(-50%, -50%);
-				z-index: 1;
-				display: none;
-
-			}
-			.loader {
-				  border: 6px solid #f3f3f3; /* Light grey */
-				  border-top: 6px solid #3498db; /* Blue */
-				  border-radius: 50%;
-				  width: 30px;
-				  height: 30px;
-				  animation: spin 2s linear infinite;
-				  position: absolute;
-				  top: 0;
-                  left: 0;
-                  right: 0;
-                  bottom: 0;
-				  -webkit-transform: translate(-50%, -50%);
-				  transform: translate(-50%, -50%);
-				  margin: auto;
-
-
-				}
-
-			@keyframes spin {
-				  0% { transform: rotate(0deg); }
-				  100% { transform: rotate(360deg); }
-			}
-
-		</style>
-
-
-<script>
-
-
-		function intervalChecker(){
-
-				var nTimer = setInterval(function() {
-				if ($('#bKashFrameWrapper iframe').css('display') == 'block') {
+        </style>
 
 
-				setTimeout(function(){
-
-					document.getElementById("loader_window").style.display = "none";
-					document.getElementById("bKash_button").style.display = "block";
-
-				}, 200);
+    <script>
 
 
-					clearInterval(nTimer);
+            function intervalChecker(){
+
+                    var nTimer = setInterval(function() {
+                    if ($('#bKashFrameWrapper iframe').css('display') == 'block') {
 
 
-				} else {
+                    setTimeout(function(){
+
+                        document.getElementById("loader_window").style.display = "none";
+                        document.getElementById("bKash_button").style.display = "block";
+
+                    }, 200);
 
 
-					document.getElementById("loader_window").style.display = "block";
-					document.getElementById("bKash_button").style.display = "none";
-
-				}
-			}, 200);
+                        clearInterval(nTimer);
 
 
-		}
+                    } else {
+
+
+                        document.getElementById("loader_window").style.display = "block";
+                        document.getElementById("bKash_button").style.display = "none";
+
+                    }
+                }, 200);
+
+
+            }
 
 
 
-		(function() {
+            (function() {
 
-				intervalChecker();
-
-
-		})();
+                    intervalChecker();
 
 
-		</script>
+            })();
 
-<!--<script>-->
 
-	<!--var paymentID = '';-->
+            </script>
 
-	<!--bKash.init({-->
-            <!--paymentMode: 'checkout',-->
-            <!--paymentRequest: {-->
-                <!--amount: '10.00',-->
-                <!--intent: 'sale',-->
-                <!--context: 'order_payment',-->
-                <!--context_reference: 'EVL348604781'-->
-            <!--},-->
-            <!--createRequest: function(request) {-->
-                <!--$.ajax({-->
-                        <!--url: 'https://api.evaly.com.bd/pay/bkash_payment/create',-->
-                        <!--type: 'POST',-->
-                        <!--contentType: 'application/json',-->
-						<!--headers: {-->
-									<!--"Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo2NjY2NywidXNlcm5hbWUiOiIwMTc1MTk3NzA0NSIsImV4cCI6MTU2Nzk0OTA0NCwiZW1haWwiOiJobXRhbWltbTdAZ21haWwuY29tIiwic2hvcHMiOltdLCJkZXZpY2UiOiJ3ZWIiLCJpc19zdXBlcnVzZXIiOmZhbHNlLCJpc19zdGFmZiI6ZmFsc2UsImdyb3VwcyI6W10sImlzX3ZlcmlmaWVkIjpmYWxzZX0.GdRwijkOxxZ3R0cqApHyLrQminianXhkuwbobMu3ZHc",-->
-								<!--},-->
-                        <!--data: JSON.stringify(request),-->
-                        <!--success: function(data) {-->
-                            <!--if (data && data.paymentID != null) {-->
-                                <!--paymentID = data.paymentID;-->
-                                <!--bKash.create().onSuccess(data);-->
-                            <!--} else {-->
-                                <!--bKash.create().onError();-->
-                            <!--}-->
-                        <!--},-->
-                        <!--error: function() {-->
-                            <!--bKash.create().onError();-->
-                        <!--}-->
-                    <!--})-->
-				<!--},-->
+    <!--<script>-->
 
-             <!--executeRequestOnAuthorization: function() {-->
-                        <!--$.ajax({-->
-                            <!--url: 'https://api.evaly.com.bd/pay/bkash_payment/execute',-->
+        <!--var paymentID = '';-->
+
+        <!--bKash.init({-->
+                <!--paymentMode: 'checkout',-->
+                <!--paymentRequest: {-->
+                    <!--amount: '10.00',-->
+                    <!--intent: 'sale',-->
+                    <!--context: 'order_payment',-->
+                    <!--context_reference: 'EVL348604781'-->
+                <!--},-->
+                <!--createRequest: function(request) {-->
+                    <!--$.ajax({-->
+                            <!--url: 'https://api.evaly.com.bd/pay/bkash_payment/create',-->
                             <!--type: 'POST',-->
                             <!--contentType: 'application/json',-->
-							<!--headers: {-->
-									<!--"Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo2NjY2NywidXNlcm5hbWUiOiIwMTc1MTk3NzA0NSIsImV4cCI6MTU2Nzk0OTA0NCwiZW1haWwiOiJobXRhbWltbTdAZ21haWwuY29tIiwic2hvcHMiOltdLCJkZXZpY2UiOiJ3ZWIiLCJpc19zdXBlcnVzZXIiOmZhbHNlLCJpc19zdGFmZiI6ZmFsc2UsImdyb3VwcyI6W10sImlzX3ZlcmlmaWVkIjpmYWxzZX0.GdRwijkOxxZ3R0cqApHyLrQminianXhkuwbobMu3ZHc",-->
-								<!--},-->
-                            <!--data: JSON.stringify({-->
-                                <!--"paymentID": paymentID-->
-                            <!--}),-->
+                            <!--headers: {-->
+                                        <!--"Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo2NjY2NywidXNlcm5hbWUiOiIwMTc1MTk3NzA0NSIsImV4cCI6MTU2Nzk0OTA0NCwiZW1haWwiOiJobXRhbWltbTdAZ21haWwuY29tIiwic2hvcHMiOltdLCJkZXZpY2UiOiJ3ZWIiLCJpc19zdXBlcnVzZXIiOmZhbHNlLCJpc19zdGFmZiI6ZmFsc2UsImdyb3VwcyI6W10sImlzX3ZlcmlmaWVkIjpmYWxzZX0.GdRwijkOxxZ3R0cqApHyLrQminianXhkuwbobMu3ZHc",-->
+                                    <!--},-->
+                            <!--data: JSON.stringify(request),-->
                             <!--success: function(data) {-->
                                 <!--if (data && data.paymentID != null) {-->
-                                    <!--window.location.href =-->
-                                        <!--"success.html";-->
+                                    <!--paymentID = data.paymentID;-->
+                                    <!--bKash.create().onSuccess(data);-->
                                 <!--} else {-->
-                                    <!--bKash.execute().onError();-->
+                                    <!--bKash.create().onError();-->
                                 <!--}-->
                             <!--},-->
                             <!--error: function() {-->
-                                <!--bKash.execute().onError();-->
+                                <!--bKash.create().onError();-->
                             <!--}-->
-                        <!--});-->
+                        <!--})-->
+                    <!--},-->
+
+                 <!--executeRequestOnAuthorization: function() {-->
+                            <!--$.ajax({-->
+                                <!--url: 'https://api.evaly.com.bd/pay/bkash_payment/execute',-->
+                                <!--type: 'POST',-->
+                                <!--contentType: 'application/json',-->
+                                <!--headers: {-->
+                                        <!--"Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo2NjY2NywidXNlcm5hbWUiOiIwMTc1MTk3NzA0NSIsImV4cCI6MTU2Nzk0OTA0NCwiZW1haWwiOiJobXRhbWltbTdAZ21haWwuY29tIiwic2hvcHMiOltdLCJkZXZpY2UiOiJ3ZWIiLCJpc19zdXBlcnVzZXIiOmZhbHNlLCJpc19zdGFmZiI6ZmFsc2UsImdyb3VwcyI6W10sImlzX3ZlcmlmaWVkIjpmYWxzZX0.GdRwijkOxxZ3R0cqApHyLrQminianXhkuwbobMu3ZHc",-->
+                                    <!--},-->
+                                <!--data: JSON.stringify({-->
+                                    <!--"paymentID": paymentID-->
+                                <!--}),-->
+                                <!--success: function(data) {-->
+                                    <!--if (data && data.paymentID != null) {-->
+                                        <!--window.location.href =-->
+                                            <!--"success.html";-->
+                                    <!--} else {-->
+                                        <!--bKash.execute().onError();-->
+                                    <!--}-->
+                                <!--},-->
+                                <!--error: function() {-->
+                                    <!--bKash.execute().onError();-->
+                                <!--}-->
+                            <!--});-->
+                        <!--}-->
+                    <!--});-->
+                <!--window.onerror = function(msg) {-->
+                    <!--var string = msg.toLowerCase();-->
+                    <!--var substring = "script error";-->
+                    <!--if (string.indexOf(substring) > -1) {-->
+                        <!--if (paymentID) {-->
+                            <!--bKash.reconfigure({-->
+                                <!--paymentRequest: {-->
+                                    <!--amount: '100.50',-->
+                                    <!--intent: "sale",-->
+                                    <!--context: "order_payment",-->
+                                    <!--context_reference: 'EVL348604781'-->
+                                <!--}-->
+                            <!--});-->
+                        <!--} else {-->
+                            <!--bKash.reconfigure({-->
+
+                                <!--paymentRequest: {-->
+                                    <!--amount: '10.0',-->
+                                    <!--intent: "sale",-->
+                                    <!--context: "order_payment",-->
+                                    <!--context_reference: 'EVL348604781'-->
+                                <!--}-->
+                            <!--});-->
+                        <!--}-->
                     <!--}-->
-                <!--});-->
-            <!--window.onerror = function(msg) {-->
-                <!--var string = msg.toLowerCase();-->
-                <!--var substring = "script error";-->
-                <!--if (string.indexOf(substring) > -1) {-->
-                    <!--if (paymentID) {-->
-                        <!--bKash.reconfigure({-->
-                            <!--paymentRequest: {-->
-                                <!--amount: '100.50',-->
-                                <!--intent: "sale",-->
-                                <!--context: "order_payment",-->
-                                <!--context_reference: 'EVL348604781'-->
-                            <!--}-->
-                        <!--});-->
-                    <!--} else {-->
-                        <!--bKash.reconfigure({-->
-
-                            <!--paymentRequest: {-->
-                                <!--amount: '10.0',-->
-                                <!--intent: "sale",-->
-                                <!--context: "order_payment",-->
-                                <!--context_reference: 'EVL348604781'-->
-                            <!--}-->
-                        <!--});-->
-                    <!--}-->
-                <!--}-->
-                <!--return false;-->
-            <!--};-->
+                    <!--return false;-->
+                <!--};-->
 
 
 
-	<!--</script>-->
+        <!--</script>-->
 
 
-</body>
+    </body>
 
 </html>
 
