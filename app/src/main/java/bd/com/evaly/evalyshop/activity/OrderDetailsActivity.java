@@ -1,8 +1,11 @@
 package bd.com.evaly.evalyshop.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.os.Bundle;
@@ -19,6 +22,8 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +50,7 @@ import bd.com.evaly.evalyshop.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.models.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.OrderStatus;
+import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -54,10 +60,16 @@ public class OrderDetailsActivity extends BaseActivity {
     private static final int SCROLL_DIRECTION_UP = -1;
 
     private NestedScrollView scrollView;
-    String orderID="",shopSlug="",shopCategory="";
+    String shopSlug="",shopCategory="";
+
+    // for payment
+    String invoice_no="";
+
+    Double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
+
     UserDetails userDetails;
     StepperIndicator indicator;
-    TextView shopName,shopAddress,shopnumber,username,userAddress,userNumber,totalPrice,paidAmount,duePrice;
+    TextView shopName,shopAddress,shopnumber,username,userAddress,userNumber,totalPriceTextView,paidAmountTextView,duePriceTextView;
     TextView orderNumber,orderDate,paymentMethods,balance;
     RecyclerView recyclerView,orderList;
     ArrayList<OrderStatus> orderStatuses;
@@ -69,6 +81,20 @@ public class OrderDetailsActivity extends BaseActivity {
     RelativeLayout shopInfo;
 
     String userAgent;
+
+
+    BottomSheetBehavior sheetBehavior;
+    LinearLayout layoutBottomSheet;
+    Button btnBottomSheet;
+    View mViewBg;
+    TextView amountToPayView;
+    ImageView bkash,cards;
+
+
+    int paymentMethod = -1;
+
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,12 +104,14 @@ public class OrderDetailsActivity extends BaseActivity {
         getSupportActionBar().setTitle("Order Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        context = this;
 
         try {
             userAgent = WebSettings.getDefaultUserAgent(this);
         } catch (Exception e) {
             userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
         }
+
 
         scrollView = findViewById(R.id.scroll);
         shopName=findViewById(R.id.billfromName);
@@ -92,11 +120,11 @@ public class OrderDetailsActivity extends BaseActivity {
         username=findViewById(R.id.billtoName);
         userAddress=findViewById(R.id.billtoAddress);
         userNumber=findViewById(R.id.billtoPhone);
-        totalPrice=findViewById(R.id.total_price);
-        paidAmount=findViewById(R.id.paid_amount);
-        duePrice=findViewById(R.id.due_price);
+        totalPriceTextView=findViewById(R.id.total_price);
+        paidAmountTextView=findViewById(R.id.paid_amount);
+        duePriceTextView=findViewById(R.id.due_price);
         orderNumber=findViewById(R.id.order_id);
-        orderNumber.setText(orderID);
+        orderNumber.setText(invoice_no);
         orderDate=findViewById(R.id.order_date);
         paymentMethods=findViewById(R.id.payment_method);
         recyclerView=findViewById(R.id.recycle);
@@ -113,6 +141,65 @@ public class OrderDetailsActivity extends BaseActivity {
         orderDetailsProducts=new ArrayList<>();
         orderDetailsProductAdapter=new OrderDetailsProductAdapter(this,orderDetailsProducts);
         orderList.setAdapter(orderDetailsProductAdapter);
+
+
+        // update balance
+        Balance.update(this);
+
+        mViewBg = findViewById(R.id.bg);
+
+        // bottom sheet
+        layoutBottomSheet = findViewById(R.id.bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+        amountToPayView = findViewById(R.id.amountPay);
+        bkash = findViewById(R.id.bkash);
+        cards = findViewById(R.id.card);
+
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+
+
+
+        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+
+                        mViewBg.setVisibility(View.VISIBLE);
+
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                        mViewBg.setVisibility(View.GONE);
+                        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+
+        mViewBg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                mViewBg.setVisibility(View.GONE);
+
+            }
+        });
+
 
         scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
@@ -137,10 +224,10 @@ public class OrderDetailsActivity extends BaseActivity {
 
         Bundle extras=getIntent().getExtras();
         if(extras!=null){
-            orderID=extras.getString("orderID");
-            Log.d("order_id",orderID);
+            invoice_no=extras.getString("orderID");
+            Log.d("order_id",invoice_no);
 
-            orderNumber.setText("#"+orderID);
+            orderNumber.setText("#"+invoice_no);
 
             getOrderDetails();
         }
@@ -171,8 +258,20 @@ public class OrderDetailsActivity extends BaseActivity {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
 
+                                double userBalance = Double.parseDouble(userDetails.getBalance());
 
-                                makePayment(orderID);
+                                if (total_amount <= userBalance){
+                                    makePartialPayment(invoice_no, String.valueOf(total_amount));
+                                } else {
+
+
+                                    Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
+
+                                    double amountToPay = total_amount - userBalance;
+
+                                    amountToPayView.setText(amountToPay+"");
+                                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                                }
 
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
@@ -231,7 +330,33 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onClick(View v) {
 
 
-                makePartialPayment(orderID, amount.getText().toString());
+                if (amount.getText().toString().equals("")){
+                    Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+
+                double partial_amount = Double.parseDouble(amount.getText().toString());
+                double userBalance = Double.parseDouble(userDetails.getBalance());
+
+                if (total_amount <= userBalance){
+                    makePartialPayment(invoice_no, String.valueOf(total_amount));
+                } else {
+
+
+                    Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
+
+                    double amountToPay = total_amount - userBalance;
+
+                    amountToPayView.setText(amountToPay+"");
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+
+
+
+
+                makePartialPayment(invoice_no, amount.getText().toString());
                 alertDialog.dismiss();
 
 
@@ -254,118 +379,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
     }
 
-
-
-
-
-
-    public void makePayment(String invoice){
-
-        String url="https://api.evaly.com.bd/pay/transactions/payment/order/";
-
-        dialog.showDialog();
-
-
-        Log.d("json order url", url);
-
-
-        Toast.makeText(this,"Payment is processing", Toast.LENGTH_SHORT).show();
-
-        JSONObject payload = new JSONObject();
-
-        try{
-            payload.put("username", userDetails.getUserName());
-            payload.put("invoice_no", invoice);
-        } catch (Exception e){
-
-
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-
-                Log.d("json payment res", response.toString());
-
-                if(response.has("reason")){
-
-                    try {
-
-                        Double due = response.getDouble("due");
-                        String invoice = response.getString("note");
-                        Intent intent = new Intent(OrderDetailsActivity.this, PayViaBkashActivity.class);
-                        intent.putExtra("due", due);
-                        intent.putExtra("invoice", invoice);
-
-                        startActivity(intent);
-
-                        dialog.hideDialog();
-
-                    } catch (Exception e){
-                    }
-
-                } else {
-
-                    // it means all payment done
-                    Toast.makeText(OrderDetailsActivity.this,"Payment successful!", Toast.LENGTH_LONG).show();
-
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            dialog.hideDialog();
-
-                            finish();
-                            startActivity(getIntent());
-
-                        }
-                    }, 1500);
-
-
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                dialog.hideDialog();
-                Log.e("onErrorResponse", error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                // headers.put("Content-Length", data.length()+"");
-                return headers;
-            }
-
-        };
-        RequestQueue queue= Volley.newRequestQueue(this);
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-        queue.add(request);
-    }
 
 
 
@@ -486,16 +499,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
         Snackbar.make(findViewById(android.R.id.content), "Insufficient balance!", Snackbar.LENGTH_LONG)
-                .setAction("Add Balance", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        Intent intent = new Intent(OrderDetailsActivity.this, PayViaBkashActivity.class);
-                        //intent.putExtra("due", due);
-                        startActivity(intent);
-
-                    }
-                })
                 .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
                 .show();
 
@@ -576,7 +579,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
     public void getOrderDetails(){
-        String url="https://api.evaly.com.bd/core/custom/orders/"+orderID+"/";
+        String url="https://api.evaly.com.bd/core/custom/orders/"+invoice_no+"/";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -619,6 +622,8 @@ public class OrderDetailsActivity extends BaseActivity {
                     }catch(Exception e){
 
                     }
+
+
                     try{
                         if(response.getString("order_status").toLowerCase().equals("delivered")){
                             makePayment.setVisibility(View.GONE);
@@ -627,10 +632,9 @@ public class OrderDetailsActivity extends BaseActivity {
                     }catch(Exception e) {
 
                     }
-                    JSONArray jsonArray = response.getJSONArray("order_items");
-                    for(int i=0;i<jsonArray.length();i++){
-                        JSONObject ob = jsonArray.getJSONObject(i);
-                        Log.d("object_details",ob.toString());
+
+
+
                         try{
                             username.setText(response.getJSONObject("customer").getString("first_name")+" "+response.getJSONObject("customer").getString("last_name"));
                         }catch(Exception e){
@@ -647,30 +651,32 @@ public class OrderDetailsActivity extends BaseActivity {
 
                         }
                         try{
-                            totalPrice.setText("৳ " + String.format("%.2f", Double.parseDouble(response.getString("total"))));
+                            totalPriceTextView.setText("৳ " + String.format("%.2f", Double.parseDouble(response.getString("total"))));
                         }catch(Exception e){
 
                         }
                         try{
-                            paidAmount.setText("৳ " + String.format("%.2f", Double.parseDouble(response.getString("paid_amount"))));
+                            paidAmountTextView.setText("৳ " + String.format("%.2f", Double.parseDouble(response.getString("paid_amount"))));
                         }catch(Exception e){
 
                         }
                         try{
-                            duePrice.setText("৳ " + String.format("%.2f",(Double.parseDouble(response.getString("total"))-Double.parseDouble(response.getString("paid_amount")))));
+                            duePriceTextView.setText("৳ " + String.format("%.2f",(Double.parseDouble(response.getString("total"))-Double.parseDouble(response.getString("paid_amount")))));
                         }catch(Exception e){
 
                         }
-                        Double paid = Double.parseDouble(response.getString("paid_amount"));
-                        Double due = Double.parseDouble(response.getString("total"))-Double.parseDouble(response.getString("paid_amount"));
-                        if(due<1)
+
+                        total_amount = Double.parseDouble(response.getString("total"));
+                        paid_amount = Double.parseDouble(response.getString("paid_amount"));
+                        due_amount = total_amount-paid_amount;
+
+                        if(due_amount<1)
                         {
                             makePayment.setVisibility(View.GONE);
                             payParially.setVisibility(View.GONE);
-
                         }
 
-                        if(paid > 1){
+                        if(paid_amount > 1){
 
 
                             makePayment.setVisibility(View.GONE);
@@ -711,24 +717,23 @@ public class OrderDetailsActivity extends BaseActivity {
 
                         String productVariation = "";
 
+
+                        JSONArray jsonArray = response.getJSONArray("order_items");
+                        for(int i=0;i<jsonArray.length();i++){
+                            JSONObject ob = jsonArray.getJSONObject(i);
+                            Log.d("object_details",ob.toString());
+
+
                         try{
 
 
                             JSONObject productItem = ob.getJSONObject("shop_product_item");
-
                             JSONObject product_item = productItem.getJSONObject("product_item"); // get shop_product_item product_item
-
-
-
 
                             if(product_item.getJSONArray("varying_options").length() > 0) {
 
                                 String attr = product_item.getJSONArray("varying_options").getJSONArray(0).getJSONObject(0).getJSONObject("attribute").getString("name");
-
-
                                 String variation = product_item.getJSONArray("varying_options").getJSONArray(0).getJSONObject(0).getJSONObject("option").getString("value");
-
-
                                 productVariation = attr + ": "+ variation;
 
                             }
@@ -736,8 +741,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
                             Log.e("json error", e.toString());
                         }
-
-
 
 
                         try{
@@ -802,7 +805,7 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
     public void getOrderHistory(){
-        String url="https://api.evaly.com.bd/core/orders/histories/"+orderID+"/";
+        String url="https://api.evaly.com.bd/core/orders/histories/"+invoice_no+"/";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
