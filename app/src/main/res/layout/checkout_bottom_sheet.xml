@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="20dp"
             android:layout_weight="2"
             android:text="Payment Method"
             android:textColor="#444"
@@ -56,6 +56,7 @@
             android:background="@drawable/payment_select_bg"
             android:clickable="true"
             android:focusableInTouchMode="true"
+            android:visibility="gone"
             app:srcCompat="@drawable/payment_icon_cod" />
 
         <ImageView
@@ -72,22 +73,58 @@
 
     </LinearLayout>
 
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="45dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="5dp"
+            android:text="Contact Number"
+            android:textColor="#444"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/contact_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/input_brd"
+        android:hint="Enter your number"
+        android:padding="12dp"
+        android:textColorHint="#777"
+        android:textSize="16sp" />
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
             android:layout_marginBottom="5dp"
             android:text="Delivery Address"
             android:textColor="#444"
             android:textSize="18sp"
             android:textStyle="bold" />
 
+
     </LinearLayout>
+
+
+
 
     <Switch
         android:id="@+id/addressSwitch"
@@ -97,7 +134,8 @@
         android:layout_weight="1"
         android:hint="Add New Address"
         android:textColor="#666"
-        android:textColorHint="#666" />
+        android:textColorHint="#666"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -117,7 +155,7 @@
         android:id="@+id/customAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="0dp"
         android:background="@drawable/input_brd"
         android:hint="Enter your address"
         android:padding="12dp"

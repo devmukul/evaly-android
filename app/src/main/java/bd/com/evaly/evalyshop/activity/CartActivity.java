@@ -79,7 +79,7 @@ public class CartActivity extends BaseActivity {
     Button btnBottomSheet;
     View mViewBg;
 
-    EditText customAddress;
+    EditText customAddress, contact_number;
     Switch addressSwitch;
     Spinner addressSpinner;
     ArrayAdapter<String> spinnerArrayAdapter;
@@ -123,10 +123,12 @@ public class CartActivity extends BaseActivity {
         getSupportActionBar().setTitle("Shopping Cart");
 
         db = new DbHelperCart(context);
+        userDetails = new UserDetails(context);
 
         itemList = new ArrayList<>();
         recyclerView = findViewById(R.id.recycle);
 
+        contact_number = findViewById(R.id.contact_number);
         checkout = findViewById(R.id.button);
         selectAll = findViewById(R.id.checkBox);
         mViewBg = findViewById(R.id.bg);
@@ -274,10 +276,11 @@ public class CartActivity extends BaseActivity {
         // address spinner
 
 
+        contact_number.setText(userDetails.getPhone());
+
         addressSpinner = findViewById(R.id.spinner);
 
 
-        userDetails = new UserDetails(context);
 
         spinnerArray = new ArrayList<String>();
 
@@ -992,15 +995,24 @@ public class CartActivity extends BaseActivity {
             }
 
 
-            if(paymentMethod == 1)
-                obj.put("payment_method", "cod");
-            else if(paymentMethod == 2)
-                obj.put("payment_method", "evaly_pay");
+
+
+
+//            if(paymentMethod == 1)
+//                obj.put("payment_method", "cod");
+//            else if(paymentMethod == 2)
+
+            obj.put("payment_method", "evaly_pay");
 
             // get items jsonArray
 
             obj.put("order_items", new JSONArray());
             obj.put("customer_address", customAddress.getText().toString());
+            if (contact_number.getText().toString().equals(""))
+                obj.put("contact_number", userDetails.getUserName());
+            else
+                obj.put("contact_number", contact_number.getText().toString());
+
 
 
             JSONArray items = obj.getJSONArray("order_items");

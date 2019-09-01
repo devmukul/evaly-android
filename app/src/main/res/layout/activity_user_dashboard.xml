@@ -44,6 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/pictureHolder"
+                android:text="Name"
                 android:textColor="#333"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -149,7 +150,8 @@
             android:paddingLeft="20dp"
             android:paddingTop="15dp"
             android:paddingRight="20dp"
-            android:paddingBottom="15dp">
+            android:paddingBottom="15dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -263,6 +265,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="8dp"
+            android:layout_marginTop="5dp"
             android:background="#f6f6f6" />
 
         <LinearLayout
@@ -271,7 +274,8 @@
             android:clickable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="20dp">
+            android:paddingLeft="20dp"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="22dp"
@@ -316,7 +320,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="52dp"
-            android:nestedScrollingEnabled="false">
+            android:nestedScrollingEnabled="false"
+            android:visibility="gone">
 
         </android.support.v7.widget.RecyclerView>
 
@@ -381,7 +386,8 @@
             android:layout_width="match_parent"
             android:layout_height="8dp"
             android:layout_marginTop="6dp"
-            android:background="#f6f6f6" />
+            android:background="#f6f6f6"
+            android:visibility="gone" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
