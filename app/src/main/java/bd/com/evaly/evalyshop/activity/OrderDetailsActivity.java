@@ -36,6 +36,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.badoualy.stepperindicator.StepperIndicator;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +45,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.OrderDetailsProductAdapter;
@@ -65,7 +67,7 @@ public class OrderDetailsActivity extends BaseActivity {
     // for payment
     String invoice_no="";
 
-    Double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
+    double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
 
     UserDetails userDetails;
     StepperIndicator indicator;
@@ -260,8 +262,10 @@ public class OrderDetailsActivity extends BaseActivity {
 
                                 double userBalance = Double.parseDouble(userDetails.getBalance());
 
+
+
                                 if (total_amount <= userBalance){
-                                    makePartialPayment(invoice_no, String.valueOf(total_amount));
+                                    makePartialPayment(invoice_no, String.valueOf((int)total_amount));
                                 } else {
 
 
@@ -336,27 +340,33 @@ public class OrderDetailsActivity extends BaseActivity {
                 }
 
 
-
                 double partial_amount = Double.parseDouble(amount.getText().toString());
+
+                if (partial_amount > total_amount){
+                    Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+
                 double userBalance = Double.parseDouble(userDetails.getBalance());
 
-                if (total_amount <= userBalance){
-                    makePartialPayment(invoice_no, String.valueOf(total_amount));
+                if (partial_amount <= userBalance){
+                    makePartialPayment(invoice_no, String.valueOf((int) partial_amount));
+
+                    Logger.d(partial_amount);
                 } else {
 
 
                     Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
 
-                    double amountToPay = total_amount - userBalance;
+                    double amountToPay = partial_amount - userBalance;
+
 
                     amountToPayView.setText(amountToPay+"");
                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
 
 
-
-
-                makePartialPayment(invoice_no, amount.getText().toString());
                 alertDialog.dismiss();
 
 
