@@ -846,7 +846,7 @@ public class CartActivity extends BaseActivity {
 
 
                     if (response.getJSONArray("data").length() < 1) {
-                        Toast.makeText(context, "Couldn't place holder, add more items.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Couldn't place holder.", Toast.LENGTH_SHORT).show();
                         dialog.hideDialog();
                         return;
                     }
