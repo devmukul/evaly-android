@@ -19,10 +19,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity android:name=".activity.orderDetails.PayViaCard"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".activity.TransactionHistory"
-            android:theme="@style/ThemeTransaction"/>
+            android:theme="@style/ThemeTransaction" />
         <activity android:name=".activity.offers.OffersActivity" />
         <activity
             android:name=".activity.InviteEarn"
@@ -30,6 +31,7 @@
         <activity
             android:name=".activity.ImagePreview"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -53,11 +55,8 @@
             android:name=".activity.SearchCategory"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.PayViaBkashActivity"
-            android:theme="@style/AppTheme" >
-
-
-        </activity>
+            android:name=".activity.orderDetails.PayViaBkashActivity"
+            android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".activity.NetworkErrorActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -68,10 +67,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.ReviewsActivity" />
         <activity
-            android:name=".activity.OrderDetailsActivity"
+            android:name=".activity.orderDetails.OrderDetailsActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activity.AddBalanceActivity"
+            android:name=".activity.orderDetails.AddBalanceActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.ChangePasswordActivity"

@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.activity.PayViaBkashActivity;
+import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.adapter.MyVoucherAdapter;
 import bd.com.evaly.evalyshop.models.MyVoucherInfo;
 import bd.com.evaly.evalyshop.util.UserDetails;

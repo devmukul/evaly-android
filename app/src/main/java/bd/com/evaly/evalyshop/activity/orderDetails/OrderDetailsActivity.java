@@ -1,10 +1,12 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.activity.orderDetails;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
@@ -37,6 +39,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.badoualy.stepperindicator.StepperIndicator;
 import com.orhanobut.logger.Logger;
+import com.thefinestartist.finestwebview.FinestWebView;
+import com.thefinestartist.finestwebview.listeners.WebViewListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,11 +52,13 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.models.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.OrderStatus;
 import bd.com.evaly.evalyshop.util.Balance;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -96,6 +102,7 @@ public class OrderDetailsActivity extends BaseActivity {
     int paymentMethod = -1;
 
     Context context;
+    RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +120,8 @@ public class OrderDetailsActivity extends BaseActivity {
         } catch (Exception e) {
             userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
         }
+
+        queue= Volley.newRequestQueue(context);
 
 
         scrollView = findViewById(R.id.scroll);
@@ -297,11 +306,33 @@ public class OrderDetailsActivity extends BaseActivity {
         });
 
 
+        bkash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+
+            }
+        });
+
+        cards.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                double amToPay = Double.parseDouble(amountToPayView.getText().toString());
+
+                addBalanceViaCard(invoice_no, String.valueOf((int) amToPay));
+
+
+            }
+        });
+
+
 
 
     }
-
-
 
 
 
@@ -352,20 +383,16 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 if (partial_amount <= userBalance){
                     makePartialPayment(invoice_no, String.valueOf((int) partial_amount));
-
                     Logger.d(partial_amount);
                 } else {
 
 
                     Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
-
                     double amountToPay = partial_amount - userBalance;
-
 
                     amountToPayView.setText(amountToPay+"");
                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
-
 
                 alertDialog.dismiss();
 
@@ -376,14 +403,13 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
 
-
-
     @Override
     public void onResume(){
 
         super.onResume();
 
-        getBalance();
+        Balance.update(this);
+
 
 
 
@@ -427,12 +453,8 @@ public class OrderDetailsActivity extends BaseActivity {
 
                     try {
 
-
-
                         dialog.hideDialog();
-
                         shouldAddBalance();
-
 
                     } catch (Exception e){
                     }
@@ -448,7 +470,6 @@ public class OrderDetailsActivity extends BaseActivity {
                         public void run() {
 
                             dialog.hideDialog();
-
                             finish();
                             startActivity(getIntent());
 
@@ -478,12 +499,11 @@ public class OrderDetailsActivity extends BaseActivity {
                 headers.put("Origin", "https://evaly.com.bd");
                 headers.put("Referer", "https://evaly.com.bd/");
                 headers.put("User-Agent", userAgent);
-                // headers.put("Content-Length", data.length()+"");
                 return headers;
             }
 
         };
-        RequestQueue queue= Volley.newRequestQueue(this);
+
         request.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
@@ -504,6 +524,105 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
 
+
+    public void addBalanceViaCard(String invoice, String amount) {
+
+        String url = "https://api.evaly.com.bd/pay/pg";
+
+        Log.d("json order url", url);
+
+
+
+        JSONObject payload = new JSONObject();
+
+
+        if (balance.equals("")){
+            Toast.makeText(this, "Enter amount", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        try {
+            payload.put("amount", amount);
+            payload.put("context", "order_payment");
+            payload.put("context_reference", invoice);
+
+        } catch (Exception e){
+
+        }
+
+
+
+        dialog.showDialog();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                dialog.hideDialog();
+
+                try {
+
+                    String purl = response.getString("payment_gateway_url");
+                    Intent intent = new Intent(OrderDetailsActivity.this, PayViaCard.class);
+                    intent.putExtra("url", purl);
+                    startActivityForResult(intent,10002);
+
+
+                }catch (Exception e){
+
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                // headers.put("Content-Length", data.length()+"");
+
+                // headers.put("Host", "api-prod.evaly.com.bd");
+                headers.put("Origin", "https://evaly.com.bd");
+                headers.put("Referer", "https://evaly.com.bd/");
+                headers.put("User-Agent", userAgent);
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+
+
+
+        };
+
+        request.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+        queue.add(request);
+    }
+
+
+
+
+
     public void shouldAddBalance(){
 
 
@@ -517,52 +636,20 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        if (requestCode == 10002) {
 
-    public void getBalance(){
-        String url="https://api-prod.evaly.com.bd/pay/balance/"+userDetails.getUserName()+"/";
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
+            if (resultCode == Activity.RESULT_OK) {
+
+                getOrderDetails();
+
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // some stuff that will happen if there's no result
+            }
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
-                try {
-
-                    userDetails.setBalance(response.getString("balance"));
-
-                    balance.setText(Html.fromHtml("Balance: <b>৳ "+ response.getString("balance") + "</b>"));
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                return headers;
-            }
-        };
-        RequestQueue queue= Volley.newRequestQueue(this);
-        queue.add(request);
     }
-
-
 
 
     @Override
@@ -794,7 +881,7 @@ public class OrderDetailsActivity extends BaseActivity {
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(OrderDetailsActivity.this);
+
         request.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
@@ -867,7 +954,7 @@ public class OrderDetailsActivity extends BaseActivity {
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(OrderDetailsActivity.this);
+
         request.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {

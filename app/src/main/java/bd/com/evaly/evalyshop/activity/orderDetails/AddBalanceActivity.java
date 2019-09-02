@@ -1,6 +1,5 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.activity.orderDetails;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,7 +7,6 @@ import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -28,7 +26,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.thefinestartist.finestwebview.FinestWebView;
-import com.thefinestartist.finestwebview.FinestWebViewActivity;
 import com.thefinestartist.finestwebview.listeners.WebViewListener;
 
 import org.json.JSONObject;
@@ -38,8 +35,8 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.util.UserDetails;
-import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class AddBalanceActivity extends BaseActivity

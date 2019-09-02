@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.activity.orderDetails;
 
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -38,6 +38,8 @@ public class PayViaBkashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bkash_payment);
         getSupportActionBar().setElevation(4f);
+
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_vector);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("bKash Payment");
 
