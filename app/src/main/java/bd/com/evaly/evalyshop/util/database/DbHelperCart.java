@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.orhanobut.logger.Logger;
 
+import bd.com.evaly.evalyshop.models.CartItem;
+
 public class DbHelperCart extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME="evaly_cart_3.db";
@@ -25,7 +27,7 @@ public class DbHelperCart extends SQLiteOpenHelper {
 
 
     public DbHelperCart(Context context){
-        super(context,DATABASE_NAME,null,5);
+        super(context,DATABASE_NAME,null,6);
         SQLiteDatabase db=this.getWritableDatabase();
     }
 
@@ -40,28 +42,67 @@ public class DbHelperCart extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(String slug,String name,String image,int price,long time,String shopData, int quantity, String shop_slug){
-        SQLiteDatabase db=this.getWritableDatabase();
-        ContentValues values=new ContentValues();
-        values.put(COL_2,slug);
-        values.put(COL_3,name);
-        values.put(COL_4,image);
-        values.put(COL_5,price+"");
-        values.put(COL_6,time);
-        values.put(COL_7,shopData);
-        values.put(COL_8,quantity);
-        values.put(COL_9,shop_slug);
+    public boolean insertData(String product_id,String name,String image,int price,long time,String shopData, int quantity, String shop_slug){
 
-        long result=db.insert(TABLE_NAME,null,values);
-        if(result==-1)
-            return false;
-        else
+        Cursor cursor = null;
+        String sql ="SELECT * FROM "+TABLE_NAME+" WHERE PRODUCT_SLUG='"+product_id+"'";
+        SQLiteDatabase db=this.getWritableDatabase();
+
+        Cursor res= db.rawQuery(sql,null);
+
+
+        if(res.getCount()>0){
+
+
+            int qnt = 1;
+            String pdid = "";
+
+            while(res.moveToNext()){
+                qnt = res.getInt(7);
+                pdid = res.getString(1);
+            }
+
+            qnt++;
+
+            String strSQL = "UPDATE "+TABLE_NAME+" SET QUANTITY = "+qnt+" WHERE PRODUCT_SLUG = '"+pdid+"'";
+            db.execSQL(strSQL);
+            db.close();
+
             return true;
+
+
+
+        }else {
+
+            ContentValues values = new ContentValues();
+            values.put(COL_2, product_id);
+            values.put(COL_3, name);
+            values.put(COL_4, image);
+            values.put(COL_5, price + "");
+            values.put(COL_6, time);
+            values.put(COL_7, shopData);
+            values.put(COL_8, quantity);
+            values.put(COL_9, shop_slug);
+
+            long result = db.insert(TABLE_NAME, null, values);
+
+            db.close();
+
+            if (result == -1)
+                return false;
+            else
+                return true;
+
+        }
     }
+
+
+
+
 
     public Cursor getData(){
         SQLiteDatabase db=this.getWritableDatabase();
-        Cursor res=db.rawQuery("select * from "+TABLE_NAME+" ORDER BY SHOP_SLUG, time desc",null);
+        Cursor res= db.rawQuery("select * from "+TABLE_NAME+" ORDER BY SHOP_SLUG, time desc",null);
 
         Logger.d(res.toString());
 

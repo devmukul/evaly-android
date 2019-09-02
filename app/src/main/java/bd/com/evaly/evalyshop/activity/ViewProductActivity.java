@@ -971,7 +971,7 @@ public class ViewProductActivity extends BaseActivity {
                                     else
                                         item.setPrice(ob.getString("discounted_price"));
 
-                                    item.setSlug(ob.getString("shop_slug"));
+                                    item.setSlug(ob.getString("shop_item_id"));
                                     item.setPhone(phone);
                                     item.setAddress(ob.getString("shop_address"));
                                     item.setShopJson(ob.toString());
