@@ -24,16 +24,17 @@ public class DbHelperCart extends SQLiteOpenHelper {
     public static final String COL_7="FROM_SHOP_DATA";
     public static final String COL_8="QUANTITY";
     public static final String COL_9="SHOP_SLUG";
+    public static final String COL_10="PRODUCT_ID";
 
 
     public DbHelperCart(Context context){
-        super(context,DATABASE_NAME,null,6);
+        super(context,DATABASE_NAME,null,7);
         SQLiteDatabase db=this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY AUTOINCREMENT,PRODUCT_SLUG TEXT, NAME TEXT, IMAGE TEXT, PRICE INT, TIME LONG, FROM_SHOP_DATA STRING, QUANTITY INT, SHOP_SLUG STRING)");
+        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY AUTOINCREMENT,PRODUCT_SLUG TEXT, NAME TEXT, IMAGE TEXT, PRICE INT, TIME LONG, FROM_SHOP_DATA STRING, QUANTITY INT, SHOP_SLUG STRING, PRODUCT_ID STRING)");
     }
 
     @Override
@@ -42,10 +43,10 @@ public class DbHelperCart extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(String product_id,String name,String image,int price,long time,String shopData, int quantity, String shop_slug){
+    public boolean insertData(String product_slug, String name,String image,int price,long time,String shopData, int quantity, String shop_slug, String product_id){
 
         Cursor cursor = null;
-        String sql ="SELECT * FROM "+TABLE_NAME+" WHERE PRODUCT_SLUG='"+product_id+"'";
+        String sql ="SELECT * FROM "+TABLE_NAME+" WHERE PRODUCT_ID='"+product_id+"'";
         SQLiteDatabase db=this.getWritableDatabase();
 
         Cursor res= db.rawQuery(sql,null);
@@ -59,12 +60,12 @@ public class DbHelperCart extends SQLiteOpenHelper {
 
             while(res.moveToNext()){
                 qnt = res.getInt(7);
-                pdid = res.getString(1);
+                pdid = res.getString(9);
             }
 
             qnt++;
 
-            String strSQL = "UPDATE "+TABLE_NAME+" SET QUANTITY = "+qnt+" WHERE PRODUCT_SLUG = '"+pdid+"'";
+            String strSQL = "UPDATE "+TABLE_NAME+" SET QUANTITY = "+qnt+" WHERE PRODUCT_ID = '"+pdid+"'";
             db.execSQL(strSQL);
             db.close();
 
@@ -75,7 +76,7 @@ public class DbHelperCart extends SQLiteOpenHelper {
         }else {
 
             ContentValues values = new ContentValues();
-            values.put(COL_2, product_id);
+            values.put(COL_2, product_slug);
             values.put(COL_3, name);
             values.put(COL_4, image);
             values.put(COL_5, price + "");
@@ -83,6 +84,7 @@ public class DbHelperCart extends SQLiteOpenHelper {
             values.put(COL_7, shopData);
             values.put(COL_8, quantity);
             values.put(COL_9, shop_slug);
+            values.put(COL_10, product_id);
 
             long result = db.insert(TABLE_NAME, null, values);
 

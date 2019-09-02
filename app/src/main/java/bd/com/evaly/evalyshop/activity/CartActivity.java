@@ -624,7 +624,7 @@ public class CartActivity extends BaseActivity {
         }else{
             cartItem=true;
             while(res.moveToNext()){
-                itemList.add(new CartItem(res.getString(0),res.getString(1),res.getString(2),res.getString(3),res.getInt(4),res.getLong(5),res.getString(6),res.getInt(7),true, res.getString(8)));
+                itemList.add(new CartItem(res.getString(0),res.getString(1),res.getString(2),res.getString(3),res.getInt(4),res.getLong(5),res.getString(6),res.getInt(7),true, res.getString(8), res.getString(9)));
 //                Collections.sort(itemList, new Comparator<WishList>(){
 //                    public int compare(WishList o1, WishList o2) {
 //                        return o2.getTime() > o1.getTime();
