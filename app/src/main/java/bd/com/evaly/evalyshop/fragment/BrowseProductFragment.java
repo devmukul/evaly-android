@@ -77,6 +77,12 @@ public class BrowseProductFragment extends Fragment {
     EditText minimum,maximum;
     ProgressBar progressBar;
 
+
+
+    public BrowseProductFragment() {
+        // Required empty public constructor
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

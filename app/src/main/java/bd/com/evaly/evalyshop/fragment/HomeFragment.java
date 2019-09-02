@@ -90,6 +90,7 @@ public class HomeFragment extends Fragment {
     Context context;
 
     public HomeFragment() {
+        // Required empty public constructor
     }
 
     @Override

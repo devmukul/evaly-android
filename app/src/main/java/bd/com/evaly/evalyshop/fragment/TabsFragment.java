@@ -162,7 +162,7 @@ public class TabsFragment extends Fragment {
 
 
     public TabsFragment(){
-
+            // Required empty public constructor
     }
 
     public TabsFragment(int type, String slug, String category, Fragment parentIntance){

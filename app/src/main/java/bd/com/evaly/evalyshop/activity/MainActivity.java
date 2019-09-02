@@ -144,7 +144,7 @@ public class MainActivity extends BaseActivity {
         toggle.syncState();
 
         if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()){
-            refreshToken();
+            Token.update(this);
         }
 
 
@@ -530,57 +530,6 @@ public class MainActivity extends BaseActivity {
         // Glide.with(getApplicationContext()).pauseRequests();
 
 
-    }
-
-    public void refreshToken() {
-
-        String url = UrlUtils.REFRESH_AUTH_TOKEN;
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
-                try {
-
-                    JSONObject userJson = response.getJSONObject("data");
-                    String token = userJson.getString("token");
-                    Logger.d(token);
-                    userDetails.setToken(token);
-
-
-                    Log.d("json user info", userJson.toString());
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                try {
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
-                    // headers.put("Host", "api-prod.evaly.com.bd");
-                    headers.put("Content-Type", "application/json");
-                    headers.put("Origin", "https://evaly.com.bd");
-                    headers.put("Referer", "https://evaly.com.bd/");
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                return headers;
-            }
-        };
-        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-        queue.add(request);
     }
 
 

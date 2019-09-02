@@ -90,6 +90,13 @@ public class ShopFragment extends Fragment {
     String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
     RequestQueue rq;
 
+
+
+    public ShopFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_shop, container, false);

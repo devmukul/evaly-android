@@ -90,6 +90,13 @@ public class BrandFragment extends Fragment {
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
 
+
+    public BrandFragment(){
+        // Required empty public constructor
+
+    }
+
+
     RequestQueue rq;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
