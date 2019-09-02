@@ -67,6 +67,26 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         return new MyViewHolder(view);
     }
 
+
+    View.OnClickListener storeClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+
+            int i = Integer.parseInt(v.getTag().toString());
+
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra("type", 3);
+            intent.putExtra("shop_slug", availableShops.get(i).getShopSlug());
+            intent.putExtra("shop_name", availableShops.get(i).getName());
+            intent.putExtra("category", availableShops.get(i).getSlug());
+
+            context.startActivity(intent);
+
+        }
+    };
+
+
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.shopName.setText(availableShops.get(i).getName());
@@ -253,20 +273,11 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
         // circle buttons clicks
 
-        myViewHolder.shop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myViewHolder.shop.setTag(i);
+        myViewHolder.shopName.setTag(R.id.shop_image, i);
 
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra("type", 3);
-                intent.putExtra("shop_slug", availableShops.get(i).getSlug());
-                intent.putExtra("shop_name", availableShops.get(i).getName());
-                intent.putExtra("category", availableShops.get(i).getSlug());
-
-                context.startActivity(intent);
-
-            }
-        });
+        myViewHolder.shop.setOnClickListener(storeClick);
+        myViewHolder.shopName.setOnClickListener(storeClick);
 
         myViewHolder.call.setOnClickListener(new View.OnClickListener() {
             @Override

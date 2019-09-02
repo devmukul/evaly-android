@@ -81,19 +81,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:paddingLeft="15dp"
         android:paddingBottom="5dp">
 
         <ImageView
             android:id="@+id/bkash"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
             android:layout_weight="0"
             android:background="@drawable/payment_select_bg"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/payment_icon_bkash" />
+            android:src="@drawable/payment_icon_bkash"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/card"
@@ -113,19 +114,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:paddingLeft="15dp"
         android:paddingBottom="25dp">
 
         <TextView
             android:id="@+id/textView36"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
             android:layout_weight="0"
             android:text="bKash"
             android:textAlignment="center"
             android:textColor="#666"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/textView31"
@@ -133,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_weight="0"
-            android:text="Cards"
+            android:text="Gateway"
             android:textAlignment="center"
             android:textColor="#666"
             android:textStyle="bold"

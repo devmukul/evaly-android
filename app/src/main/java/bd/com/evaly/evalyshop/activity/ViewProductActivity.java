@@ -600,6 +600,8 @@ public class ViewProductActivity extends BaseActivity {
                                     sliderAdapter.notifyDataSetChanged();
                                 }
                                 getAvailableShops(product_variants.getJSONObject(i).getInt("variant_id"));
+
+
                             } else {
                                 JSONArray variantArr = product_variants.getJSONObject(i).getJSONArray("product_images");
                                 int variantID = product_variants.getJSONObject(i).getInt("variant_id");
@@ -664,6 +666,8 @@ public class ViewProductActivity extends BaseActivity {
 
                         Log.d("json product", responseMain.toString());
 
+
+                        getProductRating(slug);
 
                         if (dbWish.isSlugExist(slug)) {
 
@@ -887,6 +891,9 @@ public class ViewProductActivity extends BaseActivity {
                     GradientDrawable drawable = (GradientDrawable) button.getBackground();
                     drawable.setColor(Color.parseColor("#d1ecf2"));
                     getAvailableShops(productVariants.getVariantID());
+
+
+
                 }
             });
             button.setOnFocusChangeListener(new View.OnFocusChangeListener() {
