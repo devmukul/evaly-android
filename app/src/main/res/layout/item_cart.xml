@@ -3,72 +3,84 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#fff"
     android:orientation="vertical">
 
+
+    <View
+        android:id="@+id/dividerView"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="#fafafa" />
+
+    <LinearLayout
+        android:id="@+id/sellerHolder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/imageView6"
+            app:srcCompat="@drawable/ic_menu_store"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_marginTop="1dp"
+            android:layout_weight="0"
+            android:paddingLeft="5dp"
+            android:tint="#555" />
+
+        <TextView
+            android:id="@+id/shop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:paddingLeft="5dp"
+            android:paddingRight="15dp"
+            android:text="Seller: Unknown"
+            android:textColor="#555"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/variation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:textColor="#555"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fff"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        android:paddingTop="5dp"
+        android:paddingBottom="20dp">
 
-
-        <LinearLayout
-            android:id="@+id/sellerHolder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="13dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp">
-
-            <ImageView
-                android:id="@+id/imageView6"
-                android:layout_width="wrap_content"
-                android:layout_height="16dp"
-                android:layout_marginTop="1dp"
-                android:layout_weight="0"
-                android:paddingLeft="5dp"
-                android:tint="#555"
-                app:srcCompat="@drawable/ic_menu_store" />
-
-            <TextView
-                android:id="@+id/shop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="1"
-                android:paddingLeft="5dp"
-                android:paddingRight="15dp"
-                android:text="Seller: Unknown"
-                android:textColor="#555"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/variation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:textColor="#555"
-                android:textSize="14sp" />
-        </LinearLayout>
 
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="false"
-            android:layout_centerVertical="true"
+            android:layout_centerVertical="false"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
             android:gravity="bottom"
+            android:paddingTop="10dp"
             android:paddingRight="10dp"
-            android:paddingBottom="20dp" />
+            android:paddingBottom="10dp" />
 
         <ImageView
             android:id="@+id/product_image"
@@ -211,10 +223,4 @@
 
     </RelativeLayout>
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:layout_marginTop="15dp"
-        android:background="#fafafa" />
 </LinearLayout>

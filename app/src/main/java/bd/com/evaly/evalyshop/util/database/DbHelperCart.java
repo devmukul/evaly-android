@@ -7,9 +7,11 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.orhanobut.logger.Logger;
+
 public class DbHelperCart extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME="evaly_cart_1.db";
+    public static final String DATABASE_NAME="evaly_cart_3.db";
     public static final String TABLE_NAME="cart";
     public static final String COL_1="ID";
     public static final String COL_2="PRODUCT_SLUG";
@@ -17,18 +19,19 @@ public class DbHelperCart extends SQLiteOpenHelper {
     public static final String COL_4="IMAGE";
     public static final String COL_5="PRICE";
     public static final String COL_6="TIME";
-
     public static final String COL_7="FROM_SHOP_DATA";
     public static final String COL_8="QUANTITY";
+    public static final String COL_9="SHOP_SLUG";
+
 
     public DbHelperCart(Context context){
-        super(context,DATABASE_NAME,null,3);
+        super(context,DATABASE_NAME,null,5);
         SQLiteDatabase db=this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY AUTOINCREMENT,PRODUCT_SLUG TEXT, NAME TEXT, IMAGE TEXT, PRICE INT, TIME LONG, FROM_SHOP_DATA STRING, QUANTITY INT)");
+        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY AUTOINCREMENT,PRODUCT_SLUG TEXT, NAME TEXT, IMAGE TEXT, PRICE INT, TIME LONG, FROM_SHOP_DATA STRING, QUANTITY INT, SHOP_SLUG STRING)");
     }
 
     @Override
@@ -37,7 +40,7 @@ public class DbHelperCart extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(String slug,String name,String image,int price,long time,String shopData, int quantity){
+    public boolean insertData(String slug,String name,String image,int price,long time,String shopData, int quantity, String shop_slug){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
         values.put(COL_2,slug);
@@ -47,6 +50,7 @@ public class DbHelperCart extends SQLiteOpenHelper {
         values.put(COL_6,time);
         values.put(COL_7,shopData);
         values.put(COL_8,quantity);
+        values.put(COL_9,shop_slug);
 
         long result=db.insert(TABLE_NAME,null,values);
         if(result==-1)
@@ -57,7 +61,9 @@ public class DbHelperCart extends SQLiteOpenHelper {
 
     public Cursor getData(){
         SQLiteDatabase db=this.getWritableDatabase();
-        Cursor res=db.rawQuery("select * from "+TABLE_NAME+" order by time desc",null);
+        Cursor res=db.rawQuery("select * from "+TABLE_NAME+" ORDER BY SHOP_SLUG, time desc",null);
+
+        Logger.d(res.toString());
 
         return res;
     }

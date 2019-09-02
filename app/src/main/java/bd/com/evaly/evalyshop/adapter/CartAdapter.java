@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +72,21 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         //Log.d("wish_product",itemList.get(i).getName());
+
+
+        if (i>0){
+
+            if (itemList.get(i).getShopSlug().equals(itemList.get(i-1).getShopSlug())) {
+                myViewHolder.sellerHolder.setVisibility(View.GONE);
+                myViewHolder.dividerView.setVisibility(View.GONE);
+            }
+            else {
+                myViewHolder.sellerHolder.setVisibility(View.VISIBLE);
+                myViewHolder.dividerView.setVisibility(View.VISIBLE);
+            }
+
+        }
+
 
 
         JSONObject jsonObject = new JSONObject();
@@ -502,7 +518,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         EditText quantity;
         CheckBox checkBox;
         TextView variation;
-        View view;
+        View view, dividerView;
+        LinearLayout sellerHolder;
         public MyViewHolder(final View itemView) {
             super(itemView);
             productName=itemView.findViewById(R.id.product_name);
@@ -518,6 +535,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             plus = itemView.findViewById(R.id.plus);
             minus = itemView.findViewById(R.id.minus);
             quantity = itemView.findViewById(R.id.quantity);
+            sellerHolder = itemView.findViewById(R.id.sellerHolder);
+            dividerView = itemView.findViewById(R.id.dividerView);
 
             view = itemView;
         }

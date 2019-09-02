@@ -205,8 +205,9 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                     cartItem.setQuantity(1);
                     cartItem.setSelected(true);
                     cartItem.setSellerJson(availableShops.get(i).getShopJson());
+                    cartItem.setShopSlug(availableShops.get(i).getShopSlug());
 
-                    if(db.insertData(cartItem.getSlug(),cartItem.getName(),cartItem.getImage(),cartItem.getPrice(), calendar.getTimeInMillis(), cartItem.getSellerJson(), 1)){
+                    if(db.insertData(cartItem.getSlug(),cartItem.getName(),cartItem.getImage(),cartItem.getPrice(), calendar.getTimeInMillis(), cartItem.getSellerJson(), 1, cartItem.getShopSlug())){
 
                         Snackbar snackBar = Snackbar.make(view,"Added to cart", 1500);
                         snackBar.setAction("Go to Cart", new View.OnClickListener() {

@@ -275,17 +275,24 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
                                 if (total_amount <= userBalance){
-                                    makePartialPayment(invoice_no, String.valueOf((int)total_amount));
+
+                                    double amountToPay = total_amount-paid_amount;
+
+                                    makePartialPayment(invoice_no, String.valueOf((int)amountToPay));
+
                                 } else {
 
 
                                     //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
 
-                                    double amountToPay = total_amount - userBalance;
+                                    double amountToPay = (total_amount - userBalance) - paid_amount;
+
 
                                     amountToPayView.setText(amountToPay+"");
                                     full_or_partial.setText("Full Payment");
+
                                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
                                 }
 
                             }})
@@ -397,15 +404,27 @@ public class OrderDetailsActivity extends BaseActivity {
                 } else {
 
 
+
+                    alertDialog.dismiss();
+
+
                     //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
                     double amountToPay = partial_amount - userBalance;
 
                     amountToPayView.setText(amountToPay+"");
                     full_or_partial.setText("Partial Pay");
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        }
+                    }, 500);
+
+
+
                 }
 
-                alertDialog.dismiss();
 
 
             }
@@ -784,12 +803,7 @@ public class OrderDetailsActivity extends BaseActivity {
                             payParially.setVisibility(View.GONE);
                         }
 
-                        if(paid_amount > 1){
 
-
-                            makePayment.setVisibility(View.GONE);
-
-                        }
                         try{
                             if(response.getString("payment_method").equals("cod")){
                                 paymentMethods.setText("Cash on Delivery");

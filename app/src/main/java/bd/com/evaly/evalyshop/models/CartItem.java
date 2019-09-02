@@ -2,13 +2,13 @@ package bd.com.evaly.evalyshop.models;
 
 public class CartItem {
 
-    private String id,slug,name,image,sellerJson;
+    private String id,slug,name,image,sellerJson,shopSlug;
     private int price = 0, quantity = 1;
     private boolean selected = true;
     private long time = 0;
 
 
-    public CartItem(String id, String productSlug, String name, String image, int price, long time, String sellerJson, int quantity, boolean selected) {
+    public CartItem(String id, String productSlug, String name, String image, int price, long time, String sellerJson, int quantity, boolean selected, String shopSlug) {
         this.id = id;
         this.slug = productSlug;
         this.name = name;
@@ -18,6 +18,7 @@ public class CartItem {
         this.sellerJson = sellerJson;
         this.quantity = quantity;
         this.selected = selected;
+        this.shopSlug = shopSlug;
     }
 
 
@@ -26,6 +27,14 @@ public class CartItem {
 
     }
 
+
+    public String getShopSlug() {
+        return shopSlug;
+    }
+
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
+    }
 
     public String getId() {
         return id;

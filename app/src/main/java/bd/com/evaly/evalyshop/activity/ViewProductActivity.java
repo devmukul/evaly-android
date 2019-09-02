@@ -964,6 +964,7 @@ public class ViewProductActivity extends BaseActivity {
                                     shopname.add(ob.getString("shop_name"));
                                     item.setName(ob.getString("shop_name"));
                                     item.setLogo(ob.getString("shop_image"));
+                                    item.setShopSlug(ob.getString("shop_slug"));
 
                                     if (ob.getString("discounted_price").equals("null"))
                                         item.setPrice(ob.getString("price"));

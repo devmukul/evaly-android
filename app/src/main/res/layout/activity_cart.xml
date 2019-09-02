@@ -25,9 +25,9 @@
                 android:id="@+id/recycle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#fafafa"
                 android:nestedScrollingEnabled="false"
-                android:paddingTop="8dp"
-                android:background="#fafafa">
+                android:paddingBottom="8dp">
 
             </android.support.v7.widget.RecyclerView>
 
