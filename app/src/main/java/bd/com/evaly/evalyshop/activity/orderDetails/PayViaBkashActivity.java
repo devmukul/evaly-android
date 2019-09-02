@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.activity.orderDetails;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -18,6 +19,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,22 +35,37 @@ public class PayViaBkashActivity extends BaseActivity {
 
     WebView webView;
     ProgressDialog prDialog;
+
+    ProgressBar progressBar;
+    private boolean loadingFinished = false;
+    private boolean redirect = false;
+    private boolean isShowed = true;
+    UserDetails userDetails;
+
+    String amount="0.0", context_reference = "", paymentID = "";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bkash_payment);
         getSupportActionBar().setElevation(4f);
-
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_vector);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("bKash Payment");
 
 
+        Intent intent = getIntent();
+        amount = intent.getStringExtra("amount");
+        context_reference = intent.getStringExtra("invoice_no");
+
+
+
         webView = findViewById(R.id.webView);
+        progressBar = findViewById(R.id.progressBar);
 
-        UserDetails userDetails = new UserDetails(this);
+        userDetails = new UserDetails(this);
 
-        String url = "https://evaly.com.bd/payment?invoice_no=EVL348604781&amount=779";
 
 
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -70,9 +87,9 @@ public class PayViaBkashActivity extends BaseActivity {
                 "        if (typeof bKash == 'undefined') {" +
                 "        } else {" +
                 "            initBkash(); " +
-                        "$(document).ready(function(){\n" +
-                        "   $(\"#bKash_button\").trigger('click'); \n" +
-                        "});" +
+                "$(document).ready(function(){\n" +
+                "   $(\"#bKash_button\").trigger('click'); \n" +
+                "});" +
 
                 "            clearInterval(nTimer);" +
                 "        }" +
@@ -83,10 +100,10 @@ public class PayViaBkashActivity extends BaseActivity {
                 "    bKash.init({" +
                 "        paymentMode: 'checkout'," +
                 "        paymentRequest: {" +
-                "            amount: '10.00'," +
+                "            amount: '"+amount+"'," +
                 "            intent: 'sale'," +
                 "            context: 'order_payment'," +
-                "            context_reference: 'EVL348604781'" +
+                "            context_reference: '"+context_reference+"'" +
                 "        }," +
                 "        createRequest: function(request) {" +
                 "            $.ajax({" +
@@ -94,7 +111,7 @@ public class PayViaBkashActivity extends BaseActivity {
                 "                type: 'POST'," +
                 "                contentType: 'application/json'," +
                 "                headers: {" +
-                "                    \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo2NjY2NywidXNlcm5hbWUiOiIwMTc1MTk3NzA0NSIsImV4cCI6MTU2Nzk0OTA0NCwiZW1haWwiOiJobXRhbWltbTdAZ21haWwuY29tIiwic2hvcHMiOltdLCJkZXZpY2UiOiJ3ZWIiLCJpc19zdXBlcnVzZXIiOmZhbHNlLCJpc19zdGFmZiI6ZmFsc2UsImdyb3VwcyI6W10sImlzX3ZlcmlmaWVkIjpmYWxzZX0.GdRwijkOxxZ3R0cqApHyLrQminianXhkuwbobMu3ZHc\"," +
+                "                    \"Authorization\": \"Bearer "+userDetails.getToken()+"\"," +
                 "                }," +
                 "                data: JSON.stringify(request)," +
                 "                success: function(data) {" +
@@ -116,7 +133,7 @@ public class PayViaBkashActivity extends BaseActivity {
                 "                type: 'POST'," +
                 "                contentType: 'application/json'," +
                 "                headers: {" +
-                "                    \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo2NjY2NywidXNlcm5hbWUiOiIwMTc1MTk3NzA0NSIsImV4cCI6MTU2Nzk0OTA0NCwiZW1haWwiOiJobXRhbWltbTdAZ21haWwuY29tIiwic2hvcHMiOltdLCJkZXZpY2UiOiJ3ZWIiLCJpc19zdXBlcnVzZXIiOmZhbHNlLCJpc19zdGFmZiI6ZmFsc2UsImdyb3VwcyI6W10sImlzX3ZlcmlmaWVkIjpmYWxzZX0.GdRwijkOxxZ3R0cqApHyLrQminianXhkuwbobMu3ZHc\"," +
+                "                    \"Authorization\": \"Bearer "+userDetails.getToken()+"\"," +
                 "                }," +
                 "                data: JSON.stringify({" +
                 "                    \"paymentID\": paymentID" +
@@ -142,19 +159,19 @@ public class PayViaBkashActivity extends BaseActivity {
                 "            if (paymentID) {" +
                 "                bKash.reconfigure({" +
                 "                    paymentRequest: {" +
-                "                        amount: '100.50'," +
+                "                        amount: '"+amount+"'," +
                 "                        intent: \"sale\"," +
                 "                        context: \"order_payment\"," +
-                "                        context_reference: 'EVL348604781'" +
+                "                        context_reference: '"+context_reference+"'" +
                 "                    }" +
                 "                });" +
                 "            } else {" +
                 "                bKash.reconfigure({" +
                 "                    paymentRequest: {" +
-                "                        amount: '10.0'," +
+                "                        amount: '"+amount+"'," +
                 "                        intent: \"sale\"," +
                 "                        context: \"order_payment\"," +
-                "                        context_reference: 'EVL348604781'" +
+                "                        context_reference: '"+context_reference+"'" +
                 "                    }" +
                 "                });" +
                 "            }" +
@@ -164,22 +181,61 @@ public class PayViaBkashActivity extends BaseActivity {
                 "}";
 
 
-        Log.d("js", javascript);
+
+
+
 
 
         webView.setWebViewClient(new WebViewClient() {
 
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
+                if (!loadingFinished) {
+                    redirect = true;
+                }
+
+                loadingFinished = false;
+                view.loadUrl(urlNewString);
+                return true;
+            }
+
+
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+
                 super.onPageStarted(view, url, favicon);
 
+
+                if (url.contains("success.html")){
+                    Toast.makeText(PayViaBkashActivity.this, "Payment successful!", Toast.LENGTH_LONG);
+                    setResult(Activity.RESULT_OK);
+                    finish();
+
+                    return;
+
+
+                }
+
+
+                loadingFinished = false;
+
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setProgress(0);
+
+
             }
+
+
 
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(webView, url);
                 //Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
+
+
+
 
                 webView.evaluateJavascript(javascript, new ValueCallback<String>() {
                     @Override
@@ -191,12 +247,33 @@ public class PayViaBkashActivity extends BaseActivity {
 
 
 
+                if(!redirect){
+                    loadingFinished = true;
+                }
+
+                if(loadingFinished && isShowed){
+                    isShowed = false;
+
+                } else{
+                    redirect = false;
+                }
+
+                progressBar.setProgress(100);
+                progressBar.setVisibility(View.GONE);
 
             }
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Toast.makeText(getApplicationContext(), "Oh no! " + description, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getApplicationContext(), "Oh no! " + description, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int newProgress) {
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setProgress(newProgress);
             }
         });
 

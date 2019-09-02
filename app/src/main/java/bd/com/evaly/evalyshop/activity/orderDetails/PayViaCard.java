@@ -88,6 +88,19 @@ public class PayViaCard extends AppCompatActivity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+
+                if (url.contains("evaly.com.bd")){
+
+                    Toast.makeText(PayViaCard.this, "Payment successful!", Toast.LENGTH_LONG);
+
+                    setResult(Activity.RESULT_OK);
+                    finish();
+
+                    return;
+
+                }
+
+
                 super.onPageStarted(view, url, favicon);
                 loadingFinished = false;
 
@@ -105,14 +118,7 @@ public class PayViaCard extends AppCompatActivity {
                 super.onPageFinished(webView, url);
                 //Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
 
-                if (url.contains("evaly.com.bd/")){
 
-                    Toast.makeText(PayViaCard.this, "Payment successful!", Toast.LENGTH_LONG);
-
-                    setResult(Activity.RESULT_OK);
-                    finish();
-
-                }
 
                 if(!redirect){
                     loadingFinished = true;

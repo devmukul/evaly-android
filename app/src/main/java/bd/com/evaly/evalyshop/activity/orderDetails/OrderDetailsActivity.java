@@ -85,7 +85,7 @@ public class OrderDetailsActivity extends BaseActivity {
     ArrayList<OrderDetailsProducts> orderDetailsProducts;
     OrderDetailsProductAdapter orderDetailsProductAdapter;
     ViewDialog dialog;
-    TextView makePayment, payParially;
+    TextView makePayment, payParially, full_or_partial;
     RelativeLayout shopInfo;
 
     String userAgent;
@@ -124,6 +124,7 @@ public class OrderDetailsActivity extends BaseActivity {
         queue= Volley.newRequestQueue(context);
 
 
+        full_or_partial = findViewById(R.id.full_or_partial);
         scrollView = findViewById(R.id.scroll);
         shopName=findViewById(R.id.billfromName);
         shopAddress=findViewById(R.id.billfromAddress);
@@ -278,11 +279,12 @@ public class OrderDetailsActivity extends BaseActivity {
                                 } else {
 
 
-                                    Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
 
                                     double amountToPay = total_amount - userBalance;
 
                                     amountToPayView.setText(amountToPay+"");
+                                    full_or_partial.setText("Full Payment");
                                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                                 }
 
@@ -310,6 +312,12 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
+                Intent intent = new Intent(OrderDetailsActivity.this, PayViaBkashActivity.class);
+                intent.putExtra("amount", amountToPayView.getText().toString());
+                intent.putExtra("invoice_no", invoice_no);
+                startActivityForResult(intent,10002);
+
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
 
@@ -324,6 +332,8 @@ public class OrderDetailsActivity extends BaseActivity {
                 double amToPay = Double.parseDouble(amountToPayView.getText().toString());
 
                 addBalanceViaCard(invoice_no, String.valueOf((int) amToPay));
+
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
             }
@@ -387,10 +397,11 @@ public class OrderDetailsActivity extends BaseActivity {
                 } else {
 
 
-                    Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
                     double amountToPay = partial_amount - userBalance;
 
                     amountToPayView.setText(amountToPay+"");
+                    full_or_partial.setText("Partial Pay");
                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
 
