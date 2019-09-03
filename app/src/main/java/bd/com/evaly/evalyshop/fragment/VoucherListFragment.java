@@ -76,6 +76,8 @@ public class VoucherListFragment extends Fragment {
 
     int attempt = 0;
     String userAgent;
+
+
     public VoucherListFragment() {
         // Required empty public constructor
     }

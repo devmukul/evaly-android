@@ -274,7 +274,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         // circle buttons clicks
 
         myViewHolder.shop.setTag(i);
-        myViewHolder.shopName.setTag(R.id.shop_image, i);
+        myViewHolder.shopName.setTag(i);
 
         myViewHolder.shop.setOnClickListener(storeClick);
         myViewHolder.shopName.setOnClickListener(storeClick);

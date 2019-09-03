@@ -162,7 +162,7 @@ public class TabsFragment extends Fragment {
 
 
     public TabsFragment(){
-            // Required empty public constructor
+        // Required empty public constructor
     }
 
     public TabsFragment(int type, String slug, String category, Fragment parentIntance){
@@ -221,7 +221,7 @@ public class TabsFragment extends Fragment {
             handler.postDelayed(new Runnable() {
                 public void run() {
 
-                     stopShimmer();
+                    stopShimmer();
 
                 }
             }, 300);
@@ -426,7 +426,7 @@ public class TabsFragment extends Fragment {
                 response -> {
 
 
-                progressBar2.setVisibility(View.GONE);
+                    progressBar2.setVisibility(View.GONE);
 
                     try {
                         JSONArray jsonArray = response.getJSONArray("results");
@@ -442,7 +442,7 @@ public class TabsFragment extends Fragment {
                             adapter.notifyItemInserted(itemList.size());
                         }
                         if(itemList.size() < 1 && parentIntance instanceof BrowseProductFragment) {
-                             ((BrowseProductFragment) parentIntance).removeTab(1);
+                            ((BrowseProductFragment) parentIntance).removeTab(1);
                         }
                         stopShimmer();
                     } catch (JSONException e) {
@@ -498,19 +498,19 @@ public class TabsFragment extends Fragment {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
                             //if(ob.getInt("selling_items__count")>0){ }
-                                TabsItem tabsItem = new TabsItem();
-                                tabsItem.setTitle(ob.getString("shop_name"));
-                                tabsItem.setImage(ob.getString("shop_image"));
+                            TabsItem tabsItem = new TabsItem();
+                            tabsItem.setTitle(ob.getString("shop_name"));
+                            tabsItem.setImage(ob.getString("shop_image"));
 
-                                if (slug.equals("root"))
-                                    tabsItem.setSlug(ob.getString("slug"));
-                                else
-                                    tabsItem.setSlug(ob.getString("shop_slug"));
+                            if (slug.equals("root"))
+                                tabsItem.setSlug(ob.getString("slug"));
+                            else
+                                tabsItem.setSlug(ob.getString("shop_slug"));
 
 
-                                tabsItem.setCategory(category);
-                                itemList.add(tabsItem);
-                                adapter.notifyItemInserted(itemList.size());
+                            tabsItem.setCategory(category);
+                            itemList.add(tabsItem);
+                            adapter.notifyItemInserted(itemList.size());
 
                         }
 
