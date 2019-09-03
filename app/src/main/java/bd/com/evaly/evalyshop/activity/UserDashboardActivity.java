@@ -48,7 +48,7 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 public class UserDashboardActivity extends BaseActivity {
     
     Context context;
-    TextView name,balance;
+    TextView name,balance,address;
     UserDetails userDetails;
     ImageView addAddress;
     EditText addressET;
@@ -89,22 +89,16 @@ public class UserDashboardActivity extends BaseActivity {
 
         name=findViewById(R.id.name);
         balance=findViewById(R.id.balance);
-        addAddress=findViewById(R.id.addAddress);
-        addressList=findViewById(R.id.list);
-        addressList.setLayoutManager(new LinearLayoutManager(this));
-        addresses=new ArrayList<>();
-        addressID=new ArrayList<>();
-        map=new HashMap<>();
+        address = findViewById(R.id.address);
         userDetails=new UserDetails(this);
         alert=new ViewDialog(UserDashboardActivity.this);
-        addressAdapter = new AddressAdapter(this, addresses,addressID, UserDashboardActivity.this);
-        addressList.setAdapter(addressAdapter);
         // getAddress();
 
         name.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
-
-
         balance.setText("৳ "+ userDetails.getBalance());
+        address.setText(userDetails.getJsonAddress());
+
+
 
 
 
@@ -166,6 +160,18 @@ public class UserDashboardActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+
+
+        LinearLayout editAddress = findViewById(R.id.addressClick);
+        editAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
         
         
         LinearLayout changePassword = findViewById(R.id.changePassword);
@@ -325,6 +331,7 @@ public class UserDashboardActivity extends BaseActivity {
                     userDetails.setLastName(ob.getString("last_name"));
                     userDetails.setJsonAddress(ob.getString("address"));
                     name.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
+                    address.setText(userDetails.getJsonAddress());
 
                     Log.d("onResponse", "updated");
 
