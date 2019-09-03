@@ -711,8 +711,22 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
                 dialog.hideDialog();
-                largeLog("order_details",response.toString());
+
+
+
+
                 try {
+
+                    try {
+                        orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getString("date")));
+                    } catch (Exception e){
+
+                        orderDate.setText(response.getString("date"));
+
+
+                    }
+
+
                     try{
                         if(response.getString("order_status").toLowerCase().equals("pending")){
                             indicator.setCurrentStep(1);
@@ -939,14 +953,7 @@ public class OrderDetailsActivity extends BaseActivity {
                     JSONArray list  = response.getJSONObject("data").getJSONArray("histories");
 
                     for (int i=0; i < list.length(); i++) {
-                        try {
-                            orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", list.getJSONObject(0).getString("date")));
-                        } catch (Exception e){
 
-                            orderDate.setText(list.getJSONObject(0).getString("date"));
-
-
-                        }
                         orderStatuses.add(new OrderStatus(
                                 list.getJSONObject(i).getString("date"),
                                 list.getJSONObject(i).getString("order_status"),

@@ -40,9 +40,19 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.orderID.setText(orders.get(i).getInvoiceNumber());
-        String str=orders.get(i).getTime();
-        String s[]=str.split("T");
-        myViewHolder.date.setText(s[0]);
+
+
+        try {
+
+            myViewHolder.date.setText(Utils.formattedDateFromString("", "d MMM, hh:mm aa", orders.get(i).getTime()));
+
+        } catch (Exception e) {
+
+            String str = orders.get(i).getTime();
+            String s[] = str.split("T");
+            myViewHolder.date.setText(s[0]);
+        }
+
 
         String orderStatus = orders.get(i).getStatus();
         String paymentStatus = orders.get(i).getPaymentStatus();

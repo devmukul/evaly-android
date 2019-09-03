@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:text="ORDER ID"
+                android:text="INVOICE NO"
                 android:textAllCaps="true"
                 android:textColor="#333"
                 android:textSize="18sp" />
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:paddingLeft="10dp"
+                android:paddingLeft="8dp"
                 android:textAllCaps="true"
                 android:textColor="#137ef4"
                 android:textIsSelectable="true"
@@ -107,7 +107,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:maxLines="1"
                 android:paddingLeft="15dp"
+                android:singleLine="true"
                 android:text="Pending"
                 android:textAlignment="viewStart"
                 android:textSize="11sp" />
@@ -118,6 +120,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:text="Confirmed"
                 android:textSize="11sp" />
 
@@ -127,6 +131,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:text="Processing"
                 android:textSize="11sp" />
 
@@ -136,6 +142,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:text="Picked"
                 android:textSize="11sp" />
 
@@ -145,6 +153,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:text="Shipped"
                 android:textSize="11sp" />
 
@@ -154,7 +164,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:maxLines="1"
                 android:paddingRight="15dp"
+                android:singleLine="true"
                 android:text="Delivered"
                 android:textAlignment="textEnd"
                 android:textSize="11sp" />
