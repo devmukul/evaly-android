@@ -93,7 +93,7 @@ public class CartActivity extends BaseActivity {
     ViewDialog dialog;
     boolean cartItem=false;
     ViewDialog alert;
-    int paymentMethod = -1;
+    int paymentMethod = 2;
 
     String userAgent;
     boolean isCheckedFromAdapter = false;
@@ -244,12 +244,6 @@ public class CartActivity extends BaseActivity {
             public void onClick(View v) {
 
 
-                if (paymentMethod == -1){
-                    Toast.makeText(context, "Please select payment method", Toast.LENGTH_SHORT).show();
-                    return;
-
-                }
-
                 if(userDetails.getToken().equals("")) {
                     startActivity(new Intent(CartActivity.this, SignInActivity.class));
                     return;
@@ -279,55 +273,17 @@ public class CartActivity extends BaseActivity {
 
 
         contact_number.setText(userDetails.getPhone());
-
         addressSpinner = findViewById(R.id.spinner);
-
-
-
         spinnerArray = new ArrayList<String>();
-
         spinnerArrayID = new ArrayList<Integer>();
-
-        try{
-
-            String addressString = userDetails.getJsonAddress();
-
-            Log.d("json", addressString);
-
-            JSONArray addresses = new JSONArray(addressString);
-
-            for (int j = 0; j < addresses.length(); j++){
-
-
-                if(j == 4)
-                    break;
-
-                JSONObject item = addresses.getJSONObject(j);
-
-                spinnerArray.add(item.getString("address"));
-                spinnerArrayID.add(item.getInt("id"));
-
-
-            }
-
-            Log.d("json", spinnerArray.size()+"");
-            spinnerArrayAdapter = new ArrayAdapter<String>(CartActivity.this, android.R.layout.simple_spinner_item, spinnerArray);
-            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            addressSpinner.setAdapter(spinnerArrayAdapter);
-           // alert.showDialog();
-
-
-        } catch (Exception e){
-
-
-        }
-
 
 
 
         addressSwitch = findViewById(R.id.addressSwitch);
 
         customAddress = findViewById(R.id.customAddress);
+        customAddress.setText(userDetails.getJsonAddress());
+
 
         addressSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -970,9 +926,6 @@ public class CartActivity extends BaseActivity {
                 // addressObj.put("address_id", JSONObject.NULL);
 
             }
-
-
-
 
 
 //            if(paymentMethod == 1)
