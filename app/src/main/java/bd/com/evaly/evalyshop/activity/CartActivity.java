@@ -52,6 +52,7 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.orderDetails.AddBalanceActivity;
+import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.models.CartItem;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -887,7 +888,14 @@ public class CartActivity extends BaseActivity {
 
                             String invoice = item.getString("invoice_no");
 
-                            makePayment(invoice, alert, response.length()-1, i);
+
+                            Intent intent = new Intent(context, OrderDetailsActivity.class);
+
+                            intent.putExtra("orderID", invoice);
+                            startActivity(intent);
+
+
+                            //makePayment(invoice, alert, response.length()-1, i);
 
 
 
