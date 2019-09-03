@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_weight="2"
-            android:text="Payment Method"
+            android:text="Checkout Information"
             android:textColor="#444"
             android:textSize="18dp"
             android:textStyle="bold" />
@@ -44,7 +44,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/cod"
@@ -82,12 +83,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
             android:layout_marginBottom="5dp"
             android:text="Contact Number"
             android:textColor="#444"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -117,8 +116,7 @@
             android:layout_marginBottom="5dp"
             android:text="Delivery Address"
             android:textColor="#444"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
 
     </LinearLayout>

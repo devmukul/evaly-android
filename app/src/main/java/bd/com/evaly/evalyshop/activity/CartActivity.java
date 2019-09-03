@@ -834,85 +834,53 @@ public class CartActivity extends BaseActivity {
                     if (!response.getBoolean("success")) {
                         Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
                         dialog.hideDialog();
-                        return;
+
                     }
 
                 } catch (Exception e){
 
                 }
 
-
                 try {
-
-
 
                     if (response.getJSONArray("data").length() < 1) {
                         Toast.makeText(context, "Couldn't place holder.", Toast.LENGTH_SHORT).show();
                         dialog.hideDialog();
                         return;
+                    } else {
+
+                        orderPlaced();
+                        dialog.hideDialog();
+
                     }
 
                 } catch (Exception e){
 
                 }
 
-                if(paymentMethod == 2) {
 
 
-                    try {
+                try {
 
+                    JSONArray data = response.getJSONArray("data");
+                    for (int i = 0; i < data.length(); i++) {
 
-                        JSONArray data = response.getJSONArray("data");
+                        JSONObject item = data.getJSONObject(i);
+                        String invoice = item.getString("invoice_no");
+                        Intent intent = new Intent(context, OrderDetailsActivity.class);
+                        intent.putExtra("orderID", invoice);
+                        startActivity(intent);
 
-                        for (int i = 0; i < data.length(); i++) {
-
-                            JSONObject item = data.getJSONObject(i);
-
-//                            String payment_status = item.getString("payment_status");
-//                            String payment_method = item.getString("payment_method");
-//                            String paid_amount= item.getString("paid_amount");
-//
-//                            Double paid_amount_double = 0.0;
-//
-//                            try{
-//
-//                                paid_amount_double = Double.parseDouble(paid_amount);
-//
-//                            } catch (Exception e){
-//
-//                            }
-//
-//                            Double total_price = item.getDouble("total_price");
-
-
-
-                            String invoice = item.getString("invoice_no");
-
-
-                            Intent intent = new Intent(context, OrderDetailsActivity.class);
-
-                            intent.putExtra("orderID", invoice);
-                            startActivity(intent);
-
-
-                            //makePayment(invoice, alert, response.length()-1, i);
-
-
-
-                        }
-
-
-                    } catch (Exception e) {
-
-                        Log.e("json exception", e.toString());
-                        Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
-
+                        //makePayment(invoice, alert, response.length()-1, i);
 
                     }
-                } else {
 
 
-                    orderPlaced();
+                } catch (Exception e) {
+
+                    Log.e("json exception", e.toString());
+                    Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
+
 
                 }
 
