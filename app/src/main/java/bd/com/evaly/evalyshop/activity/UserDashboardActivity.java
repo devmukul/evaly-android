@@ -104,47 +104,9 @@ public class UserDashboardActivity extends BaseActivity {
         name.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
 
 
-        try {
-
-            JSONArray addressArray= new JSONArray(userDetails.getJsonAddress());
-
-            for(int i=0;i<addressArray.length();i++){
-                if(i==4){
-                    break;
-                }
-                addresses.add(addressArray.getJSONObject(i).getString("address"));
-                addressID.add(addressArray.getJSONObject(i).getInt("id"));
-                map.put(addressArray.getJSONObject(i).getString("address"),addressArray.getJSONObject(i).getString("id"));
-                addressAdapter.notifyItemInserted(addresses.size());
-            }
-
-
-            updateUserInfo();
-
-
-
-        }catch (Exception e){
-
-            Log.e("ozii", e.toString());
-
-        }
-
         balance.setText("৳ "+ userDetails.getBalance());
 
-        addAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(addresses.size() < 1) {
-                    Toast.makeText(context, "You can add your address during first order's checkout.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if(addresses.size()==4){
-                    Toast.makeText(context, "You cannot add more than four addresses. But you can edit an existing address.", Toast.LENGTH_LONG).show();
-                }else{
-                    addressDialog();
-                }
-            }
-        });
+
 
         LinearLayout orders = findViewById(R.id.order);
         orders.setOnClickListener(new View.OnClickListener() {
@@ -229,6 +191,7 @@ public class UserDashboardActivity extends BaseActivity {
         super.onResume();
 
         getBalance();
+        updateUserInfo();
 
 
 
@@ -277,37 +240,7 @@ public class UserDashboardActivity extends BaseActivity {
 
     }
 
-    public void addressDialog(){
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
-// ...Irrelevant code for customizing the buttons and title
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.item_add_address, null);
-        dialogBuilder.setView(dialogView);
-        addressET = dialogView.findViewById(R.id.addressET);
-        Button addressAdd=dialogView.findViewById(R.id.addressAdd);
-        AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
-        addressAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addresses.add(addressET.getText().toString());
-                addressAdapter.notifyItemInserted(addresses.size());
-                alertDialog.dismiss();
-                getUserData();
-            }
-        });
-    }
 
-
-    public void showBackButton(){
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-    }
-
-
-    public void hideBackButton() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-    }
 
     public void getBalance(){
         String url="https://api.evaly.com.bd/core/user-info-pay/"+userDetails.getUserName()+"/";
@@ -324,9 +257,7 @@ public class UserDashboardActivity extends BaseActivity {
 
                 try {
 
-
                     response = response.getJSONObject("data");
-
                     userDetails.setBalance(response.getString("balance"));
                     balance.setText("৳ " + response.getString("balance"));
                 } catch (Exception e) {
@@ -372,7 +303,7 @@ public class UserDashboardActivity extends BaseActivity {
     }
 
     public void updateUserInfo(){
-        String url="https://api-prod.evaly.com.bd/api/user/detail/"+userDetails.getUserName()+"/";
+        String url="https://api.evaly.com.bd/core/user-info-pay/"+userDetails.getUserName()+"/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -383,46 +314,20 @@ public class UserDashboardActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 Log.d("onResponse", response.toString());
                 try {
-                    JSONObject ob=response.getJSONObject("user");
+
+                    JSONObject obb = response.getJSONObject("data");
+
+                    JSONObject ob= obb.getJSONObject("user");
 
                     userDetails.setUserName(ob.getString("username"));
-                    userDetails.setPhone(ob.getString("username"));
+                    userDetails.setPhone(ob.getString("contact"));
                     userDetails.setFirstName(ob.getString("first_name"));
                     userDetails.setLastName(ob.getString("last_name"));
-
+                    userDetails.setJsonAddress(ob.getString("address"));
                     name.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
 
-                    JSONArray addressArray=response.getJSONArray("addresses");
+                    Log.d("onResponse", "updated");
 
-                    if(userDetails.getJsonAddress().equals(addressArray.toString()))
-                        Log.d("json", "yes same address");
-                    else {
-
-
-                        userDetails.setJsonAddress(addressArray.toString());
-
-                        addresses.clear();
-                        addressID.clear();
-                        map.clear();
-
-                        addressAdapter.notifyDataSetChanged();
-
-
-
-                        for (int i = 0; i < addressArray.length(); i++) {
-                            if (i == 4) {
-                                break;
-                            }
-                            addresses.add(addressArray.getJSONObject(i).getString("address"));
-                            addressID.add(addressArray.getJSONObject(i).getInt("id"));
-                            map.put(addressArray.getJSONObject(i).getString("address"), addressArray.getJSONObject(i).getString("id"));
-                            addressAdapter.notifyItemInserted(addresses.size());
-                        }
-                        if (addressArray.length() != 0) {
-                        } else {
-
-                        }
-                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -467,126 +372,6 @@ public class UserDashboardActivity extends BaseActivity {
         queue.add(request);
     }
 
-    public void getUserData(){
-        final ViewDialog alert = new ViewDialog(this);
-        //alert.showDialog();
-        String url="https://api-prod.evaly.com.bd/api/user/detail/"+userDetails.getUserName()+"/";
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString()+"   "+userDetails.getToken());
-                try {
-                    JSONObject userJson = response;
-                    JSONArray userInfo = userJson.getJSONArray("addresses");
-                    JSONObject ob=new JSONObject();
-                    ob.put("address",addressET.getText().toString());
-                    ob.put("id",addressID.get(addressID.size()-1)+1);
-                    userInfo.put(userInfo.length(),ob);
-                   // System.out.println(userInfo.get(3));
-                    setUserData(userJson, alert);
-                    //Log.d("json user info", userJson.toString());
-                    JSONArray addressArray=response.getJSONArray("addresses");
-                    //JSONObject addressOB=response.getJSONObject("addresses");
-                    if(addressArray.length()!=0){
-                        String addressStr="";
-                        for(int i=0;i<addressArray.length();i++){
-                            JSONObject addressOB=addressArray.getJSONObject(i);
-                            addressStr+=addressOB.get("address")+"::";
-                        }
-                        userDetails.setAddresses(addressStr);
-                        userDetails.setJsonAddress(addressArray.toString());
-                    }else{
-                        userDetails.setAddresses("");
-                    }
 
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken()); // headers.put("Host", "api-prod.evaly.com.bd");                 headers.put("Content-Type", "application/json");                 headers.put("Origin", "https://evaly.com.bd");                 headers.put("Referer", "https://evaly.com.bd/");                 headers.put("User-Agent", userAgent);
-                return headers;
-            }
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-        RequestQueue queue= Volley.newRequestQueue(UserDashboardActivity.this);
-        queue.add(request);
-    }
-
-    public void setUserData(JSONObject payload, ViewDialog alert){
-        String url="https://api-prod.evaly.com.bd/api/user/detail/"+userDetails.getUserName()+"/";
-        Log.d("json user info url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-               // alert.hideDialog();
-                Log.d("json user info response", response.toString());
-                Toast.makeText(UserDashboardActivity.this,"Address added successfully", Toast.LENGTH_SHORT).show();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken()); // headers.put("Host", "api-prod.evaly.com.bd");                 headers.put("Content-Type", "application/json");                 headers.put("Origin", "https://evaly.com.bd");                 headers.put("Referer", "https://evaly.com.bd/");                 headers.put("User-Agent", userAgent);
-                // headers.put("Content-Length", data.length()+"");
-                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-        RequestQueue queue= Volley.newRequestQueue(UserDashboardActivity.this);
-        queue.add(request);
-    }
 
 }

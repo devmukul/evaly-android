@@ -227,7 +227,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
-                android:text="Edit Profile"
+                android:text="Edit Personal Info"
                 android:textColor="#333"
                 android:textSize="18sp" />
         </LinearLayout>

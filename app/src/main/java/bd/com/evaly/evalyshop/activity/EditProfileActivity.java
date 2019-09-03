@@ -39,7 +39,7 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class EditProfileActivity extends BaseActivity {
 
-    EditText firstname, lastName, email, phone;
+    EditText firstname, lastName, email, phone, address;
     Button update;
     String username = "", token = "";
     UserDetails userDetails;
@@ -50,8 +50,8 @@ public class EditProfileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        getSupportActionBar().setElevation(4f);
-        getSupportActionBar().setTitle("Edit Profile");
+        getSupportActionBar().setElevation(0);
+        getSupportActionBar().setTitle("Edit Personal Information");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         try {
             userAgent = WebSettings.getDefaultUserAgent(this);
@@ -63,12 +63,14 @@ public class EditProfileActivity extends BaseActivity {
         email = findViewById(R.id.email);
         phone = findViewById(R.id.phone);
         update = findViewById(R.id.update);
+        address = findViewById(R.id.address);
         userDetails = new UserDetails(this);
 
         firstname.setText(userDetails.getFirstName());
         lastName.setText(userDetails.getLastName());
         email.setText(userDetails.getEmail());
         phone.setText(userDetails.getPhone());
+        address.setText(userDetails.getJsonAddress());
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,12 +106,14 @@ public class EditProfileActivity extends BaseActivity {
                     userInfo.put("last_name", lastName.getText().toString());
                     userInfo.put("email", email.getText().toString());
                     userInfo.put("contact", phone.getText().toString());
+                    userInfo.put("address", address.getText().toString());
 
                     userDetails.setFirstName(firstname.getText().toString());
                     userDetails.setLastName(lastName.getText().toString());
 
                     userDetails.setEmail(email.getText().toString());
                     userDetails.setPhone(phone.getText().toString());
+                    userDetails.setJsonAddress(address.getText().toString());
 
                     setUserData(userInfo, alert);
 
