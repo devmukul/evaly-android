@@ -787,7 +787,7 @@ public class OrderDetailsActivity extends BaseActivity {
                             userAddress.setText("");
                         }
                         try{
-                            userNumber.setText(response.getJSONObject("customer").getString("username"));
+                            userNumber.setText(response.getString("contact_number"));
                         }catch(Exception e){
 
                         }
