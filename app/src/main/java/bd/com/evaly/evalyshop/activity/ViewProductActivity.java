@@ -708,7 +708,7 @@ public class ViewProductActivity extends BaseActivity {
 
                         collapsingToolbarLayout.setTitle(firstVariant.getString("product_name"));
 
-                        sku.setText(firstVariant.getString("variant_id"));
+                        sku.setText(firstVariant.getString("sku"));
 
 
 //                        getProductRating(firstVariant.getString("variant_id"));
