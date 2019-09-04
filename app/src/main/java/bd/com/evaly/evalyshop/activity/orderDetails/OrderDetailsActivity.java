@@ -851,7 +851,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
 
-                        String productVariation = "";
+
 
 
                         JSONArray jsonArray = response.getJSONArray("order_items");
@@ -859,40 +859,45 @@ public class OrderDetailsActivity extends BaseActivity {
                             JSONObject ob = jsonArray.getJSONObject(i);
                             Log.d("object_details",ob.toString());
 
+                            String productVariation = "";
 
-                        try{
+
+                            try{
 
 
-                            JSONObject productItem = ob.getJSONObject("shop_product_item");
-                            JSONObject product_item = productItem.getJSONObject("product_item"); // get shop_product_item product_item
+                                for(int j = 0; j < ob.getJSONArray("variations").length(); j++) {
 
-                            if(product_item.getJSONArray("varying_options").length() > 0) {
 
-                                String attr = product_item.getJSONArray("varying_options").getJSONArray(0).getJSONObject(0).getJSONObject("attribute").getString("name");
-                                String variation = product_item.getJSONArray("varying_options").getJSONArray(0).getJSONObject(0).getJSONObject("option").getString("value");
-                                productVariation = attr + ": "+ variation;
+                                    JSONObject varJ = ob.getJSONArray("variations").getJSONObject(j);
+                                    String attr = varJ.getString("attribute");
+                                    String variation = varJ.getString("attribute_value");
+
+                                    if (j > 0)
+                                        productVariation = productVariation + ", " +attr + ": "+ variation;
+                                    else
+                                        productVariation = attr + ": "+ variation;
+
+                                }
+                            } catch (Exception e){
+
+                                Log.e("json error", e.toString());
+                            }
+
+
+                            try{
+                                orderDetailsProducts.add(
+                                        new OrderDetailsProducts(
+                                                ob.getJSONArray("item_images").getString(0),
+                                                ob.getString("item_name"),
+                                                ob.getString("product_slug"),
+                                                ob.getString("order_time_price"),
+                                                ob.getString("quantity"),
+                                                (Double.parseDouble(ob.getString("order_time_price"))*Double.parseDouble(ob.getString("quantity")))+"",
+                                                productVariation));
+                                orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
+                            }catch(Exception e){
 
                             }
-                        } catch (Exception e){
-
-                            Log.e("json error", e.toString());
-                        }
-
-
-                        try{
-                            orderDetailsProducts.add(
-                                    new OrderDetailsProducts(
-                                            ob.getJSONArray("item_images").getString(0),
-                                            ob.getString("item_name"),
-                                            ob.getString("product_slug"),
-                                            ob.getString("order_time_price"),
-                                            ob.getString("quantity"),
-                                            (Double.parseDouble(ob.getString("order_time_price"))*Double.parseDouble(ob.getString("quantity")))+"",
-                                            productVariation));
-                            orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
-                        }catch(Exception e){
-
-                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
