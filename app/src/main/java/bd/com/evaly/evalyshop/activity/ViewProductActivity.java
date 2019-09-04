@@ -654,15 +654,22 @@ public class ViewProductActivity extends BaseActivity {
                         }
 
                         JSONArray productSpecifications = response.getJSONArray("product_specifications");
-                        if (productSpecifications.length() == 0) {
-                            specView.setVisibility(View.GONE);
-                            specRel.setVisibility(View.GONE);
-                        }
+
+
+
+
                         for (int i = 0; i < productSpecifications.length(); i++) {
                             specTitle.add(productSpecifications.getJSONObject(i).getString("specification_name"));
                             specValue.add(productSpecifications.getJSONObject(i).getString("specification_value"));
                             specificationAdapter.notifyItemInserted(specTitle.size());
                         }
+
+
+                        if (specValue.size() < 2) {
+                            specView.setVisibility(View.GONE);
+                            specRel.setVisibility(View.GONE);
+                        }
+
 
                         Log.d("json product", responseMain.toString());
 
