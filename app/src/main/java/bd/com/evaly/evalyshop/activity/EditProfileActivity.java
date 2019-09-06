@@ -1,6 +1,10 @@
 package bd.com.evaly.evalyshop.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,9 +14,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,12 +28,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +47,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
 public class EditProfileActivity extends BaseActivity {
 
@@ -45,6 +57,9 @@ public class EditProfileActivity extends BaseActivity {
     UserDetails userDetails;
 
     String userAgent;
+    Context context;
+
+    ImageView profilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +68,10 @@ public class EditProfileActivity extends BaseActivity {
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle("Edit Personal Information");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        context = this;
+
         try {
             userAgent = WebSettings.getDefaultUserAgent(this);
         } catch (Exception e) {
@@ -64,6 +83,9 @@ public class EditProfileActivity extends BaseActivity {
         phone = findViewById(R.id.phone);
         update = findViewById(R.id.update);
         address = findViewById(R.id.address);
+        profilePic = findViewById(R.id.picture);
+
+
         userDetails = new UserDetails(this);
 
         firstname.setText(userDetails.getFirstName());
@@ -71,6 +93,43 @@ public class EditProfileActivity extends BaseActivity {
         email.setText(userDetails.getEmail());
         phone.setText(userDetails.getPhone());
         address.setText(userDetails.getJsonAddress());
+
+        if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
+            Glide.with(this)
+                    .asBitmap()
+                    .load(userDetails.getProfilePicture())
+                    .skipMemoryCache(true)
+                    .fitCenter()
+                    .optionalCenterCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .apply(new RequestOptions().override(200, 200))
+                    .into(profilePic);
+        }
+
+
+
+        ImageView editPicture = findViewById(R.id.editPicture);
+        editPicture.bringToFront();
+
+
+
+
+        View.OnClickListener uploadListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent=new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select Profile Picture"),1000);
+
+
+            }
+        };
+
+
+
+
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +141,122 @@ public class EditProfileActivity extends BaseActivity {
         });
 
     }
+
+
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1000 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
+            try{
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+
+                uploadProfilePicture(bitmap);
+
+
+            }catch(Exception e){
+
+            }
+        }
+    }
+
+
+
+
+    private void uploadProfilePicture(final Bitmap bitmap) {
+
+        ProgressDialog dialog = ProgressDialog.show(this, "",
+                "Uploading image...", true);
+
+        RequestQueue rQueue;
+        String url="https://api.evaly.com.bd/core/image/upload";
+
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+
+                        dialog.dismiss();
+
+                        Log.d("json image",new String(response.data));
+
+
+                        try {
+                            JSONObject jsonObject = new JSONObject(new String(response.data));
+
+                            String image = jsonObject.getString("image");
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        dialog.dismiss();
+                        Toast.makeText(context, "Image upload error", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // params.put("tags", "ccccc");  add string parameters
+                return params;
+            }
+
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                // headers.put("Host", "api-prod.evaly.com.bd");
+                headers.put("Origin", "https://evaly.com.bd");
+                headers.put("Referer", "https://evaly.com.bd/");
+                headers.put("User-Agent", userAgent);
+
+                return headers;
+            }
+
+            /*
+             *pass files using below method
+             * */
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                long imagename = System.currentTimeMillis();
+                params.put("image", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
+                return params;
+            }
+        };
+
+
+        volleyMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        rQueue = Volley.newRequestQueue(context);
+        rQueue.add(volleyMultipartRequest);
+    }
+
+    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+
+
+
+
+
 
     public void getUserData() {
         final ViewDialog alert = new ViewDialog(this);
