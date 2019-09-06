@@ -28,6 +28,33 @@ import bd.com.evaly.evalyshop.R;
 public class Utils {
 
 
+    public static String isStrongPassword(String password){
+
+        if (password.length() < 8) {
+            return "Passwords must be at least 8 characters in length";
+        } else {
+            char c;
+            int count = 0;
+            int numCount = 0;
+            for (int i = 0; i < password.length(); i++) {
+                c = password.charAt(i);
+                if (!Character.isLetterOrDigit(c))
+                    count++;
+                 else if (Character.isDigit(c))
+                     numCount++;
+
+            }
+            if (count < 1)
+                return "Passwords must have at least one special character like @ ! # $ % ^ & * () {} etc";
+            else if (numCount < 1)
+                return "Passwords must have at least one digit(0-9)";
+        }
+        return "yes";
+    }
+
+
+
+
     public static String getDeviceID(Context context){
 
 

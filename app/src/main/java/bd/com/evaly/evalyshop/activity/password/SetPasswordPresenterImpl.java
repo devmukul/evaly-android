@@ -10,6 +10,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.SetPasswordModel;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.util.Utils;
 import retrofit2.Response;
 
 
@@ -45,6 +46,12 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
             if (view != null){
                 view.onShortPassword();
             }
+        } else if(!Utils.isStrongPassword(password.trim()).equals("yes")){
+
+            if (view != null){
+                view.onPasswordSetFailed(Utils.isStrongPassword(password.trim()));
+            }
+
         }else {
             SetPasswordModel model = new SetPasswordModel(otp, password, phoneNumber);
 

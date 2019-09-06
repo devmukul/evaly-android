@@ -30,6 +30,7 @@ import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class ChangePasswordActivity extends BaseActivity {
@@ -128,6 +129,8 @@ public class ChangePasswordActivity extends BaseActivity {
                     Toast.makeText(ChangePasswordActivity.this, "Please confirm your new password", Toast.LENGTH_SHORT).show();
                 } else if (!confirmPassword.getText().toString().equals(newPassword.getText().toString())) {
                     Toast.makeText(ChangePasswordActivity.this, "Password didn't match. Please enter your new password again.", Toast.LENGTH_SHORT).show();
+                } else if(!Utils.isStrongPassword(confirmPassword.getText().toString()).equals("yes")) {
+                    Toast.makeText(ChangePasswordActivity.this, Utils.isStrongPassword(confirmPassword.getText().toString()), Toast.LENGTH_SHORT).show();
                 } else {
 
 
@@ -148,7 +151,6 @@ public class ChangePasswordActivity extends BaseActivity {
                     JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, UrlUtils.CHANGE_PASSWORD, parameters, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Toast.makeText(ChangePasswordActivity.this, "Password changed successfully", Toast.LENGTH_SHORT).show();
 
                             dialog.hideDialog();
 
@@ -156,14 +158,14 @@ public class ChangePasswordActivity extends BaseActivity {
 
                             try {
 
-                                userDetails.setToken(response.getString("token"));
+                                Toast.makeText(ChangePasswordActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
+
+                                if (response.getBoolean("success"))
+                                    finish();
 
                             } catch (Exception e) {
 
                             }
-                            userDetails.clearAll();
-                            startActivity(new Intent(ChangePasswordActivity.this, MainActivity.class));
-                            finish();
                         }
                     }, new Response.ErrorListener() {
                         @Override
