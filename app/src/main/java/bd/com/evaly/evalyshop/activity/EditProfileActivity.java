@@ -3,20 +3,21 @@ package bd.com.evaly.evalyshop.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.ColorSpace;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -25,29 +26,28 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
+import com.zxy.tiny.Tiny;
+import com.zxy.tiny.callback.BitmapCallback;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
+
+import static android.graphics.Bitmap.Config.RGB_565;
+
 
 public class EditProfileActivity extends BaseActivity {
 
@@ -70,6 +70,8 @@ public class EditProfileActivity extends BaseActivity {
 
         context = this;
 
+        userDetails = new UserDetails(this);
+
         try {
             userAgent = WebSettings.getDefaultUserAgent(this);
         } catch (Exception e) {
@@ -86,7 +88,6 @@ public class EditProfileActivity extends BaseActivity {
         profilePic = findViewById(R.id.picture);
         setProfilePic();
 
-        userDetails = new UserDetails(this);
 
         firstname.setText(userDetails.getFirstName());
         lastName.setText(userDetails.getLastName());
@@ -117,6 +118,9 @@ public class EditProfileActivity extends BaseActivity {
             }
         };
 
+        editPicture.setOnClickListener(uploadListener);
+        profilePic.setOnClickListener(uploadListener);
+
 
 
 
@@ -143,8 +147,7 @@ public class EditProfileActivity extends BaseActivity {
                     .skipMemoryCache(true)
                     .fitCenter()
                     .optionalCenterCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(new RequestOptions().override(200, 200))
+                    .apply(new RequestOptions().override(500, 500))
                     .into(profilePic);
         }
 
@@ -158,11 +161,53 @@ public class EditProfileActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1000 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
             try{
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+
+
+                Bitmap bitmapz = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
 
 
 
-                uploadProfilePicture(bitmap);
+                Glide.with(this)
+                        .asBitmap()
+                        .load(bitmapz)
+                        .skipMemoryCache(true)
+                        .fitCenter()
+                        .optionalCenterCrop()
+                        .apply(new RequestOptions().override(500, 500))
+                        .into(profilePic);
+
+
+
+//
+//
+//                Tiny.BitmapCompressOptions options = new Tiny.BitmapCompressOptions();
+//                options.height = 500;//some compression configuration.
+//
+//
+//                Tiny.getInstance().source(bitmapz).asBitmap().withOptions(options).compress(new BitmapCallback() {
+//                    @Override
+//                    public void callback(boolean isSuccess, Bitmap bitmap, Throwable t) {
+//
+//
+//
+//                        Glide.with(context)
+//                                .asBitmap()
+//                                .load(bitmap)
+//                                .skipMemoryCache(true)
+//                                .fitCenter()
+//                                .optionalCenterCrop()
+//                                .apply(new RequestOptions().override(500, 500))
+//                                .into(profilePic);
+//
+//                        uploadProfilePicture(bitmap);
+//
+//
+//                    }
+//                });
+//
+
+
+
 
 
             }catch(Exception e){
@@ -170,6 +215,7 @@ public class EditProfileActivity extends BaseActivity {
             }
         }
     }
+
 
 
 
@@ -189,15 +235,22 @@ public class EditProfileActivity extends BaseActivity {
 
                         dialog.dismiss();
 
-                        Log.d("json image",new String(response.data));
+                        Log.d("json image" ,new String(response.data));
 
 
                         try {
                             JSONObject jsonObject = new JSONObject(new String(response.data));
-                            String image = jsonObject.getString("image");
-                            userDetails.setProfilePicture(image);
-                            setProfilePic();
 
+                            Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+
+                            if(jsonObject.getBoolean("success")) {
+                                String image = jsonObject.getJSONObject("data").getString("url");
+                                userDetails.setProfilePicture(image);
+                                setProfilePic();
+
+                                getUserData();
+
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -347,7 +400,6 @@ public class EditProfileActivity extends BaseActivity {
 
                 Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
 
-                EditProfileActivity.this.finish();
 
             }
         }, new Response.ErrorListener() {

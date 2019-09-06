@@ -104,20 +104,6 @@ public class UserDashboardActivity extends BaseActivity {
         address.setText(userDetails.getJsonAddress());
 
 
-        ImageView profilePicNav = findViewById(R.id.picture);
-
-
-        if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
-            Glide.with(this)
-                    .asBitmap()
-                    .load(userDetails.getProfilePicture())
-                    .skipMemoryCache(true)
-                    .fitCenter()
-                    .optionalCenterCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(new RequestOptions().override(200, 200))
-                    .into(profilePicNav);
-        }
 
 
 
@@ -218,6 +204,22 @@ public class UserDashboardActivity extends BaseActivity {
 
         Balance.update(this, balance);
         Token.update(this);
+
+        ImageView profilePicNav = findViewById(R.id.picture);
+
+
+        if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
+            Glide.with(this)
+                    .asBitmap()
+                    .load(userDetails.getProfilePicture())
+                    .skipMemoryCache(true)
+                    .fitCenter()
+                    .optionalCenterCrop()
+                    .apply(new RequestOptions().override(200, 200))
+                    .into(profilePicNav);
+        }
+
+
 
 
 

@@ -28,7 +28,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 app:cardCornerRadius="35dp"
-                app:cardElevation="0dp"
+                app:cardElevation="1dp"
                 app:cardPreventCornerOverlap="true">
 
                 <ImageView

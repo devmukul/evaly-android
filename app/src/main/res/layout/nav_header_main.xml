@@ -17,7 +17,7 @@
         android:layout_marginStart="16dp"
         app:cardBackgroundColor="#fff"
         app:cardCornerRadius="28dp"
-        app:cardElevation="0dp">
+        app:cardElevation="1dp">
 
         <ImageView
             android:id="@+id/profilePicNav"

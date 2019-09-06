@@ -78,8 +78,9 @@ public class MainActivity extends BaseActivity {
     TextView phoneNavHeader;
     DbHelperWishList dbHelperWishList;
     DbHelperCart dbHelperCart;
-
     boolean isLaunchActivity = true;
+    private View headerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +97,7 @@ public class MainActivity extends BaseActivity {
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
         navigationView2 = findViewById(R.id.nav_view2);
-        View headerView = navigationView.getHeaderView(0);
+        headerView = navigationView.getHeaderView(0);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         userNameNavHeader=headerView.findViewById(R.id.userNameNavHeader);
@@ -146,41 +147,11 @@ public class MainActivity extends BaseActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()){
-            Token.update(this);
-
-            ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
-
-
-            if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
-
-
-
-                Glide.with(this)
-                        .asBitmap()
-                        .load(userDetails.getProfilePicture())
-                        .skipMemoryCache(true)
-                        .fitCenter()
-                        .optionalCenterCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .apply(new RequestOptions().override(200, 200))
-                        .into(profilePicNav);
-            }
-
-
-        }
-
-
-
-
-
-
 
 
         if(!isConnected(MainActivity.this)){
             buildDialog(MainActivity.this).show();
         }
-
 
 
 
@@ -508,14 +479,37 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-
-
-
         if(bottomNavigationView!=null){
             Menu menu = bottomNavigationView.getMenu();
             MenuItem item = menu.getItem(0);
             item.setChecked(true);
         }
+
+
+        if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()){
+            Token.update(this);
+
+            ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
+
+
+            if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
+
+
+
+                Glide.with(this)
+                        .asBitmap()
+                        .load(userDetails.getProfilePicture())
+                        .skipMemoryCache(true)
+                        .fitCenter()
+                        .optionalCenterCrop()
+                        .apply(new RequestOptions().override(200, 200))
+                        .into(profilePicNav);
+            }
+
+
+        }
+
+
     }
 
 
