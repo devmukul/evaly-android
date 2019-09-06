@@ -170,6 +170,7 @@ public class EditProfileActivity extends BaseActivity {
                     .skipMemoryCache(true)
                     .fitCenter()
                     .optionalCenterCrop()
+                    .placeholder(R.drawable.half_dp_bg_light)
                     .apply(new RequestOptions().override(500, 500))
                     .into(profilePic);
         }
@@ -248,7 +249,7 @@ public class EditProfileActivity extends BaseActivity {
 //                        .setCompressFormat(Bitmap.CompressFormat.WEBP)
 //                        .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
 //                                Environment.DIRECTORY_PICTURES).getAbsolutePath())
-//                        .compressToBitmap(new File(imagePath));\
+//                        .compressToBitmap(new File(imagePath));
 
 
                 String destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
@@ -257,8 +258,7 @@ public class EditProfileActivity extends BaseActivity {
                 try {
 
 
-
-                    File cImage = compressImage(data.getData(),Bitmap.CompressFormat.JPEG, 50, destinationDirectoryPath);
+                    File cImage = compressImage(data.getData(),Bitmap.CompressFormat.JPEG, 60, destinationDirectoryPath);
 
                     Bitmap bitmap = BitmapFactory.decodeFile(destinationDirectoryPath);
 
@@ -336,22 +336,26 @@ public class EditProfileActivity extends BaseActivity {
 
 
     private File compressImage(Uri path, Bitmap.CompressFormat compressFormat, int quality, String destinationPath) throws IOException {
-        FileOutputStream fileOutputStream = null;
+        //FileOutputStream fileOutputStream = null;
         File file = new File(destinationPath).getParentFile();
         if (!file.exists()) {
             file.mkdirs();
         }
-        try {
-            fileOutputStream = new FileOutputStream(destinationPath);
 
-            ImageUtils.getCorrectlyOrientedImage(EditProfileActivity.this, path);
 
-        } finally {
-            if (fileOutputStream != null) {
-                fileOutputStream.flush();
-                fileOutputStream.close();
-            }
+
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream(destinationPath)) {
+
+            ImageUtils.getCorrectlyOrientedImage(EditProfileActivity.this, path).compress(compressFormat, quality, fileOutputStream);
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+
 
         return new File(destinationPath);
 
