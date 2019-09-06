@@ -55,10 +55,8 @@ public class EditProfileActivity extends BaseActivity {
     Button update;
     String username = "", token = "";
     UserDetails userDetails;
-
     String userAgent;
     Context context;
-
     ImageView profilePic;
 
     @Override
@@ -77,6 +75,8 @@ public class EditProfileActivity extends BaseActivity {
         } catch (Exception e) {
             userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
         }
+
+
         firstname = findViewById(R.id.firstName);
         lastName = findViewById(R.id.lastName);
         email = findViewById(R.id.email);
@@ -84,7 +84,7 @@ public class EditProfileActivity extends BaseActivity {
         update = findViewById(R.id.update);
         address = findViewById(R.id.address);
         profilePic = findViewById(R.id.picture);
-
+        setProfilePic();
 
         userDetails = new UserDetails(this);
 
@@ -94,17 +94,7 @@ public class EditProfileActivity extends BaseActivity {
         phone.setText(userDetails.getPhone());
         address.setText(userDetails.getJsonAddress());
 
-        if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
-            Glide.with(this)
-                    .asBitmap()
-                    .load(userDetails.getProfilePicture())
-                    .skipMemoryCache(true)
-                    .fitCenter()
-                    .optionalCenterCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(new RequestOptions().override(200, 200))
-                    .into(profilePic);
-        }
+
 
 
 
@@ -143,6 +133,23 @@ public class EditProfileActivity extends BaseActivity {
     }
 
 
+    private void setProfilePic(){
+
+
+        if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
+            Glide.with(this)
+                    .asBitmap()
+                    .load(userDetails.getProfilePicture())
+                    .skipMemoryCache(true)
+                    .fitCenter()
+                    .optionalCenterCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .apply(new RequestOptions().override(200, 200))
+                    .into(profilePic);
+        }
+
+
+    }
 
 
 
@@ -152,6 +159,8 @@ public class EditProfileActivity extends BaseActivity {
         if(requestCode==1000 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
             try{
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+
+
 
                 uploadProfilePicture(bitmap);
 
@@ -185,8 +194,9 @@ public class EditProfileActivity extends BaseActivity {
 
                         try {
                             JSONObject jsonObject = new JSONObject(new String(response.data));
-
                             String image = jsonObject.getString("image");
+                            userDetails.setProfilePicture(image);
+                            setProfilePic();
 
 
                         } catch (JSONException e) {
@@ -217,7 +227,6 @@ public class EditProfileActivity extends BaseActivity {
                 Map<String, String> headers = new HashMap<>();
 
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Origin", "https://evaly.com.bd");
                 headers.put("Referer", "https://evaly.com.bd/");
                 headers.put("User-Agent", userAgent);
@@ -282,6 +291,7 @@ public class EditProfileActivity extends BaseActivity {
                     userInfo.put("email", email.getText().toString());
                     userInfo.put("contact", phone.getText().toString());
                     userInfo.put("address", address.getText().toString());
+                    userInfo.put("profile_pic_url", userDetails.getProfilePicture());
 
                     userDetails.setFirstName(firstname.getText().toString());
                     userDetails.setLastName(lastName.getText().toString());
