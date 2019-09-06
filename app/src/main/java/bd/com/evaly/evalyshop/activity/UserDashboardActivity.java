@@ -208,7 +208,7 @@ public class UserDashboardActivity extends BaseActivity {
         ImageView profilePicNav = findViewById(R.id.picture);
 
 
-        if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
+        if (!userDetails.getProfilePicture().equals("null")) {
             Glide.with(this)
                     .asBitmap()
                     .load(userDetails.getProfilePicture())

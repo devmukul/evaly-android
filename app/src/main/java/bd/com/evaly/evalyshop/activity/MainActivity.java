@@ -492,7 +492,7 @@ public class MainActivity extends BaseActivity {
             ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
 
 
-            if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
+            if (!userDetails.getProfilePicture().equals("null")) {
 
 
 

@@ -1,15 +1,25 @@
 package bd.com.evaly.evalyshop.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.ColorSpace;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,22 +39,31 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.zxy.tiny.Tiny;
-import com.zxy.tiny.callback.BitmapCallback;
+import com.bumptech.glide.request.target.Target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.util.ImageUtils;
+import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
+import id.zelory.compressor.Compressor;
 
 import static android.graphics.Bitmap.Config.RGB_565;
 
@@ -96,23 +115,30 @@ public class EditProfileActivity extends BaseActivity {
         address.setText(userDetails.getJsonAddress());
 
 
-
-
-
         ImageView editPicture = findViewById(R.id.editPicture);
         editPicture.bringToFront();
-
-
 
 
         View.OnClickListener uploadListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Profile Picture"),1000);
+//                Intent intent=new Intent();
+//                intent.setType("image/*");
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(Intent.createChooser(intent,"Select Profile Picture"),1000);
+
+//                Intent intent=new Intent(Intent.ACTION_PICK);
+//                // Sets the type as image/*. This ensures only components of type image are selected
+//                intent.setType("image/*");
+//                //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
+//                String[] mimeTypes = {"image/jpeg", "image/png"};
+//                intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+//                // Launching the Intent
+//                startActivityForResult(intent,1001);
+
+
+                openImageSelector();
 
 
             }
@@ -120,9 +146,6 @@ public class EditProfileActivity extends BaseActivity {
 
         editPicture.setOnClickListener(uploadListener);
         profilePic.setOnClickListener(uploadListener);
-
-
-
 
 
         update.setOnClickListener(new View.OnClickListener() {
@@ -137,10 +160,10 @@ public class EditProfileActivity extends BaseActivity {
     }
 
 
-    private void setProfilePic(){
+    private void setProfilePic() {
 
 
-        if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
+        if (!userDetails.getProfilePicture().equals("null")) {
             Glide.with(this)
                     .asBitmap()
                     .load(userDetails.getProfilePicture())
@@ -151,71 +174,188 @@ public class EditProfileActivity extends BaseActivity {
                     .into(profilePic);
         }
 
+    }
+
+
+    private void openImageSelector() {
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    8000);
+
+        } else {
+
+            openSelector();
+
+
+        }
 
     }
 
+
+    private void openSelector() {
+
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        String[] mimeTypes = {"image/jpeg", "image/png"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        startActivityForResult(intent, 1001);
+
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 8000) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                openSelector();
+            else {
+
+                Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1000 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-            try{
 
 
-                Bitmap bitmapz = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+        if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
 
+            Uri selectedImage = data.getData();
 
-                Glide.with(this)
-                        .asBitmap()
-                        .load(bitmapz)
-                        .skipMemoryCache(true)
-                        .fitCenter()
-                        .optionalCenterCrop()
-                        .apply(new RequestOptions().override(500, 500))
-                        .into(profilePic);
+            String imagePath = RealPathUtil.getRealPath(context, selectedImage);
+
+            Log.d("json image uri", imagePath);
 
 
+            try {
 
-//
-//
-//                Tiny.BitmapCompressOptions options = new Tiny.BitmapCompressOptions();
-//                options.height = 500;//some compression configuration.
-//
-//
-//                Tiny.getInstance().source(bitmapz).asBitmap().withOptions(options).compress(new BitmapCallback() {
-//                    @Override
-//                    public void callback(boolean isSuccess, Bitmap bitmap, Throwable t) {
-//
-//
-//
-//                        Glide.with(context)
-//                                .asBitmap()
-//                                .load(bitmap)
-//                                .skipMemoryCache(true)
-//                                .fitCenter()
-//                                .optionalCenterCrop()
-//                                .apply(new RequestOptions().override(500, 500))
-//                                .into(profilePic);
-//
-//                        uploadProfilePicture(bitmap);
-//
-//
-//                    }
-//                });
-//
+//                Bitmap correctlyOriented = new Compressor(this)
+//                        .setMaxWidth(500)
+//                        .setMaxHeight(500)
+//                        .setQuality(50)
+//                        .setCompressFormat(Bitmap.CompressFormat.WEBP)
+//                        .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+//                                Environment.DIRECTORY_PICTURES).getAbsolutePath())
+//                        .compressToBitmap(new File(imagePath));\
+
+
+                String destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
+
+
+                try {
 
 
 
+                    File cImage = compressImage(data.getData(),Bitmap.CompressFormat.JPEG, 50, destinationDirectoryPath);
+
+                    Bitmap bitmap = BitmapFactory.decodeFile(destinationDirectoryPath);
+
+                    Glide.with(this)
+                            .asBitmap()
+                            .load(bitmap)
+                            .skipMemoryCache(true)
+                            .fitCenter()
+                            .optionalCenterCrop()
+                            .apply(new RequestOptions().override(500, 500))
+                            .into(profilePic);
+
+                    uploadProfilePicture(bitmap);
+
+                } catch (Exception e) {
 
 
-            }catch(Exception e){
+                }
 
+
+            } catch (Exception e) {
+
+
+                Log.d("json image error", e.toString());
+                Toast.makeText(context, "Error occurred while uploading image", Toast.LENGTH_SHORT).show();
             }
+
+
         }
+
+
+//        if(requestCode==1000 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
+//            try{
+//
+//
+//                Bitmap bitmapz = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+//
+//
+//                Log.d("json image uri", RealPathUtil.getRealPath(context, data.getData()));
+//
+//
+//                RequestOptions myOptions = new RequestOptions()
+//                        .fitCenter() // or centerCrop
+//                        .override(1200, 600);
+//
+//
+//                Glide.with(context)
+//                        .load(bitmapz)
+//                        .apply(myOptions)
+//                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+//                        .placeholder(R.drawable.ic_placeholder_small)
+//                        .listener(new RequestListener<Drawable>() {
+//                                      @Override
+//                                      public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+//                                          return false;
+//                                      }
+//                                      @Override
+//                                      public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+//                                          Bitmap bitmap = ((BitmapDrawable)resource).getBitmap();
+//                                          profilePic.setImageBitmap(bitmap);
+//                                          uploadProfilePicture(bitmap);
+//                                          return true;
+//                                      }
+//                                  }
+//                        )
+//                        .into(profilePic);
+//
+//
+//
+//            }catch(Exception e){
+//
+//            }
+//        }
     }
 
+
+    private File compressImage(Uri path, Bitmap.CompressFormat compressFormat, int quality, String destinationPath) throws IOException {
+        FileOutputStream fileOutputStream = null;
+        File file = new File(destinationPath).getParentFile();
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        try {
+            fileOutputStream = new FileOutputStream(destinationPath);
+
+            ImageUtils.getCorrectlyOrientedImage(EditProfileActivity.this, path);
+
+        } finally {
+            if (fileOutputStream != null) {
+                fileOutputStream.flush();
+                fileOutputStream.close();
+            }
+        }
+
+        return new File(destinationPath);
+
+    }
 
 
 

@@ -197,13 +197,12 @@ public class SignInActivity extends BaseActivity {
                     userDetails.setUserName(ob.getString("username"));
                     userDetails.setFirstName(ob.getString("first_name"));
                     userDetails.setLastName(ob.getString("last_name"));
-
                     userDetails.setEmail(ob.getString("email"));
                     userDetails.setPhone(ob.getString("contact"));
-
                     userDetails.setUserID(ob.getInt("id"));
-
                     userDetails.setJsonAddress(ob.getString("address"));
+                    userDetails.setProfilePicture(ob.getString("profile_pic_url"));
+
 
 
                     Toast.makeText(SignInActivity.this, "Successfully signed in", Toast.LENGTH_SHORT).show();
