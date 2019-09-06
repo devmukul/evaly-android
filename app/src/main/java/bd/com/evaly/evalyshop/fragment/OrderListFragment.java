@@ -53,7 +53,6 @@ public class OrderListFragment extends Fragment {
     ArrayList<Orders> orders;
     OrderAdapter adapter;
     LinearLayout notOrdered;
-    ViewDialog alert;
     int currentPage = 1,errorCounter=0;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private boolean loading = true;
@@ -117,10 +116,10 @@ public class OrderListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
-        alert = new ViewDialog(getActivity());
-
         userDetails=new UserDetails(context);
-        alert.showDialog();
+
+        showProgressView();
+
         getOrderData(currentPage);
 
 
@@ -187,7 +186,6 @@ public class OrderListFragment extends Fragment {
                 Log.d("json", response.toString());
                 errorCounter=0;
 
-                alert.hideDialog();
                 hideProgressView();
 
                 try {
@@ -224,7 +222,7 @@ public class OrderListFragment extends Fragment {
                     e.printStackTrace();
 
 
-                    alert.hideDialog();
+
                     hideProgressView();
                     //getOrderData(currentPage);
 
@@ -253,7 +251,6 @@ public class OrderListFragment extends Fragment {
                     }
                 }else{
                     progressBar.setVisibility(View.GONE);
-                    alert.hideDialog();
                     hideProgressView();
                 }
 

@@ -16,6 +16,40 @@
         android:paddingRight="20dp"
         tools:context=".activity.EditProfileActivity">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="40dp"
+            android:gravity="center">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/pictureHolder"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:cardCornerRadius="50dp"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="true">
+
+                <ImageView
+                    android:id="@+id/picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/user_image" />
+            </android.support.v7.widget.CardView>
+
+            <ImageView
+                android:id="@+id/editPicture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pictureHolder"
+                android:layout_marginLeft="-20dp"
+                android:layout_marginTop="-20dp"
+                android:layout_toRightOf="@id/pictureHolder"
+                app:srcCompat="@drawable/ic_edit_pen" />
+
+        </RelativeLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

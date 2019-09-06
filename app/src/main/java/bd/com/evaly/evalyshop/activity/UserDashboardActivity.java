@@ -112,6 +112,8 @@ public class UserDashboardActivity extends BaseActivity {
                     .asBitmap()
                     .load(userDetails.getProfilePicture())
                     .skipMemoryCache(true)
+                    .fitCenter()
+                    .optionalCenterCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(200, 200))
                     .into(profilePicNav);

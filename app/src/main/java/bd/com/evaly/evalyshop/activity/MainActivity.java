@@ -153,10 +153,15 @@ public class MainActivity extends BaseActivity {
 
 
             if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
+
+
+
                 Glide.with(this)
                         .asBitmap()
                         .load(userDetails.getProfilePicture())
                         .skipMemoryCache(true)
+                        .fitCenter()
+                        .optionalCenterCrop()
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .apply(new RequestOptions().override(200, 200))
                         .into(profilePicNav);
