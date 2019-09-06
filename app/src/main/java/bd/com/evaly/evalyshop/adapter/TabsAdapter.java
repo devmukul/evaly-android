@@ -71,7 +71,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                     bundle.putString("slug", itemlist.get(position).getSlug());
                     bundle.putString("category", itemlist.get(position).getCategory());
                     fragment3.setArguments(bundle);
-                    ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
+                    //.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
                     ft.replace(R.id.fragment_container, fragment3, itemlist.get(position).getSlug());
                     // ft.addToBackStack(itemlist.get(position).getSlug());
                     ft.addToBackStack(null);

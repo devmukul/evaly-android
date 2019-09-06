@@ -198,7 +198,7 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
 
                 FragmentTransaction ft = ((MainActivity) context).getSupportFragmentManager().beginTransaction();
 
-                ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
+                //ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
                 ft.replace(R.id.fragment_container, fragment3, category);
                 ft.addToBackStack(category);
                 ft.commit();
