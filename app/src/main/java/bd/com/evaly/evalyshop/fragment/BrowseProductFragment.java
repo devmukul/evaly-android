@@ -161,10 +161,15 @@ public class BrowseProductFragment extends Fragment {
         shimmer.startShimmer();
 
 
+        TabsFragment categoryFragment = new TabsFragment(1, slug, category, this);
+        TabsFragment brandFragment = new TabsFragment(2, slug, category, this);
+        TabsFragment shopFragment = new TabsFragment(3, slug, category, this);
 
-        pager.addFragment(new TabsFragment(1, slug, category, this),"Sub Categories");
-        pager.addFragment(new TabsFragment(2, slug, category, this),"Brands");
-        pager.addFragment(new TabsFragment(3, slug, category, this),"Shops");
+
+        pager.addFragment(categoryFragment,"Sub Categories");
+        pager.addFragment(brandFragment,"Brands");
+        pager.addFragment(shopFragment,"Shops");
+
 
 
         viewPager.setOffscreenPageLimit(1);

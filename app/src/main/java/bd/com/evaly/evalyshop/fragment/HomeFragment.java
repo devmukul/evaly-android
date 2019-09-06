@@ -162,9 +162,18 @@ public class HomeFragment extends Fragment {
         }
 
 
-        pager.addFragment(new TabsFragment(1, "root", "root", this),"Categories");
-        pager.addFragment(new TabsFragment(2, "root", "root", this),"Brands");
-        pager.addFragment(new TabsFragment(3, "root", "root", this),"Shops");
+
+
+        TabsFragment categoryFragment = new TabsFragment(1, "root", "root", this);
+        TabsFragment brandFragment = new TabsFragment(2, "root", "root", this);
+        TabsFragment shopFragment = new TabsFragment(3, "root", "root", this);
+
+
+        pager.addFragment(categoryFragment,"Categories");
+        pager.addFragment(brandFragment,"Brands");
+        pager.addFragment(shopFragment,"Shops");
+
+
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(pager);
         

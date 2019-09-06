@@ -103,7 +103,7 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
                 String category = "";
 
                 if(tv.getText().toString().contains("Bags")){
-                    category = "bags-clutches-241ff3da6";
+                    category = "bags-luggage-966bc8aac";
                 }else if(tv.getText().toString().contains("Beauty")){
                     category = "beauty-bodycare-172ec0d98";
                 }else if(tv.getText().toString().contains("Books")){
@@ -121,11 +121,11 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
                 }else if(tv.getText().toString().contains("Food & Beverage")){
                     category = "food-beverage-d976e98aa";
                 }else if(tv.getText().toString().contains("Burmese")){
-                    category = "burmiz-products-d72f4aae7";
+                    category = "burmese-products-8a15e42fc";
                 }else if(tv.getText().toString().contains("Dhaka Bank")){
-                    category = "dhaka-bank-s-m-e-bazar-e3c7b0e66";
+                    category = "dhaka-bank-msme-bazar-4d17cd4b8";
                 }else if(tv.getText().toString().contains("Food & Restaurants")){
-                    category = "food-7144381ff";
+                    category = "food-restaurants-a6ea1df9c";
                 }else if(tv.getText().toString().contains("Furniture")){
                     category = "furniture-a0121d623";
                 }else if(tv.getText().toString().contains("Glasses")){
@@ -135,23 +135,23 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
                 }else if(tv.getText().toString().contains("Handmade")){
                     category = "handmade-2a7770404";
                 }else if(tv.getText().toString().contains("Harvesting & Agriculture")){
-                    category = "agriculture-2-db8bf1a1b";
-                }else if(tv.getText().toString().contains("Health Care and Pharmaceutical")){
+                    category = "harvesting-agriculture-acd16134b";
+                }else if(tv.getText().toString().contains("Health")){
                     category = "health-care-and-pharmaceutical-461de4f12";
                 }else if(tv.getText().toString().contains("Home & Living")){
                     category = "home-living-63562e055";
                 }else if(tv.getText().toString().contains("Home Garden")){
                     category = "home-garden-6b4911201";
-                }else if(tv.getText().toString().contains("Hotel Booking")){
+                }else if(tv.getText().toString().contains("Hotel")){
                     category = "hotel-booking-95e415b49";
                 }else if(tv.getText().toString().contains("Jewellery")){
                     category = "jewellery-0ac268845";
                 }else if(tv.getText().toString().contains("Kids")){
                     category = "kids-be1ec41b2";
                 }else if(tv.getText().toString().contains("Kitchen & Dining")){
-                    category = "kitchen-dining-dining-5e34f4934";
+                    category = "kitchen-dining-5e34f4934";
                 }else if(tv.getText().toString().contains("Leather Goods")){
-                    category = "leather-goods-goods-6a0b80ea7";
+                    category = "leather-goods-6a0b80ea7";
                 }else if(tv.getText().toString().contains("LP Gas")){
                     category = "lp-gas-f9f11d790";
                 }else if(tv.getText().toString().contains("Machineries")){
@@ -174,7 +174,7 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
                     category = "shoes-4-e89d62c12";
                 }else if(tv.getText().toString().contains("Sports")){
                     category = "sports-fcb1cb312";
-                }else if(tv.getText().toString().contains("Stationaries")){
+                }else if(tv.getText().toString().contains("Stationeries")){
                     category = "stationaries-78d4dd73f";
                 }else if(tv.getText().toString().contains("Vehicles & Parts")){
                     category = "vehicles-parts-2ab45393f";
