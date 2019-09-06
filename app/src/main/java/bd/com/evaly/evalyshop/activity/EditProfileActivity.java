@@ -60,12 +60,9 @@ import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
-import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
-import id.zelory.compressor.Compressor;
 
-import static android.graphics.Bitmap.Config.RGB_565;
 
 
 public class EditProfileActivity extends BaseActivity {
@@ -242,15 +239,6 @@ public class EditProfileActivity extends BaseActivity {
 
             try {
 
-//                Bitmap correctlyOriented = new Compressor(this)
-//                        .setMaxWidth(500)
-//                        .setMaxHeight(500)
-//                        .setQuality(50)
-//                        .setCompressFormat(Bitmap.CompressFormat.WEBP)
-//                        .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-//                                Environment.DIRECTORY_PICTURES).getAbsolutePath())
-//                        .compressToBitmap(new File(imagePath));
-
 
                 String destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
 
@@ -289,49 +277,6 @@ public class EditProfileActivity extends BaseActivity {
 
         }
 
-
-//        if(requestCode==1000 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-//            try{
-//
-//
-//                Bitmap bitmapz = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
-//
-//
-//                Log.d("json image uri", RealPathUtil.getRealPath(context, data.getData()));
-//
-//
-//                RequestOptions myOptions = new RequestOptions()
-//                        .fitCenter() // or centerCrop
-//                        .override(1200, 600);
-//
-//
-//                Glide.with(context)
-//                        .load(bitmapz)
-//                        .apply(myOptions)
-//                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-//                        .placeholder(R.drawable.ic_placeholder_small)
-//                        .listener(new RequestListener<Drawable>() {
-//                                      @Override
-//                                      public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-//                                          return false;
-//                                      }
-//                                      @Override
-//                                      public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-//                                          Bitmap bitmap = ((BitmapDrawable)resource).getBitmap();
-//                                          profilePic.setImageBitmap(bitmap);
-//                                          uploadProfilePicture(bitmap);
-//                                          return true;
-//                                      }
-//                                  }
-//                        )
-//                        .into(profilePic);
-//
-//
-//
-//            }catch(Exception e){
-//
-//            }
-//        }
     }
 
 
