@@ -64,6 +64,10 @@ public class SetPasswordPresenterImpl implements SetPasswordPresenter {
                         if (view!= null){
                             view.onPasswordSetFailed("Incorrect OTP");
                         }
+                    }else if (response.code() == 429){
+                        if (view!= null){
+                            view.onPasswordSetFailed("Too many attempts, try again later!");
+                        }
                     }else {
                         if (view!= null){
                             view.onPasswordSetFailed(context.getResources().getString(R.string.something_wrong));

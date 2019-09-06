@@ -60,8 +60,8 @@ public class Token {
                     userDetails.setPhone(ob.getString("contact"));
 
                     //userDetails.setUserID(ob.getInt("id"));
-
-                    //userDetails.setJsonAddress(ob.getString("address"));
+                    userDetails.setJsonAddress(ob.getString("address"));
+                    userDetails.setProfilePicture(ob.getString("profile_pic_url"));
 
 
                     Log.d("json token", "token updated");

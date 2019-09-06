@@ -39,6 +39,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.facebook.FacebookSdk;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.orhanobut.logger.Logger;
@@ -145,6 +148,21 @@ public class MainActivity extends BaseActivity {
 
         if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()){
             Token.update(this);
+
+            ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
+
+
+            if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
+                Glide.with(this)
+                        .asBitmap()
+                        .load(userDetails.getProfilePicture())
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .apply(new RequestOptions().override(200, 200))
+                        .into(profilePicNav);
+            }
+
+
         }
 
 

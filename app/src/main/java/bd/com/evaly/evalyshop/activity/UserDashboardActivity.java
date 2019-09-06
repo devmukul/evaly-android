@@ -30,6 +30,9 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,6 +45,8 @@ import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.adapter.AddressAdapter;
+import bd.com.evaly.evalyshop.util.Balance;
+import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -98,6 +103,19 @@ public class UserDashboardActivity extends BaseActivity {
         balance.setText("৳ "+ userDetails.getBalance());
         address.setText(userDetails.getJsonAddress());
 
+
+        ImageView profilePicNav = findViewById(R.id.picture);
+
+
+        if (userDetails.getProfilePicture() != null || !userDetails.getProfilePicture().isEmpty()) {
+            Glide.with(this)
+                    .asBitmap()
+                    .load(userDetails.getProfilePicture())
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .apply(new RequestOptions().override(200, 200))
+                    .into(profilePicNav);
+        }
 
 
 
@@ -196,8 +214,8 @@ public class UserDashboardActivity extends BaseActivity {
 
         super.onResume();
 
-        getBalance();
-        updateUserInfo();
+        Balance.update(this, balance);
+        Token.update(this);
 
 
 
@@ -248,136 +266,6 @@ public class UserDashboardActivity extends BaseActivity {
 
 
 
-    public void getBalance(){
-        String url="https://api.evaly.com.bd/core/user-info-pay/"+userDetails.getUserName()+"/";
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
-
-
-                try {
-
-                    response = response.getJSONObject("data");
-                    userDetails.setBalance(response.getString("balance"));
-                    balance.setText("৳ " + response.getString("balance"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                //headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                return headers;
-            }
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-        RequestQueue queue= Volley.newRequestQueue(UserDashboardActivity.this);
-        queue.add(request);
-    }
-
-    public void updateUserInfo(){
-        String url="https://api.evaly.com.bd/core/user-info-pay/"+userDetails.getUserName()+"/";
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
-                try {
-
-                    JSONObject obb = response.getJSONObject("data");
-
-                    JSONObject ob= obb.getJSONObject("user");
-
-                    userDetails.setUserName(ob.getString("username"));
-                    userDetails.setPhone(ob.getString("contact"));
-                    userDetails.setFirstName(ob.getString("first_name"));
-                    userDetails.setLastName(ob.getString("last_name"));
-                    userDetails.setJsonAddress(ob.getString("address"));
-                    name.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
-                    address.setText(userDetails.getJsonAddress());
-
-                    Log.d("onResponse", "updated");
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                return headers;
-            }
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-        RequestQueue queue= Volley.newRequestQueue(UserDashboardActivity.this);
-        queue.add(request);
-    }
 
 
 
