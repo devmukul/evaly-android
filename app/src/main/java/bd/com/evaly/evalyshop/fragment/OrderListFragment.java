@@ -193,8 +193,8 @@ public class OrderListFragment extends Fragment {
                     if(jsonArray.length()==0){
                         notOrdered.setVisibility(View.VISIBLE);
                         Glide.with(context)
-                                .load(R.drawable.ic_emptycart)
-                                .apply(new RequestOptions().override(600, 600))
+                                .load(R.drawable.ic_emptycart_new)
+                                .apply(new RequestOptions().override(700, 700))
                                 .into((ImageView) view.findViewById(R.id.noImage));
                         recyclerView.setVisibility(View.GONE);
                         nestedSV.setBackgroundColor(Color.WHITE);
