@@ -160,10 +160,10 @@ public class EditProfileActivity extends BaseActivity {
     private void setProfilePic() {
 
 
-        if (!userDetails.getProfilePicture().equals("null")) {
+        if (!userDetails.getProfilePictureSM().equals("null")) {
             Glide.with(this)
                     .asBitmap()
-                    .load(userDetails.getProfilePicture())
+                    .load(userDetails.getProfilePictureSM())
                     .skipMemoryCache(true)
                     .fitCenter()
                     .optionalCenterCrop()
@@ -334,9 +334,10 @@ public class EditProfileActivity extends BaseActivity {
 
                             if(jsonObject.getBoolean("success")) {
                                 String image = jsonObject.getJSONObject("data").getString("url");
+                                String image_sm = jsonObject.getJSONObject("data").getString("url_small");
                                 userDetails.setProfilePicture(image);
+                                userDetails.setProfilePictureSM(image_sm);
                                 setProfilePic();
-
                                 getUserData();
 
                             }
@@ -434,6 +435,7 @@ public class EditProfileActivity extends BaseActivity {
                     userInfo.put("contact", phone.getText().toString());
                     userInfo.put("address", address.getText().toString());
                     userInfo.put("profile_pic_url", userDetails.getProfilePicture());
+
 
                     userDetails.setFirstName(firstname.getText().toString());
                     userDetails.setLastName(lastName.getText().toString());

@@ -1,11 +1,14 @@
 package bd.com.evaly.evalyshop.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.design.internal.BottomNavigationItemView;
@@ -27,6 +30,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +68,8 @@ import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
+
+import static bd.com.evaly.evalyshop.activity.ViewProductActivity.setWindowFlag;
 
 public class MainActivity extends BaseActivity {
 
@@ -492,13 +499,13 @@ public class MainActivity extends BaseActivity {
             ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
 
 
-            if (!userDetails.getProfilePicture().equals("null")) {
+            if (!userDetails.getProfilePictureSM().equals("null")) {
 
 
 
                 Glide.with(this)
                         .asBitmap()
-                        .load(userDetails.getProfilePicture())
+                        .load(userDetails.getProfilePictureSM())
                         .skipMemoryCache(true)
                         .fitCenter()
                         .optionalCenterCrop()
@@ -510,7 +517,12 @@ public class MainActivity extends BaseActivity {
         }
 
 
+
     }
+
+
+
+
 
 
     @Override

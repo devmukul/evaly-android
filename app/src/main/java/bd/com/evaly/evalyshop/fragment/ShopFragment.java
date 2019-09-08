@@ -21,6 +21,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,12 +101,9 @@ public class ShopFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_shop, container, false);
-
         context = getContext();
         mainActivity = (MainActivity) getActivity();
-
         rq = Volley.newRequestQueue(context);
-
         return view;
     }
 
@@ -113,23 +111,14 @@ public class ShopFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         InitializeActionBar InitializeActionbar = new InitializeActionBar((LinearLayout) view.findViewById(R.id.header_logo), mainActivity, "shop");
-
-
         LinearLayout homeSearch=view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent = new Intent(context, GlobalSearchActivity.class);
-
-
                 intent.putExtra("type", 1);
-
                 startActivity(intent);
-
-
             }
         });
         name = view.findViewById(R.id.name);
@@ -143,9 +132,7 @@ public class ShopFragment extends Fragment {
         link = view.findViewById(R.id.link);
         placeholder=view.findViewById(R.id.placeholder_image);
         progressBar=view.findViewById(R.id.progressBar);
-
         categoryTitle = view.findViewById(R.id.categoryTitle);
-
 
         try {
 

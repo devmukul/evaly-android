@@ -156,6 +156,16 @@ public class UserDetails {
     }
 
 
+    public String getProfilePictureSM() {
+        return  pref.getString("profile_picture_sm","");
+    }
+
+    public void setProfilePictureSM(String phone) {
+        editor.putString("profile_picture_sm", phone);
+        editor.commit();
+    }
+
+
     public String getProfilePicture() {
         return  pref.getString("profile_picture","");
     }

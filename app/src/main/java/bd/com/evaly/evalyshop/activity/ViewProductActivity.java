@@ -94,7 +94,6 @@ public class ViewProductActivity extends BaseActivity {
     Map<String, String> map, shopMap;
     LinearLayout colorRel;
 
-
     CollapsingToolbarLayout collapsingToolbarLayout;
     CoordinatorLayout coordinatorLayout;
     AppBarLayout appBarLayout;

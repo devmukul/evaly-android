@@ -59,7 +59,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
     };
 
 
-            @Override
+    @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         if(productsList.get(position).getName().contains("-")){
             String str = productsList.get(position).getName();
@@ -124,40 +124,40 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
 
 
-        holder.favorite.setTag("no");
+        //holder.favorite.setTag("no");
 
 
 
+//
+//        if(db.isSlugExist(productsList.get(position).getSlug())) {
+//            holder.favorite.setImageResource(R.drawable.ic_favorite_color);
+//            holder.favorite.setTag("yes");
+//        }
 
-        if(db.isSlugExist(productsList.get(position).getSlug())) {
-            holder.favorite.setImageResource(R.drawable.ic_favorite_color);
-            holder.favorite.setTag("yes");
-        }
 
-
-        holder.favorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Calendar calendar = Calendar.getInstance();
-
-                if(holder.favorite.getTag().equals("yes")){
-                    holder.favorite.setImageResource(R.drawable.ic_favorite);
-
-                    Toast.makeText(mContext, "Removed from wish list", Toast.LENGTH_SHORT).show();
-                    holder.favorite.setTag("no");
-                    db.deleteDataBySlug(productsList.get(position).getSlug());
-
-                } else {
-                    holder.favorite.setTag("yes");
-
-                    if (db.insertData(productsList.get(position).getSlug(), productsList.get(position).getName(), productsList.get(position).getThumbnailSM(), productsList.get(position).getPriceMin(), calendar.getTimeInMillis())) {
-                        Toast.makeText(mContext, "Added to wish list", Toast.LENGTH_SHORT).show();
-                        holder.favorite.setImageResource(R.drawable.ic_favorite_color);
-                    }
-                }
-            }
-        });
+//        holder.favorite.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                Calendar calendar = Calendar.getInstance();
+//
+//                if(holder.favorite.getTag().equals("yes")){
+//                    holder.favorite.setImageResource(R.drawable.ic_favorite);
+//
+//                    Toast.makeText(mContext, "Removed from wish list", Toast.LENGTH_SHORT).show();
+//                    holder.favorite.setTag("no");
+//                    db.deleteDataBySlug(productsList.get(position).getSlug());
+//
+//                } else {
+//                    holder.favorite.setTag("yes");
+//
+//                    if (db.insertData(productsList.get(position).getSlug(), productsList.get(position).getName(), productsList.get(position).getThumbnailSM(), productsList.get(position).getPriceMin(), calendar.getTimeInMillis())) {
+//                        Toast.makeText(mContext, "Added to wish list", Toast.LENGTH_SHORT).show();
+//                        holder.favorite.setImageResource(R.drawable.ic_favorite_color);
+//                    }
+//                }
+//            }
+//        });
 
     }
 
@@ -177,7 +177,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             textViewAndroid=itemView.findViewById(R.id.title);
             price=itemView.findViewById(R.id.price);
             imageViewAndroid=itemView.findViewById(R.id.image);
-            favorite=itemView.findViewById(R.id.favorite);
+            // favorite=itemView.findViewById(R.id.favorite);
             sku=itemView.findViewById(R.id.sku);
 
 

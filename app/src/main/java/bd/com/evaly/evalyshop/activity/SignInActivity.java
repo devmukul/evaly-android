@@ -202,6 +202,7 @@ public class SignInActivity extends BaseActivity {
                     userDetails.setUserID(ob.getInt("id"));
                     userDetails.setJsonAddress(ob.getString("address"));
                     userDetails.setProfilePicture(ob.getString("profile_pic_url"));
+                    userDetails.setProfilePictureSM(ob.getString("image_sm"));
 
 
 
