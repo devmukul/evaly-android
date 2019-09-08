@@ -37,9 +37,9 @@
                 android:layout_centerHorizontal="true"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_image_placeholder"
-                fresco:srcCompat="@drawable/test"
-                android:scaleType="fitCenter"/>
+                fresco:srcCompat="@drawable/ic_image_placeholder" />
 
 
             <TextView

@@ -48,8 +48,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/border_box"
-                        android:orientation="vertical"
-                        android:paddingBottom="3dp">
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -266,12 +265,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
+                            android:layout_marginBottom="10dp"
                             android:background="#fff"
                             android:orientation="horizontal"
                             android:paddingLeft="10dp"
                             android:paddingTop="10dp"
                             android:paddingRight="10dp"
-                            android:paddingBottom="20dp">
+                            android:paddingBottom="15dp">
 
 
                             <LinearLayout
@@ -285,11 +285,12 @@
 
                                 <ImageView
                                     android:id="@+id/btnTasbih"
-                                    android:layout_width="60dp"
-                                    android:layout_height="60dp"
+                                    android:layout_width="55dp"
+                                    android:layout_height="55dp"
                                     android:layout_weight="0"
-                                    android:background="@drawable/circle_bg"
+                                    android:background="@drawable/circle_bg_shop"
                                     android:clickable="false"
+                                    android:padding="13dp"
                                     android:tint="#35c335"
                                     app:srcCompat="@drawable/ic_call" />
 
@@ -312,12 +313,13 @@
 
                                 <ImageView
                                     android:id="@+id/btnTracker"
-                                    android:layout_width="60dp"
-                                    android:layout_height="60dp"
+                                    android:layout_width="55dp"
+                                    android:layout_height="55dp"
                                     android:layout_weight="0"
-                                    android:background="@drawable/circle_bg"
+                                    android:background="@drawable/circle_bg_shop"
                                     android:clickable="false"
-                                    android:tint="#2ab5d2"
+                                    android:padding="13dp"
+                                    android:tint="@color/colorAccent"
                                     app:srcCompat="@drawable/ic_marker" />
 
                                 <TextView
@@ -342,11 +344,12 @@
 
                                 <ImageView
                                     android:id="@+id/btnSettings"
-                                    android:layout_width="60dp"
-                                    android:layout_height="60dp"
+                                    android:layout_width="55dp"
+                                    android:layout_height="55dp"
                                     android:layout_weight="0"
-                                    android:background="@drawable/circle_bg"
+                                    android:background="@drawable/circle_bg_shop"
                                     android:clickable="false"
+                                    android:padding="13dp"
                                     android:tint="#0EAD75"
                                     app:srcCompat="@drawable/ic_link" />
 
@@ -372,12 +375,13 @@
 
                                 <ImageView
                                     android:id="@+id/btnPrayer"
-                                    android:layout_width="60dp"
-                                    android:layout_height="60dp"
+                                    android:layout_width="55dp"
+                                    android:layout_height="55dp"
                                     android:layout_weight="0"
-                                    android:background="@drawable/circle_bg"
+                                    android:background="@drawable/circle_bg_shop"
                                     android:clickable="false"
-                                    android:tint="@color/colorAccent"
+                                    android:padding="13dp"
+                                    android:tint="#f8be01"
                                     app:srcCompat="@drawable/ic_menu_star" />
 
                                 <TextView
@@ -391,7 +395,6 @@
 
 
                         </LinearLayout>
-
 
 
                         <LinearLayout
