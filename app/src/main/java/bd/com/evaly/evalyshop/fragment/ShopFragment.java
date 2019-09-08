@@ -81,7 +81,7 @@ public class ShopFragment extends Fragment {
     RecyclerView recyclerView;
     ShopCategoryAdapter adapter;
     ArrayList<TabsItem> itemList;
-    LinearLayout callButton,location,link,reviews,share;
+    LinearLayout callButton,location,link,reviews,share,followBtn;
     View view;
     Context context;
     MainActivity mainActivity;
@@ -143,6 +143,7 @@ public class ShopFragment extends Fragment {
         placeholder=view.findViewById(R.id.placeholder_image);
         progressBar=view.findViewById(R.id.progressBar);
         categoryTitle = view.findViewById(R.id.categoryTitle);
+        followBtn = view.findViewById(R.id.follow_btn);
 
         userDetails = new UserDetails(context);
 
@@ -288,6 +289,25 @@ public class ShopFragment extends Fragment {
 
                         if(response.getInt("count")>0){
                             productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, "", 1, view.findViewById(R.id.progressBar));
+
+
+                            try {
+
+
+                                followBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        subscribe();
+                                    }
+                                });
+
+
+
+                            }catch (Exception e){
+
+                            }
+
+
 
                             try {
                                 name.setText(jsonObject.getString("name"));
@@ -680,4 +700,75 @@ public class ShopFragment extends Fragment {
         });
         rq.add(request);
     }
+
+
+
+
+    public void subscribe(){
+
+
+        String url="https://api.evaly.com.bd/core/shop-subscriptions";
+
+
+        int requestMethod =  Request.Method.POST;
+
+        if (followText.getText().toString().equals("Unfollow")) {
+            requestMethod =  Request.Method.DELETE;
+            followText.setText("Follow");
+            url = "https://api.evaly.com.bd/core/unsubscribe-shop/" + slug + "/";
+        } else
+            followText.setText("Unfollow");
+
+        JSONObject parameters = new JSONObject();
+        try {
+            parameters.put("shop_slug", slug);
+        } catch (Exception e) {
+        }
+
+
+
+        JsonObjectRequest request = new JsonObjectRequest(requestMethod, url, parameters,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                //Log.d("onResponse", response.toString());
+
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                // headers.put("Host", "api-prod.evaly.com.bd");
+                headers.put("Content-Type", "application/json");
+                headers.put("Origin", "https://evaly.com.bd");
+                headers.put("Referer", "https://evaly.com.bd/");
+
+                String userAgent;
+
+                try {
+                    userAgent = WebSettings.getDefaultUserAgent(context);
+                } catch (Exception e) {
+                    userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
+                }
+
+
+
+                headers.put("User-Agent", userAgent);
+                return headers;
+            }
+        };
+        RequestQueue queue= Volley.newRequestQueue(context);
+        queue.add(request);
+    }
+
+
+
+
+
 }
