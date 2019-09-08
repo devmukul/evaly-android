@@ -76,7 +76,7 @@ public class ShopFragment extends Fragment {
     RecyclerView recyclerView;
     ShopCategoryAdapter adapter;
     ArrayList<TabsItem> itemList;
-    TextView callButton,location,link;
+    LinearLayout callButton,location,link,reviews;
     View view;
     Context context;
     MainActivity mainActivity;
@@ -130,6 +130,8 @@ public class ShopFragment extends Fragment {
         callButton=view.findViewById(R.id.call_button);
         location=view.findViewById(R.id.location);
         link = view.findViewById(R.id.link);
+        reviews = view.findViewById(R.id.reviews);
+
         placeholder=view.findViewById(R.id.placeholder_image);
         progressBar=view.findViewById(R.id.progressBar);
         categoryTitle = view.findViewById(R.id.categoryTitle);
@@ -401,7 +403,7 @@ public class ShopFragment extends Fragment {
 
 
 
-                                link.setOnClickListener(new View.OnClickListener() {
+                                reviews.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
 

@@ -36,7 +36,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.name.setText(itemList.get(i).getUser_name());
 
-        myViewHolder.time.setText(Utils.getTimeAgo(itemList.get(i).getTime()));
+        myViewHolder.time.setText(Utils.getTimeAgo(itemList.get(i).getTime()*1000));
 
 
         myViewHolder.reviewText.setText(itemList.get(i).getRating_text());
