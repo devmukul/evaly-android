@@ -299,28 +299,19 @@ public class ViewProductActivity extends BaseActivity {
         addToWishList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 Calendar calendar = Calendar.getInstance();
-
                 int price = 0;
-
                 try {
                     price = Integer.parseInt(wishListItem.getPrice());
-
-
                 } catch (Exception e) {
 
                 }
-
 
                 if (isAddedToWishList) {
 
                     addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
                     dbWish.deleteDataBySlug(wishListItem.getProductSlug());
-
                     Toast.makeText(context, "Removed from wish list", Toast.LENGTH_SHORT).show();
-
                     isAddedToWishList = false;
 
                 } else {

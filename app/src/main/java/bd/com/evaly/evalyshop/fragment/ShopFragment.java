@@ -25,6 +25,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -32,6 +33,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -53,6 +55,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
@@ -63,6 +67,7 @@ import bd.com.evaly.evalyshop.activity.ReviewsActivity;
 import bd.com.evaly.evalyshop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.TransactionItem;
+import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 
@@ -70,13 +75,13 @@ public class ShopFragment extends Fragment {
 
     String slug="", title="", groups="";
     ImageView logo;
-    TextView name,address,number,tvOffer;
+    TextView name,address,number,tvOffer,followText;
     StickyScrollView nestedSV;
     ShimmerFrameLayout shimmer;
     RecyclerView recyclerView;
     ShopCategoryAdapter adapter;
     ArrayList<TabsItem> itemList;
-    LinearLayout callButton,location,link,reviews;
+    LinearLayout callButton,location,link,reviews,share;
     View view;
     Context context;
     MainActivity mainActivity;
@@ -90,6 +95,7 @@ public class ShopFragment extends Fragment {
     ProgressBar progressBar;
     String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
     RequestQueue rq;
+    UserDetails userDetails;
 
 
 
@@ -131,10 +137,14 @@ public class ShopFragment extends Fragment {
         location=view.findViewById(R.id.location);
         link = view.findViewById(R.id.link);
         reviews = view.findViewById(R.id.reviews);
+        share = view.findViewById(R.id.share_btn);
+        followText = view.findViewById(R.id.follow_text);
 
         placeholder=view.findViewById(R.id.placeholder_image);
         progressBar=view.findViewById(R.id.progressBar);
         categoryTitle = view.findViewById(R.id.categoryTitle);
+
+        userDetails = new UserDetails(context);
 
         try {
 
@@ -153,9 +163,7 @@ public class ShopFragment extends Fragment {
             {
                 if(dx >0) //check for scroll down
                 {
-
                     GridLayoutManager mLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-
                     visibleItemCount = mLayoutManager.getChildCount();
                     totalItemCount =itemList.size();
                     pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
@@ -164,10 +172,8 @@ public class ShopFragment extends Fragment {
                     {
                         if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
                         {
-
                             loading = false;
                             getSubCategories(++currentPage);
-
                         }
 
                     }
@@ -197,17 +203,12 @@ public class ShopFragment extends Fragment {
         }else {
             tvOffer.setVisibility(View.GONE);
         }
+
+
         getShopProductCount();
-
-
-
-
         getShopData();
-
         getProductRating(slug);
-
         getSubCategories(currentPage);
-
 
         AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
         CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
@@ -250,38 +251,39 @@ public class ShopFragment extends Fragment {
             }
         });
 
-
     }
-
 
 
     public void showProductsByCategory(String categoryName, String categorySlug, int position){
 
         reset.setVisibility(View.VISIBLE);
         categoryTitle.setText(categoryName);
-
         productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, categorySlug, 1, view.findViewById(R.id.progressBar));
-
-
 
     }
 
     public void getShopProductCount(){
-        String url = "";
 
-        url= url = "https://api.evaly.com.bd/core/public/shops/items/"+slug+"/?page="+currentPage;
+
+
+        String url  = "https://api.evaly.com.bd/core/public/shops/items/"+slug+"/?page="+currentPage;
 
         Log.d("shop_url",url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
                     try {
-                        Log.d("shop_response_int",response.getInt("count")+"");
-
-
+                        //Log.d("shop_response_int",response.getInt("count")+"");
 
                         JSONObject data = response.getJSONObject("data");
-
                         JSONObject jsonObject = data.getJSONObject("shop");
+
+                        boolean subscribed = data.getBoolean("subscribed");
+
+
+                        if (subscribed)
+                            followText.setText("Unfollow");
+                        else
+                            followText.setText("Follow");
 
 
                         if(response.getInt("count")>0){
@@ -290,9 +292,7 @@ public class ShopFragment extends Fragment {
                             try {
                                 name.setText(jsonObject.getString("name"));
                                 address.setText(jsonObject.getString("address"));
-
                                 try {
-
                                     Glide.with(context)
                                             .load(jsonObject.getString("logo_image"))
                                             .listener(new RequestListener<Drawable>() {
@@ -300,7 +300,6 @@ public class ShopFragment extends Fragment {
                                                           public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                                               return false;
                                                           }
-
                                                           @Override
                                                           public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                                               Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
@@ -310,7 +309,6 @@ public class ShopFragment extends Fragment {
                                                       }
                                             )
                                             .into(logo);
-
                                 } catch (Exception e){
 
                                 }
@@ -320,33 +318,23 @@ public class ShopFragment extends Fragment {
                                     callButton.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-
                                             String phone = "Not provided";
                                             try {
-
                                                 phone = jsonObject.getString("contact_number");
-
                                                 final Snackbar snackBar = Snackbar.make(view, phone+"", Snackbar.LENGTH_LONG);
-
                                                 snackBar.setAction("Call", new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {
 
                                                         try {
-
-
                                                             Intent intent = new Intent(Intent.ACTION_DIAL);
                                                             intent.setData(Uri.parse("tel:" + jsonObject.getString("contact_number")));
-
                                                             startActivity(intent);
-
                                                         } catch (Exception e){}
-
                                                         snackBar.dismiss();
                                                     }
                                                 });
                                                 snackBar.show();
-
 
                                             } catch (JSONException e) {
                                                 Toast.makeText(context, "Sorry shop number is not available", Toast.LENGTH_SHORT).show();
@@ -361,20 +349,13 @@ public class ShopFragment extends Fragment {
                                     number.setText("");
                                 }
 
-
-
                                 location.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-
-
                                         String phone = "Not provided";
                                         try {
-
                                             phone = jsonObject.getString("address");
-
                                             final Snackbar snackBar = Snackbar.make(view, phone+"", Snackbar.LENGTH_LONG);
-
                                             snackBar.setAction("Copy", new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -390,16 +371,67 @@ public class ShopFragment extends Fragment {
                                             });
                                             snackBar.show();
 
-
                                         } catch (JSONException e) {
                                             Toast.makeText(context, "Sorry shop number is not available", Toast.LENGTH_SHORT).show();
                                             e.printStackTrace();
                                         }
 
+                                    }
+                                });
 
+
+                                link.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        String phone = "https://evaly.com.bd/";
+                                        try {
+                                            phone = "https://evaly.com.bd/shops/"+jsonObject.getString("slug");
+                                            final Snackbar snackBar = Snackbar.make(view, phone+"", Snackbar.LENGTH_LONG);
+                                            snackBar.setAction("Copy", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+
+                                                    try {
+                                                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                                                        ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/"+jsonObject.getString("slug"));
+                                                        clipboard.setPrimaryClip(clip);
+                                                    } catch (Exception e){}
+
+                                                    snackBar.dismiss();
+                                                }
+                                            });
+                                            snackBar.show();
+
+                                        } catch (JSONException e) {
+                                            Toast.makeText(context, "Sorry shop link is not available", Toast.LENGTH_SHORT).show();
+                                            e.printStackTrace();
+                                        }
 
                                     }
                                 });
+
+
+
+                                share.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        String shareURL = "https://evaly.com.bd/";
+
+                                        try {
+                                            shareURL = "https://evaly.com.bd/shops/"+jsonObject.getString("slug");
+                                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                                            sharingIntent.setType("text/plain");
+                                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareURL);
+                                            startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_via)));
+                                        } catch (Exception e) {
+                                            Toast.makeText(context, "Can't share the shop.", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                });
+
 
 
 
@@ -407,32 +439,16 @@ public class ShopFragment extends Fragment {
                                     @Override
                                     public void onClick(View v) {
 
-
-                                        String shop_id = "98989";
-
+                                            String shop_id = "98989";
                                             shop_id = slug;
-
                                             Intent intent = new Intent(context, ReviewsActivity.class);
-
                                             intent.putExtra("ratingJson", ratingJson);
                                             intent.putExtra("type", "shop");
                                             intent.putExtra("item_value", shop_id);
                                             startActivity(intent);
 
-
-
-
-
-
                                     }
                                 });
-
-
-
-
-
-
-
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -441,16 +457,11 @@ public class ShopFragment extends Fragment {
                         }else {
 
 
-
-                                ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
-
+                            ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
                             LinearLayout noItem = view.findViewById(R.id.noItem);
                             noItem.setVisibility(View.VISIBLE);
 
-
-
                             try {
-
                                 Glide.with(context)
                                         .load(R.drawable.ic_emptycart)
                                         .apply(new RequestOptions().override(600, 600))
@@ -459,9 +470,7 @@ public class ShopFragment extends Fragment {
 
                             }
 
-
                             progressBar.setVisibility(View.GONE);
-
 
                            // Toast.makeText(context, "No product is available", Toast.LENGTH_SHORT).show();
                         }
@@ -485,7 +494,30 @@ public class ShopFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                // headers.put("Host", "api-prod.evaly.com.bd");
+                headers.put("Content-Type", "application/json");
+                headers.put("Origin", "https://evaly.com.bd");
+                headers.put("Referer", "https://evaly.com.bd/");
+
+                String userAgent;
+
+                try {
+                    userAgent = WebSettings.getDefaultUserAgent(context);
+                } catch (Exception e) {
+                    userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
+                }
+
+
+
+                headers.put("User-Agent", userAgent);
+                return headers;
+            }
+        };;
         // RequestQueue rq = Volley.newRequestQueue(context);
         request.setRetryPolicy(new RetryPolicy() {
             @Override
@@ -518,22 +550,13 @@ public class ShopFragment extends Fragment {
                     Log.d("json varying", response.toString());
                     try {
 
-
                         ratingJson = response.toString();
-
                         double avg = response.getDouble("avg_ratings");
-
                         RatingBar ratingBar = view.findViewById(R.id.ratingBar);
-
                         TextView ratingsCount = view.findViewById(R.id.ratings_count);
-
                         int tratings = response.getInt("total_ratings");
-
                         ratingsCount.setText("("+tratings+")");
-
                         ratingBar.setRating((float)avg);
-
-
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -586,15 +609,12 @@ public class ShopFragment extends Fragment {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
 
-
                             TabsItem tabsItem = new TabsItem();
                             tabsItem.setTitle(ob.getString("category_name"));
                             tabsItem.setImage(ob.getString("category_image"));
                             tabsItem.setSlug(ob.getString("category_slug"));
                             tabsItem.setCategory(slug);
-
                             itemList.add(tabsItem);
-
                             adapter.notifyItemInserted(itemList.size());
 
                         }
