@@ -58,47 +58,35 @@ public class ViewProductSliderAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
+
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view;
-
         view = inflater.inflate(R.layout.view_product_item_slider, null);
-
         ImageView imageView = view.findViewById(R.id.sliderImage);
-
         final String imgURL = img.get(position);
 
-            Glide.with(context)
-                    .asBitmap()
-                    .load(img.get(position))
-                    .skipMemoryCache(true)
-                    .placeholder(R.drawable.ic_image_placeholder)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(new RequestOptions().override(900, 900))
-                    .into(imageView);
-
-
+        Glide.with(context)
+                .asBitmap()
+                .load(img.get(position))
+                .skipMemoryCache(true)
+                .placeholder(R.drawable.ic_image_placeholder)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .apply(new RequestOptions().override(900, 900))
+                .into(imageView);
 
         ViewPager viewPager = (ViewPager) container;
         viewPager.addView(view, 0);
-
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 try {
-
                     Intent intent = new Intent(context, ImagePreview.class);
                     intent.putExtra("image", imgURL);
                     //Toast.makeText(context, imgURL, Toast.LENGTH_SHORT).show();
                     context.startActivity(intent);
-
                 } catch (Exception e){
-
                     Toast.makeText(context, "High resolution image not available.", Toast.LENGTH_SHORT).show();
-
                 }
-
             }
         });
 

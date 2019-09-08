@@ -115,7 +115,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
         }else{
             holder.price.setText("৳ " + productsList.get(position).getPriceMin());
         }
-        holder.sku.setText(productsList.get(position).getSlug());
+        //holder.sku.setText(productsList.get(position).getSlug());
 
 
 
@@ -178,7 +178,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             price=itemView.findViewById(R.id.price);
             imageViewAndroid=itemView.findViewById(R.id.image);
             // favorite=itemView.findViewById(R.id.favorite);
-            sku=itemView.findViewById(R.id.sku);
+            //sku=itemView.findViewById(R.id.sku);
 
 
 

@@ -36,7 +36,8 @@ public class ViewProductAdapter extends RecyclerView.Adapter<ViewProductAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Log.d("view_product",products.get(position).getName());
+        // Log.d("view_product",products.get(position).getName());
+
         if(products.get(position).getName().contains("-")){
             String[] s=products.get(position).getName().split("-");
             String str = "";
@@ -44,9 +45,8 @@ public class ViewProductAdapter extends RecyclerView.Adapter<ViewProductAdapter.
                 str+=s[m];
             }
             holder.title.setText(str);
-        }else{
+        }else
             holder.title.setText(products.get(position).getName());
-        }
 
         Glide.with(context)
                 .asBitmap()
@@ -54,7 +54,7 @@ public class ViewProductAdapter extends RecyclerView.Adapter<ViewProductAdapter.
                 .into(holder.image);
 
         holder.price.setText("৳ " + products.get(position).getPriceMin());
-        holder.sku.setText(products.get(position).getSku());
+        //holder.sku.setText(products.get(position).getSku());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ViewProductAdapter extends RecyclerView.Adapter<ViewProductAdapter.
             title=itemView.findViewById(R.id.title);
             price=itemView.findViewById(R.id.price);
             image= itemView.findViewById(R.id.image);
-            sku=itemView.findViewById(R.id.sku);
+            //sku=itemView.findViewById(R.id.sku);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
