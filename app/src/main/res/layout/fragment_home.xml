@@ -76,7 +76,6 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/btnTasbih"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_weight="0"
@@ -102,7 +101,6 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/btnTracker"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_weight="0"
@@ -132,7 +130,6 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/btnSettings"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_weight="0"
@@ -162,7 +159,6 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/btnPrayer"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_weight="0"
