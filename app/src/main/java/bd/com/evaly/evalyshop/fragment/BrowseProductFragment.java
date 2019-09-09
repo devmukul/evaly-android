@@ -111,14 +111,14 @@ public class BrowseProductFragment extends Fragment {
         bundle.putString("category", category);
 
 
-        filter=view.findViewById(R.id.filterBtn);
-        recyclerView=view.findViewById(R.id.products);
+        filter = view.findViewById(R.id.filterBtn);
+        recyclerView = view.findViewById(R.id.products);
         filter.setVisibility(View.GONE);
-        progressBar=view.findViewById(R.id.progressBar);
-        itemListProduct=new ArrayList<>();
+        progressBar = view.findViewById(R.id.progressBar);
+        itemListProduct = new ArrayList<>();
         adapterProduct = new ProductGridAdapter(getContext(), itemListProduct);
         rq = Volley.newRequestQueue(getContext());
-        map=new HashMap<>();
+        map = new HashMap<>();
 
 
 
@@ -138,6 +138,7 @@ public class BrowseProductFragment extends Fragment {
 
         skeletonTabHeader = Skeleton.bind(tabLayout)
                 .load(R.layout.skeleton_tablayout_header)
+                .color(R.color.ddd)
                 .show();
 
 
@@ -255,7 +256,7 @@ public class BrowseProductFragment extends Fragment {
 //                    getShopsOfCategory(1);
 
 
-                    //skeletonTabHeader.hide();
+                    skeletonTabHeader.hide();
 
                     int length = response.length();
 
@@ -273,14 +274,11 @@ public class BrowseProductFragment extends Fragment {
                         pager.addFragment(fragment,"Sub Categories");
                         pager.notifyDataSetChanged();
 
-                        //hideShimmer();
                     }
 
-
-
+                    
+                    hideShimmer();
                     loadOtherTabs();
-
-
 
 
                 }, new Response.ErrorListener() {
