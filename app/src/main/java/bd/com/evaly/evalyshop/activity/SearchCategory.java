@@ -43,7 +43,7 @@ public class SearchCategory extends AppCompatActivity {
 
 
 
-    ArrayList<JSONObject> itemList;
+    ArrayList<JSONArray> itemList;
     RecyclerView recyclerView;
     CategorySearchAdapter adapter;
     LinearLayout noItem, progressContainer;
@@ -102,6 +102,8 @@ public class SearchCategory extends AppCompatActivity {
 
 
         search = findViewById(R.id.search);
+
+        search.requestFocus();
 
         search.addTextChangedListener(new TextWatcher() {
 
@@ -180,7 +182,7 @@ public class SearchCategory extends AppCompatActivity {
 
 
 
-        String url="https://api-prod.evaly.com.bd/api/categories/?search="+query+"&page=1";
+        String url="https://api.evaly.com.bd/core//categories/tree/search?search_term="+query;
         Log.d("json search", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
@@ -203,13 +205,13 @@ public class SearchCategory extends AppCompatActivity {
 
                     try {
 
-                        JSONArray result = response.getJSONArray("results");
+                        JSONArray result = response.getJSONArray("data");
 
                         if (!search.getText().toString().trim().equals("")){
 
                             for (int i = 0; i < result.length(); i++) {
 
-                                itemList.add(result.getJSONObject(i));
+                                itemList.add(result.getJSONArray(i));
                                 adapter.notifyItemInserted(i);
                             }
                         }
