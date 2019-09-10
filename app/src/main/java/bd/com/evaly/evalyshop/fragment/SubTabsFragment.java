@@ -44,12 +44,11 @@ import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.TransactionItem;
 
-public class TabsFragment extends Fragment {
+public class SubTabsFragment extends Fragment {
 
     RecyclerView recyclerView;
     TabsAdapter adapter;
     Context context;
-    Map<String,Integer> categoryMap;
     HomeCategoryAdapter2 adapter2;
     ArrayList<TabsItem> itemList;
     int type = 1;
@@ -65,122 +64,31 @@ public class TabsFragment extends Fragment {
     ArrayList<Integer> imageCategory2;
     ProgressBar progressBar2;
     RequestQueue rq;
-
-    public static String[] titleCategory = {
-            "Bags & Luggage",
-            "Beauty & Body Care",
-            "Books",
-            "Burmese Products",
-            "Construction Materials",
-            "Decoration Materials",
-            "Dhaka Bank  MSME  Bazar",
-            "Electronics & Appliance",
-            "Electric & Parts",
-            "Event & Media",
-            "Food & Beverage",
-            "Food & Restaurants",
-            "Furniture",
-            "Glasses",
-            "Grocery",
-            "Handmade",
-            "Harvesting & Agriculture",
-            "Health Care & Pharmaceutical",
-            "Home & Living",
-            "Home Garden",
-            "Hotels Booking",
-            "Jewellery",
-            "Kids",
-            "Kitchen & Dining",
-            "Leather Goods",
-            "LP Gas",
-            "Machineries",
-            "Men",
-            "Paints",
-            "Pet & Poultry Supplies",
-            "Plastic Made Products",
-            "Property",
-            "Services",
-            "Shoes",
-            "Sports",
-            "Stationeries",
-            "Vehicles & Parts",
-            "Watch & Clock",
-            "Women"
-    } ;
-
-    public static int[] imageCategory = {
-            R.drawable.ic_bags_set,
-            R.drawable.ic_color_lotion,
-            R.drawable.ic_color_books,
-            R.drawable.burmes_item,
-            R.drawable.ic_color_construction,
-            R.drawable.ic_color_decoration,
-            R.drawable.dhaka_bank_logo,
-            R.drawable.ic_color_multiple_devices,
-            R.drawable.ic_color_electric,
-
-            R.drawable.ic_color_event,
-            R.drawable.ic_color_beverage,
-            R.drawable.ic_color_food_plate,
-            R.drawable.ic_color_sliding_door_closet,
-            R.drawable.ic_color_glasses_new,
-            R.drawable.ic_color_ingredients,
-            R.drawable.ic_color_potters_wheel,
-            R.drawable.ic_color_harvest,
-            R.drawable.ic_color_health_checkup_1,
-            R.drawable.ic_color_open_curtains,
-            R.drawable.ic_color_orchid,
-            R.drawable.ic_color_hotel_building,
-            R.drawable.ic_color_jewelry,
-            R.drawable.ic_color_kids,
-            R.drawable.ic_color_kitchen,
-            R.drawable.ic_color_jacket_bag,
-            R.drawable.ic_color_gas,
-            R.drawable.ic_color_sewing_machine,
-            R.drawable.men_fashion,
-            R.drawable.ic_color_paint_bucket,
-            R.drawable.ic_color_dog,
-            R.drawable.ic_color_bucket,
-            R.drawable.ic_color_building,
-            R.drawable.ic_color_maintenance,
-            R.drawable.ic_color_new_shoes2,
-            R.drawable.ic_color_sports,
-            R.drawable.ic_color_pot,
-            R.drawable.ic_color_vehicles,
-            R.drawable.ic_color_wathces,
-            R.drawable.female_fashion,
-
-    };
-
-
     public ShimmerFrameLayout shimmer;
-
     public ShimmerFrameLayout shimmerParent;
 
+    private String json = "[]";
 
-
-    public TabsFragment(){
+    public SubTabsFragment(){
         // Required empty public constructor
     }
 
-    public TabsFragment(int type, String slug, String category, Fragment parentIntance){
 
-        this.category = category;
-        this.type = type;
-        this.slug = slug;
-        this.parentIntance = parentIntance;
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_category, container, false);
         context = getContext();
-        categoryMap=new HashMap<>();
         shimmer = view.findViewById(R.id.shimmer);
 
+        Bundle bundle = getArguments();
+
+        category = bundle.getString("category");
+        type = bundle.getInt("type");
+        slug = bundle.getString("slug");
+        json = bundle.getString("json");
 
         try {
-
             shimmer.startShimmer();
         } catch (Exception e){
 
@@ -204,38 +112,10 @@ public class TabsFragment extends Fragment {
         itemList = new ArrayList<>();
         adapter = new TabsAdapter(context, (MainActivity) getActivity(), itemList, type);
         // check if showing offline homepage vector categories
-        if (slug.equals("root") && type == 1) {
-            titleCategory2 = new ArrayList<>();
-            imageCategory2 = new ArrayList<>();
-            for (int i = 0; i < titleCategory.length; i++) {
-                titleCategory2.add(titleCategory[i]);
-                imageCategory2.add(imageCategory[i]);
-                categoryMap.put(titleCategory[i], imageCategory[i]);
-            }
-            adapter2 = new HomeCategoryAdapter2(context, titleCategory2, imageCategory2);
-            recyclerView.setAdapter(adapter2);
-            adapter2.notifyDataSetChanged();
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
 
-                    stopShimmer();
 
-                }
-            }, 300);
-            search.setHint("Search categories");
-            showMore.setVisibility(View.GONE);
-            search.setVisibility(View.VISIBLE);
-        } else {
-            recyclerView.setAdapter(adapter);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    if (shimmer.isShimmerStarted())
-                        hideParentShimmer();
-                }
-            }, 1200);
-        }
+        recyclerView.setAdapter(adapter);
+
 
         showMore.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,7 +154,14 @@ public class TabsFragment extends Fragment {
         });
 
 
-        loadData();
+
+        if (json.equals(""))
+            loadData();
+        else {
+            loadJsonToView(json, type);
+        }
+
+
     }
 
     public void loadData(){
@@ -316,27 +203,10 @@ public class TabsFragment extends Fragment {
         }, 1000 );
     }
 
-    public void hideParentShimmer(){
 
-
-        try {
-
-
-            if (parentIntance instanceof HomeFragment)
-                ((HomeFragment) parentIntance).hideShimmer();
-            else if (parentIntance instanceof BrowseProductFragment)
-                ((BrowseProductFragment) parentIntance).hideShimmer();
-        } catch (Exception e){
-
-
-            Log.e("ozii shimmer", e.toString());
-        }
-    }
 
     public void stopShimmer(){
 
-        // hide parent shimmer
-        hideParentShimmer();
 
         try {
 
@@ -346,6 +216,51 @@ public class TabsFragment extends Fragment {
         }
         shimmer.setVisibility(View.GONE);
     }
+
+
+
+
+    public void loadJsonToView(String json, int type){
+
+        try {
+
+            JSONArray response = new JSONArray(json);
+
+
+            for (int i = 0; i < response.length(); i++) {
+                try {
+                    JSONObject ob = response.getJSONObject(i);
+                    TabsItem tabsItem = new TabsItem();
+
+                    if (type == 3){
+                        tabsItem.setTitle(ob.getString("shop_name"));
+                        tabsItem.setImage(ob.getString("shop_image"));
+                        tabsItem.setSlug(ob.getString("shop_slug"));
+                    } else {
+                        tabsItem.setTitle(ob.getString("name"));
+                        tabsItem.setImage(ob.getString("image_url"));
+                        tabsItem.setSlug(ob.getString("slug"));
+                    }
+
+                    tabsItem.setCategory(category);
+                    itemList.add(tabsItem);
+                    adapter.notifyItemInserted(itemList.size());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            stopShimmer();
+        } catch (Exception e){
+
+        }
+
+
+    }
+
+
+
+
 
     public void getSubCategories(){
         String url;
@@ -375,7 +290,6 @@ public class TabsFragment extends Fragment {
                         }
                     }
 
-                    Log.d("Response", response.toString());
                     stopShimmer();
                 }, new Response.ErrorListener() {
             @Override
@@ -438,11 +352,13 @@ public class TabsFragment extends Fragment {
                             adapter.notifyItemInserted(itemList.size());
                         }
 
-                        stopShimmer();
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(context, "brand_error", Toast.LENGTH_SHORT).show();
                     }
+
+                    stopShimmer();
+
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -495,19 +411,12 @@ public class TabsFragment extends Fragment {
                             TabsItem tabsItem = new TabsItem();
                             tabsItem.setTitle(ob.getString("shop_name"));
                             tabsItem.setImage(ob.getString("shop_image"));
-
-                            if (slug.equals("root"))
-                                tabsItem.setSlug(ob.getString("slug"));
-                            else
-                                tabsItem.setSlug(ob.getString("shop_slug"));
-
-
+                            tabsItem.setSlug(ob.getString("shop_slug"));
                             tabsItem.setCategory(category);
                             itemList.add(tabsItem);
                             adapter.notifyItemInserted(itemList.size());
 
                         }
-
 
                         stopShimmer();
 

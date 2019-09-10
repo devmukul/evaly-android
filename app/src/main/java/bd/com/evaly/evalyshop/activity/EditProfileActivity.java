@@ -45,6 +45,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +55,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.util.ImageUtils;
@@ -317,6 +319,8 @@ public class EditProfileActivity extends BaseActivity {
         RequestQueue rQueue;
         String url="https://api.evaly.com.bd/core/image/upload";
 
+        Logger.d(url);
+
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
                 new Response.Listener<NetworkResponse>() {
                     @Override
@@ -334,7 +338,7 @@ public class EditProfileActivity extends BaseActivity {
 
                             if(jsonObject.getBoolean("success")) {
                                 String image = jsonObject.getJSONObject("data").getString("url");
-                                String image_sm = jsonObject.getJSONObject("data").getString("url_small");
+                                String image_sm = jsonObject.getJSONObject("data").getString("url_sm");
                                 userDetails.setProfilePicture(image);
                                 userDetails.setProfilePictureSM(image_sm);
                                 setProfilePic();

@@ -207,7 +207,6 @@ public class ShopFragment extends Fragment {
 
 
         getShopProductCount();
-        getShopData();
         getProductRating(slug);
         getSubCategories(currentPage);
 
@@ -269,11 +268,11 @@ public class ShopFragment extends Fragment {
 
         String url  = "https://api.evaly.com.bd/core/public/shops/items/"+slug+"/?page="+currentPage;
 
-        Log.d("shop_url",url);
+        Log.d("json url",url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
                     try {
-                        //Log.d("shop_response_int",response.getInt("count")+"");
+                        Log.d("json response",response.toString());
 
                         JSONObject data = response.getJSONObject("data");
                         JSONObject jsonObject = data.getJSONObject("shop");
@@ -518,8 +517,11 @@ public class ShopFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
+
+
+                if (!userDetails.getToken().equals(""))
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+
                 headers.put("Content-Type", "application/json");
                 headers.put("Origin", "https://evaly.com.bd");
                 headers.put("Referer", "https://evaly.com.bd/");
@@ -532,13 +534,11 @@ public class ShopFragment extends Fragment {
                     userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
                 }
 
-
-
                 headers.put("User-Agent", userAgent);
                 return headers;
             }
-        };;
-        // RequestQueue rq = Volley.newRequestQueue(context);
+        };
+
         request.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
@@ -612,8 +612,6 @@ public class ShopFragment extends Fragment {
 
     }
 
-    public void getShopData(){
-    }
 
     public void getSubCategories(int currentPage){
 
