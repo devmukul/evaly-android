@@ -32,11 +32,11 @@ import bd.com.evaly.evalyshop.util.TextTouchListener;
 
 public class CategorySearchAdapter extends RecyclerView.Adapter<CategorySearchAdapter.MyViewHolder>{
 
-    ArrayList<JSONObject> itemList;
+    ArrayList<JSONArray> itemList;
     Context context;
     String query;
 
-    public CategorySearchAdapter(ArrayList<JSONObject> itemList, Context context) {
+    public CategorySearchAdapter(ArrayList<JSONArray> itemList, Context context) {
         this.itemList = itemList;
         this.context = context;
         this.query = query;
@@ -78,9 +78,9 @@ public class CategorySearchAdapter extends RecyclerView.Adapter<CategorySearchAd
         try {
 
 
-            JSONArray ancestors = itemList.get(position).getJSONArray("ancestors");
+            JSONArray ancestors = itemList.get(position);
 
-            for (int i = 1; i < ancestors.length(); i++){
+            for (int i = 0; i < ancestors.length(); i++){
 
                 JSONObject item = ancestors.getJSONObject(i);
 
@@ -99,7 +99,7 @@ public class CategorySearchAdapter extends RecyclerView.Adapter<CategorySearchAd
                 img.setBounds( 0, 0, 50, 40 );
                 htext.setCompoundDrawables(img, null, null, null);
                 htext.setCompoundDrawablePadding(15);
-                htext.setPadding(i*70, 0 , 0 , 50);
+                htext.setPadding((i+1)*70, 0 , 0 , 50);
                 htext.setClickable(true);
                 htext.setTag(slug);
 
