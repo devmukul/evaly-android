@@ -163,13 +163,7 @@ public class TabsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public TabsFragment(int type, String slug, String category, Fragment parentIntance){
 
-        this.category = category;
-        this.type = type;
-        this.slug = slug;
-        this.parentIntance = parentIntance;
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -177,6 +171,13 @@ public class TabsFragment extends Fragment {
         context = getContext();
         categoryMap=new HashMap<>();
         shimmer = view.findViewById(R.id.shimmer);
+
+
+        Bundle bundle = getArguments();
+
+        category = bundle.getString("category");
+        type = bundle.getInt("type");
+        slug = bundle.getString("slug");
 
 
         try {

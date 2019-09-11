@@ -58,8 +58,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         else
             myViewHolder.messages.setTypeface(null, Typeface.NORMAL);
 
-
-
         myViewHolder.messages.setText(notifications.get(i).getMessage());
 
 

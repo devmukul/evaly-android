@@ -73,20 +73,12 @@ public class HomeFragment extends Fragment {
     TabLayout tabLayout;
     LinearLayout voucher;
     ShimmerFrameLayout shimmer;
-
     private boolean isShimmerShowed = false;
-
     Timer timer;
-
-
     RequestQueue rq;
     View view;
-
-
     String defaultCategory = "root";
-
     UserDetails userDetails;
-
     Context context;
 
     public HomeFragment() {
@@ -96,11 +88,8 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-
-
         activity = (MainActivity) getActivity();
         context = getContext();
-
         rq = Volley.newRequestQueue(context);
         evalyStore=view.findViewById(R.id.evaly_store);
         evalyStore.setOnClickListener(new View.OnClickListener() {
@@ -110,11 +99,9 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
 //        Random Dice = new Random();
 //        int n = Dice.nextInt(Data.homeRandomCategory.length);
 //        defaultCategory = Data.homeRandomCategory[n];
-
 
         return view;
     }
@@ -127,25 +114,16 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         tabLayout = view.findViewById(R.id.tab_layout);
-
-
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSmoothScrollingEnabled(true);
-
         voucher=view.findViewById(R.id.voucher);
         homeSearch=view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent = new Intent(context, GlobalSearchActivity.class);
-
-
                 intent.putExtra("type", 1);
-
                 startActivity(intent);
-
-
             }
         });
 
@@ -154,25 +132,11 @@ public class HomeFragment extends Fragment {
 
         shimmer = view.findViewById(R.id.shimmer);
         try {
-
             shimmer.setVisibility(View.VISIBLE);
             shimmer.startShimmer();
         } catch (Exception e){
 
         }
-
-
-
-
-        TabsFragment categoryFragment = new TabsFragment(1, "root", "root", this);
-        TabsFragment brandFragment = new TabsFragment(2, "root", "root", this);
-        TabsFragment shopFragment = new TabsFragment(3, "root", "root", this);
-
-
-        pager.addFragment(categoryFragment,"Categories");
-        pager.addFragment(brandFragment,"Brands");
-        pager.addFragment(shopFragment,"Shops");
-
 
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(pager);
@@ -203,26 +167,11 @@ public class HomeFragment extends Fragment {
                 }else {
                     startActivity(new Intent(context, InviteEarn.class));
                 }
-//                FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
-//                Fragment fragment3 = new ShopFragment();
-//                Bundle bundle = new Bundle();
-//                bundle.putInt("type", 1);
-//                bundle.putString("shop_slug", "evaly-wholesale-store");
-//                bundle.putString("shop_name", "Evaly Wholesale Store");
-//                bundle.putString("category", "root");
-//                bundle.putBoolean("showTabs", false);
-//                fragment3.setArguments(bundle);
-//                ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-//                ft.replace(R.id.fragment_container, fragment3, "voucher");
-//                ft.addToBackStack("wholesale");
-//                ft.commit();
             }
         });
 
 
         userDetails = new UserDetails(context);
-
-
 
         InitializeActionBar InitializeActionbar = new InitializeActionBar((LinearLayout) view.findViewById(R.id.header_logo), activity, "home");
 
@@ -300,6 +249,34 @@ public class HomeFragment extends Fragment {
 
 
 
+
+
+
+        TabsFragment categoryFragment = new TabsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", 1);
+        bundle.putString("slug", "root");
+        bundle.putString("category", "root");
+        categoryFragment.setArguments(bundle);
+
+        TabsFragment brandFragment = new TabsFragment();
+        Bundle bundle2 = new Bundle();
+        bundle2.putInt("type", 2);
+        bundle2.putString("slug", "root");
+        bundle2.putString("category", "root");
+        brandFragment.setArguments(bundle2);
+
+        TabsFragment shopFragment = new TabsFragment();
+        Bundle bundle3 = new Bundle();
+        bundle3.putInt("type", 3);
+        bundle3.putString("slug", "root");
+        bundle3.putString("category", "root");
+        shopFragment.setArguments(bundle3);
+
+        pager.addFragment(categoryFragment,"Categories");
+        pager.addFragment(brandFragment,"Brands");
+        pager.addFragment(shopFragment,"Shops");
+        pager.notifyDataSetChanged();
 
 
 
