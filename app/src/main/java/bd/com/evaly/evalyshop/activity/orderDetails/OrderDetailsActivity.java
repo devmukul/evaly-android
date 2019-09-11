@@ -712,7 +712,7 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 dialog.hideDialog();
 
-
+;
 
                 try{
                     if(response.getString("order_status").toLowerCase().equals("pending")){
