@@ -93,8 +93,16 @@ public class NotificationActivity extends BaseActivity {
                         not.setVisibility(View.GONE);
                         for(int i=0;i<jsonArray.length();i++){
                             JSONObject ob = jsonArray.getJSONObject(i);
-                            notifications.add(new Notifications(ob.getString("id"),ob.getString("thumb_url"),
-                                    ob.getString("message"),ob.getString("created_at")));
+
+                            Notifications item = new Notifications();
+                            item.setId(ob.getString("id"));
+                            item.setImageURL(ob.getString("thumb_url"));
+                            item.setMessage(ob.getString("message"));
+                            item.setTime(ob.getString("created_at"));
+                            item.setContent_type(ob.getString("content_type"));
+                            item.setContent_url(ob.getString("content_url"));
+                            notifications.add(item);
+
                             adapter.notifyItemInserted(notifications.size());
                         }
                     }
@@ -115,11 +123,6 @@ public class NotificationActivity extends BaseActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                headers.put("Host", "api.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                //headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
                 return headers;
             }
         };
@@ -173,16 +176,6 @@ public class NotificationActivity extends BaseActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                String userAgent;
-                try {
-                    userAgent = WebSettings.getDefaultUserAgent(NotificationActivity.this);
-                } catch (Exception e) {
-                    userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-                }
-                headers.put("User-Agent", userAgent);
                 return headers;
             }
         };

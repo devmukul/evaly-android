@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -22,9 +23,13 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.OrderListActivity;
+import bd.com.evaly.evalyshop.activity.ViewProductActivity;
+import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.models.Notifications;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -47,7 +52,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
+
+        if (notifications.get(i).isRead())
+            myViewHolder.messages.setTypeface(null, Typeface.BOLD);
+        else
+            myViewHolder.messages.setTypeface(null, Typeface.NORMAL);
+
+
+
         myViewHolder.messages.setText(notifications.get(i).getMessage());
+
+
         Glide.with(context)
                 .load(notifications.get(i).getImageURL())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -66,10 +81,38 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                           }
                 )
                 .into(myViewHolder.shopImage);
+
+
         myViewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, OrderListActivity.class));
+
+                if (notifications.get(i).getContent_type().equals("order")){
+
+                    Intent intent = new Intent(context, OrderDetailsActivity.class);
+                    intent.putExtra("orderID", notifications.get(i).getContent_url());
+                    context.startActivity(intent);
+
+                } else if (notifications.get(i).getContent_type().equals("shop")){
+
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.putExtra("type", 3);
+                    intent.putExtra("shop_slug", notifications.get(i).getContent_url());
+                    intent.putExtra("shop_name", notifications.get(i).getContent_url());
+                    context.startActivity(intent);
+
+                } else if (notifications.get(i).getContent_type().equals("product")) {
+
+                    Intent intent=new Intent(context, ViewProductActivity.class);
+                    intent.putExtra("product_slug",notifications.get(i).getContent_url());
+                    intent.putExtra("product_name",notifications.get(i).getContent_url());
+                    context.startActivity(intent);
+                }
+
+
+
+
+
             }
         });
 

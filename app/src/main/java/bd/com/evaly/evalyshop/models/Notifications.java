@@ -2,13 +2,45 @@ package bd.com.evaly.evalyshop.models;
 
 public class Notifications {
 
-    String id,imageURL,message,time;
+    private String id,imageURL,message,time, content_type, content_url;
+    private boolean read;
 
-    public Notifications(String id, String imageURL, String message, String time) {
+    public Notifications(String id, String imageURL, String message, String time, String content_type, String content_url, boolean read) {
         this.id = id;
         this.imageURL = imageURL;
         this.message = message;
         this.time = time;
+        this.content_type = content_type;
+        this.content_url = content_url;
+        this.read = read;
+    }
+
+    public Notifications(){
+        
+    }
+
+    public String getContent_type() {
+        return content_type;
+    }
+
+    public void setContent_type(String content_type) {
+        this.content_type = content_type;
+    }
+
+    public String getContent_url() {
+        return content_url;
+    }
+
+    public void setContent_url(String content_url) {
+        this.content_url = content_url;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
     public String getId() {

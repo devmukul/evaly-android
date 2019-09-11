@@ -93,12 +93,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         setContentView(R.layout.activity_main);
-
-
-
 
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
@@ -120,16 +115,20 @@ public class MainActivity extends BaseActivity {
         TextView text = badge.findViewById(R.id.notification);
         text.setText(dbHelperWishList.size()+"");
         itemView.addView(badge);
+
         if(dbHelperWishList.size()==0){
             badge.setVisibility(View.GONE);
         }
+
         View badge2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView text2 = badge2.findViewById(R.id.notification);
         text2.setText(dbHelperCart.size()+"");
         itemView2.addView(badge2);
+
         if(dbHelperCart.size()==0){
             badge2.setVisibility(View.GONE);
         }
+
         Handler handler = new Handler();
         int delay = 3000;
         handler.postDelayed(new Runnable(){
