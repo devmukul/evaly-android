@@ -68,7 +68,7 @@ public class OrderDetailsActivity extends BaseActivity {
     private static final int SCROLL_DIRECTION_UP = -1;
 
     private NestedScrollView scrollView;
-    String shopSlug="",shopCategory="";
+    String shopSlug="", shopCategory="";
 
     // for payment
     String invoice_no="";
@@ -712,7 +712,25 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 dialog.hideDialog();
 
+;
 
+                try{
+                    if(response.getString("order_status").toLowerCase().equals("pending")){
+                        indicator.setCurrentStep(1);
+                    }else if(response.getString("order_status").toLowerCase().equals("confirmed")){
+                        indicator.setCurrentStep(2);
+                    }else if(response.getString("status").toLowerCase().equals("processing")){
+                        indicator.setCurrentStep(3);
+                    }else if(response.getString("order_status").toLowerCase().equals("picked")){
+                        indicator.setCurrentStep(4);
+                    }else if(response.getString("order_status").toLowerCase().equals("shipped")){
+                        indicator.setCurrentStep(5);
+                    }else if(response.getString("order_status").toLowerCase().equals("delivered")){
+                        indicator.setCurrentStep(6);
+                    }
+                }catch(Exception e){
+
+                }
 
 
                 try {
@@ -727,23 +745,7 @@ public class OrderDetailsActivity extends BaseActivity {
                     }
 
 
-                    try{
-                        if(response.getString("order_status").toLowerCase().equals("pending")){
-                            indicator.setCurrentStep(1);
-                        }else if(response.getString("order_status").toLowerCase().equals("confirmed")){
-                            indicator.setCurrentStep(2);
-                        }else if(response.getString("status").toLowerCase().equals("processing")){
-                            indicator.setCurrentStep(3);
-                        }else if(response.getString("order_status").toLowerCase().equals("picked")){
-                            indicator.setCurrentStep(4);
-                        }else if(response.getString("order_status").toLowerCase().equals("shipped")){
-                            indicator.setCurrentStep(5);
-                        }else if(response.getString("order_status").toLowerCase().equals("delivered")){
-                            indicator.setCurrentStep(6);
-                        }
-                    }catch(Exception e){
 
-                    }
                     try{
                         if(response.getString("order_status").toLowerCase().equals("cancel")){
 
