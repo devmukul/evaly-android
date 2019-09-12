@@ -7,7 +7,7 @@ public class ReviewItem {
     private String user_name;
     private int rating_value;
     private String rating_text;
-    private long time;
+    private String time;
     private int is_approved;
 
     public ReviewItem(){
@@ -55,11 +55,11 @@ public class ReviewItem {
         this.rating_text = rating_text;
     }
 
-    public long getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

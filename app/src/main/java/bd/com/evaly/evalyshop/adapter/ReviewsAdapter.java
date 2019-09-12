@@ -36,8 +36,16 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.name.setText(itemList.get(i).getUser_name());
 
-        myViewHolder.time.setText(Utils.getTimeAgo(itemList.get(i).getTime()*1000));
+        try
+        {
 
+            myViewHolder.time.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM", itemList.get(i).getTime()));
+
+        } catch (Exception e) {
+
+            myViewHolder.time.setText(Utils.getTimeAgo(Integer.parseInt(itemList.get(i).getTime()) * 1000));
+
+        }
 
         myViewHolder.reviewText.setText(itemList.get(i).getRating_text());
 

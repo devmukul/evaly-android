@@ -67,6 +67,7 @@ import bd.com.evaly.evalyshop.activity.ReviewsActivity;
 import bd.com.evaly.evalyshop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.TransactionItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
@@ -563,15 +564,16 @@ public class ShopFragment extends Fragment {
 
 
     public void getProductRating(final String sku) {
-        String url= "https://nsuer.club/evaly/reviews/?sku="+sku+"&type=shop&isRating=true";
+        String url= UrlUtils.BASE_URL+"reviews/summary/shops/"+sku+"/";
         Log.d("json rating", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
                     Log.d("json varying", response.toString());
                     try {
 
+                        response = response.getJSONObject("data");
                         ratingJson = response.toString();
-                        double avg = response.getDouble("avg_ratings");
+                        double avg = response.getDouble("avg_rating");
                         RatingBar ratingBar = view.findViewById(R.id.ratingBar);
                         TextView ratingsCount = view.findViewById(R.id.ratings_count);
                         int tratings = response.getInt("total_ratings");

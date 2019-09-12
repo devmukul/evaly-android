@@ -46,6 +46,7 @@ import bd.com.evaly.evalyshop.adapter.ReviewsAdapter;
 import bd.com.evaly.evalyshop.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.reviewratings.RatingReviews;
 import bd.com.evaly.evalyshop.models.ReviewItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class ReviewsActivity extends AppCompatActivity {
@@ -79,14 +80,11 @@ public class ReviewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reviews);
 
-
         getSupportActionBar().setElevation(4f);
         getSupportActionBar().setTitle("Reviews & Ratings");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         floatingActionButton = findViewById(R.id.floatingActionButton);
-
 
         progressBar = findViewById(R.id.progressBar);
         recyclerView=findViewById(R.id.recyclerView);
@@ -98,17 +96,8 @@ public class ReviewsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         userDetails=new UserDetails(this);
 
-
-
-
         RatingReviews ratingReviews = findViewById(R.id.rating_reviews);
-
-
-
         Intent data = getIntent();
-
-
-
 
 
         if(data.hasExtra("ratingJson")) {
@@ -117,7 +106,12 @@ public class ReviewsActivity extends AppCompatActivity {
             item_value = data.getStringExtra("item_value");
             type = data.getStringExtra("type");
 
-            getReviews(item_value);
+            if (type.equals("shop")) {
+                getShopReviews(item_value);
+                checkShopEligibility(item_value);
+            }
+            else
+                getReviews(item_value);
 
 
         }
@@ -128,7 +122,17 @@ public class ReviewsActivity extends AppCompatActivity {
             JSONObject response = new JSONObject(ratingJson);
 
             int total_ratings = response.getInt("total_ratings");
-            double avg_ratings = response.getDouble("avg_ratings");
+
+            double avg_ratings = 0.0;
+
+            try {
+                avg_ratings = response.getDouble("avg_rating");
+            } catch (Exception e){
+
+                avg_ratings = response.getDouble("avg_ratings");
+            }
+
+
             int star_5 = response.getInt("star_5");
             int star_4 = response.getInt("star_4");
             int star_3 = response.getInt("star_3");
@@ -228,13 +232,27 @@ public class ReviewsActivity extends AppCompatActivity {
                     return;
                 }
 
-                postReview(
-                        alertDialog,
-                        item_value,
-                        userDetails.getFirstName()+" "+ userDetails.getLastName(),
-                        String.valueOf(d_rating_bar.getRating()),
-                        d_review_text.getText().toString()
-                        );
+
+                if (type.equals("shop")){
+
+                    postShopReview(
+                            alertDialog,
+                            item_value,
+                            userDetails.getFirstName()+" "+ userDetails.getLastName(),
+                            String.valueOf(d_rating_bar.getRating()),
+                            d_review_text.getText().toString()
+                    );
+
+                } else {
+
+                    postReview(
+                            alertDialog,
+                            item_value,
+                            userDetails.getFirstName() + " " + userDetails.getLastName(),
+                            String.valueOf(d_rating_bar.getRating()),
+                            d_review_text.getText().toString()
+                    );
+                }
 
 
 
@@ -320,14 +338,9 @@ public class ReviewsActivity extends AppCompatActivity {
 
 
                         ratingJson = response.toString();
-
-
                         Intent intent = getIntent();
-
                         intent.putExtra("ratingJson", ratingJson);
-
                         finish();
-
                         startActivity(getIntent());
 
 
@@ -361,6 +374,9 @@ public class ReviewsActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
 
 
@@ -410,7 +426,7 @@ public class ReviewsActivity extends AppCompatActivity {
                             item.setUser_name(ob.getString("user_name"));
                             item.setRating_value(ob.getInt("rating_value"));
                             item.setRating_text(ob.getString("rating_text"));
-                            item.setTime(ob.getLong("time"));
+                            item.setTime(ob.getString("time"));
                             item.setIs_approved(ob.getInt("is_approved"));
 
                             itemList.add(item);
@@ -455,6 +471,229 @@ public class ReviewsActivity extends AppCompatActivity {
         });
         queue.add(request);
     }
+
+
+
+
+    public void getShopReviews(String sku){
+
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        String url= UrlUtils.BASE_URL+"reviews/shops/"+sku+"/";
+
+        Log.d("json", url);
+
+        JSONObject parameters = new JSONObject();
+        try {
+            parameters.put("page", "1");
+            parameters.put("limit", "15");
+        } catch (Exception e) {
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("notifications_response", response.toString());
+                try {
+
+
+                    progressBar.setVisibility(View.INVISIBLE);
+
+                    JSONArray jsonArray = response.getJSONArray("data");
+                    if(jsonArray.length()==0){
+                        not.setVisibility(View.VISIBLE);
+
+                        Glide.with(ReviewsActivity.this)
+                                .load(R.drawable.ic_reviews_vector)
+                                .apply(new RequestOptions().override(800, 800))
+                                .into((ImageView) findViewById(R.id.noImage));
+
+
+                        recyclerView.setVisibility(View.GONE);
+                    }else{
+                        not.setVisibility(View.GONE);
+                        for(int i=0;i<jsonArray.length();i++){
+                            JSONObject ob = jsonArray.getJSONObject(i);
+                            ReviewItem item = new ReviewItem();
+
+                            item.setId(ob.getInt("id"));
+                            item.setUser_name(ob.getString("user_name"));
+                            item.setRating_value(ob.getInt("rating_value"));
+                            item.setRating_text(ob.getString("rating_text"));
+                            item.setTime(ob.getString("time"));
+                            item.setIs_approved(ob.getInt("is_approved"));
+
+                            itemList.add(item);
+
+                            adapter.notifyItemInserted(itemList.size());
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+
+                return headers;
+            }
+        };
+        RequestQueue queue= Volley.newRequestQueue(this);
+        request.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+        queue.add(request);
+    }
+
+
+
+
+
+    public void postShopReview(AlertDialog alertDialog, String sku, String user_name, String rating_value, String rating_text){
+
+
+        progressBar.setVisibility(View.VISIBLE);
+
+
+        String url= UrlUtils.BASE_URL+"add-review/"+sku+"/";
+
+
+        Log.d("json", url);
+
+        JSONObject parameters = new JSONObject();
+        try {
+            parameters.put("review_message", rating_text);
+            parameters.put("rating", rating_value);
+        } catch (Exception e) {
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("json submit rating", response.toString());
+                try {
+
+
+                    alertDialog.dismiss();
+
+                    Toast.makeText(ReviewsActivity.this, "Review submitted. ", Toast.LENGTH_LONG).show();
+
+                    getProductRating(alertDialog);
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                return headers;
+            }
+
+        };
+        RequestQueue queue= Volley.newRequestQueue(this);
+        queue.add(request);
+    }
+
+
+
+    public void checkShopEligibility(String sku) {
+
+        String url= UrlUtils.BASE_URL+"review-eligibility/"+sku+"/";
+        Log.d("json rating", url);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+                response -> {
+
+
+                    Log.d("json rating", response.toString());
+
+                    try{
+
+                        boolean isEligible = response.getBoolean("success");
+
+                        if(isEligible)
+                            floatingActionButton.setVisibility(View.VISIBLE);
+                        else
+                            floatingActionButton.setVisibility(View.GONE);
+
+
+                    }catch (Exception e){
+
+                    }
+
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+
+                return headers;
+            }
+        };
+
+
+
+        RequestQueue rq = Volley.newRequestQueue(this);
+        request.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+
+        request.setShouldCache(false);
+        rq.getCache().clear();
+        rq.add(request);
+
+
+    }
+
+
 
 
 
