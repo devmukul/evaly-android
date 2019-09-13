@@ -78,10 +78,7 @@ public class CartActivity extends BaseActivity {
 
     CheckBox selectAll;
     Button checkout;
-    BottomSheetBehavior sheetBehavior;
-    LinearLayout layoutBottomSheet;
     Button btnBottomSheet;
-    View mViewBg;
 
     EditText customAddress, contact_number;
     Switch addressSwitch;
@@ -137,7 +134,6 @@ public class CartActivity extends BaseActivity {
 
         checkout = findViewById(R.id.button);
         selectAll = findViewById(R.id.checkBox);
-        mViewBg = findViewById(R.id.bg);
         alert=new ViewDialog(CartActivity.this);
 
         manager = new LinearLayoutManager(context);
@@ -147,23 +143,12 @@ public class CartActivity extends BaseActivity {
 
         // bottom sheet
 
-        layoutBottomSheet = findViewById(R.id.bottom_sheet);
 
-
-        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-
-
-        getCartList();
-
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
 
         bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_checkout, null);
         bottomSheetDialog.setContentView(bottomSheetView);
-
-
-
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
 
 
@@ -214,47 +199,6 @@ public class CartActivity extends BaseActivity {
 
 
 
-        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-
-                        mViewBg.setVisibility(View.VISIBLE);
-
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-                        mViewBg.setVisibility(View.GONE);
-                        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
-
-        mViewBg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                mViewBg.setVisibility(View.GONE);
-
-            }
-        });
-
-
         btnBottomSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -270,14 +214,11 @@ public class CartActivity extends BaseActivity {
                     Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
                     return;
 
-
                 }
-
 
                  placeOrder(generateOrderJson(), dialog);
 
                 //generateOrderJson();
-
 
 
             }
@@ -345,8 +286,8 @@ public class CartActivity extends BaseActivity {
 
         // updateAddress();
 
-        ImageView cod = findViewById(R.id.cod);
-        ImageView evalyPay = findViewById(R.id.evaly_pay);
+        ImageView cod = bottomSheetView.findViewById(R.id.cod);
+        ImageView evalyPay = bottomSheetView.findViewById(R.id.evaly_pay);
 
 
         // select payment method
@@ -393,6 +334,13 @@ public class CartActivity extends BaseActivity {
                 }
             }
         });
+
+
+
+
+
+        getCartList();
+
 
 
 
@@ -533,7 +481,7 @@ public class CartActivity extends BaseActivity {
         TextView priceView = findViewById(R.id.totalPrice);
         priceView.setText("৳ "+totalPrice);
 
-        TextView priceView2 = findViewById(R.id.bs_price);
+        TextView priceView2 = bottomSheetView.findViewById(R.id.bs_price);
         priceView2.setText("৳ "+totalPrice);
 
 
@@ -558,13 +506,7 @@ public class CartActivity extends BaseActivity {
     @Override
     public void onBackPressed(){
 
-        if (sheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
 
-            sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            mViewBg.setVisibility(View.GONE);
-
-            return;
-        }
 
         super.onBackPressed();
 
@@ -953,8 +895,8 @@ public class CartActivity extends BaseActivity {
             }
         }
 
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        mViewBg.setVisibility(View.GONE);
+        bottomSheetDialog.hide();
+
         getCartList();
         Toast.makeText(context, "Your order has been placed!", Toast.LENGTH_LONG).show();
 
