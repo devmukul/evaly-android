@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -21,8 +21,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.orderDetails.PayViaCard"
-            android:theme="@style/AppTheme"/>
+        <activity android:name=".activity.newsfeed.NewsfeedActivity"
+            android:theme="@style/AppTheme">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".activity.orderDetails.PayViaCard"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.TransactionHistory"
             android:theme="@style/ThemeTransaction" />
@@ -58,7 +68,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.orderDetails.PayViaBkashActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.NetworkErrorActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -115,7 +125,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

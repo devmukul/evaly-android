@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical"
+    tools:context=".activity.newsfeed.NewsfeedActivity">
+
+    <android.support.design.widget.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        app:tabMode="scrollable">
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Public" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Announcement" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CEO" />
+    </android.support.design.widget.TabLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fafafa"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/newsfeed_box_bg">
+
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/pictureHolder"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    app:cardCornerRadius="35dp"
+                    app:cardElevation="1dp"
+                    app:cardPreventCornerOverlap="true">
+
+                    <ImageView
+                        android:id="@+id/picture"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        app:srcCompat="@drawable/rassel_bhaia" />
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_toRightOf="@id/pictureHolder"
+                    android:text="Mohammad Rassel"
+                    android:textColor="#333"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/user_name"
+                    android:layout_alignStart="@id/user_name"
+                    android:text="2 hours ago"
+                    android:textSize="13sp" />
+
+                <ImageView
+                    android:id="@+id/menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingTop="17dp"
+                    android:paddingRight="6dp"
+                    app:srcCompat="@drawable/ic_dot_menu" />
+
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/pictureHolder"
+                    android:paddingLeft="17dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="17dp"
+                    android:paddingBottom="10dp"
+                    android:text="50% ক্যাশব্যাক অফার শনিবার (07.09.2019) রাত পর্যন্ত থাকবে । আমাদের অর্ডার ডেলিভারি ক্যাপাসিটি ঠিক রাখা স্বার্থে অফার 13 তারিখ পর্যন্ত কন্টিনিউ হবে না। যারা অর্ডার করেছেন তাদের পেমেন্ট রবিবার পর্যন্ত নেওয়া হবে।"
+                    android:textColor="#444"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/action_btn_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text"
+                    android:gravity="right"
+                    android:orientation="horizontal"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="15dp">
+
+                    <ImageView
+                        android:id="@+id/like"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="0"
+                        android:clickable="true"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="5dp"
+                        android:paddingBottom="15dp"
+                        app:srcCompat="@drawable/ic_favorite_black" />
+
+                    <TextView
+                        android:id="@+id/likeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="0"
+                        android:text="32 Likes" />
+
+                    <ImageView
+                        android:id="@+id/comment"
+                        android:layout_width="35dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="0"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="5dp"
+                        app:srcCompat="@drawable/ic_chat_small" />
+
+                    <TextView
+                        android:id="@+id/cmt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:text="62 Comments" />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/newsfeed_box_bg">
+
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/pictureHolder"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    app:cardCornerRadius="35dp"
+                    app:cardElevation="1dp"
+                    app:cardPreventCornerOverlap="true">
+
+                    <ImageView
+                        android:id="@+id/picture"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        app:srcCompat="@drawable/shadik" />
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_toRightOf="@id/pictureHolder"
+                    android:text="Shabdik Himu Shobdo"
+                    android:textColor="#333"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/user_name"
+                    android:layout_alignStart="@id/user_name"
+                    android:text="8 hours ago"
+                    android:textSize="13sp" />
+
+                <ImageView
+                    android:id="@+id/menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingTop="17dp"
+                    android:paddingRight="6dp"
+                    app:srcCompat="@drawable/ic_dot_menu" />
+
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/pictureHolder"
+                    android:paddingLeft="17dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="17dp"
+                    android:paddingBottom="10dp"
+                    android:text="আজ রাত সাড়ে ১০ টায়, ১৯:১৯ ক্যাম্পেইন আপডেট এবং গ্রুপের হাফ সেঞ্চুরি উপলক্ষে থাকছে 'LIVE with CEO'"
+                    android:textColor="#444"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/postImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/ceo_live" />
+
+                <LinearLayout
+                    android:id="@+id/action_btn_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/postImage"
+                    android:gravity="right"
+                    android:orientation="horizontal"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="15dp">
+
+                    <ImageView
+                        android:id="@+id/like2"
+                        android:layout_width="35dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="0"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="5dp"
+                        app:srcCompat="@drawable/ic_favorite_black" />
+
+                    <TextView
+                        android:id="@+id/likeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="0"
+                        android:text="18 Likes" />
+
+                    <ImageView
+                        android:id="@+id/comment"
+                        android:layout_width="35dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="0"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="5dp"
+                        app:srcCompat="@drawable/ic_chat_small" />
+
+                    <TextView
+                        android:id="@+id/textView55"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:text="13 Comments" />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/newsfeed_box_bg">
+
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/pictureHolder"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    app:cardCornerRadius="35dp"
+                    app:cardElevation="1dp"
+                    app:cardPreventCornerOverlap="true">
+
+                    <ImageView
+                        android:id="@+id/picture"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        app:srcCompat="@drawable/shadik" />
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_toRightOf="@id/pictureHolder"
+                    android:text="Shabdik Himu Shobdo"
+                    android:textColor="#333"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/user_name"
+                    android:layout_alignStart="@id/user_name"
+                    android:text="4 hours ago"
+                    android:textSize="13sp" />
+
+                <ImageView
+                    android:id="@+id/menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingTop="17dp"
+                    android:paddingRight="6dp"
+                    app:srcCompat="@drawable/ic_dot_menu" />
+
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/pictureHolder"
+                    android:paddingLeft="17dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="17dp"
+                    android:paddingBottom="10dp"
+                    android:text="আজকের মত থান্ডারস্টরমে অর্ডার পর্ব শেষ! ইউনিভার্সিটি ভর্তি পরীক্ষায় প্রতি আসনের বিপরীতে যে পরিমান প্রতিযোগী থাকে, তার চেয়ে বেশি প্রতিযোগিতা ছিল ইভ্যালি থান্ডারস্টরমে। তাই ভাগ্যই এখন সম্বল। খুব শীঘ্রই ফলাফল তালিকা আকারে প্রকাশ করা হবে।  শুভ কামনা সবার জন্য।"
+                    android:textColor="#444"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/action_btn_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text"
+                    android:gravity="right"
+                    android:orientation="horizontal"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="15dp">
+
+                    <ImageView
+                        android:id="@+id/like3"
+                        android:layout_width="35dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="0"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="5dp"
+                        app:srcCompat="@drawable/ic_favorite_black" />
+
+                    <TextView
+                        android:id="@+id/likeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="0"
+                        android:text="14 Likes" />
+
+                    <ImageView
+                        android:id="@+id/comment"
+                        android:layout_width="35dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="0"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="5dp"
+                        app:srcCompat="@drawable/ic_chat_small" />
+
+                    <TextView
+                        android:id="@+id/textView55"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:text="8 Comments" />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+
+
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>
