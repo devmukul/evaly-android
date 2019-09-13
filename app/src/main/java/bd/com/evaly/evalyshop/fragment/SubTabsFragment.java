@@ -43,6 +43,7 @@ import bd.com.evaly.evalyshop.adapter.HomeCategoryAdapter2;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.TransactionItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 
 public class SubTabsFragment extends Fragment {
 
@@ -265,9 +266,9 @@ public class SubTabsFragment extends Fragment {
     public void getSubCategories(){
         String url;
         if (slug.equals("root"))
-            url = "https://api.evaly.com.bd/core/public/categories/";
+            url = UrlUtils.BASE_URL+"public/categories/";
         else
-            url = "https://api.evaly.com.bd/core/public/categories/?parent="+slug;
+            url = UrlUtils.BASE_URL+"public/categories/?parent="+slug;
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, (String) null,
                 response -> {
 
@@ -326,9 +327,9 @@ public class SubTabsFragment extends Fragment {
 
         String url;
         if (slug.equals("root"))
-            url = "https://api.evaly.com.bd/core/public/brands/?limit=12&page="+counter;
+            url = UrlUtils.BASE_URL+"public/brands/?limit=12&page="+counter;
         else
-            url = "https://api.evaly.com.bd/core/public/brands/?limit=12&category="+slug+"&page="+counter;
+            url = UrlUtils.BASE_URL+"public/brands/?limit=12&category="+slug+"&page="+counter;
 
 
         Log.d("json", url);
@@ -396,9 +397,9 @@ public class SubTabsFragment extends Fragment {
     public void getShopsOfCategory(int counter){
         String url;
         if (slug.equals("root"))
-            url = "https://api.evaly.com.bd/core/custom/shops/?page="+counter+"&limit=13";
+            url = UrlUtils.BASE_URL+"custom/shops/?page="+counter+"&limit=13";
         else
-            url = "https://api.evaly.com.bd/core/public/category/shops/"+slug+"/?limit=12&page="+counter;
+            url = UrlUtils.BASE_URL+"public/category/shops/"+slug+"/?limit=12&page="+counter;
         Log.d("json", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {

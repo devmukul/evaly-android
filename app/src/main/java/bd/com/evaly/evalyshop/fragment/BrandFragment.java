@@ -56,6 +56,7 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.TransactionItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 
@@ -256,7 +257,7 @@ public class BrandFragment extends Fragment {
 
     public void getProductCount(String slug){
 
-        String url = "https://api.evaly.com.bd/core/public/products/?page=1&limit=12&brand="+slug;
+        String url = UrlUtils.BASE_URL+"public/products/?page=1&limit=12&brand="+slug;
         Log.d("json", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {

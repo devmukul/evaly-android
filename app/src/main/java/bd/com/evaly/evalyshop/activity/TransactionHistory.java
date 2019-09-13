@@ -38,6 +38,7 @@ import bd.com.evaly.evalyshop.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.adapter.TransactionHistoryAdapter;
 import bd.com.evaly.evalyshop.models.Notifications;
 import bd.com.evaly.evalyshop.models.TransactionItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class TransactionHistory extends AppCompatActivity {
@@ -207,7 +208,7 @@ public class TransactionHistory extends AppCompatActivity {
 
 
     public void getBalance(){
-        String url="https://api.evaly.com.bd/core/user-info-pay/"+userDetails.getUserName()+"/";
+        String url= UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName()+"/";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
             @Override

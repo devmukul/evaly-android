@@ -28,6 +28,7 @@ import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.models.Notifications;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class NotificationActivity extends BaseActivity {
@@ -74,7 +75,7 @@ public class NotificationActivity extends BaseActivity {
 
 
     public void getNotifications(){
-        String url="https://api.evaly.com.bd/core/notifications/";
+        String url= UrlUtils.BASE_URL+"notifications/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -152,7 +153,7 @@ public class NotificationActivity extends BaseActivity {
     public void markAsRead(){
 
 
-        String url = "https://api.evaly.com.bd/core/update-notifications/";
+        String url = UrlUtils.BASE_URL+"update-notifications/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");

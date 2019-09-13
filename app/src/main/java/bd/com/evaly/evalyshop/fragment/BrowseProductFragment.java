@@ -59,6 +59,7 @@ import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.models.ProductListItem;
 import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 
 public class BrowseProductFragment extends Fragment {
 
@@ -248,7 +249,7 @@ public class BrowseProductFragment extends Fragment {
 
 
     public void getSubCategories(){
-        String url = "https://api.evaly.com.bd/core/public/categories/?parent="+slug;
+        String url = UrlUtils.BASE_URL+"public/categories/?parent="+slug;
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, (String) null,
                 response -> {
 
@@ -345,7 +346,7 @@ public class BrowseProductFragment extends Fragment {
 
     public void getBrandsOfCategory(int counter){
 
-        String url = "https://api.evaly.com.bd/core/public/brands/?limit=12&category="+slug+"&page="+counter;
+        String url = UrlUtils.BASE_URL+"public/brands/?limit=12&category="+slug+"&page="+counter;
 
         Log.d("json", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
@@ -412,7 +413,7 @@ public class BrowseProductFragment extends Fragment {
     }
 
     public void getShopsOfCategory(int counter){
-        String url = "https://api.evaly.com.bd/core/public/category/shops/"+slug+"/?limit=12&page="+counter;
+        String url = UrlUtils.BASE_URL+"public/category/shops/"+slug+"/?limit=12&page="+counter;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {

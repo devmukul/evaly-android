@@ -931,7 +931,7 @@ public class ViewProductActivity extends BaseActivity {
         isShopLoading = true;
 
         Log.d("json_shop", shopURL);
-        shopURL = "https://api.evaly.com.bd/core/public/product/shops/" + variationID + "/";
+        shopURL = UrlUtils.BASE_URL+"public/product/shops/" + variationID + "/";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, shopURL, (String) null,
                 response -> {
 

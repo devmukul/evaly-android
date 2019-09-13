@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class InitializeActionBar {
@@ -90,7 +91,7 @@ public class InitializeActionBar {
     public void getNotificationCount(){
 
 
-        String url = "https://api.evaly.com.bd/core/notifications_count/";
+        String url = UrlUtils.BASE_URL+"notifications_count/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");

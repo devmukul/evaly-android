@@ -63,6 +63,7 @@ import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.models.ProductListItem;
 import bd.com.evaly.evalyshop.models.SearchFilterItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 
@@ -970,9 +971,9 @@ public class GlobalSearchActivity extends BaseActivity {
             query = searchText.getText().toString();
 
 
-        String url = "https://api.evaly.com.bd/core/custom/shops/?page="+p+"&limit=15";
+        String url = UrlUtils.BASE_URL+"custom/shops/?page="+p+"&limit=15";
         if(!query.equals("root"))
-            url = "https://api.evaly.com.bd/core/custom/shops/?page="+p+"&limit=15&search="+query;
+            url = UrlUtils.BASE_URL+"custom/shops/?page="+p+"&limit=15&search="+query;
 
 
         Log.d("json", url);
@@ -1049,9 +1050,9 @@ public class GlobalSearchActivity extends BaseActivity {
             query = searchText.getText().toString();
 
 
-        String url = "https://api.evaly.com.bd/core/public/brands/?page="+p+"&limit=15";
+        String url = UrlUtils.BASE_URL+"public/brands/?page="+p+"&limit=15";
         if(!query.equals("root"))
-            url = "https://api.evaly.com.bd/core/public/brands/?page="+p+"&limit=15&search="+query;
+            url = UrlUtils.BASE_URL+"public/brands/?page="+p+"&limit=15&search="+query;
 
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,

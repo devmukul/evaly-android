@@ -25,7 +25,7 @@ public class Balance {
         UserDetails userDetails = new UserDetails(context);
 
 
-        String url="https://api.evaly.com.bd/core/user-info-pay/"+userDetails.getUserName()+"/";
+        String url=UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName()+"/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -106,7 +106,7 @@ public class Balance {
         UserDetails userDetails = new UserDetails(context);
 
 
-        String url="https://api.evaly.com.bd/core/user-info-pay/"+userDetails.getUserName()+"/";
+        String url=UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName()+"/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");

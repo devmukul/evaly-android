@@ -706,7 +706,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
     public void getOrderDetails(){
-        String url="https://api.evaly.com.bd/core/custom/orders/"+invoice_no+"/";
+        String url=UrlUtils.BASE_URL+"custom/orders/"+invoice_no+"/";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -948,7 +948,7 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
     public void getOrderHistory(){
-        String url="https://api.evaly.com.bd/core/orders/histories/"+invoice_no+"/";
+        String url=UrlUtils.BASE_URL+"orders/histories/"+invoice_no+"/";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

@@ -37,6 +37,7 @@ import java.util.Locale;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.CategorySearchAdapter;
 import bd.com.evaly.evalyshop.adapter.NotificationAdapter;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 
 public class SearchCategory extends AppCompatActivity {
 
@@ -182,7 +183,7 @@ public class SearchCategory extends AppCompatActivity {
 
 
 
-        String url="https://api.evaly.com.bd/core//categories/tree/search?search_term="+query;
+        String url= UrlUtils.BASE_URL+"/categories/tree/search?search_term="+query;
         Log.d("json search", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {

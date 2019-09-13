@@ -317,7 +317,7 @@ public class EditProfileActivity extends BaseActivity {
                 "Uploading image...", true);
 
         RequestQueue rQueue;
-        String url="https://api.evaly.com.bd/core/image/upload";
+        String url=UrlUtils.BASE_URL+"image/upload";
 
         Logger.d(url);
 
@@ -480,7 +480,7 @@ public class EditProfileActivity extends BaseActivity {
 
     public void setUserData(JSONObject payload, ViewDialog alert) {
 
-        String url = "https://api.evaly.com.bd/core/user-info-update/";
+        String url = UrlUtils.BASE_URL+"user-info-update/";
 
         Log.d("json user info url", url);
 

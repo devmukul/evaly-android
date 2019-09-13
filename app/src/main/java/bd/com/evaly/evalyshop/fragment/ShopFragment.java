@@ -267,7 +267,7 @@ public class ShopFragment extends Fragment {
 
 
 
-        String url  = "https://api.evaly.com.bd/core/public/shops/items/"+slug+"/?page="+currentPage;
+        String url  = UrlUtils.BASE_URL+"public/shops/items/"+slug+"/?page="+currentPage;
 
         Log.d("json url",url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
@@ -617,7 +617,7 @@ public class ShopFragment extends Fragment {
 
     public void getSubCategories(int currentPage){
 
-        String url = "https://api.evaly.com.bd/core/public/shops/categories/"+slug+"/?page="+currentPage;
+        String url = UrlUtils.BASE_URL+"public/shops/categories/"+slug+"/?page="+currentPage;
 
         Log.d("json", url);
 
@@ -707,7 +707,7 @@ public class ShopFragment extends Fragment {
     public void subscribe(){
 
 
-        String url="https://api.evaly.com.bd/core/shop-subscriptions";
+        String url=UrlUtils.BASE_URL+"shop-subscriptions";
 
 
         int requestMethod =  Request.Method.POST;
@@ -715,7 +715,7 @@ public class ShopFragment extends Fragment {
         if (followText.getText().toString().equals("Unfollow")) {
             requestMethod =  Request.Method.DELETE;
             followText.setText("Follow");
-            url = "https://api.evaly.com.bd/core/unsubscribe-shop/" + slug + "/";
+            url = UrlUtils.BASE_URL+"unsubscribe-shop/" + slug + "/";
         } else
             followText.setText("Unfollow");
 

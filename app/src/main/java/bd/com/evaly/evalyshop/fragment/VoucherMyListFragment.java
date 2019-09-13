@@ -52,6 +52,7 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.adapter.MyVoucherAdapter;
 import bd.com.evaly.evalyshop.models.MyVoucherInfo;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 import bd.com.evaly.evalyshop.models.VoucherDetails;
@@ -718,7 +719,7 @@ public class VoucherMyListFragment extends Fragment {
 
 
     public void holdingAmount(){
-        String url="https://api.evaly.com.bd/core/user-info-pay/"+userDetails.getUserName();
+        String url= UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName();
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");

@@ -33,7 +33,7 @@ public class Token {
         if(userDetails.getToken().equals(""))
             return;
 
-        String url="https://api.evaly.com.bd/core/refresh-auth-token/"+userDetails.getUserName()+"/";
+        String url = UrlUtils.BASE_URL+"refresh-auth-token/"+userDetails.getUserName()+"/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -42,7 +42,7 @@ public class Token {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                //Log.d("onResponse", response.toString());
+                Log.d("json onResponse", response.toString());
 
                 try {
                     JSONObject data = response.getJSONObject("data");

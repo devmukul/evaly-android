@@ -42,6 +42,7 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.OrderAdapter;
 import bd.com.evaly.evalyshop.models.Orders;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -169,9 +170,9 @@ public class OrderListFragment extends Fragment {
         String url;
 
         if(statusType.equals("all"))
-            url = "https://api.evaly.com.bd/core/custom/orders/?page="+currentPagez;
+            url = UrlUtils.BASE_URL+"core/custom/orders/?page="+currentPagez;
         else
-            url = "https://api.evaly.com.bd/core/custom/orders/?page="+currentPagez+"&order_status="+statusType;
+            url = UrlUtils.BASE_URL+"custom/orders/?page="+currentPagez+"&order_status="+statusType;
 
         Log.d("json", url);
 
