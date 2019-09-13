@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
 import android.app.Dialog;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -26,6 +27,13 @@ public class NewsfeedActivity extends AppCompatActivity {
 
 
         TextView comment = findViewById(R.id.cmt);
+
+
+
+
+
+
+
 
         comment.setOnClickListener(new View.OnClickListener() {
             @Override

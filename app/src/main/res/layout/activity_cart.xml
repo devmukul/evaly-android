@@ -162,7 +162,7 @@
         android:layout_height="match_parent"
         android:clickable="true"/>
 
-    <include layout="@layout/checkout_bottom_sheet" />
+    <include layout="@layout/bottom_sheet_checkout" />
 
 
 </android.support.design.widget.CoordinatorLayout>

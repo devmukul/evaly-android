@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.NestedScrollView;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,6 +56,7 @@ import bd.com.evaly.evalyshop.activity.orderDetails.AddBalanceActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.models.CartItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
@@ -100,6 +102,9 @@ public class CartActivity extends BaseActivity {
 
     CompoundButton.OnCheckedChangeListener selectAllListener;
 
+    BottomSheetDialog bottomSheetDialog;
+    View bottomSheetView;
+
 
 
     @Override
@@ -130,7 +135,6 @@ public class CartActivity extends BaseActivity {
         itemList = new ArrayList<>();
         recyclerView = findViewById(R.id.recycle);
 
-        contact_number = findViewById(R.id.contact_number);
         checkout = findViewById(R.id.button);
         selectAll = findViewById(R.id.checkBox);
         mViewBg = findViewById(R.id.bg);
@@ -144,7 +148,6 @@ public class CartActivity extends BaseActivity {
         // bottom sheet
 
         layoutBottomSheet = findViewById(R.id.bottom_sheet);
-        btnBottomSheet = findViewById(R.id.bs_button);
 
 
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
@@ -154,14 +157,27 @@ public class CartActivity extends BaseActivity {
 
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
+
+        bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_checkout, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+
+
+        btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
+
+
         checkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean selected=false;
                 for (int i = 0; i < itemList.size(); i++){
                     if(itemList.get(i).isSelected()){
-                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        mViewBg.setVisibility(View.VISIBLE);
+//                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+//                        mViewBg.setVisibility(View.VISIBLE);
+
+                        bottomSheetDialog.show();
+
                         selected=true;
                         break;
                     }
@@ -269,19 +285,22 @@ public class CartActivity extends BaseActivity {
 
 
 
-        // address spinner
+        // bottom sheet
+
+
+
+        contact_number = bottomSheetView.findViewById(R.id.contact_number);
+        addressSwitch = bottomSheetView.findViewById(R.id.addressSwitch);
+        customAddress = bottomSheetView.findViewById(R.id.customAddress);
+        addressSpinner = bottomSheetView.findViewById(R.id.spinner);
 
 
         contact_number.setText(userDetails.getPhone());
-        addressSpinner = findViewById(R.id.spinner);
         spinnerArray = new ArrayList<String>();
         spinnerArrayID = new ArrayList<Integer>();
 
 
 
-        addressSwitch = findViewById(R.id.addressSwitch);
-
-        customAddress = findViewById(R.id.customAddress);
         customAddress.setText(userDetails.getJsonAddress());
 
 
@@ -325,10 +344,6 @@ public class CartActivity extends BaseActivity {
         }
 
         // updateAddress();
-
-
-
-
 
         ImageView cod = findViewById(R.id.cod);
         ImageView evalyPay = findViewById(R.id.evaly_pay);
@@ -383,100 +398,6 @@ public class CartActivity extends BaseActivity {
 
     }
 
-    public void updateAddress(){
-        String url="https://api-prod.evaly.com.bd/api/user/detail/"+userDetails.getUserName()+"/";
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
-                try {
-
-
-                    JSONObject ob=response.getJSONObject("user");
-                    userDetails.setUserName(ob.getString("username"));
-                    userDetails.setPhone(ob.getString("username"));
-                    userDetails.setFirstName(ob.getString("first_name"));
-                    userDetails.setLastName(ob.getString("last_name"));
-
-
-
-                    JSONArray addressArray=response.getJSONArray("addresses");
-
-                    if(userDetails.getJsonAddress().equals(addressArray.toString()))
-                        Log.d("json", "yes same address");
-                    else {
-
-
-
-                        userDetails.setJsonAddress(addressArray.toString());
-
-                        spinnerArray.clear();
-                        spinnerArrayID.clear();
-                        spinnerArrayAdapter.notifyDataSetChanged();
-
-
-                        for (int i = 0; i < addressArray.length(); i++) {
-                            if (i == 4) {
-
-                                break;
-                            }
-                            spinnerArray.add(addressArray.getJSONObject(i).getString("address"));
-                            spinnerArrayID.add(addressArray.getJSONObject(i).getInt("id"));
-                            spinnerArrayAdapter.notifyDataSetChanged();
-                        }
-
-                        if (spinnerArray.size() < 1) {
-                            addressSwitch.setChecked(true);
-                        }
-                    }
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                return headers;
-            }
-        };
-        RequestQueue queue= Volley.newRequestQueue(CartActivity.this);
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-        queue.add(request);
-    }
 
 
     public void uncheckSelectAllBtn(boolean isChecked){
@@ -654,126 +575,11 @@ public class CartActivity extends BaseActivity {
 
 
 
-    public void makePayment(String invoice, ViewDialog alert, int total, int current){
-
-        String url="https://api.evaly.com.bd/pay/transactions/payment/order/";
-
-        Log.d("json order url", url);
-
-
-        Toast.makeText(context,"Payment is processing", Toast.LENGTH_SHORT).show();
-
-        JSONObject payload = new JSONObject();
-
-        try{
-            payload.put("invoice_no", invoice);
-        } catch (Exception e){
-
-
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-
-                Log.d("json payment res", response.toString());
-
-
-                alert.hideDialog();
-                orderPlaced();
-
-                if(response.has("reason")){
-
-                    try {
-
-
-                        Double due = response.getDouble("due");
-                        String invoice = response.getString("note");
-
-                        Intent intent = new Intent(context, AddBalanceActivity.class);
-
-                        intent.putExtra("due", due);
-                        intent.putExtra("invoice", invoice);
-
-                        startActivity(intent);
-
-                        alert.hideDialog();
-                        orderPlaced();
-
-                    } catch (Exception e){
-
-
-                    }
-
-
-
-                } else {
-
-                    if (total == current) {
-
-                        // it means all payment done
-                        alert.hideDialog();
-                        orderPlaced();
-                    }
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-
-                dialog.hideDialog();
-                alert.hideDialog();
-                orderPlaced();
-
-                //Toast.makeText(context, "Error occurred during payment. Might be insufficient balance.", Toast.LENGTH_SHORT).show();
-                Log.e("onErrorResponse", error.toString());
-
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                // headers.put("Content-Length", data.length()+"");
-                return headers;
-            }
-
-
-
-
-        };
-        RequestQueue queue= Volley.newRequestQueue(CartActivity.this);
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-        queue.add(request);
-    }
-
 
 
     public void placeOrder(JSONObject payload, ViewDialog alert){
 
-        String url="https://api.evaly.com.bd/core/custom/order/create/";
+        String url = UrlUtils.BASE_URL+"custom/order/create/";
 
         Log.d("json order url", url);
 
@@ -787,11 +593,10 @@ public class CartActivity extends BaseActivity {
                 Log.d("json order", response.toString());
 
                 try {
-                    if (!response.getBoolean("success")) {
+
                         Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
                         dialog.hideDialog();
 
-                    }
 
                 } catch (Exception e){
 
@@ -800,7 +605,6 @@ public class CartActivity extends BaseActivity {
                 try {
 
                     if (response.getJSONArray("data").length() < 1) {
-                        Toast.makeText(context, "Couldn't place holder.", Toast.LENGTH_SHORT).show();
                         dialog.hideDialog();
                         return;
                     } else {
