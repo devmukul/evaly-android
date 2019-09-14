@@ -1,23 +1,24 @@
-package bd.com.evaly.evalyshop.adapter;
+package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 import bd.com.evaly.evalyshop.views.WrapContentHeightViewPager;
 
-public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
+public class NewsfeedPager extends FragmentStatePagerAdapter {
 
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
     private int mCurrentPosition = -1;
 
 
-    public HomeTabPagerAdapter(FragmentManager manager) {
+    public NewsfeedPager(FragmentManager manager) {
 
         super(manager);
     }
@@ -38,43 +39,8 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
-        if (position != mCurrentPosition) {
-            Fragment fragment = (Fragment) object;
-            WrapContentHeightViewPager pager = (WrapContentHeightViewPager) container;
-
-
-            if (fragment != null && fragment.getView() != null) {
-                mCurrentPosition = position;
-                pager.measureCurrentView(fragment.getView());
-            }
-        }
-    }
-
-    public void removeTabPage(int position) {
-        if (!mFragmentList.isEmpty() && position<mFragmentList.size()) {
-
-        }
-
-        String toFind = "Sub Categories";
-        if(position == 2)
-            toFind = "Brands";
-        else if(position == 3)
-            toFind = "Shops";
-
-
-
-
-        for (int i = 0; i<mFragmentList.size(); i++) {
-
-            if(mFragmentTitleList.get(i).equals(toFind)) {
-                mFragmentList.remove(position);
-                mFragmentTitleList.remove(position);
-                notifyDataSetChanged();
-            }
-        }
 
     }
-
 
 
 
@@ -94,8 +60,6 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-
-
 
         if (mFragmentList.contains(object))
             return mFragmentList.indexOf(object);

@@ -31,7 +31,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
     @NonNull
     @Override
     public NewsfeedAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_notification,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_newsfeed_list,viewGroup,false);
         return new NewsfeedAdapter.MyViewHolder(view);
     }
 
@@ -40,11 +40,11 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
 
         myViewHolder.userNameView.setText(itemsList.get(i).getAuthorUsername());
-        myViewHolder.timeView.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM", itemsList.get(i).getCreatedAt()));
+        myViewHolder.timeView.setText(Utils.formattedDateFromString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt()));
         myViewHolder.statusView.setText(itemsList.get(i).getBody());
 
 
-        myViewHolder.commentCountView.setText(itemsList.get(i).getCommentsCount());
+        myViewHolder.commentCountView.setText(itemsList.get(i).getCommentsCount()+" Comments");
 
 
 
@@ -57,7 +57,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         String postImage = itemsList.get(i).getAttachment();
 
-        if (!postImage.equals("null")){
+        if (postImage.equals("null")){
 
             myViewHolder.postImage.setVisibility(View.GONE);
 
@@ -82,23 +82,25 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
 
 
-        myViewHolder.likeCountView.setText(itemsList.get(i).getFavoriteCount());
+        myViewHolder.likeCountView.setText(itemsList.get(i).getFavoriteCount() + " Likes");
 
 
-        if(itemsList.get(i).isFavorited()){
+        if(itemsList.get(i).isFavorited() || (favorite.getTag() != null && favorite.getTag().toString().equals("yes"))){
 
             favorite.setImageResource(R.drawable.ic_favorite_color);
             favorite.setTag("yes");
-            likeCount.setText(itemsList.get(i).getFavoriteCount()+1 +" Likes");
+
 
         } else {
 
             favorite.setTag("no");
             favorite.setImageResource(R.drawable.ic_favorite);
 
-            likeCount.setText(itemsList.get(i).getFavoriteCount()-1 +" Likes");
-
         }
+
+
+
+
 
 
 
@@ -111,13 +113,16 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                 if(favorite.getTag().equals("yes")){
                     favorite.setImageResource(R.drawable.ic_favorite);
                     favorite.setTag("no");
-                    likeCount.setText("32 Likes");
+                    itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount()-1 );
+                    likeCount.setText(itemsList.get(i).getFavoriteCount() +" Likes");
 
                 } else {
 
-                    favorite.setTag("yes");
                     favorite.setImageResource(R.drawable.ic_favorite_color);
-                    likeCount.setText("33 Likes");
+
+                    favorite.setTag("yes");
+                    itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount()+1 );
+                    likeCount.setText(itemsList.get(i).getFavoriteCount() +" Likes");
 
                 }
             }
@@ -132,6 +137,11 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         return itemsList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView userNameView, timeView, statusView, likeCountView, commentCountView;
         ImageView userImage, likeIcon, commentIcon, menuIcon, postImage;
@@ -139,13 +149,13 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         public MyViewHolder(final View itemView) {
             super(itemView);
 
-            userImage = itemView.findViewById(R.id.user_name);
+            userNameView = itemView.findViewById(R.id.user_name);
             timeView = itemView.findViewById(R.id.date);
             statusView = itemView.findViewById(R.id.text);
             likeCountView = itemView.findViewById(R.id.likeCount);
-            commentCountView = itemView.findViewById(R.id.comment);
+            commentCountView = itemView.findViewById(R.id.commentCount);
 
-            userImage = itemView.findViewById(R.id.image);
+            userImage = itemView.findViewById(R.id.picture);
             likeIcon = itemView.findViewById(R.id.like_icon);
             commentIcon = itemView.findViewById(R.id.comment_icon);
             menuIcon = itemView.findViewById(R.id.menu);

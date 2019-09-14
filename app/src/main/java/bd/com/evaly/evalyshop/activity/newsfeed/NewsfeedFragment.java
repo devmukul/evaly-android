@@ -5,7 +5,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +34,7 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedAdapter;
+import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPager;
 import bd.com.evaly.evalyshop.activity.newsfeed.models.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.Notifications;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -87,18 +91,17 @@ public class NewsfeedFragment extends Fragment {
         userDetails=new UserDetails(context);
         not = view.findViewById(R.id.not);
 
+
         recyclerView = view.findViewById(R.id.recyclerView);
+        LinearLayoutManager manager=new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(manager);
         adapter = new NewsfeedAdapter(itemsList, context);
         recyclerView.setAdapter(adapter);
 
         getPosts();
 
 
-
     }
-
-
-
 
 
 
@@ -150,7 +153,7 @@ public class NewsfeedFragment extends Fragment {
                             item.setFavoriteCount(ob.getInt("favorites_count"));
                             item.setCommentsCount(ob.getInt("comments_count"));
                             item.setSlug(ob.getString("slug"));
-                            item.setTags(ob.getJSONArray("tab_list").toString());
+                            item.setTags(ob.getJSONArray("tag_list").toString());
                             item.setUpdatedAt(ob.getString("updated_at"));
                             item.setType(ob.getString("type"));
 
@@ -165,7 +168,6 @@ public class NewsfeedFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                markAsRead();
 
             }
         }, new Response.ErrorListener() {
@@ -181,7 +183,7 @@ public class NewsfeedFragment extends Fragment {
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(this);
+        RequestQueue queue= Volley.newRequestQueue(context);
         request.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
