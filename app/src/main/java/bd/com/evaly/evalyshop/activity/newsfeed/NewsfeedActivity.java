@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
 import android.app.Dialog;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.util.ScreenUtils;
 
 public class NewsfeedActivity extends AppCompatActivity {
 
@@ -39,9 +41,18 @@ public class NewsfeedActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Dialog dialog = new Dialog(NewsfeedActivity.this);
+                BottomSheetDialog dialog = new BottomSheetDialog(NewsfeedActivity.this, R.style.BottomSheetDialogTheme);
                 dialog.setContentView(R.layout.alert_comments);
-                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+                View bottomSheetInternal = dialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+                BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
+
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                ScreenUtils screenUtils = new ScreenUtils(NewsfeedActivity.this);
+//                bottomSheetBehavior.setPeekHeight(15000);
+
+
+
                 dialog.show();
 
 

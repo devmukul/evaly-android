@@ -170,7 +170,7 @@ public class OrderListFragment extends Fragment {
         String url;
 
         if(statusType.equals("all"))
-            url = UrlUtils.BASE_URL+"core/custom/orders/?page="+currentPagez;
+            url = UrlUtils.BASE_URL+"custom/orders/?page="+currentPagez;
         else
             url = UrlUtils.BASE_URL+"custom/orders/?page="+currentPagez+"&order_status="+statusType;
 

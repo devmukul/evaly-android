@@ -24,13 +24,46 @@ public class NewsfeedItem {
 //            "title": "lorem ipsum 1",
 //            "updated_at": "2019-09-12T14:22:48.313438+00:00"
 
-    private String authorUsername, authoeBio, authorImage, authorBio, body, createdAt, description, slug, title, updatedAt, tags;
+    private String authorUsername, authorFullName, authoeBio, authorImage, authorBio, body, createdAt, description, slug, title, updatedAt, tags, attachment, attachmentCompressed, type;
     private boolean authorFollowing, favorited;
     private int favoriteCount, commentsCount;
 
 
     public NewsfeedItem(){
 
+    }
+
+
+    public String getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(String attachment) {
+        this.attachment = attachment;
+    }
+
+    public String getAttachmentCompressed() {
+        return attachmentCompressed;
+    }
+
+    public void setAttachmentCompressed(String attachmentCompressed) {
+        this.attachmentCompressed = attachmentCompressed;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getAuthorFullName() {
+        return authorFullName;
+    }
+
+    public void setAuthorFullName(String authorFullName) {
+        this.authorFullName = authorFullName;
     }
 
     public String getAuthorUsername() {
