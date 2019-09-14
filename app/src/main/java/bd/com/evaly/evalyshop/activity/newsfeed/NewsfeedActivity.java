@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import bd.com.evaly.evalyshop.R;
@@ -28,68 +30,21 @@ public class NewsfeedActivity extends AppCompatActivity {
 
 
 
-        TextView comment = findViewById(R.id.cmt);
 
 
 
+        BottomSheetDialog dialog = new BottomSheetDialog(NewsfeedActivity.this, R.style.BottomSheetDialogTheme);
+        dialog.setContentView(R.layout.alert_comments);
 
+        View bottomSheetInternal = dialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
 
-
-
-
-        comment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                BottomSheetDialog dialog = new BottomSheetDialog(NewsfeedActivity.this, R.style.BottomSheetDialogTheme);
-                dialog.setContentView(R.layout.alert_comments);
-
-                View bottomSheetInternal = dialog.findViewById(android.support.design.R.id.design_bottom_sheet);
-                BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
-
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                ScreenUtils screenUtils = new ScreenUtils(NewsfeedActivity.this);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        ScreenUtils screenUtils = new ScreenUtils(NewsfeedActivity.this);
 //                bottomSheetBehavior.setPeekHeight(15000);
 
-
-
-                dialog.show();
-
-
-
-            }
-        });
-
-
-        ImageView favorite = findViewById(R.id.like);
-
-
-        favorite.setTag("no");
-
-
-
-        final TextView likeCount = findViewById(R.id.likeCount);
-
-
-        favorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                if(favorite.getTag().equals("yes")){
-                    favorite.setImageResource(R.drawable.ic_favorite);
-                    favorite.setTag("no");
-                    likeCount.setText("32 Likes");
-
-                } else {
-
-                    favorite.setTag("yes");
-                    favorite.setImageResource(R.drawable.ic_favorite_color);
-                    likeCount.setText("33 Likes");
-
-                }
-            }
-        });
+        LinearLayout dialogLayout = dialog.findViewById(R.id.container2);
+        dialogLayout.setMinimumHeight(screenUtils.getHeight());
 
 
 

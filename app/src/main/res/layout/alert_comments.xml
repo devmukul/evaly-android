@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -198,7 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:gravity="top"
             android:background="@drawable/comment_input_bg"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
@@ -223,11 +224,12 @@
 
 
             <ImageView
-                android:id="@+id/imageView22"
+                android:id="@+id/uploadImage"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_weight="0"
                 android:paddingRight="15dp"
+                android:paddingTop="10dp"
                 android:tint="#444"
                 app:srcCompat="@drawable/ic_gallery" />
 

@@ -43,16 +43,9 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         myViewHolder.timeView.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM", itemsList.get(i).getCreatedAt()));
         myViewHolder.statusView.setText(itemsList.get(i).getBody());
 
-        myViewHolder.likeCountView.setText(itemsList.get(i).getFavoriteCount());
 
         myViewHolder.commentCountView.setText(itemsList.get(i).getCommentsCount());
 
-        myViewHolder.userNameView.setText(itemsList.get(i).getAuthorUsername());
-        myViewHolder.userNameView.setText(itemsList.get(i).getAuthorUsername());
-        myViewHolder.userNameView.setText(itemsList.get(i).getAuthorUsername());
-        myViewHolder.userNameView.setText(itemsList.get(i).getAuthorUsername());
-        myViewHolder.userNameView.setText(itemsList.get(i).getAuthorUsername());
-        myViewHolder.userNameView.setText(itemsList.get(i).getAuthorUsername());
 
 
         Glide.with(context)
@@ -79,6 +72,56 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                     .apply(new RequestOptions().override(900, 900))
                     .into(myViewHolder.postImage);
         }
+
+
+
+
+        ImageView favorite = myViewHolder.likeIcon;
+
+        final TextView likeCount = myViewHolder.likeCountView;
+
+
+
+        myViewHolder.likeCountView.setText(itemsList.get(i).getFavoriteCount());
+
+
+        if(itemsList.get(i).isFavorited()){
+
+            favorite.setImageResource(R.drawable.ic_favorite_color);
+            favorite.setTag("yes");
+            likeCount.setText(itemsList.get(i).getFavoriteCount()+1 +" Likes");
+
+        } else {
+
+            favorite.setTag("no");
+            favorite.setImageResource(R.drawable.ic_favorite);
+
+            likeCount.setText(itemsList.get(i).getFavoriteCount()-1 +" Likes");
+
+        }
+
+
+
+
+        favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if(favorite.getTag().equals("yes")){
+                    favorite.setImageResource(R.drawable.ic_favorite);
+                    favorite.setTag("no");
+                    likeCount.setText("32 Likes");
+
+                } else {
+
+                    favorite.setTag("yes");
+                    favorite.setImageResource(R.drawable.ic_favorite_color);
+                    likeCount.setText("33 Likes");
+
+                }
+            }
+        });
 
 
 
