@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -44,6 +45,7 @@ public class NewsfeedFragment extends Fragment {
     private Context context;
     private NewsfeedActivity activity;
     private UserDetails userDetails;
+    private LinearLayout not;
 
     public NewsfeedFragment() {
         // Required empty public constructor
@@ -83,11 +85,13 @@ public class NewsfeedFragment extends Fragment {
 
 
         userDetails=new UserDetails(context);
+        not = view.findViewById(R.id.not);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         adapter = new NewsfeedAdapter(itemsList, context);
         recyclerView.setAdapter(adapter);
 
+        getPosts();
 
 
 
@@ -112,7 +116,7 @@ public class NewsfeedFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
                 try {
-                    JSONArray jsonArray = response.getJSONArray("results");
+                    JSONArray jsonArray = response.getJSONArray("data");
                     if(jsonArray.length()==0){
                         not.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
@@ -121,16 +125,40 @@ public class NewsfeedFragment extends Fragment {
                         for(int i=0;i<jsonArray.length();i++){
                             JSONObject ob = jsonArray.getJSONObject(i);
 
-                            Notifications item = new Notifications();
-                            item.setId(ob.getString("id"));
-                            item.setImageURL(ob.getString("thumb_url"));
-                            item.setMessage(ob.getString("message"));
-                            item.setTime(ob.getString("created_at"));
-                            item.setContent_type(ob.getString("content_type"));
-                            item.setContent_url(ob.getString("content_url"));
-                            notifications.add(item);
+                            NewsfeedItem item = new NewsfeedItem();
 
-                            adapter.notifyItemInserted(notifications.size());
+                            JSONObject author = ob.getJSONObject("author");
+                            item.setAuthorUsername(author.getString("username"));
+                            item.setAuthorFullName(author.getString("full_name"));
+                            item.setAuthoeBio(author.getString("bio"));
+                            item.setAuthorImage(author.getString("image"));
+                            item.setAuthorFollowing(author.getBoolean("following"));
+
+                            item.setBody(ob.getString("body"));
+
+                            try {
+                                item.setAttachment(ob.getString("attachement"));
+                                item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
+                            } catch (Exception e){
+                                item.setAttachment(null);
+                                item.setAttachmentCompressed(null);
+                            }
+
+
+                            item.setCreatedAt(ob.getString("created_at"));
+                            item.setFavorited(ob.getBoolean("favorited"));
+                            item.setFavoriteCount(ob.getInt("favorites_count"));
+                            item.setCommentsCount(ob.getInt("comments_count"));
+                            item.setSlug(ob.getString("slug"));
+                            item.setTags(ob.getJSONArray("tab_list").toString());
+                            item.setUpdatedAt(ob.getString("updated_at"));
+                            item.setType(ob.getString("type"));
+
+
+                            itemsList.add(item);
+                            adapter.notifyItemInserted(itemsList.size());
+
+
                         }
                     }
                 } catch (Exception e) {
