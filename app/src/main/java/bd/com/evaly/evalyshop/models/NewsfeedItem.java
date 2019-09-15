@@ -1,28 +1,8 @@
-package bd.com.evaly.evalyshop.activity.newsfeed.models;
+package bd.com.evaly.evalyshop.models;
 
 import java.util.ArrayList;
 
 public class NewsfeedItem {
-
-
-
-//    "author": {
-//        "username": "01685026771",
-//                "full_name": "Osman Goni Nahid",
-//                "bio": "",
-//                "image": "https://static.productionready.io/images/smiley-cyrus.jpg",
-//                "following": false
-//    },
-//            "body": "lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum",
-//            "created_at": "2019-09-12T14:22:48.313392+00:00",
-//            "description": "lorem ipsumlorem ipsumlorem ipsumlorem ipsum",
-//            "favorited": false,
-//            "favorites_count": 0,
-//            "comments_count": 1,
-//            "slug": "lorem-ipsum-1-g31jdx",
-//            "tagList": [],
-//            "title": "lorem ipsum 1",
-//            "updated_at": "2019-09-12T14:22:48.313438+00:00"
 
     private String authorUsername, authorFullName, authoeBio, authorImage, authorBio, body, createdAt, description, slug, title, updatedAt, tags, attachment, attachmentCompressed, type;
     private boolean authorFollowing, favorited;

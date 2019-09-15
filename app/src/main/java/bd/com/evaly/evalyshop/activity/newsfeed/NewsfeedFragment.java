@@ -1,13 +1,10 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,9 +31,7 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedAdapter;
-import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPager;
-import bd.com.evaly.evalyshop.activity.newsfeed.models.NewsfeedItem;
-import bd.com.evaly.evalyshop.models.Notifications;
+import bd.com.evaly.evalyshop.models.NewsfeedItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
@@ -49,7 +44,7 @@ public class NewsfeedFragment extends Fragment {
     private Context context;
     private NewsfeedActivity activity;
     private UserDetails userDetails;
-    private LinearLayout not;
+    private LinearLayout not, progressContainer;
 
     public NewsfeedFragment() {
         // Required empty public constructor
@@ -90,6 +85,7 @@ public class NewsfeedFragment extends Fragment {
 
         userDetails=new UserDetails(context);
         not = view.findViewById(R.id.not);
+        progressContainer = view.findViewById(R.id.progressContainer);
 
 
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -114,10 +110,16 @@ public class NewsfeedFragment extends Fragment {
         } catch (Exception e) {
         }
 
+        progressContainer.setVisibility(View.VISIBLE);
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
+
+
+                progressContainer.setVisibility(View.GONE);
+
                 try {
                     JSONArray jsonArray = response.getJSONArray("data");
                     if(jsonArray.length()==0){
@@ -174,12 +176,18 @@ public class NewsfeedFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+
+                progressContainer.setVisibility(View.GONE);
             }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+
+                if (!userDetails.getToken().equals(""))
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+
                 return headers;
             }
         };
