@@ -102,17 +102,11 @@ public class NewsfeedFragment extends Fragment {
 
 
     public void getPosts(){
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts";
-
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("type", type);
-        } catch (Exception e) {
-        }
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts?type="+type;
 
         progressContainer.setVisibility(View.VISIBLE);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
@@ -181,6 +175,8 @@ public class NewsfeedFragment extends Fragment {
                 progressContainer.setVisibility(View.GONE);
             }
         }) {
+
+
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();

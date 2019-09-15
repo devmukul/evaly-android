@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import bd.com.evaly.evalyshop.views.WrapContentHeightViewPager;
 
-public class NewsfeedPager extends FragmentStatePagerAdapter {
+public class NewsfeedPager extends FragmentPagerAdapter {
 
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -58,14 +59,14 @@ public class NewsfeedPager extends FragmentStatePagerAdapter {
 
 
 
-    @Override
-    public int getItemPosition(Object object) {
-
-        if (mFragmentList.contains(object))
-            return mFragmentList.indexOf(object);
-        else
-            return POSITION_NONE;
-    }
+//    @Override
+//    public int getItemPosition(Object object) {
+//
+//        if (mFragmentList.contains(object))
+//            return mFragmentList.indexOf(object);
+//        else
+//            return POSITION_NONE;
+//    }
 
     public Fragment getCurrentFragment() {
         return mFragmentList.get(mCurrentPosition);

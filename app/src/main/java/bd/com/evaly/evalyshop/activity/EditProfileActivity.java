@@ -161,7 +161,6 @@ public class EditProfileActivity extends BaseActivity {
 
     private void setProfilePic() {
 
-
         if (!userDetails.getProfilePictureSM().equals("null")) {
             Glide.with(this)
                     .asBitmap()
@@ -191,7 +190,6 @@ public class EditProfileActivity extends BaseActivity {
 
             openSelector();
 
-
         }
 
     }
@@ -205,9 +203,7 @@ public class EditProfileActivity extends BaseActivity {
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, 1001);
 
-
     }
-
 
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
@@ -227,26 +223,17 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
         if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
-
             Uri selectedImage = data.getData();
-
             String imagePath = RealPathUtil.getRealPath(context, selectedImage);
-
             Log.d("json image uri", imagePath);
-
 
             try {
 
-
                 String destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
 
-
                 try {
-
 
                     File cImage = compressImage(data.getData(),Bitmap.CompressFormat.JPEG, 60, destinationDirectoryPath);
 
@@ -265,18 +252,13 @@ public class EditProfileActivity extends BaseActivity {
 
                 } catch (Exception e) {
 
-
                 }
 
-
             } catch (Exception e) {
-
 
                 Log.d("json image error", e.toString());
                 Toast.makeText(context, "Error occurred while uploading image", Toast.LENGTH_SHORT).show();
             }
-
-
         }
 
     }
@@ -289,20 +271,13 @@ public class EditProfileActivity extends BaseActivity {
             file.mkdirs();
         }
 
-
-
-
         try (FileOutputStream fileOutputStream = new FileOutputStream(destinationPath)) {
 
             ImageUtils.getCorrectlyOrientedImage(EditProfileActivity.this, path).compress(compressFormat, quality, fileOutputStream);
 
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
 
         return new File(destinationPath);
 
@@ -407,8 +382,6 @@ public class EditProfileActivity extends BaseActivity {
         bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
     }
-
-
 
 
 
