@@ -13,6 +13,7 @@ import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.BreakIterator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -53,6 +54,23 @@ public class Utils {
     }
 
 
+
+
+    public static String truncateText(String text, int maxLength, String endWith) {
+        if(text != null && text.length() > maxLength) {
+            BreakIterator bi = BreakIterator.getWordInstance();
+            bi.setText(text);
+
+            if(bi.isBoundary(maxLength-1)) {
+                return text.substring(0, maxLength-2) + " " + endWith;
+            } else {
+                int preceding = bi.preceding(maxLength-1);
+                return text.substring(0, preceding-1) + " " + endWith;
+            }
+        } else {
+            return text;
+        }
+    }
 
 
     public static String getDeviceID(Context context){

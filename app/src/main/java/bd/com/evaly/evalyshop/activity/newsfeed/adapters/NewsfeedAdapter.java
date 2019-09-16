@@ -63,7 +63,11 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         myViewHolder.userNameView.setText(itemsList.get(i).getAuthorFullName());
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt())));
-        myViewHolder.statusView.setText(Html.fromHtml(itemsList.get(i).getBody()));
+
+
+        myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "<b>Show more</b>")));
+
+
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
         Glide.with(context)
@@ -127,12 +131,19 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             }
         });
 
-        myViewHolder.commentHolder.setOnClickListener(new View.OnClickListener() {
+
+
+        View.OnClickListener commentOpener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 fragment.openCommentBottomSheet(itemsList.get(i).getSlug(), itemsList.get(i).getAuthorFullName(), itemsList.get(i).getAuthorImage(), itemsList.get(i).getBody(), itemsList.get(i).getCreatedAt(), itemsList.get(i).getAttachment());
             }
-        });
+        };
+
+        myViewHolder.commentHolder.setOnClickListener(commentOpener);
+
+        myViewHolder.statusView.setOnClickListener(commentOpener);
+
 
 
     }

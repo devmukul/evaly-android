@@ -150,6 +150,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentDialog.setContentView(R.layout.alert_comments);
 
         View bottomSheetInternalComment = commentDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        bottomSheetInternalComment.setPadding(0, 0, 0, 0);
         bottomSheetBehaviorComment = BottomSheetBehavior.from(bottomSheetInternalComment);
         bottomSheetBehaviorComment.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetBehaviorComment.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
