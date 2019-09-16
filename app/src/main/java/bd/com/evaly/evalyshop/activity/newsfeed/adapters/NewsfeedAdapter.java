@@ -64,7 +64,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         myViewHolder.userNameView.setText(itemsList.get(i).getAuthorFullName());
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt())));
         myViewHolder.statusView.setText(Html.fromHtml(itemsList.get(i).getBody()));
-        myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), false));
+        myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
         Glide.with(context)
                 .load(itemsList.get(i).getAuthorImage())
