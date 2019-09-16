@@ -233,7 +233,7 @@ public class NewsfeedActivity extends AppCompatActivity {
         
 
         NewsfeedFragment publicFragment = NewsfeedFragment.newInstance("public");
-        pager.addFragment(publicFragment,"PUBLIC");
+        pager.addFragment(publicFragment,"ALL");
 
 
         NewsfeedFragment announcementFragment = NewsfeedFragment.newInstance("announcement");
@@ -283,7 +283,7 @@ public class NewsfeedActivity extends AppCompatActivity {
             parameters.put("body", postBody);
 
             if (!selectedImage.equals(""))
-                parameters.put("attachement", selectedImage);
+                parameters.put("attachment", selectedImage);
 
             parameters.put("tags", new JSONArray());
 
@@ -335,26 +335,18 @@ public class NewsfeedActivity extends AppCompatActivity {
                 if (!userDetails.getToken().equals(""))
                     headers.put("Authorization", "Bearer " + userDetails.getToken());
 
+                headers.put("Content-Type", "application/json");
+
                 return headers;
             }
         };
+
         RequestQueue queue= Volley.newRequestQueue(context);
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
 
-            @Override
-            public int getCurrentRetryCount() {
-                return 2;
-            }
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
         queue.add(request);
     }
 

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -40,11 +41,15 @@ public class NewsfeedFragment extends Fragment {
     private String type;
     private RecyclerView recyclerView;
     private NewsfeedAdapter adapter;
-    private ArrayList<NewsfeedItem> itemsList = new ArrayList<>();
+    private ArrayList<NewsfeedItem> itemsList;
     private Context context;
     private NewsfeedActivity activity;
     private UserDetails userDetails;
     private LinearLayout not, progressContainer;
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private int currentPage;
+    private ProgressBar bottomProgressBar;
 
     public NewsfeedFragment() {
         // Required empty public constructor
@@ -86,25 +91,74 @@ public class NewsfeedFragment extends Fragment {
         userDetails=new UserDetails(context);
         not = view.findViewById(R.id.not);
         progressContainer = view.findViewById(R.id.progressContainer);
+        bottomProgressBar = view.findViewById(R.id.progressBar);
 
 
         recyclerView = view.findViewById(R.id.recyclerView);
+        itemsList = new ArrayList<>();
         LinearLayoutManager manager=new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
         adapter = new NewsfeedAdapter(itemsList, context);
         recyclerView.setAdapter(adapter);
 
-        getPosts();
+
+
+        currentPage = 1;
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if(dy > 0) //check for scroll down
+                {
+                    visibleItemCount = manager.getChildCount();
+                    totalItemCount = manager.getItemCount();
+                    pastVisiblesItems = manager.findFirstVisibleItemPosition();
+
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        {
+                            loading = false;
+                            getPosts(++currentPage);
+
+
+
+
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+        getPosts(currentPage);
+
 
 
     }
 
 
 
-    public void getPosts(){
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts?type="+type;
+    public void getPosts(int page){
 
-        progressContainer.setVisibility(View.VISIBLE);
+
+        String url;
+
+        if (type.equals("public"))
+            url = UrlUtils.BASE_URL_NEWSFEED+"posts?page="+page;
+        else
+            url = UrlUtils.BASE_URL_NEWSFEED+"posts?type="+type+"&page="+page;
+
+
+        if (page == 1)
+            progressContainer.setVisibility(View.VISIBLE);
+
+
+        if (page>1)
+            bottomProgressBar.setVisibility(View.VISIBLE);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
             @Override
@@ -112,7 +166,11 @@ public class NewsfeedFragment extends Fragment {
                 Log.d("json response", response.toString());
 
 
+                loading = true;
+
                 progressContainer.setVisibility(View.GONE);
+                bottomProgressBar.setVisibility(View.GONE);
+
 
                 try {
                     JSONArray jsonArray = response.getJSONArray("data");
@@ -130,13 +188,13 @@ public class NewsfeedFragment extends Fragment {
                             item.setAuthorUsername(author.getString("username"));
                             item.setAuthorFullName(author.getString("full_name"));
                             item.setAuthoeBio(author.getString("bio"));
-                            item.setAuthorImage(author.getString("image"));
+                            item.setAuthorImage(author.getString("compressed_image"));
                             item.setAuthorFollowing(author.getBoolean("following"));
 
                             item.setBody(ob.getString("body"));
 
                             try {
-                                item.setAttachment(ob.getString("attachement"));
+                                item.setAttachment(ob.getString("attachment"));
                                 item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
                             } catch (Exception e){
                                 item.setAttachment(null);
@@ -173,6 +231,8 @@ public class NewsfeedFragment extends Fragment {
 
 
                 progressContainer.setVisibility(View.GONE);
+                bottomProgressBar.setVisibility(View.GONE);
+
             }
         }) {
 

@@ -42,7 +42,7 @@
     <string-array name="post_type">
         <item>CEO</item>
         <item>ANNOUNCEMENT</item>
-        <item>PUBLIC</item>
+<!--        <item>PUBLIC</item>-->
     </string-array>
 
 
