@@ -196,9 +196,28 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         // create comment
 
-        commentInput = commentDialog.findViewById(R.id,commentInput);
+        commentInput = commentDialog.findViewById(R.id.commentInput);
         uploadImage = commentDialog.findViewById(R.id.uploadImage);
         submitComment = commentDialog.findViewById(R.id.submitComment);
+
+        uploadImage.setOnClickListener(view1 -> Toast.makeText(context,"Photo comment is disabled now.", Toast.LENGTH_SHORT).show());
+
+        submitComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (selectedPostID.equals(""))
+                    Toast.makeText(context, "Couldn't create comment. Try again later.", Toast.LENGTH_SHORT).show();
+                else if (commentInput.getText().toString().equals(""))
+                    Toast.makeText(context, "Write a comment first before submitting", Toast.LENGTH_SHORT).show();
+                else
+                    createComment();
+
+
+
+
+            }
+        });
 
 
 
@@ -526,6 +545,109 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
         });
+        queue.add(request);
+    }
+
+
+
+
+
+    public void reloadRecycler(){
+
+
+        currentCommentPage = 1;
+        commentItems.clear();
+        commentAdapter.notifyDataSetChanged();
+        loadComments(selectedPostID);
+
+
+
+    }
+
+
+    public void createComment(){
+
+        if (commentDialog == null)
+            return;
+
+        commentInput.setEnabled(false);
+        submitComment.setEnabled(false);
+
+
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments";
+
+        JSONObject parameters = new JSONObject();
+        JSONObject parametersPost = new JSONObject();
+        try {
+
+            parameters.put("body", commentInput.getText().toString());
+
+            parametersPost.put("comment", parameters);
+
+
+
+        } catch (Exception e) {
+        }
+
+        Log.d("json body", parametersPost.toString());
+
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("json response", response.toString());
+
+
+                try {
+
+
+                    if (response.has("data")) {
+                        reloadRecycler();
+
+
+                        commentInput.setText("");
+                        commentInput.setEnabled(true);
+                        submitComment.setEnabled(true);
+                    }
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+                Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
+                commentInput.setEnabled(true);
+                submitComment.setEnabled(true);
+
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+
+                if (!userDetails.getToken().equals(""))
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+
+                headers.put("Content-Type", "application/json");
+
+                return headers;
+            }
+        };
+
+        RequestQueue queue= Volley.newRequestQueue(context);
+
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         queue.add(request);
     }
 
