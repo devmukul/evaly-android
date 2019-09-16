@@ -4,19 +4,37 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
 
@@ -46,18 +64,13 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         myViewHolder.userNameView.setText(itemsList.get(i).getAuthorFullName());
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt())));
         myViewHolder.statusView.setText(Html.fromHtml(itemsList.get(i).getBody()));
-
-
-        myViewHolder.commentCountView.setText(itemsList.get(i).getCommentsCount()+" Comments");
-
-
+        myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), false));
 
         Glide.with(context)
                 .load(itemsList.get(i).getAuthorImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(200, 200))
                 .into(myViewHolder.userImage);
-
 
         String postImage = itemsList.get(i).getAttachment();
 
@@ -67,9 +80,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         } else {
 
-
             myViewHolder.postImage.setVisibility(View.VISIBLE);
-
             Glide.with(context)
                     .load(itemsList.get(i).getAttachment())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -77,33 +88,19 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                     .into(myViewHolder.postImage);
         }
 
-
-
-
         ImageView favorite = myViewHolder.likeIcon;
-
         final TextView likeCount = myViewHolder.likeCountView;
-
-
-
-        myViewHolder.likeCountView.setText(itemsList.get(i).getFavoriteCount() + " Likes");
-
+        likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
 
         if(itemsList.get(i).isFavorited() || (favorite.getTag() != null && favorite.getTag().toString().equals("yes"))){
 
             favorite.setImageResource(R.drawable.ic_favorite_color);
             favorite.setTag("yes");
 
-
         } else {
-
             favorite.setTag("no");
             favorite.setImageResource(R.drawable.ic_favorite);
-
         }
-
-
-
 
         myViewHolder.likeHolder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,25 +108,24 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
 
                 if(favorite.getTag().equals("yes")){
+
+                    fragment.sendLike(itemsList.get(i).getSlug(), true);
                     favorite.setImageResource(R.drawable.ic_favorite);
                     favorite.setTag("no");
                     itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount()-1 );
-                    likeCount.setText(itemsList.get(i).getFavoriteCount() +" Likes");
+                    likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
 
                 } else {
 
+                    fragment.sendLike(itemsList.get(i).getSlug(), false);
                     favorite.setImageResource(R.drawable.ic_favorite_color);
-
                     favorite.setTag("yes");
                     itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount()+1 );
-                    likeCount.setText(itemsList.get(i).getFavoriteCount() +" Likes");
+                    likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
 
                 }
             }
         });
-
-
-
 
         myViewHolder.commentHolder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +134,26 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             }
         });
 
+
+    }
+
+    private String wordBeautify(int count, boolean like){
+
+        if (count  == 0)
+            if (like)
+                return "Like";
+            else
+                return "Comment";
+        else if (count == 1)
+            if (like)
+                return "1 Like";
+            else
+                return "1 Comment";
+        else
+        if (like)
+            return count + " Likes";
+        else
+            return count +" Comments";
 
     }
 
@@ -179,6 +195,9 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             view = itemView;
         }
     }
+
+
+
 
     
 }

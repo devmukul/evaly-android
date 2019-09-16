@@ -87,15 +87,16 @@
         android:gravity="right"
         android:orientation="horizontal"
         android:paddingLeft="15dp"
-        android:paddingTop="5dp"
         android:paddingRight="15dp"
-        android:paddingBottom="15dp">
+        android:paddingBottom="5dp">
 
         <LinearLayout
             android:id="@+id/likeHolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp">
         <ImageView
             android:id="@+id/like_icon"
             android:layout_width="35dp"
@@ -120,7 +121,9 @@
         android:id="@+id/commentHolder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/comment_icon"

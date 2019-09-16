@@ -188,8 +188,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentItems = new ArrayList<>();
         commentAdapter = new CommentAdapter(commentItems, context);
         commentRecyclerView = commentDialog.findViewById(R.id.recyclerView);
-        LinearLayoutManager manager=new LinearLayoutManager(context);
-        commentRecyclerView.setLayoutManager(manager);
+        LinearLayoutManager manager2=new LinearLayoutManager(context);
+        commentRecyclerView.setLayoutManager(manager2);
         commentRecyclerView.setAdapter(commentAdapter);
 
 
@@ -212,12 +212,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 if (selectedPostID.equals(""))
                     Toast.makeText(context, "Couldn't create comment. Try again later.", Toast.LENGTH_SHORT).show();
                 else if (commentInput.getText().toString().equals(""))
-                    Toast.makeText(context, "Write a comment first before submitting", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
                 else
                     createComment();
-
-
-
 
             }
         });
@@ -238,7 +235,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         }
 
-        userDetails=new UserDetails(context);
+        userDetails = new UserDetails(context);
         not = view.findViewById(R.id.not);
         progressContainer = view.findViewById(R.id.progressContainer);
         bottomProgressBar = view.findViewById(R.id.progressBar);
@@ -246,12 +243,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         recyclerView = view.findViewById(R.id.recyclerView);
         itemsList = new ArrayList<>();
-        LinearLayoutManager manager2=new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(manager2);
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(manager);
         adapter = new NewsfeedAdapter(itemsList, context, this);
         recyclerView.setAdapter(adapter);
-
-
 
         currentPage = 1;
 
@@ -270,11 +265,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     {
                         if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
                         {
-                            loading = false;
                             getPosts(++currentPage);
-
-
-
 
                         }
                     }
@@ -282,10 +273,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
-
-
         getPosts(currentPage);
-
 
 
     }
@@ -296,7 +284,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
         if (commentDialog != null){
-
 
             currentCommentPage = 1;
 
@@ -343,10 +330,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-
-
-
-
     public void loadComments(String post_id){
 
 
@@ -356,6 +339,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
         commentProgressContainer.setVisibility(View.VISIBLE);
+        commentNot.setVisibility(View.GONE);
 
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id+"/comments?page=1";
 
@@ -364,14 +348,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
-
-
-
                 commentProgressContainer.setVisibility(View.GONE);
-
                 try {
-
-
                     JSONArray jsonArray = response.getJSONArray("data");
 
                     if (jsonArray.length() > 0)
@@ -379,14 +357,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     else
                         commentNot.setVisibility(View.VISIBLE);
 
-
                     for (int i=0; i < jsonArray.length(); i++) {
 
                         Gson gson = new Gson();
                         CommentItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CommentItem.class);
                         commentItems.add(item);
                         commentAdapter.notifyItemInserted(commentItems.size());
-
                     }
 
                 } catch (Exception e) {
@@ -431,6 +407,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void getPosts(int page){
 
+
+        loading = false;
+
         String url;
 
         if (type.equals("public"))
@@ -445,17 +424,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (page>1)
             bottomProgressBar.setVisibility(View.VISIBLE);
 
+        Log.d("json url", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
 
-
                 loading = true;
-
                 progressContainer.setVisibility(View.GONE);
-                bottomProgressBar.setVisibility(View.GONE);
-
+                bottomProgressBar.setVisibility(View.INVISIBLE);
 
                 try {
                     JSONArray jsonArray = response.getJSONArray("data");
@@ -466,9 +443,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                         not.setVisibility(View.GONE);
                         for(int i=0;i<jsonArray.length();i++){
                             JSONObject ob = jsonArray.getJSONObject(i);
-
                             NewsfeedItem item = new NewsfeedItem();
-
                             JSONObject author = ob.getJSONObject("author");
                             item.setAuthorUsername(author.getString("username"));
                             item.setAuthorFullName(author.getString("full_name"));
@@ -496,10 +471,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                             item.setUpdatedAt(ob.getString("updated_at"));
                             item.setType(ob.getString("type"));
 
-
                             itemsList.add(item);
                             adapter.notifyItemInserted(itemsList.size());
-
 
                         }
                     }
@@ -516,7 +489,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
                 progressContainer.setVisibility(View.GONE);
-                bottomProgressBar.setVisibility(View.GONE);
+                bottomProgressBar.setVisibility(View.INVISIBLE);
 
             }
         }) {
@@ -552,19 +525,13 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-
-
-
     public void reloadRecycler(){
-
-
         currentCommentPage = 1;
         commentItems.clear();
         commentAdapter.notifyDataSetChanged();
         loadComments(selectedPostID);
 
     }
-
 
     public void createComment(){
 
@@ -573,7 +540,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         commentInput.setEnabled(false);
         submitComment.setEnabled(false);
-
 
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments";
 
@@ -591,33 +557,20 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
         Log.d("json body", parametersPost.toString());
-
-
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
-
-
                 try {
-
-
                     if (response.has("data")) {
                         reloadRecycler();
-
-
                         commentInput.setText("");
                         commentInput.setEnabled(true);
                         submitComment.setEnabled(true);
                     }
-
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -626,29 +579,66 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
                 commentInput.setEnabled(true);
                 submitComment.setEnabled(true);
-
-
             }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-
                 if (!userDetails.getToken().equals(""))
                     headers.put("Authorization", "Bearer " + userDetails.getToken());
-
                 headers.put("Content-Type", "application/json");
-
                 return headers;
             }
         };
-
         RequestQueue queue= Volley.newRequestQueue(context);
-
         request.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
+        queue.add(request);
+    }
+
+
+
+    public void sendLike(String slug, boolean like){
+
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+slug+"/favorite";
+
+        JSONObject parametersPost = new JSONObject();
+
+        Log.d("json url", url);
+
+        JsonObjectRequest request = new JsonObjectRequest((like ? Request.Method.DELETE : Request.Method.POST), url, parametersPost,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("json response", response.toString());
+                try {
+                    if (response.has("data")) {
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+                Toast.makeText(context, "Couldn't like the status.", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                if (!userDetails.getToken().equals(""))
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+        RequestQueue queue= Volley.newRequestQueue(context);
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
     }
 
