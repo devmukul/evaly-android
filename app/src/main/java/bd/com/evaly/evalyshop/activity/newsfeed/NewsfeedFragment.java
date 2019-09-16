@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -36,7 +37,7 @@ import bd.com.evaly.evalyshop.models.NewsfeedItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
-public class NewsfeedFragment extends Fragment {
+public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private String type;
     private RecyclerView recyclerView;
@@ -50,6 +51,7 @@ public class NewsfeedFragment extends Fragment {
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private int currentPage;
     private ProgressBar bottomProgressBar;
+    private SwipeRefreshLayout swipeLayout;
 
     public NewsfeedFragment() {
         // Required empty public constructor
@@ -84,9 +86,34 @@ public class NewsfeedFragment extends Fragment {
 
 
     @Override
+    public void onRefresh() {
+
+        itemsList.clear();
+        adapter.notifyDataSetChanged();
+        currentPage = 1;
+        swipeLayout.setRefreshing(false);
+        getPosts(currentPage);
+
+
+    }
+
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+        swipeLayout =  view.findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(this);
+
+        try {
+            swipeLayout.setColorSchemeColors(android.R.color.holo_green_dark,
+                    android.R.color.holo_red_dark,
+                    android.R.color.holo_blue_dark,
+                    android.R.color.holo_orange_dark);
+        } catch (Exception e){
+
+        }
 
         userDetails=new UserDetails(context);
         not = view.findViewById(R.id.not);
