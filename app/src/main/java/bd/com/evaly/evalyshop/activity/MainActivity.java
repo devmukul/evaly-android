@@ -248,8 +248,6 @@ public class MainActivity extends BaseActivity {
                     }
 
                     showHomeFragment();
-
-
                     break;
                 case R.id.nav_wishlist:
                     intent = new Intent(MainActivity.this, WishListActivity.class);
@@ -267,16 +265,19 @@ public class MainActivity extends BaseActivity {
                         startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
                     }
                     break;
+                case R.id.nav_invite:
+                    if(userDetails.getToken().equals("")){
+                    startActivity(new Intent(MainActivity.this, SignInActivity.class));
+                }else {
+                    startActivity(new Intent(MainActivity.this, InviteEarn.class));
+                }
+
             }
             return true;
         });
 
 
         Intent data = getIntent();
-
-
-
-
 
         if(data.hasExtra("type")){
 
@@ -499,9 +500,6 @@ public class MainActivity extends BaseActivity {
 
 
             if (!userDetails.getProfilePictureSM().equals("null")) {
-
-
-
                 Glide.with(this)
                         .asBitmap()
                         .load(userDetails.getProfilePictureSM())
@@ -511,12 +509,7 @@ public class MainActivity extends BaseActivity {
                         .apply(new RequestOptions().override(200, 200))
                         .into(profilePicNav);
             }
-
-
         }
-
-
-
     }
 
 

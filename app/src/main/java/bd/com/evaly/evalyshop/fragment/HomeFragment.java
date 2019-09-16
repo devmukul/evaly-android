@@ -51,6 +51,7 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.OrderListActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.VoucherActivity;
+import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
@@ -162,11 +163,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(userDetails.getToken().equals("")){
-                    startActivity(new Intent(context, SignInActivity.class));
-                }else {
-                    startActivity(new Intent(context, InviteEarn.class));
-                }
+                startActivity(new Intent(context, NewsfeedActivity.class));
+
+
             }
         });
 
@@ -249,9 +248,6 @@ public class HomeFragment extends Fragment {
 
 
 
-
-
-
         TabsFragment categoryFragment = new TabsFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("type", 1);
@@ -285,8 +281,6 @@ public class HomeFragment extends Fragment {
 
     private void checkReferral(){
 
-
-
         if (!userDetails.getRef().equals("")){
 
             String url = "https://nsuer.club/evaly/referral/submit-referral.php";
@@ -297,11 +291,8 @@ public class HomeFragment extends Fragment {
                     //Log.d("json", response);
 
                     try{
-
                         JSONObject jsonObject = new JSONObject(response);
-
                         String message = jsonObject.getString("message");
-
                         if (!message.equals("")) {
                             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
@@ -427,34 +418,28 @@ public class HomeFragment extends Fragment {
     }
 
     public void getSliderImage(){
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, UrlUtils.BANNER, (String) null,
-                responsez -> {
 
 
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, "https://api.evaly.com.bd/core/banners/", (String) null,
+                responses -> {
                     JSONArray response;
+                    try {
+                        response = responses.getJSONArray("results");
 
-            try {
+                    } catch (Exception e){
+                        response = new JSONArray();
+                    }
 
-                response = responsez.getJSONArray("results");
 
-            } catch (Exception e){
-
-                response = new JSONArray();
-
-            }
                     if(response.length() < 1){
-
                         RelativeLayout sliderHolder = view.findViewById(R.id.sliderHolder);
                         sliderHolder.setVisibility(View.GONE);
-
-
                     }
 
                     for(int i=0;i<response.length();i++){
                         try {
 
                             JSONObject ob = response.getJSONObject(i);
-
                             BannerItem bannerItem = new BannerItem();
                             bannerItem.setImage(ob.getString("image"));
                             bannerItem.setName(ob.getString("name"));
