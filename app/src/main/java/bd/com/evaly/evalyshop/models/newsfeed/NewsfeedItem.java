@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.models;
+package bd.com.evaly.evalyshop.models.newsfeed;
 
 import java.util.ArrayList;
 

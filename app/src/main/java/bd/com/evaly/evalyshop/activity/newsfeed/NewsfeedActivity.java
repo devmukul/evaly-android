@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.activity.newsfeed;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,10 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -40,12 +36,12 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
@@ -61,7 +57,8 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPager;
-import bd.com.evaly.evalyshop.models.NewsfeedItem;
+import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
+import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
@@ -243,6 +240,9 @@ public class NewsfeedActivity extends AppCompatActivity {
         pager.addFragment(ceoFragment,"CEO");
 
         pager.notifyDataSetChanged();
+
+
+        loadComments("1568624048849");
         
 
     }
@@ -260,6 +260,83 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
+
+
+
+
+    public void loadComments(String post_id){
+
+
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id+"/comments?page=1";
+
+
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("json response", response.toString());
+
+
+                try {
+
+
+                    JSONArray jsonArray = response.getJSONArray("data");
+
+                    for (int i=0; i < jsonArray.length(); i++) {
+
+                        Gson gson = new Gson();
+                        CommentItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CommentItem.class);
+
+
+                        Logger.d(item.getReplies().get(0).getBody());
+
+                    }
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+                Toast.makeText(context, "Couldn't create status", Toast.LENGTH_SHORT).show();
+
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+
+                if (!userDetails.getToken().equals(""))
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+
+                headers.put("Content-Type", "application/json");
+
+                return headers;
+            }
+        };
+
+        RequestQueue queue= Volley.newRequestQueue(context);
+
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(request);
+    }
+
+
+
 
 
 

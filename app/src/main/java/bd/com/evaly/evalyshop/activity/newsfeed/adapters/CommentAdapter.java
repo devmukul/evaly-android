@@ -14,28 +14,29 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
+import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
 
-public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyViewHolder>{
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHolder>{
 
-    ArrayList<NewsfeedItem> itemsList;
+    ArrayList<CommentItem> itemsList;
     Context context;
 
-    public NewsfeedAdapter(ArrayList<NewsfeedItem> itemsList, Context context) {
+    public CommentAdapter(ArrayList<CommentItem> itemsList, Context context) {
         this.itemsList = itemsList;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public NewsfeedAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public CommentAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_newsfeed_list,viewGroup,false);
-        return new NewsfeedAdapter.MyViewHolder(view);
+        return new CommentAdapter.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NewsfeedAdapter.MyViewHolder myViewHolder, int i) {
+    public void onBindViewHolder(@NonNull CommentAdapter.MyViewHolder myViewHolder, int i) {
 
 
         myViewHolder.userNameView.setText(itemsList.get(i).getAuthorFullName());
@@ -142,7 +143,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView userNameView, timeView, statusView, likeCountView, commentCountView;
+        TextView userNameView, timeView, statusView, likeCountView, replyCountView;
         ImageView userImage, likeIcon, commentIcon, menuIcon, postImage;
         View view;
         public MyViewHolder(final View itemView) {
@@ -152,7 +153,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             timeView = itemView.findViewById(R.id.date);
             statusView = itemView.findViewById(R.id.text);
             likeCountView = itemView.findViewById(R.id.likeCount);
-            commentCountView = itemView.findViewById(R.id.commentCount);
+            replyCountView = itemView.findViewById(R.id.replyCount);
 
             userImage = itemView.findViewById(R.id.picture);
             likeIcon = itemView.findViewById(R.id.like_icon);
@@ -166,5 +167,5 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         }
     }
 
-    
+
 }
