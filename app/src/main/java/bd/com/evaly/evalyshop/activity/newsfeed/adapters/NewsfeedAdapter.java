@@ -3,10 +3,12 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -43,7 +45,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         myViewHolder.userNameView.setText(itemsList.get(i).getAuthorFullName());
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt())));
-        myViewHolder.statusView.setText(itemsList.get(i).getBody());
+        myViewHolder.statusView.setText(Html.fromHtml(itemsList.get(i).getBody()));
 
 
         myViewHolder.commentCountView.setText(itemsList.get(i).getCommentsCount()+" Comments");
@@ -103,7 +105,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
 
 
-        favorite.setOnClickListener(new View.OnClickListener() {
+        myViewHolder.likeHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -129,10 +131,10 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
 
 
-        myViewHolder.commentCountView.setOnClickListener(new View.OnClickListener() {
+        myViewHolder.commentHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragment.openCommentBottomSheet(itemsList.get(i).getSlug(), itemsList.get(i).getAuthorFullName(), itemsList.get(i).getAuthorImage(), itemsList.get(i).getBody(), itemsList.get(i).getCreatedAt());
+                fragment.openCommentBottomSheet(itemsList.get(i).getSlug(), itemsList.get(i).getAuthorFullName(), itemsList.get(i).getAuthorImage(), itemsList.get(i).getBody(), itemsList.get(i).getCreatedAt(), itemsList.get(i).getAttachment());
             }
         });
 
@@ -153,6 +155,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         TextView userNameView, timeView, statusView, likeCountView, commentCountView;
         ImageView userImage, likeIcon, commentIcon, menuIcon, postImage;
         View view;
+        LinearLayout likeHolder, commentHolder;
         public MyViewHolder(final View itemView) {
             super(itemView);
 
@@ -167,6 +170,9 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             commentIcon = itemView.findViewById(R.id.comment_icon);
             menuIcon = itemView.findViewById(R.id.menu);
             postImage = itemView.findViewById(R.id.postImage);
+
+            likeHolder = itemView.findViewById(R.id.likeHolder);
+            commentHolder = itemView.findViewById(R.id.commentHolder);
 
 
 

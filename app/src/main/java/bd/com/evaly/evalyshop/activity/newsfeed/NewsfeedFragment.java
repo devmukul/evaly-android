@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -81,6 +82,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ArrayList<CommentItem> commentItems;
     private LinearLayout commentNot;
     private LinearLayout commentProgressContainer;
+    private int currentCommentPage;
+    private EditText commentInput;
+    private ImageView submitComment;
+    private ImageView uploadImage;
 
 
 
@@ -138,6 +143,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         // comment bottom sheet
 
+        currentCommentPage = 1;
+
         commentDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         commentDialog.setContentView(R.layout.alert_comments);
 
@@ -147,14 +154,14 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         bottomSheetBehaviorComment.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
 
-                    bottomSheet.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            bottomSheetBehaviorComment.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    });
+
+                    currentCommentPage = 1;
+                    selectedPostID = "";
+                    commentItems.clear();
+                    commentAdapter.notifyDataSetChanged();
+                    commentDialog.hide();
 
                 }
             }
@@ -164,9 +171,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
+
         ScreenUtils screenUtils = new ScreenUtils(context);
         LinearLayout dialogLayout = commentDialog.findViewById(R.id.container2);
         dialogLayout.setMinimumHeight(screenUtils.getHeight());
+
+        bottomSheetBehaviorComment.setPeekHeight(screenUtils.getHeight());
 
         commentNot = commentDialog.findViewById(R.id.not);
         commentProgressContainer = commentDialog.findViewById(R.id.progressContainer);
@@ -182,6 +192,18 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentRecyclerView.setAdapter(commentAdapter);
 
 
+
+
+        // create comment
+
+        commentInput = commentDialog.findViewById(R.id,commentInput);
+        uploadImage = commentDialog.findViewById(R.id.uploadImage);
+        submitComment = commentDialog.findViewById(R.id.submitComment);
+
+
+
+
+        // pull to refresh
         swipeLayout =  view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
 
@@ -248,11 +270,13 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
-    public void openCommentBottomSheet(String id, String authorName, String authorImage, String postText, String date){
+    public void openCommentBottomSheet(String id, String authorName, String authorImage, String postText, String date, String postImage){
 
 
         if (commentDialog != null){
 
+
+            currentCommentPage = 1;
 
             ((TextView) commentDialog.findViewById(R.id.user_name)).setText(authorName);
             ((TextView) commentDialog.findViewById(R.id.text)).setText(postText);
@@ -266,6 +290,16 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     .apply(new RequestOptions().override(200, 200))
                     .into(userPic);
 
+
+            ImageView postPic = commentDialog.findViewById(R.id.postImage);
+
+            if (postImage == null || postImage.equals("")){} else {
+                Glide.with(context)
+                        .load(postImage)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .apply(new RequestOptions().override(900, 900))
+                        .into(postPic);
+            }
 
             selectedPostID = id;
 
@@ -319,9 +353,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     JSONArray jsonArray = response.getJSONArray("data");
 
                     if (jsonArray.length() > 0)
-                        not.setVisibility(View.GONE);
+                        commentNot.setVisibility(View.GONE);
                     else
-                        not.setVisibility(View.VISIBLE);
+                        commentNot.setVisibility(View.VISIBLE);
 
 
                     for (int i=0; i < jsonArray.length(); i++) {

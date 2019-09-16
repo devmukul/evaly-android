@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         myViewHolder.userNameView.setText(author.getFullName());
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", commentItem.getCreatedAt())));
-        myViewHolder.statusView.setText(itemsList.get(i).getBody());
+
+        myViewHolder.statusView.setText(Html.fromHtml(commentItem.getBody()));
 
 
 
@@ -79,8 +81,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                         .into(myViewHolder.postImage);
             }
         }
-
-
 
 
 
