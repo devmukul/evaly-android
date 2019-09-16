@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.LinkAddress;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -20,6 +21,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +43,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -52,18 +56,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPager;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
+import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
 public class NewsfeedActivity extends AppCompatActivity {
@@ -81,6 +89,9 @@ public class NewsfeedActivity extends AppCompatActivity {
     private String postType = "CEO";
     private String postBody = "";
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,18 +104,8 @@ public class NewsfeedActivity extends AppCompatActivity {
         userDetails = new UserDetails(context);
 
 
-//        BottomSheetDialog dialog = new BottomSheetDialog(NewsfeedActivity.this, R.style.BottomSheetDialogTheme);
-//        dialog.setContentView(R.layout.alert_comments);
-//
-//        View bottomSheetInternal = dialog.findViewById(android.support.design.R.id.design_bottom_sheet);
-//        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
-//
-//        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-//        ScreenUtils screenUtils = new ScreenUtils(NewsfeedActivity.this);
-////                bottomSheetBehavior.setPeekHeight(15000);
-//
-//        LinearLayout dialogLayout = dialog.findViewById(R.id.container2);
-//        dialogLayout.setMinimumHeight(screenUtils.getHeight());
+
+
 
 
         viewPager = findViewById(R.id.viewPager);
@@ -242,10 +243,11 @@ public class NewsfeedActivity extends AppCompatActivity {
         pager.notifyDataSetChanged();
 
 
-        loadComments("1568624048849");
+
         
 
     }
+
 
 
 
@@ -263,77 +265,6 @@ public class NewsfeedActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-    public void loadComments(String post_id){
-
-
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id+"/comments?page=1";
-
-
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("json response", response.toString());
-
-
-                try {
-
-
-                    JSONArray jsonArray = response.getJSONArray("data");
-
-                    for (int i=0; i < jsonArray.length(); i++) {
-
-                        Gson gson = new Gson();
-                        CommentItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CommentItem.class);
-
-
-                        Logger.d(item.getReplies().get(0).getBody());
-
-                    }
-
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-                Toast.makeText(context, "Couldn't create status", Toast.LENGTH_SHORT).show();
-
-
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
-
-                headers.put("Content-Type", "application/json");
-
-                return headers;
-            }
-        };
-
-        RequestQueue queue= Volley.newRequestQueue(context);
-
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        queue.add(request);
-    }
 
 
 

@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -21,10 +22,12 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
     ArrayList<NewsfeedItem> itemsList;
     Context context;
+    NewsfeedFragment fragment;
 
-    public NewsfeedAdapter(ArrayList<NewsfeedItem> itemsList, Context context) {
+    public NewsfeedAdapter(ArrayList<NewsfeedItem> itemsList, Context context, NewsfeedFragment fragment) {
         this.itemsList = itemsList;
         this.context = context;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -100,10 +103,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
 
 
-
-
-
-
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,6 +126,15 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             }
         });
 
+
+
+
+        myViewHolder.commentCountView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragment.openCommentBottomSheet(itemsList.get(i).getSlug(), itemsList.get(i).getAuthorFullName(), itemsList.get(i).getAuthorImage(), itemsList.get(i).getBody(), itemsList.get(i).getCreatedAt());
+            }
+        });
 
 
     }

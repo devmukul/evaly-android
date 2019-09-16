@@ -12,9 +12,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
+import java.util.List;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
+import bd.com.evaly.evalyshop.models.newsfeed.comment.Author;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
+import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
 
@@ -31,102 +33,56 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     @NonNull
     @Override
     public CommentAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_newsfeed_list,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_comment,viewGroup,false);
         return new CommentAdapter.MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.MyViewHolder myViewHolder, int i) {
 
+        CommentItem commentItem = itemsList.get(i);
+        Author author = commentItem.getAuthor();
+        List<RepliesItem> repliesList = commentItem.getReplies();
 
-        myViewHolder.userNameView.setText(itemsList.get(i).getAuthorFullName());
-        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt())));
+
+        myViewHolder.userNameView.setText(author.getFullName());
+        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", commentItem.getCreatedAt())));
         myViewHolder.statusView.setText(itemsList.get(i).getBody());
 
-
-        myViewHolder.commentCountView.setText(itemsList.get(i).getCommentsCount()+" Comments");
 
 
 
         Glide.with(context)
-                .load(itemsList.get(i).getAuthorImage())
+                .load(author.getCompressedImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(200, 200))
                 .into(myViewHolder.userImage);
 
 
-        String postImage = itemsList.get(i).getAttachment();
-
-        if (postImage.equals("null")){
-
-            myViewHolder.postImage.setVisibility(View.GONE);
-
-        } else {
+        Object postImageURL = commentItem.getAttachement();
 
 
-            myViewHolder.postImage.setVisibility(View.VISIBLE);
+        if (postImageURL != null) {
+            if (postImageURL.equals("null")) {
 
-            Glide.with(context)
-                    .load(itemsList.get(i).getAttachment())
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(new RequestOptions().override(900, 900))
-                    .into(myViewHolder.postImage);
-        }
+                myViewHolder.postImage.setVisibility(View.GONE);
+
+            } else {
 
 
+                myViewHolder.postImage.setVisibility(View.VISIBLE);
 
-
-        ImageView favorite = myViewHolder.likeIcon;
-
-        final TextView likeCount = myViewHolder.likeCountView;
-
-
-
-        myViewHolder.likeCountView.setText(itemsList.get(i).getFavoriteCount() + " Likes");
-
-
-        if(itemsList.get(i).isFavorited() || (favorite.getTag() != null && favorite.getTag().toString().equals("yes"))){
-
-            favorite.setImageResource(R.drawable.ic_favorite_color);
-            favorite.setTag("yes");
-
-
-        } else {
-
-            favorite.setTag("no");
-            favorite.setImageResource(R.drawable.ic_favorite);
-
-        }
-
-
-
-
-
-
-
-
-        favorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                if(favorite.getTag().equals("yes")){
-                    favorite.setImageResource(R.drawable.ic_favorite);
-                    favorite.setTag("no");
-                    itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount()-1 );
-                    likeCount.setText(itemsList.get(i).getFavoriteCount() +" Likes");
-
-                } else {
-
-                    favorite.setImageResource(R.drawable.ic_favorite_color);
-
-                    favorite.setTag("yes");
-                    itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount()+1 );
-                    likeCount.setText(itemsList.get(i).getFavoriteCount() +" Likes");
-
-                }
+                Glide.with(context)
+                        .load(commentItem.getAttachement().toString())
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .apply(new RequestOptions().override(900, 900))
+                        .into(myViewHolder.postImage);
             }
-        });
+        }
+
+
+
+
 
 
 

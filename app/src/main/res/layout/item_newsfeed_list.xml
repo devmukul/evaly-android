@@ -106,7 +106,8 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_weight="0"
-            android:text="Like" />
+            android:text="Like"
+            android:textStyle="normal"/>
 
         <ImageView
             android:id="@+id/comment_icon"
@@ -122,7 +123,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:text="Comment" />
+            android:text="Comment"
+            android:textStyle="normal"/>
     </LinearLayout>
 
 
