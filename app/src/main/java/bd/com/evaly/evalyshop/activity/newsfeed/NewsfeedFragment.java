@@ -86,6 +86,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private EditText commentInput;
     private ImageView submitComment;
     private ImageView uploadImage;
+    private ImageView reloadComment;
 
 
 
@@ -199,8 +200,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentInput = commentDialog.findViewById(R.id.commentInput);
         uploadImage = commentDialog.findViewById(R.id.uploadImage);
         submitComment = commentDialog.findViewById(R.id.submitComment);
+        reloadComment = commentDialog.findViewById(R.id.refresh);
 
         uploadImage.setOnClickListener(view1 -> Toast.makeText(context,"Photo comment is disabled now.", Toast.LENGTH_SHORT).show());
+        reloadComment.setOnClickListener(view1 -> reloadRecycler());
 
         submitComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -559,8 +562,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentItems.clear();
         commentAdapter.notifyDataSetChanged();
         loadComments(selectedPostID);
-
-
 
     }
 
