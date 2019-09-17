@@ -281,6 +281,8 @@ public class NewsfeedActivity extends AppCompatActivity {
             return;
         }
 
+        createBtn.setEnabled(false);
+
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts";
 
         JSONObject parameters = new JSONObject();
@@ -311,6 +313,8 @@ public class NewsfeedActivity extends AppCompatActivity {
                 Log.d("json response", response.toString());
 
 
+                createBtn.setEnabled(true);
+
                 try {
                     //JSONArray jsonArray = response.getJSONObject("data");
 
@@ -333,6 +337,7 @@ public class NewsfeedActivity extends AppCompatActivity {
                 Log.e("onErrorResponse", error.toString());
                 Toast.makeText(context, "Couldn't create status", Toast.LENGTH_SHORT).show();
 
+                createBtn.setEnabled(true);
 
             }
         }) {

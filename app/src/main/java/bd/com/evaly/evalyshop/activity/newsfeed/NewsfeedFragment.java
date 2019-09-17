@@ -34,6 +34,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,8 +46,10 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedAdapter;
+import bd.com.evaly.evalyshop.activity.newsfeed.adapters.ReplyAdapter;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
+import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -73,6 +76,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
+    // comment bottom sheet items
 
     private BottomSheetBehavior bottomSheetBehaviorComment;
     private BottomSheetDialog commentDialog;
@@ -87,6 +91,27 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ImageView submitComment;
     private ImageView uploadImage;
     private ImageView reloadComment;
+
+
+    // reply bottom sheet items
+
+    private BottomSheetBehavior bottomSheetBehaviorReply;
+    private BottomSheetDialog replyDialog;
+    private String selectedCommentID = "";
+    private RecyclerView replyRecyclerView;
+    private ReplyAdapter replyAdapter;
+    private ArrayList<RepliesItem> replyItems;
+    private LinearLayout replyNot;
+    private LinearLayout replyProgressContainer;
+    private int currentReplyPage;
+    private EditText ReplyInput;
+    private ImageView submitReply;
+    private ImageView uploadImageReply;
+    private ImageView reloadReply;
+
+
+
+
 
 
 
@@ -142,6 +167,94 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
+
+
+
+// Reply bottom sheet
+
+        currentReplyPage = 1;
+
+        replyDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
+        replyDialog.setContentView(R.layout.alert_replies);
+
+        View bottomSheetInternalReply = replyDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        bottomSheetInternalReply.setPadding(0, 0, 0, 0);
+        bottomSheetBehaviorReply = BottomSheetBehavior.from(bottomSheetInternalReply);
+        bottomSheetBehaviorReply.setState(BottomSheetBehavior.STATE_EXPANDED);
+        bottomSheetBehaviorReply.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+
+                    currentReplyPage = 1;
+                    selectedPostID = "";
+                    replyItems.clear();
+                    replyAdapter.notifyDataSetChanged();
+                    replyDialog.hide();
+
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+
+        ScreenUtils screenUtils = new ScreenUtils(context);
+        LinearLayout dialogLayout = replyDialog.findViewById(R.id.container2);
+        dialogLayout.setMinimumHeight(screenUtils.getHeight());
+
+        bottomSheetBehaviorReply.setPeekHeight(screenUtils.getHeight());
+
+        replyNot = replyDialog.findViewById(R.id.not);
+        replyProgressContainer = replyDialog.findViewById(R.id.progressContainer);
+
+
+        // Reply recyclerView
+
+        replyItems = new ArrayList<>();
+        replyAdapter = new ReplyAdapter(replyItems, context);
+        replyRecyclerView = replyDialog.findViewById(R.id.recyclerView);
+        LinearLayoutManager manager2=new LinearLayoutManager(context);
+        replyRecyclerView.setLayoutManager(manager2);
+        replyRecyclerView.setAdapter(replyAdapter);
+
+
+
+        // create Reply
+
+        ReplyInput = replyDialog.findViewById(R.id.commentInput);
+        uploadImage = replyDialog.findViewById(R.id.uploadImage);
+        submitReply = replyDialog.findViewById(R.id.submitComment);
+        reloadReply = replyDialog.findViewById(R.id.refresh);
+
+        uploadImage.setOnClickListener(view1 -> Toast.makeText(context,"Photo reply is disabled now.", Toast.LENGTH_SHORT).show());
+        reloadReply.setOnClickListener(view1 -> reloadRecycler());
+
+        submitReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (selectedPostID.equals(""))
+                    Toast.makeText(context, "Couldn't post reply. Try again later.", Toast.LENGTH_SHORT).show();
+                else if (ReplyInput.getText().toString().trim().equals(""))
+                    Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
+//                else
+//                    createReply();
+
+            }
+        });
+
+
+
+
+
+        // ==================================================================================================
+
+
+
+
         // comment bottom sheet
 
         currentCommentPage = 1;
@@ -174,9 +287,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         });
 
 
-        ScreenUtils screenUtils = new ScreenUtils(context);
-        LinearLayout dialogLayout = commentDialog.findViewById(R.id.container2);
-        dialogLayout.setMinimumHeight(screenUtils.getHeight());
+        LinearLayout dialogLayoutReply = commentDialog.findViewById(R.id.container2);
+        dialogLayoutReply.setMinimumHeight(screenUtils.getHeight());
 
         bottomSheetBehaviorComment.setPeekHeight(screenUtils.getHeight());
 
@@ -187,10 +299,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         // comment recyclerView
 
         commentItems = new ArrayList<>();
-        commentAdapter = new CommentAdapter(commentItems, context);
+        commentAdapter = new CommentAdapter(commentItems, context, this);
         commentRecyclerView = commentDialog.findViewById(R.id.recyclerView);
-        LinearLayoutManager manager2=new LinearLayoutManager(context);
-        commentRecyclerView.setLayoutManager(manager2);
+        LinearLayoutManager managerComment=new LinearLayoutManager(context);
+        commentRecyclerView.setLayoutManager(managerComment);
         commentRecyclerView.setAdapter(commentAdapter);
 
 
@@ -212,7 +324,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                 if (selectedPostID.equals(""))
                     Toast.makeText(context, "Couldn't create comment. Try again later.", Toast.LENGTH_SHORT).show();
-                else if (commentInput.getText().toString().equals(""))
+                else if (commentInput.getText().toString().trim().equals(""))
                     Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
                 else
                     createComment();
@@ -281,6 +393,57 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
+    public void openReplyBottomSheet(String id, String authorName, String authorImage, String postText, String date, Object postImage){
+
+
+        if (replyDialog != null){
+
+            currentReplyPage = 1;
+
+            ((TextView) replyDialog.findViewById(R.id.user_name)).setText(authorName);
+            ((TextView) replyDialog.findViewById(R.id.text)).setText(postText);
+            ((TextView) replyDialog.findViewById(R.id.date)).setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", date)));
+
+            ImageView userPic = replyDialog.findViewById(R.id.picture);
+
+            Glide.with(context)
+                    .load(authorImage)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .apply(new RequestOptions().override(200, 200))
+                    .into(userPic);
+
+
+            ImageView postPic = replyDialog.findViewById(R.id.postImage);
+
+            if (postImage == null || postImage.equals("")){} else {
+                Glide.with(context)
+                        .load(postImage)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .apply(new RequestOptions().override(900, 900))
+                        .into(postPic);
+            }
+
+            selectedCommentID = id;
+
+            replyItems.clear();
+            replyAdapter.notifyDataSetChanged();
+
+            replyDialog.show();
+
+            bottomSheetBehaviorReply.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            loadReplies(selectedCommentID);
+
+        } else
+        {
+            Toast.makeText(context, "Couldn't load replys", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+
+
     public void openCommentBottomSheet(String id, String authorName, String authorImage, String postText, String date, String postImage){
 
 
@@ -331,6 +494,157 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
+
+
+    public void loadReplies(String comment_id){
+
+
+        if (!commentDialog.isShowing()){
+            Toast.makeText(context, "Can't load comments. Restart the app", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        replyProgressContainer.setVisibility(View.VISIBLE);
+        replyNot.setVisibility(View.GONE);
+
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments/"+ comment_id +"/replies?page=1";
+
+        Log.d("json url", url);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("json response", response.toString());
+
+                replyProgressContainer.setVisibility(View.GONE);
+
+                try {
+                    JSONArray jsonArray = response.getJSONArray("data").getJSONObject(0).getJSONArray("replies");
+
+                    if (jsonArray.length() > 0)
+                        replyNot.setVisibility(View.GONE);
+                    else
+                        replyNot.setVisibility(View.VISIBLE);
+
+                    for (int i=0; i < jsonArray.length(); i++) {
+
+                        Gson gson = new Gson();
+                        RepliesItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), RepliesItem.class);
+
+                        if (!item.getBody().trim().equals("")) {
+                            replyItems.add(item);
+                            replyAdapter.notifyItemInserted(replyItems.size());
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+
+                replyProgressContainer.setVisibility(View.GONE);
+                Toast.makeText(context, "Couldn't load replies.", Toast.LENGTH_SHORT).show();
+
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+
+                if (!userDetails.getToken().equals(""))
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+
+                headers.put("Content-Type", "application/json");
+
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(request);
+    }
+
+
+    public void createReply(){
+
+        if (commentDialog == null)
+            return;
+
+        ReplyInput.setEnabled(false);
+        submitReply.setEnabled(false);
+
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments";
+
+        JSONObject parameters = new JSONObject();
+        JSONObject parametersPost = new JSONObject();
+        try {
+
+            parameters.put("body", commentInput.getText().toString());
+
+            parametersPost.put("comment", parameters);
+
+
+
+        } catch (Exception e) {
+        }
+
+        Log.d("json body", parametersPost.toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("json response", response.toString());
+                try {
+                    if (response.has("data")) {
+                        reloadRecycler();
+                        commentInput.setText("");
+                        commentInput.setEnabled(true);
+                        submitComment.setEnabled(true);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+                Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
+                commentInput.setEnabled(true);
+                submitComment.setEnabled(true);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                if (!userDetails.getToken().equals(""))
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+        RequestQueue queue= Volley.newRequestQueue(context);
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(request);
+    }
+
+
+
+
+
+
     public void loadComments(String post_id){
 
 
@@ -362,8 +676,14 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                         Gson gson = new Gson();
                         CommentItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CommentItem.class);
-                        commentItems.add(item);
-                        commentAdapter.notifyItemInserted(commentItems.size());
+
+
+                        String emBody = item.getBody().replaceAll("\\s+", "");
+
+                        if (!emBody.equals("") && emBody.length() > 2) {
+                            commentItems.add(item);
+                            commentAdapter.notifyItemInserted(commentItems.size());
+                        }
                     }
 
                 } catch (Exception e) {
