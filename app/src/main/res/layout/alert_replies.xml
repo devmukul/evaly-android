@@ -225,7 +225,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:tint="#aaa"
-                        app:srcCompat="@drawable/ic_chat_small" />
+                        app:srcCompat="@drawable/ic_reply" />
 
                     <TextView
                         android:id="@+id/textView53"
@@ -242,7 +242,8 @@
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginBottom="10dp"/>
 
 
             </LinearLayout>
@@ -266,7 +267,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:background="@drawable/comment_input_bg"
             android:gravity="top"
@@ -307,7 +308,7 @@
             android:id="@+id/submitComment"
             android:layout_width="50dp"
             android:layout_height="46dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="1dp"
             android:layout_weight="0"
             android:clickable="true"
             android:paddingLeft="5dp"

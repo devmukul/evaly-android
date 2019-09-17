@@ -104,7 +104,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private LinearLayout replyNot;
     private LinearLayout replyProgressContainer;
     private int currentReplyPage;
-    private EditText ReplyInput;
+    private EditText replyInput;
     private ImageView submitReply;
     private ImageView uploadImageReply;
     private ImageView reloadReply;
@@ -155,6 +155,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         adapter.notifyDataSetChanged();
         currentPage = 1;
         swipeLayout.setRefreshing(false);
+
+        selectedPostID = "";
+        selectedCommentID = "";
+
         getPosts(currentPage);
 
 
@@ -166,11 +170,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         super.onViewCreated(view, savedInstanceState);
 
 
-
-
-
-
-// Reply bottom sheet
+        // Reply bottom sheet
 
         currentReplyPage = 1;
 
@@ -187,7 +187,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
 
                     currentReplyPage = 1;
-                    selectedPostID = "";
+                    selectedCommentID = "";
                     replyItems.clear();
                     replyAdapter.notifyDataSetChanged();
                     replyDialog.hide();
@@ -206,7 +206,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         dialogLayout.setMinimumHeight(screenUtils.getHeight());
 
         bottomSheetBehaviorReply.setPeekHeight(screenUtils.getHeight());
-
         replyNot = replyDialog.findViewById(R.id.not);
         replyProgressContainer = replyDialog.findViewById(R.id.progressContainer);
 
@@ -221,16 +220,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyRecyclerView.setAdapter(replyAdapter);
 
 
-
         // create Reply
 
-        ReplyInput = replyDialog.findViewById(R.id.commentInput);
+        replyInput = replyDialog.findViewById(R.id.commentInput);
         uploadImage = replyDialog.findViewById(R.id.uploadImage);
         submitReply = replyDialog.findViewById(R.id.submitComment);
         reloadReply = replyDialog.findViewById(R.id.refresh);
 
         uploadImage.setOnClickListener(view1 -> Toast.makeText(context,"Photo reply is disabled now.", Toast.LENGTH_SHORT).show());
-        reloadReply.setOnClickListener(view1 -> reloadRecycler());
+        reloadReply.setOnClickListener(view1 -> reloadRecyclerReply());
 
         submitReply.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -238,19 +236,14 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                 if (selectedPostID.equals(""))
                     Toast.makeText(context, "Couldn't post reply. Try again later.", Toast.LENGTH_SHORT).show();
-                else if (ReplyInput.getText().toString().trim().equals(""))
+                else if (replyInput.getText().toString().trim().equals(""))
                     Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
-//                else
-//                    createReply();
+                else
+                    createReply();
 
             }
         });
 
-
-
-
-
-        // ==================================================================================================
 
 
 
@@ -271,7 +264,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
 
-
                     currentCommentPage = 1;
                     selectedPostID = "";
                     commentItems.clear();
@@ -291,7 +283,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         dialogLayoutReply.setMinimumHeight(screenUtils.getHeight());
 
         bottomSheetBehaviorComment.setPeekHeight(screenUtils.getHeight());
-
         commentNot = commentDialog.findViewById(R.id.not);
         commentProgressContainer = commentDialog.findViewById(R.id.progressContainer);
 
@@ -306,8 +297,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentRecyclerView.setAdapter(commentAdapter);
 
 
-
-
         // create comment
 
         commentInput = commentDialog.findViewById(R.id.commentInput);
@@ -316,7 +305,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         reloadComment = commentDialog.findViewById(R.id.refresh);
 
         uploadImage.setOnClickListener(view1 -> Toast.makeText(context,"Photo comment is disabled now.", Toast.LENGTH_SHORT).show());
-        reloadComment.setOnClickListener(view1 -> reloadRecycler());
+        reloadComment.setOnClickListener(view1 -> reloadRecyclerComment());
 
         submitComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -331,8 +320,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
         });
-
-
 
 
         // pull to refresh
@@ -352,7 +339,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         not = view.findViewById(R.id.not);
         progressContainer = view.findViewById(R.id.progressContainer);
         bottomProgressBar = view.findViewById(R.id.progressBar);
-
 
         recyclerView = view.findViewById(R.id.recyclerView);
         itemsList = new ArrayList<>();
@@ -424,21 +410,17 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
 
             selectedCommentID = id;
-
             replyItems.clear();
             replyAdapter.notifyDataSetChanged();
-
             replyDialog.show();
-
             bottomSheetBehaviorReply.setState(BottomSheetBehavior.STATE_EXPANDED);
-
             loadReplies(selectedCommentID);
+
 
         } else
         {
             Toast.makeText(context, "Couldn't load replys", Toast.LENGTH_SHORT).show();
         }
-
 
     }
 
@@ -463,7 +445,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     .apply(new RequestOptions().override(200, 200))
                     .into(userPic);
 
-
             ImageView postPic = commentDialog.findViewById(R.id.postImage);
 
             if (postImage == null || postImage.equals("")){} else {
@@ -478,9 +459,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             commentItems.clear();
             commentAdapter.notifyDataSetChanged();
-
             commentDialog.show();
-
             bottomSheetBehaviorComment.setState(BottomSheetBehavior.STATE_EXPANDED);
 
             loadComments(selectedPostID);
@@ -577,23 +556,20 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void createReply(){
 
-        if (commentDialog == null)
+        if (replyDialog == null)
             return;
 
-        ReplyInput.setEnabled(false);
+        replyInput.setEnabled(false);
         submitReply.setEnabled(false);
 
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments";
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments/"+selectedCommentID+"/replies";
 
         JSONObject parameters = new JSONObject();
         JSONObject parametersPost = new JSONObject();
         try {
 
-            parameters.put("body", commentInput.getText().toString());
-
+            parameters.put("body", replyInput.getText().toString());
             parametersPost.put("comment", parameters);
-
-
 
         } catch (Exception e) {
         }
@@ -605,10 +581,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Log.d("json response", response.toString());
                 try {
                     if (response.has("data")) {
-                        reloadRecycler();
-                        commentInput.setText("");
-                        commentInput.setEnabled(true);
-                        submitComment.setEnabled(true);
+                        reloadRecyclerReply();
+                        replyInput.setText("");
+                        replyInput.setEnabled(true);
+                        submitReply.setEnabled(true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -647,6 +623,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void loadComments(String post_id){
 
+        selectedPostID = post_id;
+
 
         if (!commentDialog.isShowing()){
             Toast.makeText(context, "Can't load comments. Restart the app", Toast.LENGTH_SHORT).show();
@@ -676,7 +654,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                         Gson gson = new Gson();
                         CommentItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CommentItem.class);
-
 
                         String emBody = item.getBody().replaceAll("\\s+", "");
 
@@ -846,13 +823,23 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-    public void reloadRecycler(){
+    public void reloadRecyclerComment(){
         currentCommentPage = 1;
         commentItems.clear();
         commentAdapter.notifyDataSetChanged();
         loadComments(selectedPostID);
 
     }
+
+
+    public void reloadRecyclerReply(){
+        currentReplyPage = 1;
+        replyItems.clear();
+        replyAdapter.notifyDataSetChanged();
+        loadReplies(selectedCommentID);
+
+    }
+
 
     public void createComment(){
 
@@ -884,7 +871,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Log.d("json response", response.toString());
                 try {
                     if (response.has("data")) {
-                        reloadRecycler();
+                        reloadRecyclerComment();
                         commentInput.setText("");
                         commentInput.setEnabled(true);
                         submitComment.setEnabled(true);

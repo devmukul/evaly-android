@@ -56,6 +56,15 @@ public class UserDetails {
     }
 
 
+    public String getGroups() {
+        return  pref.getString("groups","");
+    }
+
+    public void setGroup(String name) {
+        editor.putString("groups", name);
+        editor.commit();
+    }
+
     // referral
     public String getRef() {
         return  pref.getString("referral","");

@@ -76,8 +76,6 @@ import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
 public class NewsfeedActivity extends AppCompatActivity {
 
-
-
     private ViewPager viewPager;
     private NewsfeedPager pager;
     private TabLayout tabLayout;
@@ -90,8 +88,6 @@ public class NewsfeedActivity extends AppCompatActivity {
     private String postBody = "";
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,11 +98,6 @@ public class NewsfeedActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Newsfeed");
         context = this;
         userDetails = new UserDetails(context);
-
-
-
-
-
 
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tab_layout);
@@ -243,12 +234,7 @@ public class NewsfeedActivity extends AppCompatActivity {
         pager.notifyDataSetChanged();
 
 
-
-        
-
     }
-
-
 
 
 
@@ -262,16 +248,6 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
-
-
-
-
-
-
 
 
     public void createPost(){
@@ -296,7 +272,6 @@ public class NewsfeedActivity extends AppCompatActivity {
                 parameters.put("attachment", selectedImage);
 
             parameters.put("tags", new JSONArray());
-
             parametersPost.put("post", parameters);
 
 
@@ -318,12 +293,9 @@ public class NewsfeedActivity extends AppCompatActivity {
                 try {
                     //JSONArray jsonArray = response.getJSONObject("data");
 
-                        createPostDialog.dismiss();
-
-                        finish();
-                        startActivity(getIntent());
-
-
+                    createPostDialog.dismiss();
+                    finish();
+                    startActivity(getIntent());
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -368,9 +340,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         if (selectedImage != null && createPostDialog.isShowing()) {
 
-
             createPostDialog.findViewById(R.id.postImage).setVisibility(View.VISIBLE);
-
 
             Glide.with(this)
                     .asBitmap()
@@ -591,11 +561,6 @@ public class NewsfeedActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
     }
-
-
-
-
-
 
 
 }

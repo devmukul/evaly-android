@@ -58,7 +58,7 @@ public class TabsFragment extends Fragment {
     String category;
     EditText search;
     Button showMore;
-    Fragment parentIntance;
+
     private View view;
     boolean isEmpty = false;
     int brandCounter=1,shopCounter=1;
@@ -217,6 +217,7 @@ public class TabsFragment extends Fragment {
             adapter2 = new HomeCategoryAdapter2(context, titleCategory2, imageCategory2);
             recyclerView.setAdapter(adapter2);
             adapter2.notifyDataSetChanged();
+
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
@@ -225,18 +226,15 @@ public class TabsFragment extends Fragment {
 
                 }
             }, 300);
+
+
+
             search.setHint("Search categories");
             showMore.setVisibility(View.GONE);
             search.setVisibility(View.VISIBLE);
         } else {
             recyclerView.setAdapter(adapter);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    if (shimmer.isShimmerStarted())
-                        hideParentShimmer();
-                }
-            }, 1200);
+
         }
 
         showMore.setOnClickListener(new View.OnClickListener() {
@@ -318,27 +316,10 @@ public class TabsFragment extends Fragment {
         }, 1000 );
     }
 
-    public void hideParentShimmer(){
 
-
-        try {
-
-
-            if (parentIntance instanceof HomeFragment)
-                ((HomeFragment) parentIntance).hideShimmer();
-            else if (parentIntance instanceof BrowseProductFragment)
-                ((BrowseProductFragment) parentIntance).hideShimmer();
-        } catch (Exception e){
-
-
-            Log.e("ozii shimmer", e.toString());
-        }
-    }
 
     public void stopShimmer(){
 
-        // hide parent shimmer
-        hideParentShimmer();
 
         try {
 

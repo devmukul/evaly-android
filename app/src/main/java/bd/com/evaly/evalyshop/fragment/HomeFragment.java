@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -273,6 +274,16 @@ public class HomeFragment extends Fragment {
         pager.addFragment(shopFragment,"Shops");
         pager.notifyDataSetChanged();
 
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+
+                shimmer.stopShimmer();
+                shimmer.setVisibility(View.GONE);
+
+            }
+        }, 300);
 
 
     }

@@ -94,7 +94,7 @@
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:src="@drawable/payment_icon_bkash"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/card"
@@ -127,7 +127,7 @@
             android:textAlignment="center"
             android:textColor="#666"
             android:textStyle="bold"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/textView31"

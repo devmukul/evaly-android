@@ -51,6 +51,14 @@ public class Token {
 
 
                     JSONObject ob = data.getJSONObject("user_info");
+
+                    if (ob.has("groups")){
+
+                        userDetails.setGroup(ob.getJSONArray("groups").toString());
+
+                    }
+
+
                     userDetails.setToken(token);
                     userDetails.setUserName(ob.getString("username"));
                     userDetails.setFirstName(ob.getString("first_name"));
