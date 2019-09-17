@@ -144,7 +144,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         myViewHolder.statusView.setOnClickListener(commentOpener);
 
-        final String shareURL = "https://evaly.com.bd/feeds/"+itemsList.get(i).getSlug();
 
 
         myViewHolder.menuIcon.setOnClickListener(new View.OnClickListener() {
@@ -165,14 +164,15 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
                         switch (item.getItemId()){
                             case R.id.action_share:
-                                Intent i = new Intent(Intent.ACTION_SEND);
-                                i.setType("text/plain");
-                                i.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
-                                i.putExtra(Intent.EXTRA_TEXT, shareURL);
-                                context.startActivity(Intent.createChooser(i, "Share Post"));
+                                Intent in = new Intent(Intent.ACTION_SEND);
+                                in.setType("text/plain");
+                                in.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
+                                in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/"+itemsList.get(i).getSlug());
+                                context.startActivity(Intent.createChooser(in, "Share Post"));
 
                                 break;
                             case R.id.action_delete:
+                                fragment.deletePost(itemsList.get(i).getSlug());
 
 
                                 break;

@@ -31,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -729,41 +730,24 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyInput.setEnabled(false);
         submitReply.setEnabled(false);
 
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments/"+selectedCommentID+"/replies";
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+id;
 
-        JSONObject parameters = new JSONObject();
-        JSONObject parametersPost = new JSONObject();
-        try {
-
-            parameters.put("body", replyInput.getText().toString());
-            parametersPost.put("comment", parameters);
-
-        } catch (Exception e) {
-        }
-
-        Log.d("json body", parametersPost.toString());
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost,new Response.Listener<JSONObject>() {
+        StringRequest request = new StringRequest(Request.Method.DELETE, url,new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
-                Log.d("json response", response.toString());
-                try {
-                    if (response.has("data")) {
-                        reloadRecyclerReply();
-                        replyInput.setText("");
-                        replyInput.setEnabled(true);
-                        submitReply.setEnabled(true);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            public void onResponse(String response) {
+
+                        itemsList.clear();
+                        adapter.notifyDataSetChanged();
+                        currentPage = 1;
+                        getPosts(currentPage);
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
-                Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
-                commentInput.setEnabled(true);
-                submitComment.setEnabled(true);
+                Toast.makeText(context, "Couldn't delete post", Toast.LENGTH_SHORT).show();
+
             }
         }) {
             @Override
