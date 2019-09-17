@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,16 +67,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private NewsfeedActivity activity;
     private UserDetails userDetails;
     private LinearLayout not, progressContainer;
+
+    // newfeed scroller
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private int currentPage;
+
     private ProgressBar bottomProgressBar;
     private SwipeRefreshLayout swipeLayout;
-
-
     private RequestQueue queue;
-
-
 
     // comment bottom sheet items
 
@@ -93,6 +94,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ImageView reloadComment;
 
 
+    private boolean loadingComment = true;
+    int pastVisiblesItemsComment, visibleItemCountComment, totalItemCountComment;
+
+
     // reply bottom sheet items
 
     private BottomSheetBehavior bottomSheetBehaviorReply;
@@ -109,10 +114,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ImageView uploadImageReply;
     private ImageView reloadReply;
 
-
-
-
-
+    private boolean loadingReply = true;
+    int pastVisiblesItemsReply, visibleItemCountReply, totalItemCountReply;
 
 
     public NewsfeedFragment() {
@@ -164,11 +167,18 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
+    public UserDetails getUserDetails(){
+        return userDetails;
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+
+        userDetails = new UserDetails(context);
 
         // Reply bottom sheet
 
@@ -215,9 +225,39 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyItems = new ArrayList<>();
         replyAdapter = new ReplyAdapter(replyItems, context);
         replyRecyclerView = replyDialog.findViewById(R.id.recyclerView);
-        LinearLayoutManager manager2=new LinearLayoutManager(context);
-        replyRecyclerView.setLayoutManager(manager2);
+
+        LinearLayoutManager managerReply=new LinearLayoutManager(context);
+        replyRecyclerView.setLayoutManager(managerReply);
         replyRecyclerView.setAdapter(replyAdapter);
+
+
+
+
+        NestedScrollView nestedScrollViewReply = replyDialog.findViewById(R.id.stickyScrollView);
+
+        if (nestedScrollViewReply != null) {
+
+            nestedScrollViewReply.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+                    if (nestedScrollViewReply.getChildAt(0).getBottom()
+                            <= (nestedScrollViewReply.getHeight() + nestedScrollViewReply.getScrollY())) {
+                        Log.i("Nested", "BOTTOM SCROLL");
+
+                        try {
+
+                            loadReplies(selectedCommentID);
+
+                        } catch (Exception e)
+                        {
+                            Log.e("load more error", e.toString());
+                        }
+                    }
+                }
+            });
+        }
+
 
 
         // create Reply
@@ -226,6 +266,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         uploadImage = replyDialog.findViewById(R.id.uploadImage);
         submitReply = replyDialog.findViewById(R.id.submitComment);
         reloadReply = replyDialog.findViewById(R.id.refresh);
+
+        if (userDetails.getToken().equals("")){
+
+            replyInput.setText("You need to login to post reply.");
+            replyInput.setEnabled(false);
+            submitReply.setEnabled(false);
+
+        }
+
 
         uploadImage.setOnClickListener(view1 -> Toast.makeText(context,"Photo reply is disabled now.", Toast.LENGTH_SHORT).show());
         reloadReply.setOnClickListener(view1 -> reloadRecyclerReply());
@@ -243,8 +292,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
         });
-
-
 
 
 
@@ -296,6 +343,34 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentRecyclerView.setLayoutManager(managerComment);
         commentRecyclerView.setAdapter(commentAdapter);
 
+        NestedScrollView nestedScrollViewComment = commentDialog.findViewById(R.id.stickyScrollView);
+
+        if (nestedScrollViewComment != null) {
+
+            nestedScrollViewComment.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+                    Log.d("nested", "BOTTOM SCROLL all");
+
+                    if (nestedScrollViewComment.getChildAt(0).getBottom()
+                            <= (nestedScrollViewComment.getHeight() + nestedScrollViewComment.getScrollY())) {
+                        Log.d("nested inside", "BOTTOM SCROLL");
+
+                        try {
+
+                            loadComments(selectedPostID);
+
+                        } catch (Exception e) {
+                            Log.e("load more error", e.toString());
+                        }
+                    }
+                }
+            });
+        }
+
+
+
 
         // create comment
 
@@ -303,6 +378,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         uploadImage = commentDialog.findViewById(R.id.uploadImage);
         submitComment = commentDialog.findViewById(R.id.submitComment);
         reloadComment = commentDialog.findViewById(R.id.refresh);
+
+        if (userDetails.getToken().equals("")){
+
+            commentInput.setEnabled(false);
+            commentInput.setText("You need to login to make comment.");
+            submitComment.setEnabled(false);
+
+        }
+
 
         uploadImage.setOnClickListener(view1 -> Toast.makeText(context,"Photo comment is disabled now.", Toast.LENGTH_SHORT).show());
         reloadComment.setOnClickListener(view1 -> reloadRecyclerComment());
@@ -335,7 +419,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         }
 
-        userDetails = new UserDetails(context);
         not = view.findViewById(R.id.not);
         progressContainer = view.findViewById(R.id.progressContainer);
         bottomProgressBar = view.findViewById(R.id.progressBar);
@@ -464,6 +547,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             loadComments(selectedPostID);
 
+            ((NestedScrollView) commentDialog.findViewById(R.id.stickyScrollView)).fullScroll(ScrollView.FOCUS_UP);
+
+
         } else
         {
             Toast.makeText(context, "Couldn't load comments", Toast.LENGTH_SHORT).show();
@@ -483,18 +569,27 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             return;
         }
 
-        replyProgressContainer.setVisibility(View.VISIBLE);
+        if (currentReplyPage == 1) {
+            ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
+            replyProgressContainer.setVisibility(View.VISIBLE);
+        }
+
+        if (currentReplyPage > 1)
+            ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.VISIBLE);
+
         replyNot.setVisibility(View.GONE);
 
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments/"+ comment_id +"/replies?page=1";
+
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments/"+ comment_id +"/replies?page="+ currentReplyPage;
 
         Log.d("json url", url);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
 
+                ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
                 replyProgressContainer.setVisibility(View.GONE);
 
                 try {
@@ -502,8 +597,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                     if (jsonArray.length() > 0)
                         replyNot.setVisibility(View.GONE);
-                    else
+                    else {
                         replyNot.setVisibility(View.VISIBLE);
+                        currentReplyPage++;
+
+                    }
 
                     for (int i=0; i < jsonArray.length(); i++) {
 
@@ -528,7 +626,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Log.e("onErrorResponse", error.toString());
 
                 replyProgressContainer.setVisibility(View.GONE);
-                Toast.makeText(context, "Couldn't load replies.", Toast.LENGTH_SHORT).show();
+                ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
+
+
+                // Toast.makeText(context, "Couldn't load replies.", Toast.LENGTH_SHORT).show();
 
 
             }
@@ -620,6 +721,68 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
+    public void deletePost(String id){
+
+        if (replyDialog == null)
+            return;
+
+        replyInput.setEnabled(false);
+        submitReply.setEnabled(false);
+
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments/"+selectedCommentID+"/replies";
+
+        JSONObject parameters = new JSONObject();
+        JSONObject parametersPost = new JSONObject();
+        try {
+
+            parameters.put("body", replyInput.getText().toString());
+            parametersPost.put("comment", parameters);
+
+        } catch (Exception e) {
+        }
+
+        Log.d("json body", parametersPost.toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("json response", response.toString());
+                try {
+                    if (response.has("data")) {
+                        reloadRecyclerReply();
+                        replyInput.setText("");
+                        replyInput.setEnabled(true);
+                        submitReply.setEnabled(true);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+                Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
+                commentInput.setEnabled(true);
+                submitComment.setEnabled(true);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                if (!userDetails.getToken().equals(""))
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+        RequestQueue queue= Volley.newRequestQueue(context);
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(request);
+    }
+
 
     public void loadComments(String post_id){
 
@@ -631,24 +794,37 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             return;
         }
 
-        commentProgressContainer.setVisibility(View.VISIBLE);
+        if (currentCommentPage == 1) {
+            commentProgressContainer.setVisibility(View.VISIBLE);
+            ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
+        }
+
+        if (currentCommentPage > 1)
+            ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.VISIBLE);
+
         commentNot.setVisibility(View.GONE);
 
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id+"/comments?page=1";
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id+"/comments?page="+currentCommentPage;
 
+        currentCommentPage++;
+
+        Log.d("json url", url);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
                 commentProgressContainer.setVisibility(View.GONE);
+                ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
                 try {
                     JSONArray jsonArray = response.getJSONArray("data");
 
                     if (jsonArray.length() > 0)
                         commentNot.setVisibility(View.GONE);
-                    else
+                    else {
                         commentNot.setVisibility(View.VISIBLE);
+                        currentCommentPage++;
+                    }
 
                     for (int i=0; i < jsonArray.length(); i++) {
 
@@ -673,9 +849,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
-
+                ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
                 commentProgressContainer.setVisibility(View.GONE);
-                Toast.makeText(context, "Couldn't load comments.", Toast.LENGTH_SHORT).show();
+
+
+                //Toast.makeText(context, "Couldn't load comments.", Toast.LENGTH_SHORT).show();
 
 
             }

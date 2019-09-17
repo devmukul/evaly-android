@@ -10,6 +10,7 @@
     tools:context=".activity.newsfeed.NewsfeedActivity">
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/stickyScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -18,7 +19,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="#f8f8f8"
             android:orientation="vertical">
@@ -193,9 +194,16 @@
                     android:nestedScrollingEnabled="false"
                     android:paddingBottom="5dp" />
 
+                <ProgressBar
+                    android:id="@+id/progressBarBottom"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"/>
+
 
             </LinearLayout>
-
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

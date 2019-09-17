@@ -109,7 +109,7 @@
 
 
             <ImageView
-                android:id="@+id/comment_icon"
+                android:id="@+id/replyIcon"
                 android:layout_width="35dp"
                 android:layout_height="16dp"
                 android:layout_weight="0"

@@ -128,6 +128,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
 
 
+
         createPostDialog = new BottomSheetDialog(NewsfeedActivity.this, R.style.BottomSheetDialogTheme);
         createPostDialog.setContentView(R.layout.alert_create_post);
         
@@ -219,6 +220,10 @@ public class NewsfeedActivity extends AppCompatActivity {
 
             }
         });
+
+
+        if (!userDetails.getGroups().contains("EvalyEmployee"))
+            createBtn.setVisibility(View.GONE);
         
 
         NewsfeedFragment publicFragment = NewsfeedFragment.newInstance("public");

@@ -89,20 +89,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             }
         }
 
-        myViewHolder.replyCountView.setOnClickListener(new View.OnClickListener() {
+
+        View.OnClickListener openReply = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 fragment.openReplyBottomSheet(String.valueOf(commentItem.getId()), author.getFullName(), author.getCompressedImage(), commentItem.getBody(), commentItem.getCreatedAt(), commentItem.getAttachement());
-
-
-
             }
-        });
+        };
 
-
-
+        myViewHolder.replyCountView.setOnClickListener(openReply);
+        myViewHolder.replyIcon.setOnClickListener(openReply);
 
 
     }
@@ -119,7 +115,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView userNameView, timeView, statusView, likeCountView, replyCountView;
-        ImageView userImage, likeIcon, commentIcon, menuIcon, postImage;
+        ImageView userImage, likeIcon, replyIcon, menuIcon, postImage;
         View view;
         public MyViewHolder(final View itemView) {
             super(itemView);
@@ -132,7 +128,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
             userImage = itemView.findViewById(R.id.picture);
             likeIcon = itemView.findViewById(R.id.like_icon);
-            commentIcon = itemView.findViewById(R.id.comment_icon);
+            replyIcon = itemView.findViewById(R.id.replyIcon);
             menuIcon = itemView.findViewById(R.id.menu);
             postImage = itemView.findViewById(R.id.postImage);
 

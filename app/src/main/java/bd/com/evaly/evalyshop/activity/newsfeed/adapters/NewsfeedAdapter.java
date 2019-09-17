@@ -1,16 +1,21 @@
 package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -22,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -56,13 +62,8 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         if (itemsList.get(i).getAuthorFullName().trim().equals(""))
             myViewHolder.userNameView.setText("User");
 
-
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt())));
-
-
         myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "<b>Show more</b>")));
-
-
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
         Glide.with(context)
@@ -105,6 +106,10 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             @Override
             public void onClick(View v) {
 
+                if (fragment.getUserDetails().getToken().equals("")) {
+                    Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if(favorite.getTag().equals("yes")){
 
@@ -138,6 +143,53 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         myViewHolder.commentHolder.setOnClickListener(commentOpener);
 
         myViewHolder.statusView.setOnClickListener(commentOpener);
+
+        final String shareURL = "https://evaly.com.bd/feeds/"+itemsList.get(i).getSlug();
+
+
+        myViewHolder.menuIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                PopupMenu popup = new PopupMenu(context, myViewHolder.menuIcon);
+
+                if (fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
+                    popup.getMenuInflater().inflate(R.menu.newsfeed_menu_super, popup.getMenu());
+                else
+                    popup.getMenuInflater().inflate(R.menu.newsfeed_menu_user, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+
+
+                        switch (item.getItemId()){
+                            case R.id.action_share:
+                                Intent i = new Intent(Intent.ACTION_SEND);
+                                i.setType("text/plain");
+                                i.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
+                                i.putExtra(Intent.EXTRA_TEXT, shareURL);
+                                context.startActivity(Intent.createChooser(i, "Share Post"));
+
+                                break;
+                            case R.id.action_delete:
+
+
+                                break;
+
+
+                        }
+
+                        return true;
+                    }
+                });
+
+                popup.show();
+
+
+
+            }
+        });
 
 
 
