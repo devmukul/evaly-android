@@ -192,6 +192,30 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         bottomSheetInternalReply.setPadding(0, 0, 0, 0);
         bottomSheetBehaviorReply = BottomSheetBehavior.from(bottomSheetInternalReply);
         bottomSheetBehaviorReply.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+
+
+        ScreenUtils screenUtils = new ScreenUtils(context);
+        LinearLayout dialogLayout = replyDialog.findViewById(R.id.container2);
+        dialogLayout.setMinimumHeight(screenUtils.getHeight());
+
+        bottomSheetBehaviorReply.setPeekHeight(screenUtils.getHeight());
+        replyNot = replyDialog.findViewById(R.id.not);
+        replyProgressContainer = replyDialog.findViewById(R.id.progressContainer);
+
+
+
+        // Reply recyclerView
+
+        replyItems = new ArrayList<>();
+        replyAdapter = new ReplyAdapter(replyItems, context, this);
+        replyRecyclerView = replyDialog.findViewById(R.id.recyclerView);
+
+        LinearLayoutManager managerReply=new LinearLayoutManager(context);
+        replyRecyclerView.setLayoutManager(managerReply);
+        replyRecyclerView.setAdapter(replyAdapter);
+
+
         bottomSheetBehaviorReply.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -210,28 +234,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
             }
         });
-
-
-        ScreenUtils screenUtils = new ScreenUtils(context);
-        LinearLayout dialogLayout = replyDialog.findViewById(R.id.container2);
-        dialogLayout.setMinimumHeight(screenUtils.getHeight());
-
-        bottomSheetBehaviorReply.setPeekHeight(screenUtils.getHeight());
-        replyNot = replyDialog.findViewById(R.id.not);
-        replyProgressContainer = replyDialog.findViewById(R.id.progressContainer);
-
-
-        // Reply recyclerView
-
-        replyItems = new ArrayList<>();
-        replyAdapter = new ReplyAdapter(replyItems, context);
-        replyRecyclerView = replyDialog.findViewById(R.id.recyclerView);
-
-        LinearLayoutManager managerReply=new LinearLayoutManager(context);
-        replyRecyclerView.setLayoutManager(managerReply);
-        replyRecyclerView.setAdapter(replyAdapter);
-
-
 
 
         NestedScrollView nestedScrollViewReply = replyDialog.findViewById(R.id.stickyScrollView);
@@ -274,6 +276,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             replyInput.setEnabled(false);
             submitReply.setEnabled(false);
 
+        } else {
+            replyInput.setEnabled(true);
+            submitReply.setEnabled(true);
         }
 
 
@@ -722,7 +727,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
-    public void deletePost(String id){
+    public void deletePost(String id, final String type){
 
         if (replyDialog == null)
             return;
@@ -730,16 +735,41 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyInput.setEnabled(false);
         submitReply.setEnabled(false);
 
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+id;
+        String url;
+
+        if (type.equals("post"))
+            url = UrlUtils.BASE_URL_NEWSFEED+"posts/"+id;
+        else
+            url = UrlUtils.BASE_URL_NEWSFEED+"comments/"+id;
 
         StringRequest request = new StringRequest(Request.Method.DELETE, url,new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
-                        itemsList.clear();
-                        adapter.notifyDataSetChanged();
-                        currentPage = 1;
-                        getPosts(currentPage);
+                if (type.equals("post")) {
+
+                    itemsList.clear();
+                    adapter.notifyDataSetChanged();
+                    currentPage = 1;
+                    getPosts(currentPage);
+
+                } else if (type.equals("comment")){
+
+                    commentItems.clear();
+                    commentAdapter.notifyDataSetChanged();
+
+                    currentCommentPage = 1;
+
+                    loadComments(selectedPostID);
+                } else {
+
+                    replyItems.clear();
+                    replyAdapter.notifyDataSetChanged();
+
+                    currentReplyPage = 1;
+
+                    loadReplies(selectedCommentID);
+                }
 
             }
         }, new Response.ErrorListener() {
@@ -815,9 +845,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                         Gson gson = new Gson();
                         CommentItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CommentItem.class);
 
-                        String emBody = item.getBody().replaceAll("\\s+", "");
 
-                        if (!emBody.equals("") && emBody.length() > 2) {
+                        if (!item.getBody().trim().equals("")) {
                             commentItems.add(item);
                             commentAdapter.notifyItemInserted(commentItems.size());
                         }

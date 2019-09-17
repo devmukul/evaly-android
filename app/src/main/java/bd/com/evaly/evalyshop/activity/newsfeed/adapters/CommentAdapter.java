@@ -1,12 +1,15 @@
 package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
@@ -47,7 +50,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         CommentItem commentItem = itemsList.get(i);
         Author author = commentItem.getAuthor();
-        List<RepliesItem> repliesList = commentItem.getReplies();
+        //List<RepliesItem> repliesList = commentItem.getReplies();
 
 
         myViewHolder.userNameView.setText(author.getFullName());
@@ -99,6 +102,38 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         myViewHolder.replyCountView.setOnClickListener(openReply);
         myViewHolder.replyIcon.setOnClickListener(openReply);
+
+
+        myViewHolder.view.setLongClickable(true);
+
+        myViewHolder.view.setOnLongClickListener(
+                new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
+                            return false;
+
+                        new AlertDialog.Builder(context)
+                                .setMessage("Are you sure you want to delete?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        fragment.deletePost(commentItem.getId()+"", "comment");
+
+
+                                    }})
+                                .setNegativeButton("NO", null).show();
+
+
+
+
+                        return false;
+                    }
+                }
+        );
 
 
     }

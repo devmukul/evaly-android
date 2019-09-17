@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -172,8 +174,22 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
                                 break;
                             case R.id.action_delete:
-                                fragment.deletePost(itemsList.get(i).getSlug());
 
+                                if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
+                                    break;
+
+                                new AlertDialog.Builder(context)
+                                        .setMessage("Are you sure you want to delete?")
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+
+                                                fragment.deletePost(itemsList.get(i).getSlug(), "post");
+
+
+                                            }})
+                                        .setNegativeButton("NO", null).show();
 
                                 break;
 

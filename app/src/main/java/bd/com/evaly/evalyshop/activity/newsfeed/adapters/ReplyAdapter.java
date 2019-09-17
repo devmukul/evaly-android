@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -14,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.Author;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -23,10 +26,12 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
 
     ArrayList<RepliesItem> itemsList;
     Context context;
+    NewsfeedFragment fragment;
 
-    public ReplyAdapter(ArrayList<RepliesItem> itemsList, Context context) {
+    public ReplyAdapter(ArrayList<RepliesItem> itemsList, Context context, NewsfeedFragment fragment) {
         this.itemsList = itemsList;
         this.context = context;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -76,6 +81,40 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
                         .into(myViewHolder.postImage);
             }
         }
+
+
+        myViewHolder.view.setLongClickable(true);
+
+        myViewHolder.view.setOnLongClickListener(
+                new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+
+                        if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
+                            return false;
+
+                        new AlertDialog.Builder(context)
+                                .setMessage("Are you sure you want to delete?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        fragment.deletePost(RepliesItem.getId()+"", "reply");
+
+                                    }})
+                                .setNegativeButton("NO", null).show();
+
+
+
+
+
+
+                        return false;
+                    }
+                }
+        );
 
 
     }

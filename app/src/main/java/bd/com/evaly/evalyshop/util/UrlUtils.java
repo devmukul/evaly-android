@@ -2,9 +2,9 @@ package bd.com.evaly.evalyshop.util;
 
 public class UrlUtils {
 
-    // public static final String BASE_URL = "https://api.evaly.com.bd/core/";
+     public static final String BASE_URL = "https://api.evaly.com.bd/core/";
 
-    public static final String BASE_URL = "https://api-dev.evaly.com.bd/core/";
+    // public static final String BASE_URL = "https://api-dev.evaly.com.bd/core/";
 
     public static final String REFRESH_AUTH_TOKEN = BASE_URL + "refresh-auth-token/";
     public static final String BANNER = BASE_URL + "banners/";
@@ -18,9 +18,9 @@ public class UrlUtils {
 
     // Newsfeed
 
-    //public static final String BASE_URL_NEWSFEED = "https://api.evaly.com.bd/newsfeed/";
+    public static final String BASE_URL_NEWSFEED = "https://api.evaly.com.bd/newsfeed/";
 
-    public static final String BASE_URL_NEWSFEED = "https://api-dev.evaly.com.bd/newsfeed/";
+    //public static final String BASE_URL_NEWSFEED = "https://api-dev.evaly.com.bd/newsfeed/";
 
 
 }
