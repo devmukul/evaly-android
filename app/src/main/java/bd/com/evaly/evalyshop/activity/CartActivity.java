@@ -40,14 +40,18 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
@@ -58,6 +62,7 @@ import bd.com.evaly.evalyshop.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.models.CartItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 
@@ -102,17 +107,12 @@ public class CartActivity extends BaseActivity {
     BottomSheetDialog bottomSheetDialog;
     View bottomSheetView;
 
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         setContentView(R.layout.activity_cart);
         //getSupportActionBar().setElevation(0);
-
 
         context = this;
         try {
@@ -142,9 +142,6 @@ public class CartActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
 
         // bottom sheet
-
-
-
 
         bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_checkout, null);
@@ -176,10 +173,6 @@ public class CartActivity extends BaseActivity {
         });
 
 
-
-
-
-
         selectAllListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -192,17 +185,9 @@ public class CartActivity extends BaseActivity {
 
 
         selectAll.setOnCheckedChangeListener(selectAllListener);
-
-
-
-
-
-
-
         btnBottomSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 if(userDetails.getToken().equals("")) {
                     startActivity(new Intent(CartActivity.this, SignInActivity.class));
@@ -210,12 +195,9 @@ public class CartActivity extends BaseActivity {
                 }
 
                 if (addressSwitch.isChecked() && customAddress.getText().toString().equals("")){
-
                     Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
                     return;
-
                 }
-
                  placeOrder(generateOrderJson(), dialog);
 
                 //generateOrderJson();
@@ -224,26 +206,18 @@ public class CartActivity extends BaseActivity {
             }
         });
 
-
-
         // bottom sheet
-
-
 
         contact_number = bottomSheetView.findViewById(R.id.contact_number);
         addressSwitch = bottomSheetView.findViewById(R.id.addressSwitch);
         customAddress = bottomSheetView.findViewById(R.id.customAddress);
         addressSpinner = bottomSheetView.findViewById(R.id.spinner);
 
-
         contact_number.setText(userDetails.getPhone());
         spinnerArray = new ArrayList<String>();
         spinnerArrayID = new ArrayList<Integer>();
 
-
-
         customAddress.setText(userDetails.getJsonAddress());
-
 
         addressSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -253,7 +227,6 @@ public class CartActivity extends BaseActivity {
                     addressSpinner.setVisibility(View.GONE);
 
                 } else{
-
                     customAddress.setVisibility(View.GONE);
                     addressSpinner.setVisibility(View.VISIBLE);
 
@@ -267,11 +240,8 @@ public class CartActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
-
                 spinnerPosition = arg2; //Here is your selected position
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
                 spinnerPosition = 0;
@@ -295,10 +265,7 @@ public class CartActivity extends BaseActivity {
         cod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 paymentMethod = 1;
-
                 Log.d("json p", "cod");
 
             }
@@ -317,15 +284,10 @@ public class CartActivity extends BaseActivity {
         evalyPay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 paymentMethod = 2;
-
                 Log.d("json p", "evaly pay");
-
             }
         });
-
 
         evalyPay.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
@@ -335,25 +297,14 @@ public class CartActivity extends BaseActivity {
             }
         });
 
-
-
-
-
         getCartList();
-
-
-
 
     }
 
 
-
     public void uncheckSelectAllBtn(boolean isChecked){
 
-
         if(!isChecked) {
-
-
             selectAll.setOnCheckedChangeListener(null);
             selectAll.setChecked(false);
             selectAll.setOnCheckedChangeListener(selectAllListener);
@@ -369,15 +320,10 @@ public class CartActivity extends BaseActivity {
                 }
             }
 
-
             selectAll.setOnCheckedChangeListener(null);
             selectAll.setChecked(isAllSelected);
             selectAll.setOnCheckedChangeListener(selectAllListener);
-
-
         }
-
-
     }
 
 
@@ -398,10 +344,7 @@ public class CartActivity extends BaseActivity {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
 
-
                                     ArrayList<CartItem> listAdapter = adapter.getItemList();
-
-
 
                                     for (int i = 0; i < listAdapter.size(); i++){
                                         if(listAdapter.get(i).isSelected()){
@@ -411,9 +354,6 @@ public class CartActivity extends BaseActivity {
                                     }
 
                                     getCartList();
-
-
-
 
                                 }})
                             .setNegativeButton(android.R.string.no, null).show();
@@ -429,20 +369,13 @@ public class CartActivity extends BaseActivity {
         Cursor res=db.getData();
         if(res.getCount()==0){
 
-
             LinearLayout empty = findViewById(R.id.empty);
             LinearLayout cal = findViewById(R.id.cal);
-
             recyclerView.setVisibility(View.GONE);
-
-
             cal.setVisibility(View.GONE);
-
             empty.setVisibility(View.VISIBLE);
-
             Button button = findViewById(R.id.button);
             button.setVisibility(View.GONE);
-
             NestedScrollView scrollView = findViewById(R.id.scroller);
             scrollView.setBackgroundColor(Color.WHITE);
 
@@ -471,7 +404,6 @@ public class CartActivity extends BaseActivity {
         ArrayList<CartItem> listAdapter = adapter.getItemList();
         int totalPrice = 0;
 
-
         for (int i = 0; i < listAdapter.size(); i++){
             if(listAdapter.get(i).isSelected()){
                 totalPrice += listAdapter.get(i).getPrice() * listAdapter.get(i).getQuantity();
@@ -483,7 +415,6 @@ public class CartActivity extends BaseActivity {
 
         TextView priceView2 = bottomSheetView.findViewById(R.id.bs_price);
         priceView2.setText("৳ "+totalPrice);
-
 
     }
 
@@ -506,18 +437,9 @@ public class CartActivity extends BaseActivity {
     @Override
     public void onBackPressed(){
 
-
-
         super.onBackPressed();
 
-
     }
-
-
-
-
-
-
 
     public void placeOrder(JSONObject payload, ViewDialog alert){
 
@@ -535,10 +457,8 @@ public class CartActivity extends BaseActivity {
                 Log.d("json order", response.toString());
 
                 try {
-
-                        Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
-                        dialog.hideDialog();
-
+                    Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
+                    dialog.hideDialog();
 
                 } catch (Exception e){
 
@@ -561,7 +481,6 @@ public class CartActivity extends BaseActivity {
                 }
 
 
-
                 try {
 
                     JSONArray data = response.getJSONArray("data");
@@ -574,7 +493,6 @@ public class CartActivity extends BaseActivity {
                         startActivity(intent);
 
                         //makePayment(invoice, alert, response.length()-1, i);
-
                     }
 
 
@@ -583,11 +501,7 @@ public class CartActivity extends BaseActivity {
                     Log.e("json exception", e.toString());
                     Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
 
-
                 }
-
-
-
 
             }
         }, new Response.ErrorListener() {
@@ -615,9 +529,6 @@ public class CartActivity extends BaseActivity {
                 return headers;
             }
 
-
-
-
         };
         RequestQueue queue= Volley.newRequestQueue(CartActivity.this);
         request.setRetryPolicy(new RetryPolicy() {
@@ -640,19 +551,12 @@ public class CartActivity extends BaseActivity {
     }
 
 
-
-
-
-
-
-
-
-
     private JSONObject generateOrderJson(){
 
 
-        JSONObject obj = new JSONObject();
 
+
+        JSONObject obj = new JSONObject();
         try {
 
             JSONObject addressObj = new JSONObject();
@@ -666,17 +570,10 @@ public class CartActivity extends BaseActivity {
 
             } else {
 
-
-
                 addressObj.put("customer_address", customAddress.getText().toString());
                 // addressObj.put("address_id", JSONObject.NULL);
 
             }
-
-
-//            if(paymentMethod == 1)
-//                obj.put("payment_method", "cod");
-//            else if(paymentMethod == 2)
 
             obj.put("payment_method", "evaly_pay");
 
@@ -690,96 +587,68 @@ public class CartActivity extends BaseActivity {
                 obj.put("contact_number", contact_number.getText().toString());
 
 
-
             JSONArray items = obj.getJSONArray("order_items");
-
 
             int index=0;
 
-
             ArrayList<CartItem> adapterItems = adapter.getItemList();
 
-
             for(int i=0; i < adapterItems.size(); i++) {
-
-
-
 
                 if(adapterItems.get(i).isSelected()) {
 
                     String fromShopJson = adapterItems.get(i).getSellerJson();
-
-                    // Log.d("json seller", fromShopJson);
-
-
+                    Logger.d(fromShopJson);
                     // add "bought from shop" data to json (comes from db)
                     //items.optJSONObject(index).put("shop_product_item", new JSONObject(fromShopJson));
 
-
                     JSONObject itemsObject = new JSONObject();  // get the current object from items array
-
 
                     // put quantity
                     itemsObject.put("quantity", adapterItems.get(i).getQuantity());
 
-
-
                     try{
-
-
                         JSONObject sellerJson = new JSONObject(fromShopJson);
-
                         String item_id = sellerJson.getString("shop_item_id");
-
                         itemsObject.put("shop_item_id", item_id);
 
+                        // september date for pendrive
 
-                        items.put(itemsObject);
+                        String currentDateString = "08/31/2019 1:00:00";
+                        Date septemberDate;
+
+                        SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                        septemberDate = sd.parse(currentDateString);
+
+                        if (sellerJson.getString("shop_slug").equals("evaly-pendrive-offer-test-shop"))
+                            if (Utils.formattedDateFromString("", userDetails.getCreatedAt()).after(septemberDate)) {
+                                items.put(itemsObject);
+
+                            } else {
+                                Toast.makeText(context, "10 Tk pendrive offer is only available to users who joined after 1st September, 2019", Toast.LENGTH_LONG).show();
+                            }
+                        else
+                            items.put(itemsObject);
 
                     } catch (Exception e){
-
-
                     }
-
-
 
                     index++;
                 }
             }
 
-            largeLog("json", obj.toString());
+            Logger.d(obj);
 
         } catch (Exception e) {
             Log.e("json", "Could not parse malformed JSON: "+e.toString());
         }
 
-
         return obj;
-
-
 
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private JSONObject generateOrderJsonOld(){
-
 
         JSONObject obj = new JSONObject();
 
@@ -788,7 +657,6 @@ public class CartActivity extends BaseActivity {
             JSONObject addressObj = new JSONObject();
 
             if(!addressSwitch.isChecked()) {
-
                 addressObj.put("address", JSONObject.NULL);
                 addressObj.put("address_id", spinnerArrayID.get(spinnerPosition));
 
@@ -801,7 +669,6 @@ public class CartActivity extends BaseActivity {
 
             }
 
-
             if(paymentMethod == 1)
                 obj.put("payment_method", "cod");
             else if(paymentMethod == 2)
@@ -812,25 +679,17 @@ public class CartActivity extends BaseActivity {
             obj.put("items", new JSONArray());
             obj.put("customer_address", addressObj);
 
-
             JSONArray items = obj.getJSONArray("items");
 
-
             int index=0;
-
 
             ArrayList<CartItem> adapterItems = adapter.getItemList();
 
 
             for(int i=0; i < adapterItems.size(); i++) {
 
-
-
-
                 if(adapterItems.get(i).isSelected()) {
-
                     String fromShopJson = adapterItems.get(i).getSellerJson();
-
                     // Log.d("json seller", fromShopJson);
 
                     items.put(new JSONObject());
@@ -838,9 +697,7 @@ public class CartActivity extends BaseActivity {
                     // add "bought from shop" data to json (comes from db)
                     items.optJSONObject(index).put("shop_product_item", new JSONObject(fromShopJson));
 
-
                     JSONObject itemsObject = items.getJSONObject(index);  // get the current object from items array
-
 
                     // put quantity
                     itemsObject.put("quantity", adapterItems.get(i).getQuantity());
@@ -862,7 +719,6 @@ public class CartActivity extends BaseActivity {
                     // put varying_options (come from db)
                     // product_item.put("varying_options", new JSONArray());
 
-
                     index++;
                 }
             }
@@ -873,19 +729,14 @@ public class CartActivity extends BaseActivity {
             Log.e("json", "Could not parse malformed JSON: "+e.toString());
         }
 
-
         return obj;
-
-
 
     }
 
 
     public void orderPlaced(){
 
-
         dialog.hideDialog();
-
         ArrayList<CartItem> listAdapter = adapter.getItemList();
 
         for (int i = 0; i < listAdapter.size(); i++){

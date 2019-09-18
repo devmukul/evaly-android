@@ -26,7 +26,7 @@ import java.util.TimeZone;
 
 import bd.com.evaly.evalyshop.R;
 
-public class Utils {
+public class  Utils {
 
 
     public static String isStrongPassword(String password){
@@ -52,7 +52,6 @@ public class Utils {
         }
         return "yes";
     }
-
 
 
 
@@ -112,8 +111,6 @@ public class Utils {
 
 
 
-
-
     public static String urlEncodeUTF8(String s) {
         try {
             return URLEncoder.encode(s, "UTF-8");
@@ -135,6 +132,7 @@ public class Utils {
         return sb.toString();
     }
 
+
     public static String reverseIt(String source) {
         int i, len = source.length();
         StringBuilder dest = new StringBuilder(len);
@@ -145,6 +143,7 @@ public class Utils {
 
         return dest.toString();
     }
+
 
     public static String extraToken(String number){
 
@@ -158,26 +157,18 @@ public class Utils {
             if (e.length() > 4) {
                 t = String.valueOf(8 * Integer.parseInt(e.substring(e.length() - 4)) - 2019);
             }
-
             }catch(Exception e){
-
                 t = String.valueOf(Math.floor(9e4 * Math.random()) + 1e4);
             }
-
-
             String encoded = t;
 
         try {
-
             encoded = new String(android.util.Base64.encode(t.getBytes(), android.util.Base64.DEFAULT));
         } catch (Exception e){
 
         }
 
-
-
         return encoded;
-
 
     }
 
@@ -191,9 +182,6 @@ public class Utils {
             Log.d(tag, content);
         }
     }
-
-
-
 
 
 
@@ -265,6 +253,28 @@ public class Utils {
             Log.e("formattedDateFromString", "Exception in formateDateFromstring(): " + e.getMessage());
         }
         return outputDate;
+
+    }
+
+
+    public static Date formattedDateFromString(String inputFormat, String inputDate){
+        if(inputFormat.equals("")){ // if inputFormat = "", set a default input format.
+            inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        }
+
+        Date parsed = null;
+        String outputDate = "";
+
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+        df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
+
+
+        try {
+            parsed = df_input.parse(inputDate);
+        } catch (Exception e) {
+            Log.e("formattedDateFromString", "Exception in formateDateFromstring(): " + e.getMessage());
+        }
+        return parsed;
 
     }
 
