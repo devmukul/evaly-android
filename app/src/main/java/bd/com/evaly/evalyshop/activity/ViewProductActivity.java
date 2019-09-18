@@ -40,6 +40,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
@@ -856,40 +857,44 @@ public class ViewProductActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
 
+                    try {
 
-                    ProductVariants productVariants = productVariantsMap.get(button.getId());
-                    sliderImages.clear();
-                    sliderAdapter.notifyDataSetChanged();
+                        ProductVariants productVariants = productVariantsMap.get(button.getId());
+                        sliderImages.clear();
+                        sliderAdapter.notifyDataSetChanged();
+                        sliderPager.setAdapter(null);
 
-                    sliderPager.setAdapter(null);
+                        for (int j = 0; j < productVariants.getImages().size(); j++) {
+                            sliderImages.add(productVariants.getImages().get(j));
+                            sliderAdapter.notifyDataSetChanged();
+                        }
 
-                    for (int j = 0; j < productVariants.getImages().size(); j++) {
-                        sliderImages.add(productVariants.getImages().get(j));
+                        sliderPager.setAdapter(sliderAdapter);
+
                         sliderAdapter.notifyDataSetChanged();
 
-                        Log.d("hmt", "yes clicked");
-                    }
+                        for (int k = 0; k < buttonIDs.size(); k++) {
+                            try {
+                                Button btn = findViewById(buttonIDs.get(k));
+                                if (btn.getTag().equals(button.getTag())) {
+                                    GradientDrawable drawable = (GradientDrawable) btn.getBackground();
+                                    drawable.setColor(Color.parseColor("#eeeeee"));
+                                }
+                            } catch (Exception e) {
 
-                    sliderPager.setAdapter(sliderAdapter);
-
-                    sliderAdapter.notifyDataSetChanged();
-
-                    for (int k = 0; k < buttonIDs.size(); k++) {
-                        try {
-                            Button btn = findViewById(buttonIDs.get(k));
-                            if (btn.getTag().equals(button.getTag())) {
-                                GradientDrawable drawable = (GradientDrawable) btn.getBackground();
-                                drawable.setColor(Color.parseColor("#eeeeee"));
                             }
-                        } catch (Exception e) {
-
                         }
+                        GradientDrawable drawable = (GradientDrawable) button.getBackground();
+                        drawable.setColor(Color.parseColor("#d1ecf2"));
+                        getAvailableShops(productVariants.getVariantID());
+
+                    } catch (Exception e){
+
+                        Crashlytics.logException(e);
+
+                        Toast.makeText(context, "Couldn't select the variant", Toast.LENGTH_SHORT).show();
+
                     }
-                    GradientDrawable drawable = (GradientDrawable) button.getBackground();
-                    drawable.setColor(Color.parseColor("#d1ecf2"));
-                    getAvailableShops(productVariants.getVariantID());
-
-
 
                 }
             });
