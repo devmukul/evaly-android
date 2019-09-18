@@ -195,7 +195,6 @@ public class MainActivity extends BaseActivity {
         }else{
 
 
-
             FirebaseMessaging.getInstance().subscribeToTopic("USER."+userDetails.getUserName());
 
             userNameNavHeader.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
@@ -225,6 +224,9 @@ public class MainActivity extends BaseActivity {
                         break;
                     case R.id.nav_cart:
                         startActivity(new Intent(MainActivity.this,CartActivity.class));
+                        break;
+                    case R.id.nav_invite_ref:
+                        startActivity(new Intent(MainActivity.this, InviteEarn.class));
                         break;
 
                 }
@@ -265,12 +267,8 @@ public class MainActivity extends BaseActivity {
                         startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
                     }
                     break;
-                case R.id.nav_invite:
-                    if(userDetails.getToken().equals("")){
-                    startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                }else {
-                    startActivity(new Intent(MainActivity.this, InviteEarn.class));
-                }
+
+
 
             }
             return true;
@@ -515,17 +513,9 @@ public class MainActivity extends BaseActivity {
 
 
 
-
-
     @Override
     protected void onPause() {
-
-
-
         super.onPause();
-
-
-
 
         if ( exitDialog!=null && exitDialog.isShowing() )
         {
