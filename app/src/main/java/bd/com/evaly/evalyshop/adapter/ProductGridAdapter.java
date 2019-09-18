@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.orhanobut.logger.Logger;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.regex.Matcher;
@@ -105,16 +108,32 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
                         .into(holder.imageViewAndroid);
 
 
-
+        Logger.d(productsList.get(position).getDiscountedPrice());
 
 
         if((productsList.get(position).getPriceMin()==0) || (productsList.get(position).getPriceMax()==0)){
 
             holder.price.setText("Call For Price");
 
-        }else{
+        } else if(productsList.get(position).getDiscountedPrice() != 0){
+
+            if (productsList.get(position).getDiscountedPrice() < productsList.get(position).getPriceMin()){
+
+                holder.priceDiscount.setText("৳ " +productsList.get(position).getPriceMin());
+                holder.priceDiscount.setVisibility(View.VISIBLE);
+                holder.priceDiscount.setPaintFlags(holder.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+                holder.price.setText("৳ " + productsList.get(position).getDiscountedPrice());
+
+
+            }
+
+
+        } {
             holder.price.setText("৳ " + productsList.get(position).getPriceMin());
         }
+
+
         //holder.sku.setText(productsList.get(position).getSlug());
 
 
@@ -168,7 +187,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textViewAndroid,price,sku;
+        TextView textViewAndroid,price,priceDiscount, sku;
         ImageView imageViewAndroid,favorite;
         View itemView;
 
@@ -177,6 +196,8 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             textViewAndroid=itemView.findViewById(R.id.title);
             price=itemView.findViewById(R.id.price);
             imageViewAndroid=itemView.findViewById(R.id.image);
+            priceDiscount = itemView.findViewById(R.id.priceDiscount);
+
             // favorite=itemView.findViewById(R.id.favorite);
             //sku=itemView.findViewById(R.id.sku);
 

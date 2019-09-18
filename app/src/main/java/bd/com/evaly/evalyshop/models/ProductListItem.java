@@ -3,7 +3,7 @@ package bd.com.evaly.evalyshop.models;
 public class ProductListItem {
 
     String thumbnailSM,name,slug,categoryName,categorySlug,brandName,brandSlug, sku;
-    int priceMax,priceMin;
+    int priceMax,priceMin, discountedPrice = 0;
     boolean approved;
 
 
@@ -23,6 +23,15 @@ public class ProductListItem {
         this.priceMax = priceMax;
         this.priceMin = priceMin;
         this.approved = approved;
+    }
+
+
+    public int getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public void setDiscountedPrice(int discountedPrice) {
+        this.discountedPrice = discountedPrice;
     }
 
     public String getSku() {

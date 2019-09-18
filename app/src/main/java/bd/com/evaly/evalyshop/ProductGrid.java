@@ -239,6 +239,10 @@ public class ProductGrid {
                             item.setName(response2.getString("item_name"));
                             item.setPriceMax(priceMax);
                             item.setPriceMin(priceMin);
+
+                            if (response2.has("discounted_price"))
+                                item.setDiscountedPrice((int)response2.getDouble("discounted_price"));
+
                             products.add(item);
 
                             adapterViewAndroid.notifyItemInserted(products.size());
@@ -405,7 +409,6 @@ public class ProductGrid {
     public void getCategoryProducts(String slug, int currentPage) {
         current = currentPage;
         progressBar.setVisibility(View.VISIBLE);
-
 
         isLoading = true;
 
