@@ -106,8 +106,6 @@ public class UserDashboardActivity extends BaseActivity {
 
 
 
-
-
         LinearLayout orders = findViewById(R.id.order);
         orders.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,7 +212,7 @@ public class UserDashboardActivity extends BaseActivity {
                     .load(userDetails.getProfilePictureSM())
                     .skipMemoryCache(true)
                     .fitCenter()
-                    .optionalCenterCrop()
+                    .centerCrop()
                     .apply(new RequestOptions().override(200, 200))
                     .into(profilePicNav);
         }

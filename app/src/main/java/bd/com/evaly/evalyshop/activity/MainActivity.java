@@ -505,7 +505,7 @@ public class MainActivity extends BaseActivity {
                         .load(userDetails.getProfilePictureSM())
                         .skipMemoryCache(true)
                         .fitCenter()
-                        .optionalCenterCrop()
+                        .centerCrop()
                         .apply(new RequestOptions().override(200, 200))
                         .into(profilePicNav);
             }
