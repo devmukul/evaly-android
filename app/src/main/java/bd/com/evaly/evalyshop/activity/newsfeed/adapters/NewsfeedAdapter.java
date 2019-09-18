@@ -70,6 +70,8 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         Glide.with(context)
                 .load(itemsList.get(i).getAuthorImage())
+                .fitCenter()
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(200, 200))
                 .into(myViewHolder.userImage);
@@ -143,10 +145,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         };
 
         myViewHolder.commentHolder.setOnClickListener(commentOpener);
-
         myViewHolder.statusView.setOnClickListener(commentOpener);
-
-
 
         myViewHolder.menuIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +170,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                                 in.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
                                 in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/"+itemsList.get(i).getSlug());
                                 context.startActivity(Intent.createChooser(in, "Share Post"));
-
                                 break;
                             case R.id.action_delete:
 
@@ -187,13 +185,9 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
                                                 fragment.deletePost(itemsList.get(i).getSlug(), "post");
 
-
                                             }})
                                         .setNegativeButton("NO", null).show();
-
                                 break;
-
-
                         }
 
                         return true;
@@ -201,12 +195,8 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                 });
 
                 popup.show();
-
-
-
             }
         });
-
 
 
     }

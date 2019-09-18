@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -50,7 +51,39 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         CommentItem commentItem = itemsList.get(i);
         Author author = commentItem.getAuthor();
-        //List<RepliesItem> repliesList = commentItem.getReplies();
+        List<RepliesItem> repliesList = commentItem.getReplies();
+
+        if (repliesList.size() > 0){
+            if (repliesList.size() == 1){
+                myViewHolder.replyMoreCount.setVisibility(View.GONE);
+            }else {
+                myViewHolder.replyMoreCount.setVisibility(View.VISIBLE);
+                myViewHolder.replyHolder.setVisibility(View.VISIBLE);
+
+                if (repliesList.size() == 2)
+                    myViewHolder.replyMoreCount.setText("Show previous 1 more reply");
+                else {
+                    String smText = "Show previous " +(repliesList.size()-1)+ " more replies";
+                    myViewHolder.replyMoreCount.setText(smText);
+                }
+            }
+
+            myViewHolder.reply1Name.setText(repliesList.get(0).getAuthor().getFullName());
+            myViewHolder.reply1Text.setText(repliesList.get(0).getBody());
+            Glide.with(context)
+                    .load(repliesList.get(0).getAuthor().getCompressedImage())
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .fitCenter()
+                    .centerCrop()
+                    .apply(new RequestOptions().override(50, 50))
+                    .into(myViewHolder.reply1Image);
+
+        } else
+        {
+            myViewHolder.replyMoreCount.setVisibility(View.GONE);
+            myViewHolder.replyHolder.setVisibility(View.GONE);
+
+        }
 
 
         myViewHolder.userNameView.setText(author.getFullName());
@@ -58,16 +91,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         if (author.getFullName().trim().replaceAll("\\s+","").equals(""))
             myViewHolder.userNameView.setText("User");
 
-
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", commentItem.getCreatedAt())));
-
         myViewHolder.statusView.setText(Html.fromHtml(commentItem.getBody()));
-
 
         Glide.with(context)
                 .load(author.getCompressedImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .apply(new RequestOptions().override(200, 200))
+                .fitCenter()
+                .centerCrop()
+                .apply(new RequestOptions().override(100, 100))
                 .into(myViewHolder.userImage);
 
 
@@ -81,9 +113,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
             } else {
 
-
                 myViewHolder.postImage.setVisibility(View.VISIBLE);
-
                 Glide.with(context)
                         .load(commentItem.getAttachement().toString())
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -91,7 +121,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                         .into(myViewHolder.postImage);
             }
         }
-
 
         View.OnClickListener openReply = new View.OnClickListener() {
             @Override
@@ -102,6 +131,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         myViewHolder.replyCountView.setOnClickListener(openReply);
         myViewHolder.replyIcon.setOnClickListener(openReply);
+        myViewHolder.replyHolder.setOnClickListener(openReply);
+        myViewHolder.replyMoreCount.setOnClickListener(openReply);
 
 
         myViewHolder.view.setLongClickable(true);
@@ -149,8 +180,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView userNameView, timeView, statusView, likeCountView, replyCountView;
-        ImageView userImage, likeIcon, replyIcon, menuIcon, postImage;
+        TextView userNameView, timeView, statusView, likeCountView, replyCountView, reply1Name, reply1Text, replyMoreCount;
+        ImageView userImage, likeIcon, replyIcon, menuIcon, postImage, reply1Image;
+        LinearLayout replyHolder;
         View view;
         public MyViewHolder(final View itemView) {
             super(itemView);
@@ -166,6 +198,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             replyIcon = itemView.findViewById(R.id.replyIcon);
             menuIcon = itemView.findViewById(R.id.menu);
             postImage = itemView.findViewById(R.id.postImage);
+
+            reply1Image = itemView.findViewById(R.id.pictureReply1);
+            reply1Name = itemView.findViewById(R.id.reply1Name);
+            reply1Text = itemView.findViewById(R.id.reply1Text);
+            replyMoreCount = itemView.findViewById(R.id.replyViewCount);
+            replyHolder = itemView.findViewById(R.id.replyHolder);
 
 
 

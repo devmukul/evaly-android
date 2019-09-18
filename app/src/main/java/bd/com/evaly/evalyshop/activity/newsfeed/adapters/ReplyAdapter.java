@@ -57,13 +57,14 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
 
         Glide.with(context)
                 .load(author.getCompressedImage())
+                .fitCenter()
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .apply(new RequestOptions().override(200, 200))
+                .apply(new RequestOptions().override(100, 100))
                 .into(myViewHolder.userImage);
 
 
         Object postImageURL = RepliesItem.getAttachement();
-
 
         if (postImageURL != null) {
             if (postImageURL.equals("null")) {
