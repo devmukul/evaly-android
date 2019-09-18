@@ -620,7 +620,7 @@ public class CartActivity extends BaseActivity {
                         SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                         septemberDate = sd.parse(currentDateString);
 
-                        if (sellerJson.getString("shop_slug").equals("evaly-pendrive-offer-test-shop"))
+                        if (sellerJson.getString("shop_slug").equals("evaly-pendrive-offer-shop"))
                             if (Utils.formattedDateFromString("", userDetails.getCreatedAt()).after(septemberDate)) {
                                 items.put(itemsObject);
 

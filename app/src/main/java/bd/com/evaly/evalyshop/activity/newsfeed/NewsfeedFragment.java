@@ -805,10 +805,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void loadComments(String post_id){
 
         isCommentLoading = true;
-
-
         selectedPostID = post_id;
-
 
         if (!commentDialog.isShowing()){
             Toast.makeText(context, "Can't load comments. Restart the app", Toast.LENGTH_SHORT).show();
@@ -855,7 +852,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                         Gson gson = new Gson();
                         CommentItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CommentItem.class);
 
-
                         if (!item.getBody().trim().equals("")) {
                             commentItems.add(item);
                             commentAdapter.notifyItemInserted(commentItems.size());
@@ -875,9 +871,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
                 commentProgressContainer.setVisibility(View.GONE);
 
-
                 //Toast.makeText(context, "Couldn't load comments.", Toast.LENGTH_SHORT).show();
-
 
             }
         }) {
@@ -908,7 +902,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
         loading = false;
-
         String url;
 
         if (type.equals("public"))
@@ -918,7 +911,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         if (page == 1)
             progressContainer.setVisibility(View.VISIBLE);
-
 
         if (page>1)
             bottomProgressBar.setVisibility(View.VISIBLE);
