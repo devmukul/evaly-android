@@ -233,8 +233,6 @@ public class OrderListFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
-
-
 //
 //                alert.hideDialog();
 //                hideProgressView();
@@ -245,7 +243,7 @@ public class OrderListFragment extends Fragment {
                     if(errorCounter==5){
                         hideProgressView();
                         Toast.makeText(context, "Something went wrong. Please try again later.", Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
+
                     }else{
                         getOrderData(currentPage);
                         errorCounter++;
