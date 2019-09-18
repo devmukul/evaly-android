@@ -60,6 +60,8 @@ public class Token {
 
                     Log.d("json group", userDetails.getGroups());
 
+                    userDetails.setCreatedAt(ob.getString("created_at"));
+
                     userDetails.setToken(token);
                     userDetails.setUserName(ob.getString("username"));
                     userDetails.setFirstName(ob.getString("first_name"));

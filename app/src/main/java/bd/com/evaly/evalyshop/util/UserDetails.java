@@ -65,6 +65,17 @@ public class UserDetails {
         editor.commit();
     }
 
+
+    public void setCreatedAt(String name) {
+        editor.putString("created_at", name);
+        editor.commit();
+    }
+
+    public String getCreatedAt() {
+        return  pref.getString("created_at","");
+    }
+
+
     // referral
     public String getRef() {
         return  pref.getString("referral","");
