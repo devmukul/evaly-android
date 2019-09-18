@@ -93,10 +93,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ImageView submitComment;
     private ImageView uploadImage;
     private ImageView reloadComment;
+    private boolean isCommentLoading = false;
 
-
-    private boolean loadingComment = true;
-    int pastVisiblesItemsComment, visibleItemCountComment, totalItemCountComment;
 
 
     // reply bottom sheet items
@@ -114,9 +112,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ImageView submitReply;
     private ImageView uploadImageReply;
     private ImageView reloadReply;
+    private boolean isReplyLoading = false;
 
-    private boolean loadingReply = true;
-    int pastVisiblesItemsReply, visibleItemCountReply, totalItemCountReply;
+
 
 
     public NewsfeedFragment() {
@@ -250,7 +248,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                         try {
 
-                            loadReplies(selectedCommentID);
+                            if (!isReplyLoading)
+                                loadReplies(selectedCommentID);
 
                         } catch (Exception e)
                         {
@@ -365,7 +364,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                         try {
 
-                            loadComments(selectedPostID);
+                            if (!isCommentLoading)
+                                loadComments(selectedPostID);
 
                         } catch (Exception e) {
                             Log.e("load more error", e.toString());
@@ -570,6 +570,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void loadReplies(String comment_id){
 
 
+        isReplyLoading = true;
+
         if (!commentDialog.isShowing()){
             Toast.makeText(context, "Can't load comments. Restart the app", Toast.LENGTH_SHORT).show();
             return;
@@ -594,6 +596,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
+
+                isReplyLoading = false;
 
                 ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
                 replyProgressContainer.setVisibility(View.GONE);
@@ -800,6 +804,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void loadComments(String post_id){
 
+        isCommentLoading = true;
+
+
         selectedPostID = post_id;
 
 
@@ -827,6 +834,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
+                isCommentLoading = false;
+
                 Log.d("json response", response.toString());
                 commentProgressContainer.setVisibility(View.GONE);
                 ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
