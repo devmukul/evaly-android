@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -269,11 +270,19 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         ui_hot.setVisibility(View.INVISIBLE);
 
-        menu_hotlist.setOnClickListener(viw -> startActivity(new Intent(NewsfeedActivity.this, NewsfeedNotification.class)));
+        menu_hotlist.setOnClickListener(viw -> startActivityForResult(new Intent(NewsfeedActivity.this, NewsfeedNotification.class), 1));
 
-        return true;
+
+        if (userDetails.getToken().equals(""))
+            return false;
+        else
+            return true;
 
     }
+
+
+
+
 
     @Override
     public void onResume(){
@@ -385,13 +394,9 @@ public class NewsfeedActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
-
-
                 createBtn.setEnabled(true);
-
                 try {
                     //JSONArray jsonArray = response.getJSONObject("data");
-
                     createPostDialog.dismiss();
                     finish();
                     startActivity(getIntent());
@@ -407,33 +412,25 @@ public class NewsfeedActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
                 Toast.makeText(context, "Couldn't create status", Toast.LENGTH_SHORT).show();
-
                 createBtn.setEnabled(true);
-
             }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-
                 if (!userDetails.getToken().equals(""))
                     headers.put("Authorization", "Bearer " + userDetails.getToken());
-
                 headers.put("Content-Type", "application/json");
-
                 return headers;
             }
         };
 
         RequestQueue queue= Volley.newRequestQueue(context);
-
         request.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
         queue.add(request);
     }
-
 
     private void setPostPic() {
 
@@ -457,14 +454,12 @@ public class NewsfeedActivity extends AppCompatActivity {
 
     private void openImageSelector() {
 
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     8000);
-
         } else {
 
             openSelector();
@@ -502,6 +497,23 @@ public class NewsfeedActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+
+
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+
+                NewsfeedFragment newsfeedFragment = (NewsfeedFragment) pager.getCurrentFragment();
+
+                String type = data.getStringExtra("type");
+                String status_id = data.getStringExtra("status_id");
+                String comment_id = data.getStringExtra("comment_id");
+
+                newsfeedFragment.openCommentBottomSheet(status_id,"","","","","");
+
+        }
+
+
+
         if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             Uri selectedImage = data.getData();

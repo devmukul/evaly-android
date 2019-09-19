@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -24,12 +25,15 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.OrderListActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
+import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedNotification;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.models.Notifications;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -89,31 +93,30 @@ public class NotificationNewsfeedAdapter extends RecyclerView.Adapter<Notificati
             @Override
             public void onClick(View v) {
 
-                if (notifications.get(i).getContent_type().equals("order")){
+                try {
 
-                    Intent intent = new Intent(context, OrderDetailsActivity.class);
-                    intent.putExtra("orderID", notifications.get(i).getContent_url());
-                    context.startActivity(intent);
+                    JSONObject metaData = new JSONObject(notifications.get(i).getMeta_data());
 
-                } else if (notifications.get(i).getContent_type().equals("shop")){
+                    Intent intent = new Intent();
 
-                    Intent intent = new Intent(context, MainActivity.class);
-                    intent.putExtra("type", 3);
-                    intent.putExtra("shop_slug", notifications.get(i).getContent_url());
-                    intent.putExtra("shop_name", notifications.get(i).getContent_url());
-                    context.startActivity(intent);
+                    if (metaData.has("post_slug"))
+                        intent.putExtra("status_id", metaData.getString("post_slug"));
+                    else
+                        intent.putExtra("status_id", "");
 
-                } else if (notifications.get(i).getContent_type().equals("product")) {
+                    if (metaData.has("comment_id"))
+                        intent.putExtra("comment_id", metaData.getString("comment_id"));
+                    else
+                        intent.putExtra("comment_id", "");
 
-                    Intent intent=new Intent(context, ViewProductActivity.class);
-                    intent.putExtra("product_slug",notifications.get(i).getContent_url());
-                    intent.putExtra("product_name",notifications.get(i).getContent_url());
-                    context.startActivity(intent);
+
+                    ((NewsfeedNotification)context).setResult(Activity.RESULT_OK, intent);
+                    ((NewsfeedNotification)context).finish();
+
+
+                }catch (Exception e){
+
                 }
-
-
-
-
 
             }
         });

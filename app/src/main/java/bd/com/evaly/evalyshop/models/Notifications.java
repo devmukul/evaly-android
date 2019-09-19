@@ -2,7 +2,7 @@ package bd.com.evaly.evalyshop.models;
 
 public class Notifications {
 
-    private String id,imageURL,message,time, content_type, content_url;
+    private String id,imageURL,message,time, content_type, content_url, meta_data;
     private boolean read;
 
     public Notifications(String id, String imageURL, String message, String time, String content_type, String content_url, boolean read) {
@@ -17,6 +17,14 @@ public class Notifications {
 
     public Notifications(){
         
+    }
+
+    public String getMeta_data() {
+        return meta_data;
+    }
+
+    public void setMeta_data(String meta_data) {
+        this.meta_data = meta_data;
     }
 
     public String getContent_type() {

@@ -49,6 +49,13 @@ public class NewsfeedNotification extends AppCompatActivity {
     int hot_number;
     TextView hotlist_hot;
 
+    int page = 1;
+
+
+    // newfeed scroller
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +79,32 @@ public class NewsfeedNotification extends AppCompatActivity {
         getNotifications();
 
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if(dy > 0) //check for scroll down
+                {
+                    visibleItemCount = manager.getChildCount();
+                    totalItemCount = manager.getItemCount();
+                    pastVisiblesItems = manager.findFirstVisibleItemPosition();
+
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        {
+                            getNotifications();
+
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+
     }
 
 
@@ -83,15 +116,23 @@ public class NewsfeedNotification extends AppCompatActivity {
 
 
     public void getNotifications(){
-        String url= UrlUtils.BASE_URL_NEWSFEED+"notifications";
+        String url= UrlUtils.BASE_URL_NEWSFEED+"notifications?page"+page;
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
         } catch (Exception e) {
         }
+
+        loading = false;
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
+                loading = true;
+
+                page++;
+
                 Log.d("notifications_response", response.toString());
                 try {
                     JSONArray jsonArray = response.getJSONArray("results");
@@ -111,6 +152,8 @@ public class NewsfeedNotification extends AppCompatActivity {
                             item.setContent_type(ob.getString("content_type"));
                             item.setContent_url(ob.getString("content_url"));
                             item.setRead(ob.getBoolean("read"));
+                            item.setMeta_data(ob.getString("meta_data"));
+
                             notifications.add(item);
 
                             adapter.notifyItemInserted(notifications.size());

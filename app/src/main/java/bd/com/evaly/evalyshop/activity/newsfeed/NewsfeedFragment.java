@@ -385,7 +385,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                         try {
 
                             if (!isCommentLoading)
-                                loadComments(selectedPostID);
+                                loadComments(selectedPostID, false);
 
                         } catch (Exception e) {
                             Log.e("load more error", e.toString());
@@ -548,46 +548,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             currentCommentPage = 1;
             maxCountComment = -1;
-
-            ((TextView) commentDialog.findViewById(R.id.user_name)).setText(authorName);
-            ((TextView) commentDialog.findViewById(R.id.text)).setText(postText);
-            ((TextView) commentDialog.findViewById(R.id.date)).setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", date)));
-
-            ImageView userPic = commentDialog.findViewById(R.id.picture);
-
-            Glide.with(context)
-                    .load(authorImage)
-                    .fitCenter()
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(new RequestOptions().override(200, 200))
-                    .into(userPic);
-
-            ImageView postPic = commentDialog.findViewById(R.id.postImage);
-
-
-
-
-            if (postImageUrl == null || postImageUrl.equals("")){} else {
-                Glide.with(context)
-                        .load(postImageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .apply(new RequestOptions().override(900, 900))
-                        .into(postPic);
-
-                postPic.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        Intent intent = new Intent(context, ImagePreview.class);
-                        intent.putExtra("image", postImageUrl);
-                        context.startActivity(intent);
-                    }
-                });
-
-
-            }
-
             selectedPostID = id;
 
             commentItems.clear();
@@ -595,14 +555,61 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             commentDialog.show();
             bottomSheetBehaviorComment.setState(BottomSheetBehavior.STATE_EXPANDED);
 
-            loadComments(selectedPostID);
+            if (authorName.equals("") && authorImage.equals("") && postText.equals("")) {
+                loadComments(selectedPostID, true);
+                loadPostDetails(selectedPostID);
+            }
+            else {
 
+                initCommentHeader(authorName, authorImage, postText, date, postImageUrl);
+                loadComments(selectedPostID, false);
+
+            }
             ((NestedScrollView) commentDialog.findViewById(R.id.stickyScrollView)).fullScroll(ScrollView.FOCUS_UP);
 
 
         } else
         {
             Toast.makeText(context, "Couldn't load comments", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    public void initCommentHeader(String authorName, String authorImage, String postText, String date, String postImageUrl){
+
+
+        ((TextView) commentDialog.findViewById(R.id.user_name)).setText(authorName);
+        ((TextView) commentDialog.findViewById(R.id.text)).setText(postText);
+        ((TextView) commentDialog.findViewById(R.id.date)).setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", date)));
+        ImageView userPic = commentDialog.findViewById(R.id.picture);
+        Glide.with(context)
+                .load(authorImage)
+                .fitCenter()
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .apply(new RequestOptions().override(200, 200))
+                .into(userPic);
+
+        ImageView postPic = commentDialog.findViewById(R.id.postImage);
+
+        if (postImageUrl == null || postImageUrl.equals("")){} else {
+            Glide.with(context)
+                    .load(postImageUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .apply(new RequestOptions().override(900, 900))
+                    .into(postPic);
+
+            postPic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent = new Intent(context, ImagePreview.class);
+                    intent.putExtra("image", postImageUrl);
+                    context.startActivity(intent);
+                }
+            });
+
         }
 
 
@@ -651,6 +658,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 replyProgressContainer.setVisibility(View.GONE);
 
                 try {
+
+
                     JSONArray jsonArray = response.getJSONArray("data").getJSONObject(0).getJSONArray("replies");
 
                     if (jsonArray.length() > 0)
@@ -812,7 +821,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                     currentCommentPage = 1;
 
-                    loadComments(selectedPostID);
+                    loadComments(selectedPostID, false);
                 } else {
 
                     replyItems.clear();
@@ -850,22 +859,14 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-    public void loadComments(String post_id){
-
-
-
-
+    public void loadComments(String post_id, boolean fromRoute){
 
         if (maxCountComment == commentItems.size()) {
 
             commentProgressContainer.setVisibility(View.GONE);
             ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.GONE);
-
             return;
-
         }
-
-
 
         isCommentLoading = true;
         selectedPostID = post_id;
@@ -902,8 +903,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Log.d("json response", response.toString());
                 commentProgressContainer.setVisibility(View.GONE);
                 ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
-                try {
 
+
+                try {
 
                     maxCountComment = response.getInt("count");
 
@@ -972,6 +974,64 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
+    public void loadPostDetails(String post_id){
+
+
+        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id;
+
+
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+
+                    JSONObject ob = response.getJSONObject("data");
+
+                    JSONObject author = ob.getJSONObject("author");
+
+                    String authorName = author.getString("full_name");
+                    String authorImage = author.getString("compressed_image");
+                    String postText = ob.getString("body");
+                    String date = ob.getString("created_at");
+                    String postImageUrl = ob.getString("attachment");
+
+                    initCommentHeader(authorName, authorImage, postText, date, postImageUrl);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+
+                if (!userDetails.getToken().equals(""))
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Content-Type", "application/json");
+
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(request);
+    }
+
+
 
     public void getPosts(int page){
 
@@ -989,10 +1049,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         if (page>1)
             bottomProgressBar.setVisibility(View.VISIBLE);
-
-
-
-
 
         Log.d("json url", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
@@ -1100,7 +1156,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         maxCountComment = -1;
         commentItems.clear();
         commentAdapter.notifyDataSetChanged();
-        loadComments(selectedPostID);
+        loadComments(selectedPostID, false);
 
     }
 
