@@ -147,6 +147,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         myViewHolder.commentHolder.setOnClickListener(commentOpener);
         myViewHolder.statusView.setOnClickListener(commentOpener);
+        myViewHolder.postImage.setOnClickListener(commentOpener);
 
         myViewHolder.menuIcon.setOnClickListener(new View.OnClickListener() {
             @Override
