@@ -617,16 +617,25 @@ public class CartActivity extends BaseActivity {
                         String currentDateString = "08/31/2019 1:00:00";
                         Date septemberDate;
 
+                        String currentDateString2 = "09/20/2019 1:00:00";
+                        Date septemberDate2;
+
                         SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
                         septemberDate = sd.parse(currentDateString);
+                        septemberDate2 = sd.parse(currentDateString2);
 
-                        if (sellerJson.getString("shop_slug").equals("evaly-pendrive-offer-shop"))
-                            if (Utils.formattedDateFromString("", userDetails.getCreatedAt()).after(septemberDate)) {
+                        if (sellerJson.getString("shop_slug").equals("evaly-amol-1")) {
+
+
+                            Date joinDate = Utils.formattedDateFromString("", userDetails.getCreatedAt());
+
+                            if (joinDate.after(septemberDate) && joinDate.before(septemberDate2)) {
                                 items.put(itemsObject);
 
                             } else {
                                 Toast.makeText(context, "10 Tk pendrive offer is only available to users who joined after 1st September, 2019", Toast.LENGTH_LONG).show();
                             }
+                        }
                         else
                             items.put(itemsObject);
 
