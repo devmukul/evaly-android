@@ -374,6 +374,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             });
         }
 
+        commentRecyclerView.setFocusable(false);
+        nestedScrollViewComment.requestFocus();
+
 
 
 
@@ -587,6 +590,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyNot.setVisibility(View.GONE);
 
 
+        NestedScrollView scrollView = replyDialog.findViewById(R.id.stickyScrollView);
+
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments/"+ comment_id +"/replies?page="+ currentReplyPage;
 
         Log.d("json url", url);
@@ -595,6 +600,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
+
+                scrollView.fling(0);
 
                 isReplyLoading = false;
 
@@ -821,6 +828,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         commentNot.setVisibility(View.GONE);
 
+
+        NestedScrollView scrollView = commentDialog.findViewById(R.id.stickyScrollView);
+
+
+
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id+"/comments?page="+currentCommentPage;
 
         currentCommentPage++;
@@ -830,6 +842,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
+                scrollView.fling(0);
 
                 isCommentLoading = false;
 
@@ -854,6 +868,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                         if (!item.getBody().trim().equals("")) {
                             commentItems.add(item);
                             commentAdapter.notifyItemInserted(commentItems.size());
+
+                            //commentAdapter.notifyDataSetChanged();
                         }
                     }
 
@@ -913,6 +929,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         if (page>1)
             bottomProgressBar.setVisibility(View.VISIBLE);
+
+
+
+
 
         Log.d("json url", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
