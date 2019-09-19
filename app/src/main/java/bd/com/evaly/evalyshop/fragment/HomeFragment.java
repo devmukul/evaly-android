@@ -286,6 +286,57 @@ public class HomeFragment extends Fragment {
         }, 300);
 
 
+
+    }
+
+
+
+    public void getNotificationCount(){
+
+        String url = UrlUtils.BASE_URL_NEWSFEED+"notifications_count/";
+        JSONObject parameters = new JSONObject();
+        try {
+            parameters.put("key", "value");
+        } catch (Exception e) {
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("onResponse", response.toString());
+
+                try {
+
+                    int count = response.getInt("unread_notification_count");
+
+                    if (count>0)
+                        view.findViewById(R.id.newsfeedIndicator).setVisibility(View.VISIBLE);
+                    else
+
+                        view.findViewById(R.id.newsfeedIndicator).setVisibility(View.GONE);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                return headers;
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(request);
+
+
     }
 
 
@@ -374,7 +425,8 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Log.e("DEBUG", "onResume of HomeFragment");
+
+        getNotificationCount();
         super.onResume();
 
 
@@ -382,7 +434,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onPause() {
-        Log.e("DEBUG", "OnPause of HomeFragment");
+
         super.onPause();
     }
 
