@@ -204,7 +204,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             public void onClick(View view) {
 
                 Intent intent = new Intent(context, ImagePreview.class);
-                intent.putExtra("image", itemsList.get(i).getAttachment())
+                intent.putExtra("image", itemsList.get(i).getAttachment());
                 context.startActivity(intent);
             }
         });

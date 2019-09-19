@@ -115,7 +115,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
                 myViewHolder.postImage.setVisibility(View.VISIBLE);
                 Glide.with(context)
-                        .load(commentItem.getAttachement().toString())
+                        .load(commentItem.getAttachmentCompressedUrl().toString())
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .apply(new RequestOptions().override(900, 900))
                         .into(myViewHolder.postImage);
