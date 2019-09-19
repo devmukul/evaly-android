@@ -407,6 +407,11 @@ public class NewsfeedActivity extends AppCompatActivity {
                 Log.d("json response", response.toString());
                 createBtn.setEnabled(true);
                 try {
+
+
+                    if (!userDetails.getGroups().contains("EvalyEmployee"))
+                        Toast.makeText(context, "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
+
                     //JSONArray jsonArray = response.getJSONObject("data");
                     createPostDialog.dismiss();
                     finish();
