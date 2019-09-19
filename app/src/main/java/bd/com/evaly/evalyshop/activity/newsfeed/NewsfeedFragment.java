@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -47,6 +48,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.ReplyAdapter;
@@ -519,7 +521,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
-    public void openCommentBottomSheet(String id, String authorName, String authorImage, String postText, String date, String postImage){
+    public void openCommentBottomSheet(String id, String authorName, String authorImage, String postText, String date, String postImageUrl){
 
 
         if (commentDialog != null){
@@ -542,12 +544,27 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             ImageView postPic = commentDialog.findViewById(R.id.postImage);
 
-            if (postImage == null || postImage.equals("")){} else {
+
+
+
+            if (postImageUrl == null || postImageUrl.equals("")){} else {
                 Glide.with(context)
-                        .load(postImage)
+                        .load(postImageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .apply(new RequestOptions().override(900, 900))
                         .into(postPic);
+
+                postPic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Intent intent = new Intent(context, ImagePreview.class);
+                        intent.putExtra("image", postImageUrl);
+                        context.startActivity(intent);
+                    }
+                });
+
+
             }
 
             selectedPostID = id;
@@ -917,6 +934,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
+
     public void getPosts(int page){
 
 
@@ -1164,6 +1182,20 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
+    }
+
+
+    @Override
+    public void onDestroy()
+    {
+
+        super.onDestroy();
+
+        commentDialog.dismiss();
+        replyDialog.dismiss();
+
+
+
     }
 
 

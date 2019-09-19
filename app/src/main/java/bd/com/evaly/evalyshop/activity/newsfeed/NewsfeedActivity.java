@@ -24,6 +24,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -252,6 +254,18 @@ public class NewsfeedActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.badge_newsfeed_menu, menu);
+       // final View menu_hotlist = menu.findItem(R.id.menu_messages).getActionView();
+        //TextView ui_hot = (TextView) menu_hotlist.findViewById(R.id.hotlist_hot);
+
+        return true;
+
     }
 
 

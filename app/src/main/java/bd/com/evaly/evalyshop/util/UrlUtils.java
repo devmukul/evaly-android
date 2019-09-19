@@ -4,16 +4,21 @@ public class UrlUtils {
 
     /* Dev mode */
 
-
-//    public static final String BASE_URL = "https://api-dev.evaly.com.bd/core/";
-//    public static final String BASE_URL_NEWSFEED = "https://api-dev.evaly.com.bd/newsfeed/";
-
-
+    private static final String DOMAIN = "https://api-dev.evaly.com.bd/";
 
     /* Production */
 
-    public static final String BASE_URL = "https://api.evaly.com.bd/core/";
-    public static final String BASE_URL_NEWSFEED = "https://api.evaly.com.bd/newsfeed/";
+    //private static final String DOMAIN = "https://api.evaly.com.bd/";
+
+
+
+
+
+
+
+
+    public static final String BASE_URL = DOMAIN+"core/";
+    public static final String BASE_URL_NEWSFEED = DOMAIN+"newsfeed/";
 
 
 

@@ -199,15 +199,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             }
         });
 
-        myViewHolder.postImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                Intent intent = new Intent(context, ImagePreview.class);
-                intent.putExtra("image", itemsList.get(i).getAttachment());
-                context.startActivity(intent);
-            }
-        });
 
 
     }

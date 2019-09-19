@@ -1,13 +1,18 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -71,6 +76,34 @@ public class NewsfeedNotification extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(final Menu menu) {
+//        MenuInflater menuInflater = getMenuInflater();
+//        menuInflater.inflate(R.menu.badge_newsfeed_menu, menu);
+//        final View menu_hotlist = menu.findItem(R.id.menu_messages).getActionView();
+//        TextView ui_hot = (TextView) menu_hotlist.findViewById(R.id.hotlist_hot);
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
+
+
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        menu.clear();
+//        inflater.inflate(R.menu.activity_main_drawer, menu);
+//
+////        MenuItem item = menu.findItem(R.id.menu_messages);
+////        MenuItemCompat.setActionView(item, R.layout.feed_update_count);
+////        View view = MenuItemCompat.getActionView(item);
+//
+//    }
+
+
 
 
     public void getNotifications(){
