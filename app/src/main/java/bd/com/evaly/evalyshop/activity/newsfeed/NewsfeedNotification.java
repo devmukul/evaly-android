@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.NotificationActivity;
@@ -103,8 +104,6 @@ public class NewsfeedNotification extends AppCompatActivity {
         });
 
 
-
-
     }
 
 
@@ -116,7 +115,7 @@ public class NewsfeedNotification extends AppCompatActivity {
 
 
     public void getNotifications(){
-        String url= UrlUtils.BASE_URL_NEWSFEED+"notifications?page"+page;
+        String url= UrlUtils.BASE_URL_NEWSFEED+"notifications?page="+page;
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -124,6 +123,8 @@ public class NewsfeedNotification extends AppCompatActivity {
         }
 
         loading = false;
+
+        Log.d("json url", url);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
             @Override

@@ -171,6 +171,12 @@ public class NewsfeedActivity extends AppCompatActivity {
         LinearLayout addPhoto = createPostDialog.findViewById(R.id.addPhoto);
         Button share = createPostDialog.findViewById(R.id.share);
         Spinner typeSpinner = createPostDialog.findViewById(R.id.type);
+        LinearLayout spinnerHolder = createPostDialog.findViewById(R.id.spinner_holder);
+
+
+        if (!userDetails.getGroups().contains("EvalyEmployee"))
+            spinnerHolder.setVisibility(View.GONE);
+
 
         addPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,9 +233,10 @@ public class NewsfeedActivity extends AppCompatActivity {
         });
 
 
-        if (!userDetails.getGroups().contains("EvalyEmployee"))
+
+        if (userDetails.getToken().equals(""))
             createBtn.setVisibility(View.GONE);
-        
+
 
         NewsfeedFragment publicFragment = NewsfeedFragment.newInstance("public");
         pager.addFragment(publicFragment,"ALL");
@@ -373,7 +380,11 @@ public class NewsfeedActivity extends AppCompatActivity {
         JSONObject parametersPost = new JSONObject();
         try {
             parameters.put("title", "null");
-            parameters.put("type", postType);
+
+
+            if (userDetails.getGroups().contains("EvalyEmployee"))
+                parameters.put("type", postType);
+
             parameters.put("body", postBody);
 
             if (!selectedImage.equals(""))

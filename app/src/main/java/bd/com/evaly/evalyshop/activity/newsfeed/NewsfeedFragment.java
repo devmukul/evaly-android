@@ -37,6 +37,8 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
@@ -974,16 +976,27 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
+    SkeletonScreen skeletonCommentHeader;
+
+
     public void loadPostDetails(String post_id){
 
 
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id;
 
 
+        LinearLayout header = commentDialog.findViewById(R.id.header);
+
+        skeletonCommentHeader = Skeleton.bind(header)
+                .load(R.layout.skeleton_alert_comment_header)
+                .color(R.color.ddd)
+                .show();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
+                skeletonCommentHeader.hide();
 
                 try {
 

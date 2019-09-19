@@ -110,8 +110,13 @@ public class NotificationNewsfeedAdapter extends RecyclerView.Adapter<Notificati
                         intent.putExtra("comment_id", "");
 
 
-                    ((NewsfeedNotification)context).setResult(Activity.RESULT_OK, intent);
-                    ((NewsfeedNotification)context).finish();
+                    if (notifications.get(i).getContent_type().equals("comment") || notifications.get(i).getContent_type().equals("reply")) {
+                        ((NewsfeedNotification) context).setResult(Activity.RESULT_OK, intent);
+                        ((NewsfeedNotification) context).finish();
+                    } else {
+
+                        ((NewsfeedNotification) context).finish();
+                    }
 
 
                 }catch (Exception e){

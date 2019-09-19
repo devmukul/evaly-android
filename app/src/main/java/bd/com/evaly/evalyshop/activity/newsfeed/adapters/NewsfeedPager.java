@@ -69,7 +69,7 @@ public class NewsfeedPager extends FragmentPagerAdapter {
 //    }
 
     public Fragment getCurrentFragment() {
-        return mFragmentList.get(mCurrentPosition);
+        return mFragmentList.get(0);
     }
 
 
