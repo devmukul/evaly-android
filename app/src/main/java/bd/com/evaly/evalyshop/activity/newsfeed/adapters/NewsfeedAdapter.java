@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
@@ -86,7 +87,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
             myViewHolder.postImage.setVisibility(View.VISIBLE);
             Glide.with(context)
-                    .load(itemsList.get(i).getAttachment())
+                    .load(itemsList.get(i).getAttachmentCompressed())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(900, 900))
                     .into(myViewHolder.postImage);
@@ -195,6 +196,16 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                 });
 
                 popup.show();
+            }
+        });
+
+        myViewHolder.postImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(context, ImagePreview.class);
+                intent.putExtra("image", itemsList.get(i).getAttachment())
+                context.startActivity(intent);
             }
         });
 

@@ -202,7 +202,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyProgressContainer = replyDialog.findViewById(R.id.progressContainer);
 
 
-
         // Reply recyclerView
 
         replyItems = new ArrayList<>();
