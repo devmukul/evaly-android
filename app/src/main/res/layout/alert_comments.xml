@@ -17,7 +17,7 @@
     android:background="#fff"
     tools:context=".activity.newsfeed.NewsfeedActivity">
 
-    <android.support.v4.widget.NestedScrollView
+    <bd.com.evaly.evalyshop.views.StickyScrollView
         android:id="@+id/stickyScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,80 +28,76 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:background="#f8f8f8"
             android:orientation="vertical"
             android:descendantFocusability="blocksDescendants"
             android:focusableInTouchMode="true">
 
-            <View
-                android:layout_width="fill_parent"
-                android:id="@+id/focus_view"
-                android:layout_height="0dp"
-                android:focusable="true"
-                android:focusableInTouchMode="true">
-                <requestFocus/>
-            </View>
-
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#fff"
-                android:paddingTop="5dp">
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:tag="sticky">
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/pictureHolder"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginRight="10dp"
-                    app:cardCornerRadius="35dp"
-                    app:cardElevation="1dp"
-                    app:cardPreventCornerOverlap="true">
+            <android.support.v7.widget.CardView
+                android:id="@+id/pictureHolder"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="10dp"
+                app:cardCornerRadius="35dp"
+                app:cardElevation="1dp"
+                app:cardPreventCornerOverlap="true">
 
-                    <ImageView
-                        android:id="@+id/picture"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/user_image" />
-                </android.support.v7.widget.CardView>
+                <ImageView
+                    android:id="@+id/picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/user_image" />
+            </android.support.v7.widget.CardView>
 
-                <TextView
-                    android:id="@+id/user_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:layout_toRightOf="@id/pictureHolder"
-                    android:text="User Name"
-                    android:textColor="#333"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_toRightOf="@id/pictureHolder"
+                android:text="User Name"
+                android:textColor="#333"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/user_name"
-                    android:layout_alignStart="@id/user_name"
-                    android:text="2 hours ago"
-                    android:textSize="13sp" />
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/user_name"
+                android:layout_alignStart="@id/user_name"
+                android:text="2 hours ago"
+                android:textSize="13sp" />
 
-                <TextView
+
+            </RelativeLayout>
+
+
+            <TextView
                     android:id="@+id/text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/pictureHolder"
                     android:autoLink="all"
                     android:paddingLeft="17dp"
-                    android:paddingTop="15dp"
+                    android:paddingTop="2dp"
                     android:paddingRight="17dp"
                     android:paddingBottom="15dp"
                     android:text="Status text..."
                     android:textColor="#444"
-                    android:textSize="16sp" />
+                    android:textSize="17sp"
+                    android:background="#fff"/>
 
 
                 <ImageView
@@ -114,7 +110,6 @@
                     android:visibility="visible" />
 
 
-            </RelativeLayout>
 
 
             <View
@@ -130,7 +125,8 @@
                 android:layout_height="wrap_content"
                 android:background="#f8f8f8"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:tag="sticky">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -138,7 +134,7 @@
                     android:layout_weight="1"
                     android:paddingLeft="15dp"
                     android:paddingTop="15dp"
-                    android:paddingBottom="15dp"
+                    android:paddingBottom="17dp"
                     android:text="Comments"
                     android:textColor="#333"
                     android:textSize="16sp"
@@ -230,7 +226,7 @@
             </LinearLayout>
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </bd.com.evaly.evalyshop.views.StickyScrollView>
 
 
     <LinearLayout

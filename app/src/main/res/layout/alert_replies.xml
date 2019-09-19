@@ -18,7 +18,7 @@
     android:background="#fff"
     tools:context=".activity.newsfeed.NewsfeedActivity">
 
-    <android.support.v4.widget.NestedScrollView
+    <bd.com.evaly.evalyshop.views.StickyScrollView
         android:id="@+id/stickyScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -172,7 +172,8 @@
                 android:layout_height="wrap_content"
                 android:background="#f8f8f8"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:tag="sticky">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -272,7 +273,7 @@
 
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </bd.com.evaly.evalyshop.views.StickyScrollView>
 
 
     <LinearLayout

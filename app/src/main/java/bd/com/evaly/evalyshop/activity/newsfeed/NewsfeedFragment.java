@@ -485,8 +485,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             Glide.with(context)
                     .load(authorImage)
-                    .centerCrop()
                     .fitCenter()
+                    .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(200, 200))
                     .into(userPic);
@@ -534,8 +534,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             Glide.with(context)
                     .load(authorImage)
-                    .centerCrop()
                     .fitCenter()
+                    .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(200, 200))
                     .into(userPic);
