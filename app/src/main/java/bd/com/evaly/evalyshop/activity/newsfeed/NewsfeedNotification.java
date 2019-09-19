@@ -33,6 +33,7 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.NotificationActivity;
 import bd.com.evaly.evalyshop.adapter.NotificationAdapter;
+import bd.com.evaly.evalyshop.adapter.NotificationNewsfeedAdapter;
 import bd.com.evaly.evalyshop.models.Notifications;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -41,10 +42,13 @@ public class NewsfeedNotification extends AppCompatActivity {
 
 
     RecyclerView recyclerView;
-    NotificationAdapter adapter;
+    NotificationNewsfeedAdapter adapter;
     ArrayList<Notifications> notifications;
     UserDetails userDetails;
     LinearLayout not;
+    int hot_number;
+    TextView hotlist_hot;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +56,8 @@ public class NewsfeedNotification extends AppCompatActivity {
         setContentView(R.layout.activity_newsfeed_notification);
 
 
-        getSupportActionBar().setElevation(4f);
-        getSupportActionBar().setTitle("Notifications");
+        getSupportActionBar().setElevation(0);
+        getSupportActionBar().setTitle("Newsfeed Notifications");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView=findViewById(R.id.recycle);
@@ -61,11 +65,11 @@ public class NewsfeedNotification extends AppCompatActivity {
         LinearLayoutManager manager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         notifications=new ArrayList<>();
-        adapter=new NotificationAdapter(notifications,this);
+        adapter=new NotificationNewsfeedAdapter(notifications,this);
         recyclerView.setAdapter(adapter);
         userDetails=new UserDetails(this);
-        getNotifications();
 
+        getNotifications();
 
 
     }
@@ -78,36 +82,8 @@ public class NewsfeedNotification extends AppCompatActivity {
     }
 
 
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(final Menu menu) {
-//        MenuInflater menuInflater = getMenuInflater();
-//        menuInflater.inflate(R.menu.badge_newsfeed_menu, menu);
-//        final View menu_hotlist = menu.findItem(R.id.menu_messages).getActionView();
-//        TextView ui_hot = (TextView) menu_hotlist.findViewById(R.id.hotlist_hot);
-//
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        menu.clear();
-//        inflater.inflate(R.menu.activity_main_drawer, menu);
-//
-////        MenuItem item = menu.findItem(R.id.menu_messages);
-////        MenuItemCompat.setActionView(item, R.layout.feed_update_count);
-////        View view = MenuItemCompat.getActionView(item);
-//
-//    }
-
-
-
-
     public void getNotifications(){
-        String url= UrlUtils.BASE_URL_NEWSFEED+"notifications/";
+        String url= UrlUtils.BASE_URL_NEWSFEED+"notifications";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -134,6 +110,7 @@ public class NewsfeedNotification extends AppCompatActivity {
                             item.setTime(ob.getString("created_at"));
                             item.setContent_type(ob.getString("content_type"));
                             item.setContent_url(ob.getString("content_url"));
+                            item.setRead(ob.getBoolean("read"));
                             notifications.add(item);
 
                             adapter.notifyItemInserted(notifications.size());
@@ -217,5 +194,13 @@ public class NewsfeedNotification extends AppCompatActivity {
 
 
     }
+
+
+
+
+
+
+
+
 
 }

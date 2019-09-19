@@ -116,6 +116,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ImageView reloadReply;
     private boolean isReplyLoading = false;
 
+    private int maxCountNewfeed;
+    private int maxCountComment;
+    private int maxCountReply;
+
+
 
 
 
@@ -165,6 +170,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         getPosts(currentPage);
 
+        try {
+
+            ((NewsfeedActivity) getActivity()).getNotificationCount();
+
+        } catch (Exception e){
+
+        }
+
+
 
     }
 
@@ -180,6 +194,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
         userDetails = new UserDetails(context);
+
+
+        maxCountNewfeed = -1;
+        maxCountComment = -1;
+        maxCountReply = -1;
 
         // Reply bottom sheet
 
@@ -478,6 +497,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (replyDialog != null){
 
             currentReplyPage = 1;
+            maxCountReply = -1;
 
             ((TextView) replyDialog.findViewById(R.id.user_name)).setText(authorName);
             ((TextView) replyDialog.findViewById(R.id.text)).setText(postText);
@@ -527,6 +547,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (commentDialog != null){
 
             currentCommentPage = 1;
+            maxCountComment = -1;
 
             ((TextView) commentDialog.findViewById(R.id.user_name)).setText(authorName);
             ((TextView) commentDialog.findViewById(R.id.text)).setText(postText);
@@ -831,6 +852,21 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void loadComments(String post_id){
 
+
+
+
+
+        if (maxCountComment == commentItems.size()) {
+
+            commentProgressContainer.setVisibility(View.GONE);
+            ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.GONE);
+
+            return;
+
+        }
+
+
+
         isCommentLoading = true;
         selectedPostID = post_id;
 
@@ -847,13 +883,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (currentCommentPage > 1)
             ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.VISIBLE);
 
-        commentNot.setVisibility(View.GONE);
-
 
         NestedScrollView scrollView = commentDialog.findViewById(R.id.stickyScrollView);
-
-
-
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id+"/comments?page="+currentCommentPage;
 
         currentCommentPage++;
@@ -872,6 +903,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 commentProgressContainer.setVisibility(View.GONE);
                 ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
                 try {
+
+
+                    maxCountComment = response.getInt("count");
+
                     JSONArray jsonArray = response.getJSONArray("data");
 
                     if (jsonArray.length() > 0)
@@ -904,7 +939,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+
                 ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
+
                 commentProgressContainer.setVisibility(View.GONE);
 
                 //Toast.makeText(context, "Couldn't load comments.", Toast.LENGTH_SHORT).show();
@@ -1059,6 +1097,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void reloadRecyclerComment(){
         currentCommentPage = 1;
+        maxCountComment = -1;
         commentItems.clear();
         commentAdapter.notifyDataSetChanged();
         loadComments(selectedPostID);
@@ -1068,6 +1107,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void reloadRecyclerReply(){
         currentReplyPage = 1;
+        maxCountReply = -1;
         replyItems.clear();
         replyAdapter.notifyDataSetChanged();
         loadReplies(selectedCommentID);

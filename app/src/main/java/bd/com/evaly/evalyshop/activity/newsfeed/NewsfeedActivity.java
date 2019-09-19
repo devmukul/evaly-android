@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -89,6 +90,9 @@ public class NewsfeedActivity extends AppCompatActivity {
     private String postType = "CEO";
     private String postBody = "";
 
+    private int hot_number;
+    TextView ui_hot;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,8 +131,6 @@ public class NewsfeedActivity extends AppCompatActivity {
 
             }
         });
-
-
 
 
         createPostDialog = new BottomSheetDialog(NewsfeedActivity.this, R.style.BottomSheetDialogTheme);
@@ -256,17 +258,95 @@ public class NewsfeedActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.badge_newsfeed_menu, menu);
-       // final View menu_hotlist = menu.findItem(R.id.menu_messages).getActionView();
-        //TextView ui_hot = (TextView) menu_hotlist.findViewById(R.id.hotlist_hot);
+        final View menu_hotlist = menu.findItem(R.id.menu_messages).getActionView();
+        ui_hot = (TextView) menu_hotlist.findViewById(R.id.hotlist_hot);
+
+        ui_hot.setVisibility(View.INVISIBLE);
+
+        menu_hotlist.setOnClickListener(viw -> startActivity(new Intent(NewsfeedActivity.this, NewsfeedNotification.class)));
 
         return true;
 
     }
+
+    @Override
+    public void onResume(){
+
+        getNotificationCount();
+
+        super.onResume();
+
+
+    }
+
+
+
+    public void getNotificationCount(){
+
+        String url = UrlUtils.BASE_URL_NEWSFEED+"notifications_count/";
+        JSONObject parameters = new JSONObject();
+        try {
+            parameters.put("key", "value");
+        } catch (Exception e) {
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("onResponse", response.toString());
+
+                try {
+
+                    int count = response.getInt("unread_notification_count");
+
+
+                    updateHotCount(count);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                return headers;
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(request);
+
+
+    }
+
+    public void updateHotCount(final int new_hot_number) {
+        hot_number = new_hot_number;
+        if (ui_hot == null) return;
+
+        if (new_hot_number == 0)
+            ui_hot.setVisibility(View.INVISIBLE);
+        else {
+            ui_hot.setVisibility(View.VISIBLE);
+            ui_hot.setText(Integer.toString(new_hot_number));
+        }
+
+    }
+
+
+
 
 
     public void createPost(){

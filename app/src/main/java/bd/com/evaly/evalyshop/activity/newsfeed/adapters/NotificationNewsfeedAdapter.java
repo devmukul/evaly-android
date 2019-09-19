@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,25 +47,28 @@ public class NotificationNewsfeedAdapter extends RecyclerView.Adapter<Notificati
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_notification,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_notification_newfeed,viewGroup,false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
-        if (notifications.get(i).isRead())
-            myViewHolder.messages.setTypeface(null, Typeface.BOLD);
+        if (!notifications.get(i).isRead())
+            myViewHolder.view.setBackgroundColor(Color.parseColor("#fafafa"));
         else
-            myViewHolder.messages.setTypeface(null, Typeface.NORMAL);
+            myViewHolder.view.setBackgroundColor(Color.parseColor("#ffffff"));
 
-        myViewHolder.messages.setText(notifications.get(i).getMessage());
+        myViewHolder.messages.setText(Html.fromHtml(notifications.get(i).getMessage()));
 
 
         Glide.with(context)
                 .load(notifications.get(i).getImageURL())
+                .fitCenter()
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(200, 200))
+                .placeholder(R.drawable.user_image)
                 .listener(new RequestListener<Drawable>() {
                               @Override
                               public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

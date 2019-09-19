@@ -53,7 +53,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
-        if (notifications.get(i).isRead())
+        if (!notifications.get(i).isRead())
             myViewHolder.messages.setTypeface(null, Typeface.BOLD);
         else
             myViewHolder.messages.setTypeface(null, Typeface.NORMAL);

@@ -102,6 +102,7 @@ public class NotificationActivity extends BaseActivity {
                             item.setTime(ob.getString("created_at"));
                             item.setContent_type(ob.getString("content_type"));
                             item.setContent_url(ob.getString("content_url"));
+                            item.setRead(ob.getBoolean("read"));
                             notifications.add(item);
 
                             adapter.notifyItemInserted(notifications.size());
