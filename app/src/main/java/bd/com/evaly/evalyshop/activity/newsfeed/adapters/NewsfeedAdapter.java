@@ -66,7 +66,9 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             myViewHolder.userNameView.setText("User");
 
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt())));
-        myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "<b>Show more</b>")));
+
+        myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "...<b>Show more</b>")));
+
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
         Glide.with(context)
@@ -93,12 +95,12 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                     .into(myViewHolder.postImage);
         }
 
+
         ImageView favorite = myViewHolder.likeIcon;
         final TextView likeCount = myViewHolder.likeCountView;
         likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
 
         if(itemsList.get(i).isFavorited() || (favorite.getTag() != null && favorite.getTag().toString().equals("yes"))){
-
             favorite.setImageResource(R.drawable.ic_favorite_color);
             favorite.setTag("yes");
 

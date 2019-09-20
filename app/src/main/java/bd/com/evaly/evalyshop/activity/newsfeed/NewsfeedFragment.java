@@ -886,6 +886,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (currentCommentPage > 1)
             ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.VISIBLE);
 
+        replyNot.setVisibility(View.GONE);
 
         NestedScrollView scrollView = commentDialog.findViewById(R.id.stickyScrollView);
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id+"/comments?page="+currentCommentPage;
