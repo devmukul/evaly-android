@@ -67,7 +67,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt())));
 
-        myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "...<b>Show more</b>")));
+        myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
 
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
@@ -91,6 +91,8 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             Glide.with(context)
                     .load(itemsList.get(i).getAttachmentCompressed())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .centerCrop()
+                    .fitCenter()
                     .apply(new RequestOptions().override(900, 900))
                     .into(myViewHolder.postImage);
         }
