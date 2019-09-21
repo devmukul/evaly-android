@@ -108,11 +108,6 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
                                     }})
                                 .setNegativeButton("NO", null).show();
 
-
-
-
-
-
                         return false;
                     }
                 }

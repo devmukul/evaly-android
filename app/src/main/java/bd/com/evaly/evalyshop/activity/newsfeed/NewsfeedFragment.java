@@ -118,7 +118,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ImageView uploadImageReply;
     private ImageView reloadReply;
     private boolean isReplyLoading = false;
-
     private int maxCountNewfeed;
     private int maxCountComment;
     private int maxCountReply;

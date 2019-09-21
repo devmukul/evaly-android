@@ -101,7 +101,7 @@
         android:paddingBottom="5dp">
 
         <LinearLayout
-            android:id="@+id/confirHolder"
+            android:id="@+id/deleteHolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -128,7 +128,7 @@
 
 
         <LinearLayout
-            android:id="@+id/likeHolder"
+            android:id="@+id/rejectHolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -155,7 +155,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/commentHolder"
+            android:id="@+id/approveHolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
