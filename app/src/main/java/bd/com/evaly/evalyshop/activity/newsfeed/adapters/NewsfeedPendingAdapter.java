@@ -89,6 +89,7 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(200, 200))
+                .placeholder(R.drawable.user_image)
                 .into(myViewHolder.userImage);
 
         String postImage = itemsList.get(i).getAttachment();

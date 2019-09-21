@@ -76,6 +76,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                     .fitCenter()
                     .centerCrop()
                     .apply(new RequestOptions().override(50, 50))
+                    .placeholder(R.drawable.user_image)
                     .into(myViewHolder.reply1Image);
 
         } else

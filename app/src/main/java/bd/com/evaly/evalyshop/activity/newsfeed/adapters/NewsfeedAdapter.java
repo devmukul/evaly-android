@@ -76,6 +76,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                 .fitCenter()
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.user_image)
                 .apply(new RequestOptions().override(200, 200))
                 .into(myViewHolder.userImage);
 

@@ -61,6 +61,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(100, 100))
+                .placeholder(R.drawable.user_image)
                 .into(myViewHolder.userImage);
 
 
