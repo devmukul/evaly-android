@@ -1055,6 +1055,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         if (type.equals("public"))
             url = UrlUtils.BASE_URL_NEWSFEED+"posts?page="+page;
+        else if(type.equals("pending"))
+            url = UrlUtils.BASE_URL_NEWSFEED+"posts?status=pending&page="+page;
         else
             url = UrlUtils.BASE_URL_NEWSFEED+"posts?type="+type+"&page="+page;
 
