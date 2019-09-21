@@ -53,6 +53,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedAdapter;
+import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.ReplyAdapter;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
@@ -228,7 +229,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         // Reply recyclerView
 
         replyItems = new ArrayList<>();
+
+
         replyAdapter = new ReplyAdapter(replyItems, context, this);
+
+
         replyRecyclerView = replyDialog.findViewById(R.id.recyclerView);
 
         LinearLayoutManager managerReply=new LinearLayoutManager(context);
@@ -458,7 +463,14 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         itemsList = new ArrayList<>();
         LinearLayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
-        adapter = new NewsfeedAdapter(itemsList, context, this);
+
+
+        if (type.equals("pending"))
+            adapter = new NewsfeedPendingAdapter(itemsList, context, this);
+        else
+            adapter = new NewsfeedAdapter(itemsList, context, this);
+
+
         recyclerView.setAdapter(adapter);
 
         currentPage = 1;
