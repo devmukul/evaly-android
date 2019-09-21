@@ -218,11 +218,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
     public void deletePost(String id, final String type){
 
-        if (replyDialog == null)
-            return;
-
-        replyInput.setEnabled(false);
-        submitReply.setEnabled(false);
 
         String url;
 
@@ -235,30 +230,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             @Override
             public void onResponse(String response) {
 
-                if (type.equals("post")) {
 
-                    itemsList.clear();
-                    adapter.notifyDataSetChanged();
-                    currentPage = 1;
-                    getPosts(currentPage);
-
-                } else if (type.equals("comment")){
-
-                    commentItems.clear();
-                    commentAdapter.notifyDataSetChanged();
-
-                    currentCommentPage = 1;
-
-                    loadComments(selectedPostID, false);
-                } else {
-
-                    replyItems.clear();
-                    replyAdapter.notifyDataSetChanged();
-
-                    currentReplyPage = 1;
-
-                    loadReplies(selectedCommentID);
-                }
 
             }
         }, new Response.ErrorListener() {

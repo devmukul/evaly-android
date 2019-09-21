@@ -248,6 +248,13 @@ public class NewsfeedActivity extends AppCompatActivity {
         NewsfeedFragment ceoFragment = NewsfeedFragment.newInstance("ceo");
         pager.addFragment(ceoFragment,"CEO");
 
+
+        if (userDetails.getGroups().contains("EvalyEmployee")) {
+            NewsfeedPendingFragment pendingFragment = NewsfeedPendingFragment.newInstance("pending");
+            pager.addFragment(pendingFragment,"Pending");
+
+        }
+
         pager.notifyDataSetChanged();
 
 

@@ -70,7 +70,18 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
 
         myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
 
-        myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
+        myViewHolder.statusView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (myViewHolder.statusView.getText().toString().contains("Show more"))
+                    myViewHolder.statusView.setText(itemsList.get(i).getBody());
+                else
+                    myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
+
+
+            }
+        });
 
         Glide.with(context)
                 .load(itemsList.get(i).getAuthorImage())
@@ -105,25 +116,6 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
 
     }
 
-    private String wordBeautify(int count, boolean like){
-
-        if (count  == 0)
-            if (like)
-                return "Like";
-            else
-                return "Comment";
-        else if (count == 1)
-            if (like)
-                return "1 Like";
-            else
-                return "1 Comment";
-        else
-        if (like)
-            return count + " Likes";
-        else
-            return count +" Comments";
-
-    }
 
     @Override
     public int getItemCount() {
@@ -146,6 +138,10 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
             userNameView = itemView.findViewById(R.id.user_name);
             timeView = itemView.findViewById(R.id.date);
             statusView = itemView.findViewById(R.id.text);
+
+
+            userImage = itemView.findViewById(R.id.picture);
+            postImage = itemView.findViewById(R.id.postImage);
 
 
 

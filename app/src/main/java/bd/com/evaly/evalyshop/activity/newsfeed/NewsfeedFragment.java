@@ -465,10 +465,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         recyclerView.setLayoutManager(manager);
 
 
-        if (type.equals("pending"))
-            adapter = new NewsfeedPendingAdapter(itemsList, context, this);
-        else
-            adapter = new NewsfeedAdapter(itemsList, context, this);
+        adapter = new NewsfeedAdapter(itemsList, context, this);
 
 
         recyclerView.setAdapter(adapter);
