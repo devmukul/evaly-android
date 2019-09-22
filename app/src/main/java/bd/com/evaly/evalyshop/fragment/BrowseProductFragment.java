@@ -137,10 +137,16 @@ public class BrowseProductFragment extends Fragment {
         tabLayout = view.findViewById(R.id.tab_layout_sub);
 
 
-        skeletonTabHeader = Skeleton.bind(tabLayout)
-                .load(R.layout.skeleton_tablayout_header)
-                .color(R.color.ddd)
-                .show();
+        try {
+
+            skeletonTabHeader = Skeleton.bind(tabLayout)
+                    .load(R.layout.skeleton_tablayout_header)
+                    .color(R.color.ddd)
+                    .show();
+
+        } catch (Exception e){
+
+        }
 
 
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
@@ -247,6 +253,18 @@ public class BrowseProductFragment extends Fragment {
     }
 
 
+    @Override
+    public void onDestroy() {
+
+
+        try {
+
+            skeletonTabHeader.hide();
+
+        }catch (Exception e){}
+
+        super.onDestroy();
+    }
 
     public void getSubCategories(){
         String url = UrlUtils.BASE_URL+"public/categories/?parent="+slug;
@@ -257,7 +275,11 @@ public class BrowseProductFragment extends Fragment {
 //                    getShopsOfCategory(1);
 
 
-                    skeletonTabHeader.hide();
+                    try {
+
+                        skeletonTabHeader.hide();
+
+                    }catch (Exception e){}
 
                     int length = response.length();
 
