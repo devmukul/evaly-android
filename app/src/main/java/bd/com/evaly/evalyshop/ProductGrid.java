@@ -241,8 +241,15 @@ public class ProductGrid {
                             item.setPriceMax(priceMax);
                             item.setPriceMin(priceMin);
 
-                            if (response2.has("discounted_price"))
-                                item.setDiscountedPrice((int)response2.getDouble("discounted_price"));
+                            if (response2.has("discounted_price")) {
+
+                                String d_price = response2.getString("discounted_price");
+                                if (d_price.equals("null"))
+                                    item.setDiscountedPrice(0);
+                                else
+                                    item.setDiscountedPrice((int)Double.parseDouble(d_price));
+                            }
+
 
                             products.add(item);
 
@@ -329,6 +336,8 @@ public class ProductGrid {
 
                                 Log.d("json exc", e.toString());
                             }
+
+
                             ProductListItem item = new ProductListItem();
                             item.setThumbnailSM(response2.getJSONArray("image_urls").get(0).toString());
                             item.setSlug(response2.getString("slug"));
@@ -413,7 +422,6 @@ public class ProductGrid {
                                 priceMin = (int) Double.parseDouble(response2.getString("min_price"));
                                 priceMax = (int) Double.parseDouble(response2.getString("max_price"));
 
-
                             } catch (Exception e) {
 
                                 Log.d("json exc", e.toString());
@@ -422,6 +430,21 @@ public class ProductGrid {
                             item.setThumbnailSM(response2.getJSONArray("image_urls").get(0).toString());
                             item.setSlug(response2.getString("slug"));
                             item.setName(response2.getString("name"));
+
+
+                            if (response2.has("min_discounted_price")) {
+
+                                String d_price = response2.getString("min_discounted_price");
+
+
+                                if (d_price.equals("null"))
+                                    item.setDiscountedPrice(0);
+                                else
+                                    item.setDiscountedPrice((int)Double.parseDouble(d_price));
+
+
+                            }
+
                             item.setPriceMax(priceMax);
                             item.setPriceMin(priceMin);
                             products.add(item);

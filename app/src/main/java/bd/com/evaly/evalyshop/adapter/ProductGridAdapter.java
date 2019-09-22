@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,12 +52,9 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             int position = (int) view.getTag(); // get item for position
 
             Intent intent=new Intent(mContext, ViewProductActivity.class);
-
             intent.putExtra("product_slug",productsList.get(position).getSlug());
             intent.putExtra("product_name",productsList.get(position).getName());
             mContext.startActivity(intent);
-
-
 
         }
     };
@@ -90,14 +88,6 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
         }
 
 
-//        holder.imageViewAndroid.post(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//
-//            }
-//        });
-
                 Glide.with(mContext)
                         .asBitmap()
                         .skipMemoryCache(true)
@@ -123,13 +113,16 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
                 holder.priceDiscount.setVisibility(View.VISIBLE);
                 holder.priceDiscount.setPaintFlags(holder.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-                holder.price.setText("৳ " + productsList.get(position).getDiscountedPrice());
+                holder.price.setText("৳ " +productsList.get(position).getDiscountedPrice());
 
+                Log.d("json url", productsList.get(position).getDiscountedPrice()+"");
 
             }
 
 
-        } {
+
+
+        } else {
             holder.price.setText("৳ " + productsList.get(position).getPriceMin());
         }
 

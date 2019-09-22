@@ -8,11 +8,13 @@ public class UrlUtils {
 
     /* Production */
 
-    // private static final String DOMAIN = "https://api.evaly.com.bd/";
+    //private static final String DOMAIN = "https://api.evaly.com.bd/";
 
 
     public static final String BASE_URL = DOMAIN+"core/";
     public static final String BASE_URL_NEWSFEED = DOMAIN+"newsfeed/";
+
+    public static final String BASE_URL_PAYMENT = DOMAIN+"pay/";
 
 
     public static final String REFRESH_AUTH_TOKEN = BASE_URL + "refresh-auth-token/";
