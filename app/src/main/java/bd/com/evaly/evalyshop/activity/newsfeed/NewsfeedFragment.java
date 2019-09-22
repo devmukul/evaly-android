@@ -73,6 +73,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private NewsfeedActivity activity;
     private UserDetails userDetails;
     private LinearLayout not, progressContainer;
+    private RequestQueue queue;
 
     // newfeed scroller
     private boolean loading = true;
@@ -81,7 +82,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private ProgressBar bottomProgressBar;
     private SwipeRefreshLayout swipeLayout;
-    private RequestQueue queue;
+
 
     // comment bottom sheet items
 
@@ -786,7 +787,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(context);
+        
         request.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -860,7 +861,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(context);
+        
         request.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -1252,7 +1253,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(context);
+        
         request.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -1297,7 +1298,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(context);
+        
         request.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

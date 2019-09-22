@@ -5,19 +5,38 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedPendingFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
+import bd.com.evaly.evalyshop.util.UrlUtils;
+import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 
 
@@ -26,11 +45,13 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
     ArrayList<NewsfeedItem> itemsList;
     Context context;
     NewsfeedPendingFragment fragment;
+    UserDetails userDetails;
 
     public NewsfeedPendingAdapter(ArrayList<NewsfeedItem> itemsList, Context context, NewsfeedPendingFragment fragment) {
         this.itemsList = itemsList;
         this.context = context;
         this.fragment = fragment;
+        this.userDetails = fragment.getUserDetails();
     }
 
     @NonNull
@@ -93,6 +114,35 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
                     .into(myViewHolder.postImage);
         }
 
+
+        myViewHolder.approveHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                fragment.action(itemsList.get(i).getSlug(), "approve", i);
+
+
+            }
+        });
+
+
+        myViewHolder.deleteHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragment.action(itemsList.get(i).getSlug(), "delete", i);
+
+            }
+        });
+
+
+        myViewHolder.rejectHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragment.action(itemsList.get(i).getSlug(), "reject", i);
+            }
+        });
+
     }
 
 
@@ -107,10 +157,10 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView userNameView, timeView, statusView, likeCountView, commentCountView;
-        ImageView userImage, likeIcon, commentIcon, menuIcon, postImage;
+        TextView userNameView, timeView, statusView;
+        ImageView userImage, postImage;
         View view;
-        LinearLayout likeHolder, commentHolder;
+        LinearLayout deleteHolder, rejectHolder, approveHolder;
         public MyViewHolder(final View itemView) {
             super(itemView);
 
@@ -118,16 +168,19 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
             timeView = itemView.findViewById(R.id.date);
             statusView = itemView.findViewById(R.id.text);
 
-
             userImage = itemView.findViewById(R.id.picture);
             postImage = itemView.findViewById(R.id.postImage);
 
-
+            deleteHolder = itemView.findViewById(R.id.deleteHolder);
+            rejectHolder = itemView.findViewById(R.id.rejectHolder);
+            approveHolder = itemView.findViewById(R.id.approveHolder);
 
 
             view = itemView;
         }
     }
+
+
 
 
 

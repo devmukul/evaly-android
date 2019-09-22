@@ -52,6 +52,8 @@ public class NewsfeedNotification extends AppCompatActivity {
 
     int page = 1;
 
+    RequestQueue queue;
+
 
     // newfeed scroller
     private boolean loading = true;
@@ -67,6 +69,8 @@ public class NewsfeedNotification extends AppCompatActivity {
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle("Newsfeed Notifications");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        queue= Volley.newRequestQueue(this);
 
         recyclerView=findViewById(R.id.recycle);
         not=findViewById(R.id.empty);
@@ -180,7 +184,7 @@ public class NewsfeedNotification extends AppCompatActivity {
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(this);
+         
         request.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
@@ -233,7 +237,7 @@ public class NewsfeedNotification extends AppCompatActivity {
                 return headers;
             }
         };
-        RequestQueue queue = Volley.newRequestQueue(this);
+         
         queue.add(request);
 
 

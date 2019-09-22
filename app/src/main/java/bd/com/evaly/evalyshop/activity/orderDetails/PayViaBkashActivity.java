@@ -281,7 +281,7 @@ public class PayViaBkashActivity extends BaseActivity {
 
 
 
-        webView.loadUrl("file:///android_asset/bkash.html");
+        webView.loadUrl("https://beta.evaly.com.bd/bkash_payment?invoice_no=&amount=10&token=");
 
 
 

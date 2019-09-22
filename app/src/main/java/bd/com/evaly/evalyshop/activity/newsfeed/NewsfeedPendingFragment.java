@@ -127,7 +127,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         currentPage = 1;
         swipeLayout.setRefreshing(false);
 
-
         getPosts(currentPage);
 
         try {
@@ -137,8 +136,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         } catch (Exception e){
 
         }
-
-
 
     }
 
@@ -180,7 +177,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
         adapter = new NewsfeedPendingAdapter(itemsList, context, this);
 
-
         recyclerView.setAdapter(adapter);
 
         currentPage = 1;
@@ -210,34 +206,52 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
         getPosts(currentPage);
 
-
     }
 
 
 
+    public void action(String id, final String type, int position){
 
-    public void deletePost(String id, final String type){
+        String url = UrlUtils.BASE_URL_NEWSFEED+"posts/"+id;
+
+        JSONObject parameter = new JSONObject();
+        JSONObject parameterPost = new JSONObject();
+
+        try {
+
+            if (type.equals("reject"))
+                parameter.put("status","archieved");
+            else if (type.equals("approve"))
+                parameter.put("status","active");
 
 
-        String url;
+            parameterPost.put("post", parameter);
 
-        if (type.equals("post"))
-            url = UrlUtils.BASE_URL_NEWSFEED+"posts/"+id;
-        else
-            url = UrlUtils.BASE_URL_NEWSFEED+"comments/"+id;
 
-        StringRequest request = new StringRequest(Request.Method.DELETE, url,new Response.Listener<String>() {
+        } catch (Exception e){
+
+        }
+
+
+        itemsList.remove(position);
+
+        adapter.notifyItemRemoved(position);
+
+        Log.d("json url", url);
+        Log.d("json payload", parameterPost.toString());
+
+        JsonObjectRequest request = new JsonObjectRequest((type.equals("delete")) ? Request.Method.DELETE : Request.Method.PUT, url, parameterPost, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(String response) {
-
+            public void onResponse(JSONObject response) {
 
 
             }
+
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
-                Toast.makeText(context, "Couldn't delete post", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, "Couldn't delete post", Toast.LENGTH_SHORT).show();
 
             }
         }) {
@@ -250,6 +264,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
                 return headers;
             }
         };
+
         RequestQueue queue= Volley.newRequestQueue(context);
         request.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -257,6 +272,10 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
         queue.add(request);
     }
+
+
+
+
 
 
 
