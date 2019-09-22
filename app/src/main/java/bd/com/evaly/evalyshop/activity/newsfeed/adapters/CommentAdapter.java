@@ -56,7 +56,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         if (repliesList.size() > 0){
             if (repliesList.size() == 1){
                 myViewHolder.replyMoreCount.setVisibility(View.GONE);
-            }else {
+                myViewHolder.replyHolder.setVisibility(View.VISIBLE);
+            } else {
                 myViewHolder.replyMoreCount.setVisibility(View.VISIBLE);
                 myViewHolder.replyHolder.setVisibility(View.VISIBLE);
 
@@ -66,6 +67,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                     String smText = "Show previous " +(repliesList.size()-1)+ " more replies";
                     myViewHolder.replyMoreCount.setText(smText);
                 }
+
             }
 
             myViewHolder.reply1Name.setText(repliesList.get(0).getAuthor().getFullName());
@@ -79,8 +81,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                     .placeholder(R.drawable.user_image)
                     .into(myViewHolder.reply1Image);
 
-        } else
-        {
+        } else {
+
             myViewHolder.replyMoreCount.setVisibility(View.GONE);
             myViewHolder.replyHolder.setVisibility(View.GONE);
 

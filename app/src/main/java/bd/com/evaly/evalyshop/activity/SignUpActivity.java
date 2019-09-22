@@ -127,6 +127,14 @@ public class SignUpActivity extends BaseActivity {
                 if (response.code() == 200){
                     Toast.makeText(getApplicationContext(), "This mobile number has already been used", Toast.LENGTH_LONG).show();
                 }else if (response.code() ==201){
+
+
+                    TextView ref = findViewById(R.id.referral);
+                    String refText = ref.getText().toString();
+                    if (!refText.equals(""))
+                        userDetails.setRef(refText);
+
+
                     Intent il = new Intent(SignUpActivity.this, PasswordActivity.class);
                     il.putExtra("phone", phoneNumber.getText().toString());
                     il.putExtra("type", "signup");
