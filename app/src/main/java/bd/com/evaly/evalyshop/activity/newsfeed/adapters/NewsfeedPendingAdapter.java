@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedPendingFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -112,17 +114,23 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
                     .fitCenter()
                     .apply(new RequestOptions().override(900, 900))
                     .into(myViewHolder.postImage);
+
+            myViewHolder.postImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent = new Intent(context, ImagePreview.class);
+                    intent.putExtra("image", itemsList.get(i).getAttachment());
+                    context.startActivity(intent);
+                }
+            });
         }
 
 
         myViewHolder.approveHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 fragment.action(itemsList.get(i).getSlug(), "approve", i);
-
-
             }
         });
 
