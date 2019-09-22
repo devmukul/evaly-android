@@ -98,8 +98,6 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
                         .into(holder.imageViewAndroid);
 
 
-        Logger.d(productsList.get(position).getDiscountedPrice());
-
 
         if((productsList.get(position).getPriceMin()==0) || (productsList.get(position).getPriceMax()==0)){
 
@@ -115,11 +113,8 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
                 holder.price.setText("৳ " +productsList.get(position).getDiscountedPrice());
 
-                Log.d("json url", productsList.get(position).getDiscountedPrice()+"");
 
             }
-
-
 
 
         } else {

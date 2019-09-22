@@ -103,7 +103,7 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
                 String category = "";
 
                 if(tv.getText().toString().contains("Bags")){
-                    category = "bags-luggage-e5712f725";
+                    category = "bags-luggage-966bc8aac";
                 }else if(tv.getText().toString().contains("Beauty")){
                     category = "beauty-bodycare-172ec0d98";
                 }else if(tv.getText().toString().contains("Books")){
