@@ -237,12 +237,12 @@ public class PayViaBkashActivity extends BaseActivity {
 
 
 
-                webView.evaluateJavascript(javascript, new ValueCallback<String>() {
-                    @Override
-                    public void onReceiveValue(String s) {
-                        Log.d("LogName", s); // Prints: {"var1":"variable1","var2":"variable2"}
-                    }
-                });
+//                webView.evaluateJavascript(javascript, new ValueCallback<String>() {
+//                    @Override
+//                    public void onReceiveValue(String s) {
+//                        Log.d("LogName", s); // Prints: {"var1":"variable1","var2":"variable2"}
+//                    }
+//                });
 
 
 
@@ -281,8 +281,7 @@ public class PayViaBkashActivity extends BaseActivity {
 
 
 
-        webView.loadUrl("https://beta.evaly.com.bd/bkash_payment?invoice_no=&amount=10&token=");
-
+        webView.loadUrl("https://evaly.com.bd/bkash_payment?invoice_no="+context_reference+"&amount="+amount+"&token="+userDetails.getToken());
 
 
 

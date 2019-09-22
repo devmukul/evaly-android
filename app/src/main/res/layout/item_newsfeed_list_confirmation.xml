@@ -96,6 +96,7 @@
         android:layout_below="@id/postImage"
         android:gravity="right"
         android:orientation="horizontal"
+        android:paddingTop="3dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingBottom="5dp">

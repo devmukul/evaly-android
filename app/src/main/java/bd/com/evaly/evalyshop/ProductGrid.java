@@ -293,10 +293,10 @@ public class ProductGrid {
 
             }
         });
-        if (currentPage > 2) {
-            request.setShouldCache(false);
+
+        request.setShouldCache(false);
             //rq.getCache().clear();
-        }
+
         rq.add(request);
     }
 
@@ -399,10 +399,11 @@ public class ProductGrid {
 
             }
         });
-        if (currentPage > 2) {
-            request.setShouldCache(false);
+
+        request.setShouldCache(false);
+
             //rq.getCache().clear();
-        }
+
         rq.add(request);
     }
 
@@ -500,211 +501,12 @@ public class ProductGrid {
 
             }
         });
-        if (currentPage > 2) {
-            request.setShouldCache(false);
+        request.setShouldCache(false);
             //rq.getCache().clear();
-        }
+
         rq.add(request);
     }
 
-//    public void getCategoryProductsWithPrice(String slug, int currentPage) {
-//        current = currentPage;
-//        progressBar.setVisibility(View.VISIBLE);
-//        isLoading = true;
-//        String url = "https://api-prod.evaly.com.bd/api/product/?shadow_category__slug=" + slug + "&page=" + currentPage;
-//        Log.d("json", url);
-//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
-//                response -> {
-//                    try {
-//                        Log.d("product_json2", response.toString());
-//                        JSONArray jsonArray = response.getJSONArray("results");
-//                        for (int i = 0; i < jsonArray.length(); i++) {
-//                            JSONObject response2 = jsonArray.getJSONObject(i);
-//                            JSONObject category = response2.getJSONObject("category");
-//                            JSONObject brand = response2.getJSONObject("brand");
-//                            JSONObject price = response2.getJSONObject("price_range");
-//                            if (response2.getBoolean("approved")) {
-//                                int priceMin = 0, priceMax = 0;
-//                                try {
-//                                    priceMin = price.getInt("price__min");
-//                                    priceMax = price.getInt("price__max");
-//                                } catch (Exception e) {
-//
-//                                }
-//                                ProductListItem item = new ProductListItem();
-//                                item.setThumbnailSM(response2.getString("thumbnail_sm"));
-//                                item.setSlug(response2.getString("slug"));
-//                                item.setName(response2.getString("name"));
-//                                item.setCategoryName(category.getString("name"));
-//                                item.setCategorySlug(category.getString("slug"));
-//                                item.setBrandName(brand.getString("name"));
-//                                item.setBrandSlug(brand.getString("slug"));
-//                                item.setPriceMax(priceMax);
-//                                item.setPriceMin(priceMin);
-//                                if (minPrice == 0) {
-//                                    if (priceMin <= maxPrice) {
-//                                        products.add(item);
-//                                        adapterViewAndroid.notifyItemInserted(products.size());
-//                                    }
-//                                } else if (maxPrice == 0) {
-//                                    if (priceMin >= minPrice) {
-//                                        products.add(item);
-//                                        adapterViewAndroid.notifyItemInserted(products.size());
-//                                    }
-//                                } else {
-//                                    if (priceMin >= minPrice && priceMin <= maxPrice) {
-//                                        products.add(item);
-//                                        adapterViewAndroid.notifyItemInserted(products.size());
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        isLoading = false;
-//                        progressBar.setVisibility(View.INVISIBLE);
-//                        if (listener != null)
-//                            listener.onSuccess(products.size());
-//                        if (products.size() < 10) {
-//                            progressBar.setVisibility(View.GONE);
-//                            getCategoryProductsWithPrice(slug, ++current);
-//                        }
-//                        //Log.d("json","dataset changed");
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        progressBar.setVisibility(View.GONE);
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                progressBar.setVisibility(View.GONE);
-//
-//                if (listener != null)
-//                    listener.onSuccess(0);
-//            }
-//        });
-//        request.setRetryPolicy(new RetryPolicy() {
-//            @Override
-//            public int getCurrentTimeout() {
-//                return 50000;
-//            }
-//
-//            @Override
-//            public int getCurrentRetryCount() {
-//                return 50000;
-//            }
-//
-//            @Override
-//            public void retry(VolleyError error) throws VolleyError {
-//
-//            }
-//        });
-//        if (currentPage > 2) {
-//            request.setShouldCache(false);
-//            //rq.getCache().clear();
-//        }
-//        rq.add(request);
-//    }
-
-//    public void getSortedCategoryProducts(String slug, int currentPage, int type) {
-//        current = currentPage;
-//        progressBar.setVisibility(View.VISIBLE);
-//
-//
-//        isLoading = true;
-//
-//        String url = "https://api-prod.evaly.com.bd/api/product/?shadow_category__slug=" + slug + "&page=" + currentPage;
-//        Log.d("json", url);
-//        products.clear();
-//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
-//                response -> {
-//                    try {
-//                        Log.d("json", response.toString());
-//                        JSONArray jsonArray = response.getJSONArray("results");
-//                        for (int i = 0; i < jsonArray.length(); i++) {
-//                            JSONObject response2 = jsonArray.getJSONObject(i);
-//                            JSONObject category = response2.getJSONObject("category");
-//                            JSONObject brand = response2.getJSONObject("brand");
-//                            JSONObject price = response2.getJSONObject("price_range");
-//                            if (response2.getBoolean("approved")) {
-//                                int priceMin = 0, priceMax = 0;
-//                                try {
-//                                    priceMin = price.getInt("price__min");
-//                                    priceMax = price.getInt("price__max");
-//                                } catch (Exception e) {
-//
-//                                }
-//                                ProductListItem item = new ProductListItem();
-//                                item.setThumbnailSM(response2.getString("thumbnail_sm"));
-//                                item.setSlug(response2.getString("slug"));
-//                                item.setName(response2.getString("name"));
-//                                item.setCategoryName(category.getString("name"));
-//                                item.setCategorySlug(category.getString("slug"));
-//                                item.setBrandName(brand.getString("name"));
-//                                item.setBrandSlug(brand.getString("slug"));
-//                                item.setPriceMax(priceMax);
-//                                item.setPriceMin(priceMin);
-//                                products.add(item);
-//
-//                                adapterViewAndroid.notifyItemInserted(products.size());
-//                            }
-//                        }
-//                        Collections.sort(products, new Comparator<ProductListItem>() {
-//                            @Override
-//                            public int compare(ProductListItem lhs, ProductListItem rhs) {
-//                                if (lhs.getPriceMin() > rhs.getPriceMin()) {
-//                                    return lhs.getPriceMin();
-//                                } else {
-//                                    return rhs.getPriceMin();
-//                                }
-//                            }
-//                        });
-//
-//                        if (listener != null)
-//                            listener.onSuccess(products.size());
-//
-//                        isLoading = false;
-//
-//
-//                        progressBar.setVisibility(View.INVISIBLE);
-//                        if (products.size() < 10)
-//                            progressBar.setVisibility(View.GONE);
-//                        //Log.d("json","dataset changed");
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        progressBar.setVisibility(View.GONE);
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                progressBar.setVisibility(View.GONE);
-//
-//                if (listener != null)
-//                    listener.onSuccess(0);
-//            }
-//        });
-//
-//
-//        request.setRetryPolicy(new RetryPolicy() {
-//            @Override
-//            public int getCurrentTimeout() {
-//                return 50000;
-//            }
-//
-//            @Override
-//            public int getCurrentRetryCount() {
-//                return 50000;
-//            }
-//
-//            @Override
-//            public void retry(VolleyError error) throws VolleyError {
-//
-//            }
-//        });
-//        if (currentPage > 2) {
-//            request.setShouldCache(false);
-//            //rq.getCache().clear();
-//        }
-//        rq.add(request);
-//    }
 
     public void sortByPriceHigh() {
         Collections.sort(products, new Comparator<ProductListItem>() {

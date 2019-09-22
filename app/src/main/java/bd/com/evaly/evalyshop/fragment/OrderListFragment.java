@@ -261,11 +261,7 @@ public class OrderListFragment extends Fragment {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                headers.put("Host", "api.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                //headers.put("Referer", "https://evaly.com.bd/order/my-orders?invoice_no=EVL668365508");
-                //headers.put("User-Agent", userAgent);
+
                 return headers;
             }
         };

@@ -227,8 +227,6 @@ public class TabsFragment extends Fragment {
                 }
             }, 300);
 
-
-
             search.setHint("Search categories");
             showMore.setVisibility(View.GONE);
             search.setVisibility(View.VISIBLE);
@@ -385,7 +383,6 @@ public class TabsFragment extends Fragment {
                 getSubCategories();
             }
         });
-
         // rq.getCache().clear();
         rq.add(getRequest);
     }
@@ -452,11 +449,10 @@ public class TabsFragment extends Fragment {
 
             }
         });
-        if(counter>1) {
 
-            request.setShouldCache(false);
-            rq.getCache().clear();
-        }
+        request.setShouldCache(false);
+
+
         rq.add(request);
     }
 
@@ -524,10 +520,9 @@ public class TabsFragment extends Fragment {
             }
         });
 
-        if(counter>1) {
-            rq.getCache().clear();
-            request.setShouldCache(false);
-        }
+
+        request.setShouldCache(false);
+
         rq.add(request);
     }
 

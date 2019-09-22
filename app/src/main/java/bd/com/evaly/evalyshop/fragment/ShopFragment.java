@@ -556,6 +556,9 @@ public class ShopFragment extends Fragment {
 
             }
         });
+
+        request.setShouldCache(false);
+
         rq.add(request);
     }
 
@@ -646,12 +649,8 @@ public class ShopFragment extends Fragment {
                             recyclerView.setLayoutManager(mLayoutManager);
                         }
 
-
-
                         if(itemList.size() < 1)
                             ((TextView)view.findViewById(R.id.catTitle)).setText(" ");
-
-
 
                         try {
 
@@ -660,12 +659,8 @@ public class ShopFragment extends Fragment {
 
                         }
 
-
                         shimmer.setVisibility(View.GONE);
-
-
                         loading = true;
-
 
                     } catch (JSONException e) {
                         e.printStackTrace();
