@@ -449,9 +449,11 @@ public class NewsfeedActivity extends AppCompatActivity {
         };
 
         RequestQueue queue= Volley.newRequestQueue(context);
+
         request.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         queue.add(request);
     }
 
