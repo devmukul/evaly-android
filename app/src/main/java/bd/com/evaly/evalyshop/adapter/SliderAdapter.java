@@ -108,27 +108,29 @@ public class SliderAdapter extends PagerAdapter {
 
                 if (itemList.get(position).getUrl().contains("evaly.com.bd/shops")) {
 
-
                         String[] ar = itemList.get(position).getUrl().split("/shops/");
 
-                        String slug = ar[1];
+                        if (ar.length > 1) {
 
+                            String slug = ar[1];
+                            Fragment fragment3 = new ShopFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("type", 1);
+                            bundle.putString("shop_name", itemList.get(position).getName());
+                            bundle.putString("shop_slug", slug);
+                            bundle.putString("category", "root");
 
-                        Fragment fragment3 = new ShopFragment();
+                            fragment3.setArguments(bundle);
+                            ft.setCustomAnimations(R.animator.slide_in_left, R.animator.abc_popup_exit, 0, 0);
+                            ft.replace(R.id.fragment_container, fragment3, itemList.get(position).getName());
+                            ft.addToBackStack(itemList.get(position).getName());
+                            ft.commit();
 
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("type", 1);
-                        bundle.putString("shop_name", itemList.get(position).getName());
-                        bundle.putString("shop_slug", slug);
-                        bundle.putString("category", "root");
+                        } else {
 
-                        fragment3.setArguments(bundle);
+                            Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
 
-                        ft.setCustomAnimations(R.animator.slide_in_left, R.animator.abc_popup_exit, 0, 0);
-                        ft.replace(R.id.fragment_container, fragment3, itemList.get(position).getName());
-                        ft.addToBackStack(itemList.get(position).getName());
-                        ft.commit();
-
+                        }
 
 
                 } else {

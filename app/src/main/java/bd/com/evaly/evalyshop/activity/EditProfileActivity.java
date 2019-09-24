@@ -85,17 +85,8 @@ public class EditProfileActivity extends BaseActivity {
         getSupportActionBar().setTitle("Edit Personal Information");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         context = this;
-
         userDetails = new UserDetails(this);
-
-        try {
-            userAgent = WebSettings.getDefaultUserAgent(this);
-        } catch (Exception e) {
-            userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-        }
-
 
         firstname = findViewById(R.id.firstName);
         lastName = findViewById(R.id.lastName);
@@ -105,7 +96,6 @@ public class EditProfileActivity extends BaseActivity {
         address = findViewById(R.id.address);
         profilePic = findViewById(R.id.picture);
         setProfilePic();
-
 
         firstname.setText(userDetails.getFirstName());
         lastName.setText(userDetails.getLastName());
@@ -446,9 +436,6 @@ public class EditProfileActivity extends BaseActivity {
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
                 return headers;
             }
         };
@@ -487,10 +474,6 @@ public class EditProfileActivity extends BaseActivity {
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                // headers.put("Content-Length", data.length()+"");
                 return headers;
             }
         };
