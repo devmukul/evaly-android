@@ -352,7 +352,7 @@ public class ReviewsActivity extends AppCompatActivity {
             }
         });
         RequestQueue rq = Volley.newRequestQueue(this);
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -441,7 +441,7 @@ public class ReviewsActivity extends AppCompatActivity {
             }
         };
         RequestQueue queue= Volley.newRequestQueue(this);
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
@@ -522,7 +522,7 @@ public class ReviewsActivity extends AppCompatActivity {
             }
         };
         RequestQueue queue= Volley.newRequestQueue(this);
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
@@ -631,7 +631,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
 
         RequestQueue rq = Volley.newRequestQueue(this);
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

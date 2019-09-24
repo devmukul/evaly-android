@@ -534,7 +534,7 @@ public class ViewProductActivity extends BaseActivity {
             }
         });
         // RequestQueue rq = Volley.newRequestQueue(context);
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         request.setShouldCache(false);
@@ -779,7 +779,7 @@ public class ViewProductActivity extends BaseActivity {
             }
         });
         // RequestQueue rq = Volley.newRequestQueue(context);
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         request.setShouldCache(false);
@@ -990,7 +990,7 @@ public class ViewProductActivity extends BaseActivity {
                 error.printStackTrace();
             }
         });
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

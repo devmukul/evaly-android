@@ -750,7 +750,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -813,7 +813,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         };
         
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -887,7 +887,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         };
         
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -1001,7 +1001,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -1073,7 +1073,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -1268,7 +1268,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         };
         
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -1313,7 +1313,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         };
         
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);

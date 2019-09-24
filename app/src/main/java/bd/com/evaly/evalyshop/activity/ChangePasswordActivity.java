@@ -201,7 +201,7 @@ public class ChangePasswordActivity extends BaseActivity {
                         }
                     };
                     request.setShouldCache(false);
-                    request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                    request.setRetryPolicy(new DefaultRetryPolicy(50000,
                             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                     RequestQueue queue = Volley.newRequestQueue(ChangePasswordActivity.this);

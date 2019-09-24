@@ -188,7 +188,7 @@ public class TransactionHistory extends AppCompatActivity {
                 return headers;
             }
         };
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
@@ -229,7 +229,7 @@ public class TransactionHistory extends AppCompatActivity {
             }
         };
         request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);

@@ -370,7 +370,7 @@ public class TabsFragment extends Fragment {
 
 
         getRequest.setShouldCache(false);
-        getRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        getRequest.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         // rq.getCache().clear();
@@ -423,7 +423,7 @@ public class TabsFragment extends Fragment {
         });
 
 
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -480,7 +480,7 @@ public class TabsFragment extends Fragment {
         });
 
 
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

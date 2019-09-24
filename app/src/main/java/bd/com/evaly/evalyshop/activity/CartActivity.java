@@ -532,7 +532,7 @@ public class CartActivity extends BaseActivity {
 
         };
         RequestQueue queue= Volley.newRequestQueue(CartActivity.this);
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
