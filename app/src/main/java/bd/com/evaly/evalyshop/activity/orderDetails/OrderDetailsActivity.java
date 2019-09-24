@@ -289,13 +289,12 @@ public class OrderDetailsActivity extends BaseActivity {
                                     amountToPayView.setText(amountToPay+"");
                                     full_or_partial.setText("Full Payment");
 
-                                    if (shopGroup.contains("grandbranddays")) {
-                                        cards.setVisibility(View.GONE);
-                                        cardText.setVisibility(View.GONE);
+                                    // turn off ssl commerz for grand days
 
-
-                                    }
-
+//                                    if (shopGroup.contains("grandbranddays")) {
+//                                        cards.setVisibility(View.GONE);
+//                                        cardText.setVisibility(View.GONE);
+//                                    }
 
                                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
