@@ -113,6 +113,9 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
                 holder.price.setText("৳ " +productsList.get(position).getDiscountedPrice());
 
+            } else {
+                holder.priceDiscount.setVisibility(View.GONE);
+                holder.price.setText("৳ " +productsList.get(position).getPriceMin());
 
             }
 

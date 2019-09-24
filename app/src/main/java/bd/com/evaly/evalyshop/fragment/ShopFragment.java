@@ -305,11 +305,7 @@ public class ShopFragment extends Fragment {
 
                         if(response.getInt("count")>0){
                             productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, "", 1, view.findViewById(R.id.progressBar));
-
-
                             try {
-
-
                                 followBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -317,13 +313,8 @@ public class ShopFragment extends Fragment {
                                     }
                                 });
 
-
-
                             }catch (Exception e){
-
                             }
-
-
 
                             try {
                                 name.setText(jsonObject.getString("name"));
@@ -447,8 +438,6 @@ public class ShopFragment extends Fragment {
                                     }
                                 });
 
-
-
                                 share.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -488,7 +477,6 @@ public class ShopFragment extends Fragment {
                             }
 
                         }else {
-
 
                             ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
                             LinearLayout noItem = view.findViewById(R.id.noItem);
@@ -627,7 +615,6 @@ public class ShopFragment extends Fragment {
         rq.getCache().clear();
         rq.add(request);
 
-
     }
 
 
@@ -644,7 +631,6 @@ public class ShopFragment extends Fragment {
                         Log.d("category_brands",jsonArray.toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
-
                             TabsItem tabsItem = new TabsItem();
                             tabsItem.setTitle(ob.getString("category_name"));
                             tabsItem.setImage(ob.getString("category_image"));
@@ -652,7 +638,6 @@ public class ShopFragment extends Fragment {
                             tabsItem.setCategory(slug);
                             itemList.add(tabsItem);
                             adapter.notifyItemInserted(itemList.size());
-
                         }
 
                         if(itemList.size()<4) {
