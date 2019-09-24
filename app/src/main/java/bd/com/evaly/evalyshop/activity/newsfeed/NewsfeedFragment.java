@@ -13,6 +13,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -604,20 +605,28 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
         TextView authorNameView = commentDialog.findViewById(R.id.user_name);
+        TextView timeView = commentDialog.findViewById(R.id.date);
+
+        String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", date));
 
         authorNameView.setText(authorName);
+
 
         if (isAdmin) {
             Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
             img.setBounds(0, 0, 50, 50);
             authorNameView.setCompoundDrawables(null, null, img, null);
             authorNameView.setCompoundDrawablePadding(15);
-        }else {
+            timeView.setText(Html.fromHtml("<b>Admin</b> · " + timeAgo));
+
+        } else  {
             authorNameView.setCompoundDrawables(null, null, null, null);
+
+            timeView.setText(timeAgo);
         }
 
+
         ((TextView) commentDialog.findViewById(R.id.text)).setText(postText);
-        ((TextView) commentDialog.findViewById(R.id.date)).setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", date)));
         ImageView userPic = commentDialog.findViewById(R.id.picture);
         Glide.with(context)
                 .load(authorImage)

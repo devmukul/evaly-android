@@ -66,16 +66,29 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             myViewHolder.userNameView.setText("User");
 
 
+        String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt()));
+
+
         if (itemsList.get(i).getIsAdmin()) {
             Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
             img.setBounds(0, 0, 50, 50);
             myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
             myViewHolder.userNameView.setCompoundDrawablePadding(15);
+
+
+            myViewHolder.timeView.setText(Html.fromHtml("<b>Admin</b> · " + timeAgo));
+
         } else  {
             myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
+
+            myViewHolder.timeView.setText(timeAgo);
         }
 
-        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt())));
+
+
+
+
+
         myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
