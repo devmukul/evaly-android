@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -20,6 +21,7 @@ import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.util.List;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.EvalyStoreActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.models.BannerItem;
@@ -101,6 +103,19 @@ public class SliderAdapter extends PagerAdapter {
 
                     return;
                 }
+
+
+                if (itemList.get(position).getUrl().contains("shops-grand-brand-days")){
+
+                    Intent ni = new Intent(context, EvalyStoreActivity.class);
+                    ni.putExtra("title", "Grand Brand Days");
+                    ni.putExtra("slug", "grandbranddays");
+                    context.startActivity(ni);
+
+                    return;
+
+                }
+
 
                 if (itemList.get(position).getUrl().contains("evaly.com.bd/shops")) {
 
