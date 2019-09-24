@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +43,9 @@ public class EvalyStoreActivity extends AppCompatActivity {
     ViewDialog dialog;
     Button loadMore;
     boolean isLoading = false;
+
+    String title = "19.19 Shops";
+    String slug = "evaly1919";
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,12 +55,18 @@ public class EvalyStoreActivity extends AppCompatActivity {
         getSupportActionBar().setElevation(4f);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("19:19 Shops");
+        Intent intent = getIntent();
+
+        title = intent.getStringExtra("title");
+        slug = intent.getStringExtra("slug");
+
+
+
+        getSupportActionBar().setTitle(title);
 
         nestedSV = findViewById(R.id.sticky);
         progressBar = findViewById(R.id.progressBar);
         itemList=new ArrayList<>();
-
 
         adapter = new TabsAdapter(EvalyStoreActivity.this, this, itemList, 3);
         nestedSV = findViewById(R.id.sticky);
@@ -101,13 +111,13 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        String url = UrlUtils.BASE_URL+"shop-groups/"+slug+"/";
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, UrlUtils.OFFER_19_19,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url ,(String) null,
                 response -> {
                     try {
 
                         isLoading = false;
-
                         JSONArray jsonArray = response.getJSONArray("shops");
                         boolean b=false;
                         for (int i = 0; i < jsonArray.length(); i++) {
@@ -119,7 +129,6 @@ public class EvalyStoreActivity extends AppCompatActivity {
                                 tabsItem.setCategory("root");
                                 itemList.add(tabsItem);
                                 adapter.notifyItemInserted(itemList.size());
-
                         }
 
                        // dialog.hideDialog();

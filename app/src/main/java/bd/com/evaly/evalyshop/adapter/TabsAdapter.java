@@ -102,6 +102,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", itemlist.get(position).getType());
                     bundle.putString("shop_name", itemlist.get(position).getTitle());
+                    bundle.putString("logo_image", itemlist.get(position).getImage());
                     bundle.putString("shop_slug", itemlist.get(position).getSlug());
                     bundle.putString("category", itemlist.get(position).getCategory());
                     fragment3.setArguments(bundle);

@@ -190,6 +190,27 @@ public class ShopFragment extends Fragment {
 
         name.setText(title);
 
+
+        if (getArguments().getString("logo_image") != null){
+            Glide.with(context)
+                    .load(getArguments().getString("logo_image"))
+                    .listener(new RequestListener<Drawable>() {
+                                  @Override
+                                  public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                      return false;
+                                  }
+                                  @Override
+                                  public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                      Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
+                                      logo.setImageBitmap(bitmap);
+                                      return true;
+                                  }
+                              }
+                    )
+                    .into(logo);
+        }
+
+
         itemList = new ArrayList<>();
 
         // type 4 means shop's category
@@ -265,8 +286,6 @@ public class ShopFragment extends Fragment {
 
     public void getShopProductCount(){
 
-
-
         String url  = UrlUtils.BASE_URL+"public/shops/items/"+slug+"/?page="+currentPage;
 
         Log.d("json url",url);
@@ -277,15 +296,12 @@ public class ShopFragment extends Fragment {
 
                         JSONObject data = response.getJSONObject("data");
                         JSONObject jsonObject = data.getJSONObject("shop");
-
                         boolean subscribed = data.getBoolean("subscribed");
-
 
                         if (subscribed)
                             followText.setText("Unfollow");
                         else
                             followText.setText("Follow");
-
 
                         if(response.getInt("count")>0){
                             productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, "", 1, view.findViewById(R.id.progressBar));
@@ -451,9 +467,6 @@ public class ShopFragment extends Fragment {
 
                                     }
                                 });
-
-
-
 
                                 reviews.setOnClickListener(new View.OnClickListener() {
                                     @Override

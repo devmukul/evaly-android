@@ -94,13 +94,7 @@ public class HomeFragment extends Fragment {
         activity = (MainActivity) getActivity();
         context = getContext();
         rq = Volley.newRequestQueue(context);
-        evalyStore=view.findViewById(R.id.evaly_store);
-        evalyStore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, EvalyStoreActivity.class));
-            }
-        });
+
 
 //        Random Dice = new Random();
 //        int n = Dice.nextInt(Data.homeRandomCategory.length);
@@ -147,12 +141,28 @@ public class HomeFragment extends Fragment {
 
         viewPager.setOffscreenPageLimit(1);
 
+
+        evalyStore=view.findViewById(R.id.evaly_store);
+        evalyStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent ni = new Intent(context, EvalyStoreActivity.class);
+                ni.putExtra("title", "19.19 Shops");
+                ni.putExtra("slug", "evaly1919");
+                startActivity(ni);
+            }
+        });
+
+
         voucher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(context, VoucherActivity.class));
-
+                Intent ni = new Intent(context, EvalyStoreActivity.class);
+                ni.putExtra("title", "Grand Brand Days");
+                ni.putExtra("slug", "grandbranddays");
+                startActivity(ni);
 
             }
         });
@@ -211,34 +221,23 @@ public class HomeFragment extends Fragment {
         NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
 
         if (nestedSV != null) {
-
             nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
                 @Override
                 public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                     String TAG = "nested_sync";
-
                     if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
                         Log.i(TAG, "BOTTOM SCROLL");
-
                         try {
-
                             ((ProgressBar) view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-
                             productGrid.loadNextPage();
 
                         } catch (Exception e)
                         {
                             Log.e("load more product", e.toString());
                         }
-
-
-
-                    }
-                }
+                    } }
             });
         }
-
-
 
 
         try {
@@ -246,7 +245,6 @@ public class HomeFragment extends Fragment {
         }catch (Exception e){
             Log.e("exception", e.toString());
         }
-
 
 
         TabsFragment categoryFragment = new TabsFragment();

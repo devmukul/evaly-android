@@ -889,14 +889,6 @@ public class GlobalSearchActivity extends BaseActivity {
 
                         }
 
-
-
-
-
-
-
-
-
                         progressBar.setVisibility(View.INVISIBLE);
                         try {
 
@@ -981,7 +973,7 @@ public class GlobalSearchActivity extends BaseActivity {
                                 itemList.add(tabsItem);
 
                                 adapter.notifyItemInserted(itemList.size());
-                            Log.d("json shop item", ob.getString("shop_name"));
+
                         }
                         if(page == 1)
                             loadNextShops();
