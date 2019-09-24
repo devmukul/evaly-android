@@ -105,6 +105,8 @@ public class OrderDetailsActivity extends BaseActivity {
     Context context;
     RequestQueue queue;
 
+    String shopGroup = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,11 +169,9 @@ public class OrderDetailsActivity extends BaseActivity {
         amountToPayView = findViewById(R.id.amountPay);
         bkash = findViewById(R.id.bkash);
         cards = findViewById(R.id.card);
+        final TextView cardText = findViewById(R.id.gatewayText);
 
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-
-
 
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -272,9 +272,6 @@ public class OrderDetailsActivity extends BaseActivity {
                             public void onClick(DialogInterface dialog, int whichButton) {
 
                                 double userBalance = Double.parseDouble(userDetails.getBalance());
-
-
-
                                 if (total_amount <= userBalance){
 
                                     double amountToPay = total_amount-paid_amount;
@@ -291,6 +288,14 @@ public class OrderDetailsActivity extends BaseActivity {
 
                                     amountToPayView.setText(amountToPay+"");
                                     full_or_partial.setText("Full Payment");
+
+                                    if (shopGroup.contains("grandbranddays")) {
+                                        cards.setVisibility(View.GONE);
+                                        cardText.setVisibility(View.GONE);
+
+
+                                    }
+
 
                                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
@@ -332,10 +337,12 @@ public class OrderDetailsActivity extends BaseActivity {
             }
         });
 
+
+
+
         cards.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 double amToPay = Double.parseDouble(amountToPayView.getText().toString());
 
@@ -382,12 +389,10 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-
                 if (amount.getText().toString().equals("")){
                     Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
 
                 double partial_amount = Double.parseDouble(amount.getText().toString());
 
@@ -404,10 +409,7 @@ public class OrderDetailsActivity extends BaseActivity {
                     Logger.d(partial_amount);
                 } else {
 
-
-
                     alertDialog.dismiss();
-
 
                     //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
                     double amountToPay = partial_amount - userBalance;
@@ -422,11 +424,7 @@ public class OrderDetailsActivity extends BaseActivity {
                         }
                     }, 500);
 
-
-
                 }
-
-
 
             }
         });
@@ -436,20 +434,10 @@ public class OrderDetailsActivity extends BaseActivity {
 
     @Override
     public void onResume(){
-
         super.onResume();
-
         Balance.update(this);
 
-
-
-
     }
-
-
-
-
-
 
 
     public void makePartialPayment(String invoice, String amount){
@@ -457,11 +445,7 @@ public class OrderDetailsActivity extends BaseActivity {
         String url="https://api.evaly.com.bd/pay/transactions/payment/order/";
 
         dialog.showDialog();
-
-
         Log.d("json order url", url);
-
-
         Toast.makeText(this,"Partial payment is processing", Toast.LENGTH_SHORT).show();
 
         JSONObject payload = new JSONObject();
@@ -516,7 +500,6 @@ public class OrderDetailsActivity extends BaseActivity {
                 Log.e("onErrorResponse", error.toString());
 
                 //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
-
                 shouldAddBalance();
 
             }
@@ -548,8 +531,6 @@ public class OrderDetailsActivity extends BaseActivity {
         String url = "https://api.evaly.com.bd/pay/pg";
 
         Log.d("json order url", url);
-
-
 
         JSONObject payload = new JSONObject();
 
@@ -603,9 +584,6 @@ public class OrderDetailsActivity extends BaseActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Content-Length", data.length()+"");
-
-                // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Origin", "https://evaly.com.bd");
                 headers.put("Referer", "https://evaly.com.bd/");
                 headers.put("User-Agent", userAgent);
@@ -618,22 +596,9 @@ public class OrderDetailsActivity extends BaseActivity {
 
         };
 
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
     }
 
@@ -642,14 +607,9 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
     public void shouldAddBalance(){
-
-
-
         Snackbar.make(findViewById(android.R.id.content), "Insufficient balance!", Snackbar.LENGTH_LONG)
                 .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
                 .show();
-
-
 
     }
 
@@ -660,9 +620,7 @@ public class OrderDetailsActivity extends BaseActivity {
         if (requestCode == 10002) {
 
             if (resultCode == Activity.RESULT_OK) {
-
                 getOrderDetails();
-
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // some stuff that will happen if there's no result
             }
@@ -700,7 +658,17 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 dialog.hideDialog();
 
-;
+                // brand grand days only full payment through bKash
+
+                try{
+
+                    if(response.getJSONArray("shop_groups").toString().contains("grandbranddays")){
+                        payParially.setVisibility(View.GONE);
+                        shopGroup = response.getJSONArray("shop_groups").toString();
+                    }
+
+                }catch(Exception e){}
+
 
                 try{
                     if(response.getString("order_status").toLowerCase().equals("pending")){
@@ -716,87 +684,96 @@ public class OrderDetailsActivity extends BaseActivity {
                     }else if(response.getString("order_status").toLowerCase().equals("delivered")){
                         indicator.setCurrentStep(6);
                     }
-                }catch(Exception e){
-
-                }
+                }catch(Exception e){}
 
 
                 try {
+                    orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getString("date")));
+                } catch (Exception e){
 
+                    // json exception check :p
                     try {
-                        orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getString("date")));
-                    } catch (Exception e){
-
                         orderDate.setText(response.getString("date"));
+                    } catch (Exception ee){}
+                }
 
 
+                try{
+
+                    if(response.getString("order_status").toLowerCase().equals("cancel")){
+                        StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);
+                        indicatorCancelled.setVisibility(View.VISIBLE);
+                        indicatorCancelled.setCurrentStep(6);
+                        indicator.setDoneIcon(getDrawable(R.drawable.ic_close_smallest));
+                        indicator.setVisibility(View.GONE);
+                        makePayment.setVisibility(View.GONE);
+                        payParially.setVisibility(View.GONE);
                     }
+                }catch(Exception e){}
 
-
-
-                    try{
-                        if(response.getString("order_status").toLowerCase().equals("cancel")){
-
-                            StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);
-                            indicatorCancelled.setVisibility(View.VISIBLE);
-
-                            indicatorCancelled.setCurrentStep(6);
-
-                            indicator.setDoneIcon(getDrawable(R.drawable.ic_close_smallest));
-
-                            indicator.setVisibility(View.GONE);
-                            makePayment.setVisibility(View.GONE);
-                            payParially.setVisibility(View.GONE);
-
-
-                        }
-                    }catch(Exception e){
-
+                try{
+                    if(response.getString("order_status").toLowerCase().equals("delivered")){
+                        makePayment.setVisibility(View.GONE);
+                        payParially.setVisibility(View.GONE);
                     }
+                }catch(Exception e) {}
+
+                try{
+                    username.setText(response.getJSONObject("customer").getString("first_name")+" "+response.getJSONObject("customer").getString("last_name"));
+                }catch(Exception e){}
+
+                try{
+                    userAddress.setText(response.getString("customer_address"));
+                }catch(Exception e){
+                    userAddress.setText("");
+                }
+
+                try{
+                    userNumber.setText(response.getString("contact_number"));
+                }catch(Exception e){}
+
+                try{
+                    totalPriceTextView.setText("৳ " + String.format("%.2f", Double.parseDouble(response.getString("total"))));
+                }catch(Exception e){}
+
+                try{
+                    paidAmountTextView.setText("৳ " + String.format("%.2f", Double.parseDouble(response.getString("paid_amount"))));
+                }catch(Exception e){}
+
+                try{
+                    duePriceTextView.setText("৳ " + String.format("%.2f",(Double.parseDouble(response.getString("total"))-Double.parseDouble(response.getString("paid_amount")))));
+                }catch(Exception e){}
 
 
-                    try{
-                        if(response.getString("order_status").toLowerCase().equals("delivered")){
-                            makePayment.setVisibility(View.GONE);
-                            payParially.setVisibility(View.GONE);
-                        }
-                    }catch(Exception e) {
-
+                try{
+                    if(response.getString("payment_method").equals("cod")){
+                        paymentMethods.setText("Cash on Delivery");
+                    }else{
+                        paymentMethods.setText(response.getString("Evaly Pay"));
                     }
+                }catch(Exception e){
+
+                }
+                try{
+                    shopName.setText(response.getJSONObject("shop").getString("name"));
+                }catch(Exception e){
+                    Log.d("shop_error",e.getMessage());
+                }
+
+                try{
+                    shopSlug=response.getJSONObject("shop").getString("slug");
+                }catch(Exception e){}
+
+                try{
+                    shopAddress.setText(response.getJSONObject("shop").getString("address"));
+                }catch(Exception e){}
+
+                try{
+                    shopnumber.setText(response.getJSONObject("shop").getString("contact_number"));
+                }catch(Exception e){}
 
 
-
-                        try{
-                            username.setText(response.getJSONObject("customer").getString("first_name")+" "+response.getJSONObject("customer").getString("last_name"));
-                        }catch(Exception e){
-
-                        }
-                        try{
-                            userAddress.setText(response.getString("customer_address"));
-                        }catch(Exception e){
-                            userAddress.setText("");
-                        }
-                        try{
-                            userNumber.setText(response.getString("contact_number"));
-                        }catch(Exception e){
-
-                        }
-                        try{
-                            totalPriceTextView.setText("৳ " + String.format("%.2f", Double.parseDouble(response.getString("total"))));
-                        }catch(Exception e){
-
-                        }
-                        try{
-                            paidAmountTextView.setText("৳ " + String.format("%.2f", Double.parseDouble(response.getString("paid_amount"))));
-                        }catch(Exception e){
-
-                        }
-                        try{
-                            duePriceTextView.setText("৳ " + String.format("%.2f",(Double.parseDouble(response.getString("total"))-Double.parseDouble(response.getString("paid_amount")))));
-                        }catch(Exception e){
-
-                        }
-
+                try {
                         total_amount = Double.parseDouble(response.getString("total"));
                         paid_amount = Double.parseDouble(response.getString("paid_amount"));
                         due_amount = total_amount-paid_amount;
@@ -807,42 +784,7 @@ public class OrderDetailsActivity extends BaseActivity {
                             payParially.setVisibility(View.GONE);
                         }
 
-
-                        try{
-                            if(response.getString("payment_method").equals("cod")){
-                                paymentMethods.setText("Cash on Delivery");
-                            }else{
-                                paymentMethods.setText(response.getString("Evaly Pay"));
-                            }
-                        }catch(Exception e){
-
-                        }
-                        try{
-                            shopName.setText(response.getJSONObject("shop").getString("name"));
-                        }catch(Exception e){
-                            Log.d("shop_error",e.getMessage());
-                        }
-                        try{
-                            shopSlug=response.getJSONObject("shop").getString("slug");
-                        }catch(Exception e){
-
-                        }
-                        try{
-                            shopAddress.setText(response.getJSONObject("shop").getString("address"));
-                        }catch(Exception e){
-
-                        }
-                        try{
-                            shopnumber.setText(response.getJSONObject("shop").getString("contact_number"));
-                        }catch(Exception e){
-
-                        }
                         //Log.d("product_image",ob.getJSONObject("shop_product_item").getJSONObject("product_item").getJSONObject("product").getString("thumbnail"));
-
-
-
-
-
 
                         JSONArray jsonArray = response.getJSONArray("order_items");
                         for(int i=0;i<jsonArray.length();i++){
@@ -851,12 +793,9 @@ public class OrderDetailsActivity extends BaseActivity {
 
                             String productVariation = "";
 
-
                             try{
 
-
                                 for(int j = 0; j < ob.getJSONArray("variations").length(); j++) {
-
 
                                     JSONObject varJ = ob.getJSONArray("variations").getJSONObject(j);
                                     String attr = varJ.getString("attribute");
@@ -872,7 +811,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
                                 Log.e("json error", e.toString());
                             }
-
 
                             try{
                                 orderDetailsProducts.add(
@@ -907,31 +845,13 @@ public class OrderDetailsActivity extends BaseActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-               // headers.put("Host", "api.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                //headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
                 return headers;
             }
         };
 
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
     }
 
@@ -973,31 +893,14 @@ public class OrderDetailsActivity extends BaseActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                headers.put("Host", "api.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
+
                 return headers;
             }
         };
 
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
     }
 
