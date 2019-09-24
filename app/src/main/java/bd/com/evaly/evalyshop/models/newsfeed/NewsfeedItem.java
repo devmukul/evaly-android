@@ -7,10 +7,19 @@ public class NewsfeedItem {
     private String authorUsername, authorFullName, authoeBio, authorImage, authorBio, body, createdAt, description, slug, title, updatedAt, tags, attachment, attachmentCompressed, type;
     private boolean authorFollowing, favorited;
     private int favoriteCount, commentsCount;
-
+    private boolean isAdmin;
 
     public NewsfeedItem(){
 
+    }
+
+
+    public boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
 

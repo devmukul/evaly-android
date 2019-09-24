@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -71,6 +72,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             }
 
             myViewHolder.reply1Name.setText(repliesList.get(0).getAuthor().getFullName());
+
+            if (repliesList.get(0).getAuthor().getIsAdmin()) {
+                Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
+                img.setBounds(0, 0, 50, 50);
+                myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
+                myViewHolder.userNameView.setCompoundDrawablePadding(15);
+            }else {
+                myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
+            }
+
+
             myViewHolder.reply1Text.setText(repliesList.get(0).getBody());
             Glide.with(context)
                     .load(repliesList.get(0).getAuthor().getCompressedImage())
@@ -93,6 +105,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         if (author.getFullName().trim().replaceAll("\\s+","").equals(""))
             myViewHolder.userNameView.setText("User");
+
+
+        if (author.getIsAdmin()) {
+            Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
+            img.setBounds(0, 0, 50, 50);
+            myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
+            myViewHolder.userNameView.setCompoundDrawablePadding(15);
+        } else {
+            myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
+        }
+
 
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", commentItem.getCreatedAt())));
         myViewHolder.statusView.setText(Html.fromHtml(commentItem.getBody()));
@@ -128,7 +151,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         View.OnClickListener openReply = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragment.openReplyBottomSheet(String.valueOf(commentItem.getId()), author.getFullName(), author.getCompressedImage(), commentItem.getBody(), commentItem.getCreatedAt(), commentItem.getAttachement());
+                fragment.openReplyBottomSheet(String.valueOf(commentItem.getId()), author.getFullName(),  author.getCompressedImage(), author.getIsAdmin(), commentItem.getBody(), commentItem.getCreatedAt(), commentItem.getAttachement());
             }
         };
 

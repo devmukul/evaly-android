@@ -533,7 +533,7 @@ public class NewsfeedActivity extends AppCompatActivity {
                 String status_id = data.getStringExtra("status_id");
                 String comment_id = data.getStringExtra("comment_id");
 
-                newsfeedFragment.openCommentBottomSheet(status_id,"","","","","");
+                newsfeedFragment.openCommentBottomSheet(status_id,"","", false,"","","");
 
         }
 

@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.activity.newsfeed;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -502,7 +503,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
-    public void openReplyBottomSheet(String id, String authorName, String authorImage, String postText, String date, Object postImage){
+    public void openReplyBottomSheet(String id, String authorName, String authorImage, boolean isAdmin, String postText, String date, Object postImage){
 
 
         if (replyDialog != null){
@@ -510,7 +511,19 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             currentReplyPage = 1;
             maxCountReply = -1;
 
-            ((TextView) replyDialog.findViewById(R.id.user_name)).setText(authorName);
+
+            TextView authorNameView = replyDialog.findViewById(R.id.user_name);
+
+            if (isAdmin) {
+                Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
+                img.setBounds(0, 0, 50, 50);
+                authorNameView.setCompoundDrawables(null, null, img, null);
+                authorNameView.setCompoundDrawablePadding(15);
+            }else {
+                authorNameView.setCompoundDrawables(null, null, null, null);
+            }
+
+            authorNameView.setText(authorName);
             ((TextView) replyDialog.findViewById(R.id.text)).setText(postText);
             ((TextView) replyDialog.findViewById(R.id.date)).setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", date)));
 
@@ -552,7 +565,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
-    public void openCommentBottomSheet(String id, String authorName, String authorImage, String postText, String date, String postImageUrl){
+    public void openCommentBottomSheet(String id, String authorName, String authorImage, boolean isAdmin, String postText, String date, String postImageUrl){
 
 
         if (commentDialog != null){
@@ -572,7 +585,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
             else {
 
-                initCommentHeader(authorName, authorImage, postText, date, postImageUrl);
+                initCommentHeader(authorName, authorImage, isAdmin, postText, date, postImageUrl);
                 loadComments(selectedPostID, false);
 
             }
@@ -587,10 +600,22 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-    public void initCommentHeader(String authorName, String authorImage, String postText, String date, String postImageUrl){
+    public void initCommentHeader(String authorName, String authorImage, boolean isAdmin, String postText, String date, String postImageUrl){
 
 
-        ((TextView) commentDialog.findViewById(R.id.user_name)).setText(authorName);
+        TextView authorNameView = commentDialog.findViewById(R.id.user_name);
+
+        authorNameView.setText(authorName);
+
+        if (isAdmin) {
+            Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
+            img.setBounds(0, 0, 50, 50);
+            authorNameView.setCompoundDrawables(null, null, img, null);
+            authorNameView.setCompoundDrawablePadding(15);
+        }else {
+            authorNameView.setCompoundDrawables(null, null, null, null);
+        }
+
         ((TextView) commentDialog.findViewById(R.id.text)).setText(postText);
         ((TextView) commentDialog.findViewById(R.id.date)).setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", date)));
         ImageView userPic = commentDialog.findViewById(R.id.picture);
@@ -1016,11 +1041,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                     String authorName = author.getString("full_name");
                     String authorImage = author.getString("compressed_image");
+                    boolean isAdmin = author.getBoolean("is_admin");
                     String postText = ob.getString("body");
                     String date = ob.getString("created_at");
                     String postImageUrl = ob.getString("attachment");
 
-                    initCommentHeader(authorName, authorImage, postText, date, postImageUrl);
+                    initCommentHeader(authorName, authorImage, isAdmin, postText, date, postImageUrl);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1094,15 +1120,16 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                         not.setVisibility(View.GONE);
                         for(int i=0;i<jsonArray.length();i++){
                             JSONObject ob = jsonArray.getJSONObject(i);
+
                             NewsfeedItem item = new NewsfeedItem();
                             JSONObject author = ob.getJSONObject("author");
                             item.setAuthorUsername(author.getString("username"));
                             item.setAuthorFullName(author.getString("full_name"));
-                            item.setAuthoeBio(author.getString("bio"));
                             item.setAuthorImage(author.getString("compressed_image"));
                             item.setAuthorFollowing(author.getBoolean("following"));
-
+                            item.setIsAdmin(author.getBoolean("is_admin"));
                             item.setBody(ob.getString("body"));
+
 
                             try {
                                 item.setAttachment(ob.getString("attachment"));
@@ -1156,7 +1183,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);

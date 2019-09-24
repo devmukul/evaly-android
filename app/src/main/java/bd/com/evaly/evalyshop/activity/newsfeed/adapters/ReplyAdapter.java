@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -49,6 +50,16 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
 
         myViewHolder.userNameView.setText(author.getFullName());
 
+        if (author.getIsAdmin()) {
+            Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
+            img.setBounds(0, 0, 55, 55);
+            myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
+            myViewHolder.userNameView.setCompoundDrawablePadding(15);
+        }else {
+            myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
+        }
+
+
         if (author.getFullName().trim().equals(""))
             myViewHolder.userNameView.setText("User");
 
@@ -91,8 +102,6 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
                 new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
-
-
                         if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
                             return false;
 
@@ -100,11 +109,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
                                 .setMessage("Are you sure you want to delete?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
                                     public void onClick(DialogInterface dialog, int whichButton) {
-
                                         fragment.deletePost(RepliesItem.getId()+"", "reply");
-
                                     }})
                                 .setNegativeButton("NO", null).show();
 

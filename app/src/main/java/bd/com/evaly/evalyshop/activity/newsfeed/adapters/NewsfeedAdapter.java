@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -59,16 +60,23 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull NewsfeedAdapter.MyViewHolder myViewHolder, int i) {
 
-
         myViewHolder.userNameView.setText(itemsList.get(i).getAuthorFullName());
 
         if (itemsList.get(i).getAuthorFullName().trim().equals(""))
             myViewHolder.userNameView.setText("User");
 
+
+        if (itemsList.get(i).getIsAdmin()) {
+            Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
+            img.setBounds(0, 0, 50, 50);
+            myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
+            myViewHolder.userNameView.setCompoundDrawablePadding(15);
+        } else  {
+            myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
+        }
+
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt())));
-
         myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
-
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
         Glide.with(context)
@@ -146,7 +154,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         View.OnClickListener commentOpener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragment.openCommentBottomSheet(itemsList.get(i).getSlug(), itemsList.get(i).getAuthorFullName(), itemsList.get(i).getAuthorImage(), itemsList.get(i).getBody(), itemsList.get(i).getCreatedAt(), itemsList.get(i).getAttachment());
+                fragment.openCommentBottomSheet(itemsList.get(i).getSlug(), itemsList.get(i).getAuthorFullName(), itemsList.get(i).getAuthorImage(), itemsList.get(i).getIsAdmin(), itemsList.get(i).getBody(), itemsList.get(i).getCreatedAt(), itemsList.get(i).getAttachment());
             }
         };
 
