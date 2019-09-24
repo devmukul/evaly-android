@@ -408,10 +408,8 @@ public class EditProfileActivity extends BaseActivity {
                     userInfo.put("address", address.getText().toString());
                     userInfo.put("profile_pic_url", userDetails.getProfilePicture());
 
-
                     userDetails.setFirstName(firstname.getText().toString());
                     userDetails.setLastName(lastName.getText().toString());
-
                     userDetails.setEmail(email.getText().toString());
                     userDetails.setPhone(phone.getText().toString());
                     userDetails.setJsonAddress(address.getText().toString());
@@ -446,20 +444,14 @@ public class EditProfileActivity extends BaseActivity {
     public void setUserData(JSONObject payload, ViewDialog alert) {
 
         String url = UrlUtils.BASE_URL+"user-info-update/";
-
         Log.d("json user info url", url);
-
-
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, payload, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
                 alert.hideDialog();
-
                 Log.d("json user info response", response.toString());
-
                 Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
-
 
             }
         }, new Response.ErrorListener() {

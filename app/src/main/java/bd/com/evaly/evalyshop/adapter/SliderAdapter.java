@@ -66,7 +66,6 @@ public class SliderAdapter extends PagerAdapter {
 
         ImageView imageView = view.findViewById(R.id.sliderImage);
 
-
         if(activity instanceof ViewProductActivity){
             Glide.with(context)
                     .asBitmap()
@@ -89,7 +88,6 @@ public class SliderAdapter extends PagerAdapter {
 
         ViewPager viewPager = (ViewPager) container;
         viewPager.addView(view, 0);
-        
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,8 +101,6 @@ public class SliderAdapter extends PagerAdapter {
 
                     return;
                 }
-
-
 
                 if (itemList.get(position).getUrl().contains("evaly.com.bd/shops")) {
 
@@ -132,10 +128,7 @@ public class SliderAdapter extends PagerAdapter {
 
                         }
 
-
                 } else {
-
-
 
                     new FinestWebView.Builder(activity)
                             .titleDefault("Evaly Advertisement")
@@ -145,13 +138,9 @@ public class SliderAdapter extends PagerAdapter {
                             .gradientDivider(false)
                             .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit, R.anim.activity_close_enter, R.anim.activity_close_exit)
                             .show(itemList.get(position).getUrl());
-
-
                 }
 
             }
-
-
 
         });
 

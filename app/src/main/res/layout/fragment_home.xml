@@ -61,7 +61,7 @@
                 android:background="#fff"
                 android:orientation="horizontal"
                 android:paddingTop="20dp"
-                android:paddingBottom="20dp">
+                android:paddingBottom="15dp">
 
 
                 <LinearLayout
@@ -150,7 +150,7 @@
                         android:background="@drawable/circle_bg"
                         android:clickable="false"
                         android:tint="#2ab5d2 "
-                        app:srcCompat="@drawable/ic_menu_voucher" />
+                        app:srcCompat="@drawable/ic_star_flying" />
 
                     <TextView
                         android:id="@+id/textView3"
@@ -159,7 +159,8 @@
                         android:layout_marginTop="5dp"
                         android:layout_weight="0"
                         android:clickable="false"
-                        android:text="Voucher" />
+                        android:text="Grand Brand Days"
+                        android:textAlignment="center" />
                 </LinearLayout>
 
 

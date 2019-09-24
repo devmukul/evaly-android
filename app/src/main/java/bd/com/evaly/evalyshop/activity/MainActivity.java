@@ -228,6 +228,9 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_invite_ref:
                         startActivity(new Intent(MainActivity.this, InviteEarn.class));
                         break;
+                    case R.id.nav_voucher:
+                        startActivity(new Intent(MainActivity.this, VoucherActivity.class));
+                        break;
 
                 }
                 new Handler().postDelayed(() -> drawer.closeDrawer(GravityCompat.START), 150);
@@ -279,7 +282,6 @@ public class MainActivity extends BaseActivity {
 
         if(data.hasExtra("type")){
 
-
             int type = data.getIntExtra("type", 1);
             Bundle bundle = new Bundle();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -289,25 +291,20 @@ public class MainActivity extends BaseActivity {
                 isLaunchActivity = false;
 
                 Log.d("json", data.getStringExtra("brand_name"));
-
                 bundle.putInt("type", type);
                 bundle.putString("brand_slug", data.getStringExtra("brand_slug"));
                 bundle.putString("brand_name", data.getStringExtra("brand_name"));
                 bundle.putString("category", data.getStringExtra("category"));
                 bundle.putString("image_url", data.getStringExtra("image_url"));
-
                 Fragment fragment3 = new BrandFragment();
                 fragment3.setArguments(bundle);
                 ft.replace(R.id.fragment_container, fragment3, data.getStringExtra("slug"));
                 ft.addToBackStack(null);
                 ft.commit();
 
-
             }else if (type == 3){
 
-
                 isLaunchActivity = false;
-
                 bundle.putInt("type", type);
                 bundle.putString("shop_slug", data.getStringExtra("shop_slug"));
                 bundle.putString("shop_name", data.getStringExtra("shop_name"));
@@ -334,41 +331,24 @@ public class MainActivity extends BaseActivity {
                 ft.addToBackStack(null);
                 ft.commit();
 
-
-
-
             }
-
-
 
         } else {
 
             showHomeFragment();
         }
 
-
-
         if(data.hasExtra("fromBalance")) {
-
-
             Intent ip = new Intent(this, UserDashboardActivity.class);
-
             Toast.makeText(this, "Payment Successful!", Toast.LENGTH_SHORT).show();
-
             startActivity(ip);
-
-
         }
-
-
 
         exitDialogBuilder = new AlertDialog.Builder(this)
                 .setMessage("Are you sure you want to close the app?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-
                         exitDialog.dismiss();
                         finish();
                     }
