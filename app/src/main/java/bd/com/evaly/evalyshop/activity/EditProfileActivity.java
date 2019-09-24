@@ -111,7 +111,12 @@ public class EditProfileActivity extends BaseActivity {
         lastName.setText(userDetails.getLastName());
         email.setText(userDetails.getEmail());
         phone.setText(userDetails.getPhone());
-        address.setText(userDetails.getJsonAddress());
+
+
+        if (userDetails.getJsonAddress().equals("null"))
+            address.setHint("Add an address");
+        else
+            address.setText(userDetails.getJsonAddress());
 
 
         ImageView editPicture = findViewById(R.id.editPicture);

@@ -101,7 +101,11 @@ public class UserDashboardActivity extends BaseActivity {
 
         name.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
         balance.setText("৳ "+ userDetails.getBalance());
-        address.setText(userDetails.getJsonAddress());
+
+        if (userDetails.getJsonAddress().equals("null"))
+            address.setText("Add an address");
+        else
+            address.setText(userDetails.getJsonAddress());
 
 
 
