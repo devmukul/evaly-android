@@ -1126,10 +1126,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                 try {
                     JSONArray jsonArray = response.getJSONArray("posts");
-                    if(jsonArray.length()==0){
+                    if(jsonArray.length()==0 && page == 1){
                         not.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
-                    }else{
+                    } else{
                         not.setVisibility(View.GONE);
                         for(int i=0;i<jsonArray.length();i++){
                             JSONObject ob = jsonArray.getJSONObject(i);
