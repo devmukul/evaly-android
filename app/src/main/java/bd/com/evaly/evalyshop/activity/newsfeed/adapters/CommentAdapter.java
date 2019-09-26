@@ -74,8 +74,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             myViewHolder.reply1Name.setText(repliesList.get(0).getAuthor().getFullName());
 
             if (repliesList.get(0).getAuthor().getIsAdmin()) {
+                int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.newsfeed_verified_icon);
+
                 Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
-                img.setBounds(0, 0, 50, 50);
+                img.setBounds(0, 0, sizeInPixel, sizeInPixel);
                 myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
                 myViewHolder.userNameView.setCompoundDrawablePadding(15);
             }else {
@@ -108,8 +110,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
 
         if (author.getIsAdmin()) {
+            int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.newsfeed_verified_icon);
+
             Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
-            img.setBounds(0, 0, 50, 50);
+            img.setBounds(0, 0, sizeInPixel, sizeInPixel);
             myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
             myViewHolder.userNameView.setCompoundDrawablePadding(15);
         } else {

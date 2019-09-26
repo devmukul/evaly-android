@@ -51,8 +51,10 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
         myViewHolder.userNameView.setText(author.getFullName());
 
         if (author.getIsAdmin()) {
+            int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.newsfeed_verified_icon);
+
             Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
-            img.setBounds(0, 0, 55, 55);
+            img.setBounds(0, 0, sizeInPixel, sizeInPixel);
             myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
             myViewHolder.userNameView.setCompoundDrawablePadding(15);
         }else {

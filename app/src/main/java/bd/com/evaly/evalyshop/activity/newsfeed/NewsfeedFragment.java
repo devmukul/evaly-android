@@ -516,8 +516,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             TextView authorNameView = replyDialog.findViewById(R.id.user_name);
 
             if (isAdmin) {
+                int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.newsfeed_verified_icon);
+
                 Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
-                img.setBounds(0, 0, 50, 50);
+                img.setBounds(0, 0, sizeInPixel, sizeInPixel);
                 authorNameView.setCompoundDrawables(null, null, img, null);
                 authorNameView.setCompoundDrawablePadding(15);
             }else {
@@ -559,7 +561,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         } else
         {
-            Toast.makeText(context, "Couldn't load replys", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Couldn't load replies", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -613,8 +615,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
         if (isAdmin) {
+            int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.newsfeed_verified_icon);
+
             Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
-            img.setBounds(0, 0, 50, 50);
+            img.setBounds(0, 0, sizeInPixel, sizeInPixel);
             authorNameView.setCompoundDrawables(null, null, img, null);
             authorNameView.setCompoundDrawablePadding(15);
             timeView.setText(Html.fromHtml("<b>Admin</b> · " + timeAgo));

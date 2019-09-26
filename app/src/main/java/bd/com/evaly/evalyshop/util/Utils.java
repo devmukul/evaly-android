@@ -372,7 +372,7 @@ public class  Utils {
         long now = curDate.getTime();
 
         if (time > now || time <= 0) {
-            return null+" no";
+            return "a moment ago";
         }
 
         int timeDIM = getTimeDistanceInMinutes(time);
