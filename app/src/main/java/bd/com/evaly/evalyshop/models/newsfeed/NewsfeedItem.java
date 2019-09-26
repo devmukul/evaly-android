@@ -6,13 +6,28 @@ public class NewsfeedItem {
 
     private String authorUsername, authorFullName, authoeBio, authorImage, authorBio, body, createdAt, description, slug, title, updatedAt, tags, attachment, attachmentCompressed, type;
     private boolean authorFollowing, favorited;
-    private int favoriteCount, commentsCount;
+    private int favoriteCount, commentsCount, userID;
     private boolean isAdmin;
 
     public NewsfeedItem(){
 
     }
 
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
 
     public boolean getIsAdmin() {
         return isAdmin;

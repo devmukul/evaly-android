@@ -66,27 +66,25 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             myViewHolder.userNameView.setText("User");
 
 
-        String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getUpdatedAt()));
+        String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getCreatedAt()));
 
 
         if (itemsList.get(i).getIsAdmin()) {
+
+            int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.newsfeed_verified_icon);
+
             Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
-            img.setBounds(0, 0, 50, 50);
+            img.setBounds(0, 0, sizeInPixel, sizeInPixel);
+
             myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
             myViewHolder.userNameView.setCompoundDrawablePadding(15);
-
-
             myViewHolder.timeView.setText(Html.fromHtml("<b>Admin</b> · " + timeAgo));
 
         } else  {
-            myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
 
+            myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
             myViewHolder.timeView.setText(timeAgo);
         }
-
-
-
-
 
 
         myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));

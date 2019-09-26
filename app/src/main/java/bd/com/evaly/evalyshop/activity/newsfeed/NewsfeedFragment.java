@@ -1121,7 +1121,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 bottomProgressBar.setVisibility(View.INVISIBLE);
 
                 try {
-                    JSONArray jsonArray = response.getJSONArray("data");
+                    JSONArray jsonArray = response.getJSONArray("posts");
                     if(jsonArray.length()==0){
                         not.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
@@ -1131,12 +1131,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                             JSONObject ob = jsonArray.getJSONObject(i);
 
                             NewsfeedItem item = new NewsfeedItem();
-                            JSONObject author = ob.getJSONObject("author");
-                            item.setAuthorUsername(author.getString("username"));
-                            item.setAuthorFullName(author.getString("full_name"));
-                            item.setAuthorImage(author.getString("compressed_image"));
-                            item.setAuthorFollowing(author.getBoolean("following"));
-                            item.setIsAdmin(author.getBoolean("is_admin"));
+
+                            item.setAuthorUsername(ob.getString("username"));
+                            item.setAuthorFullName(ob.getString("author_full_name"));
+                            item.setAuthorImage(ob.getString("author_compressed_image"));
+                            item.setIsAdmin(ob.getInt("author_is_admin") != 0);
                             item.setBody(ob.getString("body"));
 
 
@@ -1148,14 +1147,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                                 item.setAttachmentCompressed(null);
                             }
 
-
                             item.setCreatedAt(ob.getString("created_at"));
-                            item.setFavorited(ob.getBoolean("favorited"));
+                            item.setUpdatedAt(ob.getString("created_at"));
+                            item.setFavorited(ob.getInt("favorited") != 0);
                             item.setFavoriteCount(ob.getInt("favorites_count"));
                             item.setCommentsCount(ob.getInt("comments_count"));
                             item.setSlug(ob.getString("slug"));
-                            item.setTags(ob.getJSONArray("tag_list").toString());
-                            item.setUpdatedAt(ob.getString("updated_at"));
                             item.setType(ob.getString("type"));
 
                             itemsList.add(item);

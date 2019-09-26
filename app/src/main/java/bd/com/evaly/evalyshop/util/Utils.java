@@ -365,31 +365,14 @@ public class  Utils {
 
 
 
-    public static String getTimeAgo(long timestamp) {
+    public static String getTimeAgo(long time) {
 
-
-        Calendar cal = Calendar.getInstance();
-        TimeZone tz = cal.getTimeZone();//get your local time zone.
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH);
-        sdf.setTimeZone(tz);//set time zone.
-        String localTime = sdf.format(new Date(timestamp));
-        Date date = new Date();
-        try {
-            date = sdf.parse(localTime);//get local date
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if(date == null) {
-            return null;
-        }
-
-        long time = date.getTime();
 
         Date curDate = currentDate();
         long now = curDate.getTime();
+
         if (time > now || time <= 0) {
-            return null;
+            return null+" no";
         }
 
         int timeDIM = getTimeDistanceInMinutes(time);
@@ -408,7 +391,7 @@ public class  Utils {
             timeAgo = (Math.round(timeDIM / 60)) + " hours ago";
         } else if (timeDIM >= 1440) {
 
-            Date tdate = new Date(timestamp);
+            Date tdate = new Date(time);
 
             SimpleDateFormat jdf = new SimpleDateFormat("MMM dd 'at' h:mm a", Locale.ENGLISH);
             jdf.setTimeZone(TimeZone.getTimeZone("GMT-6"));

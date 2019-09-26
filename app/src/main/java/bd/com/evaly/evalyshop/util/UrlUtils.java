@@ -4,11 +4,11 @@ public class UrlUtils {
 
     /* Dev mode */
 
-    // private static final String DOMAIN = "https://api-dev.evaly.com.bd/";
+     private static final String DOMAIN = "https://api-dev.evaly.com.bd/";
 
     /* Production */
 
-    private static final String DOMAIN = "https://api.evaly.com.bd/";
+    // private static final String DOMAIN = "https://api.evaly.com.bd/";
 
 
     public static final String BASE_URL = DOMAIN+"core/";
