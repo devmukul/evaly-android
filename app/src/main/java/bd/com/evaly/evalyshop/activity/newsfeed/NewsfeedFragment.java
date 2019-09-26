@@ -85,9 +85,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ProgressBar bottomProgressBar;
     private SwipeRefreshLayout swipeLayout;
 
-
     // comment bottom sheet items
-
     private BottomSheetBehavior bottomSheetBehaviorComment;
     private BottomSheetDialog commentDialog;
     private String selectedPostID = "";
@@ -126,9 +124,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private int maxCountReply;
 
 
-
-
-
     public NewsfeedFragment() {
         // Required empty public constructor
     }
@@ -148,7 +143,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         context = getContext();
         activity = (NewsfeedActivity) getActivity();
         queue= Volley.newRequestQueue(context);
-
         if (getArguments() != null) {
             type = getArguments().getString("type");
         }
@@ -169,21 +163,14 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         adapter.notifyDataSetChanged();
         currentPage = 1;
         swipeLayout.setRefreshing(false);
-
         selectedPostID = "";
         selectedCommentID = "";
-
         getPosts(currentPage);
 
         try {
-
             ((NewsfeedActivity) getActivity()).getNotificationCount();
-
         } catch (Exception e){
-
         }
-
-
 
     }
 
@@ -196,11 +183,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-
         userDetails = new UserDetails(context);
-
-
         maxCountNewfeed = -1;
         maxCountComment = -1;
         maxCountReply = -1;
@@ -217,8 +200,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         bottomSheetBehaviorReply = BottomSheetBehavior.from(bottomSheetInternalReply);
         bottomSheetBehaviorReply.setState(BottomSheetBehavior.STATE_EXPANDED);
 
-
-
         ScreenUtils screenUtils = new ScreenUtils(context);
         LinearLayout dialogLayout = replyDialog.findViewById(R.id.container2);
         dialogLayout.setMinimumHeight(screenUtils.getHeight());
@@ -231,11 +212,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         // Reply recyclerView
 
         replyItems = new ArrayList<>();
-
-
         replyAdapter = new ReplyAdapter(replyItems, context, this);
-
-
         replyRecyclerView = replyDialog.findViewById(R.id.recyclerView);
 
         LinearLayoutManager managerReply=new LinearLayoutManager(context);
@@ -253,7 +230,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     replyItems.clear();
                     replyAdapter.notifyDataSetChanged();
                     replyDialog.hide();
-
                 }
             }
 
@@ -266,17 +242,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         NestedScrollView nestedScrollViewReply = replyDialog.findViewById(R.id.stickyScrollView);
 
         if (nestedScrollViewReply != null) {
-
             nestedScrollViewReply.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
                 @Override
                 public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-
                     if (nestedScrollViewReply.getChildAt(0).getBottom()
                             <= (nestedScrollViewReply.getHeight() + nestedScrollViewReply.getScrollY())) {
-                        Log.i("Nested", "BOTTOM SCROLL");
-
                         try {
-
                             if (!isReplyLoading)
                                 loadReplies(selectedCommentID);
 
@@ -284,8 +255,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                         {
                             Log.e("load more error", e.toString());
                         }
-                    }
-                }
+                    } }
             });
         }
 
@@ -327,8 +297,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
-
-
         // comment bottom sheet
 
         currentCommentPage = 1;
@@ -359,14 +327,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
-
         LinearLayout dialogLayoutReply = commentDialog.findViewById(R.id.container2);
         dialogLayoutReply.setMinimumHeight(screenUtils.getHeight());
 
         bottomSheetBehaviorComment.setPeekHeight(screenUtils.getHeight());
         commentNot = commentDialog.findViewById(R.id.not);
         commentProgressContainer = commentDialog.findViewById(R.id.progressContainer);
-
 
         // comment recyclerView
 
@@ -389,10 +355,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                     if (nestedScrollViewComment.getChildAt(0).getBottom()
                             <= (nestedScrollViewComment.getHeight() + nestedScrollViewComment.getScrollY())) {
-                        Log.d("nested inside", "BOTTOM SCROLL");
-
                         try {
-
                             if (!isCommentLoading)
                                 loadComments(selectedPostID, false);
 
@@ -443,7 +406,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
-
         // pull to refresh
         swipeLayout =  view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
@@ -466,9 +428,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         LinearLayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
 
-
         adapter = new NewsfeedAdapter(itemsList, context, this);
-
 
         recyclerView.setAdapter(adapter);
 
@@ -492,8 +452,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                             getPosts(++currentPage);
 
                         }
-                    }
-                }
+                    } }
             }
         });
 
@@ -506,12 +465,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void openReplyBottomSheet(String id, String authorName, String authorImage, boolean isAdmin, String postText, String date, Object postImage){
 
-
         if (replyDialog != null){
 
             currentReplyPage = 1;
             maxCountReply = -1;
-
 
             TextView authorNameView = replyDialog.findViewById(R.id.user_name);
 
@@ -686,8 +643,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.VISIBLE);
 
         replyNot.setVisibility(View.GONE);
-
-
         NestedScrollView scrollView = replyDialog.findViewById(R.id.stickyScrollView);
 
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments/"+ comment_id +"/replies?page="+ currentReplyPage;
@@ -708,7 +663,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                 try {
 
-
                     JSONArray jsonArray = response.getJSONArray("data").getJSONObject(0).getJSONArray("replies");
 
                     if (jsonArray.length() > 0)
@@ -716,7 +670,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     else {
                         replyNot.setVisibility(View.VISIBLE);
                         currentReplyPage++;
-
                     }
 
                     for (int i=0; i < jsonArray.length(); i++) {
@@ -743,8 +696,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                 replyProgressContainer.setVisibility(View.GONE);
                 ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
-
-
                 // Toast.makeText(context, "Couldn't load replies.", Toast.LENGTH_SHORT).show();
 
 
@@ -758,7 +709,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     headers.put("Authorization", "Bearer " + userDetails.getToken());
 
                 headers.put("Content-Type", "application/json");
-
                 return headers;
             }
         };
@@ -832,8 +782,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         queue.add(request);
     }
-
-
 
 
 
@@ -1049,9 +997,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 try {
 
                     JSONObject ob = response.getJSONObject("data");
-
                     JSONObject author = ob.getJSONObject("author");
-
                     String authorName = author.getString("full_name");
                     String authorImage = author.getString("compressed_image");
                     boolean isAdmin = author.getBoolean("is_admin");
@@ -1333,14 +1279,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onDestroy()
     {
-
         super.onDestroy();
-
         commentDialog.dismiss();
         replyDialog.dismiss();
-
-
-
     }
 
 
