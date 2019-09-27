@@ -365,23 +365,23 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
                 bottomProgressBar.setVisibility(View.INVISIBLE);
 
                 try {
-                    JSONArray jsonArray = response.getJSONArray("data");
-                    if(jsonArray.length()==0){
+                    JSONArray jsonArray = response.getJSONArray("posts");
+                    if(jsonArray.length()==0 && page == 1){
                         not.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
-                    }else{
+                    } else{
                         not.setVisibility(View.GONE);
                         for(int i=0;i<jsonArray.length();i++){
                             JSONObject ob = jsonArray.getJSONObject(i);
-                            NewsfeedItem item = new NewsfeedItem();
-                            JSONObject author = ob.getJSONObject("author");
-                            item.setAuthorUsername(author.getString("username"));
-                            item.setAuthorFullName(author.getString("full_name"));
-                            item.setAuthoeBio(author.getString("bio"));
-                            item.setAuthorImage(author.getString("compressed_image"));
-                            item.setAuthorFollowing(author.getBoolean("following"));
 
+                            NewsfeedItem item = new NewsfeedItem();
+
+                            item.setAuthorUsername(ob.getString("username"));
+                            item.setAuthorFullName(ob.getString("author_full_name"));
+                            item.setAuthorImage(ob.getString("author_compressed_image"));
+                            item.setIsAdmin(ob.getInt("author_is_admin") != 0);
                             item.setBody(ob.getString("body"));
+
 
                             try {
                                 item.setAttachment(ob.getString("attachment"));
@@ -391,14 +391,12 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
                                 item.setAttachmentCompressed(null);
                             }
 
-
                             item.setCreatedAt(ob.getString("created_at"));
-                            item.setFavorited(ob.getBoolean("favorited"));
+                            item.setUpdatedAt(ob.getString("created_at"));
+                            item.setFavorited(ob.getInt("favorited") != 0);
                             item.setFavoriteCount(ob.getInt("favorites_count"));
                             item.setCommentsCount(ob.getInt("comments_count"));
                             item.setSlug(ob.getString("slug"));
-                            item.setTags(ob.getJSONArray("tag_list").toString());
-                            item.setUpdatedAt(ob.getString("updated_at"));
                             item.setType(ob.getString("type"));
 
                             itemsList.add(item);
