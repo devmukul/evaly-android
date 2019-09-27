@@ -400,9 +400,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     Toast.makeText(context, "Couldn't create comment. Try again later.", Toast.LENGTH_SHORT).show();
                 else if (commentInput.getText().toString().trim().equals(""))
                     Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
-                else
+                else {
+                    commentNot.setVisibility(View.GONE);
                     createComment();
-
+                }
             }
         });
 
@@ -1173,6 +1174,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         commentInput.setEnabled(false);
         submitComment.setEnabled(false);
+
 
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments";
 
