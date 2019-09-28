@@ -32,6 +32,7 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -214,6 +215,13 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                                             }})
                                         .setNegativeButton("NO", null).show();
                                 break;
+
+                            case  R.id.action_edit:
+
+                                NewsfeedActivity activity = (NewsfeedActivity) context;
+                                activity.openEditBottomSheet(itemsList.get(i));
+
+
                         }
 
                         return true;

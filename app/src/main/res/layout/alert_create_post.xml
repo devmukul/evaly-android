@@ -79,7 +79,7 @@
                 android:layout_marginRight="6dp"
                 android:layout_weight="0"
                 android:adjustViewBounds="true"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:srcCompat="@drawable/rassel_bhaia" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -117,6 +117,7 @@
                 app:srcCompat="@drawable/ic_gallery" />
 
             <TextView
+                android:id="@+id/add_photo_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
