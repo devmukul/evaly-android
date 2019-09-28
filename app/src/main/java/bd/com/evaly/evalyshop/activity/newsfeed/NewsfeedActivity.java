@@ -33,6 +33,7 @@ import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -175,7 +176,8 @@ public class NewsfeedActivity extends AppCompatActivity {
         Spinner typeSpinner = createPostDialog.findViewById(R.id.type);
         LinearLayout spinnerHolder = createPostDialog.findViewById(R.id.spinner_holder);
         TextView addPhotoText = createPostDialog.findViewById(R.id.add_photo_text);
-
+        RelativeLayout postImageHolder = createPostDialog.findViewById(R.id.postImageHolder);
+        ImageView cancelPostImage = createPostDialog.findViewById(R.id.cancelImage);
 
         if (!userDetails.getGroups().contains("EvalyEmployee"))
             spinnerHolder.setVisibility(View.GONE);
@@ -236,12 +238,24 @@ public class NewsfeedActivity extends AppCompatActivity {
                 postSlug = "";
 
                 spinnerHolder.setVisibility(View.VISIBLE);
+                postImageHolder.setVisibility(View.GONE);
                 text.setText("");
                 addPhotoText.setText("Add Photo");
 
                 createPostDialog.show();
 
             }
+        });
+
+
+        cancelPostImage.setOnClickListener(view -> {
+
+
+            selectedImage = "";
+            postImageHolder.setVisibility(View.GONE);
+            addPhotoText.setText("Add Photo");
+
+
         });
 
 
@@ -323,15 +337,21 @@ public class NewsfeedActivity extends AppCompatActivity {
         ImageView postImage = createPostDialog.findViewById(R.id.postImage);
         TextView addPhotoText = createPostDialog.findViewById(R.id.add_photo_text);
 
+        RelativeLayout postImageHolder = createPostDialog.findViewById(R.id.postImageHolder);
+        ImageView cancelPostImage = createPostDialog.findViewById(R.id.cancelImage);
+
         spinnerHolder.setVisibility(View.GONE);
 
 
         text.setText(item.getBody());
 
-        if (!item.getAttachment().equals("")){
+        Log.d("json img url", item.getAttachment());
+
+        if (!item.getAttachment().equals("null")){
 
             selectedImage = item.getAttachment();
             postImage.setVisibility(View.VISIBLE);
+            postImageHolder.setVisibility(View.VISIBLE);
             addPhotoText.setText("Change Photo");
 
 
@@ -344,6 +364,12 @@ public class NewsfeedActivity extends AppCompatActivity {
                     .placeholder(R.drawable.half_dp_bg_light)
                     .apply(new RequestOptions().override(500, 500))
                     .into(postImage);
+
+        } else {
+
+            addPhotoText.setText("Add Photo");
+            postImageHolder.setVisibility(View.GONE);
+            selectedImage = "";
 
         }
 
@@ -457,6 +483,8 @@ public class NewsfeedActivity extends AppCompatActivity {
 
             if (!(selectedImage.equals("") || selectedImage.equals("null")))
                 parameters.put("attachment", selectedImage);
+            else
+                parameters.put("attachment", JSONObject.NULL);
 
             parameters.put("tags", new JSONArray());
             parametersPost.put("post", parameters);
@@ -522,6 +550,10 @@ public class NewsfeedActivity extends AppCompatActivity {
         if (selectedImage != null && createPostDialog.isShowing()) {
 
             createPostDialog.findViewById(R.id.postImage).setVisibility(View.VISIBLE);
+            createPostDialog.findViewById(R.id.postImageHolder).setVisibility(View.VISIBLE);
+
+            ((TextView) createPostDialog.findViewById(R.id.add_photo_text)).setText("Change Photo");
+
 
             Glide.with(this)
                     .asBitmap()

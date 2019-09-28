@@ -66,21 +66,39 @@
                 android:gravity="top"
                 android:hint="Write your thoughts here..."
                 android:inputType="textMultiLine"
-                android:minLines="2"
+                android:minLines="3"
                 android:padding="10dp"
                 android:textColor="#000"
                 android:textSize="16sp" />
 
-            <ImageView
-                android:id="@+id/postImage"
+            <RelativeLayout
+                android:id="@+id/postImageHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:layout_marginRight="6dp"
-                android:layout_weight="0"
-                android:adjustViewBounds="true"
-                android:visibility="visible"
-                app:srcCompat="@drawable/rassel_bhaia" />
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/postImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:adjustViewBounds="true" />
+
+                <ImageView
+                    android:id="@+id/cancelImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp"
+                    app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+            </RelativeLayout>
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
