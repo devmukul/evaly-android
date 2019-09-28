@@ -80,46 +80,96 @@
 
 
     <script>
-
-
             function intervalChecker(){
-
                     var nTimer = setInterval(function() {
                     if ($('#bKashFrameWrapper iframe').css('display') == 'block') {
 
-
                     setTimeout(function(){
-
                         document.getElementById("loader_window").style.display = "none";
-
                     }, 200);
-
-
                         clearInterval(nTimer);
-
-
                     } else {
-
-
                         document.getElementById("loader_window").style.display = "block";
-
                     }
                 }, 200);
-
-
             }
-
-
 
             (function() {
 
                     intervalChecker();
 
-
             })();
 
+        </script>
 
-            </script>
+
+        <script>
+
+
+            function errorMessage(response) {
+                      let msg = "";
+                      if (typeof response.errorMessage === "undefined") {
+                        msg = "Payment failed";
+                      } else {
+                        let errorMessage =
+                          "Sorry, your payment was unsuccessful !!! " + response.errorMessage;
+                        let errorCode = response.errorCode;
+                        let bkashErrorCode = [
+                          2001,
+                          2002,
+                          2003,
+                          2004,
+                          2007,
+                          2008,
+                          2009,
+                          2011,
+                          2012,
+                          2013,
+                          2020,
+                          2021,
+                          2022,
+                          2025,
+                          2027,
+                          2028,
+                          2030,
+                          2031,
+                          2032,
+                          2033,
+                          2036,
+                          2037,
+                          2038,
+                          2040,
+                          2041,
+                          2042,
+                          2043,
+                          2044,
+                          2045,
+                          2046,
+                          2047,
+                          2048,
+                          2049,
+                          2050,
+                          2051,
+                          2052,
+                          2053,
+                          2054,
+                          2055,
+                          2056
+                        ];
+                        if (bkashErrorCode.includes(errorCode)) {
+                          errorMessage = "Payment Failed";
+                        } else if (errorCode == 2029) {
+                          errorMessage =
+                            "Sorry, your payment was unsuccessful !!! For same amount transaction, please try again after 10 minutes.";
+                        }
+                        msg = errorMessage;
+                      }
+                  alert(msg);
+                }
+
+
+
+        </script>
 
     <!--<script>-->
 

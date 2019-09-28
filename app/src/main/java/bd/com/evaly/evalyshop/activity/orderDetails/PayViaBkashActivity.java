@@ -87,9 +87,9 @@ public class PayViaBkashActivity extends BaseActivity {
                 "        if (typeof bKash == 'undefined') {" +
                 "        } else {" +
                 "            initBkash(); " +
-                "$(document).ready(function(){\n" +
-                "   $(\"#bKash_button\").trigger('click'); \n" +
-                "});" +
+                "   $(document).ready(function(){\n" +
+                "       $(\"#bKash_button\").trigger('click'); \n" +
+                "   });" +
 
                 "            clearInterval(nTimer);" +
                 "        }" +
@@ -144,10 +144,12 @@ public class PayViaBkashActivity extends BaseActivity {
                 "                            \"success.html\";" +
                 "                    } else {" +
                 "                        bKash.execute().onError();" +
+                "                        errorMessage(data.data);"+
                 "                    }" +
                 "                }," +
-                "                error: function() {" +
+                "                error: function(err) {" +
                 "                    bKash.execute().onError();" +
+                "                    errorMessage(err.responseJSON);"+
                 "                }" +
                 "            });" +
                 "        }" +
@@ -237,12 +239,12 @@ public class PayViaBkashActivity extends BaseActivity {
 
 
 
-//                webView.evaluateJavascript(javascript, new ValueCallback<String>() {
-//                    @Override
-//                    public void onReceiveValue(String s) {
-//                        Log.d("LogName", s); // Prints: {"var1":"variable1","var2":"variable2"}
-//                    }
-//                });
+                webView.evaluateJavascript(javascript, new ValueCallback<String>() {
+                    @Override
+                    public void onReceiveValue(String s) {
+                        Log.d("LogName", s); // Prints: {"var1":"variable1","var2":"variable2"}
+                    }
+                });
 
 
 
@@ -277,13 +279,15 @@ public class PayViaBkashActivity extends BaseActivity {
             }
         });
 
+        webView.setWebChromeClient(new WebChromeClient());
 
 
 
 
-        webView.loadUrl("https://evaly.com.bd/bkash_payment?invoice_no="+context_reference+"&amount="+amount+"&token="+userDetails.getToken());
 
-        //webView.loadUrl("file:///android_asset/bkash.html");
+        // webView.loadUrl("https://evaly.com.bd/bkash_payment?invoice_no="+context_reference+"&amount="+amount+"&token="+userDetails.getToken());
+
+        webView.loadUrl("file:///android_asset/bkash.html");
 
 
 
