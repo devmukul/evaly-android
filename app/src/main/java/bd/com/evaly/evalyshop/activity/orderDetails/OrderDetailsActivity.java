@@ -283,7 +283,12 @@ public class OrderDetailsActivity extends BaseActivity {
 
                                     //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
 
-                                    double amountToPay = (total_amount - userBalance) - paid_amount;
+                                    // grad brand days full payment
+
+                                    double amountToPay =  total_amount - paid_amount;
+
+                                    if (!shopGroup.contains("grandbranddays"))
+                                        amountToPay = (total_amount - userBalance) - paid_amount;
 
 
                                     amountToPayView.setText(amountToPay+"");
