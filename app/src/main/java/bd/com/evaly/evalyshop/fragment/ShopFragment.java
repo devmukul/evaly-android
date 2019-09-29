@@ -703,6 +703,11 @@ public class ShopFragment extends Fragment {
 
     public void subscribe(){
 
+        if (userDetails.getToken().equals("")){
+            Toast.makeText(context,"You need to login first to follow a shop", Toast.LENGTH_LONG).show();
+            return;
+        }
+
 
         String url=UrlUtils.BASE_URL+"shop-subscriptions";
 
