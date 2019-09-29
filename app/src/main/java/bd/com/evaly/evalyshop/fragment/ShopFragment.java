@@ -97,6 +97,7 @@ public class ShopFragment extends Fragment {
     String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
     RequestQueue rq;
     UserDetails userDetails;
+    int subCount = 0;
 
 
 
@@ -298,10 +299,13 @@ public class ShopFragment extends Fragment {
                         JSONObject jsonObject = data.getJSONObject("shop");
                         boolean subscribed = data.getBoolean("subscribed");
 
+
+                        subCount = data.getInt("subscriber_count");
+
                         if (subscribed)
-                            followText.setText("Unfollow");
+                            followText.setText("Unfollow ("+subCount+")");
                         else
-                            followText.setText("Follow");
+                            followText.setText("Follow ("+subCount+")");
 
                         if(response.getInt("count")>0){
                             productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, "", 1, view.findViewById(R.id.progressBar));
@@ -705,12 +709,12 @@ public class ShopFragment extends Fragment {
 
         int requestMethod =  Request.Method.POST;
 
-        if (followText.getText().toString().equals("Unfollow")) {
+        if (followText.getText().toString().contains("Unfollow")) {
             requestMethod =  Request.Method.DELETE;
-            followText.setText("Follow");
+            followText.setText("Follow ("+(--subCount)+")");
             url = UrlUtils.BASE_URL+"unsubscribe-shop/" + slug + "/";
         } else
-            followText.setText("Unfollow");
+            followText.setText("Unfollow ("+(++subCount)+")");
 
         JSONObject parameters = new JSONObject();
         try {
