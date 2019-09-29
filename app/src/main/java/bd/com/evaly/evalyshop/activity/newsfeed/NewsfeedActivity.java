@@ -33,6 +33,7 @@ import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,7 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPager;
+import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.util.ImageUtils;
@@ -90,6 +92,7 @@ public class NewsfeedActivity extends AppCompatActivity {
     private UserDetails userDetails;
     private String postType = "CEO";
     private String postBody = "";
+    private String postSlug= "";
 
     private int hot_number;
     TextView ui_hot;
@@ -172,7 +175,9 @@ public class NewsfeedActivity extends AppCompatActivity {
         Button share = createPostDialog.findViewById(R.id.share);
         Spinner typeSpinner = createPostDialog.findViewById(R.id.type);
         LinearLayout spinnerHolder = createPostDialog.findViewById(R.id.spinner_holder);
-
+        TextView addPhotoText = createPostDialog.findViewById(R.id.add_photo_text);
+        RelativeLayout postImageHolder = createPostDialog.findViewById(R.id.postImageHolder);
+        ImageView cancelPostImage = createPostDialog.findViewById(R.id.cancelImage);
 
         if (!userDetails.getGroups().contains("EvalyEmployee"))
             spinnerHolder.setVisibility(View.GONE);
@@ -226,10 +231,31 @@ public class NewsfeedActivity extends AppCompatActivity {
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+
+                selectedImage = "";
+                postType = "CEO";
+                postBody = "";
+                postSlug = "";
+
+                spinnerHolder.setVisibility(View.VISIBLE);
+                postImageHolder.setVisibility(View.GONE);
+                text.setText("");
+                addPhotoText.setText("Add Photo");
+
                 createPostDialog.show();
 
             }
+        });
+
+
+        cancelPostImage.setOnClickListener(view -> {
+
+
+            selectedImage = "";
+            postImageHolder.setVisibility(View.GONE);
+            addPhotoText.setText("Add Photo");
+
+
         });
 
 
@@ -291,6 +317,65 @@ public class NewsfeedActivity extends AppCompatActivity {
             return false;
         else
             return true;
+
+    }
+
+
+
+    public void openEditBottomSheet(NewsfeedItem item){
+
+
+        postType = "CEO";
+        postBody = item.getBody();
+        postSlug = item.getSlug();
+
+        TextView text = createPostDialog.findViewById(R.id.text);
+        LinearLayout addPhoto = createPostDialog.findViewById(R.id.addPhoto);
+        Spinner typeSpinner = createPostDialog.findViewById(R.id.type);
+        Button share = createPostDialog.findViewById(R.id.share);
+        LinearLayout spinnerHolder = createPostDialog.findViewById(R.id.spinner_holder);
+        ImageView postImage = createPostDialog.findViewById(R.id.postImage);
+        TextView addPhotoText = createPostDialog.findViewById(R.id.add_photo_text);
+
+        RelativeLayout postImageHolder = createPostDialog.findViewById(R.id.postImageHolder);
+        ImageView cancelPostImage = createPostDialog.findViewById(R.id.cancelImage);
+
+        spinnerHolder.setVisibility(View.GONE);
+
+
+        text.setText(item.getBody());
+
+        Log.d("json img url", item.getAttachment());
+
+        if (!item.getAttachment().equals("null")){
+
+            selectedImage = item.getAttachment();
+            postImage.setVisibility(View.VISIBLE);
+            postImageHolder.setVisibility(View.VISIBLE);
+            addPhotoText.setText("Change Photo");
+
+
+            Glide.with(this)
+                    .asBitmap()
+                    .load(selectedImage)
+                    .skipMemoryCache(true)
+                    .fitCenter()
+                    .optionalCenterCrop()
+                    .placeholder(R.drawable.half_dp_bg_light)
+                    .apply(new RequestOptions().override(500, 500))
+                    .into(postImage);
+
+        } else {
+
+            addPhotoText.setText("Add Photo");
+            postImageHolder.setVisibility(View.GONE);
+            selectedImage = "";
+
+        }
+
+
+        createPostDialog.show();
+
 
     }
 
@@ -369,9 +454,6 @@ public class NewsfeedActivity extends AppCompatActivity {
     }
 
 
-
-
-
     public void createPost(){
 
         if (postBody.equals("") || postBody == null) {
@@ -381,7 +463,12 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         createBtn.setEnabled(false);
 
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts";
+        String url;
+
+        url = UrlUtils.BASE_URL_NEWSFEED+"posts";
+
+        if (!postSlug.equals(""))
+            url = UrlUtils.BASE_URL_NEWSFEED+"posts/"+postSlug;
 
         JSONObject parameters = new JSONObject();
         JSONObject parametersPost = new JSONObject();
@@ -389,17 +476,18 @@ public class NewsfeedActivity extends AppCompatActivity {
             parameters.put("title", "null");
 
 
-            if (userDetails.getGroups().contains("EvalyEmployee"))
+            if (userDetails.getGroups().contains("EvalyEmployee") && postSlug.equals(""))
                 parameters.put("type", postType);
 
             parameters.put("body", postBody);
 
-            if (!selectedImage.equals(""))
+            if (!(selectedImage.equals("") || selectedImage.equals("null")))
                 parameters.put("attachment", selectedImage);
+            else
+                parameters.put("attachment", JSONObject.NULL);
 
             parameters.put("tags", new JSONArray());
             parametersPost.put("post", parameters);
-
 
 
         } catch (Exception e) {
@@ -408,7 +496,7 @@ public class NewsfeedActivity extends AppCompatActivity {
         Log.d("json body", parametersPost.toString());
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest((postSlug.equals("") ? Request.Method.POST : Request.Method.PUT), url, parametersPost,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("json response", response.toString());
@@ -462,6 +550,10 @@ public class NewsfeedActivity extends AppCompatActivity {
         if (selectedImage != null && createPostDialog.isShowing()) {
 
             createPostDialog.findViewById(R.id.postImage).setVisibility(View.VISIBLE);
+            createPostDialog.findViewById(R.id.postImageHolder).setVisibility(View.VISIBLE);
+
+            ((TextView) createPostDialog.findViewById(R.id.add_photo_text)).setText("Change Photo");
+
 
             Glide.with(this)
                     .asBitmap()
