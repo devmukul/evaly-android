@@ -53,6 +53,7 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.OrderListActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.VoucherActivity;
+import bd.com.evaly.evalyshop.activity.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.ProductGrid;
@@ -147,9 +148,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Intent ni = new Intent(context, EvalyStoreActivity.class);
-                ni.putExtra("title", "19.19 Shops");
-                ni.putExtra("slug", "evaly1919");
+                Intent ni = new Intent(context, GiftCardActivity.class);
+
                 startActivity(ni);
             }
         });
