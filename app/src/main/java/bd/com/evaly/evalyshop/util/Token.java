@@ -1,9 +1,11 @@
 package bd.com.evaly.evalyshop.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -18,6 +20,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
 
 public class Token {
@@ -87,6 +90,13 @@ public class Token {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+
+                Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
+
+                context.startActivity(new Intent(context, SignInActivity.class));
+
+
             }
         }) {
             @Override

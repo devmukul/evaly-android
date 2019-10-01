@@ -280,7 +280,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
                                 } else {
 
-
                                     //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
 
                                     // grad brand days full payment
@@ -307,8 +306,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
-
-
 
             }
         });
@@ -679,7 +676,7 @@ public class OrderDetailsActivity extends BaseActivity {
                         indicator.setCurrentStep(1);
                     }else if(response.getString("order_status").toLowerCase().equals("confirmed")){
                         indicator.setCurrentStep(2);
-                    }else if(response.getString("status").toLowerCase().equals("processing")){
+                    }else if(response.getString("order_status").toLowerCase().equals("processing")){
                         indicator.setCurrentStep(3);
                     }else if(response.getString("order_status").toLowerCase().equals("picked")){
                         indicator.setCurrentStep(4);
