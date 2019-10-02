@@ -43,8 +43,8 @@ public class GiftCardActivity extends AppCompatActivity {
 
         pager = new BaseViewPagerAdapter(getSupportFragmentManager());
 
-        pager.addFragment(new GiftCardListFragment(),"MY GIFT CARDS");
-        pager.addFragment(new GiftCardListFragment(),"GIFT CARDS");
+        pager.addFragment(new GiftCardListFragment(),"AVAILABLE");
+        pager.addFragment(new GiftCardPurchasedFragment(),"PURCHASED");
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
