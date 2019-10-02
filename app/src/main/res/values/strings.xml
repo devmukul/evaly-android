@@ -89,5 +89,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="required">Required</string>
     <string name="something_wrong">Something went wrong, please try again!</string>
     <string name="create_post">Create post</string>
+    <string name="inbox">Inbox</string>
 
 </resources>

@@ -29,6 +29,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,6 +40,8 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -50,7 +54,7 @@ public class SignInActivity extends BaseActivity {
     ImageView close, showPassword;
     EditText phoneNumber, password;
     Button signIn;
-    String token = "", userNamePhone = "";
+    String token = "", userNamePhone = "", passwordValue = "";
     boolean isShowing = false;
     UserDetails userDetails;
     ViewDialog alert;
@@ -172,6 +176,7 @@ public class SignInActivity extends BaseActivity {
 
 
             userNamePhone = phoneNumber.getText().toString();
+            passwordValue = password.getText().toString();
 
         } catch (Exception e) {
 
@@ -198,6 +203,14 @@ public class SignInActivity extends BaseActivity {
                     if (ob.has("groups")){
                         userDetails.setGroup(ob.getJSONArray("groups").toString());
                     }
+
+                    CredentialManager.saveUserName(userNamePhone);
+                    CredentialManager.savePassword(passwordValue);
+
+                    UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
+
+                    Logger.d(new Gson().toJson(userModel));
+                    CredentialManager.saveUserData(userModel);
 
                     userDetails.setToken(token);
                     userDetails.setUserName(ob.getString("username"));

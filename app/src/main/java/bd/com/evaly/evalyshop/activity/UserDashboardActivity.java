@@ -43,12 +43,15 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.adapter.AddressAdapter;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class UserDashboardActivity extends BaseActivity {
     
@@ -70,7 +73,7 @@ public class UserDashboardActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_dashboard);
-
+        ButterKnife.bind(this);
         context = this;
         
         // getSupportActionBar().setElevation(0);
@@ -186,15 +189,16 @@ public class UserDashboardActivity extends BaseActivity {
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent = new Intent(context, ChangePasswordActivity.class);
                 startActivity(intent);
-
-
             }
         });
 
+    }
 
+    @OnClick(R.id.llMessage)
+    void gotoMessage(){
+        startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
     }
 
 
@@ -230,7 +234,7 @@ public class UserDashboardActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         if(from.equals("signin")){
-            Intent intent=new Intent(UserDashboardActivity.this,MainActivity.class);
+            Intent intent=new Intent(UserDashboardActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }else{

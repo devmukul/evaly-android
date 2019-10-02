@@ -36,6 +36,12 @@
             android:name=".activity.orderDetails.PayViaCard"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".activity.chat.ChatListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity
+            android:name=".activity.chat.ChatDetailsActivity" />
+        <activity
             android:name=".activity.TransactionHistory"
             android:theme="@style/ThemeTransaction" />
         <activity android:name=".activity.offers.OffersActivity" />
@@ -162,6 +168,10 @@
             android:name=".activity.EvalyStoreActivity"
             android:label="Evaly Store"
             android:theme="@style/AppTheme" />
+
+        <service
+            android:name=".xmpp.XMPPService"
+            android:enabled="true" />
 
         <service
             android:name=".MyFirebaseMessagingService"

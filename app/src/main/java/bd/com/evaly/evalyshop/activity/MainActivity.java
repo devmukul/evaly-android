@@ -51,23 +51,30 @@ import com.facebook.FacebookSdk;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.orhanobut.logger.Logger;
 
+import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.fragment.BrandFragment;
 import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
+import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 
 import static bd.com.evaly.evalyshop.activity.ViewProductActivity.setWindowFlag;
 
@@ -88,6 +95,68 @@ public class MainActivity extends BaseActivity {
     boolean isLaunchActivity = true;
     private View headerView;
 
+    private AppController mChatApp = AppController.getInstance();
+    private XMPPHandler xmppHandler;
+//    private SessionManager sessionManager;
+
+    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+
+        @Override
+        public void onConnected() {
+            xmppHandler = AppController.getmService().xmpp;
+            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+            xmppHandler.login();
+        }
+
+        //Event Listeners
+        public void onLoggedIn() {
+
+            Logger.d("LOGIN =========");
+            Logger.d(xmppHandler.isConnected());
+            VCard vCard = xmppHandler.getCurrentUserDetails();
+            Logger.d(vCard.getFirstName());
+            if ( vCard.getLastName() == null){
+                Logger.d("========");
+                xmppHandler.updateUserInfo(CredentialManager.getUserData());
+            }
+
+            //Save current User
+//            sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
+
+//            Intent chatListIntent = new Intent(MainActivity.this, ChatListActivity.class);
+//            startActivity(chatListIntent);
+//            finish();
+        }
+
+        public void onLoginFailed(String msg) {
+            if (!msg.contains("already logged in")){
+                xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
+            }
+//            xmppHandler.disconnect();
+//            Toast.makeText(getApplicationContext(), getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
+        }
+
+        //        //Event Listeners
+        public void onSignupSuccess(){
+
+            Logger.d("Signup success");
+            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+            xmppHandler.login();
+            //Save current User
+//            sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
+
+//            Intent chatListIntent = new Intent(LoginActivity.this,ChatListActivity.class);
+//            startActivity(chatListIntent);
+//            finish();
+        }
+//
+//        public void onSignupFailed(String error){
+//            xmppHandler.disconnect();
+//            Logger.d(error);
+//            Toast.makeText(getApplicationContext(),getString(R.string.login_failed),Toast.LENGTH_SHORT).show();
+//        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +231,10 @@ public class MainActivity extends BaseActivity {
 
 
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
+
+        if (!CredentialManager.getUserName().equalsIgnoreCase("")){
+            startXmppService();
+        }
 
 
         if(userDetails.getToken().equals("")){
@@ -403,7 +476,24 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    private void startXmppService() {
 
+        //Start XMPP Service (if not running already)
+        if (!XMPPService.isServiceRunning) {
+            Intent intent = new Intent(this, XMPPService.class);
+            mChatApp.UnbindService();
+            mChatApp.BindService(intent);
+        } else {
+            xmppHandler = AppController.getmService().xmpp;
+            if (!xmppHandler.isConnected()) {
+                xmppHandler.connect();
+            } else {
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+            }
+        }
+
+    }
 
 
     @Override
@@ -463,6 +553,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
         if(bottomNavigationView!=null){
             Menu menu = bottomNavigationView.getMenu();

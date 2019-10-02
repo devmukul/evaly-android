@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activity.chat.ChatListActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:elevation="2dp"
+            android:gravity="center"
+            android:background="?attr/colorPrimary">
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:background="?attr/actionBarItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:tint="#000"
+                app:srcCompat="@drawable/ic_left_arrow_new" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/inbox"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_marginRight="24dp"
+                android:gravity="center" />
+        </android.support.v7.widget.Toolbar>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvChatList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" />
+            </LinearLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_margin="30dp" />
+
+</RelativeLayout>
