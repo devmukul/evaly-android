@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,7 +80,10 @@ public class GiftCardPurchasedFragment extends Fragment {
     View bottomSheetInternal;
 
     LinearLayout progressContainer;
+    ProgressBar progressBar;
     int currentPage;
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     public GiftCardPurchasedFragment() {
         // Required empty public constructor
@@ -100,6 +104,7 @@ public class GiftCardPurchasedFragment extends Fragment {
         userDetails=new UserDetails(context);
 
         progressContainer = view.findViewById(R.id.progressContainer);
+        progressBar = view.findViewById(R.id.progressBar);
         currentPage = 1;
 
         initializeBottomSheet();
@@ -107,12 +112,35 @@ public class GiftCardPurchasedFragment extends Fragment {
 
         noItem = view.findViewById(R.id.noItem);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(manager);
+
         instance=this;
         adapter=new GiftCardListPurchasedAdapter(context, itemList);
         recyclerView.setAdapter(adapter);
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if(dy > 0) //check for scroll down
+                {
+                    visibleItemCount = manager.getChildCount();
+                    totalItemCount = manager.getItemCount();
+                    pastVisiblesItems = manager.findFirstVisibleItemPosition();
 
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        {
+
+                            getGiftCardList();
+                        }
+                    } }
+            }
+        });
 
 
         getGiftCardList();
@@ -221,8 +249,17 @@ public class GiftCardPurchasedFragment extends Fragment {
 
     public void getGiftCardList(){
 
+        loading = false;
+
+
         if (currentPage == 1){
             progressContainer.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        } else  {
+
+            progressContainer.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+
         }
 
         String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?page=1";
@@ -230,8 +267,11 @@ public class GiftCardPurchasedFragment extends Fragment {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
                     try {
-                        JSONArray jsonArray = response.getJSONArray("data");
 
+                        loading = true;
+                        progressBar.setVisibility(View.GONE);
+
+                        JSONArray jsonArray = response.getJSONArray("data");
 
                         if (currentPage == 1)
                             progressContainer.setVisibility(View.GONE);
@@ -245,11 +285,14 @@ public class GiftCardPurchasedFragment extends Fragment {
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Gson gson = new Gson();
-                            GiftCardListPurchasedItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListPurchasedItem.class);
 
-                            itemList.add(item);
+                            try {
 
-                            adapter.notifyItemInserted(itemList.size());
+                                GiftCardListPurchasedItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListPurchasedItem.class);
+                                itemList.add(item);
+                                adapter.notifyItemInserted(itemList.size());
+                            }catch (Exception e){}
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
