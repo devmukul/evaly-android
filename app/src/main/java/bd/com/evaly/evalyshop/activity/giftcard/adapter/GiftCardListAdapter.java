@@ -36,7 +36,14 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.tv.setText(itemList.get(i).getName());
-        Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
+
+
+        if (itemList.get(i).getImageUrl() == null)
+            Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
+        else
+            Glide.with(context).load(itemList.get(i).getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
+
+
 
         myViewHolder.amount.setText("৳ " + itemList.get(i).getPrice());
 

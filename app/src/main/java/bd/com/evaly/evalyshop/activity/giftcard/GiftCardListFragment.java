@@ -78,7 +78,8 @@ public class GiftCardListFragment extends Fragment {
     Context context;
     
     BottomSheetDialog bottomSheetDialog;
-
+    BottomSheetBehavior bottomSheetBehavior;
+    View bottomSheetInternal;
 
 
     public GiftCardListFragment() {
@@ -96,21 +97,43 @@ public class GiftCardListFragment extends Fragment {
         dialog=new ViewDialog(getActivity());
 
         context = getContext();
+        rq = Volley.newRequestQueue(context);
+        userDetails=new UserDetails(context);
+
+
+        initializeBottomSheet();
+
+
+        noItem = view.findViewById(R.id.noItem);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        instance=this;
+        adapter=new GiftCardListAdapter(context, itemList);
+        recyclerView.setAdapter(adapter);
+
+
+
+
+        getGiftCardList();
+
+        return view;
+    }
+
+
+    public void initializeBottomSheet(){
 
 
         bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_gift_cards);
 
-        View bottomSheetInternal = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        bottomSheetInternal = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
         bottomSheetInternal.setPadding(0, 0, 0, 0);
 
         new KeyboardUtil(getActivity(), bottomSheetInternal);
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        
 
         layoutBottomSheet = bottomSheetDialog.findViewById(R.id.bottom_sheet);
-
 
         image = bottomSheetDialog.findViewById(R.id.image);
         plus = bottomSheetDialog.findViewById(R.id.plus);
@@ -119,21 +142,8 @@ public class GiftCardListFragment extends Fragment {
         details = bottomSheetDialog.findViewById(R.id.details);
         name = bottomSheetDialog.findViewById(R.id.name);
         amount = bottomSheetDialog.findViewById(R.id.amount);
-
-
         total = bottomSheetDialog.findViewById(R.id.total);
         placeOrder= bottomSheetDialog.findViewById(R.id.place_order);
-
-        rq = Volley.newRequestQueue(context);
-        userDetails=new UserDetails(context);
-
-        noItem = view.findViewById(R.id.noItem);
-
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        instance=this;
-        adapter=new GiftCardListAdapter(context, itemList);
-        recyclerView.setAdapter(adapter);
 
 
         plus.setOnClickListener(new View.OnClickListener() {
@@ -188,10 +198,6 @@ public class GiftCardListFragment extends Fragment {
             }
         });
 
-
-        getGiftCardList();
-
-        return view;
     }
 
 
@@ -278,7 +284,12 @@ public class GiftCardListFragment extends Fragment {
 
 
         dialog.showDialog();
+
+        initializeBottomSheet();
+
+
         String url= UrlUtils.DOMAIN+"cpn/gift-cards/retrieve/"+slug;
+
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
@@ -296,10 +307,16 @@ public class GiftCardListFragment extends Fragment {
                             amount.setText("৳ "+item.getPrice());
                             total.setText("৳ " + item.getPrice());
 
-                            Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(image);
+
+                            if (item.getImageUrl() == null)
+                                Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(image);
+                            else
+                                Glide.with(context).load(item.getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(image);
+
+
 
                             bottomSheetDialog.show();
-
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
 
                         }else{
