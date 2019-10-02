@@ -137,9 +137,7 @@ public class HomeFragment extends Fragment {
 
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(pager);
-        
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
         viewPager.setOffscreenPageLimit(1);
 
 
@@ -160,8 +158,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
 
                 Intent ni = new Intent(context, EvalyStoreActivity.class);
-                ni.putExtra("title", "Grand Brand Days");
-                ni.putExtra("slug", "grandbranddays");
+                ni.putExtra("title", "Dark Night");
+                ni.putExtra("slug", "dark-night");
                 startActivity(ni);
 
             }
@@ -184,7 +182,6 @@ public class HomeFragment extends Fragment {
         userDetails = new UserDetails(context);
 
         InitializeActionBar InitializeActionbar = new InitializeActionBar((LinearLayout) view.findViewById(R.id.header_logo), activity, "home");
-
 
         LinearLayout orders = view.findViewById(R.id.orders);
 
@@ -303,11 +300,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("onResponse", response.toString());
-
                 try {
-
                     int count = response.getInt("unread_notification_count");
-
                     if (count>0)
                         view.findViewById(R.id.newsfeedIndicator).setVisibility(View.VISIBLE);
                     else

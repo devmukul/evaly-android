@@ -94,6 +94,8 @@ public class Token {
 
                 Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
 
+                userDetails.clearAll();
+
                 context.startActivity(new Intent(context, SignInActivity.class));
 
 
