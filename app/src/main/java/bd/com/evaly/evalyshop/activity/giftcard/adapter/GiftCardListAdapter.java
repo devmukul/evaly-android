@@ -68,9 +68,9 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
 
         public MyViewHolder(final View itemView) {
             super(itemView);
-            iv= itemView.findViewById(R.id.voucher_image);
-            tv=itemView.findViewById(R.id.voucher_name);
-            amount=itemView.findViewById(R.id.voucher_amount);
+            iv= itemView.findViewById(R.id.image);
+            tv=itemView.findViewById(R.id.name);
+            amount=itemView.findViewById(R.id.price);
             lin=itemView.findViewById(R.id.lin);
             view=itemView;
         }
