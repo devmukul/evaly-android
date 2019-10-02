@@ -78,6 +78,8 @@ public class GiftCardPurchasedFragment extends Fragment {
     BottomSheetBehavior bottomSheetBehavior;
     View bottomSheetInternal;
 
+    LinearLayout progressContainer;
+    int currentPage;
 
     public GiftCardPurchasedFragment() {
         // Required empty public constructor
@@ -97,6 +99,8 @@ public class GiftCardPurchasedFragment extends Fragment {
         rq = Volley.newRequestQueue(context);
         userDetails=new UserDetails(context);
 
+        progressContainer = view.findViewById(R.id.progressContainer);
+        currentPage = 1;
 
         initializeBottomSheet();
 
@@ -217,6 +221,9 @@ public class GiftCardPurchasedFragment extends Fragment {
 
     public void getGiftCardList(){
 
+        if (currentPage == 1){
+            progressContainer.setVisibility(View.VISIBLE);
+        }
 
         String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?page=1";
 
@@ -226,12 +233,14 @@ public class GiftCardPurchasedFragment extends Fragment {
                         JSONArray jsonArray = response.getJSONArray("data");
 
 
-                        if (jsonArray.length() == 0){
+                        if (currentPage == 1)
+                            progressContainer.setVisibility(View.GONE);
 
+
+                        if (jsonArray.length() == 0 && currentPage == 1){
                             noItem.setVisibility(View.VISIBLE);
                             TextView noText = view.findViewById(R.id.noText);
-                            noText.setText("You didn't purchased any gift card yet");
-
+                            noText.setText("You haven't purchased any gift card yet");
                         }
 
                         for (int i = 0; i < jsonArray.length(); i++) {
@@ -251,6 +260,7 @@ public class GiftCardPurchasedFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 catchError();
+                progressContainer.setVisibility(View.GONE);
             }
         }) {
             @Override

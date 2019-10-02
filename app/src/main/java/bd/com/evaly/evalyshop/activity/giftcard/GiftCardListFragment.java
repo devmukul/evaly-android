@@ -76,6 +76,9 @@ public class GiftCardListFragment extends Fragment {
     BottomSheetBehavior bottomSheetBehavior;
     View bottomSheetInternal;
 
+    LinearLayout progressContainer;
+    int currentPage;
+
 
     public GiftCardListFragment() {
         // Required empty public constructor
@@ -95,6 +98,8 @@ public class GiftCardListFragment extends Fragment {
         rq = Volley.newRequestQueue(context);
         userDetails=new UserDetails(context);
 
+        progressContainer = view.findViewById(R.id.progressContainer);
+        currentPage = 1;
 
         initializeBottomSheet();
 
@@ -201,7 +206,7 @@ public class GiftCardListFragment extends Fragment {
             dialog.hideDialog();
         }catch(Exception e){}
 
-        Toast.makeText(context, "Sorry something went wrong(server error). Please try again.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Sorry something went wrong. Please try again.", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -219,14 +224,23 @@ public class GiftCardListFragment extends Fragment {
     public void getGiftCardList(){
 
 
-        String url = UrlUtils.DOMAIN+"cpn/gift-cards/custom/list?page=1";
+
+        if (currentPage == 1){
+            progressContainer.setVisibility(View.VISIBLE);
+        }
+
+        String url = UrlUtils.DOMAIN+"cpn/gift-cards/custom/list?page="+currentPage;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
                     try {
                         JSONArray jsonArray = response.getJSONArray("data");
 
-                        if (jsonArray.length() == 0){
+
+                        if (currentPage == 1)
+                            progressContainer.setVisibility(View.GONE);
+
+                        if (jsonArray.length() == 0 && currentPage == 1){
                             noItem.setVisibility(View.VISIBLE);
                         }
 
@@ -247,6 +261,7 @@ public class GiftCardListFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 catchError();
+                progressContainer.setVisibility(View.GONE);
             }
         }) {
             @Override
