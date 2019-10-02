@@ -43,10 +43,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
         else
             Glide.with(context).load(itemList.get(i).getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
 
-
-
         myViewHolder.amount.setText("৳ " + itemList.get(i).getPrice());
-
         myViewHolder.lin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,6 +51,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
                 GiftCardListFragment.getInstance().toggleBottomSheet(itemList.get(i));
             }
         });
+
     }
 
     @Override

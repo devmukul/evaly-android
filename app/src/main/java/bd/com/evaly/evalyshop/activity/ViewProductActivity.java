@@ -571,12 +571,17 @@ public class ViewProductActivity extends BaseActivity {
                         }
 
                         for (int i = 0; i < product_variants.length(); i++) {
+
                             if (response.getJSONArray("attributes").length() == 0) {
                                 JSONArray variantArr = product_variants.getJSONObject(i).getJSONArray("product_images");
                                 for (int j = 0; j < variantArr.length(); j++) {
                                     sliderImages.add(variantArr.getString(j));
                                     sliderAdapter.notifyDataSetChanged();
                                 }
+
+                                if (variantArr.length() == 1)
+                                    sliderIndicator.setVisibility(View.GONE);
+
                                 getAvailableShops(product_variants.getJSONObject(i).getInt("variant_id"));
 
 

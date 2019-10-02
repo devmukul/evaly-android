@@ -9,11 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.giftcard.GiftCardListFragment;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 
 public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardListPurchasedAdapter.MyViewHolder>{
@@ -29,7 +27,7 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_gift_card,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_gift_card_purchased,viewGroup,false);
         return new MyViewHolder(view);
     }
 
@@ -42,14 +40,10 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         else
             Glide.with(context).load(itemList.get(i).getGiftCard()).placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
 
-
-
         myViewHolder.amount.setText("৳ " + itemList.get(i).getGiftCardPrice());
-
         myViewHolder.lin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                // Gift.getInstance().toggleBottomSheet(itemList.get(i));
             }
         });
