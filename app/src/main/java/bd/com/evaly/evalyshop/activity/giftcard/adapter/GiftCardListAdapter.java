@@ -29,7 +29,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_voucher_list,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_gift_card,viewGroup,false);
         return new MyViewHolder(view);
     }
 

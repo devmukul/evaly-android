@@ -13,23 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#fff"
-        android:elevation="4dp"
-        app:tabIndicatorColor="#333"
-        app:tabIndicatorGravity="bottom"
-        app:tabIndicatorHeight="2dp"
-        app:tabSelectedTextColor="#333"
-        app:tabTextColor="#666">
+        android:elevation="0dp"
+        android:layout_alignParentTop="true"
+        app:tabMode="scrollable">
 
 
         <android.support.design.widget.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Gift Cards" />
+            android:text="Available" />
 
         <android.support.design.widget.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="My Gift Cards" />
+            android:text="Purchased" />
 
 
     </android.support.design.widget.TabLayout>
