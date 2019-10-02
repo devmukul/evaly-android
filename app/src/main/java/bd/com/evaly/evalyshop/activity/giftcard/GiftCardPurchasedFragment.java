@@ -224,6 +224,16 @@ public class GiftCardPurchasedFragment extends Fragment {
                 response -> {
                     try {
                         JSONArray jsonArray = response.getJSONArray("data");
+
+
+                        if (jsonArray.length() == 0){
+
+                            noItem.setVisibility(View.VISIBLE);
+                            TextView noText = view.findViewById(R.id.noText);
+                            noText.setText("You didn't purchased any gift card yet");
+
+                        }
+
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Gson gson = new Gson();
                             GiftCardListPurchasedItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListPurchasedItem.class);

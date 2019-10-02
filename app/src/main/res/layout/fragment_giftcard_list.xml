@@ -28,10 +28,11 @@
             android:layout_width="match_parent"
             android:layout_height="120dp"
             app:srcCompat="@drawable/ic_gift_card_line"
+            android:adjustViewBounds="true"
             android:tint="#888888"/>
 
         <TextView
-            android:id="@+id/textView29"
+            android:id="@+id/noText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
@@ -39,7 +40,8 @@
             android:layout_marginRight="30dp"
             android:text="No gift cards available at this moment."
             android:textAlignment="center"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            android:layout_marginBottom="80dp"/>
     </LinearLayout>
 
 

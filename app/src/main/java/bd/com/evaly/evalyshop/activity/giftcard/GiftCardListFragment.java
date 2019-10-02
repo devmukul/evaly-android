@@ -60,7 +60,6 @@ public class GiftCardListFragment extends Fragment {
     static GiftCardListFragment instance;
     BottomSheetBehavior sheetBehavior;
     LinearLayout layoutBottomSheet;
-    View mViewBg;
     ViewDialog dialog;
     ImageView image,plus,minus;
     UserDetails userDetails;
@@ -226,6 +225,11 @@ public class GiftCardListFragment extends Fragment {
                 response -> {
                     try {
                         JSONArray jsonArray = response.getJSONArray("data");
+
+                        if (jsonArray.length() == 0){
+                            noItem.setVisibility(View.VISIBLE);
+                        }
+
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Gson gson = new Gson();
                             GiftCardListItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListItem.class);
