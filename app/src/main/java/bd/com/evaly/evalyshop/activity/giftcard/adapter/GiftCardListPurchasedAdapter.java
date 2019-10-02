@@ -38,7 +38,7 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         if (itemList.get(i).getGiftCardImage() == null)
             Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
         else
-            Glide.with(context).load(itemList.get(i).getGiftCard()).placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
+            Glide.with(context).load(itemList.get(i).getGiftCardImage()).placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
 
         myViewHolder.amount.setText("৳ " + itemList.get(i).getGiftCardPrice());
         myViewHolder.lin.setOnClickListener(new View.OnClickListener() {

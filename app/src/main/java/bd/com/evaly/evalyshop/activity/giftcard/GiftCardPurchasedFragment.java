@@ -3,7 +3,6 @@ package bd.com.evaly.evalyshop.activity.giftcard;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -262,7 +261,7 @@ public class GiftCardPurchasedFragment extends Fragment {
 
         }
 
-        String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?page=1";
+        String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?page="+currentPage;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
@@ -294,6 +293,9 @@ public class GiftCardPurchasedFragment extends Fragment {
                             }catch (Exception e){}
 
                         }
+
+                        currentPage++;
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                         catchError();

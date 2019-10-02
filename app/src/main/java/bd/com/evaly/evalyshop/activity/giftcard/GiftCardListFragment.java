@@ -65,7 +65,7 @@ public class GiftCardListFragment extends Fragment {
     ImageView image,plus,minus;
     UserDetails userDetails;
     TextView details,name,amount,total;
-    EditText quantity;
+    EditText quantity, phoneNumber;
     int voucherAmount=0;
     Button placeOrder;
     String giftCardSlug="";
@@ -173,6 +173,7 @@ public class GiftCardListFragment extends Fragment {
         amount = bottomSheetDialog.findViewById(R.id.amount);
         total = bottomSheetDialog.findViewById(R.id.total);
         placeOrder= bottomSheetDialog.findViewById(R.id.place_order);
+        phoneNumber = bottomSheetDialog.findViewById(R.id.phone);
 
 
         plus.setOnClickListener(new View.OnClickListener() {
@@ -223,6 +224,12 @@ public class GiftCardListFragment extends Fragment {
         placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (phoneNumber.getText().toString().equals(userDetails.getUserName())){
+                    Toast.makeText(context,"You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 createOrder(giftCardSlug);
             }
         });
@@ -285,7 +292,6 @@ public class GiftCardListFragment extends Fragment {
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Gson gson = new Gson();
-
                             try {
 
                                 GiftCardListItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListItem.class);
@@ -293,7 +299,6 @@ public class GiftCardListFragment extends Fragment {
                                 adapter.notifyItemInserted(itemList.size());
 
                             }catch (Exception e){}
-
                         }
 
                         currentPage++;
@@ -348,10 +353,7 @@ public class GiftCardListFragment extends Fragment {
 
         initializeBottomSheet();
 
-
         String url= UrlUtils.DOMAIN+"cpn/gift-cards/retrieve/"+slug;
-
-
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
                     try {
@@ -361,20 +363,16 @@ public class GiftCardListFragment extends Fragment {
                             Gson gson = new Gson();
                             GiftCardListItem item = gson.fromJson(response.getJSONObject("data").toString(), GiftCardListItem.class);
 
-
                             name.setText(item.getName());
                             details.setText(item.getDescription());
                             voucherAmount= item.getPrice();
                             amount.setText("৳ "+item.getPrice());
                             total.setText("৳ " + item.getPrice());
 
-
                             if (item.getImageUrl() == null)
                                 Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(image);
                             else
                                 Glide.with(context).load(item.getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(image);
-
-
 
                             bottomSheetDialog.show();
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -411,19 +409,18 @@ public class GiftCardListFragment extends Fragment {
     }
 
     public void createOrder(String slug){
-        String url="https://api-prod.evaly.com.bd/pay/voucher-orders/";
+
+        String url= UrlUtils.DOMAIN + "cpn/gift-card-orders/place/";
 
         dialog.showDialog();
 
         JSONObject parameters = new JSONObject();
         try {
-            parameters.put("key", "value");
-            parameters.put("voucher_variant_id",slug);
+            parameters.put("to", phoneNumber.getText().toString().trim());
+            parameters.put("gift_card", slug);
             int q=Integer.parseInt(quantity.getText().toString());
-            String str[]=total.getText().toString().split(" ");
-            int t=Integer.parseInt(str[1]);
             parameters.put("quantity",q);
-            parameters.put("total_price",t);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -431,23 +428,14 @@ public class GiftCardListFragment extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
 
-
                 dialog.hideDialog();
 
                 try{
-                    Log.d("voucher_buy",response.toString());
-                    if(response.getBoolean("success")){
-                        Toast.makeText(context, "Voucher order placed successfully", Toast.LENGTH_SHORT).show();
-                    }else{
-                        if(!response.getString("message").equals("")){
-                            String cap = response.getString("message").substring(0, 1).toUpperCase() + response.getString("message").substring(1);
-                            Toast.makeText(context,cap, Toast.LENGTH_LONG).show();
-                        }else{
-                            Toast.makeText(context, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    getActivity().finish();
-                    startActivity(getActivity().getIntent());
+
+                    Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
+
+                    bottomSheetDialog.hide();
+
                 }catch(Exception e){
 
                 }
