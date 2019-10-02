@@ -120,6 +120,12 @@ public class SignUpActivity extends BaseActivity {
         hashMap.put("phone_number", phoneNumber.getText().toString());
 
 
+        TextView ref = findViewById(R.id.referral);
+        String refText = ref.getText().toString();
+        if (!refText.equals(""))
+            userDetails.setRef(refText);
+
+
         AuthApiHelper.register(hashMap, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
             @Override
             public void onDataFetched(retrofit2.Response<JsonObject> response) {
@@ -128,11 +134,6 @@ public class SignUpActivity extends BaseActivity {
                     Toast.makeText(getApplicationContext(), "This mobile number has already been used", Toast.LENGTH_LONG).show();
                 }else if (response.code() ==201){
 
-
-                    TextView ref = findViewById(R.id.referral);
-                    String refText = ref.getText().toString();
-                    if (!refText.equals(""))
-                        userDetails.setRef(refText);
 
 
                     Intent il = new Intent(SignUpActivity.this, PasswordActivity.class);
