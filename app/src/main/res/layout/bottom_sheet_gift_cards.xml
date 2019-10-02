@@ -46,7 +46,7 @@
             android:id="@+id/amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="8dp"
             android:paddingLeft="15dp"
             android:textColor="#f57224"
             android:textSize="18sp" />
@@ -68,7 +68,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
-            android:text="Phone Number" />
+            android:text="Phone Number"
+            android:textColor="#555"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/phone"
@@ -79,6 +81,7 @@
             android:layout_marginRight="15dp"
             android:background="@drawable/input_brd"
             android:ems="10"
+            android:hint="Gift card will be sent to this number"
             android:inputType="number"
             android:padding="10dp" />
 
@@ -101,6 +104,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Quantity"
+                    android:textColor="#555"
                     android:textSize="16sp" />
 
                 <LinearLayout
@@ -166,6 +170,7 @@
                     android:layout_height="wrap_content"
                     android:text="Total Price"
                     android:textAlignment="textEnd"
+                    android:textColor="#555"
                     android:textSize="16sp" />
 
                 <TextView
