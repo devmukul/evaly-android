@@ -60,6 +60,7 @@ import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
+import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -415,6 +416,9 @@ public class EditProfileActivity extends BaseActivity {
                     userDetails.setJsonAddress(address.getText().toString());
 
                     setUserData(userInfo, alert);
+
+
+                    Token.update(context);
 
                     Log.d("json user info", userJson.toString());
 

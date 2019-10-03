@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.EditProfileActivity;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
@@ -115,7 +116,6 @@ public class GiftCardMyFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         currentPage = 1;
 
-        initializeBottomSheet();
 
 
         noItem = view.findViewById(R.id.noItem);
@@ -157,65 +157,7 @@ public class GiftCardMyFragment extends Fragment {
     }
 
 
-    public void initializeBottomSheet(){
 
-
-        bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_order_details_payment);
-
-        bottomSheetInternal = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
-        bottomSheetInternal.setPadding(0, 0, 0, 0);
-
-        new KeyboardUtil(getActivity(), bottomSheetInternal);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-        layoutBottomSheet = bottomSheetDialog.findViewById(R.id.bottom_sheet);
-
-        amountToPayView = bottomSheetDialog.findViewById(R.id.amountPay);
-        bkash = bottomSheetDialog.findViewById(R.id.bkash);
-        cards = bottomSheetDialog.findViewById(R.id.card);
-
-        TextView full_or_partial = bottomSheetDialog.findViewById(R.id.full_or_partial);
-        full_or_partial.setVisibility(View.GONE);
-
-
-
-        bkash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(context, PayViaBkashActivity.class);
-                intent.putExtra("amount", amountToPayView.getText().toString());
-                intent.putExtra("invoice_no", giftCardInvoice);
-                intent.putExtra("context", "gift_card_order_payment");
-                startActivityForResult(intent,10002);
-
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-
-            }
-        });
-
-
-
-
-        cards.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                double amToPay = Double.parseDouble(amountToPayView.getText().toString());
-
-                addBalanceViaCard(giftCardInvoice, String.valueOf((int) amToPay));
-
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-
-            }
-        });
-
-
-    }
 
 
     public void catchError(){
@@ -229,14 +171,49 @@ public class GiftCardMyFragment extends Fragment {
 
     public void toggleBottomSheet(GiftCardListPurchasedItem item){
 
-        initializeBottomSheet();
-
-
-
-
         giftCardInvoice = item.getInvoiceNo();
 
-        amountToPayView.setText(item.getTotal()+"");
+
+        bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_gift_card_redeem);
+
+        bottomSheetInternal = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        bottomSheetInternal.setPadding(0, 0, 0, 0);
+
+        new KeyboardUtil(getActivity(), bottomSheetInternal);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        layoutBottomSheet = bottomSheetDialog.findViewById(R.id.bottom_sheet);
+
+
+        Button button = bottomSheetDialog.findViewById(R.id.button);
+        EditText email = bottomSheetDialog.findViewById(R.id.email);
+        TextView details = bottomSheetDialog.findViewById(R.id.details);
+
+
+        email.setText(userDetails.getEmail());
+
+        if (userDetails.getEmail().equals(""))
+            button.setText("ADD EMAIL FIRST");
+        else
+            button.setText("REDEEM");
+
+
+        button.setOnClickListener(view1 -> {
+
+
+            if (userDetails.getEmail().equals("")) {
+                context.startActivity(new Intent(context, EditProfileActivity.class));
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+            else
+                redeemCard(giftCardInvoice);
+
+
+        });
+
+
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetDialog.show();
@@ -329,63 +306,41 @@ public class GiftCardMyFragment extends Fragment {
     }
 
 
+    public void redeemCard(String invoice_no){
 
-
-
-
-
-    public void addBalanceViaCard(String invoice, String amount) {
-
-        String url = UrlUtils.DOMAIN + "pay/pg";
-
-        Log.d("json order url", url);
-
-        JSONObject payload = new JSONObject();
-
-
-        if (amountToPayView.getText().toString().equals("")){
-            Toast.makeText(context, "Enter amount", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-
-        try {
-            payload.put("amount", amount);
-            payload.put("context", "gift_card_order_payment");
-            payload.put("context_reference", invoice);
-
-        } catch (Exception e){
-
-        }
-
-
+        String url= UrlUtils.DOMAIN + "cpn/gift-card-orders/gift-code/retrieve";
 
         dialog.showDialog();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
+        JSONObject parameters = new JSONObject();
+        try {
+            parameters.put("invoice_no", invoice_no);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
                 dialog.hideDialog();
 
-                try {
+                try{
 
-                    String purl = response.getString("payment_gateway_url");
-                    Intent intent = new Intent(context, PayViaCard.class);
-                    intent.putExtra("url", purl);
-                    startActivityForResult(intent,10002);
+                    Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
+                    bottomSheetDialog.hide();
 
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-                }catch (Exception e){
-
+                }catch(Exception e){
 
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+                dialog.hideDialog();
+                Toast.makeText(context, "Server error, try again", Toast.LENGTH_SHORT).show();
 
             }
         }) {
@@ -395,17 +350,19 @@ public class GiftCardMyFragment extends Fragment {
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
                 return headers;
             }
-
-
-
-
         };
 
+        request.setShouldCache(false);
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         rq.add(request);
+
     }
+
+
+
+
 
 
 }

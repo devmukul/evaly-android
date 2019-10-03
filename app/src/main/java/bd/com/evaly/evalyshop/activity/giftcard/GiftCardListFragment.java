@@ -437,7 +437,6 @@ public class GiftCardListFragment extends Fragment {
                 try{
 
                     Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
-
                     bottomSheetDialog.hide();
 
                 }catch(Exception e){
