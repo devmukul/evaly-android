@@ -118,8 +118,6 @@ public class PayViaCard extends AppCompatActivity {
                 super.onPageFinished(webView, url);
                 //Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
 
-
-
                 if(!redirect){
                     loadingFinished = true;
                 }

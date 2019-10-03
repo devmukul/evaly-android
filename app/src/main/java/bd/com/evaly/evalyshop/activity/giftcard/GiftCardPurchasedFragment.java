@@ -46,12 +46,14 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaCard;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
@@ -72,7 +74,7 @@ public class GiftCardPurchasedFragment extends Fragment {
     EditText quantity;
     int voucherAmount=0;
     Button placeOrder;
-    String giftCardSlug="";
+    String giftCardInvoice="";
 
     LinearLayout noItem;
     Context context;
@@ -86,6 +88,9 @@ public class GiftCardPurchasedFragment extends Fragment {
     int currentPage;
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
+
+    TextView amountToPayView;
+    ImageView bkash,cards;
 
     public GiftCardPurchasedFragment() {
         // Required empty public constructor
@@ -155,7 +160,7 @@ public class GiftCardPurchasedFragment extends Fragment {
 
 
         bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_gift_cards);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_order_details_payment);
 
         bottomSheetInternal = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
         bottomSheetInternal.setPadding(0, 0, 0, 0);
@@ -166,68 +171,48 @@ public class GiftCardPurchasedFragment extends Fragment {
 
         layoutBottomSheet = bottomSheetDialog.findViewById(R.id.bottom_sheet);
 
-        image = bottomSheetDialog.findViewById(R.id.image);
-        plus = bottomSheetDialog.findViewById(R.id.plus);
-        minus = bottomSheetDialog.findViewById(R.id.minus);
-        quantity = bottomSheetDialog.findViewById(R.id.quantity);
-        details = bottomSheetDialog.findViewById(R.id.details);
-        name = bottomSheetDialog.findViewById(R.id.name);
-        amount = bottomSheetDialog.findViewById(R.id.amount);
-        total = bottomSheetDialog.findViewById(R.id.total);
-        placeOrder= bottomSheetDialog.findViewById(R.id.place_order);
+        amountToPayView = bottomSheetDialog.findViewById(R.id.amountPay);
+        bkash = bottomSheetDialog.findViewById(R.id.bkash);
+        cards = bottomSheetDialog.findViewById(R.id.card);
+
+        TextView full_or_partial = bottomSheetDialog.findViewById(R.id.full_or_partial);
+        full_or_partial.setVisibility(View.GONE);
 
 
-        plus.setOnClickListener(new View.OnClickListener() {
+
+        bkash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int quan=Integer.parseInt(quantity.getText().toString());
-                total.setText("৳ " + (quan*voucherAmount));
-                quan+=1;
-                quantity.setText(quan+"");
+
+                Intent intent = new Intent(context, PayViaBkashActivity.class);
+                intent.putExtra("amount", amountToPayView.getText().toString());
+                intent.putExtra("invoice_no", giftCardInvoice);
+                intent.putExtra("context", "gift_card_order_payment");
+                startActivityForResult(intent,10002);
+
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+
             }
         });
 
-        minus.setOnClickListener(new View.OnClickListener() {
+
+
+
+        cards.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int quan=Integer.parseInt(quantity.getText().toString());
-                quan-=1;
-                if(quan<1){
-                    quan=1;
-                }
-                total.setText("৳ " + (quan*voucherAmount));
-                quantity.setText(quan+"");
-            }
-        });
 
-        quantity.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                double amToPay = Double.parseDouble(amountToPayView.getText().toString());
 
-            }
+                addBalanceViaCard(giftCardInvoice, String.valueOf((int) amToPay));
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                try{
-                    int quan=Integer.parseInt(s.toString());
-                    total.setText("৳ " +(quan*voucherAmount));
-                }catch(Exception e){
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
 
             }
         });
 
-        placeOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createOrder(giftCardSlug);
-            }
-        });
 
     }
 
@@ -241,11 +226,19 @@ public class GiftCardPurchasedFragment extends Fragment {
 
     }
 
-    public void toggleBottomSheet(GiftCardListItem item){
+    public void toggleBottomSheet(GiftCardListPurchasedItem item){
 
-        quantity.setText("1");
-        giftCardSlug = item.getSlug();
-        getGiftCardDetails(giftCardSlug);
+        initializeBottomSheet();
+
+
+
+
+        giftCardInvoice = item.getInvoiceNo();
+
+        amountToPayView.setText(item.getTotal()+"");
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        bottomSheetDialog.show();
 
     }
 
@@ -335,163 +328,21 @@ public class GiftCardPurchasedFragment extends Fragment {
     }
 
 
-    public void getGiftCardDetails(String slug){
 
-        if (userDetails.getToken().equals("")){
-
-            Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
-            return;
-
-        }
-
-
-        dialog.showDialog();
-
-        initializeBottomSheet();
-
-
-        String url= UrlUtils.DOMAIN+"cpn/gift-cards/retrieve/"+slug;
-
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
-                response -> {
-                    try {
-                        dialog.hideDialog();
-                        if(response.getBoolean("success")){
-
-                            Gson gson = new Gson();
-                            GiftCardListItem item = gson.fromJson(response.getJSONObject("data").toString(), GiftCardListItem.class);
-
-
-                            name.setText(item.getName());
-                            details.setText(item.getDescription());
-                            voucherAmount= item.getPrice();
-                            amount.setText("৳ "+item.getPrice());
-                            total.setText("৳ " + item.getPrice());
-
-
-                            if (item.getImageUrl() == null)
-                                Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(image);
-                            else
-                                Glide.with(context).load(item.getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(image);
-
-
-
-                            bottomSheetDialog.show();
-                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-
-                        }else{
-                            Toast.makeText(context, "Sorry the gift card is not available", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
-
-                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
-    }
-
-    public void createOrder(String slug){
-        String url="https://api-prod.evaly.com.bd/pay/voucher-orders/";
-
-        dialog.showDialog();
-
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-            parameters.put("voucher_variant_id",slug);
-            int q=Integer.parseInt(quantity.getText().toString());
-            String str[]=total.getText().toString().split(" ");
-            int t=Integer.parseInt(str[1]);
-            parameters.put("quantity",q);
-            parameters.put("total_price",t);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-
-                dialog.hideDialog();
-
-                try{
-                    Log.d("voucher_buy",response.toString());
-                    if(response.getBoolean("success")){
-                        Toast.makeText(context, "Voucher order placed successfully", Toast.LENGTH_SHORT).show();
-                    }else{
-                        if(!response.getString("message").equals("")){
-                            String cap = response.getString("message").substring(0, 1).toUpperCase() + response.getString("message").substring(1);
-                            Toast.makeText(context,cap, Toast.LENGTH_LONG).show();
-                        }else{
-                            Toast.makeText(context, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    getActivity().finish();
-                    startActivity(getActivity().getIntent());
-                }catch(Exception e){
-
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-
-                dialog.hideDialog();
-                Toast.makeText(context, "Server error, try again", Toast.LENGTH_SHORT).show();
-
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                return headers;
-            }
-        };
-
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
-
-    }
 
 
 
 
     public void addBalanceViaCard(String invoice, String amount) {
 
-        String url = "https://api.evaly.com.bd/pay/pg";
+        String url = UrlUtils.DOMAIN + "pay/pg";
 
         Log.d("json order url", url);
 
         JSONObject payload = new JSONObject();
 
 
-        if (balance.equals("")){
+        if (amountToPayView.getText().toString().equals("")){
             Toast.makeText(context, "Enter amount", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -517,17 +368,12 @@ public class GiftCardPurchasedFragment extends Fragment {
 
                 try {
 
+                    String purl = response.getString("payment_gateway_url");
+                    Intent intent = new Intent(context, PayViaCard.class);
+                    intent.putExtra("url", purl);
+                    startActivityForResult(intent,10002);
 
-
-
-
-                    itemList.clear();
-                    adapter.notifyDataSetChanged();
-                    currentPage = 1;
-
-                    getGiftCardList();
-
-
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
                 }catch (Exception e){
 
@@ -557,7 +403,7 @@ public class GiftCardPurchasedFragment extends Fragment {
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+        rq.add(request);
     }
 
 

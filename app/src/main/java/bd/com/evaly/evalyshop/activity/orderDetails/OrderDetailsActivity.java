@@ -329,6 +329,7 @@ public class OrderDetailsActivity extends BaseActivity {
                 Intent intent = new Intent(OrderDetailsActivity.this, PayViaBkashActivity.class);
                 intent.putExtra("amount", amountToPayView.getText().toString());
                 intent.putExtra("invoice_no", invoice_no);
+                intent.putExtra("context", "order_payment");
                 startActivityForResult(intent,10002);
 
                 sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);

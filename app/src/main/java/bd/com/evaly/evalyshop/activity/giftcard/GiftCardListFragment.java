@@ -59,8 +59,7 @@ public class GiftCardListFragment extends Fragment {
     GiftCardListAdapter adapter;
     RequestQueue rq;
     static GiftCardListFragment instance;
-    BottomSheetBehavior sheetBehavior;
-    LinearLayout layoutBottomSheet;
+
     ViewDialog dialog;
     ImageView image,plus,minus;
     UserDetails userDetails;
@@ -72,7 +71,9 @@ public class GiftCardListFragment extends Fragment {
 
     LinearLayout noItem;
     Context context;
-    
+
+    BottomSheetBehavior sheetBehavior;
+    LinearLayout layoutBottomSheet;
     BottomSheetDialog bottomSheetDialog;
     BottomSheetBehavior bottomSheetBehavior;
     View bottomSheetInternal;
@@ -277,6 +278,9 @@ public class GiftCardListFragment extends Fragment {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
                     try {
+
+
+                        Log.d("json gift", response.toString());
 
                         loading = true;
                         progressBar.setVisibility(View.GONE);

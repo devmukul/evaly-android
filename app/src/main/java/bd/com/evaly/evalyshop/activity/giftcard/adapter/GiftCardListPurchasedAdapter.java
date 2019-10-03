@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.giftcard.GiftCardPurchasedFragment;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 
 public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardListPurchasedAdapter.MyViewHolder>{
@@ -52,7 +53,7 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         myViewHolder.lin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Gift.getInstance().toggleBottomSheet(itemList.get(i));
+               GiftCardPurchasedFragment.getInstance().toggleBottomSheet(itemList.get(i));
             }
         });
     }

@@ -29,6 +29,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class PayViaBkashActivity extends BaseActivity {
@@ -42,7 +43,7 @@ public class PayViaBkashActivity extends BaseActivity {
     private boolean isShowed = true;
     UserDetails userDetails;
 
-    String amount="0.0", context_reference = "", paymentID = "";
+    String amount="0.0", context = "order_payment", context_reference = "", paymentID = "";
 
 
     @Override
@@ -58,6 +59,7 @@ public class PayViaBkashActivity extends BaseActivity {
         Intent intent = getIntent();
         amount = intent.getStringExtra("amount");
         context_reference = intent.getStringExtra("invoice_no");
+        context = intent.getStringExtra("context");
 
 
 
@@ -102,12 +104,12 @@ public class PayViaBkashActivity extends BaseActivity {
                 "        paymentRequest: {" +
                 "            amount: '"+amount+"'," +
                 "            intent: 'sale'," +
-                "            context: 'order_payment'," +
+                "            context: '"+context+"'," +
                 "            context_reference: '"+context_reference+"'" +
                 "        }," +
                 "        createRequest: function(request) {" +
                 "            $.ajax({" +
-                "                url: 'https://api.evaly.com.bd/pay/bkash_payment/create'," +
+                "                url: '"+UrlUtils.DOMAIN+"pay/bkash_payment/create'," +
                 "                type: 'POST'," +
                 "                contentType: 'application/json'," +
                 "                headers: {" +
@@ -129,7 +131,7 @@ public class PayViaBkashActivity extends BaseActivity {
                 "        }," +
                 "        executeRequestOnAuthorization: function() {" +
                 "            $.ajax({" +
-                "                url: 'https://api.evaly.com.bd/pay/bkash_payment/execute'," +
+                "                url: '"+ UrlUtils.DOMAIN +"pay/bkash_payment/execute'," +
                 "                type: 'POST'," +
                 "                contentType: 'application/json'," +
                 "                headers: {" +
@@ -163,7 +165,7 @@ public class PayViaBkashActivity extends BaseActivity {
                 "                    paymentRequest: {" +
                 "                        amount: '"+amount+"'," +
                 "                        intent: \"sale\"," +
-                "                        context: \"order_payment\"," +
+                "                        context: \""+context+"\"," +
                 "                        context_reference: '"+context_reference+"'" +
                 "                    }" +
                 "                });" +
@@ -172,7 +174,7 @@ public class PayViaBkashActivity extends BaseActivity {
                 "                    paymentRequest: {" +
                 "                        amount: '"+amount+"'," +
                 "                        intent: \"sale\"," +
-                "                        context: \"order_payment\"," +
+                "                        context: \""+context+"\"," +
                 "                        context_reference: '"+context_reference+"'" +
                 "                    }" +
                 "                });" +
