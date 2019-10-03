@@ -262,6 +262,37 @@
                 android:textSize="18sp" />
         </LinearLayout>
 
+
+        <LinearLayout
+            android:id="@+id/llMessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingTop="15dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="15dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                android:tint="#333"
+                app:srcCompat="@drawable/ic_inbox" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="0"
+                android:text="Messages"
+                android:textColor="#333"
+                android:textSize="18sp" />
+        </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="8dp"

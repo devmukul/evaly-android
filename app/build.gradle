@@ -9,6 +9,7 @@ android {
         targetSdkVersion 28
         versionCode 68
         versionName "1.88"
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -71,9 +72,20 @@ dependencies {
     implementation 'com.github.MikeOrtiz:TouchImageView:1.4.0'
     implementation 'com.orhanobut:logger:2.2.0'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation 'com.ethanhua:skeleton:1.1.2'
     implementation 'io.supercharge:shimmerlayout:2.1.0'
 
+    implementation "org.igniterealtime.smack:smack-android-extensions:4.3.0"
+    implementation "org.igniterealtime.smack:smack-tcp:4.3.0"
+    implementation "org.igniterealtime.smack:smack-extensions:4.3.0"
+    implementation "org.igniterealtime.smack:smack-android:4.3.0"
+    implementation "org.igniterealtime.smack:smack-experimental:4.3.0"
+
+    configurations {
+        all*.exclude group: 'xpp3', module: 'xpp3'
+    }
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 
 }

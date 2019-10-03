@@ -11,6 +11,8 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import org.jivesoftware.smackx.chatstates.ChatState;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.BreakIterator;
@@ -28,6 +30,11 @@ import bd.com.evaly.evalyshop.R;
 
 public class  Utils {
 
+    public static final int REQUEST_CODE_CAMERA = 300;
+    private static final int SECOND_MILLIS = 1000;
+    private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
+    private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
+    private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
     public static String isStrongPassword(String password){
 
@@ -53,7 +60,67 @@ public class  Utils {
         return "yes";
     }
 
+    public static String getStatusMode(int status) {
+        String mPresenceMode = "";
+        switch (status){
+            case Constants.PRESENCE_MODE_AVAILABLE_INT:
+                mPresenceMode =  Constants.PRESENCE_MODE_AVAILABLE;
+                break;
+            case Constants.PRESENCE_MODE_AWAY_INT:
+                mPresenceMode =  Constants.PRESENCE_MODE_AWAY;
+                break;
+            case Constants.PRESENCE_MODE_DND_INT:
+                mPresenceMode =  Constants.PRESENCE_MODE_DND;
+                break;
+            case Constants.PRESENCE_MODE_OFFLINE_INT:
+                mPresenceMode =  Constants.PRESENCE_MODE_XA;
+                break;
+            default:
+                mPresenceMode = Constants.PRESENCE_MODE_XA;
+                break;
+        }
 
+        return mPresenceMode;
+    }
+
+    public static String getTimeAgoOnline(long time){
+
+        // TODO: localize
+        final long diff = time;
+        if (diff < MINUTE_MILLIS) {
+            return "a minute ago";
+        } else if (diff < 50 * MINUTE_MILLIS) {
+            return diff / MINUTE_MILLIS + " minutes ago";
+        } else if (diff < 90 * MINUTE_MILLIS) {
+            return "an hour ago";
+        } else if (diff < 24 * HOUR_MILLIS) {
+            return diff / HOUR_MILLIS + " hours ago";
+        } else if (diff < 48 * HOUR_MILLIS) {
+            return "yesterday";
+        } else {
+            return diff / DAY_MILLIS + " days ago";
+        }
+    }
+
+    public static String getChatMode (ChatState mode) {
+        String mChatMode = "";
+        switch (mode){
+            case composing:
+                mChatMode =  Constants.CHAT_MODE_TYPING;
+                break;
+            case gone:
+                mChatMode =  Constants.CHAT_MODE_LEFT;
+                break;
+            case paused:
+                mChatMode =  Constants.CHAT_MODE_PAUSED;
+                break;
+            case active:
+                mChatMode =  Constants.CHAT_MODE_ACTIVE;
+                break;
+        }
+
+        return mChatMode;
+    }
 
     public static String truncateText(String text, int maxLength, String endWith) {
         if(text != null && text.length() > maxLength) {
