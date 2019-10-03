@@ -124,7 +124,7 @@ public class GiftCardPurchasedFragment extends Fragment {
         recyclerView.setLayoutManager(manager);
 
         instance=this;
-        adapter=new GiftCardListPurchasedAdapter(context, itemList);
+        adapter=new GiftCardListPurchasedAdapter(context, itemList, 0);
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
@@ -257,7 +257,7 @@ public class GiftCardPurchasedFragment extends Fragment {
 
         }
 
-        String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?page="+currentPage;
+        String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?show=purchased&page="+currentPage;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
