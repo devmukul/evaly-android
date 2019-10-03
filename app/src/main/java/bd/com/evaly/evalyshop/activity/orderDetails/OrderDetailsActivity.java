@@ -334,7 +334,6 @@ public class OrderDetailsActivity extends BaseActivity {
                 sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
-
             }
         });
 

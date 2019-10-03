@@ -457,20 +457,18 @@ public class CartActivity extends BaseActivity {
 
                 Log.d("json order", response.toString());
 
-                try {
-                    Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
-                    dialog.hideDialog();
 
-                } catch (Exception e){
-
-                }
 
                 try {
 
                     if (response.getJSONArray("data").length() < 1) {
                         dialog.hideDialog();
+                        Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+
                         return;
                     } else {
+
+                        Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
 
                         orderPlaced();
                         dialog.hideDialog();

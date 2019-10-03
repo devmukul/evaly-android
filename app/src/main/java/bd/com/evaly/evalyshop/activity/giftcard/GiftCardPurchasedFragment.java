@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.activity.giftcard;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -44,6 +45,8 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListPurchasedAdapter;
+import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.activity.orderDetails.PayViaCard;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
@@ -474,6 +477,87 @@ public class GiftCardPurchasedFragment extends Fragment {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         rq.add(request);
 
+    }
+
+
+
+
+    public void addBalanceViaCard(String invoice, String amount) {
+
+        String url = "https://api.evaly.com.bd/pay/pg";
+
+        Log.d("json order url", url);
+
+        JSONObject payload = new JSONObject();
+
+
+        if (balance.equals("")){
+            Toast.makeText(context, "Enter amount", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        try {
+            payload.put("amount", amount);
+            payload.put("context", "gift_card_order_payment");
+            payload.put("context_reference", invoice);
+
+        } catch (Exception e){
+
+        }
+
+
+
+        dialog.showDialog();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                dialog.hideDialog();
+
+                try {
+
+
+
+
+
+                    itemList.clear();
+                    adapter.notifyDataSetChanged();
+                    currentPage = 1;
+
+                    getGiftCardList();
+
+
+
+                }catch (Exception e){
+
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                return headers;
+            }
+
+
+
+
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(request);
     }
 
 
