@@ -97,6 +97,9 @@ public class MainActivity extends BaseActivity {
 
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
+
+
+
 //    private SessionManager sessionManager;
 
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
@@ -121,20 +124,20 @@ public class MainActivity extends BaseActivity {
                 xmppHandler.updateUserInfo(CredentialManager.getUserData());
             }
 
-            //Save current User
-//            sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
+            // Save current User
+            // sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
 
-//            Intent chatListIntent = new Intent(MainActivity.this, ChatListActivity.class);
-//            startActivity(chatListIntent);
-//            finish();
+            // Intent chatListIntent = new Intent(MainActivity.this, ChatListActivity.class);
+            // startActivity(chatListIntent);
+            // finish();
         }
 
         public void onLoginFailed(String msg) {
             if (!msg.contains("already logged in")){
                 xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
             }
-//            xmppHandler.disconnect();
-//            Toast.makeText(getApplicationContext(), getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
+            // xmppHandler.disconnect();
+            // Toast.makeText(getApplicationContext(), getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
         }
 
         //        //Event Listeners
@@ -144,7 +147,7 @@ public class MainActivity extends BaseActivity {
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
             xmppHandler.login();
             //Save current User
-//            sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
+            // sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
 
 //            Intent chatListIntent = new Intent(LoginActivity.this,ChatListActivity.class);
 //            startActivity(chatListIntent);
@@ -554,7 +557,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+        // mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
         if(bottomNavigationView!=null){
             Menu menu = bottomNavigationView.getMenu();
