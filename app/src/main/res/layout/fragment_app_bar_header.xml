@@ -29,8 +29,11 @@
 
             <ImageView
                 android:id="@+id/menuBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="35dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="40dp"
                 android:layout_weight="0"
                 android:background="?attr/actionBarItemBackground"
                 android:clickable="true"
@@ -43,12 +46,13 @@
                 android:id="@+id/imageView4"
                 android:layout_width="wrap_content"
                 android:layout_height="34dp"
+                android:paddingBottom="5dp"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/logo" />
+                app:srcCompat="@drawable/ic_evaly_new_logo" />
 
             <RelativeLayout
                 android:id="@+id/notification_holder"
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="fill_parent"
                 android:orientation="vertical"
                 android:gravity="center"
@@ -60,8 +64,8 @@
                 <ImageView
                     android:id="@+id/hotlist_bell"
                     android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="25dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginBottom="0dp"
