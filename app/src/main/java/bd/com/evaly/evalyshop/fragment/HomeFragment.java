@@ -289,6 +289,9 @@ public class HomeFragment extends Fragment {
 
     public void getNotificationCount(){
 
+        if (userDetails.getToken().equals(""))
+            return;
+
         String url = UrlUtils.BASE_URL_NEWSFEED+"notifications_count/";
         JSONObject parameters = new JSONObject();
         try {
