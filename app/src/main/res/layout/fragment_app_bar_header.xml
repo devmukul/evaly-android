@@ -27,20 +27,28 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp">
 
+            <RelativeLayout
+                android:layout_width="50dp"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:gravity="left"
+                android:clickable="true"
+                android:paddingLeft="8dp"
+                android:layout_marginRight="4dp"
+                android:layout_weight="0">
+
             <ImageView
                 android:id="@+id/menuBtn"
-                android:layout_width="80dp"
+                android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:paddingEnd="35dp"
-                android:layout_weight="0"
                 android:background="?attr/actionBarItemBackground"
                 android:clickable="true"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:adjustViewBounds="true"
                 android:tag="menu"
                 app:srcCompat="@drawable/ic_menu" />
+            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/imageView4"
@@ -52,27 +60,26 @@
 
             <RelativeLayout
                 android:id="@+id/notification_holder"
-                android:layout_width="80dp"
+                android:layout_width="50dp"
                 android:layout_height="fill_parent"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:layout_gravity="center"
+                android:gravity="right"
                 android:clickable="true"
                 android:layout_weight="0"
-                style="@android:style/Widget.ActionButton">
+                style="@android:style/Widget.ActionButton"
+                android:layout_marginRight="4dp">
 
                 <ImageView
                     android:id="@+id/hotlist_bell"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="0dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginBottom="0dp"
                     android:contentDescription="bell"
                     android:gravity="center"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="2dp"
+                    android:adjustViewBounds="true"
                     android:src="@drawable/ic_notification" />
 
                 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
