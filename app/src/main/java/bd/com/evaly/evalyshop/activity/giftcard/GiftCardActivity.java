@@ -30,6 +30,9 @@ public class GiftCardActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Gift Cards");
 
+
+
+
         UserDetails userDetails = new UserDetails(this);
 
         if (userDetails.getToken().equals(""))
