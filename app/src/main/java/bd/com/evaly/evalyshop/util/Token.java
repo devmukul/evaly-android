@@ -105,22 +105,7 @@ public class Token {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
 
-                String userAgent;
-
-                try {
-                    userAgent = WebSettings.getDefaultUserAgent(context);
-                } catch (Exception e) {
-                    userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-                }
-
-
-
-                headers.put("User-Agent", userAgent);
                 return headers;
             }
         };

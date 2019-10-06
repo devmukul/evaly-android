@@ -146,7 +146,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Intent ni = new Intent(context, GiftCardActivity.class);
+                Intent ni = new Intent(context, InviteEarn.class);
 
                 startActivity(ni);
             }
@@ -288,6 +288,9 @@ public class HomeFragment extends Fragment {
 
 
     public void getNotificationCount(){
+
+        if (userDetails.getToken().equals(""))
+            return;
 
         String url = UrlUtils.BASE_URL_NEWSFEED+"notifications_count/";
         JSONObject parameters = new JSONObject();
