@@ -226,10 +226,10 @@ public class SignInActivity extends BaseActivity {
 
 
                     Toast.makeText(SignInActivity.this, "Successfully signed in", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(SignInActivity.this, UserDashboardActivity.class);
+                    Intent intent = new Intent(SignInActivity.this, UserDashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("from", "signin");
                     startActivity(intent);
-                    finish();
+                    finishAffinity();
 
 
                 } catch (Exception e) {

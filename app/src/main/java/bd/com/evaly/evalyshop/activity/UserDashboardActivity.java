@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.menu.MenuBuilder;
@@ -33,7 +34,9 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.orhanobut.logger.Logger;
 
+import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,15 +44,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.adapter.AddressAdapter;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -69,6 +78,70 @@ public class UserDashboardActivity extends BaseActivity {
     ViewDialog alert;
 
     String userAgent;
+
+    private AppController mChatApp = AppController.getInstance();
+    private XMPPHandler xmppHandler;
+//    private SessionManager sessionManager;
+
+    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+
+        @Override
+        public void onConnected() {
+            xmppHandler = AppController.getmService().xmpp;
+            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+            xmppHandler.login();
+        }
+
+        //Event Listeners
+        public void onLoggedIn() {
+
+            Logger.d("LOGIN =========");
+            Logger.d(xmppHandler.isConnected());
+            VCard vCard = xmppHandler.getCurrentUserDetails();
+            Logger.d(vCard.getFirstName());
+            if ( vCard.getLastName() == null){
+                Logger.d("========");
+                xmppHandler.updateUserInfo(CredentialManager.getUserData());
+            }
+
+            //Save current User
+//            sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
+
+//            Intent chatListIntent = new Intent(MainActivity.this, ChatListActivity.class);
+//            startActivity(chatListIntent);
+//            finish();
+        }
+
+        public void onLoginFailed(String msg) {
+            if (!msg.contains("already logged in")){
+                xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
+            }
+//            xmppHandler.disconnect();
+//            Toast.makeText(getApplicationContext(), getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
+        }
+
+        //        //Event Listeners
+        public void onSignupSuccess(){
+
+            Logger.d("Signup success");
+            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+            xmppHandler.login();
+            //Save current User
+//            sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
+
+//            Intent chatListIntent = new Intent(LoginActivity.this,ChatListActivity.class);
+//            startActivity(chatListIntent);
+//            finish();
+        }
+//
+//        public void onSignupFailed(String error){
+//            xmppHandler.disconnect();
+//            Logger.d(error);
+//            Toast.makeText(getApplicationContext(),getString(R.string.login_failed),Toast.LENGTH_SHORT).show();
+//        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +167,13 @@ public class UserDashboardActivity extends BaseActivity {
         if(extras!=null){
             from=extras.getString("from");
         }
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                startXmppService();
+            }
+        });
 
         name=findViewById(R.id.name);
         balance=findViewById(R.id.balance);
@@ -196,6 +276,25 @@ public class UserDashboardActivity extends BaseActivity {
 
     }
 
+    private void startXmppService() {
+
+        //Start XMPP Service (if not running already)
+        if (!XMPPService.isServiceRunning) {
+            Intent intent = new Intent(this, XMPPService.class);
+            mChatApp.UnbindService();
+            mChatApp.BindService(intent);
+        } else {
+            xmppHandler = AppController.getmService().xmpp;
+            if (!xmppHandler.isConnected()) {
+                xmppHandler.connect();
+            } else {
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+            }
+        }
+
+    }
+
     @OnClick(R.id.llMessage)
     void gotoMessage(){
         startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
@@ -207,6 +306,8 @@ public class UserDashboardActivity extends BaseActivity {
     public void onResume(){
 
         super.onResume();
+
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
         Balance.update(this, balance);
         Token.update(this);

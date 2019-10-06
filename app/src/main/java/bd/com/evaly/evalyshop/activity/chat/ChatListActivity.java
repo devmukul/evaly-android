@@ -180,23 +180,23 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
     }
 
-    @OnClick(R.id.fab)
-    void fab() {
-        xmppHandler.createGroupChat(CredentialManager.getUserName(), "EvalyGroup");
-//        xmppHandler.sendRequestTo("01673375194", CredentialManager.getUserData().getFirst_name());
-//        String id = CredentialManager.getUserName();
-//        if (!id.contains("@")) {
-//            id = id + "@" + Constants.XMPP_DOMAIN;
-//        }
-//
-//        BareJid jid = null;
-//        try {
-//            jid = JidCreate.bareFrom(id);
-//        } catch (XmppStringprepException e) {
-//            e.printStackTrace();
-//        }
-//        xmppHandler.confirmSubscription(jid, false);
-    }
+//    @OnClick(R.id.fab)
+//    void fab() {
+//        xmppHandler.createGroupChat(CredentialManager.getUserName(), "EvalyGroup");
+////        xmppHandler.sendRequestTo("01673375194", CredentialManager.getUserData().getFirst_name());
+////        String id = CredentialManager.getUserName();
+////        if (!id.contains("@")) {
+////            id = id + "@" + Constants.XMPP_DOMAIN;
+////        }
+////
+////        BareJid jid = null;
+////        try {
+////            jid = JidCreate.bareFrom(id);
+////        } catch (XmppStringprepException e) {
+////            e.printStackTrace();
+////        }
+////        xmppHandler.confirmSubscription(jid, false);
+//    }
 
     @OnClick(R.id.ivBack)
     void back() {

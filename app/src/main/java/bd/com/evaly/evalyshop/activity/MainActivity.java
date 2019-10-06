@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
@@ -232,8 +233,14 @@ public class MainActivity extends BaseActivity {
 
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
 
-        if (!CredentialManager.getUserName().equalsIgnoreCase("")){
-            startXmppService();
+        if (!userDetails.getToken().equals("")){
+            Logger.d("===========");
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    startXmppService();
+                }
+            });
         }
 
 

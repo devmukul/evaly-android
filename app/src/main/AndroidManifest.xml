@@ -40,7 +40,9 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
-            android:name=".activity.chat.ChatDetailsActivity" />
+            android:name=".activity.chat.ChatDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
         <activity
             android:name=".activity.TransactionHistory"
             android:theme="@style/ThemeTransaction" />
