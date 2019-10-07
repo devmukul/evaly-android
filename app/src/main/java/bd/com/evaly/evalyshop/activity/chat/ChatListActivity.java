@@ -270,7 +270,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                     if (roasterModel != null) {
                         dialog.hideDialog();
                         VCard vCard = xmppHandler.getUserDetails(roasterModel.getRoasterEntryUser().asEntityBareJidIfPossible());
-                        VCardObject vCardObject = new VCardObject(vCard.getFirstName() + " " + vCard.getLastName(), vCard.getFrom(), vCard.getField("URL"), 0, vCard.getNickName());
+                        VCardObject vCardObject = new VCardObject(vCard.getFirstName() + " " + vCard.getLastName(), vCard.getFrom(), vCard.getField("URL"), 0);
                         startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class).putExtra("vcard", (Serializable) vCardObject));
                     } else {
                         dialog.showDialog();
@@ -324,7 +324,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                                         } else {
                                             dialog.hideDialog();
                                             loadRoster();
-                                            VCardObject vCardObject = new VCardObject(vCard.getFirstName() + " " + vCard.getLastName(), vCard.getFrom(), vCard.getField("URL"), 0, vCard.getNickName());
+                                            VCardObject vCardObject = new VCardObject(vCard.getFirstName() + " " + vCard.getLastName(), vCard.getFrom(), vCard.getField("URL"), 0);
                                             startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class).putExtra("vcard", (Serializable) vCardObject));
 
                                         }
@@ -521,7 +521,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         Logger.d(vCard.getTo());
         Logger.d(vCard.getFrom());
 
-        VCardObject vCardObject = new VCardObject(vCard.getFirstName() + " " + vCard.getLastName(), vCard.getFrom(), vCard.getField("URL"), mUserList.get(position).getStatus(), vCard.getNickName());
+        VCardObject vCardObject = new VCardObject(vCard.getFirstName() + " " + vCard.getLastName(), vCard.getFrom(), vCard.getField("URL"), mUserList.get(position).getStatus());
         startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class).putExtra("vcard", (Serializable) vCardObject));
     }
 

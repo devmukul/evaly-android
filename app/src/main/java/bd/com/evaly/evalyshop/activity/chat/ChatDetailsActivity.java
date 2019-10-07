@@ -202,7 +202,12 @@ public class ChatDetailsActivity extends AppCompatActivity {
         vCard = (VCardObject) getIntent().getSerializableExtra("vcard");
 
         setSupportActionBar(toolbar);
-        tvName.setText(vCard.getName());
+        if (vCard.getName().trim().contains("null")){
+            tvName.setText("Customer");
+        }else {
+            tvName.setText(vCard.getName());
+        }
+
 
         if (vCard.getStatus() == 1){
             tvOnlineStatus.setVisibility(View.VISIBLE);
