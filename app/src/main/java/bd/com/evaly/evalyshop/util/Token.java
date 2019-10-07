@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -91,16 +92,19 @@ public class Token {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
 
-                Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
-
-                userDetails.clearAll();
-
-                context.startActivity(new Intent(context, SignInActivity.class));
-
-
+                    if (response.statusCode != 201) {
+                        Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
+                        userDetails.clearAll();
+                        context.startActivity(new Intent(context, SignInActivity.class));
+                    }
+                }
             }
+
         }) {
+
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
