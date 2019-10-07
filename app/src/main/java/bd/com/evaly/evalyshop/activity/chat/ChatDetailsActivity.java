@@ -123,7 +123,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             rvChatDetails.smoothScrollToPosition(adapter.getItemCount() - 1);
 
-
 //                }
         }
 
@@ -182,7 +181,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 if (AppController.getmService().xmpp.checkSender(mVCard.getFrom(), JidCreate.bareFrom(chatStateModel.getUser()))) {
 //                    chatStatusTv.setText(chatStatus);
                     Logger.d(chatStatus);
-
                 }
             } catch (XmppStringprepException e) {
                 e.printStackTrace();

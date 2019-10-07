@@ -470,7 +470,7 @@ public class XMPPHandler {
 
         ArrayList<RoasterModel> roasterModelArrayList = new ArrayList<>();
         for (RosterEntry entry : entries) {
-            Logger.d(new Gson().toJson(entry.getGroups()));
+//            Logger.d(new Gson().toJson(entry.getGroups()));
             Presence presence = roster.getPresence(entry.getJid());
 
             Presence.Mode mode = presence.getMode();

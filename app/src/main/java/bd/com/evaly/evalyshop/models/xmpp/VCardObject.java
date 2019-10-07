@@ -9,12 +9,22 @@ public class VCardObject implements Serializable {
     private Jid jid;
     private String url;
     private int status;
+    private String nickName;
 
-    public VCardObject(String name, Jid jid, String url, int status) {
+    public VCardObject(String name, Jid jid, String url, int status, String nickName) {
         this.name = name;
         this.jid = jid;
         this.url = url;
         this.status = status;
+        this.nickName = nickName;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getName() {

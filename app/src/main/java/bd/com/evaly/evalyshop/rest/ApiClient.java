@@ -12,6 +12,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -30,13 +31,22 @@ public class ApiClient {
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
-        if (retrofit == null) {
             retrofit = new Retrofit.Builder().baseUrl(UrlUtils.BASE_URL)
                     .addConverterFactory(StringConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .client(getUnsafeOkHttpClient()).build();
-        }
+
+        return retrofit;
+    }
+
+    public static Retrofit getXmppClient() {
+        retrofit = new Retrofit.Builder().baseUrl("http://"+ Constants.XMPP_DOMAIN+":5280")
+                .addConverterFactory(StringConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .client(getUnsafeOkHttpClient()).build();
+
         return retrofit;
     }
 

@@ -1,12 +1,15 @@
 package bd.com.evaly.evalyshop.models.apiHelper;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.SetPasswordModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
@@ -45,6 +48,62 @@ public class AuthApiHelper {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                listener.onFailed(0);
+            }
+        });
+
+    }
+
+    public static void changeXmppPassword(HashMap<String, String> data, DataFetchingListener<Response<JsonPrimitive>> listener){
+
+        IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
+        Call<JsonPrimitive> call = iApiClient.changeXmppPassword(data);
+        call.enqueue(new Callback<JsonPrimitive>() {
+            @Override
+            public void onResponse(Call<JsonPrimitive> call, Response<JsonPrimitive> response) {
+                listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<JsonPrimitive> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
+
+    }
+
+    public static void addRoster(HashMap<String, String> data, DataFetchingListener<Response<JsonPrimitive>> listener){
+
+        IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
+        Call<JsonPrimitive> call = iApiClient.addRoster(data);
+        call.enqueue(new Callback<JsonPrimitive>() {
+            @Override
+            public void onResponse(Call<JsonPrimitive> call, Response<JsonPrimitive> response) {
+                listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<JsonPrimitive> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
+
+    }
+    public static void sendCustomMessage(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener){
+
+        IApiClient iApiClient = ApiClient.getClient().create(IApiClient.class);
+        Call<JsonObject> call = iApiClient.sendCustomMessage(CredentialManager.getToken(), data);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Logger.d(t.getMessage());
                 listener.onFailed(0);
             }
         });

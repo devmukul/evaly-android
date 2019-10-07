@@ -31,6 +31,7 @@
                 android:layout_height="20dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
+                android:visibility="gone"
                 android:background="@drawable/white_circle">
 
                 <TextView
@@ -61,7 +62,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Name"
                     android:textColor="#333"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -71,8 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:gravity="center"
-                    android:text="12.30 pm" />
+                    android:gravity="center" />
 
                 <ImageView
                     android:layout_width="20dp"
@@ -87,8 +86,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:paddingRight="10dp"
-                android:text="Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum" />
+                android:paddingRight="10dp" />
         </LinearLayout>
     </LinearLayout>
 
