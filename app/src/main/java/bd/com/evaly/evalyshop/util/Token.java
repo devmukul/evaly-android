@@ -30,9 +30,7 @@ public class Token {
     public static void update(Context context){
 
 
-
         UserDetails userDetails = new UserDetails(context);
-
 
         if(userDetails.getToken().equals(""))
             return;
@@ -52,35 +50,22 @@ public class Token {
                     JSONObject data = response.getJSONObject("data");
 
                     String token = data.getString("token");
-
-
                     JSONObject ob = data.getJSONObject("user_info");
 
-                    if (ob.has("groups")){
-
+                    if (ob.has("groups"))
                         userDetails.setGroup(ob.getJSONArray("groups").toString());
 
-                    }
-
-                    Log.d("json group", userDetails.getGroups());
-
                     userDetails.setCreatedAt(ob.getString("created_at"));
-
                     userDetails.setToken(token);
                     userDetails.setUserName(ob.getString("username"));
                     userDetails.setFirstName(ob.getString("first_name"));
                     userDetails.setLastName(ob.getString("last_name"));
-
                     userDetails.setEmail(ob.getString("email"));
                     userDetails.setPhone(ob.getString("contact"));
-
-                    //userDetails.setUserID(ob.getInt("id"));
                     userDetails.setJsonAddress(ob.getString("address"));
                     userDetails.setProfilePicture(ob.getString("profile_pic_url"));
                     userDetails.setProfilePictureSM(ob.getString("image_sm"));
 
-
-                    Log.d("json token", "token updated");
 
                 } catch (Exception e) {
                     e.printStackTrace();
