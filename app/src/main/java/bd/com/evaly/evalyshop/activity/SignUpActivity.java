@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -74,6 +77,18 @@ public class SignUpActivity extends BaseActivity {
         close = findViewById(R.id.close);
         userDetails = new UserDetails(this);
 
+
+
+        TextView privacyText = findViewById(R.id.privacyText);
+
+        privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/privacy-policy\">Privacy Policy</a> and <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> of Evaly."));
+        privacyText.setMovementMethod(LinkMovementMethod.getInstance());
+
+
+        CheckBox checkBox = findViewById(R.id.checkBox);
+
+
+
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +100,8 @@ public class SignUpActivity extends BaseActivity {
                     Toast.makeText(SignUpActivity.this, "Please enter your phone number", Toast.LENGTH_SHORT).show();
                 } else if (phoneNumber.getText().toString().length() != 11) {
                     Toast.makeText(SignUpActivity.this, "Please enter your phone number correctly", Toast.LENGTH_SHORT).show();
+                } else if (!checkBox.isSelected()){
+                    Toast.makeText(SignUpActivity.this, "You must accept privacy policy and terms & conditions in order to sign up for Evaly", Toast.LENGTH_LONG).show();
                 } else {
                     signUpUser();
                 }
