@@ -322,6 +322,21 @@ public class OrderDetailsActivity extends BaseActivity {
         });
 
 
+
+
+        TextView payViaGiftCard = findViewById(R.id.payViaGiftCard);
+
+        payViaGiftCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialogGiftCardPayment();
+
+
+            }
+        });
+
+
         bkash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -449,6 +464,9 @@ public class OrderDetailsActivity extends BaseActivity {
         final EditText code = dialogView.findViewById(R.id.code);
 
 
+        amount.setText(due_amount+"");
+
+
         alertDialog.getWindow()
                 .setLayout(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -499,7 +517,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
         dialog.showDialog();
         Log.d("json order url", url);
-        Toast.makeText(this,"Partial payment is processing", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"Payment is processing", Toast.LENGTH_SHORT).show();
 
         JSONObject payload = new JSONObject();
 
