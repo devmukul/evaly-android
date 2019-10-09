@@ -84,9 +84,7 @@ public class SignUpActivity extends BaseActivity {
         privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/privacy-policy\">Privacy Policy</a> and <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> of Evaly."));
         privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
-
         CheckBox checkBox = findViewById(R.id.checkBox);
-
 
 
         signUp.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +98,7 @@ public class SignUpActivity extends BaseActivity {
                     Toast.makeText(SignUpActivity.this, "Please enter your phone number", Toast.LENGTH_SHORT).show();
                 } else if (phoneNumber.getText().toString().length() != 11) {
                     Toast.makeText(SignUpActivity.this, "Please enter your phone number correctly", Toast.LENGTH_SHORT).show();
-                } else if (!checkBox.isSelected()){
+                } else if (!checkBox.isChecked()){
                     Toast.makeText(SignUpActivity.this, "You must accept privacy policy and terms & conditions in order to sign up for Evaly", Toast.LENGTH_LONG).show();
                 } else {
                     signUpUser();

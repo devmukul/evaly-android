@@ -14,6 +14,8 @@ import android.support.v4.widget.NestedScrollView;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -185,6 +187,15 @@ public class CartActivity extends BaseActivity {
         };
 
 
+
+        TextView privacyText = bottomSheetView.findViewById(R.id.privacyText);
+
+        privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
+        privacyText.setMovementMethod(LinkMovementMethod.getInstance());
+
+        CheckBox checkBox = bottomSheetView.findViewById(R.id.checkBox);
+
+
         selectAll.setOnCheckedChangeListener(selectAllListener);
         btnBottomSheet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,6 +203,11 @@ public class CartActivity extends BaseActivity {
 
                 if(userDetails.getToken().equals("")) {
                     startActivity(new Intent(CartActivity.this, SignInActivity.class));
+                    return;
+                }
+
+                if (!checkBox.isChecked()){
+                    Toast.makeText(CartActivity.this, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
                     return;
                 }
 
