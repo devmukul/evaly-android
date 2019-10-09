@@ -433,6 +433,159 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
 
+
+    public void dialogGiftCardPayment(){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_pay_with_gift_card, null);
+        dialogBuilder.setView(dialogView);
+
+        AlertDialog alertDialog = dialogBuilder.create();
+
+        Button d_submit = dialogView.findViewById(R.id.submit);
+
+        final EditText amount = dialogView.findViewById(R.id.amount);
+        final EditText code = dialogView.findViewById(R.id.code);
+
+
+        alertDialog.getWindow()
+                .setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+
+        alertDialog.show();
+
+
+        d_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (amount.getText().toString().equals("")){
+                    Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (code.getText().toString().equals("")){
+                    Toast.makeText(context, "Please enter gift card coupon code.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                double partial_amount = Double.parseDouble(amount.getText().toString());
+
+                if (partial_amount > total_amount){
+                    Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+
+                double userBalance = Double.parseDouble(userDetails.getBalance());
+
+
+                makePartialPayment(invoice_no, String.valueOf((int) partial_amount));
+
+
+
+            }
+        });
+    }
+
+
+
+
+
+    public void makePaymentViaGiftCard(String giftCode, String invoice, String amount){
+
+        String url= UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-card/";
+
+        dialog.showDialog();
+        Log.d("json order url", url);
+        Toast.makeText(this,"Partial payment is processing", Toast.LENGTH_SHORT).show();
+
+        JSONObject payload = new JSONObject();
+
+        try{
+            payload.put("invoice_no", invoice);
+            payload.put("gift_code", giftCode);
+            payload.put("amount", Integer.parseInt(amount));
+        } catch (Exception e){
+
+
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+
+                Log.d("json payment res", response.toString());
+
+                if(!response.has("success")){
+
+                    try {
+
+                        dialog.hideDialog();
+                        shouldAddBalance();
+
+                    } catch (Exception e){
+                    }
+
+                } else {
+
+                    // it means all payment done
+                    Toast.makeText(OrderDetailsActivity.this,"Payment successful!", Toast.LENGTH_LONG).show();
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            dialog.hideDialog();
+                            finish();
+                            startActivity(getIntent());
+
+                        }
+                    }, 1500);
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                dialog.hideDialog();
+                Log.e("onErrorResponse", error.toString());
+
+                //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
+                shouldAddBalance();
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                // headers.put("Host", "api-prod.evaly.com.bd");
+                headers.put("Content-Type", "application/json");
+                headers.put("Origin", "https://evaly.com.bd");
+                headers.put("Referer", "https://evaly.com.bd/");
+                headers.put("User-Agent", userAgent);
+                return headers;
+            }
+
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(request);
+    }
+
+
+
+
+
+
+
+
+
     @Override
     public void onResume(){
         super.onResume();
