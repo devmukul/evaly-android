@@ -613,7 +613,54 @@ public class OrderDetailsActivity extends BaseActivity {
     public void onResume(){
         super.onResume();
         Balance.update(this);
+        checkCardBalance();
 
+    }
+
+
+
+
+
+    public void checkCardBalance(){
+
+        String url=UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName()+"/";
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("onResponse", response.toString());
+                try {
+
+                    TextView payViaGiftCard = findViewById(R.id.payViaGiftCard);
+                    response = response.getJSONObject("data");
+                    if (response.getDouble("gift_card_balance") < 1)
+                        payViaGiftCard.setVisibility(View.GONE);
+                    else
+                        payViaGiftCard.setVisibility(View.VISIBLE);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                return headers;
+            }
+        };
+        request.setShouldCache(false);
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueue queue= Volley.newRequestQueue(context);
+        queue.add(request);
     }
 
 

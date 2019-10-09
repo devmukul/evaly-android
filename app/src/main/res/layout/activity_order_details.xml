@@ -342,7 +342,8 @@
                     android:paddingBottom="8dp"
                     android:text="Pay via Gift Card"
                     android:textAlignment="center"
-                    android:textColor="#333" />
+                    android:textColor="#333"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
