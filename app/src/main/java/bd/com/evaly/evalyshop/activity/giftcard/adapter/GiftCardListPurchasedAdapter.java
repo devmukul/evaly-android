@@ -55,10 +55,15 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         myViewHolder.giftTo.setText(itemList.get(i).getTo());
         myViewHolder.status.setText(Utils.toFirstCharUpperAll(itemList.get(i).getPaymentStatus()));
 
-        if (itemList.get(i).getPaymentStatus().equals("paid"))
+        if (itemList.get(i).getPaymentStatus().equals("paid")) {
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_paid_bg));
-        else
+
+            if (type==0)
+                myViewHolder.button.setVisibility(View.GONE);
+        }
+        else {
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
+        }
 
 
         myViewHolder.lin.setOnClickListener(new View.OnClickListener() {

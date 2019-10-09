@@ -124,8 +124,8 @@ public class GiftCardMyFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
 
-        instance=this;
-        adapter=new GiftCardListPurchasedAdapter(context, itemList,1);
+        instance = this;
+        adapter = new GiftCardListPurchasedAdapter(context, itemList,1);
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
@@ -237,9 +237,14 @@ public class GiftCardMyFragment extends Fragment {
 
         String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?show=gifts&page="+currentPage;
 
+        Log.d("json url", url);
+
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
                     try {
+
+                        Log.d("json response", response.toString());
 
                         loading = true;
                         progressBar.setVisibility(View.GONE);
@@ -254,17 +259,30 @@ public class GiftCardMyFragment extends Fragment {
                             noItem.setVisibility(View.VISIBLE);
                             TextView noText = view.findViewById(R.id.noText);
                             noText.setText("You have no gift cards");
+                        } else {
+
+                            recyclerView.setVisibility(View.VISIBLE);
                         }
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Gson gson = new Gson();
 
+                            GiftCardListPurchasedItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListPurchasedItem.class);
+                            itemList.add(item);
+                            adapter.notifyItemInserted(itemList.size());
+
                             try {
 
-                                GiftCardListPurchasedItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListPurchasedItem.class);
-                                itemList.add(item);
-                                adapter.notifyItemInserted(itemList.size());
-                            }catch (Exception e){}
+
+
+                                Log.d("json", "added");
+
+
+                            }catch (Exception e){
+
+                                Log.d("json exc", e.toString());
+
+                            }
 
                         }
 
