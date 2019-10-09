@@ -84,6 +84,8 @@
             android:hint="Gift card will be sent to this number"
             android:inputType="number"
             android:maxLength="11"
+            android:singleLine="true"
+            android:maxLines="1"
             android:padding="10dp" />
 
         <LinearLayout

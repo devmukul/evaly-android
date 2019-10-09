@@ -159,7 +159,7 @@ public class GiftCardListFragment extends Fragment {
         bottomSheetInternal = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
         bottomSheetInternal.setPadding(0, 0, 0, 0);
 
-        new KeyboardUtil(getActivity(), bottomSheetInternal);
+        // new KeyboardUtil(getActivity(), bottomSheetInternal);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 

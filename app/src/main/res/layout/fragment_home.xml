@@ -121,7 +121,7 @@
                         android:background="@drawable/circle_bg"
                         android:clickable="false"
                         android:tint="#0EAD75"
-                        app:srcCompat="@drawable/ic_referral" />
+                        app:srcCompat="@drawable/ic_gift_card_line2" />
 
                     <TextView
                         android:id="@+id/textView5"
@@ -131,7 +131,7 @@
                         android:layout_weight="0"
                         android:clickable="false"
                         android:gravity="center"
-                        android:text="Invite &amp; Earn" />
+                        android:text="Gift Card" />
                 </LinearLayout>
 
 

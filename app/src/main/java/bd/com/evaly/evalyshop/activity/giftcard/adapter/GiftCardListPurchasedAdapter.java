@@ -80,10 +80,12 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         if (type==0) {
             myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_buy_btn));
             myViewHolder.button.setText("PAY");
+            myViewHolder.balanceHolder.setVisibility(View.GONE);
         }
         else {
             myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_redeem_btn));
             myViewHolder.button.setText("Redeem");
+            myViewHolder.balance.setText("৳ " + itemList.get(i).getAvailableBalance());
         }
 
     }
@@ -96,8 +98,8 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         ImageView iv;
-        TextView tv,amount,quantity, invoiceId, giftFrom, giftTo, status;
-        LinearLayout lin;
+        TextView tv,amount,quantity, invoiceId, giftFrom, giftTo, status, balance;
+        LinearLayout lin, balanceHolder;
         View view;
         Button button;
 
@@ -113,6 +115,8 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
             quantity = itemView.findViewById(R.id.quantity);
             status = itemView.findViewById(R.id.status);
             button = itemView.findViewById(R.id.button);
+            balanceHolder = itemView.findViewById(R.id.balance_holder);
+            balance = itemView.findViewById(R.id.balance);
 
 
             lin=itemView.findViewById(R.id.lin);

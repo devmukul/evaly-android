@@ -464,7 +464,7 @@ public class OrderDetailsActivity extends BaseActivity {
         final EditText code = dialogView.findViewById(R.id.code);
 
 
-        amount.setText(due_amount+"");
+        amount.setText((int)due_amount+"");
 
 
         alertDialog.getWindow()
@@ -479,6 +479,8 @@ public class OrderDetailsActivity extends BaseActivity {
         d_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
 
                 if (amount.getText().toString().equals("")){
                     Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
@@ -499,7 +501,7 @@ public class OrderDetailsActivity extends BaseActivity {
                 double userBalance = Double.parseDouble(userDetails.getBalance());
 
 
-                makePartialPayment(invoice_no, String.valueOf((int) partial_amount));
+                makePaymentViaGiftCard(code.getText().toString(), invoice_no, String.valueOf((int) partial_amount));
 
 
 
@@ -513,7 +515,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void makePaymentViaGiftCard(String giftCode, String invoice, String amount){
 
-        String url= UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-card/";
+        String url= UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-code/";
 
         dialog.showDialog();
         Log.d("json order url", url);
@@ -524,7 +526,7 @@ public class OrderDetailsActivity extends BaseActivity {
         try{
             payload.put("invoice_no", invoice);
             payload.put("gift_code", giftCode);
-            payload.put("amount", Integer.parseInt(amount));
+            payload.put("amount", amount);
         } catch (Exception e){
 
 
@@ -541,7 +543,8 @@ public class OrderDetailsActivity extends BaseActivity {
                     try {
 
                         dialog.hideDialog();
-                        shouldAddBalance();
+
+                        Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
 
                     } catch (Exception e){
                     }
@@ -572,7 +575,9 @@ public class OrderDetailsActivity extends BaseActivity {
                 Log.e("onErrorResponse", error.toString());
 
                 //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
-                shouldAddBalance();
+
+                Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
+
 
             }
         }) {
