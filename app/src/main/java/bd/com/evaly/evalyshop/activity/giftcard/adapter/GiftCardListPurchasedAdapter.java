@@ -52,7 +52,7 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         myViewHolder.quantity.setText("x "+itemList.get(i).getQuantity());
         myViewHolder.invoiceId.setText(itemList.get(i).getInvoiceNo());
         myViewHolder.giftFrom.setText(itemList.get(i).getFrom());
-        myViewHolder.giftTo.setText(itemList.get(i).getTo());
+
         myViewHolder.status.setText(Utils.toFirstCharUpperAll(itemList.get(i).getPaymentStatus()));
 
         if (itemList.get(i).getPaymentStatus().equals("paid")) {
@@ -81,11 +81,20 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
             myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_buy_btn));
             myViewHolder.button.setText("PAY");
             myViewHolder.balanceHolder.setVisibility(View.GONE);
+            myViewHolder.fromTotext.setText("To");
+            myViewHolder.giftTo.setText(itemList.get(i).getTo());
         }
         else {
             myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_redeem_btn));
             myViewHolder.button.setText("Redeem");
+
+
+            myViewHolder.balanceHolder.setVisibility(View.VISIBLE);
             myViewHolder.balance.setText("৳ " + itemList.get(i).getAvailableBalance());
+
+
+            myViewHolder.fromTotext.setText("From");
+            myViewHolder.giftTo.setText(itemList.get(i).getFrom());
         }
 
     }
@@ -98,10 +107,11 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         ImageView iv;
-        TextView tv,amount,quantity, invoiceId, giftFrom, giftTo, status, balance;
+        TextView tv,amount,quantity, invoiceId, giftFrom, giftTo, status, balance, fromTotext;
         LinearLayout lin, balanceHolder;
         View view;
         Button button;
+
 
         public MyViewHolder(final View itemView) {
             super(itemView);
@@ -117,6 +127,7 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
             button = itemView.findViewById(R.id.button);
             balanceHolder = itemView.findViewById(R.id.balance_holder);
             balance = itemView.findViewById(R.id.balance);
+            fromTotext = itemView.findViewById(R.id.fromToText);
 
 
             lin=itemView.findViewById(R.id.lin);
