@@ -578,6 +578,15 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
 
+                try {
+                    String responseBody = new String(error.networkResponse.data, "utf-8");
+                    JSONObject data = new JSONObject(responseBody);
+                    Toast.makeText(OrderDetailsActivity.this, data.getString("message"), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                }
+
+
+
 
             }
         }) {

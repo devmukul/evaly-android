@@ -147,7 +147,6 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
 
         if (itemList.get(i).getGiftCardStatus().equals("cancelled")){
 
-
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_card_cancelled));
             myViewHolder.button.setVisibility(View.GONE);
 
