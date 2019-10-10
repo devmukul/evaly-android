@@ -59,17 +59,12 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
 
 
 
-        if (itemList.get(i).getPaymentStatus().equals("unpaid") || itemList.get(i).getPaymentStatus().equals("partial")) {
-            myViewHolder.status.setText("Pending");
-            myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
-        }
-        else if (itemList.get(i).getPaymentStatus().equals("unpaid") && itemList.get(i).getGiftCardStatus().equals("pending")) {
-            myViewHolder.status.setText("Pending");
-            myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
-        }
-        else if (itemList.get(i).getGiftCardStatus().equals("active")) {
+        if (itemList.get(i).getGiftCardStatus().equals("active") && itemList.get(i).getPaymentStatus().equals("paid")) {
             myViewHolder.status.setText("Active");
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_paid_bg));
+        } else   {
+            myViewHolder.status.setText("Pending");
+            myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
         }
 
 
@@ -115,12 +110,13 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
                 myViewHolder.status.setText("Pending");
                 myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
 
-                myViewHolder.button.setOnClickListener(view -> {
+//                myViewHolder.button.setOnClickListener(view -> {
+//
+//                    Toast.makeText(context,"You can redeem the gift card after it's activated", Toast.LENGTH_LONG).show();
+//                    return;
+//
+//                });
 
-                    Toast.makeText(context,"You can redeem the gift card after it's activated", Toast.LENGTH_LONG).show();
-                    return;
-
-                });
             }
             else if (itemList.get(i).getGiftCardStatus().equals("active")) {
                 myViewHolder.status.setText("Active");
@@ -151,15 +147,15 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
 
         if (itemList.get(i).getGiftCardStatus().equals("cancelled")){
 
-            myViewHolder.status.setText("Cancelled");
 
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_card_cancelled));
             myViewHolder.button.setVisibility(View.GONE);
 
+            myViewHolder.status.setText("Cancelled");
+
+        } else {
+            myViewHolder.button.setVisibility(View.VISIBLE);
         }
-
-
-
 
 
 
