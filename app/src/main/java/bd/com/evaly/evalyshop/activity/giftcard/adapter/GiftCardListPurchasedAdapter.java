@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
@@ -92,25 +94,73 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
             myViewHolder.balanceHolder.setVisibility(View.GONE);
             myViewHolder.fromTotext.setText("To");
             myViewHolder.giftTo.setText(itemList.get(i).getTo());
-        }
-        else {
+
+            if (itemList.get(i).getPaymentStatus().equals("paid")) {
+                myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_card_paid));
+                myViewHolder.button.setText("PAID");
+                myViewHolder.button.setEnabled(false);
+            }
+
+        } else {
+
             myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_redeem_btn));
             myViewHolder.button.setText("Redeem");
             myViewHolder.balanceHolder.setVisibility(View.VISIBLE);
             myViewHolder.balance.setText("৳ " + itemList.get(i).getAvailableBalance());
             myViewHolder.fromTotext.setText("From");
             myViewHolder.giftTo.setText(itemList.get(i).getFrom());
-        }
 
 
+            if (itemList.get(i).getGiftCardStatus().equals("pending")) {
+                myViewHolder.status.setText("Pending");
+                myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
 
-        if (itemList.get(i).getPaymentStatus().equals("paid")) {
-            if (type==0) {
-                myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_card_paid));
-                myViewHolder.button.setText("PAID");
-                myViewHolder.button.setEnabled(false);
+                myViewHolder.button.setOnClickListener(view -> {
+
+                    Toast.makeText(context,"You can redeem the gift card after it's activated", Toast.LENGTH_LONG).show();
+                    return;
+
+                });
             }
+            else if (itemList.get(i).getGiftCardStatus().equals("active")) {
+                myViewHolder.status.setText("Active");
+                myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_paid_bg));
+            }
+
+            if (itemList.get(i).getAvailableBalance() == 0) {
+                myViewHolder.status.setText("Used");
+                myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
+
+                myViewHolder.button.setOnClickListener(view -> {
+
+                    Toast.makeText(context,"This gift card's balance is already used", Toast.LENGTH_LONG).show();
+                    return;
+
+                });
+
+
+            } else if (itemList.get(i).getAvailableBalance() > 0 && itemList.get(i).getGiftCardStatus().equals("active")){
+
+                myViewHolder.status.setText("Available");
+                myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_paid_bg));
+                myViewHolder.button.setEnabled(true);
+            }
+
         }
+
+
+        if (itemList.get(i).getGiftCardStatus().equals("cancelled")){
+
+            myViewHolder.status.setText("Cancelled");
+
+            myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_card_cancelled));
+            myViewHolder.button.setVisibility(View.GONE);
+
+        }
+
+
+
+
 
 
 
