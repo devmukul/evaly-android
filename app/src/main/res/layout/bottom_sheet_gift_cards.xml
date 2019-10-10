@@ -41,7 +41,7 @@
             android:text="Gift Card"
             android:textAlignment="textStart"
             android:textColor="#000"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="visible" />
 
@@ -60,7 +60,7 @@
                 android:paddingLeft="15dp"
                 android:textColor="#666"
                 android:text="Price:"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
             <TextView
                 android:id="@+id/amount"
                 android:layout_width="wrap_content"
@@ -69,7 +69,8 @@
                 android:paddingLeft="5dp"
                 android:textColor="#f57224"
                 android:text="BDT 500"
-                android:textSize="18sp" />
+                android:textSize="17sp"
+                android:textStyle="bold"/>
 
 
             <TextView
@@ -80,7 +81,7 @@
                 android:paddingLeft="15dp"
                 android:textColor="#666"
                 android:text="Value:"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textAlignment="textEnd"/>
 
             <TextView
@@ -91,8 +92,9 @@
                 android:paddingLeft="5dp"
                 android:textColor="#f57224"
                 android:text="BDT 500"
-                android:textSize="18sp"
-                android:paddingRight="15dp"/>
+                android:textSize="17sp"
+                android:paddingRight="15dp"
+                android:textStyle="bold"/>
 
 
         </LinearLayout>
@@ -103,9 +105,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:textColor="#333"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:visibility="visible" />
 
 
@@ -116,8 +118,8 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:text="Phone Number"
-            android:textColor="#555"
-            android:textSize="16sp" />
+            android:textColor="#666"
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/phone"
@@ -131,6 +133,7 @@
             android:hint="Gift card will be sent to this number"
             android:inputType="number"
             android:maxLength="11"
+            android:textSize="16sp"
             android:singleLine="true"
             android:maxLines="1"
             android:padding="10dp" />
@@ -155,7 +158,7 @@
                     android:layout_marginLeft="15dp"
                     android:text="Quantity"
                     android:textColor="#555"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <LinearLayout
                     android:id="@+id/countHolder"
@@ -220,8 +223,8 @@
                     android:layout_height="wrap_content"
                     android:text="Total Price"
                     android:textAlignment="textEnd"
-                    android:textColor="#555"
-                    android:textSize="16sp" />
+                    android:textColor="#666"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/total"
