@@ -20,7 +20,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/image"
@@ -33,15 +33,35 @@
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/gift_pending_bg"
+                android:paddingLeft="12dp"
+                android:paddingTop="4dp"
+                android:paddingRight="12dp"
+                android:paddingBottom="5dp"
+                android:text="Pending"
+                android:textSize="14sp"
+                android:textColor="#fff" />
+
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gift_card_time_bg"
                 android:paddingLeft="10dp"
                 android:paddingTop="4dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="5dp"
-                android:text="Pending"
-                android:textColor="#fff" />
+                android:text="time ago"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                android:layout_alignParentBottom="true"/>
+
+
+
+
         </RelativeLayout>
 
         <TextView

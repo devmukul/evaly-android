@@ -55,10 +55,6 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         myViewHolder.invoiceId.setText(itemList.get(i).getInvoiceNo());
         myViewHolder.giftFrom.setText(itemList.get(i).getFrom());
 
-
-
-
-
         if (itemList.get(i).getGiftCardStatus().equals("active") && itemList.get(i).getPaymentStatus().equals("paid")) {
             myViewHolder.status.setText("Active");
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_paid_bg));
@@ -67,16 +63,11 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
         }
 
-
-
-
         myViewHolder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (type==0) {
-
+                if (type == 0)
                     GiftCardPurchasedFragment.getInstance().toggleBottomSheet(itemList.get(i));
-                }
                 else
                     GiftCardMyFragment.getInstance().toggleBottomSheet(itemList.get(i));
             }
@@ -115,10 +106,8 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
                 myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
 
 //                myViewHolder.button.setOnClickListener(view -> {
-//
 //                    Toast.makeText(context,"You can redeem the gift card after it's activated", Toast.LENGTH_LONG).show();
 //                    return;
-//
 //                });
 
             }
@@ -130,12 +119,9 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
             if (itemList.get(i).getAvailableBalance() == 0) {
                 myViewHolder.status.setText("Used");
                 myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
-
                 myViewHolder.button.setOnClickListener(view -> {
-
                     Toast.makeText(context,"This gift card's balance is already used", Toast.LENGTH_LONG).show();
                     return;
-
                 });
 
 
@@ -161,6 +147,8 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         }
 
 
+        myViewHolder.time.setText(Utils.formattedDateFromString("", "h:mm a',' d MMM", itemList.get(i).getCreatedAt()));
+
 
 
     }
@@ -173,7 +161,7 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         ImageView iv;
-        TextView tv,amount,quantity, invoiceId, giftFrom, giftTo, status, balance, fromTotext;
+        TextView tv,amount,quantity, invoiceId, giftFrom, giftTo, status, balance, fromTotext, time;
         LinearLayout lin, balanceHolder;
         View view;
         Button button;
@@ -184,7 +172,6 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
             iv= itemView.findViewById(R.id.image);
             tv=itemView.findViewById(R.id.name);
             amount=itemView.findViewById(R.id.price);
-
             invoiceId=itemView.findViewById(R.id.invoice_id);
             giftFrom=itemView.findViewById(R.id.giftFrom);
             giftTo=itemView.findViewById(R.id.giftTo);
@@ -194,9 +181,8 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
             balanceHolder = itemView.findViewById(R.id.balance_holder);
             balance = itemView.findViewById(R.id.balance);
             fromTotext = itemView.findViewById(R.id.fromToText);
-
-
             lin=itemView.findViewById(R.id.lin);
+            time = itemView.findViewById(R.id.time);
             view=itemView;
         }
     }
