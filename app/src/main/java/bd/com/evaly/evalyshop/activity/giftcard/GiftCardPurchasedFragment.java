@@ -109,6 +109,20 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     }
 
+
+    @Override
+    public void onResume(){
+
+        itemList.clear();
+        adapter.notifyDataSetChanged();
+        currentPage = 1;
+
+        getGiftCardList();
+
+        super.onResume();
+
+    }
+
     public GiftCardPurchasedFragment() {
         // Required empty public constructor
     }
@@ -203,13 +217,14 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             @Override
             public void onClick(View v) {
 
+
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 Intent intent = new Intent(context, PayViaBkashActivity.class);
                 intent.putExtra("amount", amountToPayView.getText().toString());
                 intent.putExtra("invoice_no", giftCardInvoice);
                 intent.putExtra("context", "gift_card_order_payment");
                 startActivityForResult(intent,10002);
 
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
             }
@@ -222,11 +237,12 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             @Override
             public void onClick(View v) {
 
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
                 double amToPay = Double.parseDouble(amountToPayView.getText().toString());
 
                 addBalanceViaCard(giftCardInvoice, String.valueOf((int) amToPay));
 
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
             }
@@ -248,9 +264,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     public void toggleBottomSheet(GiftCardListPurchasedItem item){
 
         initializeBottomSheet();
-
-
-
 
         giftCardInvoice = item.getInvoiceNo();
 
@@ -386,12 +399,14 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
                 try {
 
+
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
                     String purl = response.getString("payment_gateway_url");
                     Intent intent = new Intent(context, PayViaCard.class);
                     intent.putExtra("url", purl);
                     startActivityForResult(intent,10002);
 
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
                 }catch (Exception e){
 
