@@ -76,7 +76,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Invoice ID"
+                    android:text="Invoice No."
                     android:textColor="#555" />
                 <TextView
                     android:id="@+id/invoice_id"
