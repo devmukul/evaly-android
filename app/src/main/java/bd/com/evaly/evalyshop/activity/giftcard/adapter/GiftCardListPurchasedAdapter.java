@@ -94,6 +94,10 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
                 myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_card_paid));
                 myViewHolder.button.setText("PAID");
                 myViewHolder.button.setEnabled(false);
+            } else {
+                myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_buy_btn));
+                myViewHolder.button.setText("Pay");
+                myViewHolder.button.setEnabled(true);
             }
 
         } else {

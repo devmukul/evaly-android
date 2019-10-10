@@ -54,6 +54,7 @@ import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
@@ -268,6 +269,11 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
                 if (phoneNumber.getText().toString().equals("")){
                     Toast.makeText(context,"Please enter a number", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (!Utils.isValidNumber(phoneNumber.getText().toString())){
+                    Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

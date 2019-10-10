@@ -36,6 +36,12 @@ public class  Utils {
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
+
+    public static boolean isValidNumber(String text){
+
+        return text.matches("^(01)[3-9][0-9]{8}$");
+    }
+
     public static String isStrongPassword(String password){
 
         if (password.length() < 8) {

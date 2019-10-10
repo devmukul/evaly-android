@@ -215,6 +215,13 @@ public class CartActivity extends BaseActivity {
                     Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+
+                if (!Utils.isValidNumber(contact_number.getText().toString())){
+                    Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                  placeOrder(generateOrderJson(), dialog);
 
                 //generateOrderJson();
