@@ -55,23 +55,20 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
 
 
 
-        if (itemList.get(i).getPaymentStatus().equals("paid")) {
-            myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_paid_bg));
 
-            if (type==0)
-                myViewHolder.button.setVisibility(View.GONE);
-        }
-        else {
+
+        if (itemList.get(i).getPaymentStatus().equals("unpaid") || itemList.get(i).getPaymentStatus().equals("partial")) {
+            myViewHolder.status.setText("Pending");
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
         }
-
-
-        if (itemList.get(i).getPaymentStatus().equals("unpaid") || itemList.get(i).getPaymentStatus().equals("partial"))
+        else if (itemList.get(i).getPaymentStatus().equals("unpaid") && itemList.get(i).getGiftCardStatus().equals("pending")) {
             myViewHolder.status.setText("Pending");
-        else if (itemList.get(i).getPaymentStatus().equals("unpaid") && itemList.get(i).getGiftCardStatus().equals("pending"))
-            myViewHolder.status.setText("Pending");
-        else if (itemList.get(i).getGiftCardStatus().equals("active"))
+            myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
+        }
+        else if (itemList.get(i).getGiftCardStatus().equals("active")) {
             myViewHolder.status.setText("Active");
+            myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_paid_bg));
+        }
 
 
 
@@ -99,15 +96,23 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         else {
             myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_redeem_btn));
             myViewHolder.button.setText("Redeem");
-
-
             myViewHolder.balanceHolder.setVisibility(View.VISIBLE);
             myViewHolder.balance.setText("৳ " + itemList.get(i).getAvailableBalance());
-
-
             myViewHolder.fromTotext.setText("From");
             myViewHolder.giftTo.setText(itemList.get(i).getFrom());
         }
+
+
+
+        if (itemList.get(i).getPaymentStatus().equals("paid")) {
+            if (type==0) {
+                myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_card_paid));
+                myViewHolder.button.setText("PAID");
+                myViewHolder.button.setEnabled(false);
+            }
+        }
+
+
 
     }
 
