@@ -231,6 +231,17 @@ public class GiftCardListFragment extends Fragment {
                     return;
                 }
 
+                if (phoneNumber.getText().toString().equals("")){
+                    Toast.makeText(context,"Please enter a number", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+
+                if (Integer.parseInt(quantity.getText().toString()) > 10){
+                    Toast.makeText(context,"Quantity must be less than 10", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 createOrder(giftCardSlug);
             }
         });
