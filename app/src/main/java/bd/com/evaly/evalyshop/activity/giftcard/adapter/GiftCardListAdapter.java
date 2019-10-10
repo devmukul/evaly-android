@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,7 +45,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
             Glide.with(context).load(itemList.get(i).getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
 
         myViewHolder.amount.setText("৳ " + itemList.get(i).getPrice());
-        myViewHolder.lin.setOnClickListener(new View.OnClickListener() {
+        myViewHolder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -65,6 +66,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
         TextView tv,amount;
         LinearLayout lin;
         View view;
+        Button button;
 
         public MyViewHolder(final View itemView) {
             super(itemView);
@@ -72,6 +74,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
             tv=itemView.findViewById(R.id.name);
             amount=itemView.findViewById(R.id.price);
             lin=itemView.findViewById(R.id.lin);
+            button = itemView.findViewById(R.id.button);
             view=itemView;
         }
     }

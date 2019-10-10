@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -58,7 +59,7 @@ import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
-public class GiftCardMyFragment extends Fragment {
+public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
 
     View view;
@@ -94,6 +95,22 @@ public class GiftCardMyFragment extends Fragment {
     TextView amountToPayView;
     ImageView bkash,cards;
 
+
+    SwipeRefreshLayout swipeLayout;
+
+    @Override
+    public void onRefresh() {
+
+        itemList.clear();
+        adapter.notifyDataSetChanged();
+        currentPage = 1;
+        swipeLayout.setRefreshing(false);
+
+        getGiftCardList();
+
+
+    }
+
     public GiftCardMyFragment() {
         // Required empty public constructor
     }
@@ -104,6 +121,9 @@ public class GiftCardMyFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
+        swipeLayout = view.findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(this);
+
 
         itemList=new ArrayList<>();
         dialog=new ViewDialog(getActivity());
@@ -296,7 +316,6 @@ public class GiftCardMyFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                catchError();
                 progressContainer.setVisibility(View.GONE);
             }
         }) {

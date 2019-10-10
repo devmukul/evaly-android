@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -48,6 +49,7 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListAdapter;
+import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -55,7 +57,7 @@ import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
-public class GiftCardListFragment extends Fragment {
+public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     View view;
     RecyclerView recyclerView;
@@ -90,6 +92,21 @@ public class GiftCardListFragment extends Fragment {
 
 
 
+    SwipeRefreshLayout swipeLayout;
+
+    @Override
+    public void onRefresh() {
+
+        itemList.clear();
+        adapter.notifyDataSetChanged();
+        currentPage = 1;
+        swipeLayout.setRefreshing(false);
+
+        getGiftCardList();
+
+
+    }
+
 
     public GiftCardListFragment() {
         // Required empty public constructor
@@ -101,6 +118,8 @@ public class GiftCardListFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
+        swipeLayout = view.findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(this);
 
         itemList=new ArrayList<>();
         dialog=new ViewDialog(getActivity());
@@ -348,7 +367,6 @@ public class GiftCardListFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                catchError();
                 progressContainer.setVisibility(View.GONE);
             }
         }) {
