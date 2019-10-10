@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -47,7 +48,7 @@ public class NewsfeedNotification extends AppCompatActivity {
     NotificationNewsfeedAdapter adapter;
     ArrayList<Notifications> notifications;
     UserDetails userDetails;
-    LinearLayout not;
+    LinearLayout not, progressContainer;
     int hot_number;
     TextView hotlist_hot;
 
@@ -59,6 +60,8 @@ public class NewsfeedNotification extends AppCompatActivity {
     // newfeed scroller
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
+
+    ProgressBar progressBar;
 
 
     @Override
@@ -74,6 +77,9 @@ public class NewsfeedNotification extends AppCompatActivity {
         queue= Volley.newRequestQueue(this);
 
         recyclerView=findViewById(R.id.recycle);
+        progressBar = findViewById(R.id.progressBar);
+        progressContainer = findViewById(R.id.progressContainer);
+
         not=findViewById(R.id.empty);
         LinearLayoutManager manager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
@@ -131,6 +137,12 @@ public class NewsfeedNotification extends AppCompatActivity {
 
         Log.d("json url", url);
 
+        if (page == 1)
+            progressContainer.setVisibility(View.VISIBLE);
+
+        if (page>1)
+            progressBar.setVisibility(View.VISIBLE);
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -138,6 +150,10 @@ public class NewsfeedNotification extends AppCompatActivity {
                 loading = true;
 
                 page++;
+
+
+                progressContainer.setVisibility(View.GONE);
+                progressBar.setVisibility(View.INVISIBLE);
 
                 Log.d("notifications_response", response.toString());
                 try {
@@ -176,6 +192,11 @@ public class NewsfeedNotification extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+
+                progressContainer.setVisibility(View.GONE);
+
+                progressBar.setVisibility(View.GONE);
             }
         }) {
             @Override
