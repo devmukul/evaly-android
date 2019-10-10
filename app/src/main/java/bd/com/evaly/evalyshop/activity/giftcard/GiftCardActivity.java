@@ -35,26 +35,25 @@ public class GiftCardActivity extends AppCompatActivity {
 
         UserDetails userDetails = new UserDetails(this);
 
-        if (userDetails.getToken().equals(""))
-        {
-            Toast.makeText(this, "You need to login first", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.viewpager);
 
         pager = new BaseViewPagerAdapter(getSupportFragmentManager());
 
-        pager.addFragment(new GiftCardListFragment(),"AVAILABLE");
-        pager.addFragment(new GiftCardPurchasedFragment(),"PURCHASED");
+        pager.addFragment(new GiftCardListFragment(),"STORE");
 
-        pager.addFragment(new GiftCardMyFragment(),"MY GIFTS");
+        if (!userDetails.getToken().equals("")) {
 
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+            pager.addFragment(new GiftCardPurchasedFragment(), "PURCHASED");
+            pager.addFragment(new GiftCardMyFragment(), "MY GIFTS");
+        }
 
+        tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(pager);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.setOffscreenPageLimit(1);
 
 
 
