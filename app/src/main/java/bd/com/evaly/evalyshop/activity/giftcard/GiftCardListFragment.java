@@ -10,12 +10,15 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
@@ -63,7 +67,7 @@ public class GiftCardListFragment extends Fragment {
     ViewDialog dialog;
     ImageView image,plus,minus;
     UserDetails userDetails;
-    TextView details,name,amount,total;
+    TextView details,name,amount,total,cardValue;
     EditText quantity, phoneNumber;
     int voucherAmount=0;
     Button placeOrder;
@@ -172,9 +176,20 @@ public class GiftCardListFragment extends Fragment {
         details = bottomSheetDialog.findViewById(R.id.details);
         name = bottomSheetDialog.findViewById(R.id.name);
         amount = bottomSheetDialog.findViewById(R.id.amount);
+        cardValue = bottomSheetDialog.findViewById(R.id.cardValue);
+
         total = bottomSheetDialog.findViewById(R.id.total);
         placeOrder= bottomSheetDialog.findViewById(R.id.place_order);
         phoneNumber = bottomSheetDialog.findViewById(R.id.phone);
+
+
+
+        TextView privacyText = bottomSheetDialog.findViewById(R.id.privacyText);
+
+        privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
+        privacyText.setMovementMethod(LinkMovementMethod.getInstance());
+
+        CheckBox checkBox = bottomSheetDialog.findViewById(R.id.checkBox);
 
 
         plus.setOnClickListener(new View.OnClickListener() {
@@ -226,6 +241,7 @@ public class GiftCardListFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+
                 if (phoneNumber.getText().toString().equals(userDetails.getUserName())){
                     Toast.makeText(context,"You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
                     return;
@@ -241,6 +257,12 @@ public class GiftCardListFragment extends Fragment {
                     Toast.makeText(context,"Quantity must be less than 10", Toast.LENGTH_LONG).show();
                     return;
                 }
+
+                if (!checkBox.isChecked()){
+                    Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
 
                 createOrder(giftCardSlug);
             }
@@ -383,6 +405,7 @@ public class GiftCardListFragment extends Fragment {
                             voucherAmount= item.getPrice();
                             amount.setText("৳ "+item.getPrice());
                             total.setText("৳ " + item.getPrice());
+                            cardValue.setText("৳ " + item.getValue());
 
                             if (item.getImageUrl() == null)
                                 Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(image);
@@ -449,6 +472,11 @@ public class GiftCardListFragment extends Fragment {
 
                     Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
                     bottomSheetDialog.hide();
+
+                    startActivity(getActivity().getIntent());
+
+                    getActivity().finish();
+
 
                 }catch(Exception e){
 
