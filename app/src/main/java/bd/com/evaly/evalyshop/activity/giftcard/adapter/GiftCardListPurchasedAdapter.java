@@ -53,7 +53,7 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         myViewHolder.invoiceId.setText(itemList.get(i).getInvoiceNo());
         myViewHolder.giftFrom.setText(itemList.get(i).getFrom());
 
-        myViewHolder.status.setText(Utils.toFirstCharUpperAll(itemList.get(i).getPaymentStatus()));
+
 
         if (itemList.get(i).getPaymentStatus().equals("paid")) {
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_paid_bg));
@@ -64,6 +64,16 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         else {
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
         }
+
+
+        if (itemList.get(i).getPaymentStatus().equals("unpaid") || itemList.get(i).getPaymentStatus().equals("partial"))
+            myViewHolder.status.setText("Pending");
+        else if (itemList.get(i).getPaymentStatus().equals("unpaid") && itemList.get(i).getGiftCardStatus().equals("pending"))
+            myViewHolder.status.setText("Pending");
+        else if (itemList.get(i).getGiftCardStatus().equals("active"))
+            myViewHolder.status.setText("Active");
+
+
 
 
         myViewHolder.button.setOnClickListener(new View.OnClickListener() {

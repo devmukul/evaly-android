@@ -23,6 +23,9 @@ public class GiftCardListPurchasedItem{
 	@SerializedName("payment_status")
 	private String paymentStatus;
 
+	@SerializedName("gift_status")
+	private String giftCardStatus;
+
 	@SerializedName("gift_card_image")
 	private Object giftCardImage;
 
@@ -39,6 +42,15 @@ public class GiftCardListPurchasedItem{
 
 	@SerializedName("gift_card_price")
 	private int giftCardPrice;
+
+
+	public String getGiftCardStatus() {
+		return giftCardStatus;
+	}
+
+	public void setGiftCardStatus(String giftCardStatus) {
+		this.giftCardStatus = giftCardStatus;
+	}
 
 	public void setCreatedAt(String createdAt){
 		this.createdAt = createdAt;
