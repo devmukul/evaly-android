@@ -92,7 +92,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
         Glide.with(context)
-                .load(itemsList.get(i).getAuthorImage())
+                .load(itemsList.get(i).getAutho())
                 .fitCenter()
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
