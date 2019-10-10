@@ -317,6 +317,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 progressContainer.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
         }) {
             @Override
