@@ -66,11 +66,13 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         }
 
 
-        myViewHolder.lin.setOnClickListener(new View.OnClickListener() {
+        myViewHolder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (type==0)
+                if (type==0) {
+
                     GiftCardPurchasedFragment.getInstance().toggleBottomSheet(itemList.get(i));
+                }
                 else
                     GiftCardMyFragment.getInstance().toggleBottomSheet(itemList.get(i));
             }
