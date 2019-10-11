@@ -113,13 +113,15 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     @Override
     public void onResume(){
 
+
+        super.onResume();
+
         itemList.clear();
         adapter.notifyDataSetChanged();
         currentPage = 1;
 
         getGiftCardList();
 
-        super.onResume();
 
     }
 
@@ -183,7 +185,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         });
 
 
-        getGiftCardList();
 
         return view;
     }

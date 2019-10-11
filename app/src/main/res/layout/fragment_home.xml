@@ -131,7 +131,7 @@
                         android:layout_weight="0"
                         android:clickable="false"
                         android:gravity="center"
-                        android:text="Gift Card" />
+                        android:text="Gift Cards" />
                 </LinearLayout>
 
 
