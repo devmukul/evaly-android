@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -59,6 +60,8 @@ import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
@@ -201,7 +204,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     private boolean isImageSelected = false;
 
 
-    public void buildBankDialog(){
+    public void buildBankDialog(Bitmap bitmap){
         final AlertDialog dialogBuilder = new AlertDialog.Builder(context).create();
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_bank_receipt, null);
@@ -210,7 +213,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         double amToPay = Double.parseDouble(amountToPayView.getText().toString());
 
-        amountET.setText(amToPay+"");
+        amountET.setText((int)amToPay+"");
 
 
         Button submit =  dialogView.findViewById(R.id.buttonSubmit);
@@ -219,8 +222,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         ImageView selectImage = dialogView.findViewById(R.id.upload);
 
         if(isImageSelected) {
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.ic_upload_image_large);
             selectImage.setImageBitmap(bitmap);
         }
 
@@ -228,13 +229,11 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent=new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,"Select Bank Deposit Photo"),1000);
                 dialogBuilder.dismiss();
-
             }
         });
 
@@ -255,7 +254,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                     return;
 
                 }
-
 
                 String amountz = amountToPayView.getText().toString();
 
@@ -279,6 +277,29 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
 
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1000 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
+            try{
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
+                isImageSelected = true;
+                buildBankDialog(bitmap);
+
+                //uploadBankDepositImage(bitmap);
+                // ByteArrayOutputStream ba=new ByteArrayOutputStream();
+                //bitmap.compress(Bitmap.CompressFormat.JPEG,100,ba);
+                //byte[] imgBytes=ba.toByteArray();
+                //bankDepositImage=Base64.encodeToString(imgBytes,Base64.DEFAULT);
+                //Log.d("json ", bankDepositImage);
+                //uploadBankDepositImage(bankDepositImage);
+
+            }catch(Exception e){
+
+            }
+        }
+    }
 
 
 
@@ -309,12 +330,9 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         TextView full_or_partial = bottomSheetDialog.findViewById(R.id.full_or_partial);
         full_or_partial.setVisibility(View.GONE);
 
-
-
         bkash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 Intent intent = new Intent(context, PayViaBkashActivity.class);
@@ -322,12 +340,8 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 intent.putExtra("invoice_no", giftCardInvoice);
                 intent.putExtra("context", "gift_card_order_payment");
                 startActivityForResult(intent,10002);
-
-
-
             }
         });
-
 
 
         cards.setOnClickListener(new View.OnClickListener() {
@@ -343,12 +357,11 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         bank.setOnClickListener(v -> {
 
 
-            buildBankDialog();
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.ic_upload_image_large);
+            buildBankDialog(bitmap);
 
         });
-
-
-
 
     }
 
