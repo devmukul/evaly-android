@@ -3,7 +3,8 @@ package bd.com.evaly.evalyshop.models.giftcard;
 
 import com.google.gson.annotations.SerializedName;
 
-public class GiftCardListPurchasedItem{
+
+public class GiftCardMyItem{
 
 	@SerializedName("createdAt")
 	private String createdAt;
@@ -23,11 +24,8 @@ public class GiftCardListPurchasedItem{
 	@SerializedName("payment_status")
 	private String paymentStatus;
 
-	@SerializedName("gift_status")
-	private String giftCardStatus;
-
 	@SerializedName("gift_card_image")
-	private Object giftCardImage;
+	private String giftCardImage;
 
 	@SerializedName("from")
 	private String from;
@@ -35,22 +33,14 @@ public class GiftCardListPurchasedItem{
 	@SerializedName("to")
 	private String to;
 
+	@SerializedName("gift_status")
+	private String giftStatus;
 
 	@SerializedName("available_balance")
 	private int availableBalance;
 
-
 	@SerializedName("gift_card_price")
 	private int giftCardPrice;
-
-
-	public String getGiftCardStatus() {
-		return giftCardStatus;
-	}
-
-	public void setGiftCardStatus(String giftCardStatus) {
-		this.giftCardStatus = giftCardStatus;
-	}
 
 	public void setCreatedAt(String createdAt){
 		this.createdAt = createdAt;
@@ -100,11 +90,11 @@ public class GiftCardListPurchasedItem{
 		return paymentStatus;
 	}
 
-	public void setGiftCardImage(Object giftCardImage){
+	public void setGiftCardImage(String giftCardImage){
 		this.giftCardImage = giftCardImage;
 	}
 
-	public Object getGiftCardImage(){
+	public String getGiftCardImage(){
 		return giftCardImage;
 	}
 
@@ -122,6 +112,14 @@ public class GiftCardListPurchasedItem{
 
 	public String getTo(){
 		return to;
+	}
+
+	public void setGiftStatus(String giftStatus){
+		this.giftStatus = giftStatus;
+	}
+
+	public String getGiftStatus(){
+		return giftStatus;
 	}
 
 	public void setAvailableBalance(int availableBalance){
@@ -143,7 +141,7 @@ public class GiftCardListPurchasedItem{
 	@Override
  	public String toString(){
 		return 
-			"GiftCardListPurchasedItem{" + 
+			"GiftCardMyItem{" + 
 			"createdAt = '" + createdAt + '\'' + 
 			",total = '" + total + '\'' + 
 			",quantity = '" + quantity + '\'' + 
@@ -153,6 +151,8 @@ public class GiftCardListPurchasedItem{
 			",gift_card_image = '" + giftCardImage + '\'' + 
 			",from = '" + from + '\'' + 
 			",to = '" + to + '\'' + 
+			",gift_status = '" + giftStatus + '\'' + 
+			",available_balance = '" + availableBalance + '\'' + 
 			",gift_card_price = '" + giftCardPrice + '\'' + 
 			"}";
 		}

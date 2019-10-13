@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -57,7 +58,7 @@ import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
-public class GiftCardPurchasedFragment extends Fragment {
+public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     View view;
     RecyclerView recyclerView;
@@ -92,6 +93,38 @@ public class GiftCardPurchasedFragment extends Fragment {
     TextView amountToPayView;
     ImageView bkash,cards;
 
+
+    SwipeRefreshLayout swipeLayout;
+
+    @Override
+    public void onRefresh() {
+
+        itemList.clear();
+        adapter.notifyDataSetChanged();
+        currentPage = 1;
+        swipeLayout.setRefreshing(false);
+
+        getGiftCardList();
+
+
+    }
+
+
+    @Override
+    public void onResume(){
+
+
+        super.onResume();
+
+        itemList.clear();
+        adapter.notifyDataSetChanged();
+        currentPage = 1;
+
+        getGiftCardList();
+
+
+    }
+
     public GiftCardPurchasedFragment() {
         // Required empty public constructor
     }
@@ -102,6 +135,8 @@ public class GiftCardPurchasedFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
+        swipeLayout = view.findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(this);
 
         itemList=new ArrayList<>();
         dialog=new ViewDialog(getActivity());
@@ -150,7 +185,6 @@ public class GiftCardPurchasedFragment extends Fragment {
         });
 
 
-        getGiftCardList();
 
         return view;
     }
@@ -184,13 +218,14 @@ public class GiftCardPurchasedFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 Intent intent = new Intent(context, PayViaBkashActivity.class);
                 intent.putExtra("amount", amountToPayView.getText().toString());
                 intent.putExtra("invoice_no", giftCardInvoice);
                 intent.putExtra("context", "gift_card_order_payment");
                 startActivityForResult(intent,10002);
 
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
             }
@@ -203,11 +238,12 @@ public class GiftCardPurchasedFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
                 double amToPay = Double.parseDouble(amountToPayView.getText().toString());
 
                 addBalanceViaCard(giftCardInvoice, String.valueOf((int) amToPay));
 
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
             }
@@ -229,9 +265,6 @@ public class GiftCardPurchasedFragment extends Fragment {
     public void toggleBottomSheet(GiftCardListPurchasedItem item){
 
         initializeBottomSheet();
-
-
-
 
         giftCardInvoice = item.getInvoiceNo();
 
@@ -300,8 +333,8 @@ public class GiftCardPurchasedFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                catchError();
                 progressContainer.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
         }) {
             @Override
@@ -368,12 +401,14 @@ public class GiftCardPurchasedFragment extends Fragment {
 
                 try {
 
+
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
                     String purl = response.getString("payment_gateway_url");
                     Intent intent = new Intent(context, PayViaCard.class);
                     intent.putExtra("url", purl);
                     startActivityForResult(intent,10002);
 
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
                 }catch (Exception e){
 

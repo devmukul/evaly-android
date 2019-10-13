@@ -7,15 +7,19 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,15 +47,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListAdapter;
+import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
-public class GiftCardListFragment extends Fragment {
+public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     View view;
     RecyclerView recyclerView;
@@ -63,7 +70,7 @@ public class GiftCardListFragment extends Fragment {
     ViewDialog dialog;
     ImageView image,plus,minus;
     UserDetails userDetails;
-    TextView details,name,amount,total;
+    TextView details,name,amount,total,cardValue;
     EditText quantity, phoneNumber;
     int voucherAmount=0;
     Button placeOrder;
@@ -86,6 +93,21 @@ public class GiftCardListFragment extends Fragment {
 
 
 
+    SwipeRefreshLayout swipeLayout;
+
+    @Override
+    public void onRefresh() {
+
+        itemList.clear();
+        adapter.notifyDataSetChanged();
+        currentPage = 1;
+        swipeLayout.setRefreshing(false);
+
+        getGiftCardList();
+
+
+    }
+
 
     public GiftCardListFragment() {
         // Required empty public constructor
@@ -97,6 +119,8 @@ public class GiftCardListFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
+        swipeLayout = view.findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(this);
 
         itemList=new ArrayList<>();
         dialog=new ViewDialog(getActivity());
@@ -159,7 +183,7 @@ public class GiftCardListFragment extends Fragment {
         bottomSheetInternal = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
         bottomSheetInternal.setPadding(0, 0, 0, 0);
 
-        new KeyboardUtil(getActivity(), bottomSheetInternal);
+        // new KeyboardUtil(getActivity(), bottomSheetInternal);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
@@ -172,9 +196,20 @@ public class GiftCardListFragment extends Fragment {
         details = bottomSheetDialog.findViewById(R.id.details);
         name = bottomSheetDialog.findViewById(R.id.name);
         amount = bottomSheetDialog.findViewById(R.id.amount);
+        cardValue = bottomSheetDialog.findViewById(R.id.cardValue);
+
         total = bottomSheetDialog.findViewById(R.id.total);
         placeOrder= bottomSheetDialog.findViewById(R.id.place_order);
         phoneNumber = bottomSheetDialog.findViewById(R.id.phone);
+
+
+
+        TextView privacyText = bottomSheetDialog.findViewById(R.id.privacyText);
+
+        privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
+        privacyText.setMovementMethod(LinkMovementMethod.getInstance());
+
+        CheckBox checkBox = bottomSheetDialog.findViewById(R.id.checkBox);
 
 
         plus.setOnClickListener(new View.OnClickListener() {
@@ -226,10 +261,33 @@ public class GiftCardListFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+
                 if (phoneNumber.getText().toString().equals(userDetails.getUserName())){
                     Toast.makeText(context,"You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
                     return;
                 }
+
+                if (phoneNumber.getText().toString().equals("")){
+                    Toast.makeText(context,"Please enter a number", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (!Utils.isValidNumber(phoneNumber.getText().toString())){
+                    Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+                if (Integer.parseInt(quantity.getText().toString()) > 10){
+                    Toast.makeText(context,"Quantity must be less than 10", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (!checkBox.isChecked()){
+                    Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
 
                 createOrder(giftCardSlug);
             }
@@ -315,8 +373,8 @@ public class GiftCardListFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                catchError();
                 progressContainer.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
         }) {
             @Override
@@ -372,6 +430,7 @@ public class GiftCardListFragment extends Fragment {
                             voucherAmount= item.getPrice();
                             amount.setText("৳ "+item.getPrice());
                             total.setText("৳ " + item.getPrice());
+                            cardValue.setText("৳ " + item.getValue());
 
                             if (item.getImageUrl() == null)
                                 Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(image);
@@ -438,6 +497,11 @@ public class GiftCardListFragment extends Fragment {
 
                     Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
                     bottomSheetDialog.hide();
+
+                    startActivity(getActivity().getIntent());
+
+                    getActivity().finish();
+
 
                 }catch(Exception e){
 

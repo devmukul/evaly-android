@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class NewsfeedItem {
 
-    private String authorUsername, authorFullName, authoeBio, authorImage, authorBio, body, createdAt, description, slug, title, updatedAt, tags, attachment, attachmentCompressed, type;
+    private String authorUsername, authorFullName, authoeBio, authorImage, authorBio, body, createdAt, description, slug, title, updatedAt, tags, attachment, attachmentCompressed, type, authorImageCompressed;
     private boolean authorFollowing, favorited;
     private int favoriteCount, commentsCount, userID;
     private boolean isAdmin;
@@ -52,6 +52,15 @@ public class NewsfeedItem {
 
     public void setAttachmentCompressed(String attachmentCompressed) {
         this.attachmentCompressed = attachmentCompressed;
+    }
+
+
+    public String getAuthorImageCompressed() {
+        return authorImageCompressed;
+    }
+
+    public void setAuthorImageCompressed(String authorImageCompressed) {
+        this.authorImageCompressed = authorImageCompressed;
     }
 
     public String getType() {

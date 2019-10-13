@@ -63,6 +63,7 @@ import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
@@ -147,7 +148,12 @@ public class EditProfileActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //setUserData();
-                System.out.println(userDetails.getToken());
+
+                if (!Utils.isValidNumber(phone.getText().toString())){
+                    Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 getUserData();
             }
         });
@@ -416,8 +422,6 @@ public class EditProfileActivity extends BaseActivity {
                     userDetails.setJsonAddress(address.getText().toString());
 
                     setUserData(userInfo, alert);
-
-
                     Token.update(context);
 
                     Log.d("json user info", userJson.toString());

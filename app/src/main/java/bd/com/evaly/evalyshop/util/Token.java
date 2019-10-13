@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,9 +30,7 @@ public class Token {
     public static void update(Context context){
 
 
-
         UserDetails userDetails = new UserDetails(context);
-
 
         if(userDetails.getToken().equals(""))
             return;
@@ -51,35 +50,22 @@ public class Token {
                     JSONObject data = response.getJSONObject("data");
 
                     String token = data.getString("token");
-
-
                     JSONObject ob = data.getJSONObject("user_info");
 
-                    if (ob.has("groups")){
-
+                    if (ob.has("groups"))
                         userDetails.setGroup(ob.getJSONArray("groups").toString());
 
-                    }
-
-                    Log.d("json group", userDetails.getGroups());
-
                     userDetails.setCreatedAt(ob.getString("created_at"));
-
                     userDetails.setToken(token);
                     userDetails.setUserName(ob.getString("username"));
                     userDetails.setFirstName(ob.getString("first_name"));
                     userDetails.setLastName(ob.getString("last_name"));
-
                     userDetails.setEmail(ob.getString("email"));
                     userDetails.setPhone(ob.getString("contact"));
-
-                    //userDetails.setUserID(ob.getInt("id"));
                     userDetails.setJsonAddress(ob.getString("address"));
                     userDetails.setProfilePicture(ob.getString("profile_pic_url"));
                     userDetails.setProfilePictureSM(ob.getString("image_sm"));
 
-
-                    Log.d("json token", "token updated");
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -91,16 +77,19 @@ public class Token {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
 
-                Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
-
-                userDetails.clearAll();
-
-                context.startActivity(new Intent(context, SignInActivity.class));
-
-
+                    if (response.statusCode != 201) {
+                        Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
+                        userDetails.clearAll();
+                        context.startActivity(new Intent(context, SignInActivity.class));
+                    }
+                }
             }
+
         }) {
+
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();

@@ -102,65 +102,6 @@ public class MainActivity extends BaseActivity {
 
 //    private SessionManager sessionManager;
 
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-
-        @Override
-        public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-        }
-
-        //Event Listeners
-        public void onLoggedIn() {
-
-            Logger.d("LOGIN =========");
-            Logger.d(xmppHandler.isConnected());
-            VCard vCard = xmppHandler.getCurrentUserDetails();
-            Logger.d(vCard.getFirstName());
-            if ( vCard.getLastName() == null){
-                Logger.d("========");
-                xmppHandler.updateUserInfo(CredentialManager.getUserData());
-            }
-
-            // Save current User
-            // sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
-
-            // Intent chatListIntent = new Intent(MainActivity.this, ChatListActivity.class);
-            // startActivity(chatListIntent);
-            // finish();
-        }
-
-        public void onLoginFailed(String msg) {
-            if (!msg.contains("already logged in")){
-                xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
-            }
-            // xmppHandler.disconnect();
-            // Toast.makeText(getApplicationContext(), getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
-        }
-
-        //        //Event Listeners
-        public void onSignupSuccess(){
-
-            Logger.d("Signup success");
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-            //Save current User
-            // sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
-
-//            Intent chatListIntent = new Intent(LoginActivity.this,ChatListActivity.class);
-//            startActivity(chatListIntent);
-//            finish();
-        }
-//
-//        public void onSignupFailed(String error){
-//            xmppHandler.disconnect();
-//            Logger.d(error);
-//            Toast.makeText(getApplicationContext(),getString(R.string.login_failed),Toast.LENGTH_SHORT).show();
-//        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -235,9 +176,6 @@ public class MainActivity extends BaseActivity {
 
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
 
-        if (!CredentialManager.getUserName().equalsIgnoreCase("")){
-            startXmppService();
-        }
 
 
         if(userDetails.getToken().equals("")){
@@ -479,24 +417,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private void startXmppService() {
-
-        //Start XMPP Service (if not running already)
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(this, XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-        } else {
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
-            } else {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-            }
-        }
-
-    }
 
 
     @Override

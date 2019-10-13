@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -58,7 +59,7 @@ import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
-public class GiftCardMyFragment extends Fragment {
+public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
 
     View view;
@@ -94,6 +95,22 @@ public class GiftCardMyFragment extends Fragment {
     TextView amountToPayView;
     ImageView bkash,cards;
 
+
+    SwipeRefreshLayout swipeLayout;
+
+    @Override
+    public void onRefresh() {
+
+        itemList.clear();
+        adapter.notifyDataSetChanged();
+        currentPage = 1;
+        swipeLayout.setRefreshing(false);
+
+        getGiftCardList();
+
+
+    }
+
     public GiftCardMyFragment() {
         // Required empty public constructor
     }
@@ -104,6 +121,9 @@ public class GiftCardMyFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
+        swipeLayout = view.findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(this);
+
 
         itemList=new ArrayList<>();
         dialog=new ViewDialog(getActivity());
@@ -124,8 +144,8 @@ public class GiftCardMyFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
 
-        instance=this;
-        adapter=new GiftCardListPurchasedAdapter(context, itemList,1);
+        instance = this;
+        adapter = new GiftCardListPurchasedAdapter(context, itemList,1);
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
@@ -237,9 +257,14 @@ public class GiftCardMyFragment extends Fragment {
 
         String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?show=gifts&page="+currentPage;
 
+        Log.d("json url", url);
+
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
                     try {
+
+                        Log.d("json response", response.toString());
 
                         loading = true;
                         progressBar.setVisibility(View.GONE);
@@ -254,17 +279,30 @@ public class GiftCardMyFragment extends Fragment {
                             noItem.setVisibility(View.VISIBLE);
                             TextView noText = view.findViewById(R.id.noText);
                             noText.setText("You have no gift cards");
+                        } else {
+
+                            recyclerView.setVisibility(View.VISIBLE);
                         }
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Gson gson = new Gson();
 
+                            GiftCardListPurchasedItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListPurchasedItem.class);
+                            itemList.add(item);
+                            adapter.notifyItemInserted(itemList.size());
+
                             try {
 
-                                GiftCardListPurchasedItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListPurchasedItem.class);
-                                itemList.add(item);
-                                adapter.notifyItemInserted(itemList.size());
-                            }catch (Exception e){}
+
+
+                                Log.d("json", "added");
+
+
+                            }catch (Exception e){
+
+                                Log.d("json exc", e.toString());
+
+                            }
 
                         }
 
@@ -278,8 +316,8 @@ public class GiftCardMyFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                catchError();
                 progressContainer.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
         }) {
             @Override
