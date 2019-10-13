@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.activity.giftcard;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -43,6 +45,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +63,7 @@ import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -77,11 +81,12 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     ViewDialog dialog;
     ImageView image,plus,minus;
     UserDetails userDetails;
-    TextView details,name,amount,total;
+    TextView details,name,total;
     EditText quantity;
     int voucherAmount=0;
     Button placeOrder;
     String giftCardInvoice="";
+    String amount;
 
     LinearLayout noItem;
     Context context;
@@ -196,11 +201,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     }
 
 
-
-
-
-
-
     private boolean isImageSelected = false;
 
 
@@ -214,6 +214,8 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         double amToPay = Double.parseDouble(amountToPayView.getText().toString());
 
         amountET.setText((int)amToPay+"");
+
+        amountET.setVisibility(View.GONE);
 
 
         Button submit =  dialogView.findViewById(R.id.buttonSubmit);
@@ -249,23 +251,16 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             public void onClick(View view) {
 
                 if (!isImageSelected){
-
                     Toast.makeText(context, "Please select your bank receipt image", Toast.LENGTH_LONG).show();
-                    return;
+                    return; }
 
-                }
+                amount = amountToPayView.getText().toString();
 
-                String amountz = amountToPayView.getText().toString();
-
-                if (amountz.equals(""))
-                {
+                if (amount.equals("")) {
                     Toast.makeText(context, "Please enter amount.", Toast.LENGTH_LONG).show();
-                    return;
+                    return; }
 
-                }
-
-
-                // uploadBankDepositImage(bitmap);
+                uploadBankDepositImage(bitmap);
 
                 dialogBuilder.dismiss();
             }
@@ -275,6 +270,144 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     }
 
 
+    public void paymentViaBank(String image){
+
+        ProgressDialog dialog = ProgressDialog.show(context, "",
+                "Updating data...", true);
+
+        String url= UrlUtils.DOMAIN+"pay/bank_deposit/";
+        JSONObject parameters = new JSONObject();
+
+        try {
+            int a = Integer.parseInt(amount);
+            parameters.put("amount", a);
+        } catch (Exception e){
+            Toast.makeText(context, "Invalid amount, enter only numbers!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            parameters.put("context","gift_card_order_payment");
+            parameters.put("context_reference",giftCardInvoice);
+            parameters.put("bank_receipt_copy",image);
+        } catch (Exception e) {
+            Toast.makeText(context, "Error occured!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Log.d("json param", parameters.toString());
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+
+                    dialog.dismiss();
+                    Log.d("json set image", response.toString());
+                    Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    getActivity().finish();
+                    startActivity(getActivity().getIntent());
+
+
+                }catch(Exception e){
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                return headers;
+            }
+        };
+        request.setShouldCache(false);
+        rq.add(request);
+    }
+
+
+    private void uploadBankDepositImage(final Bitmap bitmap) {
+
+        ProgressDialog dialog = ProgressDialog.show(context, "",
+                "Uploading image...", true);
+        RequestQueue rQueue;
+        String url= UrlUtils.BASE_URL+"image/upload";
+
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        dialog.dismiss();
+                        Log.d("json image",new String(response.data));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new String(response.data));
+                            jsonObject = jsonObject.getJSONObject("data");
+                            String image = jsonObject.getString("url");
+                            paymentViaBank(image);
+
+//                          Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+//                          jsonObject.toString().replace("\\\\","");
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        dialog.dismiss();
+                        Toast.makeText(context, "Image upload error, might be too large image", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // params.put("tags", "ccccc");  add string parameters
+                return params;
+            }
+
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                return headers;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                long imagename = System.currentTimeMillis();
+                params.put("image", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
+                return params;
+            }
+        };
+
+
+        volleyMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        rQueue = Volley.newRequestQueue(context);
+        rQueue.add(volleyMultipartRequest);
+    }
+
+    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
 
 
 
@@ -293,6 +426,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 //byte[] imgBytes=ba.toByteArray();
                 //bankDepositImage=Base64.encodeToString(imgBytes,Base64.DEFAULT);
                 //Log.d("json ", bankDepositImage);
+
                 //uploadBankDepositImage(bankDepositImage);
 
             }catch(Exception e){
@@ -308,7 +442,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
 
     public void initializeBottomSheet(){
-
 
         bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_order_details_payment);
@@ -356,6 +489,9 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         bank.setOnClickListener(v -> {
 
+            isImageSelected = false;
+
+            amount = amountToPayView.getText().toString();
 
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.ic_upload_image_large);
@@ -382,6 +518,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         giftCardInvoice = item.getInvoiceNo();
 
         amountToPayView.setText(item.getTotal()+"");
+        amount = item.getTotal()+"";
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetDialog.show();

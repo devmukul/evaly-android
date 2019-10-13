@@ -124,7 +124,6 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         swipeLayout = view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
 
-
         itemList=new ArrayList<>();
         dialog=new ViewDialog(getActivity());
 
@@ -135,11 +134,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         progressContainer = view.findViewById(R.id.progressContainer);
         progressBar = view.findViewById(R.id.progressBar);
         currentPage = 1;
-
-
-
         noItem = view.findViewById(R.id.noItem);
-
 
         LinearLayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
