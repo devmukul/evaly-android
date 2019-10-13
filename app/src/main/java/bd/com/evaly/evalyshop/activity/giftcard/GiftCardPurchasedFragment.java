@@ -254,7 +254,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                     Toast.makeText(context, "Please select your bank receipt image", Toast.LENGTH_LONG).show();
                     return; }
 
-                amount = amountToPayView.getText().toString();
 
                 if (amount.equals("")) {
                     Toast.makeText(context, "Please enter amount.", Toast.LENGTH_LONG).show();
@@ -519,7 +518,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         amountToPayView.setText(item.getTotal()+"");
         amount = item.getTotal()+"";
-
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetDialog.show();
 
