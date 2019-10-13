@@ -1088,7 +1088,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                             item.setAuthorUsername(ob.getString("username"));
                             item.setAuthorFullName(ob.getString("author_full_name"));
-                            item.setAuthorImage(ob.getString("author_compressed_image"));
+                            item.setAuthorImage(ob.getString("author_image"));
                             item.setIsAdmin(ob.getInt("author_is_admin") != 0);
                             item.setBody(ob.getString("body"));
 

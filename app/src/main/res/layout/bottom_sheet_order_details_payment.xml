@@ -108,6 +108,18 @@
             android:src="@drawable/cardpayment"
             android:visibility="visible" />
 
+        <ImageView
+            android:id="@+id/bank"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0"
+            android:background="@drawable/payment_select_bg"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_bank_icon"
+            android:visibility="visible" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -141,6 +153,23 @@
             android:textStyle="bold"
             android:visibility="visible" />
 
+
+        <TextView
+            android:id="@+id/bankText"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0"
+            android:text="Bank"
+            android:textAlignment="center"
+            android:textColor="#666"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
     </LinearLayout>
+
+
+
+
 
 </LinearLayout>
