@@ -171,7 +171,7 @@
 
         <CheckBox
             android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:text="" />
@@ -191,7 +191,34 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="top"
+        android:layout_marginTop="20dp">
 
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="20dp"
+            android:layout_weight="0"
+            app:srcCompat="@drawable/ic_info_small"
+            android:tint="#555"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delivery of the products will be completed within 15 working days after payment.."
+            android:textColor="#555"
+            android:textSize="14sp"
+            android:layout_marginTop="-4dp"
+            android:layout_weight="0"
+            android:paddingLeft="5dp"
+            android:layout_marginBottom="10dp"/>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/bs_button"
