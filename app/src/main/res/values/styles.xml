@@ -19,9 +19,6 @@
     </style>
 
 
-
-
-
     <!-- set the rounded drawable as background to your bottom sheet -->
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/round_border_bottom_sheet</item>
@@ -35,9 +32,6 @@
     </style>
 
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
-
-
-
 
 
     <style name="OrderListTabItem" parent="@android:style/TextAppearance.Widget.TabWidget">
