@@ -138,30 +138,6 @@
                     android:textSize="16sp" />
 
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp">
-
-                <ImageView
-                    android:id="@+id/call2"
-                    android:layout_width="18dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/ic_phone_thin"
-                    android:tint="#555" />
-
-                <TextView
-                    android:id="@+id/number1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:autoLink="phone"
-                    android:text="01927111666"
-                    android:textAlignment="center"
-                    android:textColor="#333"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

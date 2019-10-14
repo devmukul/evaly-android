@@ -15,11 +15,6 @@ public class UrlUtils {
 
 
 
-
-
-
-
-
     public static final String BASE_URL = DOMAIN+"core/";
     public static final String BASE_URL_NEWSFEED = DOMAIN+"newsfeed/";
 
