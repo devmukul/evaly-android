@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -105,6 +106,10 @@ public class ContactActivity extends BaseActivity
 
         View mapsView = findViewById(R.id.mapOpener);
         mapsView.setOnClickListener(openMaps);
+
+
+        ImageView back = findViewById(R.id.backArrow);
+        back.setOnClickListener(v -> finish());
 
 
     }
