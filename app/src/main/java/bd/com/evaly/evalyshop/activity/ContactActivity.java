@@ -23,7 +23,7 @@ public class ContactActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        getSupportActionBar().setElevation(4f);
+        getSupportActionBar().setElevation(0);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Contact us");
 
