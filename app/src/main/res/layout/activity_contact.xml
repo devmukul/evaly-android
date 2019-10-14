@@ -269,6 +269,7 @@
                         android:text="House 8 (1st Floor), Road 14 \nDhanmondi, Dhaka-1209"
                         android:textAlignment="viewStart"
                         android:textColor="#333"
+                        android:textIsSelectable="true"
                         android:textSize="17sp" />
                 </LinearLayout>
 
@@ -312,6 +313,7 @@
                         android:textAlignment="center"
                         android:textColor="#333"
                         android:textColorLink="#333"
+                        android:textIsSelectable="false"
                         android:textSize="17sp" />
                 </LinearLayout>
 
