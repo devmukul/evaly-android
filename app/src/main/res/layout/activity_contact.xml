@@ -91,6 +91,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:clickable="true"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -99,7 +100,7 @@
                     android:layout_height="50dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/grid_color_1"
-                    android:clickable="true"
+                    android:clickable="false"
                     android:padding="14dp"
                     android:tint="#fff"
                     app:srcCompat="@drawable/ic_call" />
@@ -119,6 +120,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:clickable="true"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -127,7 +129,7 @@
                     android:layout_height="50dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/grid_color_3"
-                    android:clickable="true"
+                    android:clickable="false"
                     android:padding="14dp"
                     android:tint="#fff"
                     app:srcCompat="@drawable/ic_email_2" />
@@ -147,6 +149,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:clickable="true"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -155,7 +158,7 @@
                     android:layout_height="50dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/grid_color_2"
-                    android:clickable="true"
+                    android:clickable="false"
                     android:padding="14dp"
                     android:tint="#fff"
                     app:srcCompat="@drawable/ic_marker_filled" />
@@ -175,6 +178,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:clickable="true"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -183,7 +187,7 @@
                     android:layout_height="50dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/grid_color_4"
-                    android:clickable="true"
+                    android:clickable="false"
                     android:paddingLeft="10dp"
                     android:paddingTop="10dp"
                     android:paddingRight="10dp"

@@ -10,7 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.thefinestartist.finestwebview.FinestWebView;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
@@ -35,6 +38,74 @@ public class ContactActivity extends BaseActivity
         //make fully Android Transparent Status bar
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
+
+        LinearLayout callBox = findViewById(R.id.callBox);
+        callBox.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:09638111666"));
+            startActivity(intent);
+        });
+
+
+        LinearLayout emailBox = findViewById(R.id.emailBox);
+        emailBox.setOnClickListener(v -> {
+
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto","support@evaly.com.bd", null));
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+            startActivity(emailIntent);
+        });
+
+
+        LinearLayout facebookBox = findViewById(R.id.facebookBox);
+        facebookBox.setOnClickListener(v -> {
+
+            try {
+                getPackageManager().getPackageInfo("com.facebook.katana", 0);
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/1567333923329329")));
+            } catch (Exception e) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/evaly.com.bd/")));
+            }
+
+        });
+
+
+
+
+        View.OnClickListener openMaps = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri gmmIntentUri = Uri.parse("geo:23.754241,90.3726478?q=" + Uri.encode("Evaly.com.bd"));
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+
+                    new FinestWebView.Builder(ContactActivity.this)
+                            .titleDefault("Google Maps")
+                            .webViewBuiltInZoomControls(false)
+                            .webViewDisplayZoomControls(false)
+                            .dividerHeight(0)
+                            .gradientDivider(false)
+                            .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit, R.anim.activity_close_enter, R.anim.activity_close_exit)
+                            .show("https://g.page/evaly-com-bd?share");
+
+                }
+            }
+        };
+
+
+
+        LinearLayout mapsBox = findViewById(R.id.mapsBox);
+        mapsBox.setOnClickListener(openMaps);
+
+
+
+        View mapsView = findViewById(R.id.mapOpener);
+        mapsView.setOnClickListener(openMaps);
+
 
     }
 
