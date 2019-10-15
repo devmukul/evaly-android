@@ -2,8 +2,9 @@ package bd.com.evaly.evalyshop.models;
 
 public class AvailableShop {
 
-    String name,logo,price,slug,contact_number,address,shopJson,maximumPrice,shopSlug, productId;
-    boolean stock;
+    private String name,logo,price,slug,contact_number,address,shopJson,maximumPrice,shopSlug, productId;
+    private double discountValue;
+    private boolean stock;
 
 
     public AvailableShop(){
@@ -22,6 +23,27 @@ public class AvailableShop {
         this.maximumPrice=maximumPrice;
         this.shopSlug = shopSlug;
         this.productId = productId;
+    }
+
+
+    public String getContact_number() {
+        return contact_number;
+    }
+
+    public void setContact_number(String contact_number) {
+        this.contact_number = contact_number;
+    }
+
+    public double getDiscountValue() {
+        return discountValue;
+    }
+
+    public void setDiscountValue(double discountValue) {
+        this.discountValue = discountValue;
+    }
+
+    public boolean isStock() {
+        return stock;
     }
 
     public String getShopSlug() {
