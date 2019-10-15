@@ -751,7 +751,11 @@ public class ViewProductActivity extends BaseActivity {
 
 
                         ProductGrid productGrid = new ProductGrid(context, findViewById(R.id.products), firstVariant.getString("category_slug"), findViewById(R.id.progressBar));
+
+
                         if (nestedSV != null) {
+                            productGrid.setScrollView(nestedSV);
+
                             nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
                                 @Override
                                 public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {

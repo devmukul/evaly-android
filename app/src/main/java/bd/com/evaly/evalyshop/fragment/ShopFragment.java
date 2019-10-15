@@ -77,7 +77,7 @@ public class ShopFragment extends Fragment {
     String slug="", title="", groups="";
     ImageView logo;
     TextView name,address,number,tvOffer,followText;
-    StickyScrollView nestedSV;
+    NestedScrollView nestedSV;
     ShimmerFrameLayout shimmer;
     RecyclerView recyclerView;
     ShopCategoryAdapter adapter;
@@ -237,7 +237,7 @@ public class ShopFragment extends Fragment {
         CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
         CoordinatorLayout rootLayout = view.findViewById(R.id.root_coordinator);
 
-        NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
+        nestedSV = view.findViewById(R.id.stickyScrollView);
 
         if (nestedSV != null) {
 
@@ -282,6 +282,7 @@ public class ShopFragment extends Fragment {
         reset.setVisibility(View.VISIBLE);
         categoryTitle.setText(categoryName);
         productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, categorySlug, 1, view.findViewById(R.id.progressBar));
+        productGrid.setScrollView(nestedSV);
 
     }
 
@@ -309,6 +310,7 @@ public class ShopFragment extends Fragment {
 
                         if(response.getInt("count")>0){
                             productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, "", 1, view.findViewById(R.id.progressBar));
+                            productGrid.setScrollView(nestedSV);
                             try {
                                 followBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override

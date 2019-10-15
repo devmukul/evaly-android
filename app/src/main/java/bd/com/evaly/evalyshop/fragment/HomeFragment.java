@@ -198,7 +198,10 @@ public class HomeFragment extends Fragment {
         });
 
 
+        NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
+
         ProductGrid productGrid = new ProductGrid(context, view.findViewById(R.id.products), defaultCategory, view.findViewById(R.id.progressBar));
+        productGrid.setScrollView(nestedSV);
 
         // slider
         sliderPager =  view.findViewById(R.id.sliderPager);
@@ -215,7 +218,6 @@ public class HomeFragment extends Fragment {
         CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
         CoordinatorLayout rootLayout = view.findViewById(R.id.root_coordinator);
 
-        NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
 
         if (nestedSV != null) {
             nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {

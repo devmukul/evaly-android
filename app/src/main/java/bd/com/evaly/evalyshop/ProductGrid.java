@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop;
 
 import android.content.Context;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -49,6 +50,9 @@ public class ProductGrid {
     private ProgressBar progressBar;
     RequestQueue rq;
 
+
+    private NestedScrollView scrollView;
+
     private boolean isLoading = false;
 
     private ProductListener listener;
@@ -71,6 +75,11 @@ public class ProductGrid {
 
         rq = Volley.newRequestQueue(context);
 
+    }
+
+
+    public void setScrollView(NestedScrollView scrollView){
+        this.scrollView = scrollView;
     }
 
 
@@ -213,6 +222,12 @@ public class ProductGrid {
         Log.d("json", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
+
+
+                    if (scrollView != null)
+                        scrollView.fling(0);
+
+
                     try {
                         Log.d("shop_products", response.toString());
 
@@ -312,6 +327,11 @@ public class ProductGrid {
         Log.d("json", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
+
+
+                    if (scrollView != null)
+                        scrollView.fling(0);
+
                     try {
                         Log.d("shop_products", response.toString());
                         if (response.getInt("count") == 0) {
@@ -409,6 +429,11 @@ public class ProductGrid {
         }
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
+
+
+                    if (scrollView != null)
+                        scrollView.fling(0);
+
                     try {
                         Log.d("product_json", response.toString());
                         JSONArray jsonArray = response.getJSONArray("results");
@@ -493,18 +518,5 @@ public class ProductGrid {
     }
 
 
-    public void sortByPriceHigh() {
-        Collections.sort(products, new Comparator<ProductListItem>() {
-            @Override
-            public int compare(ProductListItem lhs, ProductListItem rhs) {
-                if (lhs.getPriceMin() > rhs.getPriceMin()) {
-                    return lhs.getPriceMin();
-                } else {
-                    return rhs.getPriceMin();
-                }
-            }
-        });
-
-    }
 }
 
