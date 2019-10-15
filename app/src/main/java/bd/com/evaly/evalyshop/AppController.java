@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -16,8 +17,11 @@ import com.crashlytics.android.Crashlytics;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
+import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.models.db.AppDatabase;
+import bd.com.evaly.evalyshop.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.xmpp.LocalBinder;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPService;
@@ -33,6 +37,8 @@ public class AppController extends Application implements Application.ActivityLi
     public static XMPPService xmppService;
     public Boolean mBounded = false;
     public static AppDatabase database;
+
+    static UserDetails userDetails;
 
 
     //Our broadCast receive to update us on various events
@@ -50,6 +56,8 @@ public class AppController extends Application implements Application.ActivityLi
         mContext = getApplicationContext();
 
         database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "booksDB").build();
+
+        userDetails = new UserDetails(this);
 
 //        internetConnectionDialog();
         Logger.addLogAdapter(new AndroidLogAdapter());
@@ -155,6 +163,26 @@ public class AppController extends Application implements Application.ActivityLi
 
     @Override
     public void onActivityDestroyed(Activity activity) {
+
+    }
+
+
+    public static void logout(Activity context) {
+
+        MyPreference.with(context).clearAll();
+        if (xmppService != null && xmppService.xmpp != null){
+            xmppService.xmpp.disconnect();
+        }
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                database.clearAllTables();
+            }
+        });
+        userDetails.clearAll();
+        context.stopService(new Intent(context, XMPPService.class));
+        context.startActivity(new Intent(context, SignInActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        context.finishAffinity();
 
     }
 }

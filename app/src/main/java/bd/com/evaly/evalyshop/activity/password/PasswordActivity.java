@@ -9,7 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -21,15 +23,11 @@ import java.util.HashMap;
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.activity.SignInActivity;
-import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.xmpp.XMPPService;
@@ -55,20 +53,23 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     EditText etPassword;
     @BindView(R.id.etConfirmPassword)
     EditText etConfirmPassword;
+    @BindView(R.id.tvPasswordWarning)
+    TextView tvPasswordWarning;
 
     ViewDialog dialog;
 
-    private UserDetails userDetails;
-    private String phoneNumber, password;
-
     private int size = 1;
 
+    private String phoneNumber, password;
+
     private SetPasswordPresenter presenter;
+
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
 
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
+        //Event Listeners
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
             xmppHandler.Signup(new SignupModel(phoneNumber, password, password));
@@ -86,35 +87,16 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         public void onLoggedIn() {
             Logger.d("LOGIN");
             dialog.hideDialog();
+
             xmppHandler.sendRequestTo("09638111667", "Evaly");
             xmppHandler.changePassword(etPassword.getText().toString());
             xmppHandler.disconnect();
             Snackbar.make(pin1Et, "Password set Successfully, Please login!", Snackbar.LENGTH_LONG).show();
-            new Handler().postDelayed(() -> {
-                userDetails.clearAll();
-                startActivity(new Intent(PasswordActivity.this, SignInActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                finishAffinity();
-            }, 2000);
+            new Handler().postDelayed(() -> AppController.logout(PasswordActivity.this), 2000);
         }
-
-        public void onSignupFailed(String error) {
-            Logger.d(error);
-            if (Constants.SIGNUP_ERR_CONFLICT.equalsIgnoreCase(error)) {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-                return;
-            }
-            xmppHandler.disconnect();
-            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-        }
-
-
-        public void onPasswordChangeFailed(String msg) {
-            Logger.d(msg);
-        }
-
 
         public void onLoginFailed(String msg) {
+            Logger.d(msg);
             if (!msg.contains("already logged in")) {
                 HashMap<String, String> data = new HashMap<>();
                 data.put("user", CredentialManager.getUserName());
@@ -124,7 +106,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                 AuthApiHelper.changeXmppPassword(data, new DataFetchingListener<Response<JsonPrimitive>>() {
                     @Override
                     public void onDataFetched(Response<JsonPrimitive> response) {
-                        Logger.d(new Gson().toJson(response));
+//                        Logger.d(new Gson().toJson(response));
                         dialog.hideDialog();
                         if (response.code() == 200) {
                             onPasswordChanged();
@@ -144,18 +126,28 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             }
         }
 
+        public void onSignupFailed(String error) {
+            Logger.d(error);
+            if (Constants.SIGNUP_ERR_CONFLICT.equalsIgnoreCase(error)) {
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+                return;
+            }
+            xmppHandler.disconnect();
+            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        }
 
         public void onPasswordChanged() {
+            dialog.hideDialog();
             Snackbar.make(pin1Et, "Password set Successfully, Please login!", Snackbar.LENGTH_LONG).show();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    userDetails.clearAll();
-                    startActivity(new Intent(PasswordActivity.this, SignInActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                    finishAffinity();
-                }
-            }, 2000);
             xmppHandler.disconnect();
+
+//            xmppHandler.disconnect();
+        }
+
+        public void onPasswordChangeFailed(String msg){
+            Logger.d(msg);
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         }
     };
 
@@ -165,17 +157,16 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         setContentView(R.layout.activity_password);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle("Set Password");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setElevation(0);
 
         dialog = new ViewDialog(this);
 
         phoneNumber = getIntent().getStringExtra("phone");
+//        firstName = getIntent().getStringExtra("firstName");
+//        lastName = getIntent().getStringExtra("lastName");
 
         presenter = new SetPasswordPresenterImpl(this, this);
-
-        userDetails = new UserDetails(this);
 
         pin1Et.addTextChangedListener(new TextWatcher() {
 
@@ -291,11 +282,13 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             }
 
         });
+
     }
 
     @OnClick(R.id.btnResetPassword)
     void resetPassword() {
         dialog.showDialog();
+        tvPasswordWarning.setVisibility(View.GONE);
         String otp = pin1Et.getText().toString().trim() + pin2Et.getText().toString().trim() + pin3Et.getText().toString().trim()
                 + pin4Et.getText().toString().trim() + pin5Et.getText().toString().trim();
         presenter.setPassword(otp, etPassword.getText().toString().trim(), etConfirmPassword.getText().toString().trim(), phoneNumber);
@@ -319,8 +312,15 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+    }
+
+    @Override
     public void onBackPressed() {
         finish();
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
     @Override
@@ -368,7 +368,6 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
     @Override
     public void onPasswordSetSuccess() {
-        dialog.hideDialog();
         password = etPassword.getText().toString();
         CredentialManager.saveUserName(phoneNumber);
         startXmppService();
@@ -379,6 +378,12 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     public void onShortPassword() {
         dialog.hideDialog();
         etPassword.setError("At least 8 characters!");
+    }
+
+    @Override
+    public void onSpecialCharMiss() {
+        dialog.hideDialog();
+        tvPasswordWarning.setVisibility(View.VISIBLE);
     }
 
     @Override

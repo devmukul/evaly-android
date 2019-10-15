@@ -7,5 +7,6 @@ public interface SetPasswordView {
     void onPasswordMismatch();
     void onPasswordSetSuccess();
     void onShortPassword();
+    void onSpecialCharMiss();
     void onPasswordSetFailed(String msg);
 }
