@@ -1088,7 +1088,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                             item.setAuthorUsername(ob.getString("username"));
                             item.setAuthorFullName(ob.getString("author_full_name"));
-                            item.setAuthorImage(ob.getString("author_image"));
+                            item.setAuthorImage(ob.getString("author_compressed_image"));
                             item.setIsAdmin(ob.getInt("author_is_admin") != 0);
                             item.setBody(ob.getString("body"));
 
@@ -1096,9 +1096,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                             try {
                                 item.setAttachment(ob.getString("attachment"));
                                 item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
+
                             } catch (Exception e){
-                                item.setAttachment(null);
-                                item.setAttachmentCompressed(null);
+                                item.setAttachment("null");
+                                item.setAttachmentCompressed("null");
                             }
 
                             item.setCreatedAt(ob.getString("created_at"));

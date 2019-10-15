@@ -39,7 +39,7 @@ public class NewsfeedItem {
 
 
     public String getAttachment() {
-        return attachment;
+        return attachment.replace("\n", "");
     }
 
     public void setAttachment(String attachment) {
@@ -47,21 +47,17 @@ public class NewsfeedItem {
     }
 
     public String getAttachmentCompressed() {
-        return attachmentCompressed;
+        return attachmentCompressed.replace("\n", "");
     }
 
-    public void setAttachmentCompressed(String attachmentCompressed) {
-        this.attachmentCompressed = attachmentCompressed;
-    }
+    public void setAttachmentCompressed(String attachmentCompressed) { this.attachmentCompressed = attachmentCompressed; }
 
 
     public String getAuthorImageCompressed() {
-        return authorImageCompressed;
+        return authorImageCompressed.replace("\n", "");
     }
 
-    public void setAuthorImageCompressed(String authorImageCompressed) {
-        this.authorImageCompressed = authorImageCompressed;
-    }
+    public void setAuthorImageCompressed(String authorImageCompressed) { this.authorImageCompressed = authorImageCompressed; }
 
     public String getType() {
         return type;
@@ -96,7 +92,7 @@ public class NewsfeedItem {
     }
 
     public String getAuthorImage() {
-        return authorImage;
+        return authorImage.replace("\n", "");
     }
 
     public void setAuthorImage(String authorImage) {
