@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.thefinestartist.finestwebview.FinestWebView;
 
 import bd.com.evaly.evalyshop.BaseActivity;
@@ -39,6 +40,11 @@ public class ContactActivity extends BaseActivity
         //make fully Android Transparent Status bar
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
+
+
+        ImageView mapImage = findViewById(R.id.mapImage);
+
+        Glide.with(this).load(R.drawable.map_high_res).into(mapImage);
 
         LinearLayout callBox = findViewById(R.id.callBox);
         callBox.setOnClickListener(v -> {
