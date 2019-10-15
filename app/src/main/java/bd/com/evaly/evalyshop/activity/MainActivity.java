@@ -105,9 +105,7 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        //        //Event Listeners
         public void onSignupSuccess(){
-
             Logger.d("Signup success");
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
             xmppHandler.login();
