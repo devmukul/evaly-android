@@ -16,13 +16,24 @@ public class RoasterModel implements Serializable, Comparable<RoasterModel> {
     public Presence.Mode presenceMode;
     public int status;
     long time;
+    private String lastMessageId;
+    private String name;
 
-    public RoasterModel(Jid roasterEntryUser, Jid roasterPresenceFrom, String presenceStatus, Presence.Mode presenceMode, int status){
+    public RoasterModel(Jid roasterEntryUser, Jid roasterPresenceFrom, String presenceStatus, Presence.Mode presenceMode, int status, String name){
         this.roasterEntryUser = roasterEntryUser;
         this.roasterPresenceFrom = roasterPresenceFrom;
         this.presenceStatus = presenceStatus;
         this.presenceMode = presenceMode;
         this.status = status;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public long getTime() {
@@ -31,6 +42,14 @@ public class RoasterModel implements Serializable, Comparable<RoasterModel> {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public String getLastMessageId() {
+        return lastMessageId;
+    }
+
+    public void setLastMessageId(String lastMessageId) {
+        this.lastMessageId = lastMessageId;
     }
 
     public Jid getRoasterEntryUser() {
@@ -75,7 +94,7 @@ public class RoasterModel implements Serializable, Comparable<RoasterModel> {
 
     @Override
     public int compareTo(RoasterModel roasterModel) {
-        Logger.d("_+_+_+_+_+_+");
+//        Logger.d("_+_+_+_+_+_+");
         return Long.compare(getTime(), roasterModel.getTime());
 
     }

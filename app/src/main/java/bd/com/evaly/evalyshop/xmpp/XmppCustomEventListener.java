@@ -21,6 +21,7 @@ public class XmppCustomEventListener implements XMPPEventReceiver.XmppCustomEven
     public void onConnectionClosed() {}
     public void onReConnection() {}
     public void onPasswordChanged(){}
+    public void onPasswordChangeFailed(String msg) { }
     public void onLoginFailed(String msg) {}
     public void onPresenceChanged(PresenceModel presenceModel) {}
     public void onChatStateChanged(ChatStateModel chatStateModel){}

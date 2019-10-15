@@ -45,6 +45,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONException;
@@ -56,15 +57,20 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
-
+import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 
 
 public class EditProfileActivity extends BaseActivity {
@@ -76,6 +82,37 @@ public class EditProfileActivity extends BaseActivity {
     String userAgent;
     Context context;
     ImageView profilePic;
+    private ViewDialog dialog;
+
+    private UserModel mUserModel;
+
+    private AppController mChatApp = AppController.getInstance();
+    private XMPPHandler xmppHandler;
+
+    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener(){
+
+        //Event Listeners
+        public void onConnected() {
+            xmppHandler = AppController.getmService().xmpp;
+            xmppHandler.updateUserInfo(mUserModel);
+
+            Logger.d("======   CONNECTED  -========");
+        }
+
+        public void onUpdateUserSuccess(){
+            dialog.hideDialog();
+            Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
+            onBackPressed();
+        }
+
+        public void onUpdateUserFailed( String error ){
+            Logger.d(error);
+
+            xmppHandler.disconnect();
+            Toast.makeText(getApplicationContext(),error,Toast.LENGTH_SHORT).show();
+        }
+
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +125,8 @@ public class EditProfileActivity extends BaseActivity {
         context = this;
         userDetails = new UserDetails(this);
 
+        dialog = new ViewDialog(this);
+
         firstname = findViewById(R.id.firstName);
         lastName = findViewById(R.id.lastName);
         email = findViewById(R.id.email);
@@ -96,6 +135,7 @@ public class EditProfileActivity extends BaseActivity {
         address = findViewById(R.id.address);
         profilePic = findViewById(R.id.picture);
         setProfilePic();
+
 
         firstname.setText(userDetails.getFirstName());
         lastName.setText(userDetails.getLastName());
@@ -383,9 +423,7 @@ public class EditProfileActivity extends BaseActivity {
 
 
     public void getUserData() {
-        final ViewDialog alert = new ViewDialog(this);
-
-        alert.showDialog();
+        dialog.showDialog();
 
         String url = UrlUtils.REFRESH_AUTH_TOKEN + userDetails.getUserName() + "/";
         JSONObject parameters = new JSONObject();
@@ -414,7 +452,7 @@ public class EditProfileActivity extends BaseActivity {
                     userDetails.setPhone(phone.getText().toString());
                     userDetails.setJsonAddress(address.getText().toString());
 
-                    setUserData(userInfo, alert);
+                    setUserData(userInfo);
 
                     Log.d("json user info", userJson.toString());
 
@@ -441,7 +479,24 @@ public class EditProfileActivity extends BaseActivity {
         queue.add(request);
     }
 
-    public void setUserData(JSONObject payload, ViewDialog alert) {
+    private void startXmppService() {
+        if( !XMPPService.isServiceRunning ) {
+            Intent intent = new Intent(this, XMPPService.class);
+            mChatApp.UnbindService();
+            mChatApp.BindService(intent);
+            Logger.d("++++++++++");
+        } else {
+            Logger.d("---------");
+            xmppHandler = AppController.getmService().xmpp;
+            if(!xmppHandler.isConnected()){
+                xmppHandler.connect();
+            } else {
+                xmppHandler.updateUserInfo(mUserModel);
+            }
+        }
+    }
+
+    public void setUserData(JSONObject payload) {
 
         String url = UrlUtils.BASE_URL+"user-info-update/";
         Log.d("json user info url", url);
@@ -449,9 +504,22 @@ public class EditProfileActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
 
-                alert.hideDialog();
+                dialog.hideDialog();
                 Log.d("json user info response", response.toString());
-                Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
+                JSONObject data = null;
+                try {
+                    data = response.getJSONObject("data");
+                    JSONObject ob = data.getJSONObject("user_info");
+                    UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
+
+                    Logger.d(new Gson().toJson(userModel));
+                    CredentialManager.saveUserData(userModel);
+
+                    startXmppService();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
 
             }
         }, new Response.ErrorListener() {
@@ -476,6 +544,11 @@ public class EditProfileActivity extends BaseActivity {
         queue.add(request);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

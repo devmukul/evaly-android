@@ -10,6 +10,7 @@ public class Constants {
     // Event specific constants
     public static final String EVT_SIGNUP_SUC = "xmpp_signup_success";
     public static final String EVT_PASSWORD_CHANGE_SUC = "xmpp_password_change_success";
+    public static final String EVT_PASSWORD_CHANGE_FAILED = "xmpp_password_change_failed";
     public static final String EVT_SIGNUP_ERR = "xmpp_signup_error";
     public static final String EVT_LOGGED_IN = "xmpp_logged_in";
     public static final String EVT_NEW_MSG = "xmpp_new_msg";
@@ -35,6 +36,7 @@ public class Constants {
     public static final String INTENT_KEY_NEWREQUEST = "newrequest";
     public static final String INTENT_KEY_SIGNUP_ERR = "signuperror";
     public static final String INTENT_KEY_UPDATE_USER_ERR = "updateusererror";
+    public static final String INTENT_KEY_CHANGE_PASS_FAILED = "updateusererror";
 
 
     //Presence States (Strings)

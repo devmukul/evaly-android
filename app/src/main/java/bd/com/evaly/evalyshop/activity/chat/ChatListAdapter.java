@@ -23,6 +23,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
 import bd.com.evaly.evalyshop.util.Constants;
@@ -33,24 +34,25 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
 
-    private List<RoasterModel> list;
+    private List<RosterTable> list;
     private Activity context;
     private RecyclerViewOnItemClickListenerChat listener;
-    private XMPPHandler xmppHandler;
     List<VCard> vCardList;
     public static List<ChatItem> chatItemList;
+    private List<ChatListViewHolder> chatListViewHolderList;
 
-    public ChatListAdapter(List<RoasterModel> list, Activity context, RecyclerViewOnItemClickListenerChat listener) {
+    public ChatListAdapter(List<RosterTable> list, Activity context, RecyclerViewOnItemClickListenerChat listener) {
         this.list = list;
         this.context = context;
         this.listener = listener;
-        xmppHandler = AppController.getmService().xmpp;
         vCardList = new ArrayList<>();
         chatItemList = new ArrayList<>();
+        chatListViewHolderList = new ArrayList<>();
     }
 
     public interface RecyclerViewOnItemClickListenerChat {
-        void onItemClicked(VCard object, int position, RoasterModel roasterModel);
+        void onItemClicked(RosterTable roasterModel);
+
         void onAllDataLoaded(List<RoasterModel> roasterModelList);
     }
 
@@ -62,71 +64,86 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
     @Override
     public void onBindViewHolder(@NonNull ChatListViewHolder holder, int position) {
-        RoasterModel model = list.get(position);
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                VCard vCard = xmppHandler.getUserDetails(model.getRoasterEntryUser().asEntityBareJidIfPossible());
-                Logger.d(new Gson().toJson(vCard));
-                try {
-                    if (vCard.getNickName() == null || vCard.getNickName().replaceAll("\\s+$", "").equals("")) {
-                        if (vCard.getFirstName() == null){
-                            holder.tvName.setText("Customer");
-                        }else {
-                            holder.tvName.setText(vCard.getFirstName() + " " + vCard.getLastName());
-                        }
-                    } else if (vCard.getNickName().trim().replaceAll("\\s+$", "").equals("")) {
-                        holder.tvName.setText("Customer");
-                    } else {
-                        holder.tvName.setText(vCard.getNickName());
-                    }
-                    Glide.with(context)
-                            .load(vCard.getField("URL"))
-                            .apply(new RequestOptions().placeholder(R.drawable.user_image))
-                            .into(holder.ivProfileImage);
-                    vCardList.add(vCard);
-                    if (model.getStatus() == Constants.PRESENCE_MODE_AVAILABLE_INT) {
-                        holder.llOnlineStatus.setVisibility(View.VISIBLE);
-                    } else {
-                        holder.llOnlineStatus.setVisibility(View.GONE);
-                    }
-                } catch (Exception e) {
-                    holder.tvName.setText(model.getRoasterPresenceFrom().getLocalpartOrNull().toString());
-                    e.printStackTrace();
-                }
+        RosterTable model = list.get(position);
+//        Logger.d(list.size() + "     " + position);
 
-                ChatItem chatItem = null;
-                try {
-                    chatItem = xmppHandler.getLastMessage(vCard.getFrom());
-                    list.get(position).setTime(chatItem.getLognTime());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (chatItem != null) {
-                    if (chatItem.getSender().contains(CredentialManager.getUserName())) {
-                        if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
-                            holder.tvBody.setText("You: Sent an image");
-                        } else {
-                            holder.tvBody.setText("You: " + chatItem.getChat());
-                        }
 
-                    } else {
-                        if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
-                            holder.tvBody.setText("Sent an image");
-                        } else {
-                            holder.tvBody.setText(chatItem.getChat());
-                        }
-                    }
-                    holder.tvTime.setText(chatItem.getTime());
+        try {
+//            if (model.rosterName == null) {
+//                if (model.name != null ) {
+//                    tvName.setText(rosterTable.name);
+//                } else if (model.nick_name == null ) {
+//                    tvName.setText("Customer");
+//                } else {
+//                    tvName.setText(model.nick_name);
+//                }
+//
+//            } else {
+//                tvName.setText(rosterTable.name);
+//            }
+            if (model.rosterName == null || model.rosterName.equals("")) {
+                if (model.nick_name == null || model.nick_name.replaceAll("\\s+$", "").equals("")) {
+                    holder.tvName.setText("Customer");
                 } else {
-                    holder.tvBody.setText("Say hi");
-                    holder.tvTime.setText("");
+                    holder.tvName.setText(model.nick_name);
+                }
+            } else {
+                holder.tvName.setText(model.rosterName);
+            }
+            Glide.with(context)
+                    .load(model.imageUrl)
+                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                    .into(holder.ivProfileImage);
+//            vCardList.add(vCard);
+            if (model.status == Constants.PRESENCE_MODE_AVAILABLE_INT) {
+                holder.llOnlineStatus.setVisibility(View.VISIBLE);
+            } else {
+                holder.llOnlineStatus.setVisibility(View.GONE);
+            }
+            ChatItem chatItem = new Gson().fromJson(model.lastMessage, ChatItem.class);
+            if (chatItem == null) {
+                holder.tvBody.setText("Say hi");
+                holder.tvTime.setText("");
+            } else {
+                if (chatItem.getSender().contains(CredentialManager.getUserName())) {
+                    if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
+                        holder.tvBody.setText("You: Sent an image");
+                    } else {
+                        holder.tvBody.setText("You: " + chatItem.getChat());
+                    }
+
+                } else {
+                    if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
+                        holder.tvBody.setText("Sent an image");
+                    } else {
+                        holder.tvBody.setText(chatItem.getChat());
+                    }
+                }
+                holder.tvTime.setText(chatItem.getTime());
+
+                if (model.unreadCount > 0) {
+                    Logger.d(model.unreadCount);
+                    holder.tvUnreadCount.setText(String.valueOf(model.unreadCount));
+                    holder.tvUnreadCount.setVisibility(View.VISIBLE);
+                } else {
+                    holder.tvUnreadCount.setVisibility(View.GONE);
                 }
             }
-        });
+        } catch (Exception e) {
+//            holder.tvName.setText(model.getRoasterPresenceFrom().getLocalpartOrNull().toString());
+            e.printStackTrace();
+        }
+
+        chatListViewHolderList.add(holder);
     }
 
-    public List<RoasterModel> getList(){
+    public void loadUnreadMessage() {
+        for (int i = 0; i < chatListViewHolderList.size(); i++) {
+
+        }
+    }
+
+    public List<RosterTable> getList() {
         return list;
     }
 
@@ -146,6 +163,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         TextView tvTime;
         @BindView(R.id.llOnlineStatus)
         LinearLayout llOnlineStatus;
+        @BindView(R.id.tvUnreadCount)
+        TextView tvUnreadCount;
 
 
         public ChatListViewHolder(@NonNull View itemView) {
@@ -160,7 +179,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onItemClicked(vCardList.get(getLayoutPosition()), getLayoutPosition(), list.get(getLayoutPosition()));
+                    listener.onItemClicked(list.get(getLayoutPosition()));
+//                    unreadCount.set(getLayoutPosition(), 0);
                 }
             });
         }

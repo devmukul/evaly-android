@@ -41,6 +41,9 @@ public class XMPPService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         if(intent != null){
+            if (xmpp == null){
+                xmpp = new XMPPHandler(XMPPService.this);
+            }
             xmpp.connect();
             XMPPService.isServiceRunning = true;
         }
@@ -52,6 +55,7 @@ public class XMPPService extends Service {
     public void onDestroy() {
         super.onDestroy();
         if(xmpp != null) xmpp.disconnect();
+//        xmpp = null;
         XMPPService.isServiceRunning = false;
     }
 
@@ -106,6 +110,12 @@ public class XMPPService extends Service {
 
     public void onPasswordChanged(){
         sendBroadcast(new Intent(Constants.EVT_PASSWORD_CHANGE_SUC));
+    }
+
+    public void onPasswordChangeFailed(String msg){
+        Intent intent = new Intent(Constants.EVT_PASSWORD_CHANGE_FAILED);
+        intent.putExtra(Constants.INTENT_KEY_CHANGE_PASS_FAILED,msg);
+        sendBroadcast(intent);
     }
 
     public void onSignupFailed(String error) {

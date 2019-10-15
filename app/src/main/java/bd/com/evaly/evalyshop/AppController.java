@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop;
 
 import android.app.Activity;
 import android.app.Application;
+import android.arch.persistence.room.Room;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import com.crashlytics.android.Crashlytics;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
+import bd.com.evaly.evalyshop.models.db.AppDatabase;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.xmpp.LocalBinder;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
@@ -30,6 +32,8 @@ public class AppController extends Application implements Application.ActivityLi
 
     public static XMPPService xmppService;
     public Boolean mBounded = false;
+    public static AppDatabase database;
+
 
     //Our broadCast receive to update us on various events
     private XMPPEventReceiver mEventReceiver;
@@ -45,6 +49,7 @@ public class AppController extends Application implements Application.ActivityLi
         mAppController = this;
         mContext = getApplicationContext();
 
+        database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "booksDB").build();
 
 //        internetConnectionDialog();
         Logger.addLogAdapter(new AndroidLogAdapter());
@@ -54,6 +59,7 @@ public class AppController extends Application implements Application.ActivityLi
         IntentFilter intentFilter = new IntentFilter(Constants.EVT_LOGGED_IN);
         intentFilter.addAction(Constants.EVT_SIGNUP_SUC);
         intentFilter.addAction(Constants.EVT_PASSWORD_CHANGE_SUC);
+        intentFilter.addAction(Constants.EVT_PASSWORD_CHANGE_FAILED);
         intentFilter.addAction(Constants.EVT_NEW_MSG_SENT);
         intentFilter.addAction(Constants.EVT_UPDATE_USER_SUC);
         intentFilter.addAction(Constants.EVT_UPDATE_USER_ERR);

@@ -6,10 +6,13 @@ import com.google.gson.JsonPrimitive;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.util.UrlUtils;
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface IApiClient {
 
@@ -27,4 +30,10 @@ public interface IApiClient {
 
     @POST(UrlUtils.SEND_CUSTOM_MESSAGE)
     Call<JsonObject> sendCustomMessage(@Header("Authorization") String token, @Body HashMap<String, String> data);
+
+
+    @Multipart
+    @POST(UrlUtils.IMAGE_UPLOAD)
+    Call<JsonObject> imageUpload(@Header("Authorization") String token, @Header("Content_Type") String contentType, @Part MultipartBody.Part image);
+
 }

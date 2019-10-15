@@ -116,26 +116,17 @@ public class MainActivity extends BaseActivity {
             Logger.d("LOGIN =========");
             Logger.d(xmppHandler.isConnected());
             VCard vCard = xmppHandler.getCurrentUserDetails();
-            Logger.d(vCard.getFirstName());
+//            Logger.d(vCard.getFirstName());
             if ( vCard.getLastName() == null){
                 Logger.d("========");
                 xmppHandler.updateUserInfo(CredentialManager.getUserData());
             }
-
-            //Save current User
-//            sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
-
-//            Intent chatListIntent = new Intent(MainActivity.this, ChatListActivity.class);
-//            startActivity(chatListIntent);
-//            finish();
         }
 
         public void onLoginFailed(String msg) {
             if (!msg.contains("already logged in")){
                 xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
             }
-//            xmppHandler.disconnect();
-//            Toast.makeText(getApplicationContext(), getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
         }
 
         //        //Event Listeners
@@ -144,19 +135,7 @@ public class MainActivity extends BaseActivity {
             Logger.d("Signup success");
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
             xmppHandler.login();
-            //Save current User
-//            sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
-
-//            Intent chatListIntent = new Intent(LoginActivity.this,ChatListActivity.class);
-//            startActivity(chatListIntent);
-//            finish();
         }
-//
-//        public void onSignupFailed(String error){
-//            xmppHandler.disconnect();
-//            Logger.d(error);
-//            Toast.makeText(getApplicationContext(),getString(R.string.login_failed),Toast.LENGTH_SHORT).show();
-//        }
     };
 
     @Override
@@ -238,6 +217,7 @@ public class MainActivity extends BaseActivity {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
+                    Logger.d("START_SERVICE");
                     startXmppService();
                 }
             });

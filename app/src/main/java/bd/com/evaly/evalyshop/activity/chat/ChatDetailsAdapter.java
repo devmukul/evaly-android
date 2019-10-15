@@ -29,6 +29,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ImagePreview;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.VCardObject;
 import bd.com.evaly.evalyshop.util.Constants;
@@ -44,10 +45,12 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
     private Activity context;
-    private VCardObject vCard;
+    private RosterTable vCard;
     List<ChatItem> chatItemList;
 
-    public ChatDetailsAdapter(List<ChatItem> chatItemList, Activity context, VCardObject vCard) {
+    boolean received, sent;
+
+    public ChatDetailsAdapter(List<ChatItem> chatItemList, Activity context, RosterTable vCard) {
         this.context = context;
         this.vCard = vCard;
         this.chatItemList = chatItemList;
@@ -57,13 +60,10 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public int getItemViewType(int position) {
         ChatItem chatItem = chatItemList.get(position);
 //        Logger.d(vCard.getJid() +"  =======   "+ chatItem.getSender().toString());
-        if (!chatItem.getSender().toString().contains(vCard.getJid().toString())) {
+        if (!chatItem.getSender().toString().contains(vCard.id)) {
             return VIEW_TYPE_MESSAGE_SENT;
-
         } else {
-
             return VIEW_TYPE_MESSAGE_RECEIVED;
-
         }
     }
 
@@ -71,8 +71,12 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {
+            sent = true;
+            received = false;
             return new SentMessageViewHolder(LayoutInflater.from(context).inflate(R.layout.sent_message_view, parent, false));
         } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
+            received = true;
+            sent = false;
             return new ReceiveMessageViewHolder(LayoutInflater.from(context).inflate(R.layout.chat_details_view, parent, false));
         }
 
@@ -120,6 +124,9 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ImageView ivImage;
         @BindView(R.id.imageProgress)
         ProgressBar imageProgress;
+        @BindView(R.id.tvUnreadMessage)
+        TextView tvUnreadMessage;
+
 
         public SentMessageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -141,20 +148,22 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         void bind(ChatItem chatItem) {
 
-            if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)){
+            if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
                 tvMessage.setVisibility(View.GONE);
                 imageProgress.setVisibility(View.VISIBLE);
                 ivImage.setVisibility(View.VISIBLE);
-                if (chatItem.getChat() != null || !chatItem.getChat().equalsIgnoreCase("")) {
+                if (chatItem .getLarge_image() != null){
                     ivImage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(context, ImagePreview.class);
-                            intent.putExtra("image", chatItem.getChat());
+                            intent.putExtra("image", chatItem.getLarge_image());
                             //Toast.makeText(context, imgURL, Toast.LENGTH_SHORT).show();
                             context.startActivity(intent);
                         }
                     });
+                }
+                if (chatItem.getChat() != null || !chatItem.getChat().equalsIgnoreCase("")) {
                     Glide.with(context)
                             .load(chatItem.getChat())
                             .apply(new RequestOptions().placeholder(R.drawable.ic_image_placeholder))
@@ -170,7 +179,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                     imageProgress.setVisibility(View.GONE);
-                                    Logger.d("=========");
+//                                    Logger.d("=========");
 
                                     ivImage.setVisibility(View.VISIBLE);
                                     cardImage.setVisibility(View.VISIBLE);
@@ -179,11 +188,18 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             })
                             .into(ivImage);
                 }
-            }else {
+            } else {
+                ivImage.setVisibility(View.GONE);
+                imageProgress.setVisibility(View.GONE);
                 tvMessage.setVisibility(View.VISIBLE);
                 tvMessage.setText(chatItem.getChat());
             }
-            tvChatTime.setText(Utils.getTimeAgoOnline(chatItem.getLognTime()));
+            if (chatItem.isUnread()) {
+                tvUnreadMessage.setVisibility(View.VISIBLE);
+            } else {
+                tvUnreadMessage.setVisibility(View.GONE);
+            }
+            tvChatTime.setText(Utils.getTimeAgo(chatItem.getLognTime()));
         }
     }
 
@@ -205,16 +221,18 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ImageView ivImage;
         @BindView(R.id.imageProgress)
         ProgressBar imageProgress;
+        @BindView(R.id.tvUnreadMessage)
+        TextView tvUnreadMessage;
 
         public ReceiveMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
 
-
             tvMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
 //                    tvSeen.setVisibility(View.VISIBLE);
 //                    tvChatTime.setVisibility(View.VISIBLE);
 //                    if (position % 2 == 0) {
@@ -227,20 +245,22 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         void bind(ChatItem chatItem) {
-            if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)){
-                ivImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(context, ImagePreview.class);
-                        intent.putExtra("image", chatItem.getChat());
-                        //Toast.makeText(context, imgURL, Toast.LENGTH_SHORT).show();
-                        context.startActivity(intent);
-                    }
-                });
+            if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
+                if (chatItem .getLarge_image() != null){
+                    ivImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, ImagePreview.class);
+                            intent.putExtra("image", chatItem.getLarge_image());
+                            //Toast.makeText(context, imgURL, Toast.LENGTH_SHORT).show();
+                            context.startActivity(intent);
+                        }
+                    });
+                }
                 tvMessage.setVisibility(View.GONE);
                 imageProgress.setVisibility(View.VISIBLE);
                 ivImage.setVisibility(View.VISIBLE);
-                if (chatItem.getChat() != null || !chatItem.getChat().isEmpty()){
+                if (chatItem.getChat() != null || !chatItem.getChat().isEmpty()) {
                     ivImage.setVisibility(View.VISIBLE);
                     Glide.with(context)
                             .load(chatItem.getChat())
@@ -262,13 +282,27 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             })
                             .into(ivImage);
                 }
-            }else {
+            } else {
+//                if (received){
+//                    tvMessage.setBackgroundResource(R.drawable.other_chat_back_round);
+//                }else {
+//                    tvMessage.setBackgroundResource(R.drawable.other_chat_back);
+//                }
+                ivImage.setVisibility(View.GONE);
+                imageProgress.setVisibility(View.GONE);
                 tvMessage.setVisibility(View.VISIBLE);
                 tvMessage.setText(chatItem.getChat());
             }
+
+            if (chatItem.isUnread()) {
+                tvUnreadMessage.setVisibility(View.VISIBLE);
+            } else {
+                tvUnreadMessage.setVisibility(View.GONE);
+            }
+
             tvMessage.setText(chatItem.getChat());
             Glide.with(context)
-                    .load(vCard.getUrl())
+                    .load(vCard.imageUrl)
                     .apply(new RequestOptions().placeholder(R.drawable.user_image))
                     .into(ivProfile);
         }

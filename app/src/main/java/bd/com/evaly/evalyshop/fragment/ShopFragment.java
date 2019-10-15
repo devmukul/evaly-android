@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -49,6 +50,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
@@ -61,8 +64,10 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.AppController;
@@ -74,10 +79,14 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.ReviewsActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.chat.ChatDetailsActivity;
+import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.adapter.ShopCategoryAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.TransactionItem;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
@@ -86,10 +95,13 @@ import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class ShopFragment extends Fragment {
 
@@ -117,11 +129,13 @@ public class ShopFragment extends Fragment {
     RequestQueue rq;
     UserDetails userDetails;
     int subCount = 0;
+    private ViewDialog dialog;
 
     private VCard vCard;
     AppController mChatApp = AppController.getInstance();
 
     XMPPHandler xmppHandler;
+    private List<RosterTable> rosterList;
 
 
     public ShopFragment() {
@@ -155,6 +169,7 @@ public class ShopFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        dialog = new ViewDialog(getActivity());
         name = view.findViewById(R.id.name);
         tvOffer = view.findViewById(R.id.tvOffer);
         address = view.findViewById(R.id.address);
@@ -174,6 +189,15 @@ public class ShopFragment extends Fragment {
         followBtn = view.findViewById(R.id.follow_btn);
 
         userDetails = new UserDetails(context);
+
+        rosterList = new ArrayList<>();
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+            }
+        });
 
         try {
 
@@ -334,6 +358,104 @@ public class ShopFragment extends Fragment {
                             e.printStackTrace();
                         }
 
+                        llInbox.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (userDetails.getToken() == null || userDetails.getToken().equals("")){
+                                    startActivity(new Intent(getActivity(), SignInActivity.class));
+                                    getActivity().finish();
+                                }else {
+                                    RosterTable roasterModel = getContactFromRoster(owner_number);
+                                    Logger.d(new Gson().toJson(roasterModel));
+                                    if (!CredentialManager.getUserName().equalsIgnoreCase(owner_number)) {
+                                        if (roasterModel != null) {
+                                            dialog.hideDialog();
+                                            Logger.d(new Gson().toJson(roasterModel));
+                                            startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", roasterModel));
+                                        } else {
+                                            dialog.showDialog();
+                                            HashMap<String, String> data = new HashMap<>();
+                                            data.put("localuser", CredentialManager.getUserName());
+                                            data.put("localserver", Constants.XMPP_HOST);
+                                            data.put("user", owner_number);
+                                            data.put("server", Constants.XMPP_HOST);
+                                            data.put("nick", shop_name);
+                                            data.put("subs", "both");
+                                            data.put("group", "evaly");
+
+//                                                    addRosterByOther();
+
+                                            Logger.d(data);
+                                            AuthApiHelper.addRoster(data, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
+                                                @Override
+                                                public void onDataFetched(retrofit2.Response<JsonPrimitive> response) {
+
+                                                    if (response.code() == 200 || response.code() == 201) {
+                                                        try {
+                                                            EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
+                                                                    + Constants.XMPP_HOST);
+                                                            VCard vCard = xmppHandler.getUserDetails(jid);
+                                                            HashMap<String, String> data1 = new HashMap<>();
+                                                            data1.put("phone_number", owner_number);
+                                                            data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
+
+                                                            Logger.d(new Gson().toJson(vCard.getFirstName())+"       ====");
+                                                            if (vCard.getFirstName() == null) {
+                                                                dialog.hideDialog();
+                                                                RosterTable table = new RosterTable();
+                                                                table.id = jid.asUnescapedString();
+                                                                table.rosterName = shop_name;
+                                                                table.name = "";
+                                                                table.status = 0;
+                                                                table.unreadCount = 0;
+                                                                table.nick_name = "";
+                                                                table.imageUrl = "";
+                                                                table.lastMessage = "";
+                                                                AsyncTask.execute(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        Logger.d("NEW ENTRY");
+                                                                        AppController.database.taskDao().addRoster(table);
+                                                                    }
+                                                                });
+                                                                startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", table));
+                                                            } else {
+                                                                dialog.hideDialog();
+                                                                RosterTable rosterTable = new RosterTable();
+                                                                rosterTable.name = vCard.getFirstName() + " " + vCard.getLastName();
+                                                                rosterTable.id = vCard.getFrom().asUnescapedString();
+                                                                rosterTable.imageUrl = vCard.getField("URL");
+                                                                rosterTable.status = 0;
+                                                                rosterTable.lastMessage = "";
+                                                                rosterTable.nick_name = vCard.getNickName();
+                                                                rosterTable.time = 0;
+                                                                startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
+
+                                                            }
+                                                        } catch (XmppStringprepException e) {
+                                                            e.printStackTrace();
+                                                        }
+
+
+                                                    } else {
+                                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailed(int status) {
+                                                    dialog.hideDialog();
+                                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }
+                        });
+
                         if (subscribed)
                             followText.setText("Unfollow (" + subCount + ")");
                         else
@@ -477,20 +599,6 @@ public class ShopFragment extends Fragment {
                                     }
                                 });
 
-                                llInbox.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if (userDetails.getToken() == null || userDetails.getToken().equals("")){
-                                            startActivity(new Intent(getActivity(), SignInActivity.class));
-                                            getActivity().finish();
-                                        }else {
-                                            xmppHandler.sendRequestTo(owner_number, shop_name);
-                                            VCardObject vCardObject = new VCardObject(shop_name, vCard.getFrom(), vCard.getField("URL"), 0);
-                                            startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("vcard", vCardObject));
-                                        }
-                                    }
-                                });
-
                                 reviews.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -597,6 +705,15 @@ public class ShopFragment extends Fragment {
         rq.add(request);
     }
 
+    private RosterTable getContactFromRoster(String number) {
+        RosterTable roasterModel = null;
+        for (RosterTable model : rosterList) {
+            if (model.id.contains(number)) {
+                roasterModel = model;
+            }
+        }
+        return roasterModel;
+    }
 
     public void getProductRating(final String sku) {
         String url = UrlUtils.BASE_URL + "reviews/summary/shops/" + sku + "/";

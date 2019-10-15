@@ -69,7 +69,6 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
-        //Event Listeners
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
             xmppHandler.Signup(new SignupModel(phoneNumber, password, password));
@@ -78,14 +77,42 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         }
 
         public void onSignupSuccess() {
+            Logger.d("SIGNUP SUCCESS");
             CredentialManager.savePassword(password);
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-
+            xmppHandler.login();
         }
 
         public void onLoggedIn() {
+            Logger.d("LOGIN");
+            dialog.hideDialog();
+            xmppHandler.sendRequestTo("09638111667", "Evaly");
             xmppHandler.changePassword(etPassword.getText().toString());
+            xmppHandler.disconnect();
+            Snackbar.make(pin1Et, "Password set Successfully, Please login!", Snackbar.LENGTH_LONG).show();
+            new Handler().postDelayed(() -> {
+                userDetails.clearAll();
+                startActivity(new Intent(PasswordActivity.this, SignInActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                finishAffinity();
+            }, 2000);
         }
+
+        public void onSignupFailed(String error) {
+            Logger.d(error);
+            if (Constants.SIGNUP_ERR_CONFLICT.equalsIgnoreCase(error)) {
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+                return;
+            }
+            xmppHandler.disconnect();
+            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        }
+
+
+        public void onPasswordChangeFailed(String msg) {
+            Logger.d(msg);
+        }
+
 
         public void onLoginFailed(String msg) {
             if (!msg.contains("already logged in")) {
@@ -117,16 +144,6 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             }
         }
 
-        public void onSignupFailed(String error) {
-            Logger.d(error);
-            if (Constants.SIGNUP_ERR_CONFLICT.equalsIgnoreCase(error)) {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-                return;
-            }
-            xmppHandler.disconnect();
-            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-        }
 
         public void onPasswordChanged() {
             Snackbar.make(pin1Et, "Password set Successfully, Please login!", Snackbar.LENGTH_LONG).show();
@@ -158,7 +175,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
         presenter = new SetPasswordPresenterImpl(this, this);
 
-        userDetails=new UserDetails(this);
+        userDetails = new UserDetails(this);
 
         pin1Et.addTextChangedListener(new TextWatcher() {
 

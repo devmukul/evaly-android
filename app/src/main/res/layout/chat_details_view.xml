@@ -27,6 +27,15 @@
             android:layout_marginBottom="3dp"
             android:textSize="12sp"/>
 
+        <TextView
+            android:id="@+id/tvUnreadMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:text="------------- Unread Message -------------"
+            android:layout_gravity="center"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,8 +78,7 @@
                             android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
                             android:visibility="gone"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_image_placeholder"/>
+                            android:scaleType="fitCenter"/>
                     </RelativeLayout>
 
                 </android.support.v7.widget.CardView>
