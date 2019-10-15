@@ -99,6 +99,7 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -142,6 +143,55 @@ public class ShopFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+        //On User Presence Changed
+        public void onPresenceChanged(PresenceModel presenceModel) {
+
+            Logger.d(presenceModel.getUserStatus());
+
+
+            try {
+                for (int i = 0; i < rosterList.size(); i++) {
+
+                    RosterTable model = rosterList.get(i);
+//                    Logger.d(new Gson().toJson(model));
+//                    Logger.d(new Gson().toJson(presenceModel));
+
+
+                    try {
+                        if (AppController.getmService().xmpp.checkSender(JidCreate.bareFrom(model.id), JidCreate.bareFrom(presenceModel.getUser()))) {
+                            model.status = presenceModel.getUserStatus();
+                            rosterList.set(i, model);
+                            adapter.notifyItemChanged(i);
+                            break;
+                        }
+                    } catch (XmppStringprepException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.getMessage();
+            }
+//            adapter.notifyDataSetChanged();
+        }
+
+        public void onConnected(){
+            xmppHandler = AppController.getmService().xmpp;
+            if (!owner_number.equals("")){
+                try {
+                    Logger.d(owner_number);
+                    EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
+                            + Constants.XMPP_HOST);
+                    vCard = xmppHandler.getUserDetails(jid);
+                    Logger.d(new Gson().toJson(vCard));
+                } catch (XmppStringprepException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -150,7 +200,7 @@ public class ShopFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         rq = Volley.newRequestQueue(context);
 
-        xmppHandler = AppController.getmService().xmpp;
+        startXmppService();
 
         return view;
     }
@@ -321,6 +371,25 @@ public class ShopFragment extends Fragment {
 
     }
 
+    private void startXmppService() {
+
+        //Start XMPP Service (if not running already)
+        if (!XMPPService.isServiceRunning) {
+            Intent intent = new Intent(getActivity(), XMPPService.class);
+            mChatApp.UnbindService();
+            mChatApp.BindService(intent);
+        } else {
+            xmppHandler = AppController.getmService().xmpp;
+            if (!xmppHandler.isConnected()) {
+                xmppHandler.connect();
+            } else {
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+            }
+        }
+
+    }
+
 
     public void showProductsByCategory(String categoryName, String categorySlug, int position) {
 
@@ -347,16 +416,6 @@ public class ShopFragment extends Fragment {
                         shop_name = jsonObject.getString("name");
                         owner_number = jsonObject.getString("owner_name");
                         subCount = data.getInt("subscriber_count");
-
-                        try {
-                            Logger.d(owner_number);
-                            EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
-                                    + Constants.XMPP_HOST);
-                            vCard = xmppHandler.getUserDetails(jid);
-                            Logger.d(new Gson().toJson(vCard));
-                        } catch (XmppStringprepException e) {
-                            e.printStackTrace();
-                        }
 
                         llInbox.setOnClickListener(new View.OnClickListener() {
                             @Override

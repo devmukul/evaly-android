@@ -97,7 +97,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
     ImageView ivBack;
 
     private ChatDetailsAdapter adapter;
-    private VCardObject vCard;
     private VCard mVCard;
 
     private ViewDialog dialog;
@@ -433,7 +432,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
         public void run() {
 
             //User haven't typed for PAUSE_THRESHOLD secs, mark chat status "Paused"
-            AppController.getmService().xmpp.updateChatStatus(vCard.getJid().asBareJid().toString(), ChatState.paused);
+            AppController.getmService().xmpp.updateChatStatus(rosterTable.id, ChatState.paused);
         }
     };
 
