@@ -41,7 +41,7 @@ public class ApiClient {
     }
 
     public static Retrofit getXmppClient() {
-        retrofit = new Retrofit.Builder().baseUrl("http://"+ Constants.XMPP_DOMAIN+":5280")
+        retrofit = new Retrofit.Builder().baseUrl("https://"+ Constants.XMPP_DOMAIN)
                 .addConverterFactory(StringConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addConverterFactory(ScalarsConverterFactory.create())

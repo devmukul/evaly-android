@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,13 +20,19 @@ import com.crashlytics.android.Crashlytics;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import bd.com.evaly.evalyshop.activity.SignInActivity;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.AppDatabase;
 import bd.com.evaly.evalyshop.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.xmpp.LocalBinder;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
+import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import io.fabric.sdk.android.Fabric;
 
@@ -57,7 +65,7 @@ public class AppController extends Application implements Application.ActivityLi
         mAppController = this;
         mContext = getApplicationContext();
 
-        database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "booksDB").build();
+        database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "evalyDB").build();
 
         userDetails = new UserDetails(this);
 
@@ -87,6 +95,7 @@ public class AppController extends Application implements Application.ActivityLi
         intentFilter.addAction(Constants.EVT_REQUEST_SUBSCRIBE);
 
         registerReceiver(mEventReceiver, intentFilter);
+
         registerActivityLifecycleCallbacks(this);
     }
 
@@ -109,10 +118,9 @@ public class AppController extends Application implements Application.ActivityLi
         }
     };
 
-    public XMPPEventReceiver getEventReceiver(){
+    public XMPPEventReceiver getEventReceiver() {
         return mEventReceiver;
     }
-
 
 
     public static synchronized AppController getInstance() {
@@ -179,8 +187,17 @@ public class AppController extends Application implements Application.ActivityLi
     public static void logout(Activity context) {
 
         MyPreference.with(context).clearAll();
-        if (xmppService != null && xmppService.xmpp != null){
+//        getInstance().clearAppData();
+        Logger.d(CredentialManager.getToken());
+        if (xmppService != null && xmppService.xmpp != null) {
             xmppService.xmpp.disconnect();
+        }
+        try {
+            userDetails.clearAll();
+            getInstance().UnbindService();
+            XMPPHandler.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         AsyncTask.execute(new Runnable() {
             @Override
@@ -188,7 +205,7 @@ public class AppController extends Application implements Application.ActivityLi
                 database.clearAllTables();
             }
         });
-        userDetails.clearAll();
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -200,6 +217,5 @@ public class AppController extends Application implements Application.ActivityLi
                 System.exit(1);
             }
         }, 300);
-
     }
 }

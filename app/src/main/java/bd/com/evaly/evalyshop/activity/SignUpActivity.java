@@ -137,6 +137,7 @@ public class SignUpActivity extends BaseActivity {
 
                     Intent il = new Intent(SignUpActivity.this, PasswordActivity.class);
                     il.putExtra("phone", phoneNumber.getText().toString());
+                    il.putExtra("name", firstName.getText().toString()+" "+lastName.getText().toString());
                     il.putExtra("type", "signup");
                     finish();
                     startActivity(il);

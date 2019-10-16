@@ -72,6 +72,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     private int size = 1;
 
     private String phoneNumber, password;
+    private String name;
 
     private SetPasswordPresenter presenter;
 
@@ -101,7 +102,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
         public void onLoggedIn() {
             Logger.d("LOGIN");
-            dialog.hideDialog();
+
 
             HashMap<String, String> data = new HashMap<>();
             data.put("localuser", CredentialManager.getUserName());
@@ -116,55 +117,32 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
                 @Override
                 public void onDataFetched(Response<JsonPrimitive> response) {
-
+                    dialog.hideDialog();
                     if (response.code() == 200 || response.code() == 201) {
                         try {
                             EntityBareJid jid = JidCreate.entityBareFrom("09638111667" + "@"
                                     + Constants.XMPP_HOST);
-                            VCard vCard = xmppHandler.getUserDetails(jid);
                             HashMap<String, String> data1 = new HashMap<>();
                             data1.put("phone_number", "09638111667");
                             data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
 
-                            Logger.d(new Gson().toJson(vCard.getFirstName()) + "       ====");
-                            AuthApiHelper.sendCustomMessage(data1, new DataFetchingListener<Response<JsonObject>>() {
+                            RosterTable table = new RosterTable();
+                            table.id = jid.asUnescapedString();
+                            table.rosterName = "Evaly";
+                            table.name = "";
+                            table.status = 0;
+                            table.unreadCount = 0;
+                            table.nick_name = "";
+                            table.imageUrl = "";
+                            table.lastMessage = "";
+                            AsyncTask.execute(new Runnable() {
                                 @Override
-                                public void onDataFetched(Response<JsonObject> response) {
-                                    dialog.hideDialog();
-                                    if (response.code() == 200 || response.code() == 201) {
-                                        Toast.makeText(getApplicationContext(), "Invitation sent!", Toast.LENGTH_LONG).show();
-//                                                                xmppHandler.sendRequestTo(etPhoneNumber.getText().toString(), etPhoneNumber.getText().toString());
-                                        Logger.d("[[[[[[[[[[[");
-                                        RosterTable table = new RosterTable();
-                                        table.id = jid.asUnescapedString();
-                                        table.rosterName = "Evaly";
-                                        table.name = "";
-                                        table.status = 0;
-                                        table.unreadCount = 0;
-                                        table.nick_name = "";
-                                        table.imageUrl = "";
-                                        table.lastMessage = "";
-                                        AsyncTask.execute(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Logger.d("NEW ENTRY");
-                                                AppController.database.taskDao().addRoster(table);
-                                            }
-                                        });
-                                    } else {
-                                        dialog.hideDialog();
-                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailed(int status) {
-                                    dialog.hideDialog();
-                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-
+                                public void run() {
+                                    Logger.d("NEW ENTRY");
+                                    AppController.database.taskDao().addRoster(table);
                                 }
                             });
-                            
+
                         } catch (XmppStringprepException e) {
                             e.printStackTrace();
                         }
@@ -182,7 +160,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                 }
             });
 
-            xmppHandler.sendRequestTo("09638111667", "Evaly");
+//            xmppHandler.sendRequestTo("09638111667", "Evaly");
             xmppHandler.changePassword(etPassword.getText().toString());
             xmppHandler.disconnect();
             Snackbar.make(pin1Et, "Password set Successfully, Please login!", Snackbar.LENGTH_LONG).show();
@@ -252,7 +230,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         data.put("localserver", Constants.XMPP_HOST);
         data.put("user", CredentialManager.getUserName());
         data.put("server", Constants.XMPP_HOST);
-        data.put("nick", CredentialManager.getUserData().getFirst_name());
+        data.put("nick", name);
         data.put("subs", "both");
         data.put("group", "evaly");
         AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
@@ -280,6 +258,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         dialog = new ViewDialog(this);
 
         phoneNumber = getIntent().getStringExtra("phone");
+        name = getIntent().getStringExtra("name");
 //        firstName = getIntent().getStringExtra("firstName");
 //        lastName = getIntent().getStringExtra("lastName");
 

@@ -197,6 +197,7 @@ public class SignInActivity extends BaseActivity {
 
                     token = data.getString("token");
 
+                    CredentialManager.saveToken(token);
 
                     JSONObject ob = data.getJSONObject("user_info");
 

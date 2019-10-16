@@ -93,9 +93,11 @@ public class MainActivity extends BaseActivity {
             Logger.d(xmppHandler.isConnected());
             VCard vCard = xmppHandler.getCurrentUserDetails();
 //            Logger.d(vCard.getFirstName());
-            if ( vCard.getLastName() == null){
-                Logger.d("========");
-                xmppHandler.updateUserInfo(CredentialManager.getUserData());
+            if (CredentialManager.getUserData() != null){
+                if ( vCard.getLastName() == null){
+                    Logger.d("========");
+                    xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                }
             }
         }
 

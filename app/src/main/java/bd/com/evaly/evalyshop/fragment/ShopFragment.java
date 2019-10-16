@@ -200,7 +200,9 @@ public class ShopFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         rq = Volley.newRequestQueue(context);
 
-        startXmppService();
+        if (!CredentialManager.getToken().equals("")){
+            startXmppService();
+        }
 
         return view;
     }

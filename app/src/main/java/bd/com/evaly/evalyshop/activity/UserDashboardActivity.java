@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -149,12 +150,14 @@ public class UserDashboardActivity extends BaseActivity {
             from=extras.getString("from");
         }
 
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                startXmppService();
-            }
-        });
+        if (!CredentialManager.getToken().equals("")){
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    startXmppService();
+                }
+            });
+        }
 
         name=findViewById(R.id.name);
         balance=findViewById(R.id.balance);
@@ -278,7 +281,11 @@ public class UserDashboardActivity extends BaseActivity {
 
     @OnClick(R.id.llMessage)
     void gotoMessage(){
-        startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
+        if (!CredentialManager.getToken().equals("")){
+            startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
+        }else {
+            Toast.makeText(getApplicationContext(), "Please login to see messages", Toast.LENGTH_LONG).show();
+        }
     }
 
 
