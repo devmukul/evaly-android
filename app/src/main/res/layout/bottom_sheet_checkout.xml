@@ -171,6 +171,7 @@
 
         <CheckBox
             android:id="@+id/checkBox"
+            style="@style/Widget.AppCompat.CompoundButton.CheckBox"
             android:layout_width="35dp"
             android:layout_height="wrap_content"
             android:layout_weight="0"
@@ -181,42 +182,42 @@
             android:id="@+id/privacyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="I agree to the Terms &amp; Conditions and Purchasing Policy of Evaly."
-            android:textColor="#333"
-            android:textSize="14sp"
             android:layout_marginTop="-4dp"
+            android:layout_marginBottom="10dp"
             android:layout_weight="0"
             android:paddingLeft="5dp"
-            android:layout_marginBottom="10dp"/>
+            android:text="I agree to the Terms &amp; Conditions and Purchasing Policy of Evaly."
+            android:textColor="#444"
+            android:textSize="13sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
         android:gravity="top"
-        android:layout_marginTop="20dp">
+        android:orientation="horizontal">
 
 
         <ImageView
             android:layout_width="35dp"
             android:layout_height="20dp"
             android:layout_weight="0"
-            app:srcCompat="@drawable/ic_info_small"
-            android:tint="#555"/>
+            android:tint="#555"
+            app:srcCompat="@drawable/ic_info_small" />
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Delivery of the products will be completed within 15 working days after payment.."
-            android:textColor="#555"
-            android:textSize="14sp"
             android:layout_marginTop="-4dp"
+            android:layout_marginBottom="10dp"
             android:layout_weight="0"
             android:paddingLeft="5dp"
-            android:layout_marginBottom="10dp"/>
+            android:text="Delivery of the products will be completed within 15 working days after payment.."
+            android:textColor="#666"
+            android:textSize="13sp" />
 
     </LinearLayout>
 
