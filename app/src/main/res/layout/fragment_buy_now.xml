@@ -91,21 +91,6 @@
                         android:clickable="true"
                         app:srcCompat="@drawable/ic_placeholder_small" />
 
-                    <ImageView
-                        android:id="@+id/trash"
-                        android:layout_width="50dp"
-                        android:layout_height="36dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginTop="5dp"
-                        android:paddingLeft="20dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="0dp"
-                        android:paddingBottom="5dp"
-                        android:tint="@color/colorAccent"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_trash" />
-
                     <LinearLayout
                         android:id="@+id/countHolder"
                         android:layout_width="wrap_content"
@@ -160,7 +145,7 @@
                         android:layout_below="@+id/price"
                         android:layout_alignStart="@+id/product_name"
                         android:layout_marginTop="6dp"
-                        android:text="2000"
+                        android:text="৳ 174900"
                         android:textColor="#f57224"
                         android:textSize="18sp" />
 
@@ -173,22 +158,6 @@
                         android:text="2100"
                         android:textColor="#f57224"
                         android:textSize="13sp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/price"
-                        android:layout_alignStart="@+id/product_name"
-                        android:layout_alignParentBottom="false"
-                        android:layout_marginTop="5dp"
-                        android:drawableLeft="@drawable/ic_time_small"
-                        android:drawablePadding="5dp"
-                        android:paddingBottom="5dp"
-                        android:text="1 minute ago"
-                        android:textColor="#777"
-                        android:textSize="14sp"
                         android:visibility="gone" />
 
                     <TextView
@@ -214,7 +183,7 @@
                         android:layout_below="@+id/product_name"
                         android:layout_alignStart="@+id/product_name"
                         android:layout_marginTop="3dp"
-                        android:text="1000 x 2"
+                        android:text="৳ 174900 x 1"
                         android:textColor="#777"
                         android:textSize="13sp" />
 
@@ -237,7 +206,8 @@
                 android:layout_marginRight="15dp"
                 android:text="Variation:"
                 android:textColor="#333"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:visibility="gone" />
 
 
 

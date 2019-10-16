@@ -1,7 +1,13 @@
 package bd.com.evaly.evalyshop.activity.buynow;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -9,15 +15,96 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.ReviewsActivity;
+import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
+import bd.com.evaly.evalyshop.models.shopItem.ShopItem;
+import bd.com.evaly.evalyshop.models.user.User;
+import bd.com.evaly.evalyshop.reviewratings.BarLabels;
+import bd.com.evaly.evalyshop.util.UrlUtils;
+import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class BuyNowFragment extends BottomSheetDialogFragment {
+
+
+    private Context context;
+    private UserDetails userDetails;
+    private RequestQueue rq;
+    private ArrayList<ShopItem> itemsList;
+
+
+    String shop_slug = "tvs-bangladesh";
+    String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
+
+    @BindView(R.id.shop)
+    TextView shopName;
+
+    @BindView(R.id.product_name)
+    TextView productName;
+
+    @BindView(R.id.product_image)
+    ImageView productImage;
+
+    @BindView(R.id.minus)
+    ImageView minus;
+
+    @BindView(R.id.plus)
+    ImageView plus;
+
+    @BindView(R.id.price)
+    TextView productPrice;
+
+    @BindView(R.id.priceTotal)
+    TextView productTotalPrice;
+
+    @BindView(R.id.wholeSalePrice)
+    TextView productWholesalePrice;
+
+    @BindView(R.id.quantity)
+    EditText productQuantity;
+
+
+    // checkout
+    @BindView(R.id.customAddress)
+    EditText customAddress;
+
+    @BindView(R.id.contact_number)
+    EditText contactNumber;
 
 
 
@@ -32,8 +119,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment {
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_buy_now, container, false);
 
-        return inflater.inflate(R.layout.fragment_buy_now, container, false);
+        ButterKnife.bind(this, view);
+
+        return view;
+
     }
 
 
@@ -41,6 +132,16 @@ public class BuyNowFragment extends BottomSheetDialogFragment {
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        context = view.getContext();
+        userDetails = new UserDetails(context);
+        rq = Volley.newRequestQueue(context);
+        itemsList = new ArrayList<>();
+
+        customAddress.setText(userDetails.getJsonAddress());
+        contactNumber.setText(userDetails.getPhone());
+
+
+        getProductDetails();
 
 
     }
@@ -63,6 +164,59 @@ public class BuyNowFragment extends BottomSheetDialogFragment {
 
     public static BuyNowFragment newInstance() {
         return new BuyNowFragment();
+    }
+
+
+
+
+    public void getProductDetails() {
+
+
+        String url = UrlUtils.BASE_URL+"/public/shops/"+ shop_slug +"/items/" +shop_item_slug+ "/variants";
+        Log.d("json rating", url);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
+                response -> {
+
+                    try {
+                        JSONArray jsonArray = response.getJSONArray("data");
+                        for(int i = 0; i < jsonArray.length(); i++){
+                            Gson gson = new Gson();
+                            ShopItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), ShopItem.class);
+                            itemsList.add(item);
+                        }
+
+                        if (itemsList.size() > 0){
+                            ShopItem firstItem = itemsList.get(0);
+
+                            productName.setText(firstItem.getShopItemName());
+                            shopName.setText("Seller: " + firstItem.getShopName());
+
+                            Glide.with(context)
+                                    .load(firstItem.getShopItemImage())
+                                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                                    .apply(new RequestOptions().override(200, 200))
+                                    .into(productImage);
+
+
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        request.setShouldCache(false);
+        rq.getCache().clear();
+        rq.add(request);
+
+
     }
 
 
