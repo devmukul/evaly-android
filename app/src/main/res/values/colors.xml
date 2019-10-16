@@ -53,6 +53,7 @@
     <color name="evaly_color">#bd1f26</color>
     <color name="transaction_color">#666ee4</color>
     <color name="self_chat_color">#FC595F</color>
+    <color name="self_chat_color_clicked">#AC3E41</color>
     <color name="dark_green">#2B794F</color>
     <color name="green">#38A169</color>
     <color name="light_gray">#EBEBEB</color>

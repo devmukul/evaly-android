@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -39,6 +40,7 @@ public class AppController extends Application implements Application.ActivityLi
     public static AppDatabase database;
 
     static UserDetails userDetails;
+    IntentFilter intentFilter;
 
 
     //Our broadCast receive to update us on various events
@@ -64,7 +66,7 @@ public class AppController extends Application implements Application.ActivityLi
 
         if (mEventReceiver == null) mEventReceiver = new XMPPEventReceiver();
 
-        IntentFilter intentFilter = new IntentFilter(Constants.EVT_LOGGED_IN);
+        intentFilter = new IntentFilter(Constants.EVT_LOGGED_IN);
         intentFilter.addAction(Constants.EVT_SIGNUP_SUC);
         intentFilter.addAction(Constants.EVT_PASSWORD_CHANGE_SUC);
         intentFilter.addAction(Constants.EVT_PASSWORD_CHANGE_FAILED);
@@ -85,6 +87,7 @@ public class AppController extends Application implements Application.ActivityLi
         intentFilter.addAction(Constants.EVT_REQUEST_SUBSCRIBE);
 
         registerReceiver(mEventReceiver, intentFilter);
+        registerActivityLifecycleCallbacks(this);
     }
 
     private final ServiceConnection mConnection = new ServiceConnection() {
@@ -143,7 +146,8 @@ public class AppController extends Application implements Application.ActivityLi
 
     @Override
     public void onActivityResumed(Activity activity) {
-
+        Logger.d("RESUMED");
+        registerReceiver(mEventReceiver, intentFilter);
     }
 
     @Override
@@ -153,7 +157,12 @@ public class AppController extends Application implements Application.ActivityLi
 
     @Override
     public void onActivityPaused(Activity activity) {
-        if (mEventReceiver != null) unregisterReceiver(mEventReceiver);
+        Logger.d("PAUSED");
+        try {
+            if (mEventReceiver != null) unregisterReceiver(mEventReceiver);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -180,9 +189,17 @@ public class AppController extends Application implements Application.ActivityLi
             }
         });
         userDetails.clearAll();
-        context.stopService(new Intent(context, XMPPService.class));
-        context.startActivity(new Intent(context, SignInActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-        context.finishAffinity();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                context.stopService(new Intent(context, XMPPService.class));
+                context.startActivity(new Intent(context, SignInActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                context.finishAffinity();
+                System.exit(1);
+            }
+        }, 300);
 
     }
 }

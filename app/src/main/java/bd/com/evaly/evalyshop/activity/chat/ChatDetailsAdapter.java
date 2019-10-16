@@ -126,6 +126,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ProgressBar imageProgress;
         @BindView(R.id.tvUnreadMessage)
         TextView tvUnreadMessage;
+        boolean isShow = false;
 
 
         public SentMessageViewHolder(@NonNull View itemView) {
@@ -135,8 +136,18 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tvMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    tvSeen.setVisibility(View.VISIBLE);
-//                    tvChatTime.setVisibility(View.VISIBLE);
+                    if (isShow){
+//                        tvSeen.setVisibility(View.GONE);
+                        tvChatTime.setVisibility(View.GONE);
+                        tvMessage.setBackgroundResource(R.drawable.self_chat_back);
+
+                        isShow = false;
+                    }else {
+//                        tvSeen.setVisibility(View.VISIBLE);
+                        tvChatTime.setVisibility(View.VISIBLE);
+                        tvMessage.setBackgroundResource(R.drawable.self_chat_back_clicked);
+                        isShow = true;
+                    }
 //                    if (position % 2 == 0) {
 //                        holder.tvMessage.setBackgroundResource(R.drawable.self_chat_back_clicked);
 //                    } else {
@@ -152,7 +163,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 tvMessage.setVisibility(View.GONE);
                 imageProgress.setVisibility(View.VISIBLE);
                 ivImage.setVisibility(View.VISIBLE);
-                if (chatItem .getLarge_image() != null){
+                if (chatItem.getLarge_image() != null){
                     ivImage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -224,6 +235,8 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         @BindView(R.id.tvUnreadMessage)
         TextView tvUnreadMessage;
 
+        boolean isShow = false;
+
         public ReceiveMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -232,7 +245,17 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tvMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    if (isShow){
+//                        tvSeen.setVisibility(View.GONE);
+                        tvChatTime.setVisibility(View.GONE);
+                        tvMessage.setBackgroundResource(R.drawable.other_chat_back);
+                        isShow = false;
+                    }else {
+//                        tvSeen.setVisibility(View.VISIBLE);
+                        tvChatTime.setVisibility(View.VISIBLE);
+                        tvMessage.setBackgroundResource(R.drawable.other_chat_back_clicked);
+                        isShow = true;
+                    }
 //                    tvSeen.setVisibility(View.VISIBLE);
 //                    tvChatTime.setVisibility(View.VISIBLE);
 //                    if (position % 2 == 0) {

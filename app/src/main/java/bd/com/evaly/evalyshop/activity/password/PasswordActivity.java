@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.activity.password;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -15,17 +16,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
+import org.jivesoftware.smackx.vcardtemp.packet.VCard;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
+
+import java.io.Serializable;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.chat.ChatDetailsActivity;
+import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -72,7 +83,11 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         //Event Listeners
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.Signup(new SignupModel(phoneNumber, password, password));
+            if (password == null) {
+                xmppHandler.Signup(new SignupModel(phoneNumber, etPassword.getText().toString(), etPassword.getText().toString()));
+            } else {
+                xmppHandler.Signup(new SignupModel(phoneNumber, password, password));
+            }
 
             Logger.d("======   CONNECTED  -========");
         }
@@ -87,6 +102,85 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         public void onLoggedIn() {
             Logger.d("LOGIN");
             dialog.hideDialog();
+
+            HashMap<String, String> data = new HashMap<>();
+            data.put("localuser", CredentialManager.getUserName());
+            data.put("localserver", Constants.XMPP_HOST);
+            data.put("user", "09638111667");
+            data.put("server", Constants.XMPP_HOST);
+            data.put("nick", "Evaly");
+            data.put("subs", "both");
+            data.put("group", "evaly");
+            addRosterByOther();
+
+            AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+                @Override
+                public void onDataFetched(Response<JsonPrimitive> response) {
+
+                    if (response.code() == 200 || response.code() == 201) {
+                        try {
+                            EntityBareJid jid = JidCreate.entityBareFrom("09638111667" + "@"
+                                    + Constants.XMPP_HOST);
+                            VCard vCard = xmppHandler.getUserDetails(jid);
+                            HashMap<String, String> data1 = new HashMap<>();
+                            data1.put("phone_number", "09638111667");
+                            data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
+
+                            Logger.d(new Gson().toJson(vCard.getFirstName()) + "       ====");
+                            AuthApiHelper.sendCustomMessage(data1, new DataFetchingListener<Response<JsonObject>>() {
+                                @Override
+                                public void onDataFetched(Response<JsonObject> response) {
+                                    dialog.hideDialog();
+                                    if (response.code() == 200 || response.code() == 201) {
+                                        Toast.makeText(getApplicationContext(), "Invitation sent!", Toast.LENGTH_LONG).show();
+//                                                                xmppHandler.sendRequestTo(etPhoneNumber.getText().toString(), etPhoneNumber.getText().toString());
+                                        Logger.d("[[[[[[[[[[[");
+                                        RosterTable table = new RosterTable();
+                                        table.id = jid.asUnescapedString();
+                                        table.rosterName = "Evaly";
+                                        table.name = "";
+                                        table.status = 0;
+                                        table.unreadCount = 0;
+                                        table.nick_name = "";
+                                        table.imageUrl = "";
+                                        table.lastMessage = "";
+                                        AsyncTask.execute(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Logger.d("NEW ENTRY");
+                                                AppController.database.taskDao().addRoster(table);
+                                            }
+                                        });
+                                    } else {
+                                        dialog.hideDialog();
+                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailed(int status) {
+                                    dialog.hideDialog();
+                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+
+                                }
+                            });
+                            
+                        } catch (XmppStringprepException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailed(int status) {
+                    dialog.hideDialog();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
+            });
 
             xmppHandler.sendRequestTo("09638111667", "Evaly");
             xmppHandler.changePassword(etPassword.getText().toString());
@@ -145,11 +239,34 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 //            xmppHandler.disconnect();
         }
 
-        public void onPasswordChangeFailed(String msg){
+        public void onPasswordChangeFailed(String msg) {
+            dialog.hideDialog();
             Logger.d(msg);
             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         }
     };
+
+    private void addRosterByOther() {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("localuser", "09638111667");
+        data.put("localserver", Constants.XMPP_HOST);
+        data.put("user", CredentialManager.getUserName());
+        data.put("server", Constants.XMPP_HOST);
+        data.put("nick", CredentialManager.getUserData().getFirst_name());
+        data.put("subs", "both");
+        data.put("group", "evaly");
+        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+            @Override
+            public void onDataFetched(Response<JsonPrimitive> response) {
+
+            }
+
+            @Override
+            public void onFailed(int status) {
+
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

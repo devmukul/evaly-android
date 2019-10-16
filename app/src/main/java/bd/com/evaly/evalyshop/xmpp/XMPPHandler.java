@@ -104,6 +104,7 @@ public class XMPPHandler {
     public XMPPService service;
     public static XMPPHandler instance = null;
     public static boolean instanceCreated = false;
+    boolean isFirstTime;
 
     private final boolean debug = Constants.XMPP_DEBUG;
 
@@ -161,46 +162,54 @@ public class XMPPHandler {
     //Pass server address, port to initialize connection
     private void initialiseConnection() {
 
-        XMPPTCPConnectionConfiguration config = null;
 
-        try {
-            InetAddress addr = InetAddress.getByName(Constants.XMPP_HOST);
-            config = XMPPTCPConnectionConfiguration.builder()
-                    .setUsernameAndPassword(userId, userPassword)
-                    .setXmppDomain(Constants.XMPP_DOMAIN)
-                    .setHostAddress(addr)
-                    .setHost(Constants.XMPP_HOST)
-                    .setPort(Constants.XMPP_PORT)
-                    .build();
-        } catch (XmppStringprepException e) {
-            e.printStackTrace();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-        connection = new XMPPTCPConnection(config);
-        connection.addConnectionListener(mConnectionListener);
-        connection.addAsyncStanzaListener(mStanzaListener, new StanzaFilter() {
+        AsyncTask.execute(new Runnable() {
             @Override
-            public boolean accept(Stanza stanza) {
-                //You can also return only presence packets, since we are only filtering presences
-                return true;
+            public void run() {
+                try {
+                    XMPPTCPConnectionConfiguration config = null;
+
+                    InetAddress addr = InetAddress.getByName(Constants.XMPP_HOST);
+                    config = XMPPTCPConnectionConfiguration.builder()
+                            .setUsernameAndPassword(userId, userPassword)
+                            .setXmppDomain(Constants.XMPP_DOMAIN)
+                            .setHostAddress(addr)
+                            .setHost(Constants.XMPP_HOST)
+                            .setPort(Constants.XMPP_PORT)
+                            .build();
+
+                    connection = new XMPPTCPConnection(config);
+                    connection.addConnectionListener(mConnectionListener);
+                    connection.addAsyncStanzaListener(mStanzaListener, new StanzaFilter() {
+                        @Override
+                        public boolean accept(Stanza stanza) {
+                            //You can also return only presence packets, since we are only filtering presences
+                            return true;
+                        }
+                    });
+
+                    ReconnectionManager reconnectionManager = ReconnectionManager.getInstanceFor(connection);
+                    reconnectionManager.enableAutomaticReconnection();
+
+                    roster = Roster.getInstanceFor(connection);
+                    roster.addRosterListener(mRoasterListener);
+                    roster.setSubscriptionMode(Roster.SubscriptionMode.manual);
+                } catch (XmppStringprepException e) {
+                    e.printStackTrace();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        ReconnectionManager reconnectionManager = ReconnectionManager.getInstanceFor(connection);
-        reconnectionManager.enableAutomaticReconnection();
 
-        roster = Roster.getInstanceFor(connection);
-        roster.addRosterListener(mRoasterListener);
-        roster.setSubscriptionMode(Roster.SubscriptionMode.manual);
 
-        ProviderManager pm = new ProviderManager();
-        pm.addExtensionProvider("active", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
-        pm.addExtensionProvider("composing", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
-        pm.addExtensionProvider("paused", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
-        pm.addExtensionProvider("inactive", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
-        pm.addExtensionProvider("gone", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
+//        ProviderManager pm = new ProviderManager();
+//        pm.addExtensionProvider("active", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
+//        pm.addExtensionProvider("composing", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
+//        pm.addExtensionProvider("paused", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
+//        pm.addExtensionProvider("inactive", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
+//        pm.addExtensionProvider("gone", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
 
     }
 
@@ -225,6 +234,8 @@ public class XMPPHandler {
 
     //Explicitly start a connection
     public void connect() {
+
+        initialiseConnection();
 
         AsyncTask<Void, Void, Boolean> connectionThread = new AsyncTask<Void, Void, Boolean>() {
             @Override
@@ -317,7 +328,7 @@ public class XMPPHandler {
     }
 
     //Explicitly Disconnect a connection
-    public void disconnect() {
+    public static void disconnect() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -468,9 +479,13 @@ public class XMPPHandler {
         ArrayList<Jid> pendingRequestList = new ArrayList<>();
         for (RosterEntry entry : entries) {
             confirmSubscription(entry.getJid(), true);
-            Presence presence = roster.getPresence(entry.getJid());
-            if (entry.getType() == RosterPacket.ItemType.from) {
-                pendingRequestList.add(presence.getFrom());
+            try {
+                Presence presence = roster.getPresence(entry.getJid());
+                if (entry.getType() == RosterPacket.ItemType.from) {
+                    pendingRequestList.add(presence.getFrom());
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
 
@@ -483,20 +498,27 @@ public class XMPPHandler {
         ArrayList<RoasterModel> roasterModelArrayList = new ArrayList<>();
         for (RosterEntry entry : entries) {
 //            Logger.d(new Gson().toJson(entry.getGroups()));
-            Presence presence = roster.getPresence(entry.getJid());
+            try {
+                if (entry != null){
+                    Presence presence = roster.getPresence(entry.getJid());
 
-            Presence.Mode mode = presence.getMode();
+                    Presence.Mode mode = presence.getMode();
 
-            int status = retreiveState(mode, presence.isAvailable());
-            roasterModelArrayList.add(
-                    new RoasterModel(entry.getJid(), presence.getFrom(), presence.getStatus(), mode, status, entry.getName()));
+                    int status = retreiveState(mode, presence.isAvailable());
+                    roasterModelArrayList.add(
+                            new RoasterModel(entry.getJid(), presence.getFrom(), presence.getStatus(), mode, status, entry.getName()));
+
+                    if (debug) {
+                        Logger.e(entry.getUser() + "   " + entry.getName() + "   " + presence.getType().name() + "   " + presence.getStatus() + "   " + presence.getMode() + "   " + entry.getType());
+
+                        String isSubscribePending = (entry.getType() == RosterPacket.ItemType.both) ? "Yes" : "No";
+                        Log.e(TAG, "sub: " + isSubscribePending);
+                    }
+                }
 
 
-            if (debug) {
-                Logger.e(entry.getUser() + "   " + entry.getName() + "   " + presence.getType().name() + "   " + presence.getStatus() + "   " + presence.getMode() + "   " + entry.getType());
-
-                String isSubscribePending = (entry.getType() == RosterPacket.ItemType.both) ? "Yes" : "No";
-                Log.e(TAG, "sub: " + isSubscribePending);
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
 
@@ -737,6 +759,7 @@ public class XMPPHandler {
         vCard.setPhoneHome("mobile", userModel.getContacts());
         vCard.setAddressFieldHome("REGION", userModel.getAddresses());
         vCard.setField("URL", userModel.getImage_sm());
+
         try {
             vCardManager.saveVCard(vCard);
         } catch (SmackException.NoResponseException e) {
@@ -771,6 +794,9 @@ public class XMPPHandler {
     public void changePassword(String password) {
         AccountManager accountManager = AccountManager.getInstance(connection);
         try {
+            accountManager.sensitiveOperationOverInsecureConnection(true);
+            Logger.d(connection.getUser());
+            Logger.d(userId+"   "+ userPassword);
             accountManager.changePassword(password);
             service.onPasswordChanged();
         } catch (SmackException.NoResponseException e) {
@@ -883,6 +909,9 @@ public class XMPPHandler {
 
             if (userPassword == null || userPassword.equals("")) {
                 service.onLoginFailed("password empty");
+                return;
+            }else if (userId == null || userId.equals("")){
+                service.onLoginFailed("username empty");
                 return;
             }
             connection.login(userId, userPassword);
@@ -1073,15 +1102,11 @@ public class XMPPHandler {
         @Override
         public void authenticated(XMPPConnection connection, boolean resumed) {
             Logger.d("AUTHENTICATED");
+            Logger.d(userId+"    "+ userPassword+"        "+ connection.getUser().asEntityBareJidString()+"    ");
             chatInstanceIterator(chat_created_for);
             loggedin = true;
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    getPendingRequests();
-                }
-            }).start();
+
 
             ChatManager.getInstanceFor(connection).addIncomingListener(mChatManagerListener);
             ChatManager.getInstanceFor(connection).addOutgoingListener(mChatManagerListener);
@@ -1089,30 +1114,40 @@ public class XMPPHandler {
 
             mVcard = getCurrentUserDetails();
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    roasterList = getAllRoaster();
-                    Logger.d(roasterList.size()+"    ()()()()()()(()");
-                    List<RosterTable> list = new ArrayList<>();
-                    for (RoasterModel model : roasterList) {
-                        RosterTable table = new RosterTable();
-                        table.id = model.getRoasterEntryUser().asUnescapedString();
-                        table.rosterName = model.getName();
-                        table.status = model.getStatus();
-                        list.add(table);
+            if (!isFirstTime){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getPendingRequests();
                     }
+                }).start();
 
-                    updateRoster(list);
-
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            AppController.database.taskDao().addAllRoster(list);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        roasterList = getAllRoaster();
+                        Logger.d(roasterList.size()+"    ()()()()()()(()");
+                        List<RosterTable> list = new ArrayList<>();
+                        for (RoasterModel model : roasterList) {
+                            RosterTable table = new RosterTable();
+                            table.id = model.getRoasterEntryUser().asUnescapedString();
+                            table.rosterName = model.getName();
+                            table.status = model.getStatus();
+                            list.add(table);
                         }
-                    });
-                }
-            }).start();
+
+                        updateRoster(list);
+
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                AppController.database.taskDao().addAllRoster(list);
+                            }
+                        });
+                    }
+                }).start();
+                isFirstTime = true;
+            }
 //
 
 
@@ -1309,11 +1344,13 @@ public class XMPPHandler {
             RosterTable table = roasterList.get(i);
             try {
                 vCard = getUserDetails(JidCreate.bareFrom(table.id).asEntityBareJidIfPossible());
-                table.name = vCard.getFirstName() + " " + vCard.getLastName();
-                table.nick_name = vCard.getNickName();
-                table.imageUrl = vCard.getField("URL");
-                list.add(table);
-                Logger.d(list.size() + "    " + roasterList.size());
+                if(vCard != null){
+                    table.name = vCard.getFirstName() + " " + vCard.getLastName();
+                    table.nick_name = vCard.getNickName();
+                    table.imageUrl = vCard.getField("URL");
+                    list.add(table);
+                    Logger.d(list.size() + "    " + roasterList.size());
+                }
 
                 if (list.size() == roasterList.size()) {
                     updateMessage(list);
@@ -1380,6 +1417,18 @@ public class XMPPHandler {
         }
     }
 
+    private int getListPosition(ChatItem chatItem) {
+        int pos = -1;
+        for (int i = 0; i < roasterList.size(); i++) {
+            Logger.d(chatItem.getSender() + "      " + roasterList.get(i).getRoasterEntryUser());
+            if (roasterList.get(i).getRoasterEntryUser().asUnescapedString().equalsIgnoreCase(chatItem.getSender())) {
+                pos = i;
+                break;
+            }
+        }
+        return pos;
+    }
+
     //Your own Chat Manager. We attach the message events here
     private class MyChatManagerListener implements IncomingChatMessageListener, OutgoingChatMessageListener, ChatStateListener {
 
@@ -1389,6 +1438,33 @@ public class XMPPHandler {
             Logger.d(message.getBody());
             ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
             Logger.d(new Gson().toJson(chatItem));
+
+            int pos = getListPosition(chatItem);
+            if (pos == -1){
+                RosterTable table = new RosterTable();
+                try {
+                    VCard vCard = getUserDetails(JidCreate.entityBareFrom(chatItem.getSender()));
+                    table.id = vCard.getFrom().asUnescapedString();
+                    table.nick_name = vCard.getNickName();
+                    table.name = vCard.getFirstName()+" "+vCard.getLastName();
+                    table.imageUrl = vCard.getField("URL");
+                    table.lastMessage = new Gson().toJson(chatItem);
+                    table.time = chatItem.getLognTime();
+                    table.status = 1;
+                    table.rosterName = "";
+                    table.unreadCount = 1;
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            AppController.database.taskDao().addRoster(table);
+                        }
+                    });
+                } catch (XmppStringprepException e) {
+                    e.printStackTrace();
+                }
+            }else {
+
+            }
             service.onNewMessage(new Gson().toJson(chatItem));
         }
 
@@ -1573,12 +1649,12 @@ public class XMPPHandler {
             }
             PresenceModel presenceModel = new PresenceModel(presence.getFrom().asBareJid().toString(), presence.getStatus(), mode, status, lastActivity);
 //            Logger.d(presenceModel.getUser());
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    AppController.database.taskDao().updateStatus(presenceModel.getUserStatus(), presenceModel.getUser());
-                }
-            });
+//            AsyncTask.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    AppController.database.taskDao().updateStatus(presenceModel.getUserStatus(), presenceModel.getUser());
+//                }
+//            });
             service.onPresenceChange(presenceModel);
         }
     }
@@ -1631,8 +1707,9 @@ public class XMPPHandler {
             table.id = newEntry.getJid().asUnescapedString();
             table.rosterName = newEntry.getName();
 
-            VCard vCard = getUserDetails(newEntry.getJid().asEntityBareJidIfPossible());
             try {
+                VCard vCard = getUserDetails(newEntry.getJid().asEntityBareJidIfPossible());
+
                 table.name = vCard.getFirstName() + " " + vCard.getLastName();
                 table.imageUrl = vCard.getField("URL");
                 ChatItem chatItem = getLastMessage(newEntry.getJid());

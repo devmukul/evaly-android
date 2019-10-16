@@ -569,6 +569,9 @@ public class MainActivity extends BaseActivity {
         if(dbHelperWishList!=null){
             dbHelperWishList.close();
         }
+        if (xmppHandler != null){
+            xmppHandler.disconnect();
+        }
         super.onDestroy();
 
         // Glide.with(getApplicationContext()).pauseRequests();

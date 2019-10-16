@@ -131,30 +131,28 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             int position = getListPosition(chatItem);
 
 
-            RosterTable roasterModel = rosterList.get(position);
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), roasterModel.id);
-                }
-            });
+            if (position == -1) {
 
-            roasterModel.lastMessage = new Gson().toJson(chatItem);
-            roasterModel.unreadCount = roasterModel.unreadCount + 1;
-            rosterList.set(position, roasterModel);
-            adapter.notifyItemChanged(position);
+            } else {
+                RosterTable roasterModel = rosterList.get(position);
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), roasterModel.id);
+                    }
+                });
+                roasterModel.lastMessage = new Gson().toJson(chatItem);
+                roasterModel.unreadCount = roasterModel.unreadCount + 1;
+                rosterList.set(position, roasterModel);
+                adapter.notifyItemChanged(position);
 
-            rosterList.remove(position);
+                rosterList.remove(position);
 
-            rosterList.add(0, roasterModel);
-            adapter.notifyItemMoved(position, 0);
-            rvChatList.smoothScrollToPosition(0);
+                rosterList.add(0, roasterModel);
+                adapter.notifyItemMoved(position, 0);
+                rvChatList.smoothScrollToPosition(0);
+            }
 
-
-//            adapter.notifyItemChanged(position);
-
-
-//            Logger.d(mVCard.getFrom().toString());
             Logger.d(new Gson().toJson(chatItem));
         }
 
@@ -181,7 +179,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     };
 
     private int getListPosition(ChatItem chatItem) {
-        int pos = 0;
+        int pos = -1;
         for (int i = 0; i < rosterList.size(); i++) {
             Logger.d(chatItem.getSender() + "      " + rosterList.get(i).id);
             if (rosterList.get(i).id.equalsIgnoreCase(chatItem.getSender())) {
@@ -199,12 +197,22 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         setSupportActionBar(toolbar);
 
-        xmppHandler = AppController.getmService().xmpp;
-
-
         dialog = new ViewDialog(this);
 //        Logger.d(mUserList.size());
         rosterList = new ArrayList<>();
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        populateData(rosterList);
+                    }
+                });
+            }
+        });
 
         viewModel = new RoomWIthRxViewModel(getApplication());
         AsyncTask.execute(new Runnable() {
@@ -214,15 +222,19 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(list -> {
-                            rosterList = list;
-                            Logger.d(list.size()+"  =======");
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    populateData(rosterList);
-                                }
-                            });
-                        }, e ->{
+                            rosterList.clear();
+                            rosterList.addAll(list);
+                            if (adapter != null) {
+                                adapter.notifyDataSetChanged();
+                            }
+                            Logger.d(list.size() + "  =======");
+//                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    populateData(rosterList);
+//                                }
+//                            });
+                        }, e -> {
 
                         });
 
@@ -230,9 +242,19 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             }
         });
 
+//        Logger.d(mUserList.size());
+//        showLoading();
+//        new Handler().post(new Runnable() {
+//            @Override
+//            public void run() {
+//                loadRoster();
+//            }
+//        });
+
         startXmppService();
 
         xmppEventReceiver = mChatApp.getEventReceiver();
+//        mVCard = xmppHandler.mVcard;
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -249,6 +271,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 //                                    Logger.d("RoomWithRx: " + list.size());
 //
 //                                }, e -> System.out.println("RoomWithRx: " +e.getMessage()));
+                        rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
@@ -586,7 +609,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     @Override
     protected void onResume() {
         super.onResume();
-        xmppEventReceiver.setListener(xmppCustomEventListener);
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
         if (isFirst) {
             new Handler().postDelayed(new Runnable() {

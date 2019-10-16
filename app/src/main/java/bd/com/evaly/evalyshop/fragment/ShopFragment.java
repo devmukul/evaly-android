@@ -442,7 +442,7 @@ public class ShopFragment extends Fragment {
                                             data.put("subs", "both");
                                             data.put("group", "evaly");
 
-//                                                    addRosterByOther();
+                                            addRosterByOther();
 
                                             Logger.d(data);
                                             AuthApiHelper.addRoster(data, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
@@ -901,6 +901,27 @@ public class ShopFragment extends Fragment {
         rq.add(request);
     }
 
+    private void addRosterByOther() {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("localuser", shop_name);
+        data.put("localserver", Constants.XMPP_HOST);
+        data.put("user", CredentialManager.getUserName());
+        data.put("server", Constants.XMPP_HOST);
+        data.put("nick", CredentialManager.getUserData().getFirst_name());
+        data.put("subs", "both");
+        data.put("group", "evaly");
+        AuthApiHelper.addRoster(data, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
+            @Override
+            public void onDataFetched(retrofit2.Response<JsonPrimitive> response) {
+
+            }
+
+            @Override
+            public void onFailed(int status) {
+
+            }
+        });
+    }
 
     public void subscribe() {
 
