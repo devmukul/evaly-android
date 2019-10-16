@@ -53,6 +53,7 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.OrderListActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.VoucherActivity;
+import bd.com.evaly.evalyshop.activity.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.activity.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
@@ -105,6 +106,13 @@ public class HomeFragment extends Fragment {
     }
 
 
+    public void showBottomSheet() {
+        BuyNowFragment addPhotoBottomDialogFragment =
+                BuyNowFragment.newInstance();
+        addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
+                "BuyNow");
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -148,7 +156,10 @@ public class HomeFragment extends Fragment {
 
                 Intent ni = new Intent(context, GiftCardActivity.class);
 
-                startActivity(ni);
+                // startActivity(ni);
+
+                showBottomSheet();
+
             }
         });
 
@@ -171,6 +182,9 @@ public class HomeFragment extends Fragment {
         wholesale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
 
                 startActivity(new Intent(context, NewsfeedActivity.class));
 

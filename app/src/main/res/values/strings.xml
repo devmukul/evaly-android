@@ -18,53 +18,7 @@
 
     <string name="rating_and_reviews">Rating &amp; Reviews</string>
 
-    <string-array name="search_categories">
-        <item>All Categories</item>
-    </string-array>
-
-    <string-array name="search_type">
-        <item>Products</item>
-        <item>Shops</item>
-        <item>Brands</item>
-
-    </string-array>
-
-    <string-array name="sort">
-        <item>Default</item>
-        <item>Name(A - Z)</item>
-        <item>Name(Z - A)</item>
-        <item>Price(Low > High)</item>
-        <item>Price(High > Low)</item>
-        <item>Ratings</item>
-    </string-array>
-
-
-    <string-array name="post_type">
-        <item>CEO</item>
-        <item>ANNOUNCEMENT</item>
-        <!--        <item>PUBLIC</item>-->
-    </string-array>
-
-
-    <string-array name="brands">
-        <item>All Brands</item>
-        <item>Samsung</item>
-        <item>OnePlus</item>
-        <item>Bajaj</item>
-        <item>Yamaha</item>
-        <item>Sony</item>
-    </string-array>
-
-    <string-array name="shops">
-        <item>All Shops</item>
-        <item>Star Tech</item>
-        <item>M.K. Electronics</item>
-        <item>Evaly Store</item>
-        <item>Fortuna</item>
-        <item>Kidz</item>
-    </string-array>
     <string name="title_activity_user_profile">UserProfile</string>
-
 
     <string name="contact">
 
@@ -83,12 +37,58 @@
 It is a platform where people can purchase all kinds of goods from a single website. From a pencil to a book to a dress to a cell phone to cars to lands; everything is available in this website. It is built by a team of developers who have the sharpest minds in this sector and they are dedicated to only Droplet Limited. We hire no outsourcing outlets and that ensures the security of all our users. There is absolutely no chance of any information being leaked thanks to our dedicated team who are working all the time to ensure that our website is the most secure e-commerce platform. What separates us from other platforms of such sorts is the diversity of our product range and the security that we provide to our users. It is absolutely cutting-edge and state-of-the-art and we can guarantee that no other platform has this much diversity in its product range. Our website is going to be so convenient and user-friendly for our customers that, they would rather order from our website than to go to the shop which is 100 meters away from his/her home. That is the kind of target eValy.com.bd has set for itself. And once we achieve our targets in Bangladesh, we will start expanding towards other countries and present ourselves in a much broader and global scale and encompass the entire world with our website in a short amount of time.
     </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
     <string name="reset_password">Reset Password</string>
+
     <string name="required">Required</string>
     <string name="something_wrong">Something went wrong, please try again!</string>
+
+
     <string name="create_post">Create post</string>
+
     <string name="inbox">Inbox</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string-array name="search_categories">
+        <item>All Categories</item>
+    </string-array>
+    <string-array name="search_type">
+        <item>Products</item>
+        <item>Shops</item>
+        <item>Brands</item>
+
+    </string-array>
+    <string-array name="sort">
+        <item>Default</item>
+        <item>Name(A - Z)</item>
+        <item>Name(Z - A)</item>
+        <item>Price(Low > High)</item>
+        <item>Price(High > Low)</item>
+        <item>Ratings</item>
+    </string-array>
+    <string-array name="post_type">
+        <item>CEO</item>
+        <item>ANNOUNCEMENT</item>
+        <!--        <item>PUBLIC</item>-->
+    </string-array>
+    <string-array name="brands">
+        <item>All Brands</item>
+        <item>Samsung</item>
+        <item>OnePlus</item>
+        <item>Bajaj</item>
+        <item>Yamaha</item>
+        <item>Sony</item>
+    </string-array>
+    <string-array name="shops">
+        <item>All Shops</item>
+        <item>Star Tech</item>
+        <item>M.K. Electronics</item>
+        <item>Evaly Store</item>
+        <item>Fortuna</item>
+        <item>Kidz</item>
+    </string-array>
 
 </resources>
