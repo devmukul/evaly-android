@@ -26,6 +26,17 @@ public class ShopItem{
 	@SerializedName("shop_item_image")
 	private String shopItemImage;
 
+	private boolean selected;
+
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
 	public void setShopItemName(String shopItemName){
 		this.shopItemName = shopItemName;
 	}

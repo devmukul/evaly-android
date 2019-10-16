@@ -204,12 +204,30 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="15dp"
-                android:text="Variation:"
+                android:text="Color: Glossy Red"
                 android:textColor="#333"
                 android:textSize="16sp"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewVariation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:clipToPadding="false"
+                android:paddingTop="15dp"
+                android:paddingLeft="15dp"
+                android:paddingBottom="20dp"/>
+
+
+
+
+            <View
+                android:id="@+id/dividerViewVariation"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="#fafafa" />
 
 
             <include

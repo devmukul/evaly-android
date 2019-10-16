@@ -15,6 +15,8 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -49,6 +51,7 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ReviewsActivity;
+import bd.com.evaly.evalyshop.activity.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.user.User;
@@ -107,6 +110,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment {
     EditText contactNumber;
 
 
+    @BindView(R.id.recyclerViewVariation)
+    RecyclerView recyclerVariation;
+    private VariationAdapter adapterVariation;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -135,10 +141,19 @@ public class BuyNowFragment extends BottomSheetDialogFragment {
         context = view.getContext();
         userDetails = new UserDetails(context);
         rq = Volley.newRequestQueue(context);
-        itemsList = new ArrayList<>();
 
         customAddress.setText(userDetails.getJsonAddress());
         contactNumber.setText(userDetails.getPhone());
+
+
+
+        itemsList = new ArrayList<>();
+        adapterVariation = new VariationAdapter(itemsList, context);
+
+        LinearLayoutManager managerVariation = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        recyclerVariation.setLayoutManager(managerVariation);
+
+        recyclerVariation.setAdapter(adapterVariation);
 
 
         getProductDetails();
@@ -182,7 +197,13 @@ public class BuyNowFragment extends BottomSheetDialogFragment {
                         for(int i = 0; i < jsonArray.length(); i++){
                             Gson gson = new Gson();
                             ShopItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), ShopItem.class);
+
+                            if (i==0)
+                                item.setSelected(true);
+
                             itemsList.add(item);
+
+                            adapterVariation.notifyDataSetChanged();
                         }
 
                         if (itemsList.size() > 0){
@@ -194,7 +215,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment {
                             Glide.with(context)
                                     .load(firstItem.getShopItemImage())
                                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                                    .apply(new RequestOptions().override(200, 200))
+                                    .apply(new RequestOptions().override(250, 250))
                                     .into(productImage);
 
 
