@@ -104,12 +104,12 @@
 
                         <ImageView
                             android:id="@+id/minus"
-                            android:layout_width="27dp"
-                            android:layout_height="27dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_weight="0"
                             android:background="#eee"
                             android:clickable="true"
-                            android:padding="5dp"
+                            android:padding="6dp"
                             app:srcCompat="@drawable/ic_minus" />
 
                         <EditText
@@ -129,12 +129,12 @@
 
                         <ImageView
                             android:id="@+id/plus"
-                            android:layout_width="27dp"
-                            android:layout_height="27dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_weight="0"
                             android:background="#eee"
                             android:clickable="true"
-                            android:padding="5dp"
+                            android:padding="6dp"
                             app:srcCompat="@drawable/ic_plus" />
                     </LinearLayout>
 
@@ -170,7 +170,7 @@
                         android:layout_toRightOf="@+id/product_image"
                         android:clickable="true"
                         android:maxLines="2"
-                        android:text=" "
+                        android:text="Product Title"
                         android:textColor="#444"
                         android:textIsSelectable="false"
                         android:textSize="16sp" />
@@ -199,6 +199,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/variation_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"

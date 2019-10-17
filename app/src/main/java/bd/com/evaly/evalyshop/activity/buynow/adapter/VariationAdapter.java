@@ -18,12 +18,21 @@ import bd.com.evaly.evalyshop.models.shopItem.ShopItem;
 
 public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyViewHolder>{
 
-    ArrayList<ShopItem> itemsList;
-    Context context;
+    private ArrayList<ShopItem> itemsList;
+    private Context context;
+    private ClickListenerVariation clickListenerVariation;
 
-    public VariationAdapter(ArrayList<ShopItem> itemsList, Context context) {
+    public interface ClickListenerVariation {
+
+        public void selectVariation(int position);
+    }
+
+
+
+    public VariationAdapter(ArrayList<ShopItem> itemsList, Context context, ClickListenerVariation clickListenerVariation) {
         this.itemsList = itemsList;
         this.context = context;
+        this.clickListenerVariation = clickListenerVariation;
     }
 
     @NonNull
@@ -36,6 +45,10 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
+
+        myViewHolder.text.setText(itemsList.get(i).getAttributes().get(0).getValue());
+
+
         Glide.with(context)
                 .load(itemsList.get(i).getShopItemImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -46,6 +59,15 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
             myViewHolder.holder.setBackground(context.getResources().getDrawable(R.drawable.variation_brd_selected));
         else
             myViewHolder.holder.setBackground(context.getResources().getDrawable(R.drawable.variation_brd));
+
+
+        myViewHolder.holder.setOnClickListener(view -> {
+
+            clickListenerVariation.selectVariation(i);
+
+        });
+
+
     }
 
     @Override
@@ -57,6 +79,7 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
         TextView time,status,note;
         ImageView image;
         RelativeLayout holder;
+        TextView text;
 
 
         View view;
@@ -65,6 +88,7 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
 
             holder = itemView.findViewById(R.id.holder);
             image = itemView.findViewById(R.id.image);
+            text = itemView.findViewById(R.id.text);
 
             view = itemView;
 

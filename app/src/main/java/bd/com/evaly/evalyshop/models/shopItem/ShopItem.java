@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class ShopItem{
 
+
+	private boolean selected;
+
 	@SerializedName("shop_item_name")
 	private String shopItemName;
 
@@ -26,8 +29,29 @@ public class ShopItem{
 	@SerializedName("shop_item_image")
 	private String shopItemImage;
 
-	private boolean selected;
+	@SerializedName("shop_item_price")
+	private String shopItemPrice;
 
+	@SerializedName("shop_item_discounted_price")
+	private String shopItemDiscountedPrice;
+
+
+
+	public String getShopItemPrice() {
+		return shopItemPrice;
+	}
+
+	public void setShopItemPrice(String shopItemPrice) {
+		this.shopItemPrice = shopItemPrice;
+	}
+
+	public String getShopItemDiscountedPrice() {
+		return shopItemDiscountedPrice;
+	}
+
+	public void setShopItemDiscountedPrice(String shopItemDiscountedPrice) {
+		this.shopItemDiscountedPrice = shopItemDiscountedPrice;
+	}
 
 	public boolean isSelected() {
 		return selected;
