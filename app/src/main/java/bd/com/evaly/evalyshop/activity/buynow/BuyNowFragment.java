@@ -284,7 +284,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 return;
             }
 
-            if (productPriceInt < 501){
+            if (productPriceInt*quantityCount < 501){
                 Toast.makeText(context, "You can't order below 500 TK", Toast.LENGTH_LONG).show();
                 return;
             }
