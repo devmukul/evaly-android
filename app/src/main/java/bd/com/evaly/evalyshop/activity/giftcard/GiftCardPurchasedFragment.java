@@ -443,7 +443,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     public void initializeBottomSheet(){
 
         bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_order_details_payment);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_gift_card_payment);
 
         bottomSheetInternal = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
         bottomSheetInternal.setPadding(0, 0, 0, 0);

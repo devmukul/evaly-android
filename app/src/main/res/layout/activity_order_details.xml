@@ -310,11 +310,12 @@
                     android:paddingTop="8dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="8dp"
-                    android:text="Full Payment"
+                    android:text="Make Payment"
                     android:textAlignment="center"
                     android:textColor="#fff" />
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/payPartially"
                     android:layout_width="135dp"
                     android:layout_height="wrap_content"
