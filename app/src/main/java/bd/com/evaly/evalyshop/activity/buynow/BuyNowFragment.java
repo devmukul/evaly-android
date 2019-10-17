@@ -224,10 +224,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             @Override
             public void onClick(View view) {
 
-                if (productPriceInt < 501){
-                    Toast.makeText(context, "You can't order below 500 TK", Toast.LENGTH_LONG).show();
-                    return;
-                }
 
                 if(userDetails.getToken().equals("")) {
                     startActivity(new Intent(context, SignInActivity.class));
@@ -287,6 +283,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
+
+            if (productPriceInt < 501){
+                Toast.makeText(context, "You can't order below 500 TK", Toast.LENGTH_LONG).show();
+                return;
+            }
+
 
             bottomSheetDialog.show();
 
