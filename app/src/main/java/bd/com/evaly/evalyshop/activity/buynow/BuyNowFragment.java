@@ -9,6 +9,8 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,6 +36,8 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -110,6 +114,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     BottomSheetDialog bottomSheetDialog;
     View bottomSheetView;
 
+    SkeletonScreen skeleton;
+
 
     @BindView(R.id.recyclerViewVariation)
     RecyclerView recyclerVariation;
@@ -127,9 +133,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                     String varName = attributesItem.getName();
                     String varValue = attributesItem.getValue();
-
                     variationTitle.setText(varName + ": " + varValue);
-
 
                     loadProductById(position);
 
@@ -176,6 +180,13 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         context = view.getContext();
         userDetails = new UserDetails(context);
         rq = Volley.newRequestQueue(context);
+
+
+        skeleton = Skeleton.bind((LinearLayout) view.findViewById(R.id.linearLayout))
+                .load(R.layout.skeleton_buy_now_modal)
+                .color(R.color.ddd)
+                .shimmer(true)
+                .show();
 
 
         itemsList = new ArrayList<>();
@@ -288,6 +299,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         Log.d("json rating", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
+
+                    skeleton.hide();
 
                     try {
                         JSONArray jsonArray = response.getJSONArray("data");
