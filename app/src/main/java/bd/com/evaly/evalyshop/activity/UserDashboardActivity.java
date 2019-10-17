@@ -281,7 +281,7 @@ public class UserDashboardActivity extends BaseActivity {
 
     @OnClick(R.id.llMessage)
     void gotoMessage(){
-        if (!CredentialManager.getToken().equals("")){
+        if (!CredentialManager.getToken().equals("") && !userDetails.getToken().equals("")){
             startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
         }else {
             Toast.makeText(getApplicationContext(), "Please login to see messages", Toast.LENGTH_LONG).show();

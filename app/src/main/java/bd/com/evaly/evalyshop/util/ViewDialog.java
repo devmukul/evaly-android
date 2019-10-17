@@ -45,8 +45,12 @@ public class ViewDialog {
 //                .into(imageViewTarget);
 
             //...finaly show it
-            if (!activity.isFinishing()){
-                dialog.show();
+            if (!activity.isFinishing() && !dialog.isShowing()){
+                try {
+                    dialog.show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
         } catch (Exception e){

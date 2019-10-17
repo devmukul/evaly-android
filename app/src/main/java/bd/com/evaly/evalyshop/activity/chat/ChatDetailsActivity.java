@@ -215,21 +215,23 @@ public class ChatDetailsActivity extends AppCompatActivity {
         public void onChatStateChanged(ChatStateModel chatStateModel) {
             String chatStatus = Utils.getChatMode(chatStateModel.getChatState());
 
-            if (chatStateModel.getChatState() == ChatState.composing) {
+            if (chatStateModel.getUser().contains(rosterTable.id)){
+                if (chatStateModel.getChatState() == ChatState.composing) {
 
-                Glide.with(ChatDetailsActivity.this)
-                        .load(rosterTable.imageUrl)
-                        .apply(new RequestOptions().placeholder(R.drawable.user_image))
-                        .into(ivProfile);
+                    Glide.with(ChatDetailsActivity.this)
+                            .load(rosterTable.imageUrl)
+                            .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                            .into(ivProfile);
 
 
-                tvTyping.setText(tvName.getText().toString() + " is typing");
-                llTyping.setVisibility(View.VISIBLE);
+                    tvTyping.setText(tvName.getText().toString() + " is typing");
+                    llTyping.setVisibility(View.VISIBLE);
 
-            } else {
+                } else {
 //                layoutParams.setMargins(0, 0, 0, 0);
 //                llRecyclerView.setLayoutParams(layoutParams);
-                llTyping.setVisibility(View.GONE);
+                    llTyping.setVisibility(View.GONE);
+                }
             }
 
             try {
@@ -260,7 +262,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
         rosterTable = (RosterTable) getIntent().getSerializableExtra("roster");
         Logger.d(new Gson().toJson(rosterTable));
 
-        dialog = new ViewDialog(this);
+        dialog = new ViewDialog(ChatDetailsActivity.this);
         setSupportActionBar(toolbar);
         if (rosterTable.rosterName == null) {
             if (rosterTable.name != null ) {

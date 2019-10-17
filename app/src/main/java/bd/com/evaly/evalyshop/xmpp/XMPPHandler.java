@@ -203,7 +203,6 @@ public class XMPPHandler {
         });
 
 
-
 //        ProviderManager pm = new ProviderManager();
 //        pm.addExtensionProvider("active", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
 //        pm.addExtensionProvider("composing", "http://jabber.org/protocol/chatstates", new ChatStateExtensionProvider());
@@ -334,7 +333,7 @@ public class XMPPHandler {
             public void run() {
                 try {
                     connection.disconnect();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -488,7 +487,7 @@ public class XMPPHandler {
                 if (entry.getType() == RosterPacket.ItemType.from) {
                     pendingRequestList.add(presence.getFrom());
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -503,7 +502,7 @@ public class XMPPHandler {
         for (RosterEntry entry : entries) {
 //            Logger.d(new Gson().toJson(entry.getGroups()));
             try {
-                if (entry != null){
+                if (entry != null) {
                     Presence presence = roster.getPresence(entry.getJid());
 
                     Presence.Mode mode = presence.getMode();
@@ -521,7 +520,7 @@ public class XMPPHandler {
                 }
 
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -800,7 +799,7 @@ public class XMPPHandler {
         try {
             accountManager.sensitiveOperationOverInsecureConnection(true);
             Logger.d(connection.getUser());
-            Logger.d(userId+"   "+ userPassword);
+            Logger.d(userId + "   " + userPassword);
             accountManager.changePassword(password);
             service.onPasswordChanged();
         } catch (SmackException.NoResponseException e) {
@@ -914,7 +913,7 @@ public class XMPPHandler {
             if (userPassword == null || userPassword.equals("")) {
                 service.onLoginFailed("password empty");
                 return;
-            }else if (userId == null || userId.equals("")){
+            } else if (userId == null || userId.equals("")) {
                 service.onLoginFailed("username empty");
                 return;
             }
@@ -1106,10 +1105,9 @@ public class XMPPHandler {
         @Override
         public void authenticated(XMPPConnection connection, boolean resumed) {
             Logger.d("AUTHENTICATED");
-            Logger.d(userId+"    "+ userPassword+"        "+ connection.getUser().asEntityBareJidString()+"    ");
+            Logger.d(userId + "    " + userPassword + "        " + connection.getUser().asEntityBareJidString() + "    ");
             chatInstanceIterator(chat_created_for);
             loggedin = true;
-
 
 
             ChatManager.getInstanceFor(connection).addIncomingListener(mChatManagerListener);
@@ -1118,7 +1116,7 @@ public class XMPPHandler {
 
             mVcard = getCurrentUserDetails();
 
-            if (!isFirstTime){
+            if (!isFirstTime) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -1130,7 +1128,7 @@ public class XMPPHandler {
                     @Override
                     public void run() {
                         roasterList = getAllRoaster();
-                        Logger.d(roasterList.size()+"    ()()()()()()(()");
+                        Logger.d(roasterList.size() + "    ()()()()()()(()");
                         List<RosterTable> list = new ArrayList<>();
                         for (RoasterModel model : roasterList) {
                             RosterTable table = new RosterTable();
@@ -1153,7 +1151,6 @@ public class XMPPHandler {
                 isFirstTime = true;
             }
 //
-
 
 
             //Wait for 500ms before showing we are authenticated
@@ -1348,7 +1345,7 @@ public class XMPPHandler {
             RosterTable table = roasterList.get(i);
             try {
                 vCard = getUserDetails(JidCreate.bareFrom(table.id).asEntityBareJidIfPossible());
-                if(vCard != null){
+                if (vCard != null) {
                     table.name = vCard.getFirstName() + " " + vCard.getLastName();
                     table.nick_name = vCard.getNickName();
                     table.imageUrl = vCard.getField("URL");
@@ -1412,7 +1409,7 @@ public class XMPPHandler {
         }
 
         if (count == list.size()) {
-            Logger.d(count+"    ==========");
+            Logger.d(count + "    ==========");
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -1445,13 +1442,13 @@ public class XMPPHandler {
             Logger.d(new Gson().toJson(chatItem));
 
             int pos = getListPosition(chatItem);
-            if (pos == -1){
+            if (pos == -1) {
                 RosterTable table = new RosterTable();
                 try {
                     VCard vCard = getUserDetails(JidCreate.entityBareFrom(chatItem.getSender()));
                     table.id = vCard.getFrom().asUnescapedString();
                     table.nick_name = vCard.getNickName();
-                    table.name = vCard.getFirstName()+" "+vCard.getLastName();
+                    table.name = vCard.getFirstName() + " " + vCard.getLastName();
                     table.imageUrl = vCard.getField("URL");
                     table.lastMessage = new Gson().toJson(chatItem);
                     table.time = chatItem.getLognTime();
@@ -1467,7 +1464,7 @@ public class XMPPHandler {
                 } catch (XmppStringprepException e) {
                     e.printStackTrace();
                 }
-            }else {
+            } else {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -1488,6 +1485,8 @@ public class XMPPHandler {
 
         @Override
         public void stateChanged(Chat chat, ChatState state, Message message) {
+            Logger.d(new Gson().toJson(message));
+            Logger.d(chat.getXmppAddressOfChatPartner());
             if (debug)
                 Log.e(TAG, "Chat State local: " + chat.getXmppAddressOfChatPartner() + ": " + state.name());
 
@@ -1505,7 +1504,7 @@ public class XMPPHandler {
                 if (debug) Logger.e(TAG, "User is nothing");
             }
 
-            service.onChatStateChange(new ChatStateModel(chat.getClass().getName(), state));
+            service.onChatStateChange(new ChatStateModel(chat.getXmppAddressOfChatPartner().asUnescapedString(), state));
         }
     }
 
@@ -1543,7 +1542,7 @@ public class XMPPHandler {
                 if (debug) Log.e(TAG, "User is nothing");
             }
 
-            service.onChatStateChange(new ChatStateModel(chat.getClass().getName(), state));
+            service.onChatStateChange(new ChatStateModel(chat.getXmppAddressOfChatPartner().asUnescapedString(), state));
         }
 
         @Override
@@ -1712,7 +1711,7 @@ public class XMPPHandler {
             e.printStackTrace();
         }
 
-        if (newEntry!= null){
+        if (newEntry != null) {
             RosterTable table = new RosterTable();
             table.id = newEntry.getJid().asUnescapedString();
             table.rosterName = newEntry.getName();
@@ -1726,7 +1725,7 @@ public class XMPPHandler {
                 table.lastMessage = new Gson().toJson(chatItem);
                 table.time = System.currentTimeMillis();
                 table.status = 0;
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             int unreadCount = 0;
@@ -1896,7 +1895,7 @@ public class XMPPHandler {
 //            mamQueryResult.pagePrevious(maxResults);
 //            mamQueryResult.pageNext(maxResults);
 //            Logger.d(mamQueryResult.getMessageCount());
-            if (!mamQueryResult.isComplete()){
+            if (!mamQueryResult.isComplete()) {
                 List<Message> forwardedMessages = mamQueryResult.pagePrevious(maxResults);
 
                 Iterator<Message> forwardedIterator = forwardedMessages.iterator();
@@ -1952,6 +1951,7 @@ public class XMPPHandler {
 
     //Chat State events
     public void updateChatStatus(String receiver, ChatState chatState) {
+        Logger.d(receiver);
         if (chat_created_for.get(receiver) == null)
             chat_created_for.put(receiver, false);
 
@@ -1964,19 +1964,17 @@ public class XMPPHandler {
 //            chat_created_for.put(receiver,true);
 //        }
 
-        if (mChat == null) {
-            try {
-                mChat = ChatManager.getInstanceFor(connection).chatWith(JidCreate.entityBareFrom(receiver));
-            } catch (XmppStringprepException e) {
-                e.printStackTrace();
-            }
+        try {
+            mChat = ChatManager.getInstanceFor(connection).chatWith(JidCreate.entityBareFrom(receiver));
+        } catch (XmppStringprepException e) {
+            e.printStackTrace();
         }
 
 
         try {
             if (connection.isAuthenticated()) {
                 Logger.d(chatState);
-                Logger.d(mChat);
+                Logger.d(mChat.getXmppAddressOfChatPartner());
                 if (mChat == null) {
                     Logger.d("CHAT_NULL");
                 }

@@ -35,6 +35,10 @@ public class ChatItem implements Parcelable {
         this.large_image = large_image;
     }
 
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
     public String getLarge_image() {
         return large_image;
     }
