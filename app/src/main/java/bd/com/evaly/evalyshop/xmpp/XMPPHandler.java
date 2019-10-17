@@ -332,8 +332,11 @@ public class XMPPHandler {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
-                connection.disconnect();
+                try {
+                    connection.disconnect();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }).start();
     }
@@ -1139,12 +1142,12 @@ public class XMPPHandler {
 
                         updateRoster(list);
 
-                        AsyncTask.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                AppController.database.taskDao().addAllRoster(list);
-                            }
-                        });
+//                        AsyncTask.execute(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                AppController.database.taskDao().addAllRoster(list);
+//                            }
+//                        });
                     }
                 }).start();
                 isFirstTime = true;
@@ -1409,6 +1412,7 @@ public class XMPPHandler {
         }
 
         if (count == list.size()) {
+            Logger.d(count+"    ==========");
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -1464,7 +1468,12 @@ public class XMPPHandler {
                     e.printStackTrace();
                 }
             }else {
-
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), from.asUnescapedString(), 1);
+                    }
+                });
             }
             service.onNewMessage(new Gson().toJson(chatItem));
         }
@@ -1737,7 +1746,7 @@ public class XMPPHandler {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        Logger.d(table);
+                        Logger.d(new Gson().toJson(table));
                         AppController.database.taskDao().addRoster(table);
                     }
                 });

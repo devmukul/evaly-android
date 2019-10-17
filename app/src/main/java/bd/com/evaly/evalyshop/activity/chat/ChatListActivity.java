@@ -122,12 +122,12 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
             } else {
                 RosterTable roasterModel = rosterList.get(position);
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), roasterModel.id, roasterModel.unreadCount+1);
-                    }
-                });
+//                AsyncTask.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), roasterModel.id, roasterModel.unreadCount+1);
+//                    }
+//                });
                 roasterModel.lastMessage = new Gson().toJson(chatItem);
 //                roasterModel.unreadCount = roasterModel.unreadCount + 1;
                 rosterList.set(position, roasterModel);

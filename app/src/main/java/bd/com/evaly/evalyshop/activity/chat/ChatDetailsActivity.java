@@ -155,12 +155,12 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 adapter.notifyItemInserted(chatItemList.size() - 1);
                 rvChatDetails.smoothScrollToPosition(adapter.getItemCount() - 1);
             } else {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), chatItem.getSender(), 0);
-                    }
-                });
+//                AsyncTask.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), chatItem.getSender(), 0);
+//                    }
+//                });
             }
 
         }
@@ -571,7 +571,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     void send() {
         if (!etCommentsBox.getText().toString().trim().isEmpty() && mVCard != null) {
 
-            ChatItem chatItem = new ChatItem(etCommentsBox.getText().toString().trim(), mVCard.getFirstName() + " " + mVCard.getLastName(), mVCard.getField("URL"), mVCard.getNickName(), System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_TEXT, true, "");
+            ChatItem chatItem = new ChatItem(etCommentsBox.getText().toString().trim(), CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), mVCard.getNickName(), System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_TEXT, true, "");
             chatItem.setUid(CredentialManager.getUserName() + System.currentTimeMillis());
 //            chatItemList.add(chatItem);
             Logger.d(new Gson().toJson(chatItem));

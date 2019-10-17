@@ -321,7 +321,7 @@ public class EditProfileActivity extends BaseActivity {
 
     private void uploadProfilePicture(final Bitmap bitmap) {
 
-        ProgressDialog dialog = ProgressDialog.show(this, "",
+        ProgressDialog dialog = ProgressDialog.show(EditProfileActivity.this, "",
                 "Uploading image...", true);
 
         RequestQueue rQueue;
@@ -350,7 +350,7 @@ public class EditProfileActivity extends BaseActivity {
                                 userDetails.setProfilePicture(image);
                                 userDetails.setProfilePictureSM(image_sm);
                                 setProfilePic();
-                                getUserData();
+//                                getUserData();
 
                             }
 
@@ -436,6 +436,9 @@ public class EditProfileActivity extends BaseActivity {
                 try {
 
                     JSONObject userJson = response.getJSONObject("data");
+                    UserModel userModel = new Gson().fromJson(userJson.toString(), UserModel.class);
+
+                    CredentialManager.saveUserData(userModel);
                     JSONObject userInfo = userJson.getJSONObject("user_info");
                     userInfo.put("first_name", firstname.getText().toString());
                     userInfo.put("last_name", lastName.getText().toString());
@@ -507,8 +510,7 @@ public class EditProfileActivity extends BaseActivity {
                 JSONObject data = null;
                 try {
                     data = response.getJSONObject("data");
-                    JSONObject ob = data.getJSONObject("user_info");
-                    UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
+                    UserModel userModel = new Gson().fromJson(data.toString(), UserModel.class);
 
                     Logger.d(new Gson().toJson(userModel));
                     CredentialManager.saveUserData(userModel);
