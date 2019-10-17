@@ -216,7 +216,7 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="0"
             android:paddingLeft="5dp"
-            android:text="Delivery of the products will be completed within 15 working days after payment.."
+            android:text="Delivery of the products will be completed within approximately 15 working days after payment."
             android:textColor="#666"
             android:textSize="13sp" />
 
