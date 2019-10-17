@@ -20,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,8 +57,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private UserDetails userDetails;
     private RequestQueue rq;
     private ArrayList<ShopItem> itemsList;
-    private String shop_slug = "evaly-bata-official-store";
-    private String shop_item_slug = "blue-running-shoes-for-men";
+    private String shop_slug = "tvs-bangladesh";
+    private String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
     private int quantityCount = 1;
     private int productPriceInt = 0;
 
@@ -96,6 +97,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
     @BindView(R.id.buy_now)
     TextView checkOutBtn;
+
+    @BindView(R.id.variationHolder)
+    LinearLayout variationHolder;
 
 
 
@@ -285,13 +289,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                                 item.setSelected(true);
 
                             itemsList.add(item);
-
                             adapterVariation.notifyDataSetChanged();
                         }
 
                         if (itemsList.size() > 0){
-                            ShopItem firstItem = itemsList.get(0);
 
+                            ShopItem firstItem = itemsList.get(0);
                             productName.setText(firstItem.getShopItemName());
                             shopName.setText("Seller: " + firstItem.getShopName());
                             productPrice.setText("৳ "+firstItem.getShopItemPrice() + " x 1");
@@ -299,25 +302,21 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                             productTotalPrice.setText("৳ "+firstItem.getShopItemPrice());
 
                             try {
-                                productPriceInt = Integer.parseInt(firstItem.getShopItemPrice());
-                            } catch (Exception e){
 
-                            }
+                                productPriceInt = Integer.parseInt(firstItem.getShopItemPrice());
+
+                            } catch (Exception e){ }
 
 
                             if (!firstItem.getShopItemDiscountedPrice().equals("0")) {
+
                                 productPrice.setText("৳ " + firstItem.getShopItemDiscountedPrice() + " x 1");
                                 productTotalPrice.setText("৳ " + firstItem.getShopItemDiscountedPrice());
 
                                 try {
                                     productPriceInt = Integer.parseInt(firstItem.getShopItemDiscountedPrice());
-                                } catch (Exception e){
-
-                                }
-
+                                } catch (Exception e){ }
                             }
-
-
 
                             Glide.with(context)
                                     .load(firstItem.getShopItemImage())
@@ -325,17 +324,15 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                                     .apply(new RequestOptions().override(250, 250))
                                     .into(productImage);
 
-
                             if (firstItem.getAttributes().size()>0) {
 
                                 AttributesItem attributesItem = firstItem.getAttributes().get(0);
-
                                 String varName = attributesItem.getName();
                                 String varValue = attributesItem.getValue();
-
                                 variationTitle.setText(varName + ": " + varValue);
-                            }
 
+                            } else
+                                variationHolder.setVisibility(View.GONE);
 
                         }
 
