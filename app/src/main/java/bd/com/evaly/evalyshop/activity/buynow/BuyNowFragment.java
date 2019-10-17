@@ -129,6 +129,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     String varValue = attributesItem.getValue();
 
                     variationTitle.setText(varName + ": " + varValue);
+
+
+                    loadProductById(position);
+
                 }
             }
             else
@@ -300,45 +304,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                         if (itemsList.size() > 0){
 
-                            ShopItem firstItem = itemsList.get(0);
-                            productName.setText(firstItem.getShopItemName());
-                            shopName.setText("Seller: " + firstItem.getShopName());
-                            productPrice.setText("৳ "+firstItem.getShopItemPrice() + " x 1");
-                            productQuantity.setText("1");
-                            productTotalPrice.setText("৳ "+firstItem.getShopItemPrice());
-
-                            try {
-
-                                productPriceInt = Integer.parseInt(firstItem.getShopItemPrice());
-
-                            } catch (Exception e){ }
-
-
-                            if (!firstItem.getShopItemDiscountedPrice().equals("0")) {
-
-                                productPrice.setText("৳ " + firstItem.getShopItemDiscountedPrice() + " x 1");
-                                productTotalPrice.setText("৳ " + firstItem.getShopItemDiscountedPrice());
-
-                                try {
-                                    productPriceInt = Integer.parseInt(firstItem.getShopItemDiscountedPrice());
-                                } catch (Exception e){ }
-                            }
-
-                            Glide.with(context)
-                                    .load(firstItem.getShopItemImage())
-                                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                                    .apply(new RequestOptions().override(250, 250))
-                                    .into(productImage);
-
-                            if (firstItem.getAttributes().size()>0) {
-
-                                AttributesItem attributesItem = firstItem.getAttributes().get(0);
-                                String varName = attributesItem.getName();
-                                String varValue = attributesItem.getValue();
-                                variationTitle.setText(varName + ": " + varValue);
-
-                            } else
-                                variationHolder.setVisibility(View.GONE);
+                            loadProductById(0);
 
                         }
 
@@ -358,6 +324,52 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         rq.getCache().clear();
         rq.add(request);
 
+
+    }
+
+
+    private void loadProductById(int position){
+
+
+        ShopItem firstItem = itemsList.get(position);
+        productName.setText(firstItem.getShopItemName());
+        shopName.setText("Seller: " + firstItem.getShopName());
+        productPrice.setText("৳ "+firstItem.getShopItemPrice() + " x 1");
+        productQuantity.setText("1");
+        productTotalPrice.setText("৳ "+firstItem.getShopItemPrice());
+
+        try {
+
+            productPriceInt = Integer.parseInt(firstItem.getShopItemPrice());
+
+        } catch (Exception e){ }
+
+
+        if (!firstItem.getShopItemDiscountedPrice().equals("0")) {
+
+            productPrice.setText("৳ " + firstItem.getShopItemDiscountedPrice() + " x 1");
+            productTotalPrice.setText("৳ " + firstItem.getShopItemDiscountedPrice());
+
+            try {
+                productPriceInt = Integer.parseInt(firstItem.getShopItemDiscountedPrice());
+            } catch (Exception e){ }
+        }
+
+        Glide.with(context)
+                .load(firstItem.getShopItemImage())
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .apply(new RequestOptions().override(250, 250))
+                .into(productImage);
+
+        if (firstItem.getAttributes().size()>0) {
+
+            AttributesItem attributesItem = firstItem.getAttributes().get(0);
+            String varName = attributesItem.getName();
+            String varValue = attributesItem.getValue();
+            variationTitle.setText(varName + ": " + varValue);
+
+        } else
+            variationHolder.setVisibility(View.GONE);
 
     }
 
