@@ -106,7 +106,7 @@ public class ShopFragment extends Fragment implements ProductListener {
     public void buyNow(String productSlug){
 
         BuyNowFragment addPhotoBottomDialogFragment =
-                BuyNowFragment.newInstance();
+                BuyNowFragment.newInstance(slug, productSlug);
         addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
                 "BuyNow");
 

@@ -102,8 +102,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     LinearLayout variationHolder;
 
 
-
-
     // checkout
     CheckBox selectAll;
     Button checkout;
@@ -131,17 +129,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     String varValue = attributesItem.getValue();
 
                     variationTitle.setText(varName + ": " + varValue);
-
                 }
-
             }
             else
                 itemsList.get(i).setSelected(false);
         }
-
         adapterVariation.notifyDataSetChanged();
-
-
     }
 
 
@@ -150,6 +143,13 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         super.onCreate(savedInstanceState);
         //bottom sheet round corners can be obtained but the while background appears to remove that we need to add this.
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+
+        Bundle args = getArguments();
+
+        shop_slug = args.getString("shopSlug");
+        shop_item_slug = args.getString("productSlug");
+
+
     }
 
 
@@ -264,8 +264,14 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         return bottomSheetDialog;
     }
 
-    public static BuyNowFragment newInstance() {
-        return new BuyNowFragment();
+    public static BuyNowFragment newInstance(String shopSlug, String productSlug) {
+        BuyNowFragment f = new BuyNowFragment();
+        Bundle args = new Bundle();
+        args.putString("shopSlug", shopSlug);
+        args.putString("productSlug", productSlug);
+        f.setArguments(args);
+
+        return f;
     }
 
 

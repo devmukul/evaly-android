@@ -106,13 +106,6 @@ public class HomeFragment extends Fragment {
     }
 
 
-    public void showBottomSheet() {
-        BuyNowFragment addPhotoBottomDialogFragment =
-                BuyNowFragment.newInstance();
-        addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
-                "BuyNow");
-    }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -156,9 +149,8 @@ public class HomeFragment extends Fragment {
 
                 Intent ni = new Intent(context, GiftCardActivity.class);
 
-                // startActivity(ni);
+                startActivity(ni);
 
-                showBottomSheet();
 
             }
         });

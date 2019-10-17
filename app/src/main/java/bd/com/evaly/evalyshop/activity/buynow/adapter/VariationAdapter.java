@@ -44,12 +44,14 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
 
-        myViewHolder.text.setText(itemsList.get(i).getAttributes().get(0).getValue());
+        if (itemsList.get(i).getAttributes().size() > 0)
+            myViewHolder.text.setText(itemsList.get(i).getAttributes().get(0).getValue());
 
 
         Glide.with(context)
                 .load(itemsList.get(i).getShopItemImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.ic_image_placeholder)
                 .apply(new RequestOptions().override(200, 200))
                 .into(myViewHolder.image);
 
