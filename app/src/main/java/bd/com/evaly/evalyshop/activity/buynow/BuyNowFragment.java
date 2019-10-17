@@ -3,12 +3,14 @@ package bd.com.evaly.evalyshop.activity.buynow;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,15 +44,19 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.models.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -65,6 +71,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
     private int quantityCount = 1;
     private int productPriceInt = 0;
+    private DbHelperCart db;
 
     @BindView(R.id.shop)
     TextView shopName;
@@ -154,6 +161,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         Bundle args = getArguments();
 
+        db = new DbHelperCart(getActivity());
+
         shop_slug = args.getString("shopSlug");
         shop_item_slug = args.getString("productSlug");
 
@@ -197,6 +206,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         recyclerVariation.setAdapter(adapterVariation);
 
 
+        getProductDetails();
+
+
         minus.setOnClickListener(view1 -> {
 
             if (quantityCount>1){
@@ -222,7 +234,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
 
 
-        getProductDetails();
+
 
 
 
@@ -376,13 +388,39 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         if (firstItem.getAttributes().size()>0) {
 
+            variationHolder.setVisibility(View.VISIBLE);
+
             AttributesItem attributesItem = firstItem.getAttributes().get(0);
             String varName = attributesItem.getName();
             String varValue = attributesItem.getValue();
             variationTitle.setText(varName + ": " + varValue);
-
         } else
             variationHolder.setVisibility(View.GONE);
+
+
+
+
+
+        addToCartBtn.setOnClickListener(v -> {
+
+            Calendar calendar = Calendar.getInstance();
+
+            String price  = firstItem.getShopItemPrice();
+
+            if (!firstItem.getShopItemDiscountedPrice().equals("0"))
+                price = firstItem.getShopItemDiscountedPrice();
+
+            String sellerJson = new Gson().toJson(firstItem);
+
+            if(db.insertData(shop_item_slug,firstItem.getShopItemName(),firstItem.getShopItemImage(), Integer.parseInt(price), calendar.getTimeInMillis(), sellerJson, 1, firstItem.getShopSlug(), String.valueOf(firstItem.getShopItemId()))){
+
+                Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+
+
 
     }
 
