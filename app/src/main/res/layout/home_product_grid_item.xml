@@ -92,6 +92,7 @@
 
 
             <TextView
+                android:id="@+id/buy_now"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/price"
@@ -99,6 +100,7 @@
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/buy_now_btn"
+                android:visibility="gone"
                 android:clickable="true"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"

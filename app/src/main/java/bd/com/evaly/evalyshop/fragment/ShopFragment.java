@@ -64,15 +64,16 @@ import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.ReviewsActivity;
+import bd.com.evaly.evalyshop.activity.buynow.BuyNowFragment;
+import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.adapter.ShopCategoryAdapter;
+import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.models.TabsItem;
-import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.views.StickyScrollView;
 
-public class ShopFragment extends Fragment {
+public class ShopFragment extends Fragment implements ProductListener {
 
     String slug="", title="", groups="";
     ImageView logo;
@@ -99,6 +100,22 @@ public class ShopFragment extends Fragment {
     UserDetails userDetails;
     int subCount = 0;
 
+
+
+    @Override
+    public void buyNow(String productSlug){
+
+        BuyNowFragment addPhotoBottomDialogFragment =
+                BuyNowFragment.newInstance();
+        addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
+                "BuyNow");
+
+    }
+
+    @Override
+    public void onSuccess(int count){
+
+    }
 
 
     public ShopFragment() {
@@ -283,6 +300,7 @@ public class ShopFragment extends Fragment {
         categoryTitle.setText(categoryName);
         productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, categorySlug, 1, view.findViewById(R.id.progressBar));
         productGrid.setScrollView(nestedSV);
+        productGrid.setListener(this);
 
     }
 
@@ -311,6 +329,7 @@ public class ShopFragment extends Fragment {
                         if(response.getInt("count")>0){
                             productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, "", 1, view.findViewById(R.id.progressBar));
                             productGrid.setScrollView(nestedSV);
+                            productGrid.setListener(this);
                             try {
                                 followBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override

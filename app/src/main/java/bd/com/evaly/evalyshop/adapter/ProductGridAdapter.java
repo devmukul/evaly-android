@@ -22,15 +22,29 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
+import bd.com.evaly.evalyshop.activity.buynow.BuyNowFragment;
+import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.models.ProductListItem;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 
 public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.MyViewHolder> {
-    Context mContext;
-    ArrayList<ProductListItem> productsList;
-    DbHelperWishList db;
+    private Context mContext;
+    private ArrayList<ProductListItem> productsList;
+    private DbHelperWishList db;
+    private String shopSlug = "";
+
+    private ProductListener productListener;
+
+    public void setproductListener(ProductListener productListener){
+        this.productListener = productListener;
+    }
+    
+    public void setShopSlug(String shopSlug){
+        this.shopSlug = shopSlug;
+    }
 
     public ProductGridAdapter(Context context, ArrayList<ProductListItem> a) {
         mContext = context;
@@ -127,10 +141,20 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
         //holder.sku.setText(productsList.get(position).getSlug());
 
-
-
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(itemViewListener);
+
+
+
+        if (!shopSlug.equals("") && productListener != null) {
+            holder.buyNow.setTag(position);
+            holder.buyNow.setVisibility(View.VISIBLE);
+            holder.buyNow.setOnClickListener(v -> productListener.buyNow(productsList.get(position).getSlug()));
+        }
+        else
+            holder.buyNow.setVisibility(View.GONE);
+
+
 
 
 
@@ -178,7 +202,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textViewAndroid,price,priceDiscount, sku;
+        TextView textViewAndroid,price,priceDiscount, sku, buyNow;
         ImageView imageViewAndroid,favorite;
         View itemView;
 
@@ -188,6 +212,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             price=itemView.findViewById(R.id.price);
             imageViewAndroid=itemView.findViewById(R.id.image);
             priceDiscount = itemView.findViewById(R.id.priceDiscount);
+            buyNow = itemView.findViewById(R.id.buy_now);
 
             // favorite=itemView.findViewById(R.id.favorite);
             //sku=itemView.findViewById(R.id.sku);

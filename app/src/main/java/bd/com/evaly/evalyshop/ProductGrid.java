@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
+import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.models.ProductListItem;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -39,7 +40,7 @@ public class ProductGrid {
     RecyclerView recyclerView;
     StaggeredGridLayoutManager mLayoutManager;
     String categorySlug;
-    String shopSlug;
+    String shopSlug = "";
     public HomeFragment main;
     public Context context;
     ArrayList<ProductListItem> products;
@@ -49,21 +50,17 @@ public class ProductGrid {
     private ProductGridAdapter adapterViewAndroid;
     private ProgressBar progressBar;
     RequestQueue rq;
-
-
     private NestedScrollView scrollView;
-
     private boolean isLoading = false;
-
     private ProductListener listener;
 
-    public interface ProductListener {
-        void onSuccess(int count);
-    }
+
 
 
     public void setListener(ProductListener listener) {
         this.listener = listener;
+        if (adapterViewAndroid!=null)
+            adapterViewAndroid.setproductListener(listener);
     }
 
 
@@ -168,12 +165,15 @@ public class ProductGrid {
         adapterViewAndroid = new ProductGridAdapter(context, products);
 
 
+
         adapterViewAndroid.setHasStableIds(true);
         products.clear();
         adapterViewAndroid.notifyDataSetChanged();
 
-        if (type2 == 1)
+        if (type2 == 1) {
             getShopProducts(shopSlug, categorySlug, 1);
+            adapterViewAndroid.setShopSlug(shopSlug);
+        }
         else
             getBrandProducts(shopSlug, categorySlug, 1);
 

@@ -27,8 +27,6 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
         public void selectVariation(int position);
     }
 
-
-
     public VariationAdapter(ArrayList<ShopItem> itemsList, Context context, ClickListenerVariation clickListenerVariation) {
         this.itemsList = itemsList;
         this.context = context;
