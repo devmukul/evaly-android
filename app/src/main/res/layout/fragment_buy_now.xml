@@ -233,7 +233,50 @@
             <include
                 layout="@layout/bottom_sheet_checkout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingBottom="20dp">
+
+
+
+                <Button
+                    android:id="@+id/add_to_cart"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/black_btn"
+                    android:stateListAnimator="@null"
+                    android:text="ADD TO CART"
+                    android:textColor="#fff"
+                    android:layout_weight="1"
+                    android:layout_marginRight="7dp"/>
+
+                <Button
+                    android:id="@+id/buy_now"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/buy_now_btn"
+                    android:stateListAnimator="@null"
+                    android:text="CHECK OUT"
+                    android:textColor="#fff"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="7dp"/>
+
+
+            </LinearLayout>
+
+
+
 
 
         </LinearLayout>

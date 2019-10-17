@@ -86,6 +86,7 @@ dependencies {
     configurations {
         all*.exclude group: 'xpp3', module: 'xpp3'
     }
+
     implementation 'de.hdodenhof:circleimageview:3.0.0'
 
 }
