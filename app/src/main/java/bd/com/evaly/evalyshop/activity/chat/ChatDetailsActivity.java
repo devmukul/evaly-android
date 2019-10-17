@@ -148,7 +148,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), rosterTable.id);
+                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), rosterTable.id, 0);
                     }
                 });
                 chatItemList.add(chatItem);
@@ -158,7 +158,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), chatItem.getSender());
+                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), chatItem.getSender(), 0);
                     }
                 });
             }
@@ -170,7 +170,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
-                    AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), rosterTable.id);
+                    AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), rosterTable.id, 0);
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -272,7 +272,17 @@ public class ChatDetailsActivity extends AppCompatActivity {
             }
 
         } else {
-            tvName.setText(rosterTable.rosterName);
+            if (rosterTable.rosterName.equals("")){
+                if (rosterTable.name != null ) {
+                    tvName.setText(rosterTable.name);
+                } else if (rosterTable.nick_name == null ) {
+                    tvName.setText("Customer");
+                } else {
+                    tvName.setText(rosterTable.nick_name);
+                }
+            }else {
+                tvName.setText(rosterTable.rosterName);
+            }
         }
 
         if (rosterTable.status == 1) {

@@ -152,7 +152,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:ems="10"
-                android:hint="Write your comment..."
+                android:hint="Write your message here..."
                 android:inputType="textMultiLine|textPersonName"
                 android:paddingLeft="15dp"
                 android:paddingTop="15dp"
@@ -169,7 +169,7 @@
                 android:paddingRight="15dp"
                 android:paddingTop="10dp"
                 android:tint="#444"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:srcCompat="@drawable/ic_gallery" />
 
 

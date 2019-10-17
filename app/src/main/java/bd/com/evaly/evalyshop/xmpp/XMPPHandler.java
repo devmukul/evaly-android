@@ -332,6 +332,7 @@ public class XMPPHandler {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 connection.disconnect();
             }
         }).start();

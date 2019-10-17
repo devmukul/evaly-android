@@ -180,7 +180,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                     public void onDataFetched(Response<JsonPrimitive> response) {
 //                        Logger.d(new Gson().toJson(response));
                         dialog.hideDialog();
-                        if (response.code() == 200) {
+                        if (response.code() == 200 || response.code() == 201) {
                             onPasswordChanged();
                         } else {
                             Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
@@ -213,6 +213,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             dialog.hideDialog();
             Snackbar.make(pin1Et, "Password set Successfully, Please login!", Snackbar.LENGTH_LONG).show();
             xmppHandler.disconnect();
+            AppController.logout(PasswordActivity.this);
 
 //            xmppHandler.disconnect();
         }

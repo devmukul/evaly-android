@@ -352,11 +352,7 @@ public class UserDashboardActivity extends BaseActivity {
                 onBackPressed();
                 return true;
             case R.id.logout:
-
-                userDetails.clearAll();
-                startActivity(new Intent(UserDashboardActivity.this,MainActivity.class));
-                finish();
-
+                AppController.logout(UserDashboardActivity.this);
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -156,6 +158,12 @@ public class SignInActivity extends BaseActivity {
                     Toast.makeText(SignInActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
                 } else {
                     alert.showDialog();
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            AppController.database.clearAllTables();
+                        }
+                    });
                     signInUser();
                 }
             }

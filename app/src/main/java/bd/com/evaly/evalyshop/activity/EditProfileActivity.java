@@ -84,8 +84,6 @@ public class EditProfileActivity extends BaseActivity {
     ImageView profilePic;
     private ViewDialog dialog;
 
-    private UserModel mUserModel;
-
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
 
@@ -94,7 +92,7 @@ public class EditProfileActivity extends BaseActivity {
         //Event Listeners
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.updateUserInfo(mUserModel);
+            xmppHandler.updateUserInfo(CredentialManager.getUserData());
 
             Logger.d("======   CONNECTED  -========");
         }
@@ -491,7 +489,7 @@ public class EditProfileActivity extends BaseActivity {
             if(!xmppHandler.isConnected()){
                 xmppHandler.connect();
             } else {
-                xmppHandler.updateUserInfo(mUserModel);
+                xmppHandler.updateUserInfo(CredentialManager.getUserData());
             }
         }
     }

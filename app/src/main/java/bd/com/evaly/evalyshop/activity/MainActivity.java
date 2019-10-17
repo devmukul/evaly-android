@@ -47,6 +47,7 @@ import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
+import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
@@ -441,20 +442,23 @@ public class MainActivity extends BaseActivity {
 
     private void startXmppService() {
 
+        startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
+
+
         //Start XMPP Service (if not running already)
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(this, XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-        } else {
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
-            } else {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-            }
-        }
+//        if (!XMPPService.isServiceRunning) {
+//            Intent intent = new Intent(this, XMPPService.class);
+//            mChatApp.UnbindService();
+//            mChatApp.BindService(intent);
+//        } else {
+//            xmppHandler = AppController.getmService().xmpp;
+//            if (!xmppHandler.isConnected()) {
+//                xmppHandler.connect();
+//            } else {
+//                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+//                xmppHandler.login();
+//            }
+//        }
 
     }
 

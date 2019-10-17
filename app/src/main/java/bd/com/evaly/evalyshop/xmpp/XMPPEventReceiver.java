@@ -107,17 +107,25 @@ public class XMPPEventReceiver extends BroadcastReceiver {
                 break;
 
             case Constants.EVT_PRESENCE_CHG:
-                Bundle bundle = intent.getExtras();
-                PresenceModel presenceModel = (PresenceModel) bundle.getSerializable( Constants.INTENT_KEY_PRESENCE );
+                try {
+                    Bundle bundle = intent.getExtras();
+                    PresenceModel presenceModel = (PresenceModel) bundle.getSerializable( Constants.INTENT_KEY_PRESENCE );
 //                Logger.d(new Gson().toJson(presenceModel));
-                if(xmppCustomEventListener != null) xmppCustomEventListener.onPresenceChanged(presenceModel);
+                    if(xmppCustomEventListener != null) xmppCustomEventListener.onPresenceChanged(presenceModel);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
 
             case Constants.EVT_CHATSTATE_CHG:
-                Bundle intentBundle = intent.getExtras();
-                ChatStateModel chatStateModel = (ChatStateModel) intentBundle.getParcelable( Constants.INTENT_KEY_CHATSTATE );
+                try {
+                    Bundle intentBundle = intent.getExtras();
+                    ChatStateModel chatStateModel = (ChatStateModel) intentBundle.getSerializable( Constants.INTENT_KEY_CHATSTATE );
 //                Logger.d(chatStateModel.getChatState());
-                if(xmppCustomEventListener != null) xmppCustomEventListener.onChatStateChanged(chatStateModel);
+                    if(xmppCustomEventListener != null) xmppCustomEventListener.onChatStateChanged(chatStateModel);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
 
             case Constants.EVT_REQUEST_SUBSCRIBE:

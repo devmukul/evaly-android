@@ -36,8 +36,8 @@ public interface TaskDao {
     @Query("UPDATE roster_table SET unread_count = :value WHERE id = :id")
     void updateUnreadCount(int value, String id);
 
-    @Query("UPDATE roster_table SET last_message = :last_message, time = :time WHERE id = :id")
-    void updateLastMessage(String last_message, long time, String id);
+    @Query("UPDATE roster_table SET last_message = :last_message, time = :time, unread_count = :count WHERE id = :id")
+    void updateLastMessage(String last_message, long time, String id, int count);
 
     @Query("UPDATE roster_table SET status = :status WHERE id = :id")
     void updateStatus(int status, String id);

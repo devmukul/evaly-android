@@ -54,6 +54,7 @@ public class XMPPService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Logger.d("SERVICE DESTROYED");
         if(xmpp != null) xmpp.disconnect();
 //        xmpp = null;
         XMPPService.isServiceRunning = false;
