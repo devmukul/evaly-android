@@ -58,7 +58,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filtera
         this.data = new ArrayList<>();
         inflater = LayoutInflater.from(context);
 
-        server = Utils.urlEncode(server);
+        server = server;
         queue = Volley.newRequestQueue(context);
 
     }

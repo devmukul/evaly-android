@@ -83,10 +83,10 @@
         android:paddingBottom="5dp">
 
         <ImageView
-            android:id="@+id/bank"
+            android:id="@+id/evaly_pay"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="0"
             android:background="@drawable/payment_select_bg"
             android:clickable="true"
@@ -98,7 +98,7 @@
             android:id="@+id/bkash"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="0"
             android:background="@drawable/payment_select_bg"
             android:clickable="true"
@@ -138,8 +138,8 @@
             android:layout_weight="0"
             android:text="Evaly Balance"
             android:textAlignment="center"
-            android:layout_marginRight="5dp"
-            android:textColor="#666"
+            android:layout_marginRight="10dp"
+            android:textColor="#555"
             android:textStyle="bold"
             android:textSize="13sp"
             android:visibility="visible" />
@@ -148,11 +148,11 @@
             android:id="@+id/bKashText"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="0"
             android:text="bKash"
             android:textAlignment="center"
-            android:textColor="#666"
+            android:textColor="#555"
             android:textStyle="bold"
             android:textSize="13sp"
             android:visibility="visible" />
@@ -165,7 +165,7 @@
             android:layout_weight="0"
             android:text="Gateway"
             android:textAlignment="center"
-            android:textColor="#666"
+            android:textColor="#555"
             android:textStyle="bold"
             android:textSize="13sp"
             android:visibility="visible" />
