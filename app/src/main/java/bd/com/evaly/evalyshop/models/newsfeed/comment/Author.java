@@ -26,7 +26,7 @@ public class Author{
 	}
 
 	public void setCompressedImage(String compressedImage){
-		this.compressedImage = compressedImage;
+		this.compressedImage = compressedImage.replace("\n", "");
 	}
 
 	public String getCompressedImage(){

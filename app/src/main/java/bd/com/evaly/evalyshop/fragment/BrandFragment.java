@@ -65,7 +65,7 @@ public class BrandFragment extends Fragment {
     String slug="", title="", categoryString="", imgUrl="", categorySlug="";
     ImageView logo;
     TextView name,categoryName,address,number;
-    StickyScrollView nestedSV;
+    NestedScrollView nestedSV;
 
     ShimmerFrameLayout shimmer;
 
@@ -201,8 +201,8 @@ public class BrandFragment extends Fragment {
         CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
         CoordinatorLayout rootLayout = view.findViewById(R.id.root_coordinator);
 
-        NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
 
+        nestedSV = view.findViewById(R.id.stickyScrollView);
         if (nestedSV != null) {
 
             nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
@@ -264,6 +264,7 @@ public class BrandFragment extends Fragment {
                     try {
                         if(response.getInt("count")>0){
                             productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, categorySlug, 2, view.findViewById(R.id.progressBar));
+                            productGrid.setScrollView(nestedSV);
                         }else{
 
 

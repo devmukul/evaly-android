@@ -16,6 +16,9 @@ public class GiftCardListItem{
 	@SerializedName("description")
 	private String description;
 
+	@SerializedName("image_url")
+	private String imageUrl;
+
 	@SerializedName("value")
 	private int value;
 
@@ -27,6 +30,15 @@ public class GiftCardListItem{
 
 	@SerializedName("updatedAt")
 	private String updatedAt;
+
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String image_url) {
+		this.imageUrl = image_url;
+	}
 
 	public void setCreatedAt(String createdAt){
 		this.createdAt = createdAt;

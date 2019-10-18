@@ -310,11 +310,12 @@
                     android:paddingTop="8dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="8dp"
-                    android:text="Full Payment"
+                    android:text="Make Payment"
                     android:textAlignment="center"
                     android:textColor="#fff" />
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/payPartially"
                     android:layout_width="135dp"
                     android:layout_height="wrap_content"
@@ -328,6 +329,22 @@
                     android:text="Pay Partially"
                     android:textAlignment="center"
                     android:textColor="#333" />
+
+                <TextView
+                    android:id="@+id/payViaGiftCard"
+                    android:layout_width="135dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/pay_partially"
+                    android:clickable="true"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="8dp"
+                    android:text="Pay via Gift Card"
+                    android:textAlignment="center"
+                    android:textColor="#333"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

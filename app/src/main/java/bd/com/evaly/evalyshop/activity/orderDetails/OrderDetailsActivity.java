@@ -96,8 +96,8 @@ public class OrderDetailsActivity extends BaseActivity {
     LinearLayout layoutBottomSheet;
     Button btnBottomSheet;
     View mViewBg;
-    TextView amountToPayView;
-    ImageView bkash,cards;
+    TextView amountToPayView, evalyPayText;
+    ImageView bkash,cards,evalyPay;
 
 
     int paymentMethod = -1;
@@ -169,6 +169,9 @@ public class OrderDetailsActivity extends BaseActivity {
         amountToPayView = findViewById(R.id.amountPay);
         bkash = findViewById(R.id.bkash);
         cards = findViewById(R.id.card);
+        evalyPay = findViewById(R.id.evaly_pay);
+        evalyPayText = findViewById(R.id.evalyPayText);
+
         final TextView cardText = findViewById(R.id.gatewayText);
 
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -178,11 +181,10 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehavior.STATE_HIDDEN:
+                        mViewBg.setVisibility(View.GONE);
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED: {
-
                         mViewBg.setVisibility(View.VISIBLE);
-
                     }
                     break;
                     case BottomSheetBehavior.STATE_COLLAPSED: {
@@ -264,49 +266,16 @@ public class OrderDetailsActivity extends BaseActivity {
         makePayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(OrderDetailsActivity.this)
-                        .setMessage("Do you sure you want to make payment?")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int whichButton) {
-
-                                double userBalance = Double.parseDouble(userDetails.getBalance());
-                                if (total_amount <= userBalance){
-
-                                    double amountToPay = total_amount-paid_amount;
-
-                                    makePartialPayment(invoice_no, String.valueOf((int)amountToPay));
-
-                                } else {
-
-                                    //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
-
-                                    // grad brand days full payment
-
-                                    double amountToPay =  total_amount - paid_amount;
-
-                                    if (!shopGroup.contains("grandbranddays"))
-                                        amountToPay = (total_amount - userBalance) - paid_amount;
 
 
-                                    amountToPayView.setText(amountToPay+"");
-                                    full_or_partial.setText("Full Payment");
+                double amountToPay = total_amount - paid_amount;
 
-                                    // turn off ssl commerz for grand days
+                double userBalance = Double.parseDouble(userDetails.getBalance());
 
-//                                    if (shopGroup.contains("grandbranddays")) {
-//                                        cards.setVisibility(View.GONE);
-//                                        cardText.setVisibility(View.GONE);
-//                                    }
 
-                                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-                                }
-
-                            }})
-                        .setNegativeButton(android.R.string.no, null).show();
-
+                amountToPayView.setText((int)amountToPay + "");
+                full_or_partial.setVisibility(View.GONE);
+                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
 
@@ -322,17 +291,69 @@ public class OrderDetailsActivity extends BaseActivity {
         });
 
 
+
+
+        TextView payViaGiftCard = findViewById(R.id.payViaGiftCard);
+
+        payViaGiftCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialogGiftCardPayment();
+
+
+            }
+        });
+
+
+        evalyPay.setOnClickListener(v -> {
+
+
+            double amountToPay = total_amount - paid_amount;
+
+            if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
+                Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (amountToPayView.getText().toString().equals("0")){
+                Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (Double.parseDouble(amountToPayView.getText().toString()) > Double.parseDouble(userDetails.getBalance())){
+                Toast.makeText(context, "Insufficient Evaly balance (৳ "+userDetails.getBalance()+")", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
+            makePartialPayment(invoice_no, amountToPayView.getText().toString());
+
+
+        });
+
+
         bkash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+
+                double amountToPay = total_amount - paid_amount;
+
+                if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
+                    Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (amountToPayView.getText().toString().equals("0")){
+                    Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
                 Intent intent = new Intent(OrderDetailsActivity.this, PayViaBkashActivity.class);
                 intent.putExtra("amount", amountToPayView.getText().toString());
                 intent.putExtra("invoice_no", invoice_no);
+                intent.putExtra("context", "order_payment");
                 startActivityForResult(intent,10002);
 
                 sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
 
 
             }
@@ -344,6 +365,18 @@ public class OrderDetailsActivity extends BaseActivity {
         cards.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                double amountToPay = total_amount - paid_amount;
+
+                if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
+                    Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (amountToPayView.getText().toString().equals("0")){
+                    Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
 
                 double amToPay = Double.parseDouble(amountToPayView.getText().toString());
 
@@ -433,17 +466,234 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
 
+
+    public void dialogGiftCardPayment(){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_pay_with_gift_card, null);
+        dialogBuilder.setView(dialogView);
+
+        AlertDialog alertDialog = dialogBuilder.create();
+
+        Button d_submit = dialogView.findViewById(R.id.submit);
+
+        final EditText amount = dialogView.findViewById(R.id.amount);
+        final EditText code = dialogView.findViewById(R.id.code);
+
+
+        amount.setText((int)due_amount+"");
+
+
+        alertDialog.getWindow()
+                .setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+
+        alertDialog.show();
+
+
+        d_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                if (amount.getText().toString().equals("")){
+                    Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (code.getText().toString().equals("")){
+                    Toast.makeText(context, "Please enter gift card coupon code.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                double partial_amount = Double.parseDouble(amount.getText().toString());
+
+                if (partial_amount > total_amount){
+                    Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+
+                double userBalance = Double.parseDouble(userDetails.getBalance());
+
+
+                makePaymentViaGiftCard(code.getText().toString(), invoice_no, String.valueOf((int) partial_amount));
+
+
+
+            }
+        });
+    }
+
+
+
+
+
+    public void makePaymentViaGiftCard(String giftCode, String invoice, String amount){
+
+        String url= UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-code/";
+
+        dialog.showDialog();
+        Log.d("json order url", url);
+        Toast.makeText(this,"Payment is processing", Toast.LENGTH_SHORT).show();
+
+        JSONObject payload = new JSONObject();
+
+        try{
+            payload.put("invoice_no", invoice);
+            payload.put("gift_code", giftCode);
+            payload.put("amount", amount);
+        } catch (Exception e){
+
+
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+
+                Log.d("json payment res", response.toString());
+
+                if(!response.has("success")){
+
+                    try {
+
+                        dialog.hideDialog();
+
+                        Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
+
+                    } catch (Exception e){
+                    }
+
+                } else {
+
+                    // it means all payment done
+                    Toast.makeText(OrderDetailsActivity.this,"Payment successful!", Toast.LENGTH_LONG).show();
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            dialog.hideDialog();
+                            finish();
+                            startActivity(getIntent());
+
+                        }
+                    }, 1500);
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                dialog.hideDialog();
+                Log.e("onErrorResponse", error.toString());
+
+                //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
+
+                Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
+
+                try {
+                    String responseBody = new String(error.networkResponse.data, "utf-8");
+                    JSONObject data = new JSONObject(responseBody);
+                    Toast.makeText(OrderDetailsActivity.this, data.getString("message"), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                }
+
+
+
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                // headers.put("Host", "api-prod.evaly.com.bd");
+                headers.put("Content-Type", "application/json");
+                headers.put("Origin", "https://evaly.com.bd");
+                headers.put("Referer", "https://evaly.com.bd/");
+                headers.put("User-Agent", userAgent);
+                return headers;
+            }
+
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(request);
+    }
+
+
+
+
+
+
+
+
+
     @Override
     public void onResume(){
         super.onResume();
         Balance.update(this);
+        checkCardBalance();
 
+    }
+
+
+
+
+
+    public void checkCardBalance(){
+
+        String url=UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName()+"/";
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("onResponse", response.toString());
+                try {
+
+                    TextView payViaGiftCard = findViewById(R.id.payViaGiftCard);
+                    response = response.getJSONObject("data");
+                    if (response.getDouble("gift_card_balance") < 1)
+                        payViaGiftCard.setVisibility(View.GONE);
+                    else
+                        payViaGiftCard.setVisibility(View.VISIBLE);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                return headers;
+            }
+        };
+        request.setShouldCache(false);
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueue queue= Volley.newRequestQueue(context);
+        queue.add(request);
     }
 
 
     public void makePartialPayment(String invoice, String amount){
 
-        String url="https://api.evaly.com.bd/pay/transactions/payment/order/";
+        String url= UrlUtils.DOMAIN+"pay/transactions/payment/order/";
 
         dialog.showDialog();
         Log.d("json order url", url);
@@ -529,7 +779,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void addBalanceViaCard(String invoice, String amount) {
 
-        String url = "https://api.evaly.com.bd/pay/pg";
+        String url = UrlUtils.DOMAIN+"pay/pg";
 
         Log.d("json order url", url);
 

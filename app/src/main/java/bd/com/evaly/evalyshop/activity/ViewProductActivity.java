@@ -571,12 +571,17 @@ public class ViewProductActivity extends BaseActivity {
                         }
 
                         for (int i = 0; i < product_variants.length(); i++) {
+
                             if (response.getJSONArray("attributes").length() == 0) {
                                 JSONArray variantArr = product_variants.getJSONObject(i).getJSONArray("product_images");
                                 for (int j = 0; j < variantArr.length(); j++) {
                                     sliderImages.add(variantArr.getString(j));
                                     sliderAdapter.notifyDataSetChanged();
                                 }
+
+                                if (variantArr.length() == 1)
+                                    sliderIndicator.setVisibility(View.GONE);
+
                                 getAvailableShops(product_variants.getJSONObject(i).getInt("variant_id"));
 
 
@@ -746,7 +751,11 @@ public class ViewProductActivity extends BaseActivity {
 
 
                         ProductGrid productGrid = new ProductGrid(context, findViewById(R.id.products), firstVariant.getString("category_slug"), findViewById(R.id.progressBar));
+
+
                         if (nestedSV != null) {
+                            productGrid.setScrollView(nestedSV);
+
                             nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
                                 @Override
                                 public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -955,6 +964,8 @@ public class ViewProductActivity extends BaseActivity {
 
                                     item.setSlug(slug);
                                     item.setProductId(ob.getString("shop_item_id"));
+
+                                    item.setDiscountValue(ob.getDouble("discount_value"));
 
                                     item.setPhone(phone);
                                     item.setAddress(ob.getString("shop_address"));

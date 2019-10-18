@@ -97,67 +97,37 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
             myViewHolder.address.setText(availableShops.get(i).getAddress());
 
 
-
-
-
         if(availableShops.get(i).getStock()==false){
             myViewHolder.buyBtn.setText("Out of Stock");
             myViewHolder.buyBtn.setEnabled(false);
         }
 
-
-
-
-//        if(Double.parseDouble(availableShops.get(i).getMaximumPrice())-Double.parseDouble(availableShops.get(i).getPrice())>0){
-//            myViewHolder.maximumnPrice.setText("৳ "+availableShops.get(i).getMaximumPrice());
-//            myViewHolder.maximumnPrice.setPaintFlags(myViewHolder.maximumnPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-//            Double a=Double.parseDouble(availableShops.get(i).getMaximumPrice());
-//            Double b=Double.parseDouble(availableShops.get(i).getPrice());
-//            Double percentage=((a-b)*100)/a;
-//            myViewHolder.priceOff.setText((int)Math.ceil(percentage)+" % off");
-//        }else{
-//            myViewHolder.discount.setVisibility(View.INVISIBLE);
-//        }
-
         try {
-
-            Log.d("json price", "pr" + availableShops.get(i).getPrice() + " mp " +availableShops.get(i).getMaximumPrice());
 
             String actualPrice = Integer.toString((int) Double.parseDouble(availableShops.get(i).getMaximumPrice()));
             String discountPrice = Integer.toString((int) Double.parseDouble(availableShops.get(i).getPrice()));
 
 
-            if (actualPrice.equals(discountPrice)) {
-
+            if (availableShops.get(i).getDiscountValue() == 0) {
 
                 myViewHolder.price.setText("৳ " + actualPrice);
                 myViewHolder.maximumnPrice.setVisibility(View.GONE);
 
+                if(actualPrice.equals("0")){
+                    myViewHolder.price.setVisibility(View.INVISIBLE);
+                    myViewHolder.buyBtn.setText("Call For Price");
+                    myViewHolder.buyBtn.getBackground().setAlpha(140);
+                    myViewHolder.buyBtn.setEnabled(false);
+                    myViewHolder.maximumnPrice.setVisibility(View.GONE);
+                }
 
             }
             else {
-
                 myViewHolder.maximumnPrice.setPaintFlags(myViewHolder.maximumnPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
                 myViewHolder.price.setText("৳ " + discountPrice);
                 myViewHolder.maximumnPrice.setText("৳ " + actualPrice);
                 myViewHolder.maximumnPrice.setVisibility(View.VISIBLE);
-
-
             }
-
-
-            if(discountPrice.equals("0") || actualPrice.equals("0")){
-
-                myViewHolder.price.setVisibility(View.INVISIBLE);
-                myViewHolder.buyBtn.setText("Call For Price");
-                myViewHolder.buyBtn.getBackground().setAlpha(140);
-                myViewHolder.buyBtn.setEnabled(false);
-                myViewHolder.maximumnPrice.setVisibility(View.GONE);
-            }
-
-
-
 
         } catch (Exception e){
 

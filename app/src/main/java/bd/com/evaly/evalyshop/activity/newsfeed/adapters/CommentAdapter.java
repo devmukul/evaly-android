@@ -86,14 +86,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
 
             myViewHolder.reply1Text.setText(repliesList.get(0).getBody());
-            Glide.with(context)
-                    .load(repliesList.get(0).getAuthor().getCompressedImage())
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .fitCenter()
-                    .centerCrop()
-                    .apply(new RequestOptions().override(50, 50))
-                    .placeholder(R.drawable.user_image)
-                    .into(myViewHolder.reply1Image);
+
+            if (!repliesList.get(0).getAuthor().getCompressedImage().equals("null")) {
+                Glide.with(context)
+                        .load(repliesList.get(0).getAuthor().getCompressedImage())
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .fitCenter()
+                        .centerCrop()
+                        .apply(new RequestOptions().override(50, 50))
+                        .placeholder(R.drawable.user_image)
+                        .into(myViewHolder.reply1Image);
+            }
 
         } else {
 
@@ -124,11 +127,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", commentItem.getCreatedAt())));
         myViewHolder.statusView.setText(Html.fromHtml(commentItem.getBody()));
 
+
         Glide.with(context)
                 .load(author.getCompressedImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .fitCenter()
                 .centerCrop()
+                .placeholder(R.drawable.user_image)
                 .apply(new RequestOptions().override(100, 100))
                 .into(myViewHolder.userImage);
 
@@ -140,9 +145,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             if (postImageURL.equals("null")) {
 
                 myViewHolder.postImage.setVisibility(View.GONE);
-
             } else {
-
                 myViewHolder.postImage.setVisibility(View.VISIBLE);
                 Glide.with(context)
                         .load(commentItem.getAttachmentCompressedUrl().toString())

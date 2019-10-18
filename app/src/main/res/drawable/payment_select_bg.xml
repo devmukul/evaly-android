@@ -11,6 +11,7 @@
                 android:right="13dp"
                 android:bottom="13dp"
                 android:top="13dp"/>
+            <corners android:radius="8dp"/>
         </shape>
     </item>
 
@@ -25,6 +26,10 @@
                 android:right="13dp"
                 android:bottom="13dp"
                 android:top="13dp"/>
+
+
+            <corners android:radius="8dp"/>
+
         </shape>
 
     </item>

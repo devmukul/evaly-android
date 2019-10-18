@@ -170,8 +170,12 @@ public class BrowseProductFragment extends Fragment {
         viewPager = view.findViewById(R.id.pager_sub);
 
         pager =  new HomeTabPagerAdapter(getChildFragmentManager());
-        final ProductGrid productGrid = new ProductGrid(getContext(), view.findViewById(R.id.products),slug, view.findViewById(R.id.progressBar));
 
+
+        NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
+
+        final ProductGrid productGrid = new ProductGrid(getContext(), view.findViewById(R.id.products),slug, view.findViewById(R.id.progressBar));
+        productGrid.setScrollView(nestedSV);
 
         TextView filterBtn = view.findViewById(R.id.filterBtn);
         //filterBtn.setOnClickListener(view -> drawer.openDrawer(Gravity.RIGHT));
@@ -214,7 +218,6 @@ public class BrowseProductFragment extends Fragment {
         CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
         CoordinatorLayout rootLayout = view.findViewById(R.id.root_coordinator);
 
-        NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
 
         if (nestedSV != null) {
 
