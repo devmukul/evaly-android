@@ -45,8 +45,14 @@ public class BaseViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
+        Log.i("PosTab",""+position);
+
         return mFragmentTitleList.get(position);
     }
+
+
+
+
 
 
 }

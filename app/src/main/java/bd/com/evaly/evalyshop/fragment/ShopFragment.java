@@ -22,7 +22,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +49,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
@@ -58,13 +56,10 @@ import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,38 +73,36 @@ import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.ReviewsActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
+import bd.com.evaly.evalyshop.activity.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.activity.chat.ChatDetailsActivity;
-import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.TabsItem;
-import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
-import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
-import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
-import bd.com.evaly.evalyshop.models.xmpp.VCardObject;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
-import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-public class ShopFragment extends Fragment {
+
+public class ShopFragment extends Fragment implements ProductListener {
 
     String slug = "", title = "", groups = "", owner_number = "", shop_name = "";
     ImageView logo;
     TextView name, address, number, tvOffer, followText;
     StickyScrollView nestedSV;
+
     ShimmerFrameLayout shimmer;
     RecyclerView recyclerView;
     ShopCategoryAdapter adapter;
@@ -137,6 +130,22 @@ public class ShopFragment extends Fragment {
 
     XMPPHandler xmppHandler;
     private List<RosterTable> rosterList;
+
+
+    @Override
+    public void buyNow(String productSlug){
+
+        BuyNowFragment addPhotoBottomDialogFragment =
+                BuyNowFragment.newInstance(slug, productSlug);
+        addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
+                "BuyNow");
+
+    }
+
+    @Override
+    public void onSuccess(int count){
+
+    }
 
 
     public ShopFragment() {
@@ -334,7 +343,7 @@ public class ShopFragment extends Fragment {
         CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
         CoordinatorLayout rootLayout = view.findViewById(R.id.root_coordinator);
 
-        NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
+        nestedSV = view.findViewById(R.id.stickyScrollView);
 
         if (nestedSV != null) {
 
@@ -398,6 +407,8 @@ public class ShopFragment extends Fragment {
         reset.setVisibility(View.VISIBLE);
         categoryTitle.setText(categoryName);
         productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, categorySlug, 1, view.findViewById(R.id.progressBar));
+        productGrid.setScrollView(nestedSV);
+        productGrid.setListener(this);
 
     }
 
@@ -524,6 +535,8 @@ public class ShopFragment extends Fragment {
 
                         if (response.getInt("count") > 0) {
                             productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, "", 1, view.findViewById(R.id.progressBar));
+                            productGrid.setScrollView(nestedSV);
+                            productGrid.setListener(this);
                             try {
                                 followBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override

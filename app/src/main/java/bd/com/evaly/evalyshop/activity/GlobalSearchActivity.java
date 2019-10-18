@@ -763,6 +763,9 @@ public class GlobalSearchActivity extends BaseActivity {
                 response -> {
 
 
+                    if (nestedSV!=null)
+                        nestedSV.fling(0);
+
                     Log.d("json search_result",response.toString());
 
 
@@ -959,6 +962,10 @@ public class GlobalSearchActivity extends BaseActivity {
         Log.d("json", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
+
+                    if (nestedSV!=null)
+                        nestedSV.fling(0);
+
                     isLoading = false;
                     try {
                         JSONArray jsonArray = response.getJSONArray("data");
@@ -1024,6 +1031,11 @@ public class GlobalSearchActivity extends BaseActivity {
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
                 response -> {
+
+
+                    if (nestedSV!=null)
+                        nestedSV.fling(0);
+
                     try {
                         isLoading = false;
                         JSONArray jsonArray = response.getJSONArray("results");

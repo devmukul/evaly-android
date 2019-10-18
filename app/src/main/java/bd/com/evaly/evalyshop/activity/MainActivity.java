@@ -444,7 +444,6 @@ public class MainActivity extends BaseActivity {
 
         startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
 
-
         //Start XMPP Service (if not running already)
 //        if (!XMPPService.isServiceRunning) {
 //            Intent intent = new Intent(this, XMPPService.class);
@@ -461,6 +460,7 @@ public class MainActivity extends BaseActivity {
 //        }
 
     }
+
 
 
     @Override
@@ -521,7 +521,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+        // mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
         if(bottomNavigationView!=null){
             Menu menu = bottomNavigationView.getMenu();

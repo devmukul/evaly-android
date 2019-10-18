@@ -1,0 +1,286 @@
+<html>
+<head>
+    <script src="jquery-3.3.1.min.js"></script>
+
+    <script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
+
+
+</head>
+
+<body>
+
+<div class="opacity_window" id="loader_window">
+    <div class="loader"></div>
+</div>
+
+
+<button class="try_btn" id="bKash_button">Try Again</button>
+
+
+<style>
+
+
+               .opacity_window {
+                    background-color: #000000;
+                    opacity: 0.60;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 99;
+                    position: relative;
+                }
+
+                body {}
+
+                * {
+                    padding: 0;
+                    margin: 0;
+                }
+
+                .try_btn {
+                    background: #0095ff;
+                    color: #fff;
+                    border: 0px;
+                    padding: 10px 15px;
+                    border-radius: 5px;
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    -webkit-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);
+                    z-index: 1;
+                    display: none;
+                }
+
+                .loader {
+                    border: 6px solid #f3f3f3;
+                    /* Light grey */
+                    border-top: 6px solid #3498db;
+                    /* Blue */
+                    border-radius: 50%;
+                    width: 30px;
+                    height: 30px;
+                    animation: spin 2s linear infinite;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    -webkit-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);
+                    margin: auto;
+                }
+
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+
+        </style>
+
+
+<script>
+            function intervalChecker(){
+                    var nTimer = setInterval(function() {
+                    if ($('#bKashFrameWrapper iframe').css('display') == 'block') {
+
+                    setTimeout(function(){
+                        document.getElementById("loader_window").style.display = "none";
+                    }, 200);
+                        clearInterval(nTimer);
+                    } else {
+                        document.getElementById("loader_window").style.display = "block";
+                    }
+                }, 200);
+            }
+
+            (function() {
+
+                    intervalChecker();
+
+            })();
+
+        </script>
+
+
+<script>
+
+
+            function errorMessage(response) {
+                      let msg = "";
+                      if (typeof response.errorMessage === "undefined") {
+                        msg = "Payment failed";
+                      } else {
+                        let errorMessage =
+                          "Sorry, your payment was unsuccessful !!! " + response.errorMessage;
+                        let errorCode = response.errorCode;
+                        let bkashErrorCode = [
+                          2001,
+                          2002,
+                          2003,
+                          2004,
+                          2007,
+                          2008,
+                          2009,
+                          2011,
+                          2012,
+                          2013,
+                          2020,
+                          2021,
+                          2022,
+                          2025,
+                          2027,
+                          2028,
+                          2030,
+                          2031,
+                          2032,
+                          2033,
+                          2036,
+                          2037,
+                          2038,
+                          2040,
+                          2041,
+                          2042,
+                          2043,
+                          2044,
+                          2045,
+                          2046,
+                          2047,
+                          2048,
+                          2049,
+                          2050,
+                          2051,
+                          2052,
+                          2053,
+                          2054,
+                          2055,
+                          2056
+                        ];
+                        if (bkashErrorCode.includes(errorCode)) {
+                          errorMessage = "Payment Failed";
+                        } else if (errorCode == 2029) {
+                          errorMessage =
+                            "Sorry, your payment was unsuccessful !!! For same amount transaction, please try again after 10 minutes.";
+                        }
+                        msg = errorMessage;
+                      }
+                  alert(msg);
+                }
+
+
+
+        </script>
+
+<!--<script>-->
+
+<!--var paymentID = '';-->
+
+<!--bKash.init({-->
+<!--paymentMode: 'checkout',-->
+<!--paymentRequest: {-->
+<!--amount: '10.00',-->
+<!--intent: 'sale',-->
+<!--context: 'order_payment',-->
+<!--context_reference: 'EVL348604781'-->
+<!--},-->
+<!--createRequest: function(request) {-->
+<!--$.ajax({-->
+<!--url: 'https://api.evaly.com.bd/pay/bkash_payment/create',-->
+<!--type: 'POST',-->
+<!--contentType: 'application/json',-->
+<!--headers: {-->
+<!--"Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo2NjY2NywidXNlcm5hbWUiOiIwMTc1MTk3NzA0NSIsImV4cCI6MTU2Nzk0OTA0NCwiZW1haWwiOiJobXRhbWltbTdAZ21haWwuY29tIiwic2hvcHMiOltdLCJkZXZpY2UiOiJ3ZWIiLCJpc19zdXBlcnVzZXIiOmZhbHNlLCJpc19zdGFmZiI6ZmFsc2UsImdyb3VwcyI6W10sImlzX3ZlcmlmaWVkIjpmYWxzZX0.GdRwijkOxxZ3R0cqApHyLrQminianXhkuwbobMu3ZHc",-->
+<!--},-->
+<!--data: JSON.stringify(request),-->
+<!--success: function(data) {-->
+<!--if (data && data.paymentID != null) {-->
+<!--paymentID = data.paymentID;-->
+<!--bKash.create().onSuccess(data);-->
+<!--} else {-->
+<!--bKash.create().onError();-->
+<!--}-->
+<!--},-->
+<!--error: function() {-->
+<!--bKash.create().onError();-->
+<!--}-->
+<!--})-->
+<!--},-->
+
+<!--executeRequestOnAuthorization: function() {-->
+<!--$.ajax({-->
+<!--url: 'https://api.evaly.com.bd/pay/bkash_payment/execute',-->
+<!--type: 'POST',-->
+<!--contentType: 'application/json',-->
+<!--headers: {-->
+<!--"Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo2NjY2NywidXNlcm5hbWUiOiIwMTc1MTk3NzA0NSIsImV4cCI6MTU2Nzk0OTA0NCwiZW1haWwiOiJobXRhbWltbTdAZ21haWwuY29tIiwic2hvcHMiOltdLCJkZXZpY2UiOiJ3ZWIiLCJpc19zdXBlcnVzZXIiOmZhbHNlLCJpc19zdGFmZiI6ZmFsc2UsImdyb3VwcyI6W10sImlzX3ZlcmlmaWVkIjpmYWxzZX0.GdRwijkOxxZ3R0cqApHyLrQminianXhkuwbobMu3ZHc",-->
+<!--},-->
+<!--data: JSON.stringify({-->
+<!--"paymentID": paymentID-->
+<!--}),-->
+<!--success: function(data) {-->
+<!--if (data && data.paymentID != null) {-->
+<!--window.location.href =-->
+<!--"success.html";-->
+<!--} else {-->
+<!--bKash.execute().onError();-->
+<!--}-->
+<!--},-->
+<!--error: function() {-->
+<!--bKash.execute().onError();-->
+<!--}-->
+<!--});-->
+<!--}-->
+<!--});-->
+<!--window.onerror = function(msg) {-->
+<!--var string = msg.toLowerCase();-->
+<!--var substring = "script error";-->
+<!--if (string.indexOf(substring) > -1) {-->
+<!--if (paymentID) {-->
+<!--bKash.reconfigure({-->
+<!--paymentRequest: {-->
+<!--amount: '100.50',-->
+<!--intent: "sale",-->
+<!--context: "order_payment",-->
+<!--context_reference: 'EVL348604781'-->
+<!--}-->
+<!--});-->
+<!--} else {-->
+<!--bKash.reconfigure({-->
+
+<!--paymentRequest: {-->
+<!--amount: '10.0',-->
+<!--intent: "sale",-->
+<!--context: "order_payment",-->
+<!--context_reference: 'EVL348604781'-->
+<!--}-->
+<!--});-->
+<!--}-->
+<!--}-->
+<!--return false;-->
+<!--};-->
+
+
+
+<!--</script>-->
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

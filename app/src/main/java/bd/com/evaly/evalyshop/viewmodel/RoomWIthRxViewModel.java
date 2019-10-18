@@ -4,6 +4,8 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
@@ -22,6 +24,7 @@ public class RoomWIthRxViewModel extends AndroidViewModel {
 
 
     public Flowable<List<RosterTable>> getList() {
+        Logger.d("UPDATE");
         return appDatabase.taskDao().getAllRoster();
     }
 }

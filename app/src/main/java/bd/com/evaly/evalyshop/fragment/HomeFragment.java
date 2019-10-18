@@ -53,6 +53,7 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.OrderListActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.VoucherActivity;
+import bd.com.evaly.evalyshop.activity.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.activity.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
@@ -137,9 +138,7 @@ public class HomeFragment extends Fragment {
 
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(pager);
-        
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
         viewPager.setOffscreenPageLimit(1);
 
 
@@ -151,6 +150,8 @@ public class HomeFragment extends Fragment {
                 Intent ni = new Intent(context, GiftCardActivity.class);
 
                 startActivity(ni);
+
+
             }
         });
 
@@ -160,8 +161,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
 
                 Intent ni = new Intent(context, EvalyStoreActivity.class);
-                ni.putExtra("title", "Grand Brand Days");
-                ni.putExtra("slug", "grandbranddays");
+                ni.putExtra("title", "Dark Night");
+                ni.putExtra("slug", "dark-night");
                 startActivity(ni);
 
             }
@@ -174,6 +175,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+
+
+
                 startActivity(new Intent(context, NewsfeedActivity.class));
 
 
@@ -184,7 +188,6 @@ public class HomeFragment extends Fragment {
         userDetails = new UserDetails(context);
 
         InitializeActionBar InitializeActionbar = new InitializeActionBar((LinearLayout) view.findViewById(R.id.header_logo), activity, "home");
-
 
         LinearLayout orders = view.findViewById(R.id.orders);
 
@@ -201,7 +204,10 @@ public class HomeFragment extends Fragment {
         });
 
 
+        NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
+
         ProductGrid productGrid = new ProductGrid(context, view.findViewById(R.id.products), defaultCategory, view.findViewById(R.id.progressBar));
+        productGrid.setScrollView(nestedSV);
 
         // slider
         sliderPager =  view.findViewById(R.id.sliderPager);
@@ -218,7 +224,6 @@ public class HomeFragment extends Fragment {
         CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
         CoordinatorLayout rootLayout = view.findViewById(R.id.root_coordinator);
 
-        NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
 
         if (nestedSV != null) {
             nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
@@ -292,6 +297,9 @@ public class HomeFragment extends Fragment {
 
     public void getNotificationCount(){
 
+        if (userDetails.getToken().equals(""))
+            return;
+
         String url = UrlUtils.BASE_URL_NEWSFEED+"notifications_count/";
         JSONObject parameters = new JSONObject();
         try {
@@ -303,11 +311,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("onResponse", response.toString());
-
                 try {
-
                     int count = response.getInt("unread_notification_count");
-
                     if (count>0)
                         view.findViewById(R.id.newsfeedIndicator).setVisibility(View.VISIBLE);
                     else
@@ -348,7 +353,7 @@ public class HomeFragment extends Fragment {
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    //Log.d("json", response);
+                    Log.d("json", response);
 
                     try{
                         JSONObject jsonObject = new JSONObject(response);

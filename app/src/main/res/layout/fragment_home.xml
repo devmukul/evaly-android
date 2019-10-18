@@ -121,7 +121,7 @@
                         android:background="@drawable/circle_bg"
                         android:clickable="false"
                         android:tint="#0EAD75"
-                        app:srcCompat="@drawable/ic_menu_store" />
+                        app:srcCompat="@drawable/ic_gift_card_line2" />
 
                     <TextView
                         android:id="@+id/textView5"
@@ -131,7 +131,7 @@
                         android:layout_weight="0"
                         android:clickable="false"
                         android:gravity="center"
-                        android:text="19:19 Shops" />
+                        android:text="Gift Cards" />
                 </LinearLayout>
 
 
@@ -150,7 +150,7 @@
                         android:background="@drawable/circle_bg"
                         android:clickable="false"
                         android:tint="#2ab5d2 "
-                        app:srcCompat="@drawable/ic_star_flying" />
+                        app:srcCompat="@drawable/ic_night" />
 
                     <TextView
                         android:id="@+id/textView3"
@@ -159,7 +159,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_weight="0"
                         android:clickable="false"
-                        android:text="Grand Brand Days"
+                        android:text="Dark Night"
                         android:textAlignment="center" />
                 </LinearLayout>
 

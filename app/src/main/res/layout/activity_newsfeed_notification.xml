@@ -5,10 +5,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#fff">
 
+    <LinearLayout
+        android:id="@+id/progressContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progressBar4"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+    </LinearLayout>
+
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recycle">
+        android:id="@+id/recycle"
+        android:paddingBottom="60dp"
+        android:clipToPadding="false">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -41,6 +58,17 @@
             android:textColor="#66778e"
             android:textSize="18sp" />
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginBottom="20dp"
+        android:visibility="invisible"
+        android:background="@android:color/transparent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"/>
 
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop;
 
 import android.content.Context;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
+import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.models.ProductListItem;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -38,7 +40,7 @@ public class ProductGrid {
     RecyclerView recyclerView;
     StaggeredGridLayoutManager mLayoutManager;
     String categorySlug;
-    String shopSlug;
+    String shopSlug = "";
     public HomeFragment main;
     public Context context;
     ArrayList<ProductListItem> products;
@@ -48,18 +50,17 @@ public class ProductGrid {
     private ProductGridAdapter adapterViewAndroid;
     private ProgressBar progressBar;
     RequestQueue rq;
-
+    private NestedScrollView scrollView;
     private boolean isLoading = false;
-
     private ProductListener listener;
 
-    public interface ProductListener {
-        void onSuccess(int count);
-    }
+
 
 
     public void setListener(ProductListener listener) {
         this.listener = listener;
+        if (adapterViewAndroid!=null)
+            adapterViewAndroid.setproductListener(listener);
     }
 
 
@@ -71,6 +72,11 @@ public class ProductGrid {
 
         rq = Volley.newRequestQueue(context);
 
+    }
+
+
+    public void setScrollView(NestedScrollView scrollView){
+        this.scrollView = scrollView;
     }
 
 
@@ -159,12 +165,15 @@ public class ProductGrid {
         adapterViewAndroid = new ProductGridAdapter(context, products);
 
 
+
         adapterViewAndroid.setHasStableIds(true);
         products.clear();
         adapterViewAndroid.notifyDataSetChanged();
 
-        if (type2 == 1)
+        if (type2 == 1) {
             getShopProducts(shopSlug, categorySlug, 1);
+            adapterViewAndroid.setShopSlug(shopSlug);
+        }
         else
             getBrandProducts(shopSlug, categorySlug, 1);
 
@@ -213,6 +222,12 @@ public class ProductGrid {
         Log.d("json", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
+
+
+                    if (scrollView != null)
+                        scrollView.fling(0);
+
+
                     try {
                         Log.d("shop_products", response.toString());
 
@@ -312,6 +327,11 @@ public class ProductGrid {
         Log.d("json", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
+
+
+                    if (scrollView != null)
+                        scrollView.fling(0);
+
                     try {
                         Log.d("shop_products", response.toString());
                         if (response.getInt("count") == 0) {
@@ -409,6 +429,11 @@ public class ProductGrid {
         }
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
                 response -> {
+
+
+                    if (scrollView != null)
+                        scrollView.fling(0);
+
                     try {
                         Log.d("product_json", response.toString());
                         JSONArray jsonArray = response.getJSONArray("results");
@@ -493,18 +518,5 @@ public class ProductGrid {
     }
 
 
-    public void sortByPriceHigh() {
-        Collections.sort(products, new Comparator<ProductListItem>() {
-            @Override
-            public int compare(ProductListItem lhs, ProductListItem rhs) {
-                if (lhs.getPriceMin() > rhs.getPriceMin()) {
-                    return lhs.getPriceMin();
-                } else {
-                    return rhs.getPriceMin();
-                }
-            }
-        });
-
-    }
 }
 

@@ -35,9 +35,7 @@ public class Balance {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
-
-
+                // Log.d("onResponse", response.toString());
                 try {
 
                     response = response.getJSONObject("data");
@@ -57,18 +55,6 @@ public class Balance {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-
-                String userAgent;
-
-                try {
-                    userAgent = WebSettings.getDefaultUserAgent(context);
-                } catch (Exception e) {
-                    userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-                }
-
-                headers.put("User-Agent", userAgent);
                 return headers;
             }
         };
@@ -128,18 +114,7 @@ public class Balance {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
 
-                String userAgent;
-
-                try {
-                    userAgent = WebSettings.getDefaultUserAgent(context);
-                } catch (Exception e) {
-                    userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-                }
-
-                headers.put("User-Agent", userAgent);
                 return headers;
             }
         };

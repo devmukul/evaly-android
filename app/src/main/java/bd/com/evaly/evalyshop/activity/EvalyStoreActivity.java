@@ -9,6 +9,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -46,6 +47,8 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
     String title = "19.19 Shops";
     String slug = "evaly1919";
+
+    LinearLayout not;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +69,7 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
         nestedSV = findViewById(R.id.sticky);
         progressBar = findViewById(R.id.progressBar);
+        not = findViewById(R.id.not);
         itemList=new ArrayList<>();
 
         adapter = new TabsAdapter(EvalyStoreActivity.this, this, itemList, 3);
@@ -102,7 +106,6 @@ public class EvalyStoreActivity extends AppCompatActivity {
 //        }
 
 
-
     }
 
     public void getEvalyShops(int p){
@@ -131,6 +134,13 @@ public class EvalyStoreActivity extends AppCompatActivity {
                                 adapter.notifyItemInserted(itemList.size());
                         }
 
+
+                        if (jsonArray.length() == 0)
+                            not.setVisibility(View.VISIBLE);
+                        else
+                            not.setVisibility(View.GONE);
+
+
                        // dialog.hideDialog();
 
                         progressBar.setVisibility(View.INVISIBLE);
@@ -143,7 +153,7 @@ public class EvalyStoreActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(EvalyStoreActivity.this, "All evaly stores are loaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EvalyStoreActivity.this, "All shops are loaded", Toast.LENGTH_SHORT).show();
 
                 error.printStackTrace();
             }

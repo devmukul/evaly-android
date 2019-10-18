@@ -488,6 +488,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             ((TextView) replyDialog.findViewById(R.id.text)).setText(postText);
             ((TextView) replyDialog.findViewById(R.id.date)).setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", date)));
 
+            replyNot.setVisibility(View.GONE);
+
             ImageView userPic = replyDialog.findViewById(R.id.picture);
 
             Glide.with(context)
@@ -538,6 +540,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             commentItems.clear();
             commentAdapter.notifyDataSetChanged();
             commentDialog.show();
+            commentNot.setVisibility(View.GONE);
             bottomSheetBehaviorComment.setState(BottomSheetBehavior.STATE_EXPANDED);
 
             if (authorName.equals("") && authorImage.equals("") && postText.equals("")) {
@@ -1093,9 +1096,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                             try {
                                 item.setAttachment(ob.getString("attachment"));
                                 item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
+
                             } catch (Exception e){
-                                item.setAttachment(null);
-                                item.setAttachmentCompressed(null);
+                                item.setAttachment("null");
+                                item.setAttachmentCompressed("null");
                             }
 
                             item.setCreatedAt(ob.getString("created_at"));

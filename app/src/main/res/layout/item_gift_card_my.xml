@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginBottom="15dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="false">
+
+    <LinearLayout
+        android:id="@+id/lin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                app:srcCompat="@drawable/slider_img1" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/gift_pending_bg"
+                android:paddingLeft="10dp"
+                android:paddingTop="4dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="5dp"
+                android:text="Pending"
+                android:textColor="#fff" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="Gift card"
+            android:textAlignment="textStart"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:paddingRight="15dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="From"
+                    android:textColor="#555" />
+
+                <TextView
+                    android:id="@+id/giftFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="01759877045"
+                    android:textColor="#555"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="To"
+                    android:textColor="#555" />
+
+                <TextView
+                    android:id="@+id/giftTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="01659878046"
+                    android:textColor="#222"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:id="@+id/invoice_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="# EVLC145072076"
+                android:textAlignment="center"
+                android:textColor="#333"
+                android:textIsSelectable="true"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingTop="8dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="Price: "
+                android:textColor="#666"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="TK. 20000"
+                android:textColor="#f57224"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="5dp"
+                android:text="x 1"
+                android:textColor="#333" />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_weight="0"
+                android:background="@drawable/gift_buy_btn"
+                android:clickable="false"
+                android:stateListAnimator="@null"
+                android:text="PAY"
+                android:textColor="#fff"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

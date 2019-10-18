@@ -5,8 +5,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.Toast;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.BaseViewPagerAdapter;
+import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class GiftCardActivity extends AppCompatActivity {
 
@@ -15,22 +19,55 @@ public class GiftCardActivity extends AppCompatActivity {
     TabLayout tabLayout;
     BaseViewPagerAdapter pager;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_giftcards);
+
+        getSupportActionBar().setElevation(0);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Gift Cards");
+
+
+
+
+        UserDetails userDetails = new UserDetails(this);
+
+
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.viewpager);
 
         pager = new BaseViewPagerAdapter(getSupportFragmentManager());
 
-        pager.addFragment(new GiftCardListFragment(),"MY GIFT CARDS");
-        pager.addFragment(new GiftCardListFragment(),"GIFT CARDS");
+        pager.addFragment(new GiftCardListFragment(),"STORE");
 
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+        if (!userDetails.getToken().equals("")) {
 
+            pager.addFragment(new GiftCardPurchasedFragment(), "PURCHASED");
+            pager.addFragment(new GiftCardMyFragment(), "MY GIFTS");
+        }
+
+        tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(pager);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.setOffscreenPageLimit(1);
+
+
+
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }

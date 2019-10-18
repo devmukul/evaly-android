@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="10dp"
@@ -37,7 +37,7 @@
             android:id="@+id/full_or_partial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="20dp"
             android:layout_weight="0"
             android:background="@drawable/make_payment"
             android:paddingLeft="6dp"
@@ -54,12 +54,10 @@
         android:id="@+id/amountPay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/input_brd"
-        android:clickable="false"
-        android:focusableInTouchMode="false"
         android:hint="Amount"
         android:inputType="number"
         android:paddingLeft="15dp"
@@ -70,7 +68,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="15dp"
         android:text="Choose Payment Method:"
@@ -81,14 +79,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingLeft="15dp"
+        android:paddingLeft="20dp"
         android:paddingBottom="5dp">
+
+        <ImageView
+            android:id="@+id/evaly_pay"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="0"
+            android:background="@drawable/payment_select_bg"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:src="@drawable/payment_icon_evaly"
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/bkash"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="0"
             android:background="@drawable/payment_select_bg"
             android:clickable="true"
@@ -108,6 +118,8 @@
             android:src="@drawable/cardpayment"
             android:visibility="visible" />
 
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -117,16 +129,32 @@
         android:paddingLeft="15dp"
         android:paddingBottom="25dp">
 
+
+
+        <TextView
+            android:id="@+id/evalyPayText"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Evaly Balance"
+            android:textAlignment="center"
+            android:layout_marginRight="10dp"
+            android:textColor="#555"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:visibility="visible" />
+
         <TextView
             android:id="@+id/bKashText"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="0"
             android:text="bKash"
             android:textAlignment="center"
-            android:textColor="#666"
+            android:textColor="#555"
             android:textStyle="bold"
+            android:textSize="13sp"
             android:visibility="visible" />
 
         <TextView
@@ -137,10 +165,17 @@
             android:layout_weight="0"
             android:text="Gateway"
             android:textAlignment="center"
-            android:textColor="#666"
+            android:textColor="#555"
             android:textStyle="bold"
+            android:textSize="13sp"
             android:visibility="visible" />
 
+
+
     </LinearLayout>
+
+
+
+
 
 </LinearLayout>
