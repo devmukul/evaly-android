@@ -135,6 +135,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         public void onConnected(){
             xmppHandler = AppController.getmService().xmpp;
+            loadMessage();
         }
         //Event Listeners
         public void onNewMessageReceived(ChatItem chatItem) {
@@ -311,7 +312,11 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         xmppEventReceiver = mChatApp.getEventReceiver();
 
-       loadMessage();
+       if (xmppHandler.isConnected()){
+           loadMessage();
+       }else {
+           startXmppService();
+       }
 
 //        Logger.d(rosterTable.unreadCount + "    ==========");
 
