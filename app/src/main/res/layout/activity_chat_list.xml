@@ -15,28 +15,31 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:elevation="2dp"
+            android:elevation="0dp"
             android:gravity="center"
             android:background="?attr/colorPrimary">
 
             <ImageView
                 android:id="@+id/ivBack"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="?attr/actionBarItemBackground"
                 android:clickable="true"
                 android:focusable="true"
                 android:tint="#000"
-                app:srcCompat="@drawable/ic_left_arrow_new" />
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:srcCompat="@drawable/ic_left_arrow_new"
+                android:layout_marginRight="20dp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/conversations"
+                android:text="Messages"
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                android:layout_marginRight="24dp"
-                android:gravity="center" />
+                android:layout_marginRight="24dp" />
         </android.support.v7.widget.Toolbar>
 
         <android.support.v4.widget.SwipeRefreshLayout

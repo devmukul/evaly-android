@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="90dp"
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
@@ -18,8 +18,9 @@
         android:padding="10dp">
 
         <RelativeLayout
-            android:layout_width="70dp"
-            android:layout_height="70dp">
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="10dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/ivProfileImage"
@@ -49,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="5dp">
@@ -67,7 +69,8 @@
                     android:text=""
                     android:textColor="#333"
                     android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_marginBottom="5dp"/>
 
                 <TextView
                     android:id="@+id/tvTime"
@@ -80,7 +83,8 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    app:srcCompat="@drawable/ic_keyboard_arrow_right" />
+                    app:srcCompat="@drawable/ic_keyboard_arrow_right"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
@@ -118,5 +122,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gray_border" />
+        android:background="@color/gray_border"
+        android:visibility="gone"/>
 </LinearLayout>
