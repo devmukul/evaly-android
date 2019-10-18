@@ -101,7 +101,7 @@ public class ShopFragment extends Fragment implements ProductListener {
     String slug = "", title = "", groups = "", owner_number = "", shop_name = "";
     ImageView logo;
     TextView name, address, number, tvOffer, followText;
-    StickyScrollView nestedSV;
+    NestedScrollView nestedSV;
 
     ShimmerFrameLayout shimmer;
     RecyclerView recyclerView;
