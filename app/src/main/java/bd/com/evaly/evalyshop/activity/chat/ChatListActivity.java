@@ -18,9 +18,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -60,6 +62,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     RecyclerView rvChatList;
     @BindView(R.id.swipe)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.not)
+    LinearLayout not;
 
     private EditText etPhoneNumber, etContactName;
     private Button btnInvite;
@@ -200,6 +204,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             }
         });
 
+
+
         viewModel = new RoomWIthRxViewModel(getApplication());
         AsyncTask.execute(new Runnable() {
             @Override
@@ -210,6 +216,11 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                         .subscribe(list -> {
                             rosterList.clear();
                             rosterList.addAll(list);
+                            if (rosterList.size()>0){
+                                not.setVisibility(View.GONE);
+                            }else {
+                                not.setVisibility(View.VISIBLE);
+                            }
                             if (adapter != null) {
                                 adapter.notifyDataSetChanged();
                             }

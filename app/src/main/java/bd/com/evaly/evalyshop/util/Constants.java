@@ -1,8 +1,8 @@
 package bd.com.evaly.evalyshop.util;
 
 public class Constants {
-    public static final String XMPP_DOMAIN = "chat-dev.evaly.com.bd";
-    public static final String XMPP_HOST = "chat-dev.evaly.com.bd";
+    public static final String XMPP_DOMAIN = "chat.evaly.com.bd";
+    public static final String XMPP_HOST = "chat.evaly.com.bd";
     public static final int XMPP_PORT = 5222;
     public static final String XMPP_RESOURCE = "xmppdemo";
     public static final boolean XMPP_DEBUG = true;
