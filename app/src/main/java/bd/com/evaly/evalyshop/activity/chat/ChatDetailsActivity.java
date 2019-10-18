@@ -252,6 +252,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     };
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -265,6 +266,11 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         dialog = new ViewDialog(ChatDetailsActivity.this);
         setSupportActionBar(toolbar);
+
+
+
+
+
         if (rosterTable.rosterName == null) {
             if (rosterTable.name != null ) {
                 tvName.setText(rosterTable.name);
