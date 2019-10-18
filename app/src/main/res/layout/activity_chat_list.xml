@@ -42,6 +42,11 @@
                 android:layout_marginRight="24dp" />
         </android.support.v7.widget.Toolbar>
 
+
+
+
+
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe"
             android:layout_width="match_parent"
@@ -59,6 +64,33 @@
             </LinearLayout>
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/not"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_chat_small"
+            android:tint="#aaa" />
+
+        <TextView
+            android:id="@+id/textView44"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="No messages"
+            android:textAlignment="center"
+            android:textColor="#555"
+            android:textSize="20sp" />
+    </LinearLayout>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
