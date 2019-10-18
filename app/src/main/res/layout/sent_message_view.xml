@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="15dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="3dp"
         android:orientation="vertical">
@@ -44,20 +44,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginLeft="52dp"
-            android:layout_marginRight="12dp"
             android:layout_marginBottom="5dp"
             android:visibility="visible"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/transparent"
+            app:cardBackgroundColor="#f9f9f9"
             app:cardCornerRadius="10dp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="false">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-
-
                 <ProgressBar
                     android:id="@+id/imageProgress"
                     android:layout_width="wrap_content"
@@ -87,7 +83,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:layout_marginLeft="52dp"
-            android:layout_marginRight="12dp"
             android:textSize="16sp"
             android:layout_gravity="right"
             android:paddingTop="12dp"
