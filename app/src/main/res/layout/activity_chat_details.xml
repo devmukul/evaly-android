@@ -92,6 +92,7 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="70dp"
             android:gravity="bottom"
+            android:background="#fff"
             android:orientation="vertical">
 
             <ProgressBar
