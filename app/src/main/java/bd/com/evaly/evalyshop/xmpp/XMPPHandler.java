@@ -1093,6 +1093,7 @@ public class XMPPHandler {
         @Override
         public void connected(XMPPConnection connection) {
             Logger.d("CONNECT");
+            Logger.d(userId+"    "+userPassword);
             if (debug) Log.d(TAG, "Connected!");
             service.onConnected();
             connected = true;
