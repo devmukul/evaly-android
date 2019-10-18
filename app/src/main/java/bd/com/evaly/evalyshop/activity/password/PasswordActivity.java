@@ -107,7 +107,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             HashMap<String, String> data = new HashMap<>();
             data.put("localuser", CredentialManager.getUserName());
             data.put("localserver", Constants.XMPP_HOST);
-            data.put("user", "09638111667");
+            data.put("user", "09638111666");
             data.put("server", Constants.XMPP_HOST);
             data.put("nick", "Evaly");
             data.put("subs", "both");
