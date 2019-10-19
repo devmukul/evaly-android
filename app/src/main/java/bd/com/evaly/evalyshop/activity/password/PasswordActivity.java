@@ -124,7 +124,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                                     + Constants.XMPP_HOST);
                             HashMap<String, String> data1 = new HashMap<>();
                             data1.put("phone_number", "09638111666");
-                            data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
+                            data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.evalyshop");
 
                             RosterTable table = new RosterTable();
                             table.id = jid.asUnescapedString();
