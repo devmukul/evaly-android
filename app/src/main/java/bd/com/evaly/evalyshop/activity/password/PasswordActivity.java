@@ -120,10 +120,10 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                     dialog.hideDialog();
                     if (response.code() == 200 || response.code() == 201) {
                         try {
-                            EntityBareJid jid = JidCreate.entityBareFrom("09638111667" + "@"
+                            EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
                                     + Constants.XMPP_HOST);
                             HashMap<String, String> data1 = new HashMap<>();
-                            data1.put("phone_number", "09638111667");
+                            data1.put("phone_number", "09638111666");
                             data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
 
                             RosterTable table = new RosterTable();
@@ -227,7 +227,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
     private void addRosterByOther() {
         HashMap<String, String> data = new HashMap<>();
-        data.put("localuser", "09638111667");
+        data.put("localuser", "09638111666");
         data.put("localserver", Constants.XMPP_HOST);
         data.put("user", CredentialManager.getUserName());
         data.put("server", Constants.XMPP_HOST);
