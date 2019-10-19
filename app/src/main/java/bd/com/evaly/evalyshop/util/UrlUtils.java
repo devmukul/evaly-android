@@ -8,7 +8,7 @@ public class UrlUtils {
 
     /* Production */
 
-//    public static final String DOMAIN = "https://api.evaly.com.bd/";
+    //    public static final String DOMAIN = "https://api.evaly.com.bd/";
 
 
 
