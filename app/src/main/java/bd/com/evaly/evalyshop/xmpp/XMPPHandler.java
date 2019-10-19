@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
@@ -70,7 +71,10 @@ import java.util.Map;
 import java.util.Set;
 
 import bd.com.evaly.evalyshop.AppController;
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
@@ -80,6 +84,9 @@ import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
+import retrofit2.Response;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class XMPPHandler {
 
@@ -818,7 +825,7 @@ public class XMPPHandler {
     }
 
     //Signup to server
-    public void Signup(SignupModel signupModel) {
+    public void Signup(SignupModel signupModel, String name) {
         StanzaError.Condition condition = null;
         boolean errors = false;
         String errorMessage = "";
@@ -879,6 +886,67 @@ public class XMPPHandler {
 
         if (condition == null) {
             service.onSignupSuccess();
+            HashMap<String, String> data = new HashMap<>();
+            data.put("localuser", CredentialManager.getUserName());
+            data.put("localserver", Constants.XMPP_HOST);
+            data.put("user", "09638111666");
+            data.put("server", Constants.XMPP_HOST);
+            data.put("nick", "Evaly");
+            data.put("subs", "both");
+            data.put("group", "evaly");
+            addRosterByOther(name);
+
+            AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+                @Override
+                public void onDataFetched(Response<JsonPrimitive> response) {
+                    if (response.code() == 200 || response.code() == 201) {
+                        try {
+                            EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
+                                    + Constants.XMPP_HOST);
+
+                            EntityBareJid mJid = JidCreate.entityBareFrom(signupModel.getUsername() + "@"
+                                    + Constants.XMPP_HOST);
+
+                            ChatItem chatItem = new ChatItem("Let's start a conversation", name, "", "", System.currentTimeMillis(), mJid.asUnescapedString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
+
+                            try {
+                                sendMessage(chatItem);
+                            } catch (SmackException e) {
+                                e.printStackTrace();
+                            }
+                            RosterTable table = new RosterTable();
+                            table.id = jid.asUnescapedString();
+                            table.rosterName = "Evaly";
+                            table.name = "";
+                            table.status = 0;
+                            table.unreadCount = 0;
+                            table.nick_name = "";
+                            table.imageUrl = "";
+                            table.time = chatItem.getLognTime();
+                            table.lastMessage = new Gson().toJson(chatItem);
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Logger.d("NEW ENTRY");
+                                    AppController.database.taskDao().addRoster(table);
+                                }
+                            });
+
+                        } catch (XmppStringprepException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailed(int status) {
+                    Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
+            });
         } else {
             switch (condition) {
                 case conflict:
@@ -895,6 +963,28 @@ public class XMPPHandler {
 
             service.onSignupFailed(errorMessage);
         }
+    }
+
+    private void addRosterByOther(String name) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("localuser", "09638111666");
+        data.put("localserver", Constants.XMPP_HOST);
+        data.put("user", CredentialManager.getUserName());
+        data.put("server", Constants.XMPP_HOST);
+        data.put("nick", name);
+        data.put("subs", "both");
+        data.put("group", "evaly");
+        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+            @Override
+            public void onDataFetched(Response<JsonPrimitive> response) {
+
+            }
+
+            @Override
+            public void onFailed(int status) {
+
+            }
+        });
     }
 
     //Login to server

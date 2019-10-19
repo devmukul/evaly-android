@@ -87,9 +87,9 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
             if (password == null) {
-                xmppHandler.Signup(new SignupModel(phoneNumber, etPassword.getText().toString(), etPassword.getText().toString()));
+                xmppHandler.Signup(new SignupModel(phoneNumber, etPassword.getText().toString(), etPassword.getText().toString()), name);
             } else {
-                xmppHandler.Signup(new SignupModel(phoneNumber, password, password));
+                xmppHandler.Signup(new SignupModel(phoneNumber, password, password), name);
             }
 
             Logger.d("======   CONNECTED  -========");
@@ -413,7 +413,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             if (!xmppHandler.isConnected()) {
                 xmppHandler.connect();
             } else {
-                xmppHandler.Signup(new SignupModel(phoneNumber, password, password));
+                xmppHandler.Signup(new SignupModel(phoneNumber, password, password), name);
             }
         }
     }
