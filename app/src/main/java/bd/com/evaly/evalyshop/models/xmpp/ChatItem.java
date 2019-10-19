@@ -108,7 +108,7 @@ public class ChatItem implements Parcelable {
     }
 
     public String getTime(){
-        return Utils.getTimeAgo(time);
+        return Utils.getTimeAgoSmall(time);
     }
 
     public String getSender(){
