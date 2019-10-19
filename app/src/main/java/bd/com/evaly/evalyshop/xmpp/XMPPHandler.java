@@ -885,7 +885,6 @@ public class XMPPHandler {
         }
 
         if (condition == null) {
-            service.onSignupSuccess();
             HashMap<String, String> data = new HashMap<>();
             data.put("localuser", CredentialManager.getUserName());
             data.put("localserver", Constants.XMPP_HOST);
@@ -947,6 +946,8 @@ public class XMPPHandler {
                     Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                 }
             });
+            service.onSignupSuccess();
+
         } else {
             switch (condition) {
                 case conflict:
