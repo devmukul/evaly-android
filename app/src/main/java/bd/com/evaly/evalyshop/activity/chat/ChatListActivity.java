@@ -432,12 +432,11 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                                     populateData(rosterList);
                                 }
                             });
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    populateData(rosterList);
-                                }
-                            });
+                            if (rosterList.size()>0){
+                                not.setVisibility(View.GONE);
+                            }else {
+                                not.setVisibility(View.VISIBLE);
+                            }
 //                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
                         }
                     });
