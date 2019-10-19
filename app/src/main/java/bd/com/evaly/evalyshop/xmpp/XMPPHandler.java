@@ -1006,11 +1006,7 @@ public class XMPPHandler {
         Logger.d(new Gson().toJson(message));
 
         try {
-            if (connection.isAuthenticated()) {
-                mChat.send(message);
-            } else {
-                login();
-            }
+            mChat.send(message);
         } catch (SmackException.NotConnectedException e) {
             if (debug) Log.e(TAG, "msg Not sent!-Not Connected!");
             throw new SmackException(e);
@@ -1093,7 +1089,7 @@ public class XMPPHandler {
         @Override
         public void connected(XMPPConnection connection) {
             Logger.d("CONNECT");
-            Logger.d(userId+"    "+userPassword);
+            Logger.d(userId + "    " + userPassword);
             if (debug) Log.d(TAG, "Connected!");
             service.onConnected();
             connected = true;

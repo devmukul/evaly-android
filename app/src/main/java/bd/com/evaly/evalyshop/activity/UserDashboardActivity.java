@@ -19,11 +19,18 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
+import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.AppController;
@@ -32,9 +39,14 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.adapter.AddressAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
 import bd.com.evaly.evalyshop.util.Balance;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -43,6 +55,7 @@ import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Response;
 
 public class UserDashboardActivity extends BaseActivity {
     
@@ -60,6 +73,8 @@ public class UserDashboardActivity extends BaseActivity {
     ViewDialog alert;
 
     String userAgent;
+
+    boolean isFromSignup;
 
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
@@ -87,17 +102,81 @@ public class UserDashboardActivity extends BaseActivity {
                 xmppHandler.updateUserInfo(CredentialManager.getUserData());
             }
 
-            //Save current User
-//            sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
+            Logger.d(isFromSignup);
 
-//            Intent chatListIntent = new Intent(MainActivity.this, ChatListActivity.class);
-//            startActivity(chatListIntent);
-//            finish();
+            if (isFromSignup){
+                HashMap<String, String> data = new HashMap<>();
+                data.put("localuser", CredentialManager.getUserName());
+                data.put("localserver", Constants.XMPP_HOST);
+                data.put("user", "09638111666");
+                data.put("server", Constants.XMPP_HOST);
+                data.put("nick", "Evaly");
+                data.put("subs", "both");
+                data.put("group", "evaly");
+                addRosterByOther();
+
+                AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+                    @Override
+                    public void onDataFetched(Response<JsonPrimitive> response) {
+                        alert.hideDialog();
+                        if (response.code() == 200 || response.code() == 201) {
+                            try {
+                                EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
+                                        + Constants.XMPP_HOST);
+
+                                ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
+
+                                try {
+                                    xmppHandler.sendMessage(chatItem);
+                                } catch (SmackException e) {
+                                    e.printStackTrace();
+                                }
+                                RosterTable table = new RosterTable();
+                                table.id = jid.asUnescapedString();
+                                table.rosterName = "Evaly";
+                                table.name = "";
+                                table.status = 0;
+                                table.unreadCount = 0;
+                                table.nick_name = "";
+                                table.imageUrl = "";
+                                table.time = chatItem.getLognTime();
+                                table.lastMessage = new Gson().toJson(chatItem);
+                                AsyncTask.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Logger.d("NEW ENTRY");
+                                        AppController.database.taskDao().addRoster(table);
+                                    }
+                                });
+
+                            } catch (XmppStringprepException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailed(int status) {
+                        alert.hideDialog();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
         }
 
         public void onLoginFailed(String msg) {
-            if (!msg.contains("already logged in")){
-                xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
+            Logger.d(msg);
+            alert.hideDialog();
+            if (!msg.contains("already logged in") && !msg.contains("XMPPError: conflict - cancel")){
+                if (CredentialManager.getPassword()!= null && !CredentialManager.getPassword().equals("")){
+//                    alert.showDialog();
+                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
+                }
             }
 //            xmppHandler.disconnect();
 //            Toast.makeText(getApplicationContext(), getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
@@ -105,16 +184,13 @@ public class UserDashboardActivity extends BaseActivity {
 
         //        //Event Listeners
         public void onSignupSuccess(){
-
             Logger.d("Signup success");
+
+
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
             xmppHandler.login();
-            //Save current User
-//            sessionManager.saveCurrentUser( AppController.getmService().xmpp.getCurrentUserDetails() );
 
-//            Intent chatListIntent = new Intent(LoginActivity.this,ChatListActivity.class);
-//            startActivity(chatListIntent);
-//            finish();
+            isFromSignup = true;
         }
 //
 //        public void onSignupFailed(String error){
@@ -123,6 +199,28 @@ public class UserDashboardActivity extends BaseActivity {
 //            Toast.makeText(getApplicationContext(),getString(R.string.login_failed),Toast.LENGTH_SHORT).show();
 //        }
     };
+
+    private void addRosterByOther() {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("localuser", "09638111666");
+        data.put("localserver", Constants.XMPP_HOST);
+        data.put("user", CredentialManager.getUserName());
+        data.put("server", Constants.XMPP_HOST);
+        data.put("nick", CredentialManager.getUserData().getFirst_name());
+        data.put("subs", "both");
+        data.put("group", "evaly");
+        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+            @Override
+            public void onDataFetched(Response<JsonPrimitive> response) {
+
+            }
+
+            @Override
+            public void onFailed(int status) {
+
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

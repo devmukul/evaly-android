@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.activity.chat;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -11,7 +12,9 @@ import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,25 +26,36 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
 import com.orhanobut.logger.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
+import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.viewmodel.RoomWIthRxViewModel;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
@@ -52,6 +66,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 public class ChatListActivity extends AppCompatActivity implements ChatListAdapter.RecyclerViewOnItemClickListenerChat {
 
@@ -80,6 +95,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     XMPPEventReceiver xmppEventReceiver;
 
     RoomWIthRxViewModel viewModel;
+
+    ViewDialog loading;
+
 
     VCard mVCard;
 
@@ -188,6 +206,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         setSupportActionBar(toolbar);
 
+        loading = new ViewDialog(this);
+
 //        xmppHandler = AppController.getmService().xmpp;
         rosterList = new ArrayList<>();
 
@@ -205,7 +225,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         });
 
 
-
         viewModel = new RoomWIthRxViewModel(getApplication());
         AsyncTask.execute(new Runnable() {
             @Override
@@ -216,9 +235,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                         .subscribe(list -> {
                             rosterList.clear();
                             rosterList.addAll(list);
-                            if (rosterList.size()>0){
+                            if (rosterList.size() > 0) {
                                 not.setVisibility(View.GONE);
-                            }else {
+                            } else {
                                 not.setVisibility(View.VISIBLE);
                             }
                             if (adapter != null) {
@@ -314,8 +333,221 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
     @OnClick(R.id.fab)
     void fab() {
+        dialog = new BottomSheetDialog(ChatListActivity.this, R.style.BottomSheetDialogTheme);
+        dialog.setContentView(R.layout.invite_view);
+
+        etContactName = dialog.findViewById(R.id.etContactName);
+        etPhoneNumber = dialog.findViewById(R.id.etContactNumber);
+        ivAddNumber = dialog.findViewById(R.id.ivAddNumber);
+        ivClose = dialog.findViewById(R.id.ivClose);
+        btnInvite = dialog.findViewById(R.id.btnInvite);
+
+        ivAddNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ActivityCompat.checkSelfPermission(ChatListActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ChatListActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE_CONTACTS);
+                } else {
+                    getContact();
+                }
+            }
+        });
+
+        btnInvite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (etPhoneNumber.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please enter phone number!", Toast.LENGTH_LONG).show();
+                } else if (etContactName.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please enter name!", Toast.LENGTH_LONG).show();
+                } else {
+                    if (etPhoneNumber.getText().toString().matches("^(01)[3-9][0-9]{8}$")) {
+
+                        RosterTable roasterModel = getContactFromRoster(etPhoneNumber.getText().toString());
+                        Logger.d(new Gson().toJson(roasterModel));
+                        if (!CredentialManager.getUserName().equalsIgnoreCase(etPhoneNumber.getText().toString())) {
+                            if (roasterModel != null) {
+                                loading.hideDialog();
+                                dialog.dismiss();
+//                        VCard vCard = null;
+//                        try {
+//                            vCard = xmppHandler.getUserDetails(JidCreate.bareFrom(roasterModel.id).asEntityBareJidIfPossible());
+//                        } catch (XmppStringprepException e) {
+//                            e.printStackTrace();
+//                        }
+//                        VCardObject vCardObject = new VCardObject(vCard.getFirstName() + " " + vCard.getLastName(), vCard.getFrom(), vCard.getField("URL"), 0);
+                                startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) roasterModel));
+                            } else {
+                                loading.showDialog();
+                                dialog.dismiss();
+                                HashMap<String, String> data = new HashMap<>();
+                                data.put("localuser", CredentialManager.getUserName());
+                                data.put("localserver", Constants.XMPP_HOST);
+                                data.put("user", etPhoneNumber.getText().toString());
+                                data.put("server", Constants.XMPP_HOST);
+                                data.put("nick", etContactName.getText().toString());
+                                data.put("subs", "both");
+                                data.put("group", "evaly");
+
+                                addRosterByOther();
+
+                                AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+                                    @Override
+                                    public void onDataFetched(Response<JsonPrimitive> response) {
+
+                                        if (response.code() == 200 || response.code() == 201) {
+                                            try {
+                                                EntityBareJid jid = JidCreate.entityBareFrom(etPhoneNumber.getText().toString().trim() + "@"
+                                                        + Constants.XMPP_HOST);
+                                                VCard vCard = xmppHandler.getUserDetails(jid);
+                                                HashMap<String, String> data1 = new HashMap<>();
+                                                data1.put("phone_number", etPhoneNumber.getText().toString().trim());
+                                                data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
+
+                                                Logger.d(new Gson().toJson(vCard.getFirstName()) + "       ====");
+                                                if (vCard.getFirstName() == null) {
+                                                    AuthApiHelper.sendCustomMessage(data1, new DataFetchingListener<Response<JsonObject>>() {
+                                                        @Override
+                                                        public void onDataFetched(Response<JsonObject> response) {
+                                                            loading.hideDialog();
+                                                            if (response.code() == 200 || response.code() == 201) {
+                                                                Toast.makeText(getApplicationContext(), "Invitation sent!", Toast.LENGTH_LONG).show();
+//                                                                xmppHandler.sendRequestTo(etPhoneNumber.getText().toString(), etPhoneNumber.getText().toString());
+                                                                Logger.d("[[[[[[[[[[[");
+                                                                ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
+
+                                                                try {
+                                                                    xmppHandler.sendMessage(chatItem);
+                                                                } catch (SmackException e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                                RosterTable table = new RosterTable();
+                                                                table.id = jid.asUnescapedString();
+                                                                table.rosterName = etContactName.getText().toString();
+                                                                table.name = "";
+                                                                table.status = 0;
+                                                                table.unreadCount = 0;
+                                                                table.nick_name = "";
+                                                                table.imageUrl = "";
+                                                                table.time = chatItem.getLognTime();
+                                                                table.lastMessage = new Gson().toJson(chatItem);
+                                                                AsyncTask.execute(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        Logger.d("NEW ENTRY");
+                                                                        AppController.database.taskDao().addRoster(table);
+                                                                    }
+                                                                });
+                                                                Logger.d(new Gson().toJson(xmppHandler.mVcard));
+
+                                                                dialog.dismiss();
+                                                            } else {
+                                                                loading.hideDialog();
+                                                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onFailed(int status) {
+                                                            loading.hideDialog();
+                                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+
+                                                        }
+                                                    });
+                                                } else {
+                                                    loading.hideDialog();
+                                                    ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
+
+                                                    try {
+                                                        xmppHandler.sendMessage(chatItem);
+                                                    } catch (SmackException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    RosterTable table = new RosterTable();
+                                                    table.id = jid.asUnescapedString();
+                                                    table.rosterName = etContactName.getText().toString();
+                                                    table.name = "";
+                                                    table.status = 0;
+                                                    table.unreadCount = 0;
+                                                    table.nick_name = "";
+                                                    table.imageUrl = "";
+                                                    table.time = chatItem.getLognTime();
+                                                    table.lastMessage = new Gson().toJson(chatItem);
+                                                    AsyncTask.execute(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Logger.d("NEW ENTRY");
+                                                            AppController.database.taskDao().addRoster(table);
+                                                        }
+                                                    });
+                                                    startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) table));
+
+                                                }
+                                            } catch (XmppStringprepException e) {
+                                                e.printStackTrace();
+                                            }
 
 
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailed(int status) {
+                                        loading.hideDialog();
+                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Invalid phone number!", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        View bottomSheetInternal = dialog.findViewById(R.id.design_bottom_sheet);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int newState) {
+                if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    Logger.d("=---==========------");
+                    view.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        }
+                    });
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    etContactName.setText("");
+                    etPhoneNumber.setText("");
+                    dialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+        dialog.setCancelable(false);
+
+        dialog.show();
 
 //        xmppHandler.createGroupChat(CredentialManager.getUserName(), "EvalyGroup");
 //        xmppHandler.sendRequestTo("01673375194", CredentialManager.getUserData().getFirst_name());
@@ -333,6 +565,32 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 //        xmppHandler.confirmSubscription(jid, false);
     }
 
+    private void addRosterByOther() {
+        String name;
+
+        name = CredentialManager.getUserData().getFirst_name();
+
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("localuser", etPhoneNumber.getText().toString());
+        data.put("localserver", Constants.XMPP_HOST);
+        data.put("user", CredentialManager.getUserName());
+        data.put("server", Constants.XMPP_HOST);
+        data.put("nick", name);
+        data.put("subs", "both");
+        data.put("group", "evaly");
+        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+            @Override
+            public void onDataFetched(Response<JsonPrimitive> response) {
+
+            }
+
+            @Override
+            public void onFailed(int status) {
+
+            }
+        });
+    }
 
     private RosterTable getContactFromRoster(String number) {
         RosterTable roasterModel = null;
@@ -433,9 +691,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                                     populateData(rosterList);
                                 }
                             });
-                            if (rosterList.size()>0){
+                            if (rosterList.size() > 0) {
                                 not.setVisibility(View.GONE);
-                            }else {
+                            } else {
                                 not.setVisibility(View.VISIBLE);
                             }
 //                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));

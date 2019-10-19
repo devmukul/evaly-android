@@ -184,16 +184,18 @@ public class ContactActivity extends BaseActivity {
 
                                     try {
                                         xmppHandler.sendMessage(chatItem);
+                                        Logger.d("SENT ");
                                     } catch (SmackException e) {
+                                        Logger.d("SENT FAILED");
                                         e.printStackTrace();
                                     }
 
                                     RosterTable rosterTable = new RosterTable();
-                                    rosterTable.name = vCard.getFirstName() + " " + vCard.getLastName();
-                                    rosterTable.id = vCard.getFrom().asUnescapedString();
+                                    rosterTable.name = "Evaly";
+                                    rosterTable.id = jid.asUnescapedString();
                                     rosterTable.imageUrl = vCard.getField("URL");
                                     rosterTable.status = 0;
-                                    rosterTable.lastMessage = "";
+                                    rosterTable.lastMessage = new Gson().toJson(chatItem);
                                     rosterTable.nick_name = vCard.getNickName();
                                     rosterTable.time = 0;
                                     AsyncTask.execute(new Runnable() {
@@ -202,6 +204,7 @@ public class ContactActivity extends BaseActivity {
                                             AppController.database.taskDao().addRoster(rosterTable);
                                         }
                                     });
+                                    dialog.hideDialog();
                                     startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) rosterTable));
 
 
@@ -332,6 +335,14 @@ public class ContactActivity extends BaseActivity {
         super.onResume();
         mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+//
+                rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+//                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
+            }
+        });
     }
 
     //    @Override
