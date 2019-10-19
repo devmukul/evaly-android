@@ -20,6 +20,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -37,6 +38,7 @@ import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -105,7 +107,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
 
             HashMap<String, String> data = new HashMap<>();
-            data.put("localuser", CredentialManager.getUserName());
+            data.put("localuser", name);
             data.put("localserver", Constants.XMPP_HOST);
             data.put("user", "09638111666");
             data.put("server", Constants.XMPP_HOST);
@@ -126,6 +128,13 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                             data1.put("phone_number", "09638111666");
                             data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
 
+                            ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
+
+                            try {
+                                xmppHandler.sendMessage(chatItem);
+                            } catch (SmackException e) {
+                                e.printStackTrace();
+                            }
                             RosterTable table = new RosterTable();
                             table.id = jid.asUnescapedString();
                             table.rosterName = "Evaly";
@@ -134,7 +143,8 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
                             table.unreadCount = 0;
                             table.nick_name = "";
                             table.imageUrl = "";
-                            table.lastMessage = "";
+                            table.time = chatItem.getLognTime();
+                            table.lastMessage = new Gson().toJson(chatItem);
                             AsyncTask.execute(new Runnable() {
                                 @Override
                                 public void run() {
@@ -229,7 +239,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         HashMap<String, String> data = new HashMap<>();
         data.put("localuser", "09638111666");
         data.put("localserver", Constants.XMPP_HOST);
-        data.put("user", CredentialManager.getUserName());
+        data.put("user", name);
         data.put("server", Constants.XMPP_HOST);
         data.put("nick", name);
         data.put("subs", "both");

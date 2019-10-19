@@ -316,6 +316,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     void fab() {
 
 
+
 //        xmppHandler.createGroupChat(CredentialManager.getUserName(), "EvalyGroup");
 //        xmppHandler.sendRequestTo("01673375194", CredentialManager.getUserData().getFirst_name());
 //        String id = CredentialManager.getUserName();
