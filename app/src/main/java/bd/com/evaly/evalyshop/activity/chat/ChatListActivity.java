@@ -235,6 +235,14 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                         .subscribe(list -> {
                             rosterList.clear();
                             rosterList.addAll(list);
+                            for (int i = 0; i < rosterList.size(); i++) {
+                                if (rosterList.get(i).id.contains("09638111666")) {
+                                    RosterTable table = rosterList.get(i);
+                                    table.status = 1;
+                                    rosterList.remove(i);
+                                    rosterList.add(0, table);
+                                }
+                            }
                             if (rosterList.size() > 0) {
                                 not.setVisibility(View.GONE);
                             } else {
@@ -288,6 +296,14 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 //
 //                                }, e -> System.out.println("RoomWithRx: " +e.getMessage()));
                         rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+                        for (int i = 0; i < rosterList.size(); i++) {
+                            if (rosterList.get(i).id.contains("09638111666")) {
+                                RosterTable table = rosterList.get(i);
+                                table.status = 1;
+                                rosterList.remove(i);
+                                rosterList.add(0, table);
+                            }
+                        }
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
@@ -685,6 +701,14 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 //
 //                                    }, e -> System.out.println("RoomWithRx: " +e.getMessage()));
                             rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+                            for (int i = 0; i < rosterList.size(); i++) {
+                                if (rosterList.get(i).id.contains("09638111666")) {
+                                    RosterTable table = rosterList.get(i);
+                                    table.status = 1;
+                                    rosterList.remove(i);
+                                    rosterList.add(0, table);
+                                }
+                            }
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {
