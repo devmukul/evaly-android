@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:visibility="gone"
-            android:text="------------- Unread Message -------------"
+            android:text="-------- Unread Message --------"
             android:layout_gravity="center"/>
 
         <LinearLayout

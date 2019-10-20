@@ -419,6 +419,8 @@ public class ChatDetailsActivity extends AppCompatActivity {
             }
         } catch (XmppStringprepException e) {
             e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -429,12 +431,15 @@ public class ChatDetailsActivity extends AppCompatActivity {
             public void run() {
                 try {
                     chatItemList = xmppHandler.getChatHistoryWithJID(JidCreate.bareFrom(rosterTable.id), 20, false);
+                    if (rosterTable.unreadCount > 0) {
+                        chatItemList.get(chatItemList.size() - rosterTable.unreadCount).setUnread(true);
+                    }
                 } catch (XmppStringprepException e) {
                     e.printStackTrace();
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
-                if (rosterTable.unreadCount > 0) {
-                    chatItemList.get(chatItemList.size() - rosterTable.unreadCount).setUnread(true);
-                }
+
 
                 runOnUiThread(new Runnable() {
                     @Override
