@@ -160,70 +160,74 @@ public class ContactActivity extends BaseActivity {
                     startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) roasterModel));
                 } else {
                     dialog.showDialog();
-                    HashMap<String, String> data = new HashMap<>();
-                    data.put("localuser", CredentialManager.getUserName());
-                    data.put("localserver", Constants.XMPP_HOST);
-                    data.put("user", "09638111666");
-                    data.put("server", Constants.XMPP_HOST);
-                    data.put("nick", "Evaly");
-                    data.put("subs", "both");
-                    data.put("group", "evaly");
+                    if (xmppHandler != null && xmppHandler.isConnected()){
+                        HashMap<String, String> data = new HashMap<>();
+                        data.put("localuser", CredentialManager.getUserName());
+                        data.put("localserver", Constants.XMPP_HOST);
+                        data.put("user", "09638111666");
+                        data.put("server", Constants.XMPP_HOST);
+                        data.put("nick", "Evaly");
+                        data.put("subs", "both");
+                        data.put("group", "evaly");
 
-                    addRosterByOther();
+                        addRosterByOther();
 
-                    AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-                        @Override
-                        public void onDataFetched(Response<JsonPrimitive> response) {
+                        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+                            @Override
+                            public void onDataFetched(Response<JsonPrimitive> response) {
 
-                            if (response.code() == 200 || response.code() == 201) {
-                                try {
-                                    EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
-                                            + Constants.XMPP_HOST);
-                                    VCard vCard = xmppHandler.getUserDetails(jid);
-                                    ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
-
+                                if (response.code() == 200 || response.code() == 201) {
                                     try {
-                                        xmppHandler.sendMessage(chatItem);
-                                        Logger.d("SENT ");
-                                    } catch (SmackException e) {
-                                        Logger.d("SENT FAILED");
+                                        EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
+                                                + Constants.XMPP_HOST);
+                                        VCard vCard = xmppHandler.getUserDetails(jid);
+                                        ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
+
+                                        try {
+                                            xmppHandler.sendMessage(chatItem);
+                                            Logger.d("SENT ");
+                                        } catch (SmackException e) {
+                                            Logger.d("SENT FAILED");
+                                            e.printStackTrace();
+                                        }
+
+                                        RosterTable rosterTable = new RosterTable();
+                                        rosterTable.name = "Evaly";
+                                        rosterTable.id = jid.asUnescapedString();
+                                        rosterTable.imageUrl = vCard.getField("URL");
+                                        rosterTable.status = 0;
+                                        rosterTable.lastMessage = new Gson().toJson(chatItem);
+                                        rosterTable.nick_name = vCard.getNickName();
+                                        rosterTable.time = 0;
+                                        AsyncTask.execute(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                AppController.database.taskDao().addRoster(rosterTable);
+                                            }
+                                        });
+                                        dialog.hideDialog();
+                                        startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) rosterTable));
+
+
+                                    } catch (XmppStringprepException e) {
                                         e.printStackTrace();
                                     }
 
-                                    RosterTable rosterTable = new RosterTable();
-                                    rosterTable.name = "Evaly";
-                                    rosterTable.id = jid.asUnescapedString();
-                                    rosterTable.imageUrl = vCard.getField("URL");
-                                    rosterTable.status = 0;
-                                    rosterTable.lastMessage = new Gson().toJson(chatItem);
-                                    rosterTable.nick_name = vCard.getNickName();
-                                    rosterTable.time = 0;
-                                    AsyncTask.execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            AppController.database.taskDao().addRoster(rosterTable);
-                                        }
-                                    });
-                                    dialog.hideDialog();
-                                    startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) rosterTable));
 
-
-                                } catch (XmppStringprepException e) {
-                                    e.printStackTrace();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                                 }
+                            }
 
-
-                            } else {
+                            @Override
+                            public void onFailed(int status) {
+                                dialog.hideDialog();
                                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                             }
-                        }
+                        });
+                    }else {
 
-                        @Override
-                        public void onFailed(int status) {
-                            dialog.hideDialog();
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    }
                 }
             }
         });
