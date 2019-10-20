@@ -49,6 +49,7 @@ import java.util.HashMap;
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.fragment.BrandFragment;
 import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
@@ -370,6 +371,9 @@ public class MainActivity extends BaseActivity {
                         break;
                     case R.id.nav_voucher:
                         startActivity(new Intent(MainActivity.this, VoucherActivity.class));
+                        break;
+                    case R.id.nav_messages:
+                        startActivity(new Intent(MainActivity.this, ChatListActivity.class));
                         break;
 
                 }

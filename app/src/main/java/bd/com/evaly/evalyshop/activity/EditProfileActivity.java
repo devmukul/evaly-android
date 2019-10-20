@@ -193,6 +193,15 @@ public class EditProfileActivity extends BaseActivity {
                 if (!Utils.isValidNumber(phone.getText().toString())){
                     Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
                     return;
+                }else if (firstname.getText().toString().trim().isEmpty()){
+                    firstname.setError("Required");
+                    return;
+                }else if (lastName.getText().toString().trim().isEmpty()){
+                    lastName.setError("Required");
+                    return;
+                }else if (email.getText().toString().trim().isEmpty()){
+                    email.setError("Required");
+                    return;
                 }
 
                 getUserData();

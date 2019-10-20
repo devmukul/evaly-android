@@ -37,6 +37,10 @@
             android:title="Invite &amp; Earn"/>
 
         <item
+            android:id="@+id/nav_messages"
+            android:icon="@drawable/ic_email_2"
+            android:title="Message"/>
+        <item
             android:id="@+id/nav_contact"
             android:icon="@drawable/ic_phone_thin"
             android:title="Contact"/>
