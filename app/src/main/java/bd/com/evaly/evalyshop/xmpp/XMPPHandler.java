@@ -238,6 +238,10 @@ public class XMPPHandler {
         return connected;
     }
 
+    public boolean isLoggedin() {
+        return loggedin;
+    }
+
     //Explicitly start a connection
     public void connect() {
 

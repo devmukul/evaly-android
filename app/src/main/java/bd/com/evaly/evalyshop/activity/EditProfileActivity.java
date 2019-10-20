@@ -94,9 +94,12 @@ public class EditProfileActivity extends BaseActivity {
         //Event Listeners
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.updateUserInfo(CredentialManager.getUserData());
-
             Logger.d("======   CONNECTED  -========");
+        }
+
+        public void onLoggedIn(){
+            xmppHandler = AppController.getmService().xmpp;
+            xmppHandler.updateUserInfo(CredentialManager.getUserData());
         }
 
         public void onUpdateUserSuccess(){

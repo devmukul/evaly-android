@@ -160,7 +160,7 @@ public class ContactActivity extends BaseActivity {
                     startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) roasterModel));
                 } else {
                     dialog.showDialog();
-                    if (xmppHandler != null && xmppHandler.isConnected()){
+                    if (xmppHandler != null && xmppHandler.isLoggedin()){
                         HashMap<String, String> data = new HashMap<>();
                         data.put("localuser", CredentialManager.getUserName());
                         data.put("localserver", Constants.XMPP_HOST);
