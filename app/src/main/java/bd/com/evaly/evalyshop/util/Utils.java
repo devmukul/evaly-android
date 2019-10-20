@@ -477,6 +477,46 @@ public class  Utils {
     }
 
 
+
+    public static String getTimeAgoSmall(long time) {
+
+
+        Date curDate = currentDate();
+        long now = curDate.getTime();
+
+        if (time > now || time <= 0) {
+            return "a moment ago";
+        }
+
+        int timeDIM = getTimeDistanceInMinutes(time);
+
+        String timeAgo = null;
+
+        if (timeDIM == 0) {
+            timeAgo = "Just now";
+        } else if (timeDIM == 1) {
+            return "1 min ago";
+        } else if (timeDIM >= 2 && timeDIM <= 44) {
+            timeAgo = timeDIM + " mins ago";
+        } else if (timeDIM >= 45 && timeDIM <= 89) {
+            timeAgo = "1 hour ago";
+        } else if (timeDIM >= 90 && timeDIM <= 1439) {
+            timeAgo = (Math.round(timeDIM / 60)) + " hours ago";
+        } else if (timeDIM >= 1440) {
+
+            Date tdate = new Date(time);
+
+            SimpleDateFormat jdf = new SimpleDateFormat("MMM dd 'at' h:mm a", Locale.ENGLISH);
+            jdf.setTimeZone(TimeZone.getTimeZone("GMT-6"));
+
+            timeAgo = jdf.format(tdate);
+
+        }
+
+        return timeAgo;
+    }
+
+
     public static String getHumanTime(long timestamp) {
 
 
