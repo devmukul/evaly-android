@@ -155,6 +155,11 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             holder.buyNow.setVisibility(View.GONE);
 
 
+        if ((productsList.get(position).getPriceMin()==0) || (productsList.get(position).getPriceMax()==0)){
+            holder.buyNow.setVisibility(View.GONE);
+        }
+
+
 
 
 
