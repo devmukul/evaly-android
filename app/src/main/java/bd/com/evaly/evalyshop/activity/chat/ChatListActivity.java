@@ -238,6 +238,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                             for (int i = 0; i < rosterList.size(); i++) {
                                 if (rosterList.get(i).id.contains("09638111666")) {
                                     RosterTable table = rosterList.get(i);
+                                    if (table.lastMessage == null || table.lastMessage.trim().equals("")){
+                                        sendMessage();
+                                    }
                                     table.status = 1;
                                     rosterList.remove(i);
                                     rosterList.add(0, table);
@@ -322,6 +325,44 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             }
         });
 
+    }
+
+    private void sendMessage(){
+        try {
+            EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
+                    + Constants.XMPP_HOST);
+
+            EntityBareJid mJid = JidCreate.entityBareFrom(CredentialManager.getUserName() + "@"
+                    + Constants.XMPP_HOST);
+
+            ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), mJid.asUnescapedString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
+
+            try {
+                xmppHandler.sendMessage(chatItem);
+            } catch (SmackException e) {
+                e.printStackTrace();
+            }
+            RosterTable table = new RosterTable();
+            table.id = jid.asUnescapedString();
+            table.rosterName = "Evaly";
+            table.name = "";
+            table.status = 0;
+            table.unreadCount = 0;
+            table.nick_name = "";
+            table.imageUrl = "";
+            table.time = chatItem.getLognTime();
+            table.lastMessage = new Gson().toJson(chatItem);
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Logger.d("NEW ENTRY");
+                    AppController.database.taskDao().addRoster(table);
+
+                }
+            });
+        } catch (XmppStringprepException e) {
+            e.printStackTrace();
+        }
     }
 
     private void populateData(List<RosterTable> roasterModelList) {

@@ -134,7 +134,7 @@ public class XMPPHandler {
      */
     public XMPPHandler(XMPPService service) {
         this.service = service;
-        this.autoLogin = false;
+        this.autoLogin = true;
 
         if (instance == null) {
             instance = this;
@@ -889,6 +889,11 @@ public class XMPPHandler {
         }
 
         if (condition == null) {
+            userId = signupModel.getUsername();
+            userPassword = signupModel.getPassword();
+            login();
+            Logger.d(connection.isConnected()+"   [[[[[[[");
+            Logger.d("%%%%%%%%%%%%%%%%%%%%%%%%%%");
             HashMap<String, String> data = new HashMap<>();
             data.put("localuser", CredentialManager.getUserName());
             data.put("localserver", Constants.XMPP_HOST);
@@ -897,49 +902,12 @@ public class XMPPHandler {
             data.put("nick", "Evaly");
             data.put("subs", "both");
             data.put("group", "evaly");
-            addRosterByOther(name);
 
             AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
                 @Override
                 public void onDataFetched(Response<JsonPrimitive> response) {
                     if (response.code() == 200 || response.code() == 201) {
-                        try {
-                            EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
-                                    + Constants.XMPP_HOST);
-
-                            EntityBareJid mJid = JidCreate.entityBareFrom(signupModel.getUsername() + "@"
-                                    + Constants.XMPP_HOST);
-
-                            ChatItem chatItem = new ChatItem("Let's start a conversation", name, "", "", System.currentTimeMillis(), mJid.asUnescapedString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
-
-                            try {
-                                sendMessage(chatItem);
-                            } catch (SmackException e) {
-                                e.printStackTrace();
-                            }
-                            RosterTable table = new RosterTable();
-                            table.id = jid.asUnescapedString();
-                            table.rosterName = "Evaly";
-                            table.name = "";
-                            table.status = 0;
-                            table.unreadCount = 0;
-                            table.nick_name = "";
-                            table.imageUrl = "";
-                            table.time = chatItem.getLognTime();
-                            table.lastMessage = new Gson().toJson(chatItem);
-                            AsyncTask.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Logger.d("NEW ENTRY");
-                                    AppController.database.taskDao().addRoster(table);
-                                }
-                            });
-
-                        } catch (XmppStringprepException e) {
-                            e.printStackTrace();
-                        }
-
-
+                        addRosterByOther(name);
                     } else {
                         Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                     }
@@ -950,7 +918,7 @@ public class XMPPHandler {
                     Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                 }
             });
-            service.onSignupSuccess();
+
 
         } else {
             switch (condition) {
@@ -982,7 +950,7 @@ public class XMPPHandler {
         AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
             @Override
             public void onDataFetched(Response<JsonPrimitive> response) {
-
+                service.onSignupSuccess();
             }
 
             @Override
@@ -1003,7 +971,7 @@ public class XMPPHandler {
                 }
             }).start();
 
-            if (debug) Log.i(TAG, "User " + userId + userPassword);
+            Log.e(TAG, "User " + userId + userPassword);
 
             if (userPassword == null || userPassword.equals("")) {
                 service.onLoginFailed("password empty");
@@ -1014,7 +982,7 @@ public class XMPPHandler {
             }
             connection.login(userId, userPassword);
 
-            if (debug) Log.i(TAG, "Yey! We're logged in to the Xmpp server!");
+            Log.e(TAG, "Yey! We're logged in to the Xmpp server!");
 
             service.onLoggedIn();
         } catch (XMPPException | SmackException | IOException e) {
@@ -1099,7 +1067,7 @@ public class XMPPHandler {
         message.setType(Message.Type.chat);
 
         Logger.d(new Gson().toJson(message));
-
+        Logger.e(connection.isConnected()+"     "+connection.isAuthenticated());
         try {
             mChat.send(message);
         } catch (SmackException.NotConnectedException e) {
@@ -1185,7 +1153,8 @@ public class XMPPHandler {
         public void connected(XMPPConnection connection) {
             Logger.d("CONNECT");
             Logger.d(userId + "    " + userPassword);
-            if (debug) Log.d(TAG, "Connected!");
+            Log.e(TAG, "Connected!");
+            Log.e(TAG, autoLogin+"");
             service.onConnected();
             connected = true;
 
