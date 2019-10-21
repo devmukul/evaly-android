@@ -179,7 +179,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                 }else{
 
                     if(((int) Double.parseDouble(availableShops.get(i).getPrice())) < 1) {
-                        Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Can't add this product to cart."+ availableShops.get(i).getPrice(), Toast.LENGTH_LONG).show();
                         return;
                     }
 
