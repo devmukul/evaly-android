@@ -252,6 +252,7 @@ public class XMPPHandler {
             protected synchronized Boolean doInBackground(Void... arg0) {
                 //There is no point in reconnecting an already established connection. So abort, if we do
                 if (connection.isConnected())
+                if (connection.isConnected())
                     return false;
 
                 //We are currently in "connection" phase, so no requests should be made while we are connecting.

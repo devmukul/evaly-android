@@ -93,6 +93,9 @@ public class UserDashboardActivity extends BaseActivity {
         //Event Listeners
         public void onLoggedIn() {
 
+            if (xmppHandler == null){
+                xmppHandler = AppController.getmService().xmpp;
+            }
             Logger.d("LOGIN =========");
             Logger.d(xmppHandler.isConnected());
             VCard vCard = xmppHandler.mVcard;
