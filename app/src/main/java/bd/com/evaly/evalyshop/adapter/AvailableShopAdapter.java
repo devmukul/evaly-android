@@ -178,23 +178,46 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
                 }else{
 
-                    if(((int) Double.parseDouble(availableShops.get(i).getPrice())) < 1) {
-                        Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
-
 
                     Calendar calendar = Calendar.getInstance();
 
                     cartItem.setSlug(availableShops.get(i).getSlug());
                     cartItem.setProductId(availableShops.get(i).getProductId());
 
-                    try {
-                        cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getPrice()));
-                    } catch (Exception e){
-                        cartItem.setPrice(0);
+
+
+                    if (availableShops.get(i).getDiscountValue() == 0) {
+
+                        if (((int) Double.parseDouble(availableShops.get(i).getMaximumPrice())) < 1) {
+                            Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        try {
+                            cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getMaximumPrice()));
+                        } catch (Exception e){
+                            cartItem.setPrice(0);
+                        }
+
+
+
+                    } else {
+
+                        if (((int) Double.parseDouble(availableShops.get(i).getPrice())) < 1) {
+                            Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        try {
+                            cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getPrice()));
+                        } catch (Exception e){
+                            cartItem.setPrice(0);
+                        }
+
                     }
+
+
+
 
                     cartItem.setQuantity(1);
                     cartItem.setSelected(true);
