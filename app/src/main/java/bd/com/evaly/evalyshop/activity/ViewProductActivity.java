@@ -965,7 +965,10 @@ public class ViewProductActivity extends BaseActivity {
                                     item.setSlug(slug);
                                     item.setProductId(ob.getString("shop_item_id"));
 
-                                    item.setDiscountValue(ob.getDouble("discount_value"));
+                                    if (!ob.getString("discount_value").equals("null"))
+                                        item.setDiscountValue(ob.getDouble("discount_value"));
+                                    else
+                                        item.setDiscountValue(0.0);
 
                                     item.setPhone(phone);
                                     item.setAddress(ob.getString("shop_address"));

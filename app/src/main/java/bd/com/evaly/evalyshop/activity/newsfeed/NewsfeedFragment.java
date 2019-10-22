@@ -497,6 +497,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     .fitCenter()
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .placeholder(R.drawable.user_image)
                     .apply(new RequestOptions().override(200, 200))
                     .into(userPic);
 
@@ -598,6 +599,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .fitCenter()
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.user_image)
                 .apply(new RequestOptions().override(200, 200))
                 .into(userPic);
 
