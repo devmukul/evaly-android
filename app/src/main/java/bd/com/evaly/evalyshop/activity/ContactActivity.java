@@ -120,18 +120,20 @@ public class ContactActivity extends BaseActivity {
             startActivity(intent);
         });
 
-        if (AppController.getmService().xmpp != null && AppController.getmService().xmpp.isConnected()) {
-            xmppHandler = AppController.getmService().xmpp;
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
+        if (!CredentialManager.getToken().equals("")){
+            if (AppController.getmService().xmpp != null && AppController.getmService().xmpp.isConnected()) {
+                xmppHandler = AppController.getmService().xmpp;
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
 //
-                    rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+                        rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
 //                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
-                }
-            });
-        } else {
-            startXmppService();
+                    }
+                });
+            } else {
+                startXmppService();
+            }
         }
 
         LinearLayout emailBox = findViewById(R.id.emailBox);

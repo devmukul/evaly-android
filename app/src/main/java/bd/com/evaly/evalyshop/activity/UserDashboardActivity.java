@@ -58,9 +58,9 @@ import butterknife.OnClick;
 import retrofit2.Response;
 
 public class UserDashboardActivity extends BaseActivity {
-    
+
     Context context;
-    TextView name,balance,address;
+    TextView name, balance, address;
     UserDetails userDetails;
     ImageView addAddress;
     EditText addressET;
@@ -68,8 +68,8 @@ public class UserDashboardActivity extends BaseActivity {
     ArrayList<String> addresses;
     ArrayList<Integer> addressID;
     AddressAdapter addressAdapter;
-    Map<String,String> map;
-    String from="";
+    Map<String, String> map;
+    String from = "";
     ViewDialog alert;
 
     String userAgent;
@@ -93,24 +93,25 @@ public class UserDashboardActivity extends BaseActivity {
         //Event Listeners
         public void onLoggedIn() {
 
+            if (xmppHandler == null){
+                xmppHandler = AppController.getmService().xmpp;
+            }
             Logger.d("LOGIN =========");
             Logger.d(xmppHandler.isConnected());
             VCard vCard = xmppHandler.mVcard;
-            Logger.d(vCard.getFirstName());
-            if ( vCard.getLastName() == null){
+//            Logger.d(vCard.getFirstName());
+            if (vCard.getLastName() == null) {
                 Logger.d("========");
                 xmppHandler.updateUserInfo(CredentialManager.getUserData());
             }
-
-            Logger.d(isFromSignup);
 
         }
 
         public void onLoginFailed(String msg) {
             Logger.d(msg);
             alert.hideDialog();
-            if (!msg.contains("already logged in") ){
-                if (CredentialManager.getPassword()!= null && !CredentialManager.getPassword().equals("")){
+            if (!msg.contains("already logged in")) {
+                if (CredentialManager.getPassword() != null && !CredentialManager.getPassword().equals("")) {
 //                    alert.showDialog();
                     xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()), CredentialManager.getUserData().getFirst_name());
                 }
@@ -120,21 +121,46 @@ public class UserDashboardActivity extends BaseActivity {
         }
 
         //        //Event Listeners
-        public void onSignupSuccess(){
+        public void onSignupSuccess() {
             Logger.d("Signup success");
-
 
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
             xmppHandler.login();
 
-            isFromSignup = true;
         }
 //
-//        public void onSignupFailed(String error){
-//            xmppHandler.disconnect();
-//            Logger.d(error);
-//            Toast.makeText(getApplicationContext(),getString(R.string.login_failed),Toast.LENGTH_SHORT).show();
-//        }
+        public void onSignupFailed(String error){
+            Logger.d(error);
+            if (error.contains("User already exist")) {
+                alert.showDialog();
+                HashMap<String, String> data = new HashMap<>();
+                data.put("user", CredentialManager.getUserName());
+                data.put("host", Constants.XMPP_HOST);
+                data.put("newpass", CredentialManager.getPassword());
+                Logger.d("===============");
+                AuthApiHelper.changeXmppPassword(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+                    @Override
+                    public void onDataFetched(Response<JsonPrimitive> response) {
+                        alert.hideDialog();
+//                        Logger.d(new Gson().toJson(response));
+                        if (response.code() == 200 || response.code() == 201) {
+                            onPasswordChanged();
+                        } else {
+                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailed(int status) {
+                        alert.hideDialog();
+                        Logger.d("======-=-=-=-=-=-=");
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+            }
+        }
     };
 
 
@@ -144,7 +170,7 @@ public class UserDashboardActivity extends BaseActivity {
         setContentView(R.layout.activity_user_dashboard);
         ButterKnife.bind(this);
         context = this;
-        
+
         // getSupportActionBar().setElevation(0);
 
 
@@ -159,12 +185,12 @@ public class UserDashboardActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(4f);
 
-        Bundle extras=getIntent().getExtras();
-        if(extras!=null){
-            from=extras.getString("from");
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            from = extras.getString("from");
         }
 
-        if (!CredentialManager.getToken().equals("")){
+        if (!CredentialManager.getToken().equals("")) {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -173,22 +199,20 @@ public class UserDashboardActivity extends BaseActivity {
             });
         }
 
-        name=findViewById(R.id.name);
-        balance=findViewById(R.id.balance);
+        name = findViewById(R.id.name);
+        balance = findViewById(R.id.balance);
         address = findViewById(R.id.address);
-        userDetails=new UserDetails(this);
-        alert=new ViewDialog(UserDashboardActivity.this);
+        userDetails = new UserDetails(this);
+        alert = new ViewDialog(UserDashboardActivity.this);
         // getAddress();
 
-        name.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
-        balance.setText("৳ "+ userDetails.getBalance());
+        name.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
+        balance.setText("৳ " + userDetails.getBalance());
 
         if (userDetails.getJsonAddress().equals("null"))
             address.setText("Add an address");
         else
             address.setText(userDetails.getJsonAddress());
-
-
 
 
         LinearLayout orders = findViewById(R.id.order);
@@ -212,8 +236,8 @@ public class UserDashboardActivity extends BaseActivity {
 
             }
         });
-        
-        
+
+
         LinearLayout addBalance = findViewById(R.id.addBalance);
         addBalance.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,8 +263,7 @@ public class UserDashboardActivity extends BaseActivity {
             }
         });
 
-        
-        
+
         LinearLayout editProfile = findViewById(R.id.editProfile);
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,7 +272,6 @@ public class UserDashboardActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
-
 
 
         LinearLayout editAddress = findViewById(R.id.addressClick);
@@ -261,8 +283,7 @@ public class UserDashboardActivity extends BaseActivity {
             }
         });
 
-        
-        
+
         LinearLayout changePassword = findViewById(R.id.changePassword);
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,18 +315,17 @@ public class UserDashboardActivity extends BaseActivity {
     }
 
     @OnClick(R.id.llMessage)
-    void gotoMessage(){
-        if (!CredentialManager.getToken().equals("") && !userDetails.getToken().equals("")){
+    void gotoMessage() {
+        if (!CredentialManager.getToken().equals("") && !userDetails.getToken().equals("")) {
             startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
-        }else {
+        } else {
             Toast.makeText(getApplicationContext(), "Please login to see messages", Toast.LENGTH_LONG).show();
         }
     }
 
 
-
     @Override
-    public void onResume(){
+    public void onResume() {
 
         super.onResume();
 
@@ -329,18 +349,15 @@ public class UserDashboardActivity extends BaseActivity {
         }
 
 
-
-
-
     }
 
     @Override
     public void onBackPressed() {
-        if(from.equals("signin")){
-            Intent intent=new Intent(UserDashboardActivity.this, MainActivity.class);
+        if (from.equals("signin")) {
+            Intent intent = new Intent(UserDashboardActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
@@ -349,14 +366,12 @@ public class UserDashboardActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.dashboard_menu, menu);
-        if(menu instanceof MenuBuilder){
+        if (menu instanceof MenuBuilder) {
             MenuBuilder m = (MenuBuilder) menu;
             m.setOptionalIconsVisible(true);
         }
         return true;
     }
-
-
 
 
     @Override
@@ -372,10 +387,6 @@ public class UserDashboardActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
 
     }
-
-
-
-
 
 
 }

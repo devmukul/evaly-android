@@ -289,20 +289,29 @@ public class MainActivity extends BaseActivity {
             buildDialog(MainActivity.this).show();
         }
 
+        if (!CredentialManager.getToken().equals("")){
+            if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals("")){
+                AppController.logout(MainActivity.this);
+            }else {
+                if (!CredentialManager.getToken().equals("")){
+                    Logger.d("===========");
+                    if (AppController.getInstance().isNetworkConnected()){
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                Logger.d("START_SERVICE");
+                                startXmppService();
+                            }
+                        });
+                    }
+                }
+            }
+        }
 
 
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
 
-        if (!userDetails.getToken().equals("")){
-            Logger.d("===========");
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    Logger.d("START_SERVICE");
-                    startXmppService();
-                }
-            });
-        }
+
 
 
         if(userDetails.getToken().equals("")){
