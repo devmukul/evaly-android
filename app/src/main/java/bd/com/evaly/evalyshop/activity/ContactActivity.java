@@ -148,7 +148,7 @@ public class ContactActivity extends BaseActivity {
             if (CredentialManager.getToken().equals("")) {
                 Toast.makeText(getApplicationContext(), "Please login to send message", Toast.LENGTH_LONG).show();
             } else {
-                RosterTable roasterModel = getContactFromRoster("09638111666");
+                RosterTable roasterModel = getContactFromRoster(Constants.EVALY_NUMBER);
                 Logger.d(new Gson().toJson(roasterModel));
                 if (roasterModel != null) {
                     dialog.hideDialog();
@@ -166,7 +166,7 @@ public class ContactActivity extends BaseActivity {
                         HashMap<String, String> data = new HashMap<>();
                         data.put("localuser", CredentialManager.getUserName());
                         data.put("localserver", Constants.XMPP_HOST);
-                        data.put("user", "09638111666");
+                        data.put("user", Constants.EVALY_NUMBER);
                         data.put("server", Constants.XMPP_HOST);
                         data.put("nick", "Evaly");
                         data.put("subs", "both");
@@ -180,7 +180,7 @@ public class ContactActivity extends BaseActivity {
 
                                 if (response.code() == 200 || response.code() == 201) {
                                     try {
-                                        EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
+                                        EntityBareJid jid = JidCreate.entityBareFrom(Constants.EVALY_NUMBER + "@"
                                                 + Constants.XMPP_HOST);
                                         VCard vCard = xmppHandler.getUserDetails(jid);
                                         ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
@@ -298,7 +298,7 @@ public class ContactActivity extends BaseActivity {
 
     private void addRosterByOther() {
         HashMap<String, String> data = new HashMap<>();
-        data.put("localuser", "09638111666");
+        data.put("localuser", Constants.EVALY_NUMBER);
         data.put("localserver", Constants.XMPP_HOST);
         data.put("user", CredentialManager.getUserName());
         data.put("server", Constants.XMPP_HOST);

@@ -99,7 +99,7 @@ public class XMPPHandler {
     public static AbstractXMPPConnection connection;
     public String userId = CredentialManager.getUserName();
     public String userPassword = CredentialManager.getPassword();
-    private boolean autoLogin = true;
+    public boolean autoLogin;
     public VCard mVcard;
     public List<RoasterModel> roasterList;
     Roster roster;
@@ -251,7 +251,6 @@ public class XMPPHandler {
             @Override
             protected synchronized Boolean doInBackground(Void... arg0) {
                 //There is no point in reconnecting an already established connection. So abort, if we do
-                if (connection.isConnected())
                 if (connection.isConnected())
                     return false;
 
@@ -758,13 +757,6 @@ public class XMPPHandler {
 //        Logger.d(connection.getUser().asEntityBareJid());
         try {
             vCard = vCardManager.loadVCard(connection.getUser().asEntityBareJid());
-            vCard.setNickName(userModel.getFirst_name());
-            vCard.setEmailHome(userModel.getEmail());
-            vCard.setFirstName(userModel.getFirst_name());
-            vCard.setLastName(userModel.getLast_name());
-            vCard.setPhoneHome("mobile", userModel.getContacts());
-            vCard.setAddressFieldHome("REGION", userModel.getAddresses());
-            vCard.setField("URL", userModel.getImage_sm());
         } catch (SmackException.NoResponseException e) {
             e.printStackTrace();
         } catch (XMPPException.XMPPErrorException e) {
@@ -774,10 +766,15 @@ public class XMPPHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        vCard.setNickName(userModel.getFirst_name());
+        vCard.setEmailHome(userModel.getEmail());
+        vCard.setFirstName(userModel.getFirst_name());
+        vCard.setLastName(userModel.getLast_name());
+        vCard.setPhoneHome("mobile", userModel.getContacts());
+        vCard.setAddressFieldHome("REGION", userModel.getAddresses());
+        vCard.setField("URL", userModel.getImage_sm());
 
         try {
-            assert vCard != null;
             vCardManager.saveVCard(vCard);
         } catch (SmackException.NoResponseException e) {
             e.printStackTrace();
@@ -892,15 +889,13 @@ public class XMPPHandler {
         }
 
         if (condition == null) {
-            userId = signupModel.getUsername();
-            userPassword = signupModel.getPassword();
-            login();
+
             Logger.d(connection.isConnected()+"   [[[[[[[");
             Logger.d("%%%%%%%%%%%%%%%%%%%%%%%%%%");
             HashMap<String, String> data = new HashMap<>();
             data.put("localuser", CredentialManager.getUserName());
             data.put("localserver", Constants.XMPP_HOST);
-            data.put("user", "09638111666");
+            data.put("user", Constants.EVALY_NUMBER);
             data.put("server", Constants.XMPP_HOST);
             data.put("nick", "Evaly");
             data.put("subs", "both");
@@ -912,13 +907,11 @@ public class XMPPHandler {
                     if (response.code() == 200 || response.code() == 201) {
                         addRosterByOther(name);
                     } else {
-                        Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailed(int status) {
-                    Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -943,7 +936,7 @@ public class XMPPHandler {
 
     private void addRosterByOther(String name) {
         HashMap<String, String> data = new HashMap<>();
-        data.put("localuser", "09638111666");
+        data.put("localuser", Constants.EVALY_NUMBER);
         data.put("localserver", Constants.XMPP_HOST);
         data.put("user", CredentialManager.getUserName());
         data.put("server", Constants.XMPP_HOST);
@@ -1161,8 +1154,10 @@ public class XMPPHandler {
             service.onConnected();
             connected = true;
 
-            if (!connection.isAuthenticated() && autoLogin) {
-                login();
+            if (userPassword !=null && !userPassword.trim().equals("")){
+                if (!connection.isAuthenticated() && autoLogin) {
+                    login();
+                }
             }
         }
 

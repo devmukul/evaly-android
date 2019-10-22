@@ -87,92 +87,28 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
         //Event Listeners
         public void onConnected() {
+            Logger.d("======   CONNECTED  -========");
             xmppHandler = AppController.getmService().xmpp;
+            xmppHandler.autoLogin = false;
             if (password == null) {
                 xmppHandler.Signup(new SignupModel(phoneNumber, etPassword.getText().toString(), etPassword.getText().toString()), name);
             } else {
                 xmppHandler.Signup(new SignupModel(phoneNumber, password, password), name);
             }
 
-            Logger.d("======   CONNECTED  -========");
         }
 
         public void onSignupSuccess() {
             Logger.d("SIGNUP SUCCESS");
+            xmppHandler.autoLogin = true;
             CredentialManager.savePassword(password);
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+            xmppHandler.setUserPassword(phoneNumber, password);
             xmppHandler.login();
 
-            isFromSignUp = true;
         }
 
         public void onLoggedIn() {
             Logger.d("LOGIN");
-//            HashMap<String, String> data = new HashMap<>();
-//            data.put("localuser", name);
-//            data.put("localserver", Constants.XMPP_HOST);
-//            data.put("user", "09638111666");
-//            data.put("server", Constants.XMPP_HOST);
-//            data.put("nick", "Evaly");
-//            data.put("subs", "both");
-//            data.put("group", "evaly");
-//            addRosterByOther();
-//
-//            AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-//                @Override
-//                public void onDataFetched(Response<JsonPrimitive> response) {
-//                    dialog.hideDialog();
-//                    if (response.code() == 200 || response.code() == 201) {
-//                        try {
-//                            EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
-//                                    + Constants.XMPP_HOST);
-//                            HashMap<String, String> data1 = new HashMap<>();
-//                            data1.put("phone_number", "09638111666");
-//                            data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.evalyshop");
-//
-//                            ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
-//
-//                            try {
-//                                xmppHandler.sendMessage(chatItem);
-//                            } catch (SmackException e) {
-//                                e.printStackTrace();
-//                            }
-//                            RosterTable table = new RosterTable();
-//                            table.id = jid.asUnescapedString();
-//                            table.rosterName = "Evaly";
-//                            table.name = "";
-//                            table.status = 0;
-//                            table.unreadCount = 0;
-//                            table.nick_name = "";
-//                            table.imageUrl = "";
-//                            table.time = chatItem.getLognTime();
-//                            table.lastMessage = new Gson().toJson(chatItem);
-//                            AsyncTask.execute(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    Logger.d("NEW ENTRY");
-//                                    AppController.database.taskDao().addRoster(table);
-//                                }
-//                            });
-//
-//                        } catch (XmppStringprepException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//
-//                    } else {
-//                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailed(int status) {
-//                    dialog.hideDialog();
-//                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-//                }
-//            });
-
-//            xmppHandler.sendRequestTo("09638111667", "Evaly");
             xmppHandler.changePassword(etPassword.getText().toString());
             xmppHandler.disconnect();
             Snackbar.make(pin1Et, "Password set Successfully, Please login!", Snackbar.LENGTH_LONG).show();
@@ -183,7 +119,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             Logger.d(msg);
             if (!msg.contains("already logged in")) {
                 HashMap<String, String> data = new HashMap<>();
-                data.put("user", CredentialManager.getUserName());
+                data.put("user", phoneNumber);
                 data.put("host", Constants.XMPP_HOST);
                 data.put("newpass", etPassword.getText().toString());
                 Logger.d("===============");

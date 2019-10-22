@@ -236,7 +236,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                             rosterList.clear();
                             rosterList.addAll(list);
                             for (int i = 0; i < rosterList.size(); i++) {
-                                if (rosterList.get(i).id.contains("09638111666")) {
+                                if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
                                     RosterTable table = rosterList.get(i);
                                     if (table.lastMessage == null || table.lastMessage.trim().equals("")){
                                         sendMessage();
@@ -300,7 +300,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 //                                }, e -> System.out.println("RoomWithRx: " +e.getMessage()));
                         rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
                         for (int i = 0; i < rosterList.size(); i++) {
-                            if (rosterList.get(i).id.contains("09638111666")) {
+                            if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
                                 RosterTable table = rosterList.get(i);
                                 table.status = 1;
                                 rosterList.remove(i);
@@ -329,7 +329,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
     private void sendMessage(){
         try {
-            EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
+            EntityBareJid jid = JidCreate.entityBareFrom(Constants.EVALY_NUMBER + "@"
                     + Constants.XMPP_HOST);
 
             EntityBareJid mJid = JidCreate.entityBareFrom(CredentialManager.getUserName() + "@"
@@ -747,7 +747,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 //                                    }, e -> System.out.println("RoomWithRx: " +e.getMessage()));
                             rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
                             for (int i = 0; i < rosterList.size(); i++) {
-                                if (rosterList.get(i).id.contains("09638111666")) {
+                                if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
                                     RosterTable table = rosterList.get(i);
                                     table.status = 1;
                                     rosterList.remove(i);
