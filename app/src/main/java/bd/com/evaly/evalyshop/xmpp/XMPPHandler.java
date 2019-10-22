@@ -758,6 +758,13 @@ public class XMPPHandler {
 //        Logger.d(connection.getUser().asEntityBareJid());
         try {
             vCard = vCardManager.loadVCard(connection.getUser().asEntityBareJid());
+            vCard.setNickName(userModel.getFirst_name());
+            vCard.setEmailHome(userModel.getEmail());
+            vCard.setFirstName(userModel.getFirst_name());
+            vCard.setLastName(userModel.getLast_name());
+            vCard.setPhoneHome("mobile", userModel.getContacts());
+            vCard.setAddressFieldHome("REGION", userModel.getAddresses());
+            vCard.setField("URL", userModel.getImage_sm());
         } catch (SmackException.NoResponseException e) {
             e.printStackTrace();
         } catch (XMPPException.XMPPErrorException e) {
@@ -767,15 +774,10 @@ public class XMPPHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        vCard.setNickName(userModel.getFirst_name());
-        vCard.setEmailHome(userModel.getEmail());
-        vCard.setFirstName(userModel.getFirst_name());
-        vCard.setLastName(userModel.getLast_name());
-        vCard.setPhoneHome("mobile", userModel.getContacts());
-        vCard.setAddressFieldHome("REGION", userModel.getAddresses());
-        vCard.setField("URL", userModel.getImage_sm());
+
 
         try {
+            assert vCard != null;
             vCardManager.saveVCard(vCard);
         } catch (SmackException.NoResponseException e) {
             e.printStackTrace();

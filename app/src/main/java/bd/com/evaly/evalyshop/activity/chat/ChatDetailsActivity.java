@@ -139,6 +139,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         public void onLoggedIn(){
             xmppHandler = AppController.getmService().xmpp;
+            mVCard = xmppHandler.mVcard;
             loadMessage();
         }
         //Event Listeners
