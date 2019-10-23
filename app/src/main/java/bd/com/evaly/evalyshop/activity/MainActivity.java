@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -33,6 +34,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.FacebookSdk;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.JsonPrimitive;
@@ -310,6 +313,20 @@ public class MainActivity extends BaseActivity {
 
 
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
+        String email = CredentialManager.getUserName();
+        String strNew = email.replaceAll("[^A-Za-z0-9]", "");
+
+        Logger.d(strNew);
+        try {
+            FirebaseMessaging.getInstance().subscribeToTopic(strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Logger.d(task.isSuccessful());
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
 
 

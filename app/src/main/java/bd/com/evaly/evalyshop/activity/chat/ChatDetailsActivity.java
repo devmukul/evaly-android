@@ -205,14 +205,16 @@ public class ChatDetailsActivity extends AppCompatActivity {
         //On User Presence Changed
         public void onPresenceChanged(PresenceModel presenceModel) {
 //            Logger.d(presenceModel.getStatus());
-            String presence = Utils.getStatusMode(presenceModel.getUserStatus());
-            if (presenceModel.getUserStatus() == 1) {
-                tvOnlineStatus.setText(presence);
-                llOnlineStatus.setVisibility(View.VISIBLE);
-                tvOnlineStatus.setVisibility(View.VISIBLE);
-            } else {
-                tvOnlineStatus.setText(Utils.getTimeAgoOnline(presenceModel.getTime()));
-                llOnlineStatus.setVisibility(View.GONE);
+            if (!presenceModel.getUser().contains(Constants.EVALY_NUMBER)){
+                String presence = Utils.getStatusMode(presenceModel.getUserStatus());
+                if (presenceModel.getUserStatus() == 1) {
+                    tvOnlineStatus.setText(presence);
+                    llOnlineStatus.setVisibility(View.VISIBLE);
+                    tvOnlineStatus.setVisibility(View.VISIBLE);
+                } else {
+                    tvOnlineStatus.setText(Utils.getTimeAgoOnline(presenceModel.getTime()));
+                    llOnlineStatus.setVisibility(View.GONE);
+                }
             }
 
         }

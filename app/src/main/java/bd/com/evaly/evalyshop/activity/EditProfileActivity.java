@@ -473,7 +473,7 @@ public class EditProfileActivity extends BaseActivity {
                     userDetails.setJsonAddress(address.getText().toString());
 
                     setUserData(userInfo);
-                    Token.update(context);
+                    Token.update(EditProfileActivity.this);
 
 
                     Log.d("json user info", userJson.toString());

@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -22,13 +23,14 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
 
 public class Token {
 
 
-    public static void update(Context context){
+    public static void update(Activity context){
 
 
         UserDetails userDetails = new UserDetails(context);
@@ -83,8 +85,7 @@ public class Token {
 
                     if (response.statusCode != 201) {
                         Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
-                        userDetails.clearAll();
-                        context.startActivity(new Intent(context, SignInActivity.class));
+                        AppController.logout(context);
                     }
                 }
             }

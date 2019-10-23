@@ -1467,14 +1467,20 @@ public class XMPPHandler {
             }
         }
 
+        if (list.size() == 0){
+            AppController.allDataLoaded = true;
+        }
         if (count == list.size()) {
             Logger.d(count + "    ==========");
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    AppController.database.taskDao().addAllRoster(list);
-                }
-            });
+            for (RosterTable table : list){
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppController.database.taskDao().addRoster(table);
+                    }
+                });
+            }
+            AppController.allDataLoaded = true;
         }
     }
 

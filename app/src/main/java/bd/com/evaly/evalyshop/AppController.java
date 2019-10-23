@@ -41,6 +41,7 @@ public class AppController extends Application implements Application.ActivityLi
 
     public static AppController mAppController;
     public static Context mContext;
+    public static boolean allDataLoaded;
     private final String TAG = getClass().getSimpleName();
 //    public static AlertDialog dialog;
 

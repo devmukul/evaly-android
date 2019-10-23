@@ -233,26 +233,30 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(list -> {
-                            rosterList.clear();
-                            rosterList.addAll(list);
-                            for (int i = 0; i < rosterList.size(); i++) {
-                                if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
-                                    RosterTable table = rosterList.get(i);
-                                    if (table.lastMessage == null || table.lastMessage.trim().equals("")){
-                                        sendMessage();
+                            if (AppController.allDataLoaded){
+                                rosterList.clear();
+                                rosterList.addAll(list);
+                                for (int i = 0; i < rosterList.size(); i++) {
+                                    if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
+                                        RosterTable table = rosterList.get(i);
+                                        if (table.lastMessage == null || table.lastMessage.trim().equals("")){
+                                            sendMessage();
+                                        }
+                                        Logger.d(new Gson().toJson(table));
+
+                                        table.status = 1;
+                                        rosterList.remove(i);
+                                        rosterList.add(0, table);
                                     }
-                                    table.status = 1;
-                                    rosterList.remove(i);
-                                    rosterList.add(0, table);
                                 }
-                            }
-                            if (rosterList.size() > 0) {
-                                not.setVisibility(View.GONE);
-                            } else {
-                                not.setVisibility(View.VISIBLE);
-                            }
-                            if (adapter != null) {
-                                adapter.notifyDataSetChanged();
+                                if (rosterList.size() > 0) {
+                                    not.setVisibility(View.GONE);
+                                } else {
+                                    not.setVisibility(View.VISIBLE);
+                                }
+                                if (adapter != null) {
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
                             Logger.d(list.size() + "  =======");
 //                            new Handler(Looper.getMainLooper()).post(new Runnable() {
