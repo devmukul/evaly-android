@@ -808,11 +808,20 @@ public class OrderDetailsActivity extends BaseActivity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
+
+                Log.d("json payload", payload.toString());
+                Log.d("json response", response.toString());
+
                 dialog.hideDialog();
 
                 try {
 
                     String purl = response.getString("payment_gateway_url");
+
+
+                    Log.d("json response", purl);
+
                     Intent intent = new Intent(OrderDetailsActivity.this, PayViaCard.class);
                     intent.putExtra("url", purl);
                     startActivityForResult(intent,10002);
