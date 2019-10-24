@@ -45,6 +45,8 @@ import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatException;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.jivesoftware.smackx.offline.OfflineMessageHeader;
+import org.jivesoftware.smackx.offline.OfflineMessageManager;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONArray;
@@ -893,7 +895,7 @@ public class XMPPHandler {
 
         if (condition == null) {
 
-            Logger.d(connection.isConnected()+"   [[[[[[[");
+            Logger.d(connection.isConnected() + "   [[[[[[[");
             Logger.d("%%%%%%%%%%%%%%%%%%%%%%%%%%");
             HashMap<String, String> data = new HashMap<>();
             data.put("localuser", CredentialManager.getUserName());
@@ -1066,7 +1068,7 @@ public class XMPPHandler {
         message.setType(Message.Type.chat);
 
         Logger.d(new Gson().toJson(message));
-        Logger.e(connection.isConnected()+"     "+connection.isAuthenticated());
+        Logger.e(connection.isConnected() + "     " + connection.isAuthenticated());
         try {
             mChat.send(message);
         } catch (SmackException.NotConnectedException e) {
@@ -1153,11 +1155,11 @@ public class XMPPHandler {
             Logger.d("CONNECT");
             Logger.d(userId + "    " + userPassword);
             Log.e(TAG, "Connected!");
-            Log.e(TAG, autoLogin+"");
+            Log.e(TAG, autoLogin + "");
             service.onConnected();
             connected = true;
 
-            if (userPassword !=null && !userPassword.trim().equals("")){
+            if (userPassword != null && !userPassword.trim().equals("")) {
                 if (!connection.isAuthenticated() && autoLogin) {
                     login();
                 }
@@ -1471,12 +1473,12 @@ public class XMPPHandler {
             }
         }
 
-        if (list.size() == 0){
+        if (list.size() == 0) {
             AppController.allDataLoaded = true;
         }
         if (count == list.size()) {
             Logger.d(count + "    ==========");
-            for (RosterTable table : list){
+            for (RosterTable table : list) {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -1964,7 +1966,10 @@ public class XMPPHandler {
 //            mamQueryResult.pagePrevious(maxResults);
 //            mamQueryResult.pageNext(maxResults);
 //            Logger.d(mamQueryResult.getMessageCount());
-            if (!mamQueryResult.isComplete()) {
+
+
+            Logger.d(mamQueryResult.getPage().getMessages().size());
+            if (mamQueryResult.getPage().getMessages().size() != 0) {
                 List<Message> forwardedMessages = mamQueryResult.pagePrevious(maxResults);
 
                 Iterator<Message> forwardedIterator = forwardedMessages.iterator();

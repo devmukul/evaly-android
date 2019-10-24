@@ -281,18 +281,18 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     if (chatItemList.get(getLayoutPosition() + 1).getSender().contains(vCard.id)) {
                         ivProfile.setVisibility(View.INVISIBLE);
                         tvMessage.setBackgroundResource(R.drawable.other_chat_back_round);
-                        Logger.d("CHANGED BACK");
+//                        Logger.d("CHANGED BACK");
 
                     } else {
                         ivProfile.setVisibility(View.VISIBLE);
                         tvMessage.setBackgroundResource(R.drawable.other_chat_back);
-                        Logger.d("CHANGED BACK =======");
+//                        Logger.d("CHANGED BACK =======");
 
                     }
                 } else if (getLayoutPosition() + 1 == chatItemList.size()) {
                     ivProfile.setVisibility(View.VISIBLE);
                     tvMessage.setBackgroundResource(R.drawable.other_chat_back);
-                    Logger.d("CHANGED BACK +++++");
+//                    Logger.d("CHANGED BACK +++++");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

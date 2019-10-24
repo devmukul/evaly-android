@@ -2,14 +2,14 @@ package bd.com.evaly.evalyshop.util;
 
 public class Constants {
     //DEV
-    public static final String XMPP_DOMAIN = "chat-dev.evaly.com.bd";
-    public static final String XMPP_HOST = "chat-dev.evaly.com.bd";
-    public static final String EVALY_NUMBER = "09638111667";
+//    public static final String XMPP_DOMAIN = "chat-dev.evaly.com.bd";
+//    public static final String XMPP_HOST = "chat-dev.evaly.com.bd";
+//    public static final String EVALY_NUMBER = "09638111667";
 
     //PROD
-//    public static final String XMPP_DOMAIN = "chat.evaly.com.bd";
-//    public static final String XMPP_HOST = "chat.evaly.com.bd";
-//    public static final String EVALY_NUMBER = "09638111666";
+    public static final String XMPP_DOMAIN = "chat.evaly.com.bd";
+    public static final String XMPP_HOST = "chat.evaly.com.bd";
+    public static final String EVALY_NUMBER = "09638111666";
     public static final int XMPP_PORT = 5222;
     public static final String XMPP_RESOURCE = "xmppdemo";
     public static final boolean XMPP_DEBUG = true;

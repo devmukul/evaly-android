@@ -374,15 +374,16 @@ public class ChatDetailsActivity extends AppCompatActivity {
 //                Logger.d(itemno + " =======");
 //                Logger.d(newState + " +++++++++");
                 if (itemno == 0) {
+                    Logger.d(isLastPage+"    "+ isLoading);
                     if (!isLoading && !isLastPage) {
                         isLoading = true;
                         if (chatItemList.size() > 0) {
                             messageId = chatItemList.get(0).getMessageId();
                         }
-//                        Logger.d("UID======   " + messageId);
+                        Logger.d("UID======   " + messageId);
                         if (messageId != null) {
                             try {
-                                addlisttop(xmppHandler.getChatHistoryWithPagination(JidCreate.bareFrom(rosterTable.id), 20, messageId));
+                                addlisttop(xmppHandler.getChatHistoryWithPagination(JidCreate.bareFrom(rosterTable.id), 15, messageId));
                             } catch (XmppStringprepException e) {
                                 e.printStackTrace();
                             }
@@ -490,7 +491,8 @@ public class ChatDetailsActivity extends AppCompatActivity {
     }
 
     public void addlisttop(List<ChatItem> list) {
-        if (list.size() < 10) {
+        Logger.d(list.size()+"    {{{{{{");
+        if (list.size() < 15) {
             isLastPage = true;
         }
         for (int i = 0; i < list.size(); i++) {
