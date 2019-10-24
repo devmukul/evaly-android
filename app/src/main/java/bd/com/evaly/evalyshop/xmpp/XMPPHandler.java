@@ -195,12 +195,15 @@ public class XMPPHandler {
                         }
                     });
 
+
                     ReconnectionManager reconnectionManager = ReconnectionManager.getInstanceFor(connection);
                     reconnectionManager.enableAutomaticReconnection();
 
                     roster = Roster.getInstanceFor(connection);
                     roster.addRosterListener(mRoasterListener);
                     roster.setSubscriptionMode(Roster.SubscriptionMode.manual);
+
+
                 } catch (XmppStringprepException e) {
                     e.printStackTrace();
                 } catch (UnknownHostException e) {
@@ -1174,6 +1177,7 @@ public class XMPPHandler {
             ChatStateManager.getInstance(connection).addChatStateListener(mChatManagerListener);
 
             mVcard = getCurrentUserDetails();
+
 
             if (!isFirstTime) {
                 new Thread(new Runnable() {

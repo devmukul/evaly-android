@@ -32,6 +32,7 @@ import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.VCardObject;
+import bd.com.evaly.evalyshop.util.AnimationUtils;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.RecyclerViewItemDecorator;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -60,11 +61,16 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public int getItemViewType(int position) {
         ChatItem chatItem = chatItemList.get(position);
 //        Logger.d(vCard.getJid() +"  =======   "+ chatItem.getSender().toString());
-        if (!chatItem.getSender().toString().contains(vCard.id)) {
-            return VIEW_TYPE_MESSAGE_SENT;
-        } else {
-            return VIEW_TYPE_MESSAGE_RECEIVED;
+        if (chatItem.getSender()!= null){
+            if (!chatItem.getSender().contains(vCard.id)) {
+                return VIEW_TYPE_MESSAGE_SENT;
+            } else {
+                return VIEW_TYPE_MESSAGE_RECEIVED;
+            }
+        }else {
+            return 2;
         }
+
     }
 
     @NonNull
@@ -247,13 +253,15 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View view) {
                     if (isShow) {
 //                        tvSeen.setVisibility(View.GONE);
-                        tvChatTime.setVisibility(View.GONE);
-                        tvMessage.setBackgroundResource(R.drawable.other_chat_back);
+                        AnimationUtils.collapse(tvChatTime);
+//                        tvChatTime.setVisibility(View.GONE);
+//                        tvMessage.setBackgroundResource(R.drawable.other_chat_back);
                         isShow = false;
                     } else {
 //                        tvSeen.setVisibility(View.VISIBLE);
-                        tvChatTime.setVisibility(View.VISIBLE);
-                        tvMessage.setBackgroundResource(R.drawable.other_chat_back_clicked);
+//                        tvChatTime.setVisibility(View.VISIBLE);
+//                        tvMessage.setBackgroundResource(R.drawable.other_chat_back_clicked);
+                        AnimationUtils.expand(tvChatTime);
                         isShow = true;
                     }
 //                    tvSeen.setVisibility(View.VISIBLE);
@@ -268,16 +276,28 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         void bind(ChatItem chatItem) {
-            if (getLayoutPosition() + 1 < chatItemList.size()) {
-                if (chatItemList.get(getLayoutPosition()+1).getSender().contains(vCard.id)){
-                    ivProfile.setVisibility(View.INVISIBLE);
-                    tvMessage.setBackgroundResource(R.drawable.other_chat_back_round);
-                }else {
+            try {
+                if (getLayoutPosition() + 1 < chatItemList.size()) {
+                    if (chatItemList.get(getLayoutPosition() + 1).getSender().contains(vCard.id)) {
+                        ivProfile.setVisibility(View.INVISIBLE);
+                        tvMessage.setBackgroundResource(R.drawable.other_chat_back_round);
+                        Logger.d("CHANGED BACK");
+
+                    } else {
+                        ivProfile.setVisibility(View.VISIBLE);
+                        tvMessage.setBackgroundResource(R.drawable.other_chat_back);
+                        Logger.d("CHANGED BACK =======");
+
+                    }
+                } else if (getLayoutPosition() + 1 == chatItemList.size()) {
                     ivProfile.setVisibility(View.VISIBLE);
                     tvMessage.setBackgroundResource(R.drawable.other_chat_back);
-
+                    Logger.d("CHANGED BACK +++++");
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
             if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
                 if (chatItem.getLarge_image() != null) {
                     ivImage.setOnClickListener(new View.OnClickListener() {

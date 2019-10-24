@@ -464,7 +464,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                                                     VCard vCard = xmppHandler.getUserDetails(jid);
                                                     HashMap<String, String> data1 = new HashMap<>();
                                                     data1.put("phone_number", etPhoneNumber.getText().toString().trim());
-                                                    data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
+                                                    data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.evalyshop");
 
                                                     Logger.d(new Gson().toJson(vCard.getFirstName()) + "       ====");
                                                     if (vCard.getFirstName() == null) {

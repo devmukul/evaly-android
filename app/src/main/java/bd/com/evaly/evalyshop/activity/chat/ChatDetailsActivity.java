@@ -133,15 +133,16 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
-        public void onConnected(){
+        public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
         }
 
-        public void onLoggedIn(){
+        public void onLoggedIn() {
             xmppHandler = AppController.getmService().xmpp;
             mVCard = xmppHandler.mVcard;
             loadMessage();
         }
+
         //Event Listeners
         public void onNewMessageReceived(ChatItem chatItem) {
             Logger.d(chatItem.getChat());
@@ -158,7 +159,11 @@ public class ChatDetailsActivity extends AppCompatActivity {
                     }
                 });
                 chatItemList.add(chatItem);
-                adapter.notifyItemInserted(chatItemList.size() - 1);
+                if (chatItemList.size() > 1) {
+                    adapter.notifyItemRangeChanged(chatItemList.size()-2, chatItemList.size()-1);
+                }else {
+                    adapter.notifyItemInserted(chatItemList.size() - 1);
+                }
                 rvChatDetails.smoothScrollToPosition(adapter.getItemCount() - 1);
             } else {
 //                AsyncTask.execute(new Runnable() {
@@ -181,9 +186,9 @@ public class ChatDetailsActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)){
+                                if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
                                     Logger.d("==========");
-                                    chatItemList.remove(chatItemList.size()-1);
+                                    chatItemList.remove(chatItemList.size() - 1);
                                     adapter.notifyDataSetChanged();
 //                                    adapter.notifyItemRemoved(chatItemList.size()-1);
                                     Logger.d(chatItemList.size());
@@ -193,7 +198,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                                 rvChatDetails.scrollToPosition(chatItemList.size() - 1);
                                 Logger.d(chatItemList.size());
 
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 Logger.d(e.getMessage());
                             }
                         }
@@ -205,7 +210,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
         //On User Presence Changed
         public void onPresenceChanged(PresenceModel presenceModel) {
 //            Logger.d(presenceModel.getStatus());
-            if (!presenceModel.getUser().contains(Constants.EVALY_NUMBER)){
+            if (!presenceModel.getUser().contains(Constants.EVALY_NUMBER)) {
                 String presence = Utils.getStatusMode(presenceModel.getUserStatus());
                 if (presenceModel.getUserStatus() == 1) {
                     tvOnlineStatus.setText(presence);
@@ -223,7 +228,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
         public void onChatStateChanged(ChatStateModel chatStateModel) {
             String chatStatus = Utils.getChatMode(chatStateModel.getChatState());
 
-            if (chatStateModel.getUser().contains(rosterTable.id)){
+            if (chatStateModel.getUser().contains(rosterTable.id)) {
                 if (chatStateModel.getChatState() == ChatState.composing) {
 
                     Glide.with(ChatDetailsActivity.this)
@@ -259,7 +264,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
     };
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -275,28 +279,25 @@ public class ChatDetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-
-
-
         if (rosterTable.rosterName == null) {
-            if (rosterTable.name != null ) {
+            if (rosterTable.name != null) {
                 tvName.setText(rosterTable.name);
-            } else if (rosterTable.nick_name == null ) {
+            } else if (rosterTable.nick_name == null) {
                 tvName.setText("Customer");
             } else {
                 tvName.setText(rosterTable.nick_name);
             }
 
         } else {
-            if (rosterTable.rosterName.equals("")){
-                if (rosterTable.name != null ) {
+            if (rosterTable.rosterName.equals("")) {
+                if (rosterTable.name != null) {
                     tvName.setText(rosterTable.name);
-                } else if (rosterTable.nick_name == null ) {
+                } else if (rosterTable.nick_name == null) {
                     tvName.setText("Customer");
                 } else {
                     tvName.setText(rosterTable.nick_name);
                 }
-            }else {
+            } else {
                 tvName.setText(rosterTable.rosterName);
             }
         }
@@ -325,11 +326,11 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         xmppEventReceiver = mChatApp.getEventReceiver();
 
-       if (xmppHandler.isConnected()){
-           loadMessage();
-       }else {
-           startXmppService();
-       }
+        if (xmppHandler.isConnected()) {
+            loadMessage();
+        } else {
+            startXmppService();
+        }
 
 //        Logger.d(rosterTable.unreadCount + "    ==========");
 
@@ -422,7 +423,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
             }
         } catch (XmppStringprepException e) {
             e.printStackTrace();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -437,9 +438,10 @@ public class ChatDetailsActivity extends AppCompatActivity {
                     if (rosterTable.unreadCount > 0) {
                         chatItemList.get(chatItemList.size() - rosterTable.unreadCount).setUnread(true);
                     }
+                    Logger.json(new Gson().toJson(chatItemList));
                 } catch (XmppStringprepException e) {
                     e.printStackTrace();
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -596,7 +598,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     void send() {
         if (!etCommentsBox.getText().toString().trim().isEmpty() && mVCard != null) {
 
-            ChatItem chatItem = new ChatItem(etCommentsBox.getText().toString().trim(), CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), mVCard.getNickName(), System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_TEXT, true, "");
+            ChatItem chatItem = new ChatItem(etCommentsBox.getText().toString().trim(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), mVCard.getNickName(), System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_TEXT, true, "");
             chatItem.setUid(CredentialManager.getUserName() + System.currentTimeMillis());
 //            chatItemList.add(chatItem);
             Logger.d(new Gson().toJson(chatItem));
@@ -619,7 +621,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.ivBack)
-    void back(){
+    void back() {
         onBackPressed();
     }
 
