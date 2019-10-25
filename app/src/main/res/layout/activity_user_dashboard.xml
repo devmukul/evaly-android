@@ -278,8 +278,11 @@
 
             <ImageView
                 android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_height="22dp"
                 android:layout_weight="0"
+                android:paddingLeft="1dp"
+                android:paddingTop="3dp"
+                android:paddingRight="1dp"
                 android:tint="#333"
                 app:srcCompat="@drawable/ic_chat_small" />
 
