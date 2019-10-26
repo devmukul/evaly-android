@@ -105,6 +105,8 @@ public class CartActivity extends BaseActivity {
     String userAgent;
     boolean isCheckedFromAdapter = false;
 
+    double totalPriceDouble = 0;
+
     CompoundButton.OnCheckedChangeListener selectAllListener;
 
     BottomSheetDialog bottomSheetDialog;
@@ -213,6 +215,11 @@ public class CartActivity extends BaseActivity {
 
                 if (addressSwitch.isChecked() && customAddress.getText().toString().equals("")){
                     Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (totalPriceDouble < 500){
+                    Toast.makeText(context, "You can't order below 500 Tk.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -405,10 +412,17 @@ public class CartActivity extends BaseActivity {
 
 
         }else{
+
+            totalPriceDouble = 0;
+
             cartItem=true;
             while(res.moveToNext()){
                 itemList.add(new CartItem(res.getString(0),res.getString(1),res.getString(2),res.getString(3),res.getInt(4),res.getLong(5),res.getString(6),res.getInt(7),true, res.getString(8), res.getString(9)));
-//                Collections.sort(itemList, new Comparator<WishList>(){
+
+                totalPriceDouble +=  res.getInt(4);
+
+
+                        //                Collections.sort(itemList, new Comparator<WishList>(){
 //                    public int compare(WishList o1, WishList o2) {
 //                        return o2.getTime() > o1.getTime();
 //                    }
@@ -427,10 +441,12 @@ public class CartActivity extends BaseActivity {
 
         ArrayList<CartItem> listAdapter = adapter.getItemList();
         int totalPrice = 0;
+        totalPriceDouble = 0;
 
         for (int i = 0; i < listAdapter.size(); i++){
             if(listAdapter.get(i).isSelected()){
                 totalPrice += listAdapter.get(i).getPrice() * listAdapter.get(i).getQuantity();
+                totalPriceDouble += listAdapter.get(i).getPrice() * listAdapter.get(i).getQuantity();
             }
         }
 
@@ -486,7 +502,9 @@ public class CartActivity extends BaseActivity {
 
                     if (response.getJSONArray("data").length() < 1) {
                         dialog.hideDialog();
-                        Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
 
                         return;
                     } else {
