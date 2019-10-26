@@ -100,7 +100,10 @@ public class UserDashboardActivity extends BaseActivity {
             Logger.d(xmppHandler.isConnected());
             VCard vCard = xmppHandler.mVcard;
 //            Logger.d(vCard.getFirstName());
-            if (vCard.getLastName() == null) {
+            if (vCard == null) {
+                Logger.d("========");
+                xmppHandler.updateUserInfo(CredentialManager.getUserData());
+            }else if (vCard.getLastName() == null){
                 Logger.d("========");
                 xmppHandler.updateUserInfo(CredentialManager.getUserData());
             }
