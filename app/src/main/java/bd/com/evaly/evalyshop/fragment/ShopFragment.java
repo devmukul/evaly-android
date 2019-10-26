@@ -437,7 +437,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                                     startActivity(new Intent(getActivity(), SignInActivity.class));
                                     getActivity().finish();
                                 }else {
-                                    if (xmppHandler.isConnected() && xmppHandler.isLoggedin()){
+                                    if (xmppHandler != null && xmppHandler.isConnected() && xmppHandler.isLoggedin()){
                                         RosterTable roasterModel = getContactFromRoster(owner_number);
                                         Logger.d(new Gson().toJson(roasterModel));
                                         if (!CredentialManager.getUserName().equalsIgnoreCase(owner_number)) {

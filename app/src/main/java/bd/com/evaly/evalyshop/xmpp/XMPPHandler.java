@@ -256,7 +256,7 @@ public class XMPPHandler {
             @Override
             protected synchronized Boolean doInBackground(Void... arg0) {
                 //There is no point in reconnecting an already established connection. So abort, if we do
-                if (connection.isConnected())
+                if (connection != null && connection.isConnected())
                     return false;
 
                 //We are currently in "connection" phase, so no requests should be made while we are connecting.
@@ -756,12 +756,12 @@ public class XMPPHandler {
     public void updateUserInfo(UserModel userModel) {
         StanzaError.Condition condition = null;
         VCardManager vCardManager = VCardManager.getInstanceFor(connection);
-        VCard vCard = null;
+        VCard vCard = new VCard();
         Logger.d(connection.isConnected());
         Logger.d(new Gson().toJson(userModel));
 //        Logger.d(connection.getUser().asEntityBareJid());
         try {
-            vCard = vCardManager.loadVCard(connection.getUser().asEntityBareJid());
+            vCard = vCardManager.loadVCard(JidCreate.entityBareFrom(userModel.getUsername()+"@"+Constants.XMPP_HOST));
         } catch (SmackException.NoResponseException e) {
             e.printStackTrace();
         } catch (XMPPException.XMPPErrorException e) {
@@ -769,6 +769,8 @@ public class XMPPHandler {
         } catch (SmackException.NotConnectedException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (XmppStringprepException e) {
             e.printStackTrace();
         }
         vCard.setNickName(userModel.getFirst_name());
@@ -1717,7 +1719,9 @@ public class XMPPHandler {
             int status = retreiveState(mode, presence.isAvailable());
             long lastActivity = 0;
             try {
-                lastActivity = LastActivityManager.getInstanceFor(connection).getLastActivity(presence.getFrom()).lastActivity;
+                if (connection != null && isLoggedin()){
+                    lastActivity = LastActivityManager.getInstanceFor(connection).getLastActivity(presence.getFrom()).lastActivity;
+                }
             } catch (SmackException.NoResponseException e) {
                 e.printStackTrace();
             } catch (XMPPException.XMPPErrorException e) {
