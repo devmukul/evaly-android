@@ -144,13 +144,13 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View view) {
                     if (isShow) {
 //                        tvSeen.setVisibility(View.GONE);
-                        tvChatTime.setVisibility(View.GONE);
+                        AnimationUtils.collapse(tvChatTime);
                         tvMessage.setBackgroundResource(R.drawable.self_chat_back);
 
                         isShow = false;
                     } else {
 //                        tvSeen.setVisibility(View.VISIBLE);
-                        tvChatTime.setVisibility(View.VISIBLE);
+                        AnimationUtils.expand(tvChatTime);
                         tvMessage.setBackgroundResource(R.drawable.self_chat_back_clicked);
                         isShow = true;
                     }
@@ -255,12 +255,12 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //                        tvSeen.setVisibility(View.GONE);
                         AnimationUtils.collapse(tvChatTime);
 //                        tvChatTime.setVisibility(View.GONE);
-//                        tvMessage.setBackgroundResource(R.drawable.other_chat_back);
+                        tvMessage.setBackgroundResource(R.drawable.other_chat_back);
                         isShow = false;
                     } else {
 //                        tvSeen.setVisibility(View.VISIBLE);
 //                        tvChatTime.setVisibility(View.VISIBLE);
-//                        tvMessage.setBackgroundResource(R.drawable.other_chat_back_clicked);
+                        tvMessage.setBackgroundResource(R.drawable.other_chat_back_clicked);
                         AnimationUtils.expand(tvChatTime);
                         isShow = true;
                     }
