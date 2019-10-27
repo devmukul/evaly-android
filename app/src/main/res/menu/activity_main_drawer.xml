@@ -15,16 +15,25 @@
             android:id="@+id/nav_orders"
             android:icon="@drawable/ic_order_thin"
             android:title="Orders"/>
+        <item
+            android:id="@+id/nav_messages"
+            android:icon="@drawable/ic_chat_small"
+            android:title="Messages"/>
+
+        <item
+            android:id="@+id/nav_cart"
+            android:icon="@drawable/ic_cart"
+            android:title="Cart" />
 
         <item
             android:id="@+id/nav_wishlist"
             android:icon="@drawable/ic_favorite"
             android:title="WishList"/>
 
-        <item
-            android:id="@+id/nav_cart"
-            android:icon="@drawable/ic_cart"
-            android:title="Cart" />
+
+        <item android:id="@+id/nav_followed_shops"
+                android:icon="@drawable/ic_menu_store"
+                android:title="Followed Shops"/>
 
         <item
             android:id="@+id/nav_voucher"
@@ -36,10 +45,7 @@
             android:icon="@drawable/ic_referral"
             android:title="Invite &amp; Earn"/>
 
-        <item
-            android:id="@+id/nav_messages"
-            android:icon="@drawable/ic_chat_small"
-            android:title="Message"/>
+
         <item
             android:id="@+id/nav_contact"
             android:icon="@drawable/ic_phone_thin"
