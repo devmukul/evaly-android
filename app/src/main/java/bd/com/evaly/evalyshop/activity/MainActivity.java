@@ -401,6 +401,11 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_messages:
                         startActivity(new Intent(MainActivity.this, ChatListActivity.class));
                         break;
+                    case R.id.nav_followed_shops:
+                        Intent inf = new Intent(MainActivity.this, EvalyStoreActivity.class);
+                        inf.putExtra("title", "Followed Shop");
+                        inf.putExtra("slug","shop-subscriptions");
+                        startActivity(inf);
 
                 }
                 new Handler().postDelayed(() -> drawer.closeDrawer(GravityCompat.START), 150);
