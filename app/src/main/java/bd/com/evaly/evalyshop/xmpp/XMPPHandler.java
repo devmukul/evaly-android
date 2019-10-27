@@ -1730,6 +1730,8 @@ public class XMPPHandler {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }catch (Exception e){
+                e.printStackTrace();
             }
             PresenceModel presenceModel = new PresenceModel(presence.getFrom().asBareJid().toString(), presence.getStatus(), mode, status, lastActivity);
 //            Logger.d(presenceModel.getUser());
