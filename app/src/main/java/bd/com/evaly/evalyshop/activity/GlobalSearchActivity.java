@@ -699,6 +699,8 @@ public class GlobalSearchActivity extends BaseActivity {
 
 
 
+        progressBar.setVisibility(View.VISIBLE);
+
 
         Map<String,Object> paramsMap = new HashMap<String,Object>();
 
@@ -709,8 +711,13 @@ public class GlobalSearchActivity extends BaseActivity {
         paramsMap.put("highlightPostTag", "</ais-highlight-0000000000>");
         paramsMap.put("facets", "[\"price\",\"category_name\",\"brand_name\",\"color\"]");
         paramsMap.put("tagFilters", "");
-        paramsMap.put("facetFilters", filterJSON);
-        paramsMap.put("numericFilters", priceFilterJSON);
+
+
+        if (!filterJSON.equals("[]"))
+            paramsMap.put("facetFilters", filterJSON);
+
+        if (!priceFilterJSON.equals("[\"price>=10\"]"))
+            paramsMap.put("numericFilters", priceFilterJSON);
 
 
 
@@ -765,6 +772,10 @@ public class GlobalSearchActivity extends BaseActivity {
 
 
                     try {
+
+
+                        progressBar.setVisibility(View.INVISIBLE);
+
                         isLoading = false;
                         JSONArray jsonArray = response.getJSONArray("results");
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
