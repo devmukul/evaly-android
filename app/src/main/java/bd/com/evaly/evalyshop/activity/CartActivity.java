@@ -365,8 +365,8 @@ public class CartActivity extends BaseActivity {
                 onBackPressed();
                 return true;
             case R.id.action_delete:
-                if(!cartItem){
-                    Toast.makeText(context, "No available cart item to delete", Toast.LENGTH_SHORT).show();
+                if(itemList.size() == 0){
+                    Toast.makeText(context, "No item is available in cart to delete", Toast.LENGTH_SHORT).show();
                 }else{
                     new AlertDialog.Builder(this)
                             .setMessage("Are you sure you want to delete the selected products from the cart?")
