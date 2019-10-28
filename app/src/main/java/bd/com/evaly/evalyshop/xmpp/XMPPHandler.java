@@ -13,6 +13,7 @@ import com.orhanobut.logger.Logger;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.ReconnectionListener;
 import org.jivesoftware.smack.ReconnectionManager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
@@ -202,6 +203,26 @@ public class XMPPHandler {
 
                     ReconnectionManager reconnectionManager = ReconnectionManager.getInstanceFor(connection);
                     reconnectionManager.enableAutomaticReconnection();
+                    reconnectionManager.addReconnectionListener(new ReconnectionListener() {
+                        @Override
+                        public void reconnectingIn(int seconds) {
+                            service.onReConnection();
+                            Logger.e("Reconnection    "+seconds);
+                            loggedin = false;
+                        }
+
+                        @Override
+                        public void reconnectionFailed(Exception e) {
+                            service.onReConnectionError();
+
+                            if (debug) Log.d(TAG, "ReconnectionFailed!");
+
+                            //Reset the variables
+                            connected = false;
+                            chatInstanceIterator(chat_created_for);
+                            loggedin = false;
+                        }
+                    });
 
                     roster = Roster.getInstanceFor(connection);
                     roster.addRosterListener(mRoasterListener);
@@ -275,7 +296,7 @@ public class XMPPHandler {
                 if (debug) Log.d(TAG, "connecting....");
 
                 try {
-                    if (connection != null){
+                    if (connection != null) {
                         connection.connect();
 
                         /**
@@ -289,15 +310,15 @@ public class XMPPHandler {
                          **/
 
 
-                    DeliveryReceiptManager dm = DeliveryReceiptManager.getInstanceFor(connection);
-                    dm.setAutoReceiptMode(DeliveryReceiptManager.AutoReceiptMode.always);
-                    dm.addReceiptReceivedListener(new ReceiptReceivedListener() {
-                        @Override
-                        public void onReceiptReceived(Jid fromJid, Jid toJid, String receiptId, Stanza receipt) {
-                            Logger.d(fromJid.asUnescapedString()+"  ---->  "+toJid.asUnescapedString()+"     "+receiptId);
-                        }
+                        DeliveryReceiptManager dm = DeliveryReceiptManager.getInstanceFor(connection);
+                        dm.setAutoReceiptMode(DeliveryReceiptManager.AutoReceiptMode.always);
+                        dm.addReceiptReceivedListener(new ReceiptReceivedListener() {
+                            @Override
+                            public void onReceiptReceived(Jid fromJid, Jid toJid, String receiptId, Stanza receipt) {
+                                Logger.d(fromJid.asUnescapedString() + "  ---->  " + toJid.asUnescapedString() + "     " + receiptId);
+                            }
 
-                    });
+                        });
 
                         connected = true;
                     }
@@ -764,7 +785,7 @@ public class XMPPHandler {
         Logger.d(new Gson().toJson(userModel));
 //        Logger.d(connection.getUser().asEntityBareJid());
         try {
-            vCard = vCardManager.loadVCard(JidCreate.entityBareFrom(userModel.getUsername()+"@"+Constants.XMPP_HOST));
+            vCard = vCardManager.loadVCard(JidCreate.entityBareFrom(userModel.getUsername() + "@" + Constants.XMPP_HOST));
         } catch (SmackException.NoResponseException e) {
             e.printStackTrace();
         } catch (XMPPException.XMPPErrorException e) {
@@ -1722,7 +1743,7 @@ public class XMPPHandler {
             int status = retreiveState(mode, presence.isAvailable());
             long lastActivity = 0;
             try {
-                if (connection != null && isLoggedin()){
+                if (connection != null && isLoggedin()) {
                     lastActivity = LastActivityManager.getInstanceFor(connection).getLastActivity(presence.getFrom()).lastActivity;
                 }
             } catch (SmackException.NoResponseException e) {
@@ -1733,7 +1754,7 @@ public class XMPPHandler {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             PresenceModel presenceModel = new PresenceModel(presence.getFrom().asBareJid().toString(), presence.getStatus(), mode, status, lastActivity);

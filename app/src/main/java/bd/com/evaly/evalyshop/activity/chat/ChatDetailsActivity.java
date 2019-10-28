@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -102,6 +103,8 @@ public class ChatDetailsActivity extends AppCompatActivity {
     LinearLayout llOnlineStatus;
     @BindView(R.id.ivBack)
     ImageView ivBack;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     @BindView(R.id.emoji_btn)
     ImageView emojiBtn;
@@ -124,6 +127,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
 //    LinearLayout.LayoutParams layoutParams;
 
     String messageId = null;
+    String senderId;
     private RosterTable rosterTable;
 
     private List<ChatItem> chatItemList;
@@ -172,13 +176,17 @@ public class ChatDetailsActivity extends AppCompatActivity {
                         AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), rosterTable.id, 0);
                     }
                 });
-                chatItemList.add(chatItem);
-                if (chatItemList.size() > 1) {
-                    adapter.notifyItemRangeChanged(chatItemList.size()-2, chatItemList.size()-1);
-                }else {
-                    adapter.notifyItemInserted(chatItemList.size() - 1);
+                if (chatItem.getSender().contains(rosterTable.id)){
+                    chatItemList.add(chatItem);
+                    if (adapter != null) {
+                        if (chatItemList.size() > 1) {
+                            adapter.notifyItemRangeChanged(chatItemList.size() - 2, chatItemList.size() - 1);
+                        } else {
+                            adapter.notifyItemInserted(chatItemList.size() - 1);
+                        }
+                        rvChatDetails.smoothScrollToPosition(adapter.getItemCount() - 1);
+                    }
                 }
-                rvChatDetails.smoothScrollToPosition(adapter.getItemCount() - 1);
             } else {
 //                AsyncTask.execute(new Runnable() {
 //                    @Override
@@ -200,9 +208,9 @@ public class ChatDetailsActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
+                                if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)){
                                     Logger.d("==========");
-                                    chatItemList.remove(chatItemList.size() - 1);
+                                    chatItemList.remove(chatItemList.size()-1);
                                     adapter.notifyDataSetChanged();
 //                                    adapter.notifyItemRemoved(chatItemList.size()-1);
                                     Logger.d(chatItemList.size());
@@ -212,7 +220,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                                 rvChatDetails.scrollToPosition(chatItemList.size() - 1);
                                 Logger.d(chatItemList.size());
 
-                            } catch (Exception e) {
+                            }catch (Exception e){
                                 Logger.d(e.getMessage());
                             }
                         }
@@ -282,67 +290,19 @@ public class ChatDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_details);
-
-
-        EmojiManager.install(new GoogleEmojiProvider());
-
         ButterKnife.bind(this);
 
-        startXmppService();
+        dialog = new ViewDialog(this);
 
         rosterTable = (RosterTable) getIntent().getSerializableExtra("roster");
         Logger.d(new Gson().toJson(rosterTable));
 
-        dialog = new ViewDialog(ChatDetailsActivity.this);
         setSupportActionBar(toolbar);
 
-        ViewGroup rootView = (ViewGroup) findViewById(R.id.main_activity_root_view);
 
-
-        EmojiPopup.Builder emojiBuilder = EmojiPopup.Builder.fromRootView(rootView);
-
-        final EmojiPopup emojiPopup = emojiBuilder.build(etCommentsBox);
-
-
-        emojiBtn.setOnClickListener(view -> {
-
-            if (emojiPopup.isShowing())
-                emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy));
-            else
-                emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard));
-
-
-            emojiPopup.toggle();
-
-
-        });
-
-        etCommentsBox.setOnClickListener(view -> {
-
-
-            if (emojiPopup.isShowing())
-                emojiPopup.toggle();
-
-            emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy));
-
-        });
-
-
-
-
-
-
-        if (rosterTable.rosterName == null) {
-            if (rosterTable.name != null) {
-                tvName.setText(rosterTable.name);
-            } else if (rosterTable.nick_name == null) {
-                tvName.setText("Customer");
-            } else {
-                tvName.setText(rosterTable.nick_name);
-            }
-
-        } else {
-            if (rosterTable.rosterName.equals("")) {
+        if (rosterTable != null){
+            senderId = rosterTable.id;
+            if (rosterTable.rosterName == null) {
                 if (rosterTable.name != null) {
                     tvName.setText(rosterTable.name);
                 } else if (rosterTable.nick_name == null) {
@@ -350,24 +310,46 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 } else {
                     tvName.setText(rosterTable.nick_name);
                 }
+
             } else {
-                tvName.setText(rosterTable.rosterName);
+                if (rosterTable.rosterName.equals("")) {
+                    if (rosterTable.name != null) {
+                        tvName.setText(rosterTable.name);
+                    } else if (rosterTable.nick_name == null) {
+                        tvName.setText("Customer");
+                    } else {
+                        tvName.setText(rosterTable.nick_name);
+                    }
+                } else {
+                    tvName.setText(rosterTable.rosterName);
+                }
             }
+
+            if (rosterTable.status == 1) {
+                tvOnlineStatus.setVisibility(View.VISIBLE);
+                tvOnlineStatus.setText("Online");
+                llOnlineStatus.setVisibility(View.VISIBLE);
+            } else {
+                tvOnlineStatus.setVisibility(View.GONE);
+                llOnlineStatus.setVisibility(View.GONE);
+            }
+
+            Glide.with(this)
+                    .load(rosterTable.imageUrl)
+                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                    .into(ivProfileImage);
+        }else {
+            senderId = getIntent().getExtras().get("sender").toString();
+
+            rosterTable = new RosterTable();
+            rosterTable.id = senderId;
+            rosterTable.rosterName = getIntent().getExtras().get("name").toString();
+            rosterTable.imageUrl = getIntent().getExtras().get("image").toString();
+            tvName.setText(rosterTable.rosterName);
+            Logger.d(new Gson().toJson(rosterTable));
         }
 
-        if (rosterTable.status == 1) {
-            tvOnlineStatus.setVisibility(View.VISIBLE);
-            tvOnlineStatus.setText("Online");
-            llOnlineStatus.setVisibility(View.VISIBLE);
-        } else {
-            tvOnlineStatus.setVisibility(View.GONE);
-            llOnlineStatus.setVisibility(View.GONE);
-        }
-
-        Glide.with(this)
-                .load(rosterTable.imageUrl)
-                .apply(new RequestOptions().placeholder(R.drawable.user_image))
-                .into(ivProfileImage);
+        startXmppService();
 
         layoutManager = new LinearLayoutManager(ChatDetailsActivity.this);
 
@@ -375,11 +357,13 @@ public class ChatDetailsActivity extends AppCompatActivity {
 //        xmppHandler = AppController.getmService().xmpp;
 //        Logger.d(vCard.getJid());
 
-        mVCard = xmppHandler.mVcard;
+        if (xmppHandler!= null){
+            mVCard = xmppHandler.mVcard;
+        }
 
         xmppEventReceiver = mChatApp.getEventReceiver();
 
-        if (xmppHandler.isConnected()) {
+        if (xmppHandler != null && xmppHandler.isConnected()) {
             loadMessage();
         } else {
             startXmppService();
@@ -427,16 +411,16 @@ public class ChatDetailsActivity extends AppCompatActivity {
 //                Logger.d(itemno + " =======");
 //                Logger.d(newState + " +++++++++");
                 if (itemno == 0) {
-                    Logger.d(isLastPage+"    "+ isLoading);
                     if (!isLoading && !isLastPage) {
                         isLoading = true;
                         if (chatItemList.size() > 0) {
                             messageId = chatItemList.get(0).getMessageId();
                         }
-                        Logger.d("UID======   " + messageId);
                         if (messageId != null) {
+                            Logger.d("UID======   " + messageId);
+                            showProgressBar();
                             try {
-                                addlisttop(xmppHandler.getChatHistoryWithPagination(JidCreate.bareFrom(rosterTable.id), 15, messageId));
+                                addlisttop(xmppHandler.getChatHistoryWithPagination(JidCreate.bareFrom(rosterTable.id), 20, messageId));
                             } catch (XmppStringprepException e) {
                                 e.printStackTrace();
                             }
@@ -482,17 +466,22 @@ public class ChatDetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     private void loadMessage() {
         dialog.showDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    chatItemList = xmppHandler.getChatHistoryWithJID(JidCreate.bareFrom(rosterTable.id), 20, false);
+                    Logger.d(new Gson().toJson(rosterTable));
+
+                    chatItemList = xmppHandler.getChatHistoryWithJID(JidCreate.bareFrom(senderId), 20, false);
                     if (rosterTable.unreadCount > 0) {
                         chatItemList.get(chatItemList.size() - rosterTable.unreadCount).setUnread(true);
                     }
-                    Logger.json(new Gson().toJson(chatItemList));
                 } catch (XmppStringprepException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
@@ -555,6 +544,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
         if (chatItemList.size() > 0) {
             messageId = chatItemList.get(0).getUid();
         }
+        progressBar.setVisibility(View.GONE);
         isLoading = false;
     }
 
@@ -668,6 +658,11 @@ public class ChatDetailsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
+    }
 
     @Override
     protected void onResume() {
