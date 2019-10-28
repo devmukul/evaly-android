@@ -113,6 +113,17 @@ public class UserDetails {
         editor.commit();
     }
 
+    public void setChatLoaded(boolean loaded) {
+        editor.putBoolean("first_chat_loaded", loaded);
+        editor.commit();
+    }
+
+
+    public boolean isChatLoaded() {
+        return  pref.getBoolean("first_chat_loaded", false);
+    }
+
+
 
 
 
