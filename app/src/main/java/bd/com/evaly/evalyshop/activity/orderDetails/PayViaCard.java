@@ -91,7 +91,7 @@ public class PayViaCard extends AppCompatActivity {
 
                 if (url.contains("evaly.com.bd")){
 
-                    Toast.makeText(PayViaCard.this, "Payment successful!", Toast.LENGTH_LONG);
+                    Toast.makeText(PayViaCard.this, "Payment successful! If your order's payment status doesn't get updated within 5 minutes, please contact support.", Toast.LENGTH_LONG);
 
                     setResult(Activity.RESULT_OK);
                     finish();

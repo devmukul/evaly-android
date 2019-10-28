@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/main_activity_root_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -163,11 +165,26 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:gravity="top"
+            android:gravity="bottom"
             android:background="@drawable/chat_input_bg"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:id="@+id/emoji_btn"
+                android:layout_width="50dp"
+                android:layout_height="43dp"
+                android:clickable="true"
+                android:layout_marginLeft="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="13dp"
+                android:layout_marginBottom="4dp"
+                android:paddingBottom="10dp"
+                android:tint="#666"
+                app:srcCompat="@drawable/ic_icons8_happy"/>
+
 
             <EditText
                 android:id="@+id/etCommentsBox"
@@ -179,12 +196,11 @@
                 android:maxHeight="100dp"
                 android:hint="Write your message here..."
                 android:inputType="textMultiLine|textPersonName"
-                android:paddingLeft="20dp"
                 android:paddingTop="14dp"
                 android:paddingRight="20dp"
                 android:paddingBottom="14dp"
                 android:textColorHint="#666"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
 
             <ImageView
@@ -197,9 +213,11 @@
                 android:paddingBottom="10dp"
                 android:paddingLeft="10dp"
                 android:layout_marginTop="0dp"
+                android:layout_marginBottom="4dp"
                 android:tint="#444"
                 android:visibility="visible"
                 app:srcCompat="@drawable/ic_gallery"
+                android:layout_marginRight="2dp"
                 android:background="?attr/actionBarItemBackground"/>
 
 

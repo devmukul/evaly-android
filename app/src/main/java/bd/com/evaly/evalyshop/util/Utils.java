@@ -495,7 +495,7 @@ public class  Utils {
         if (timeDIM == 0) {
             timeAgo = "Just now";
         } else if (timeDIM == 1) {
-            return "1 min ago";
+            return "1 mins ago";
         } else if (timeDIM >= 2 && timeDIM <= 44) {
             timeAgo = timeDIM + " mins ago";
         } else if (timeDIM >= 45 && timeDIM <= 89) {
@@ -506,7 +506,7 @@ public class  Utils {
 
             Date tdate = new Date(time);
 
-            SimpleDateFormat jdf = new SimpleDateFormat("MMM dd 'at' h:mm a", Locale.ENGLISH);
+            SimpleDateFormat jdf = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
             jdf.setTimeZone(TimeZone.getTimeZone("GMT-6"));
 
             timeAgo = jdf.format(tdate);

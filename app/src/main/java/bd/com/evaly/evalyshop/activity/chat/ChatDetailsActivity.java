@@ -22,6 +22,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +35,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
+import com.vanniktech.emoji.EmojiEditText;
+import com.vanniktech.emoji.EmojiManager;
+import com.vanniktech.emoji.EmojiPopup;
+import com.vanniktech.emoji.google.GoogleEmojiProvider;
+import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.chatstates.ChatState;
@@ -95,6 +102,13 @@ public class ChatDetailsActivity extends AppCompatActivity {
     LinearLayout llOnlineStatus;
     @BindView(R.id.ivBack)
     ImageView ivBack;
+
+    @BindView(R.id.emoji_btn)
+    ImageView emojiBtn;
+
+
+
+
 
     private ChatDetailsAdapter adapter;
     private VCard mVCard;
@@ -268,6 +282,10 @@ public class ChatDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_details);
+
+
+        EmojiManager.install(new GoogleEmojiProvider());
+
         ButterKnife.bind(this);
 
         startXmppService();
@@ -277,6 +295,41 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         dialog = new ViewDialog(ChatDetailsActivity.this);
         setSupportActionBar(toolbar);
+
+        ViewGroup rootView = (ViewGroup) findViewById(R.id.main_activity_root_view);
+
+
+        EmojiPopup.Builder emojiBuilder = EmojiPopup.Builder.fromRootView(rootView);
+
+        final EmojiPopup emojiPopup = emojiBuilder.build(etCommentsBox);
+
+
+        emojiBtn.setOnClickListener(view -> {
+
+            if (emojiPopup.isShowing())
+                emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy));
+            else
+                emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard));
+
+
+            emojiPopup.toggle();
+
+
+        });
+
+        etCommentsBox.setOnClickListener(view -> {
+
+
+            if (emojiPopup.isShowing())
+                emojiPopup.toggle();
+
+            emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy));
+
+        });
+
+
+
+
 
 
         if (rosterTable.rosterName == null) {
