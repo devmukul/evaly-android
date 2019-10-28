@@ -157,7 +157,7 @@
         android:layout_weight="0"
         android:layout_alignParentBottom="true"
         android:background="#f9f9f9"
-        android:gravity="center_vertical|bottom"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -165,7 +165,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:gravity="top"
+            android:gravity="bottom"
             android:background="@drawable/chat_input_bg"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="12dp"
@@ -180,6 +180,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="13dp"
+                android:layout_marginBottom="4dp"
                 android:paddingBottom="10dp"
                 android:tint="#666"
                 app:srcCompat="@drawable/ic_icons8_happy"/>
@@ -212,6 +213,7 @@
                 android:paddingBottom="10dp"
                 android:paddingLeft="10dp"
                 android:layout_marginTop="0dp"
+                android:layout_marginBottom="4dp"
                 android:tint="#444"
                 android:visibility="visible"
                 app:srcCompat="@drawable/ic_gallery"
