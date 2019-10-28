@@ -47,6 +47,8 @@ import org.jivesoftware.smackx.muc.MultiUserChatException;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.offline.OfflineMessageHeader;
 import org.jivesoftware.smackx.offline.OfflineMessageManager;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
+import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONArray;
@@ -273,31 +275,32 @@ public class XMPPHandler {
                 if (debug) Log.d(TAG, "connecting....");
 
                 try {
-                    connection.connect();
+                    if (connection != null){
+                        connection.connect();
 
-                    /**
-                     * Set delivery receipt for every Message, so that we can confirm if message
-                     * has been received on other end.
-                     *
-                     * @NOTE: This feature is not yet implemented in this example. Maybe, I'll add it later on.
-                     * Feel free to pull request to add one.
-                     *
-                     * Read more about this: http://xmpp.org/extensions/xep-0184.html
-                     **/
+                        /**
+                         * Set delivery receipt for every Message, so that we can confirm if message
+                         * has been received on other end.
+                         *
+                         * @NOTE: This feature is not yet implemented in this example. Maybe, I'll add it later on.
+                         * Feel free to pull request to add one.
+                         *
+                         * Read more about this: http://xmpp.org/extensions/xep-0184.html
+                         **/
 
-                    /*
+
                     DeliveryReceiptManager dm = DeliveryReceiptManager.getInstanceFor(connection);
                     dm.setAutoReceiptMode(DeliveryReceiptManager.AutoReceiptMode.always);
                     dm.addReceiptReceivedListener(new ReceiptReceivedListener() {
                         @Override
-                        public void onReceiptReceived(final String fromid,
-                                                      final String toid, final String msgid,
-                                                      final Stanza packet) {
-
+                        public void onReceiptReceived(Jid fromJid, Jid toJid, String receiptId, Stanza receipt) {
+                            Logger.d(fromJid.asUnescapedString()+"  ---->  "+toJid.asUnescapedString()+"     "+receiptId);
                         }
+
                     });
-                    */
-                    connected = true;
+
+                        connected = true;
+                    }
 
                 } catch (IOException e) {
                     service.onConnectionClosed();

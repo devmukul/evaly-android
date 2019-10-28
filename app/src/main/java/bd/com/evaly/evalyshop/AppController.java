@@ -18,6 +18,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -188,6 +189,15 @@ public class AppController extends Application implements Application.ActivityLi
 
     public static void logout(Activity context) {
 
+        try {
+            String email = CredentialManager.getUserName();
+            String strNew = email.replaceAll("[^A-Za-z0-9]", "");
+
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(strNew);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         MyPreference.with(context).clearAll();
 //        getInstance().clearAppData();
         Logger.d(CredentialManager.getToken());
@@ -215,10 +225,10 @@ public class AppController extends Application implements Application.ActivityLi
                 context.startActivity(new Intent(context, SignInActivity.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                context.finishAffinity();
+                context.finish();
                 System.exit(1);
             }
-        }, 300);
+        }, 200);
     }
 
     public boolean isNetworkConnected() {

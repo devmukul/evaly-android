@@ -37,34 +37,38 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
         // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
+        try {
+            if (remoteMessage.getData().size() > 0) {
 
 
-            String title = remoteMessage.getData().get("title");
-            String body = remoteMessage.getData().get("body");
-            String type = remoteMessage.getData().get("type");
-            String extra = remoteMessage.getData().get("pageUrl");
+                String title = remoteMessage.getData().get("title");
+                String body = remoteMessage.getData().get("body");
+                String type = remoteMessage.getData().get("type");
+                String extra = remoteMessage.getData().get("pageUrl");
 
 
 
 
-            if(type.equals("text")){
+                if(type.equals("text")){
 
-                sendNotification(body, title, extra);
+                    sendNotification(body, title, extra);
 
-            } else if(type.equals("image")){
+                } else if(type.equals("image")){
 
 
-                String image_url = remoteMessage.getData().get("image_url");
+                    String image_url = remoteMessage.getData().get("image_url");
 
-                new generatePictureStyleNotification(this,title, body,
-                        image_url, extra).execute();
+                    new generatePictureStyleNotification(this,title, body,
+                            image_url, extra).execute();
+
+                }
+
 
             }
 
-
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }

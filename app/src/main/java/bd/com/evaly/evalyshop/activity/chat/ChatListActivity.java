@@ -346,19 +346,20 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             } catch (SmackException e) {
                 e.printStackTrace();
             }
-            RosterTable table = new RosterTable();
-            table.id = jid.asUnescapedString();
-            table.rosterName = "Evaly";
-            table.name = "";
-            table.status = 0;
-            table.unreadCount = 0;
-            table.nick_name = "";
-            table.imageUrl = "";
-            table.time = chatItem.getLognTime();
-            table.lastMessage = new Gson().toJson(chatItem);
+
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
+                    RosterTable table = new RosterTable();
+                    table.id = jid.asUnescapedString();
+                    table.rosterName = "Evaly";
+                    table.name = "";
+                    table.status = 0;
+                    table.unreadCount = 0;
+                    table.nick_name = "";
+                    table.imageUrl = "";
+                    table.time = chatItem.getLognTime();
+                    table.lastMessage = new Gson().toJson(chatItem);
                     Logger.d("NEW ENTRY");
                     AppController.database.taskDao().addRoster(table);
 
