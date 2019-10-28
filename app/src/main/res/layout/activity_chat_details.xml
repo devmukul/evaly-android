@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/main_activity_root_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -169,6 +171,13 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp">
 
+            <ImageView
+                android:id="@+id/emoji_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:clickable="true"/>
+
+
             <EditText
                 android:id="@+id/etCommentsBox"
                 android:layout_width="wrap_content"
@@ -184,7 +193,7 @@
                 android:paddingRight="20dp"
                 android:paddingBottom="14dp"
                 android:textColorHint="#666"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
 
             <ImageView
