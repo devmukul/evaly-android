@@ -480,7 +480,6 @@ public class  Utils {
 
     public static String getTimeAgoSmall(long time) {
 
-
         Date curDate = currentDate();
         long now = curDate.getTime();
 

@@ -39,7 +39,9 @@ import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiPopup;
 import com.vanniktech.emoji.google.GoogleEmojiProvider;
+import com.vanniktech.emoji.listeners.OnEmojiBackspaceClickListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
+import com.vanniktech.emoji.listeners.OnSoftKeyboardCloseListener;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.chatstates.ChatState;
@@ -301,6 +303,14 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         EmojiPopup.Builder emojiBuilder = EmojiPopup.Builder.fromRootView(rootView);
 
+        emojiBuilder.setOnSoftKeyboardCloseListener(new OnSoftKeyboardCloseListener() {
+            @Override
+            public void onKeyboardClose() {
+                emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy));
+            }
+        });
+
+
         final EmojiPopup emojiPopup = emojiBuilder.build(etCommentsBox);
 
 
@@ -326,6 +336,10 @@ public class ChatDetailsActivity extends AppCompatActivity {
             emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy));
 
         });
+
+
+
+
 
 
 
