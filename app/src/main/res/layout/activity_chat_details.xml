@@ -157,7 +157,7 @@
         android:layout_weight="0"
         android:layout_alignParentBottom="true"
         android:background="#f9f9f9"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|bottom"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -173,9 +173,16 @@
 
             <ImageView
                 android:id="@+id/emoji_btn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:clickable="true"/>
+                android:layout_width="50dp"
+                android:layout_height="44dp"
+                android:clickable="true"
+                android:layout_marginLeft="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="13dp"
+                android:paddingBottom="10dp"
+                android:tint="#666"
+                app:srcCompat="@drawable/ic_icons8_happy"/>
 
 
             <EditText
@@ -188,7 +195,6 @@
                 android:maxHeight="100dp"
                 android:hint="Write your message here..."
                 android:inputType="textMultiLine|textPersonName"
-                android:paddingLeft="20dp"
                 android:paddingTop="14dp"
                 android:paddingRight="20dp"
                 android:paddingBottom="14dp"
