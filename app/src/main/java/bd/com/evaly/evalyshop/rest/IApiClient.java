@@ -9,6 +9,7 @@ import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -36,4 +37,6 @@ public interface IApiClient {
     @POST(UrlUtils.IMAGE_UPLOAD)
     Call<JsonObject> imageUpload(@Header("Authorization") String token, @Header("Content_Type") String contentType, @Part MultipartBody.Part image);
 
+    @GET(UrlUtils.CHECK_UPDATE)
+    Call<JsonObject> checkUpdate();
 }

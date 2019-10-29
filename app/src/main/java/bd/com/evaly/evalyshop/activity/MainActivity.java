@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
@@ -51,6 +53,7 @@ import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.fragment.BrandFragment;
@@ -198,33 +201,14 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-//    private void addRosterByOther() {
-//        HashMap<String, String> data = new HashMap<>();
-//        data.put("localuser", "09638111666");
-//        data.put("localserver", Constants.XMPP_HOST);
-//        data.put("user", CredentialManager.getUserName());
-//        data.put("server", Constants.XMPP_HOST);
-//        data.put("nick", CredentialManager.getUserData().getFirst_name());
-//        data.put("subs", "both");
-//        data.put("group", "evaly");
-//        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-//            @Override
-//            public void onDataFetched(Response<JsonPrimitive> response) {
-//
-//            }
-//
-//            @Override
-//            public void onFailed(int status) {
-//
-//            }
-//        });
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+
 
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
@@ -543,7 +527,6 @@ public class MainActivity extends BaseActivity {
                 FacebookSdk.fullyInitialize();
             }
         }, 2000);
-
 
 
     }

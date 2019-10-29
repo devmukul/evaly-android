@@ -40,7 +40,9 @@ import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiPopup;
 import com.vanniktech.emoji.google.GoogleEmojiProvider;
+import com.vanniktech.emoji.listeners.OnEmojiBackspaceClickListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
+import com.vanniktech.emoji.listeners.OnSoftKeyboardCloseListener;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.chatstates.ChatState;
@@ -298,6 +300,45 @@ public class ChatDetailsActivity extends AppCompatActivity {
         Logger.d(new Gson().toJson(rosterTable));
 
         setSupportActionBar(toolbar);
+
+        ViewGroup rootView = (ViewGroup) findViewById(R.id.main_activity_root_view);
+
+
+        EmojiPopup.Builder emojiBuilder = EmojiPopup.Builder.fromRootView(rootView);
+
+        emojiBuilder.setOnSoftKeyboardCloseListener(new OnSoftKeyboardCloseListener() {
+            @Override
+            public void onKeyboardClose() {
+                emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy));
+            }
+        });
+
+
+        final EmojiPopup emojiPopup = emojiBuilder.build(etCommentsBox);
+
+
+        emojiBtn.setOnClickListener(view -> {
+
+            if (emojiPopup.isShowing())
+                emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy));
+            else
+                emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard));
+
+
+            emojiPopup.toggle();
+
+
+        });
+
+        etCommentsBox.setOnClickListener(view -> {
+
+
+            if (emojiPopup.isShowing())
+                emojiPopup.toggle();
+
+            emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy));
+
+        });
 
 
         if (rosterTable != null){

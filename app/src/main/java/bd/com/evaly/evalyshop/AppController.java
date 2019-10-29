@@ -21,6 +21,8 @@ import com.crashlytics.android.Crashlytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
+import com.vanniktech.emoji.EmojiManager;
+import com.vanniktech.emoji.google.GoogleEmojiProvider;
 
 import java.io.IOException;
 import java.util.List;
@@ -71,6 +73,9 @@ public class AppController extends Application implements Application.ActivityLi
         database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "evalyDB").build();
 
         userDetails = new UserDetails(this);
+
+        EmojiManager.install(new GoogleEmojiProvider());
+
 
 //        internetConnectionDialog();
         Logger.addLogAdapter(new AndroidLogAdapter());

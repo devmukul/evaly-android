@@ -30,6 +30,25 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AuthApiHelper {
+
+    public static void checkUpdate(DataFetchingListener<Response<JsonObject>> listener){
+
+        IApiClient iApiClient = getiApiClient();
+        Call<JsonObject> call = iApiClient.checkUpdate();
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                listener.onFailed(0);
+            }
+        });
+
+    }
+
     public static void setPassword(HashMap<String, String> model, DataFetchingListener<Response<JsonObject>> listener){
 
         IApiClient iApiClient = getiApiClient();

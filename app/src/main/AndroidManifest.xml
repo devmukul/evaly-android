@@ -3,6 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="bd.com.evaly.evalyshop">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name=".AppController"
         android:allowBackup="true"
@@ -12,10 +20,19 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".activity.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activity.newsfeed.NewsfeedNotification" />
         <activity
             android:name=".activity.newsfeed.NewsfeedActivity"
@@ -38,10 +55,10 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="OPEN_CHAT_DETAILS" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.TransactionHistory"
             android:theme="@style/ThemeTransaction" />
@@ -52,7 +69,6 @@
         <activity
             android:name=".activity.ImagePreview"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -60,15 +76,12 @@
         <activity
             android:name=".activity.VoucherActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".activity.giftcard.GiftCardActivity"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".activity.SearchCategory"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".activity.orderDetails.PayViaBkashActivity"
             android:theme="@style/AppTheme" />
@@ -120,19 +133,11 @@
         <activity
             android:name=".activity.MainActivity"
             android:largeHeap="true"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".activity.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".activity.SignUpActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -164,7 +169,6 @@
         <meta-data
             android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
             android:value="false" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/logo" />
@@ -182,13 +186,12 @@
         <service
             android:name=".xmpp.XMPPService"
             android:enabled="true" />
-
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service android:name=".service.XmppConnectionIntentService" />
@@ -197,14 +200,5 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
     </application>
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
 </manifest>

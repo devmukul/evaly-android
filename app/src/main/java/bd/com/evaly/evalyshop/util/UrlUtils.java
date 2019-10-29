@@ -34,4 +34,7 @@ public class UrlUtils {
     public static final String ADD_ROSTER = "api/add_rosteritem";
     public static final String IMAGE_UPLOAD = "image/upload/";
 
+    public static final String CHECK_UPDATE = BASE_URL + "apps/versions/current";
+
+
 }
