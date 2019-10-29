@@ -105,7 +105,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     LinearLayout llOnlineStatus;
     @BindView(R.id.ivBack)
     ImageView ivBack;
-    @BindView(R.id.progressBar)
+    @BindView(R.id.infinite_scroll_progressbar)
     ProgressBar progressBar;
 
     @BindView(R.id.emoji_btn)
@@ -377,6 +377,8 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
             if (rosterTable != null && rosterTable.imageUrl != null && rosterTable.imageUrl.equalsIgnoreCase("evaly")){
                 ivProfileImage.setImageResource(R.mipmap.ic_launcher);
+                tvOnlineStatus.setText("Online");
+                llOnlineStatus.setVisibility(View.VISIBLE);
             }else {
                 Glide.with(this)
                         .load(rosterTable.imageUrl)
@@ -512,7 +514,13 @@ public class ChatDetailsActivity extends AppCompatActivity {
     }
 
     private void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.bringToFront();
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void loadMessage() {
