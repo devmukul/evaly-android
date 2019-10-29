@@ -353,7 +353,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 }
 
             } else {
-                if (rosterTable.rosterName.equals("")) {
+                if (rosterTable.rosterName.equals("")|| rosterTable.rosterName.equalsIgnoreCase("null null")) {
                     if (rosterTable.name != null) {
                         tvName.setText(rosterTable.name);
                     } else if (rosterTable.nick_name == null) {
@@ -375,7 +375,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 llOnlineStatus.setVisibility(View.GONE);
             }
 
-            if (rosterTable.imageUrl.equalsIgnoreCase("evaly")){
+            if (rosterTable != null && rosterTable.imageUrl != null && rosterTable.imageUrl.equalsIgnoreCase("evaly")){
                 ivProfileImage.setImageResource(R.mipmap.ic_launcher);
             }else {
                 Glide.with(this)

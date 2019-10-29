@@ -111,30 +111,30 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
         //On User Presence Changed
-        public void onLoggedIn(){
+        public void onLoggedIn() {
             xmppHandler = AppController.getmService().xmpp;
             try {
-                ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER+"@"+Constants.XMPP_HOST));
+                ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
                 updateEvalyChat(chatItem);
             } catch (XmppStringprepException e) {
                 e.printStackTrace();
             }
         }
 
-        public void onConnected(){
+        public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
             try {
-                ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER+"@"+Constants.XMPP_HOST));
+                ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
                 updateEvalyChat(chatItem);
             } catch (XmppStringprepException e) {
                 e.printStackTrace();
             }
         }
 
-        public void onLoginFailed(String msg){
-            if (msg.contains("already logged in")){
+        public void onLoginFailed(String msg) {
+            if (msg.contains("already logged in")) {
                 try {
-                    ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER+"@"+Constants.XMPP_HOST));
+                    ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
                     updateEvalyChat(chatItem);
                 } catch (XmppStringprepException e) {
                     e.printStackTrace();
@@ -182,22 +182,28 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
             } else {
                 RosterTable roasterModel = rosterList.get(position);
-//                AsyncTask.execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), roasterModel.id, roasterModel.unreadCount+1);
-//                    }
-//                });
-                roasterModel.lastMessage = new Gson().toJson(chatItem);
+
+                if (chatItem.getSender().contains(Constants.EVALY_NUMBER)) {
+                    updateEvalyChat(chatItem);
+                } else {
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), roasterModel.id, roasterModel.unreadCount + 1);
+                        }
+                    });
+                    roasterModel.lastMessage = new Gson().toJson(chatItem);
 //                roasterModel.unreadCount = roasterModel.unreadCount + 1;
-                rosterList.set(position, roasterModel);
-                adapter.notifyItemChanged(position);
+                    rosterList.set(position, roasterModel);
+                    adapter.notifyItemChanged(position);
 
-                rosterList.remove(position);
+                    rosterList.remove(position);
 
-                rosterList.add(0, roasterModel);
-                adapter.notifyItemMoved(position, 0);
-                rvChatList.smoothScrollToPosition(0);
+                    rosterList.add(0, roasterModel);
+                    adapter.notifyItemMoved(position, 0);
+                    rvChatList.smoothScrollToPosition(0);
+                }
             }
 
             Logger.d(new Gson().toJson(chatItem));
@@ -263,7 +269,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         });
 
 
-
         viewModel = new RoomWIthRxViewModel(getApplication());
         AsyncTask.execute(new Runnable() {
             @Override
@@ -272,14 +277,14 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(list -> {
-                            if (AppController.allDataLoaded){
+                            if (AppController.allDataLoaded) {
                                 rosterList.clear();
                                 rosterList.addAll(list);
                                 for (int i = 0; i < rosterList.size(); i++) {
                                     if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
                                         RosterTable table = rosterList.get(i);
-                                        if (table.lastMessage == null || table.lastMessage.trim().equals("")){
-                                            sendMessage();
+                                        if (table.lastMessage == null || table.lastMessage.trim().equals("")) {
+//                                            sendMessage();
                                         }
                                         Logger.d(new Gson().toJson(table));
 
@@ -323,9 +328,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         startXmppService();
 
-        if (xmppHandler != null && xmppHandler.isConnected()){
+        if (xmppHandler != null && xmppHandler.isConnected()) {
             try {
-                ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER+"@"+Constants.XMPP_HOST));
+                ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
                 updateEvalyChat(chatItem);
                 Logger.d(new Gson().toJson(chatItem));
             } catch (XmppStringprepException e) {
@@ -381,9 +386,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     }
 
     @OnClick(R.id.llEvaly)
-    void evaly(){
+    void evaly() {
         RosterTable roasterModel = new RosterTable();
-        roasterModel.id = Constants.EVALY_NUMBER+"@"+Constants.XMPP_HOST;
+        roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
         roasterModel.rosterName = "Evaly";
         roasterModel.imageUrl = "evaly";
         startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class)
@@ -413,7 +418,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         }
     }
 
-    private void sendMessage(){
+    private void sendMessage() {
         try {
             EntityBareJid jid = JidCreate.entityBareFrom(Constants.EVALY_NUMBER + "@"
                     + Constants.XMPP_HOST);
@@ -421,7 +426,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             EntityBareJid mJid = JidCreate.entityBareFrom(CredentialManager.getUserName() + "@"
                     + Constants.XMPP_HOST);
 
-            ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), mJid.asUnescapedString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
+            ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), mJid.asUnescapedString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
 
             try {
                 xmppHandler.sendMessage(chatItem);
@@ -522,7 +527,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 //                        VCardObject vCardObject = new VCardObject(vCard.getFirstName() + " " + vCard.getLastName(), vCard.getFrom(), vCard.getField("URL"), 0);
                                 startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) roasterModel));
                             } else {
-                                if (xmppHandler.isLoggedin() && xmppHandler.isConnected()){
+                                if (xmppHandler.isLoggedin() && xmppHandler.isConnected()) {
                                     loading.showDialog();
                                     dialog.dismiss();
                                     HashMap<String, String> data = new HashMap<>();
@@ -559,7 +564,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                                                                     Toast.makeText(getApplicationContext(), "Invitation sent!", Toast.LENGTH_LONG).show();
 //                                                                xmppHandler.sendRequestTo(etPhoneNumber.getText().toString(), etPhoneNumber.getText().toString());
                                                                     Logger.d("[[[[[[[[[[[");
-                                                                    ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
+                                                                    ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
 
                                                                     try {
                                                                         xmppHandler.sendMessage(chatItem);
@@ -601,7 +606,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                                                         });
                                                     } else {
                                                         loading.hideDialog();
-                                                        ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
+                                                        ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
 
                                                         try {
                                                             xmppHandler.sendMessage(chatItem);
@@ -644,7 +649,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                                             Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                                         }
                                     });
-                                }else {
+                                } else {
                                     startXmppService();
                                 }
                             }
