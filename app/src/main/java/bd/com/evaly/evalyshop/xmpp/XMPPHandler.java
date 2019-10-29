@@ -922,29 +922,30 @@ public class XMPPHandler {
         if (condition == null) {
 
             Logger.d(connection.isConnected() + "   [[[[[[[");
-            Logger.d("%%%%%%%%%%%%%%%%%%%%%%%%%%");
-            HashMap<String, String> data = new HashMap<>();
-            data.put("localuser", CredentialManager.getUserName());
-            data.put("localserver", Constants.XMPP_HOST);
-            data.put("user", Constants.EVALY_NUMBER);
-            data.put("server", Constants.XMPP_HOST);
-            data.put("nick", "Evaly");
-            data.put("subs", "both");
-            data.put("group", "evaly");
-
-            AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-                @Override
-                public void onDataFetched(Response<JsonPrimitive> response) {
-                    if (response.code() == 200 || response.code() == 201) {
-                        addRosterByOther(name);
-                    } else {
-                    }
-                }
-
-                @Override
-                public void onFailed(int status) {
-                }
-            });
+            service.onSignupSuccess();
+//            Logger.d("%%%%%%%%%%%%%%%%%%%%%%%%%%");
+//            HashMap<String, String> data = new HashMap<>();
+//            data.put("localuser", CredentialManager.getUserName());
+//            data.put("localserver", Constants.XMPP_HOST);
+//            data.put("user", Constants.EVALY_NUMBER);
+//            data.put("server", Constants.XMPP_HOST);
+//            data.put("nick", "Evaly");
+//            data.put("subs", "both");
+//            data.put("group", "evaly");
+//
+//            AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+//                @Override
+//                public void onDataFetched(Response<JsonPrimitive> response) {
+//                    if (response.code() == 200 || response.code() == 201) {
+//                        addRosterByOther(name);
+//                    } else {
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailed(int status) {
+//                }
+//            });
 
 
         } else {
@@ -1504,13 +1505,17 @@ public class XMPPHandler {
         }
         if (count == list.size()) {
             Logger.d(count + "    ==========");
+
             for (RosterTable table : list) {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        AppController.database.taskDao().addRoster(table);
-                    }
-                });
+                Logger.d(Constants.EVALY_NUMBER+"      "+table.id);
+                if (!table.id.contains(Constants.EVALY_NUMBER)){
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            AppController.database.taskDao().addRoster(table);
+                        }
+                    });
+                }
             }
             AppController.allDataLoaded = true;
         }
@@ -1552,12 +1557,14 @@ public class XMPPHandler {
                     table.status = 1;
                     table.rosterName = "";
                     table.unreadCount = 1;
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            AppController.database.taskDao().addRoster(table);
-                        }
-                    });
+                    if (!table.id.contains(Constants.EVALY_NUMBER)){
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                AppController.database.taskDao().addRoster(table);
+                            }
+                        });
+                    }
                 } catch (XmppStringprepException e) {
                     e.printStackTrace();
                 }
@@ -1843,13 +1850,15 @@ public class XMPPHandler {
                 unreadCount = Integer.valueOf(value);
                 table.unreadCount = unreadCount;
 
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        Logger.d(new Gson().toJson(table));
-                        AppController.database.taskDao().addRoster(table);
-                    }
-                });
+                if (!table.id.contains(Constants.EVALY_NUMBER)){
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Logger.d(new Gson().toJson(table));
+                            AppController.database.taskDao().addRoster(table);
+                        }
+                    });
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();

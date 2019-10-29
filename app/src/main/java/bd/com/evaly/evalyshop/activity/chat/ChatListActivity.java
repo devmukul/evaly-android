@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -79,6 +80,12 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.not)
     LinearLayout not;
+    @BindView(R.id.tvName)
+    TextView tvName;
+    @BindView(R.id.tvBody)
+    TextView tvBody;
+    @BindView(R.id.tvTime)
+    TextView tvTime;
 
     private EditText etPhoneNumber, etContactName;
     private Button btnInvite;
@@ -104,6 +111,37 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
         //On User Presence Changed
+        public void onLoggedIn(){
+            xmppHandler = AppController.getmService().xmpp;
+            try {
+                ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER+"@"+Constants.XMPP_HOST));
+                updateEvalyChat(chatItem);
+            } catch (XmppStringprepException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void onConnected(){
+            xmppHandler = AppController.getmService().xmpp;
+            try {
+                ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER+"@"+Constants.XMPP_HOST));
+                updateEvalyChat(chatItem);
+            } catch (XmppStringprepException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void onLoginFailed(String msg){
+            if (msg.contains("already logged in")){
+                try {
+                    ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER+"@"+Constants.XMPP_HOST));
+                    updateEvalyChat(chatItem);
+                } catch (XmppStringprepException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         public void onPresenceChanged(PresenceModel presenceModel) {
 
             Logger.d(presenceModel.getUserStatus());
@@ -225,6 +263,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         });
 
 
+
         viewModel = new RoomWIthRxViewModel(getApplication());
         AsyncTask.execute(new Runnable() {
             @Override
@@ -284,6 +323,16 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         startXmppService();
 
+        if (xmppHandler != null && xmppHandler.isConnected()){
+            try {
+                ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER+"@"+Constants.XMPP_HOST));
+                updateEvalyChat(chatItem);
+                Logger.d(new Gson().toJson(chatItem));
+            } catch (XmppStringprepException e) {
+                e.printStackTrace();
+            }
+        }
+
         xmppEventReceiver = mChatApp.getEventReceiver();
 //        mVCard = xmppHandler.mVcard;
 
@@ -329,6 +378,39 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             }
         });
 
+    }
+
+    @OnClick(R.id.llEvaly)
+    void evaly(){
+        RosterTable roasterModel = new RosterTable();
+        roasterModel.id = Constants.EVALY_NUMBER+"@"+Constants.XMPP_HOST;
+        roasterModel.rosterName = "Evaly";
+        roasterModel.imageUrl = "evaly";
+        startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class)
+                .putExtra("roster", (Serializable) roasterModel));
+    }
+
+    private void updateEvalyChat(ChatItem chatItem) {
+        if (chatItem == null) {
+
+        } else {
+            if (chatItem.getSender().contains(CredentialManager.getUserName())) {
+                if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
+                    tvBody.setText("You: Sent an image");
+                } else {
+                    tvBody.setText("You: " + chatItem.getChat());
+                }
+
+            } else {
+                if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
+                    tvBody.setText("Sent an image");
+                } else {
+                    tvBody.setText(chatItem.getChat());
+                }
+            }
+            tvTime.setText(chatItem.getTime());
+
+        }
     }
 
     private void sendMessage(){

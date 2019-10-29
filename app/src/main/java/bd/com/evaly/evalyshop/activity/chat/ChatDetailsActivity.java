@@ -375,10 +375,14 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 llOnlineStatus.setVisibility(View.GONE);
             }
 
-            Glide.with(this)
-                    .load(rosterTable.imageUrl)
-                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
-                    .into(ivProfileImage);
+            if (rosterTable.imageUrl.equalsIgnoreCase("evaly")){
+                ivProfileImage.setImageResource(R.mipmap.ic_launcher);
+            }else {
+                Glide.with(this)
+                        .load(rosterTable.imageUrl)
+                        .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                        .into(ivProfileImage);
+            }
         }else {
             senderId = getIntent().getExtras().get("sender").toString();
 
