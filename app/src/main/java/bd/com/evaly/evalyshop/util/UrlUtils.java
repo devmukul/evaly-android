@@ -4,14 +4,24 @@ public class UrlUtils {
 
     /* Dev mode */
 
-    public static final String DOMAIN = "https://api-dev.evaly.com.bd/";
+    // public static final String DOMAIN = "https://api-dev.evaly.com.bd/";
+
+
+    public static final String DOMAIN = "http://192.168.1.230:8000/";
+
+    public static final String DOMAIN5000 = "http://192.168.1.230:5000/";
 
     /* Production */
 
-//     public static final String DOMAIN = "https://api.evaly.com.bd/";
+    // public static final String DOMAIN = "https://api.evaly.com.bd/";
 
 
-    public static final String BASE_URL = DOMAIN + "core/";
+    public static final String BASE_URL = DOMAIN + "";
+
+    public static final String BASE_URL_AUTH = DOMAIN5000 + "";
+
+    public static final String BASE_URL_AUTH_API = DOMAIN5000 + "api/";
+
     public static final String BASE_URL_NEWSFEED = DOMAIN + "newsfeed/";
 
     public static final String BASE_URL_PAYMENT = DOMAIN + "pay/";
@@ -24,7 +34,13 @@ public class UrlUtils {
 
 
     public static final String CHANGE_PASSWORD = BASE_URL + "change-password/";
-    public static final String SET_PASSWORD = BASE_URL + "set-password/";
+
+    // changed
+    public static final String SET_PASSWORD = BASE_URL_AUTH + "set-password/";
+
+    public static final String REFRESH_TOKEN = BASE_URL_AUTH_API + "refresh/";
+
+
     public static final String REGISTER = BASE_URL + "register/";
     public static final String SEND_CUSTOM_MESSAGE = BASE_URL + "custom-message/";
 

@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.models.apiHelper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 
@@ -16,11 +17,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.SetPasswordModel;
+import bd.com.evaly.evalyshop.models.User;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
+import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.viewmodel.ImageUploadView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -85,6 +89,35 @@ public class AuthApiHelper {
 
     }
 
+
+    public static void refreshToken(Activity context, DataFetchingListener<Response<JsonObject>> listener) {
+
+        UserDetails userDetails = new UserDetails(context);
+
+        IApiClient iApiClient = getiApiClient();
+        HashMap<String, String> data = new HashMap<>();
+        data.put("access", userDetails.getToken());
+        data.put("refresh", userDetails.getRefreshToken());
+        Call<JsonObject> call = iApiClient.refreshToken(data);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.code() == 401){
+                    AppController.logout(context);
+                }else {
+                    listener.onDataFetched(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                listener.onFailed(0);
+            }
+        });
+
+    }
+
+
     public static void changeXmppPassword(HashMap<String, String> data, DataFetchingListener<Response<JsonPrimitive>> listener){
 
         IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
@@ -126,6 +159,7 @@ public class AuthApiHelper {
 
         IApiClient iApiClient = ApiClient.getClient().create(IApiClient.class);
         Call<JsonObject> call = iApiClient.sendCustomMessage(CredentialManager.getToken(), data);
+
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

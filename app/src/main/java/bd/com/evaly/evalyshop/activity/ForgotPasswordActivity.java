@@ -91,7 +91,7 @@ public class ForgotPasswordActivity extends BaseActivity {
 
         }
 
-        String url = UrlUtils.BASE_URL + "forgot-password";
+        String url = UrlUtils.BASE_URL_AUTH + "forgot-password";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -146,11 +146,6 @@ public class ForgotPasswordActivity extends BaseActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                headers.put("Content-Type", "application/json");
                 return headers;
             }
         };

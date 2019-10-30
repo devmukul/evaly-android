@@ -30,7 +30,7 @@ import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
 public class Token {
 
 
-    public static void update(Activity context){
+    public static void update(Activity context, boolean openDashboard){
 
 
         UserDetails userDetails = new UserDetails(context);
@@ -38,10 +38,11 @@ public class Token {
         if(userDetails.getToken().equals(""))
             return;
 
-        String url = UrlUtils.BASE_URL+"refresh-auth-token/"+userDetails.getUserName()+"/";
+        String url = UrlUtils.BASE_URL_AUTH_API+"refresh/";
         JSONObject parameters = new JSONObject();
         try {
-            parameters.put("key", "value");
+            parameters.put("access", userDetails.getToken());
+            parameters.put("refresh", userDetails.getRefreshToken());
         } catch (Exception e) {
         }
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
@@ -50,29 +51,13 @@ public class Token {
                 Log.d("json onResponse", response.toString());
 
                 try {
-                    JSONObject data = response.getJSONObject("data");
+                    userDetails.setToken(response.getString("access"));
+                    userDetails.setRefreshToken(response.getString("refresh"));
+                } catch (Exception e){
 
-                    String token = data.getString("token");
-                    JSONObject ob = data.getJSONObject("user_info");
-
-                    if (ob.has("groups"))
-                        userDetails.setGroup(ob.getJSONArray("groups").toString());
-
-                    userDetails.setCreatedAt(ob.getString("created_at"));
-                    userDetails.setToken(token);
-                    userDetails.setUserName(ob.getString("username"));
-                    userDetails.setFirstName(ob.getString("first_name"));
-                    userDetails.setLastName(ob.getString("last_name"));
-                    userDetails.setEmail(ob.getString("email"));
-                    userDetails.setPhone(ob.getString("contact"));
-                    userDetails.setJsonAddress(ob.getString("address"));
-                    userDetails.setProfilePicture(ob.getString("profile_pic_url"));
-                    userDetails.setProfilePictureSM(ob.getString("image_sm"));
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+
+
             }
 
         }, new Response.ErrorListener() {
@@ -83,7 +68,7 @@ public class Token {
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
 
-                    if (response.statusCode != 201) {
+                    if (response.statusCode != 401) {
                         Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
                         AppController.logout(context);
                     }

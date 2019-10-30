@@ -44,6 +44,8 @@ import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.util.Balance;
+import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -191,7 +193,8 @@ public class SignInActivity extends BaseActivity {
         }
 
 
-        String url = UrlUtils.BASE_URL + "login/";
+        String url = UrlUtils.BASE_URL_AUTH_API + "login/";
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -201,44 +204,27 @@ public class SignInActivity extends BaseActivity {
                 Log.d("json login", response.toString());
 
                 try {
-                    JSONObject data = response.getJSONObject("data");
 
-                    token = data.getString("token");
+                    JSONObject data = response;
+
+                    token = data.getString("access");
 
                     CredentialManager.saveToken(token);
-
-                    JSONObject ob = data.getJSONObject("user_info");
-
-                    if (ob.has("groups")){
-                        userDetails.setGroup(ob.getJSONArray("groups").toString());
-                    }
 
                     CredentialManager.saveUserName(userNamePhone);
                     CredentialManager.savePassword(passwordValue);
 
-                    UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
+//                    UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
+//
+//                    Logger.d(new Gson().toJson(userModel));
+//                    CredentialManager.saveUserData(userModel);
 
-                    Logger.d(new Gson().toJson(userModel));
-                    CredentialManager.saveUserData(userModel);
-
+                    userDetails.setUserName(phoneNumber.getText().toString());
                     userDetails.setToken(token);
-                    userDetails.setUserName(ob.getString("username"));
-                    userDetails.setFirstName(ob.getString("first_name"));
-                    userDetails.setLastName(ob.getString("last_name"));
-                    userDetails.setEmail(ob.getString("email"));
-                    userDetails.setPhone(ob.getString("contact"));
-                    userDetails.setUserID(ob.getInt("id"));
-                    userDetails.setJsonAddress(ob.getString("address"));
-                    userDetails.setProfilePicture(ob.getString("profile_pic_url"));
-                    userDetails.setProfilePictureSM(ob.getString("image_sm"));
+                    userDetails.setRefreshToken(data.getString("refresh"));
 
 
-
-                    Toast.makeText(SignInActivity.this, "Successfully signed in", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(SignInActivity.this, UserDashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("from", "signin");
-                    startActivity(intent);
-                    finishAffinity();
+                    Balance.update(SignInActivity.this, true);
 
 
                 } catch (Exception e) {
@@ -261,7 +247,6 @@ public class SignInActivity extends BaseActivity {
                     attempt++;
 
                 } else {
-
 
                     try {
 

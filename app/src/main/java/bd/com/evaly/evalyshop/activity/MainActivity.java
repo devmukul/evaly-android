@@ -546,7 +546,7 @@ public class MainActivity extends BaseActivity {
 
        }
 
-        Token.update(this);
+        Token.update(this, false);
 
 
     }
@@ -652,7 +652,7 @@ public class MainActivity extends BaseActivity {
 
 
         if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()){
-            Token.update(this);
+            Token.update(this, false);
 
             ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
 

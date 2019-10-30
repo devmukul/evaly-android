@@ -335,7 +335,7 @@ public class UserDashboardActivity extends BaseActivity {
         mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
         Balance.update(this, balance);
-        Token.update(this);
+        Token.update(this, false);
 
         ImageView profilePicNav = findViewById(R.id.picture);
 

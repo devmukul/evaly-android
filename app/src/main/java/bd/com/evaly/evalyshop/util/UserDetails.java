@@ -56,6 +56,18 @@ public class UserDetails {
     }
 
 
+    public String getRefreshToken() {
+        String token = pref.getString("refreshtoken","");
+        return token;
+
+    }
+
+    public void setRefreshToken(String token) {
+        editor.putString("refreshtoken", token);
+        editor.commit();
+    }
+
+
     public String getGroups() {
         return  pref.getString("groups","");
     }

@@ -39,6 +39,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.badoualy.stepperindicator.StepperIndicator;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 import com.thefinestartist.finestwebview.FinestWebView;
 import com.thefinestartist.finestwebview.listeners.WebViewListener;
@@ -56,8 +57,10 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.adapter.OrderStatusAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.OrderStatus;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -159,7 +162,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
         // update balance
-        Balance.update(this);
+        Balance.update(this, false);
 
         mViewBg = findViewById(R.id.bg);
 
@@ -589,8 +592,31 @@ public class OrderDetailsActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            makePaymentViaGiftCard(giftCode, invoice, amount);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
                 dialog.hideDialog();
                 Log.e("onErrorResponse", error.toString());
+
+
+
 
                 //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
 
@@ -639,7 +665,7 @@ public class OrderDetailsActivity extends BaseActivity {
     @Override
     public void onResume(){
         super.onResume();
-        Balance.update(this);
+        Balance.update(this, false);
         checkCardBalance();
 
     }
@@ -650,7 +676,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void checkCardBalance(){
 
-        String url=UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName()+"/";
+        String url=UrlUtils.BASE_URL_AUTH_API+"user-info-pay/"+userDetails.getUserName()+"/";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
             @Override
@@ -673,6 +699,25 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            checkCardBalance();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
             }
         }) {
             @Override
