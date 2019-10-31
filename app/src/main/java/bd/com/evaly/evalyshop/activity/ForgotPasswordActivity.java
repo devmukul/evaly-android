@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
@@ -31,7 +32,10 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.activity.password.PasswordActivity;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -126,6 +130,23 @@ public class ForgotPasswordActivity extends BaseActivity {
                                 if (jsonObject.getString("success") != null)
                                     Toast.makeText(ForgotPasswordActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                                 break;
+
+                            case 401:
+
+                                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                        @Override
+                                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                            resetPassword();
+                                        }
+
+                                        @Override
+                                        public void onFailed(int status) {
+
+                                        }
+                                    });
+
+                                    return;
+
                             case 500:
                                 Toast.makeText(ForgotPasswordActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
 
