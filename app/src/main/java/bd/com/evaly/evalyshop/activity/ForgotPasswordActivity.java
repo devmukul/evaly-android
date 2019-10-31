@@ -133,7 +133,7 @@ public class ForgotPasswordActivity extends BaseActivity {
 
                             case 401:
 
-                                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                    AuthApiHelper.refreshToken(ForgotPasswordActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                                         @Override
                                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                                             resetPassword();

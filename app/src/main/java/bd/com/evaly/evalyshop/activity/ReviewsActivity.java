@@ -518,7 +518,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
                 if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    AuthApiHelper.refreshToken(ReviewsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                             getShopReviews(sku);
@@ -598,7 +598,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
                 if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    AuthApiHelper.refreshToken(ReviewsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                             postShopReview( alertDialog,  sku,  user_name,  rating_value,  rating_text);

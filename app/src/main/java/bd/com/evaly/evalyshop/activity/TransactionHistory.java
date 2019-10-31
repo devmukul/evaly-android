@@ -179,7 +179,7 @@ public class TransactionHistory extends AppCompatActivity {
 
                 if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    AuthApiHelper.refreshToken(TransactionHistory.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                             getTransactionHistory(page);
@@ -240,7 +240,7 @@ public class TransactionHistory extends AppCompatActivity {
 
                 if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    AuthApiHelper.refreshToken(TransactionHistory.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                             getBalance();

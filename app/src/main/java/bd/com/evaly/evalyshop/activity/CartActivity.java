@@ -43,6 +43,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
@@ -62,7 +63,9 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.orderDetails.AddBalanceActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.CartAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.CartItem;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -549,6 +552,25 @@ public class CartActivity extends BaseActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
+
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(CartActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            placeOrder(payload, alert);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
                 Toast.makeText(context, "Couldn't place holder, might be a server error.", Toast.LENGTH_SHORT).show();
                 dialog.hideDialog();
 
@@ -560,12 +582,6 @@ public class CartActivity extends BaseActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                // headers.put("Content-Length", data.length()+"");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
                 return headers;
             }
 

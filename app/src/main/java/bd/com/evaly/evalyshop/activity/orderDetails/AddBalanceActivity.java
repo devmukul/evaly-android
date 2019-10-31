@@ -26,6 +26,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 import com.thefinestartist.finestwebview.FinestWebView;
 import com.thefinestartist.finestwebview.listeners.WebViewListener;
 
@@ -37,6 +38,8 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -328,19 +331,32 @@ public class AddBalanceActivity extends BaseActivity
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(AddBalanceActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            addBalance();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
+
             }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Content-Length", data.length()+"");
 
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                headers.put("Content-Type", "application/json");
                 return headers;
             }
 

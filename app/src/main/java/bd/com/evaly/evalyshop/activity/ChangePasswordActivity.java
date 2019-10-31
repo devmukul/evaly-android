@@ -23,6 +23,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONObject;
@@ -33,7 +34,10 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -212,6 +216,26 @@ public class ChangePasswordActivity extends BaseActivity {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+
+
+                            if (error.networkResponse.statusCode == 401){
+
+                                AuthApiHelper.refreshToken(ChangePasswordActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                    @Override
+                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                        Toast.makeText(ChangePasswordActivity.this, "Please try again now", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onFailed(int status) {
+
+                                    }
+                                });
+
+                                return;
+
+                            }
+
                             try {
 
                                 dialog.hideDialog();
@@ -229,14 +253,6 @@ public class ChangePasswordActivity extends BaseActivity {
 
                             Map<String, String> headers = new HashMap<>();
                             headers.put("Authorization", "Bearer " + userDetails.getToken());
-                            // headers.put("Host", "api-prod.evaly.com.bd");
-                            headers.put("Content-Type", "application/json");
-                            headers.put("Origin", "https://evaly.com.bd");
-                            headers.put("Referer", "https://evaly.com.bd/");
-                            headers.put("User-Agent", userAgent);
-                            // headers.put("Content-Length", data.length()+"");
-
-                            // Log.d("json", headers.toString());
 
                             return headers;
                         }

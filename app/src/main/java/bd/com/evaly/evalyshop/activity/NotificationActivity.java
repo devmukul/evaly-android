@@ -127,7 +127,7 @@ public class NotificationActivity extends BaseActivity {
 
                 if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    AuthApiHelper.refreshToken(NotificationActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                             getNotifications();
