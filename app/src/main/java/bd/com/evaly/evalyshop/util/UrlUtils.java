@@ -4,12 +4,11 @@ public class UrlUtils {
 
     /* Dev mode */
 
-    // public static final String DOMAIN = "https://api-dev.evaly.com.bd/";
+    public static final String DOMAIN = "https://api-dev.evaly.com.bd/";
 
 
-    public static final String DOMAIN = "http://192.168.1.230:8000/";
 
-    public static final String DOMAIN5000 = "http://192.168.1.230:5000/";
+    public static final String DOMAIN5000 = DOMAIN+"auth/";
 
     /* Production */
 

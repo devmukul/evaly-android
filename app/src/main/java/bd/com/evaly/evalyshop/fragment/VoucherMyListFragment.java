@@ -453,7 +453,7 @@ public class VoucherMyListFragment extends Fragment {
 
                 if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                             paymentViaCard();
@@ -554,7 +554,7 @@ public class VoucherMyListFragment extends Fragment {
 
                 if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                             paymentViaBank(image);
@@ -629,7 +629,7 @@ public class VoucherMyListFragment extends Fragment {
 
                 if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                             paymentViaBkash();
@@ -828,7 +828,7 @@ public class VoucherMyListFragment extends Fragment {
 
                 if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                             holdingAmount();
@@ -983,7 +983,7 @@ public class VoucherMyListFragment extends Fragment {
 
                             if (error.networkResponse.statusCode == 401){
 
-                                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                                     @Override
                                     public void onDataFetched(retrofit2.Response<JsonObject> response) {
                                         uploadBankDepositImage(bitmap);
