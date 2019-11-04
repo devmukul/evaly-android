@@ -358,6 +358,10 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     .load(vCard.imageUrl)
                     .apply(new RequestOptions().placeholder(R.drawable.user_image))
                     .into(ivProfile);
+
+
+            tvChatTime.setText(Utils.getTimeAgo(chatItem.getLognTime()));
+
         }
     }
 }
