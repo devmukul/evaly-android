@@ -104,12 +104,12 @@ public class Token {
         if(userDetails.getToken().equals(""))
             return;
 
-        String url = UrlUtils.BASE_URL_AUTH_API+"api/logout/";
+        String url = UrlUtils.BASE_URL_AUTH_API+"logout/";
         JSONObject parameters = new JSONObject();
 
         Log.d("jsonz url", url);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
@@ -126,16 +126,7 @@ public class Token {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
 
-                    listener.onFailed(response.statusCode);
-
-                    if (response.statusCode != 401) {
-                        Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
-                        AppController.logout(context);
-                    }
-                }
             }
 
         }) {
@@ -154,6 +145,7 @@ public class Token {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
     }
+
 
 
 }

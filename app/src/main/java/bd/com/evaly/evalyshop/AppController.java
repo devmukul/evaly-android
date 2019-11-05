@@ -234,32 +234,19 @@ public class AppController extends Application implements Application.ActivityLi
         });
 
 
-        Token.logout(context, new DataFetchingListener<JSONObject>() {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onDataFetched(JSONObject response) {
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        context.stopService(new Intent(context, XMPPService.class));
-                        context.startActivity(new Intent(context, SignInActivity.class)
-                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                        context.finish();
-                        System.exit(1);
-                    }
-                }, 400);
-
-
+            public void run() {
+                context.stopService(new Intent(context, XMPPService.class));
+                context.startActivity(new Intent(context, SignInActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                context.finish();
+                System.exit(1);
             }
+        }, 400);
 
-            @Override
-            public void onFailed(int status) {
 
-            }
-        });
-
-        Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
 
 
 
