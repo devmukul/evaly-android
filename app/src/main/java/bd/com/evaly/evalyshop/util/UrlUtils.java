@@ -7,13 +7,10 @@ public class UrlUtils {
     public static final String DOMAIN = "https://api-dev.evaly.com.bd/";
 
 
+    /* Production */
+//     public static final String DOMAIN = "https://api.evaly.com.bd/";
 
     public static final String DOMAIN5000 = DOMAIN+"auth/";
-
-    /* Production */
-
-    // public static final String DOMAIN = "https://api.evaly.com.bd/";
-
 
     public static final String BASE_URL = DOMAIN + "core/";
 
@@ -40,8 +37,8 @@ public class UrlUtils {
     public static final String REFRESH_TOKEN = BASE_URL_AUTH_API + "refresh/";
 
 
-    public static final String REGISTER = BASE_URL + "register/";
-    public static final String SEND_CUSTOM_MESSAGE = BASE_URL + "custom-message/";
+    public static final String REGISTER = DOMAIN5000 + "register/";
+    public static final String SEND_CUSTOM_MESSAGE = DOMAIN5000 + "custom-message/";
 
 
     public static final String CHANGE_XMPP_PASSWORD = "/api/change_password";

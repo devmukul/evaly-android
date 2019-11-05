@@ -15,6 +15,14 @@ public class CredentialManager {
         return MyPreference.with(AppController.getmContext()).getString(ConstantUtils.TOKEN, "");
     }
 
+    public static void saveRefreshToken(String token){
+        MyPreference.with(AppController.mContext).addString(ConstantUtils.REFRESH_TOKEN, "Bearer "+ token).save();
+    }
+
+    public static String getRefreshToken(){
+        return MyPreference.with(AppController.getmContext()).getString(ConstantUtils.REFRESH_TOKEN, "");
+    }
+
     public static void saveUserName(String userName){
         MyPreference.with(AppController.mContext).addString(ConstantUtils.USERNAME, userName).save();
     }

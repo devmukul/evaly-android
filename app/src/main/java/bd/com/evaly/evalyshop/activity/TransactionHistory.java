@@ -218,7 +218,7 @@ public class TransactionHistory extends AppCompatActivity {
 
 
     public void getBalance(){
-        String url= UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName()+"/";
+        String url= UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName()+"/";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
             @Override

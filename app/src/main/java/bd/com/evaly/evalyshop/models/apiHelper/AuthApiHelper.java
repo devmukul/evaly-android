@@ -35,7 +35,7 @@ import retrofit2.Response;
 
 public class AuthApiHelper {
 
-    public static void checkUpdate(DataFetchingListener<Response<JsonObject>> listener){
+    public static void checkUpdate(DataFetchingListener<Response<JsonObject>> listener) {
 
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call = iApiClient.checkUpdate();
@@ -53,7 +53,7 @@ public class AuthApiHelper {
 
     }
 
-    public static void setPassword(HashMap<String, String> model, DataFetchingListener<Response<JsonObject>> listener){
+    public static void setPassword(HashMap<String, String> model, DataFetchingListener<Response<JsonObject>> listener) {
 
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call = iApiClient.setPassword(model);
@@ -71,7 +71,7 @@ public class AuthApiHelper {
 
     }
 
-    public static void register(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener){
+    public static void register(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {
 
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call = iApiClient.register(data);
@@ -102,9 +102,20 @@ public class AuthApiHelper {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.code() == 401){
+                if (response.code() == 401) {
                     AppController.logout(context);
-                }else {
+                } else if (response.code() == 200 || response.code() == 201) {
+                    String token = response.body().get("access").getAsString();
+                    String refresh = response.body().get("refresh").getAsString();
+                    CredentialManager.saveToken(token);
+                    CredentialManager.saveRefreshToken(refresh);
+
+                    try {
+                        userDetails.setToken(token);
+                        userDetails.setRefreshToken(refresh);
+                    } catch (Exception e) {
+
+                    }
                     listener.onDataFetched(response);
                 }
             }
@@ -118,7 +129,7 @@ public class AuthApiHelper {
     }
 
 
-    public static void changeXmppPassword(HashMap<String, String> data, DataFetchingListener<Response<JsonPrimitive>> listener){
+    public static void changeXmppPassword(HashMap<String, String> data, DataFetchingListener<Response<JsonPrimitive>> listener) {
 
         IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
         Call<JsonPrimitive> call = iApiClient.changeXmppPassword(data);
@@ -137,7 +148,7 @@ public class AuthApiHelper {
 
     }
 
-    public static void addRoster(HashMap<String, String> data, DataFetchingListener<Response<JsonPrimitive>> listener){
+    public static void addRoster(HashMap<String, String> data, DataFetchingListener<Response<JsonPrimitive>> listener) {
 
         IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
         Call<JsonPrimitive> call = iApiClient.addRoster(data);
@@ -155,7 +166,8 @@ public class AuthApiHelper {
         });
 
     }
-    public static void sendCustomMessage(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener){
+
+    public static void sendCustomMessage(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {
 
         IApiClient iApiClient = ApiClient.getClient().create(IApiClient.class);
         Call<JsonObject> call = iApiClient.sendCustomMessage(CredentialManager.getToken(), data);
@@ -208,14 +220,14 @@ public class AuthApiHelper {
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), f);
         MultipartBody.Part body = MultipartBody.Part.createFormData("image", f.getName(), requestFile);
 
-        Call<JsonObject> call = iApiClient.imageUpload(CredentialManager.getToken(),"multipart/form-data", body);
+        Call<JsonObject> call = iApiClient.imageUpload(CredentialManager.getToken(), "multipart/form-data", body);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Logger.d(response.body());
                 if (response.code() == 201) {
                     try {
-                        if (view != null){
+                        if (view != null) {
                             String img = response.body().getAsJsonObject("data").get("url").getAsString();
                             String smImg = response.body().getAsJsonObject("data").get("url_sm").getAsString();
                             view.onImageUploadSuccess(img, smImg);
@@ -224,8 +236,8 @@ public class AuthApiHelper {
                     } catch (Exception e) {
                         Logger.d(e.getMessage());
                     }
-                }else {
-                    if (view != null){
+                } else {
+                    if (view != null) {
                         view.onImageUploadFailed("Something went wrong, please try again");
                     }
                 }
@@ -234,7 +246,7 @@ public class AuthApiHelper {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Logger.d(t.getMessage());
-                if (view != null){
+                if (view != null) {
                     view.onImageUploadFailed("Something went wrong, please try again");
                 }
             }

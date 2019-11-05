@@ -17,21 +17,27 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
+
 import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.user.UserModel;
 
 
 public class Balance {
 
-    public static void update(Activity context, boolean openDashboard){
+    public static void update(Activity context, boolean openDashboard) {
 
         UserDetails userDetails = new UserDetails(context);
 
 
-        String url=UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName()+"/";
+        String url = UrlUtils.BASE_URL_AUTH + "user-info-pay/" + userDetails.getUserName() + "/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -59,6 +65,11 @@ public class Balance {
                     userDetails.setJsonAddress(ob.getString("address"));
                     userDetails.setProfilePicture(ob.getString("profile_pic_url"));
                     userDetails.setProfilePictureSM(ob.getString("image_sm"));
+
+                    UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
+//
+                    Logger.d(new Gson().toJson(userModel));
+                    CredentialManager.saveUserData(userModel);
 
 
                     if (openDashboard) {
@@ -93,25 +104,17 @@ public class Balance {
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue queue= Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(context);
         queue.add(request);
     }
 
 
-
-
-
-
-
-
-
-
-    public static void update(Context context, TextView textView){
+    public static void update(Context context, TextView textView) {
 
         UserDetails userDetails = new UserDetails(context);
 
 
-        String url=UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName()+"/";
+        String url = UrlUtils.BASE_URL_AUTH + "user-info-pay/" + userDetails.getUserName() + "/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -153,12 +156,9 @@ public class Balance {
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue queue= Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(context);
         queue.add(request);
     }
-
-
-
 
 
 }

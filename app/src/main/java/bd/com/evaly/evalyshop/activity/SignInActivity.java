@@ -184,6 +184,7 @@ public class SignInActivity extends BaseActivity {
             payload.put("password", password.getText().toString());
             payload.put("username", phoneNumber.getText().toString());
 
+            Logger.d(password.getText().toString()+"    "+ phoneNumber.getText().toString());
 
             userNamePhone = phoneNumber.getText().toString();
             passwordValue = password.getText().toString();
@@ -213,11 +214,6 @@ public class SignInActivity extends BaseActivity {
 
                     CredentialManager.saveUserName(userNamePhone);
                     CredentialManager.savePassword(passwordValue);
-
-//                    UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
-//
-//                    Logger.d(new Gson().toJson(userModel));
-//                    CredentialManager.saveUserData(userModel);
 
                     userDetails.setUserName(phoneNumber.getText().toString());
                     userDetails.setToken(token);
@@ -250,7 +246,6 @@ public class SignInActivity extends BaseActivity {
 
                     try {
 
-
                         alert.hideDialog();
                         error.printStackTrace();
 
@@ -260,11 +255,8 @@ public class SignInActivity extends BaseActivity {
                         NetworkResponse response = error.networkResponse;
                         if (response != null && response.data != null) {
                             switch (response.statusCode) {
-                                case 400:
-                                    json = new String(response.data);
-                                    jsonObject = new JSONObject(json);
-                                    if (jsonObject.getString("status") != null)
-                                        Toast.makeText(SignInActivity.this, jsonObject.getString("status"), Toast.LENGTH_SHORT).show();
+                                case 401:
+                                    Toast.makeText(SignInActivity.this, "Incorrect username or password!X", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 500:
                                     Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
@@ -273,6 +265,8 @@ public class SignInActivity extends BaseActivity {
                         }
 
                     } catch (Exception e) {
+                        e.printStackTrace();
+                        Logger.d(e.getMessage());
                         Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
                     }
                 }

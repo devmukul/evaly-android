@@ -777,14 +777,8 @@ public class VoucherMyListFragment extends Fragment {
     }
 
 
-
-
-
-
-
-
     public void holdingAmount(){
-        String url= UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName();
+        String url= UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName();
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
