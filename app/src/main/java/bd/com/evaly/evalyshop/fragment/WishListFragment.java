@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.adapter.WishListAdapter;
 import bd.com.evaly.evalyshop.models.WishList;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -37,6 +39,8 @@ public class WishListFragment extends Fragment {
     ViewDialog alert;
     View view;
 
+    MainActivity activity;
+
     public WishListFragment() {
         // Required empty public constructor
     }
@@ -49,6 +53,9 @@ public class WishListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        activity = (MainActivity) getActivity();
+
 
     }
 
@@ -85,8 +92,32 @@ public class WishListFragment extends Fragment {
 
         });
 
-        getWishList();
 
+//        view.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+//                    //((MainActivity) getActivity()).finish();
+//                    if(getFragmentManager().getBackStackEntryCount() > 0) {
+//                        getFragmentManager().popBackStack();
+//                    }else {
+//                        ((MainActivity) getActivity()).finish();
+//                    }
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+
+
+    }
+
+
+    @Override
+    public void onResume(){
+
+        super.onResume();
+        getWishList();
 
     }
 

@@ -93,7 +93,7 @@ public class MainActivity extends BaseActivity {
     TextView phoneNavHeader;
     DbHelperWishList dbHelperWishList;
     DbHelperCart dbHelperCart;
-    boolean isLaunchActivity = true;
+    public boolean isLaunchActivity = true;
     private View headerView;
 
     private AppController mChatApp = AppController.getInstance();
@@ -421,8 +421,11 @@ public class MainActivity extends BaseActivity {
 //                    startActivity(intent);
 
                     Fragment fragment3 = WishListFragment.newInstance();
-                    ft.replace(R.id.fragment_container, fragment3, "wishlist");
-                    ft.addToBackStack(null);
+
+                    ft.add(R.id.fragment_container, fragment3, "wishlist");
+                    ft.hide(homeFragment);
+                    ft.show(fragment3);
+                    ft.addToBackStack("wishlist");
                     ft.commit();
 
                     break;
@@ -544,10 +547,10 @@ public class MainActivity extends BaseActivity {
 
     public void showHomeFragment() {
        try {
-           Fragment fragment3 = new HomeFragment();
+           homeFragment = new HomeFragment();
            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
            // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-           ft.replace(R.id.fragment_container, fragment3, "Home");
+           ft.replace(R.id.fragment_container, homeFragment, "Home");
            ft.setReorderingAllowed(true);
            ft.addToBackStack("home");
            ft.commit();
