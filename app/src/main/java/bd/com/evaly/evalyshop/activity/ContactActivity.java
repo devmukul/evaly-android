@@ -41,6 +41,7 @@ import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.chat.ChatDetailsActivity;
+import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
@@ -148,89 +149,14 @@ public class ContactActivity extends BaseActivity {
             if (CredentialManager.getToken().equals("")) {
                 Toast.makeText(getApplicationContext(), "Please login to send message", Toast.LENGTH_LONG).show();
             } else {
-                RosterTable roasterModel = getContactFromRoster(Constants.EVALY_NUMBER);
-                Logger.d(new Gson().toJson(roasterModel));
-                if (roasterModel != null) {
-                    dialog.hideDialog();
-//                        VCard vCard = null;
-//                        try {
-//                            vCard = xmppHandler.getUserDetails(JidCreate.bareFrom(roasterModel.id).asEntityBareJidIfPossible());
-//                        } catch (XmppStringprepException e) {
-//                            e.printStackTrace();
-//                        }
-//                        VCardObject vCardObject = new VCardObject(vCard.getFirstName() + " " + vCard.getLastName(), vCard.getFrom(), vCard.getField("URL"), 0);
-                    startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) roasterModel));
-                } else {
-                    dialog.showDialog();
-                    if (xmppHandler != null && xmppHandler.isLoggedin()){
-                        HashMap<String, String> data = new HashMap<>();
-                        data.put("localuser", CredentialManager.getUserName());
-                        data.put("localserver", Constants.XMPP_HOST);
-                        data.put("user", Constants.EVALY_NUMBER);
-                        data.put("server", Constants.XMPP_HOST);
-                        data.put("nick", "Evaly");
-                        data.put("subs", "both");
-                        data.put("group", "evaly");
 
-                        addRosterByOther();
+                RosterTable roasterModel = new RosterTable();
+                roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
+                roasterModel.rosterName = "Evaly";
+                roasterModel.imageUrl = "evaly";
+                startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class)
+                        .putExtra("roster", (Serializable) roasterModel));
 
-                        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-                            @Override
-                            public void onDataFetched(Response<JsonPrimitive> response) {
-
-                                if (response.code() == 200 || response.code() == 201) {
-                                    try {
-                                        EntityBareJid jid = JidCreate.entityBareFrom(Constants.EVALY_NUMBER + "@"
-                                                + Constants.XMPP_HOST);
-                                        VCard vCard = xmppHandler.getUserDetails(jid);
-                                        ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
-
-                                        try {
-                                            xmppHandler.sendMessage(chatItem);
-                                            Logger.d("SENT ");
-                                        } catch (SmackException e) {
-                                            Logger.d("SENT FAILED");
-                                            e.printStackTrace();
-                                        }
-
-                                        RosterTable rosterTable = new RosterTable();
-                                        rosterTable.name = "Evaly";
-                                        rosterTable.id = jid.asUnescapedString();
-                                        rosterTable.imageUrl = vCard.getField("URL");
-                                        rosterTable.status = 0;
-                                        rosterTable.lastMessage = new Gson().toJson(chatItem);
-                                        rosterTable.nick_name = vCard.getNickName();
-                                        rosterTable.time = 0;
-                                        AsyncTask.execute(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                AppController.database.taskDao().addRoster(rosterTable);
-                                            }
-                                        });
-                                        dialog.hideDialog();
-                                        startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) rosterTable));
-
-
-                                    } catch (XmppStringprepException e) {
-                                        e.printStackTrace();
-                                    }
-
-
-                                } else {
-                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailed(int status) {
-                                dialog.hideDialog();
-                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }else {
-
-                    }
-                }
             }
         });
 
