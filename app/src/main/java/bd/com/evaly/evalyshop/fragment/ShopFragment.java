@@ -49,6 +49,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
@@ -736,6 +737,25 @@ public class ShopFragment extends Fragment implements ProductListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getShopProductCount();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
             }
         }) {
             @Override
@@ -982,6 +1002,25 @@ public class ShopFragment extends Fragment implements ProductListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            subscribe();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
             }
         }) {
             @Override

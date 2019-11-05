@@ -42,6 +42,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
@@ -52,11 +53,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.ReplyAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
@@ -1130,6 +1134,23 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getPosts(page);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
 
                 progressContainer.setVisibility(View.GONE);
                 bottomProgressBar.setVisibility(View.INVISIBLE);
@@ -1218,6 +1239,25 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            createComment();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
                 Log.e("onErrorResponse", error.toString());
                 Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
                 commentInput.setEnabled(true);
@@ -1265,6 +1305,25 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            sendLike(slug, like);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
                 Log.e("onErrorResponse", error.toString());
                 Toast.makeText(context, "Couldn't like the status.", Toast.LENGTH_SHORT).show();
             }

@@ -320,6 +320,26 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            paymentViaBank(image);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
             }
         }) {
             @Override
@@ -365,6 +385,24 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+
+                        if (error.networkResponse.statusCode == 401){
+
+                            AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                @Override
+                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                    uploadBankDepositImage(bitmap);
+                                }
+
+                                @Override
+                                public void onFailed(int status) {
+
+                                }
+                            });
+
+                            return;
+
+                        }
 
                         dialog.dismiss();
                         Toast.makeText(context, "Image upload error, might be too large image", Toast.LENGTH_SHORT).show();
@@ -583,6 +621,25 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getGiftCardList();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
                 error.printStackTrace();
                 progressContainer.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);

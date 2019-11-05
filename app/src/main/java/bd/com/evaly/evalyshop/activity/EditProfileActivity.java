@@ -386,6 +386,25 @@ public class EditProfileActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
+                        if (error.networkResponse.statusCode == 401){
+
+                            AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                @Override
+                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                    uploadProfilePicture(bitmap);
+                                }
+
+                                @Override
+                                public void onFailed(int status) {
+
+                                }
+                            });
+
+                            return;
+
+                        }
+
+
                         dialog.dismiss();
                         Toast.makeText(context, "Image upload error", Toast.LENGTH_SHORT).show();
                     }

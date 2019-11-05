@@ -183,6 +183,25 @@ public class NotificationActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+                if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(NotificationActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            markAsRead();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }
+
             }
         }) {
             @Override
