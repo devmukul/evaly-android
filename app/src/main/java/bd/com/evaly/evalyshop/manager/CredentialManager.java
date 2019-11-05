@@ -8,7 +8,7 @@ import bd.com.evaly.evalyshop.util.ConstantUtils;
 public class CredentialManager {
 
     public static void saveToken(String token){
-        MyPreference.with(AppController.mContext).addString(ConstantUtils.TOKEN, "bearer "+ token).save();
+        MyPreference.with(AppController.mContext).addString(ConstantUtils.TOKEN, "Bearer "+ token).save();
     }
 
     public static String getToken(){
