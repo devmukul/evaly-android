@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -237,6 +238,17 @@ public class AppController extends Application implements Application.ActivityLi
             @Override
             public void onDataFetched(JSONObject response) {
 
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        context.stopService(new Intent(context, XMPPService.class));
+                        context.startActivity(new Intent(context, SignInActivity.class)
+                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        context.finish();
+                        System.exit(1);
+                    }
+                }, 400);
 
 
             }
@@ -247,18 +259,10 @@ public class AppController extends Application implements Application.ActivityLi
             }
         });
 
+        Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                context.stopService(new Intent(context, XMPPService.class));
-                context.startActivity(new Intent(context, SignInActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                context.finish();
-                System.exit(1);
-            }
-        }, 400);
+
+
 
 
 
