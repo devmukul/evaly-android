@@ -60,6 +60,7 @@ import bd.com.evaly.evalyshop.fragment.BrandFragment;
 import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
+import bd.com.evaly.evalyshop.fragment.WishListFragment;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
@@ -404,6 +405,8 @@ public class MainActivity extends BaseActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
 
 
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
             Intent intent;
             switch (menuItem.getItemId()) {
                 case R.id.nav_home:
@@ -414,8 +417,14 @@ public class MainActivity extends BaseActivity {
                     showHomeFragment();
                     break;
                 case R.id.nav_wishlist:
-                    intent = new Intent(MainActivity.this, WishListActivity.class);
-                    startActivity(intent);
+//                    intent = new Intent(MainActivity.this, WishListActivity.class);
+//                    startActivity(intent);
+
+                    Fragment fragment3 = WishListFragment.newInstance();
+                    ft.replace(R.id.fragment_container, fragment3, "wishlist");
+                    ft.addToBackStack(null);
+                    ft.commit();
+
                     break;
                 case R.id.nav_cart:
 

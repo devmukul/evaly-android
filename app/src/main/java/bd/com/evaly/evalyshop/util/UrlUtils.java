@@ -15,7 +15,7 @@ public class UrlUtils {
     // public static final String DOMAIN = "https://api.evaly.com.bd/";
 
 
-    public static final String BASE_URL = DOMAIN + "";
+    public static final String BASE_URL = DOMAIN + "core/";
 
     public static final String BASE_URL_AUTH = DOMAIN5000 + "";
 
