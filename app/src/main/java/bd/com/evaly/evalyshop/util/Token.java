@@ -28,6 +28,7 @@ import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 
 public class Token {
 
@@ -55,6 +56,11 @@ public class Token {
                 try {
                     userDetails.setToken(response.getString("access"));
                     userDetails.setRefreshToken(response.getString("refresh"));
+
+
+                    CredentialManager.saveToken(response.getString("access"));
+                    CredentialManager.saveRefreshToken(response.getString("refresh"));
+
                 } catch (Exception e){
 
                 }
