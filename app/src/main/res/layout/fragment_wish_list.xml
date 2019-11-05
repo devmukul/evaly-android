@@ -21,22 +21,13 @@
         android:clickable="true">
 
 
-        <ImageView
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_back"
-            android:padding="10dp"
-            android:layout_marginLeft="5dp"
-            android:background="?attr/actionBarItemBackground"
-            android:clickable="true"/>
 
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Shopping Cart"
+            android:text="Wish List"
             android:textColor="#000"
             android:layout_marginLeft="20dp"
             android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Title"/>

@@ -402,6 +402,9 @@ public class MainActivity extends BaseActivity {
 
         final FragmentManager  fragmentManager= getSupportFragmentManager();
 
+        Fragment fragmentWishtList = WishListFragment.newInstance();
+
+
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
 
 
@@ -410,22 +413,36 @@ public class MainActivity extends BaseActivity {
             Intent intent;
             switch (menuItem.getItemId()) {
                 case R.id.nav_home:
-                    while (fragmentManager.getBackStackEntryCount() > 0) {
-                        fragmentManager.popBackStackImmediate();
-                    }
+//                    while (fragmentManager.getBackStackEntryCount() > 0) {
+//                        fragmentManager.popBackStackImmediate();
+//                    }
+//
+//                    showHomeFragment();
 
-                    showHomeFragment();
+
+
+
+                    ft.hide(fragmentWishtList);
+                    ft.show(homeFragment);
+                    ft.commit();
+
                     break;
                 case R.id.nav_wishlist:
 //                    intent = new Intent(MainActivity.this, WishListActivity.class);
 //                    startActivity(intent);
 
-                    Fragment fragment3 = WishListFragment.newInstance();
 
-                    ft.add(R.id.fragment_container, fragment3, "wishlist");
+
+                    Fragment fragmentW = fragmentManager.findFragmentByTag("wishlist");
+                    if (fragmentW == null) {
+
+                        ft.add(R.id.fragment_container, fragmentWishtList, "wishlist");
+
+                        ft.addToBackStack("wishlist");
+                    }
+
                     ft.hide(homeFragment);
-                    ft.show(fragment3);
-                    ft.addToBackStack("wishlist");
+                    ft.show(fragmentWishtList);
                     ft.commit();
 
                     break;
@@ -453,9 +470,12 @@ public class MainActivity extends BaseActivity {
 
         if(data.hasExtra("type")){
 
+
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
             int type = data.getIntExtra("type", 1);
             Bundle bundle = new Bundle();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             if (type == 2) {
 

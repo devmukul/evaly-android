@@ -85,12 +85,6 @@ public class WishListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
-        ImageView back = view.findViewById(R.id.back);
-        back.setOnClickListener(view1 -> {
-
-            getActivity().onBackPressed();
-
-        });
 
 
 //        view.setOnKeyListener(new View.OnKeyListener() {
