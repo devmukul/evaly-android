@@ -868,6 +868,15 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         }
         isFirst = true;
 
+        if (xmppHandler != null){
+            try {
+                ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
+                updateEvalyChat(chatItem);
+            } catch (XmppStringprepException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @Override
