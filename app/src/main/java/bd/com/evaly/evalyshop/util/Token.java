@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
@@ -26,6 +27,7 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 
 public class Token {
 
@@ -94,7 +96,7 @@ public class Token {
 
 
 
-    public static void logout(Activity context){
+    public static void logout(Activity context, DataFetchingListener<JSONObject> listener){
 
 
         UserDetails userDetails = new UserDetails(context);
@@ -105,9 +107,16 @@ public class Token {
         String url = UrlUtils.BASE_URL_AUTH_API+"api/logout/";
         JSONObject parameters = new JSONObject();
 
+        Log.d("jsonz url", url);
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
+
+                Log.d("jsonz response", response.toString());
+
+                listener.onDataFetched(response);
 
 
             }
@@ -119,6 +128,8 @@ public class Token {
 
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
+
+                    listener.onFailed(response.statusCode);
 
                     if (response.statusCode != 401) {
                         Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
