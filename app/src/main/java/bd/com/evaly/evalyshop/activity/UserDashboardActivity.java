@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -25,6 +26,7 @@ import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
+import org.json.JSONObject;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -384,7 +386,28 @@ public class UserDashboardActivity extends BaseActivity {
                 onBackPressed();
                 return true;
             case R.id.logout:
-                AppController.logout(UserDashboardActivity.this);
+
+                Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
+                Token.logout(UserDashboardActivity.this, new DataFetchingListener<JSONObject>() {
+                        @Override
+                        public void onDataFetched(JSONObject response) {
+
+
+
+                            Toast.makeText(context, "Successfully logged out...", Toast.LENGTH_SHORT).show();
+
+                            AppController.logout(UserDashboardActivity.this);
+
+
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                });
+
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -16,29 +16,36 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.google.GoogleEmojiProvider;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.activity.SignInActivity;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.AppDatabase;
 import bd.com.evaly.evalyshop.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.xmpp.LocalBinder;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import io.fabric.sdk.android.Fabric;
+import retrofit2.Response;
 
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks{
 
@@ -194,6 +201,9 @@ public class AppController extends Application implements Application.ActivityLi
 
     public static void logout(Activity context) {
 
+
+
+
         try {
             String email = CredentialManager.getUserName();
             String strNew = email.replaceAll("[^A-Za-z0-9]", "");
@@ -223,6 +233,7 @@ public class AppController extends Application implements Application.ActivityLi
             }
         });
 
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -233,7 +244,15 @@ public class AppController extends Application implements Application.ActivityLi
                 context.finish();
                 System.exit(1);
             }
-        }, 200);
+        }, 400);
+
+
+
+
+
+
+
+
     }
 
     public boolean isNetworkConnected() {

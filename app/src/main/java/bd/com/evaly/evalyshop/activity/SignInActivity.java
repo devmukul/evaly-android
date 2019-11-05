@@ -256,7 +256,7 @@ public class SignInActivity extends BaseActivity {
                         if (response != null && response.data != null) {
                             switch (response.statusCode) {
                                 case 401:
-                                    Toast.makeText(SignInActivity.this, "Incorrect username or password!X", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignInActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 500:
                                     Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
