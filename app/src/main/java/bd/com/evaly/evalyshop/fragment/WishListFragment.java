@@ -117,6 +117,10 @@ public class WishListFragment extends Fragment {
 
 
     public void getWishList(){
+
+        wishLists.clear();
+        adapter.notifyDataSetChanged();
+
         db=new DbHelperWishList(getContext());
         Cursor res=db.getData();
         if(res.getCount()==0){
