@@ -93,4 +93,56 @@ public class Token {
     }
 
 
+
+    public static void logout(Activity context){
+
+
+        UserDetails userDetails = new UserDetails(context);
+
+        if(userDetails.getToken().equals(""))
+            return;
+
+        String url = UrlUtils.BASE_URL_AUTH_API+"api/logout/";
+        JSONObject parameters = new JSONObject();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", error.toString());
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+
+                    if (response.statusCode != 401) {
+                        Toast.makeText(context, "Your login token is expired, please login again", Toast.LENGTH_LONG).show();
+                        AppController.logout(context);
+                    }
+                }
+            }
+
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + userDetails.getToken());
+
+                return headers;
+            }
+        };
+        RequestQueue queue= Volley.newRequestQueue(context);
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(request);
+    }
+
+
 }
