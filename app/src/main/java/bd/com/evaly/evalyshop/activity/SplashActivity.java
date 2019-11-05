@@ -29,16 +29,20 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onDataFetched(Response<JsonObject> response) {
                 if (response.code() == 200 || response.code() == 201){
-                    String version = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("version").getAsString();
-                    boolean isForce = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("force").getAsBoolean();
-                    int v = Integer.parseInt(version);
-                    Logger.d(v+"      "+isForce+"     "+versionCode);
+                    try {
+                        String version = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("version").getAsString();
+                        boolean isForce = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("force").getAsBoolean();
+                        int v = Integer.parseInt(version);
+                        Logger.d(v+"      "+isForce+"     "+versionCode);
 
-                    if (versionCode != v && isForce){
-                        update();
-                    }else {
-                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                        finish();
+                        if (versionCode != v && isForce){
+                            update();
+                        }else {
+                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                            finish();
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
                 }
             }

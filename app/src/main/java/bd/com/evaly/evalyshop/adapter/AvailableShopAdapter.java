@@ -72,15 +72,12 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         @Override
         public void onClick(View v) {
 
-
             int i = Integer.parseInt(v.getTag().toString());
-
             Intent intent = new Intent(context, MainActivity.class);
             intent.putExtra("type", 3);
             intent.putExtra("shop_slug", availableShops.get(i).getShopSlug());
             intent.putExtra("shop_name", availableShops.get(i).getName());
             intent.putExtra("category", availableShops.get(i).getSlug());
-
             context.startActivity(intent);
 
         }

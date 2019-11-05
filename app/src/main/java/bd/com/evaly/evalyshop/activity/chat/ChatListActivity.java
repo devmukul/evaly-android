@@ -530,125 +530,150 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                                 if (xmppHandler.isLoggedin() && xmppHandler.isConnected()) {
                                     loading.showDialog();
                                     dialog.dismiss();
-                                    HashMap<String, String> data = new HashMap<>();
-                                    data.put("localuser", CredentialManager.getUserName());
-                                    data.put("localserver", Constants.XMPP_HOST);
-                                    data.put("user", etPhoneNumber.getText().toString());
-                                    data.put("server", Constants.XMPP_HOST);
-                                    data.put("nick", etContactName.getText().toString());
-                                    data.put("subs", "both");
-                                    data.put("group", "evaly");
 
-                                    addRosterByOther();
+//                                    addRosterByOther();
 
-                                    AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+                                    String name;
+
+                                    name = CredentialManager.getUserData().getFirst_name();
+
+                                    HashMap<String, String> data1 = new HashMap<>();
+                                    data1.put("localuser", etPhoneNumber.getText().toString());
+                                    data1.put("localserver", Constants.XMPP_HOST);
+                                    data1.put("user", CredentialManager.getUserName());
+                                    data1.put("server", Constants.XMPP_HOST);
+                                    data1.put("nick", name);
+                                    data1.put("subs", "both");
+                                    data1.put("group", "evaly");
+                                    AuthApiHelper.addRoster(data1, new DataFetchingListener<Response<JsonPrimitive>>() {
                                         @Override
                                         public void onDataFetched(Response<JsonPrimitive> response) {
+                                            HashMap<String, String> data = new HashMap<>();
+                                            data.put("localuser", CredentialManager.getUserName());
+                                            data.put("localserver", Constants.XMPP_HOST);
+                                            data.put("user", etPhoneNumber.getText().toString());
+                                            data.put("server", Constants.XMPP_HOST);
+                                            data.put("nick", etContactName.getText().toString());
+                                            data.put("subs", "both");
+                                            data.put("group", "evaly");
 
-                                            if (response.code() == 200 || response.code() == 201) {
-                                                try {
-                                                    EntityBareJid jid = JidCreate.entityBareFrom(etPhoneNumber.getText().toString().trim() + "@"
-                                                            + Constants.XMPP_HOST);
-                                                    VCard vCard = xmppHandler.getUserDetails(jid);
-                                                    HashMap<String, String> data1 = new HashMap<>();
-                                                    data1.put("phone_number", etPhoneNumber.getText().toString().trim());
-                                                    data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.evalyshop");
+                                            AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+                                                @Override
+                                                public void onDataFetched(Response<JsonPrimitive> response) {
 
-                                                    Logger.d(new Gson().toJson(vCard.getFirstName()) + "       ====");
-                                                    if (vCard.getFirstName() == null) {
-                                                        AuthApiHelper.sendCustomMessage(data1, new DataFetchingListener<Response<JsonObject>>() {
-                                                            @Override
-                                                            public void onDataFetched(Response<JsonObject> response) {
-                                                                loading.hideDialog();
-                                                                if (response.code() == 200 || response.code() == 201) {
-                                                                    Toast.makeText(getApplicationContext(), "Invitation sent!", Toast.LENGTH_LONG).show();
-//                                                                xmppHandler.sendRequestTo(etPhoneNumber.getText().toString(), etPhoneNumber.getText().toString());
-                                                                    Logger.d("[[[[[[[[[[[");
-                                                                    ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
-
-                                                                    try {
-                                                                        xmppHandler.sendMessage(chatItem);
-                                                                    } catch (SmackException e) {
-                                                                        e.printStackTrace();
-                                                                    }
-                                                                    RosterTable table = new RosterTable();
-                                                                    table.id = jid.asUnescapedString();
-                                                                    table.rosterName = etContactName.getText().toString();
-                                                                    table.name = "";
-                                                                    table.status = 0;
-                                                                    table.unreadCount = 0;
-                                                                    table.nick_name = "";
-                                                                    table.imageUrl = "";
-                                                                    table.time = chatItem.getLognTime();
-                                                                    table.lastMessage = new Gson().toJson(chatItem);
-                                                                    AsyncTask.execute(new Runnable() {
-                                                                        @Override
-                                                                        public void run() {
-                                                                            Logger.d("NEW ENTRY");
-                                                                            AppController.database.taskDao().addRoster(table);
-                                                                        }
-                                                                    });
-                                                                    Logger.d(new Gson().toJson(xmppHandler.mVcard));
-
-                                                                    dialog.dismiss();
-                                                                } else {
-                                                                    loading.hideDialog();
-                                                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void onFailed(int status) {
-                                                                loading.hideDialog();
-                                                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-
-                                                            }
-                                                        });
-                                                    } else {
-                                                        loading.hideDialog();
-                                                        ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
-
+                                                    if (response.code() == 200 || response.code() == 201) {
                                                         try {
-                                                            xmppHandler.sendMessage(chatItem);
-                                                        } catch (SmackException e) {
+                                                            EntityBareJid jid = JidCreate.entityBareFrom(etPhoneNumber.getText().toString().trim() + "@"
+                                                                    + Constants.XMPP_HOST);
+                                                            VCard vCard = xmppHandler.getUserDetails(jid);
+                                                            HashMap<String, String> data1 = new HashMap<>();
+                                                            data1.put("phone_number", etPhoneNumber.getText().toString().trim());
+                                                            data1.put("text", "You are invited to chat with "+CredentialManager.getUserData().getFirst_name() +" at Evaly. Please download Evaly app from here, \n https://play.google.com/store/apps/details?id=bd.com.evaly.evalyshop and start chatting");
+
+                                                            Logger.d(new Gson().toJson(vCard.getFirstName()) + "       ====");
+                                                            if (vCard.getFirstName() == null) {
+                                                                AuthApiHelper.sendCustomMessage(data1, new DataFetchingListener<Response<JsonObject>>() {
+                                                                    @Override
+                                                                    public void onDataFetched(Response<JsonObject> response) {
+                                                                        loading.hideDialog();
+                                                                        if (response.code() == 200 || response.code() == 201) {
+                                                                            Toast.makeText(getApplicationContext(), "Invitation sent!", Toast.LENGTH_LONG).show();
+//                                                                xmppHandler.sendRequestTo(etPhoneNumber.getText().toString(), etPhoneNumber.getText().toString());
+                                                                            Logger.d("[[[[[[[[[[[");
+                                                                            ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
+
+                                                                            try {
+                                                                                xmppHandler.sendMessage(chatItem);
+                                                                            } catch (SmackException e) {
+                                                                                e.printStackTrace();
+                                                                            }
+                                                                            RosterTable table = new RosterTable();
+                                                                            table.id = jid.asUnescapedString();
+                                                                            table.rosterName = etContactName.getText().toString();
+                                                                            table.name = "";
+                                                                            table.status = 0;
+                                                                            table.unreadCount = 0;
+                                                                            table.nick_name = "";
+                                                                            table.imageUrl = "";
+                                                                            table.time = chatItem.getLognTime();
+                                                                            table.lastMessage = new Gson().toJson(chatItem);
+                                                                            AsyncTask.execute(new Runnable() {
+                                                                                @Override
+                                                                                public void run() {
+                                                                                    Logger.d("NEW ENTRY");
+                                                                                    AppController.database.taskDao().addRoster(table);
+                                                                                }
+                                                                            });
+                                                                            Logger.d(new Gson().toJson(xmppHandler.mVcard));
+
+                                                                            dialog.dismiss();
+                                                                        } else {
+                                                                            loading.hideDialog();
+                                                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                                                        }
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onFailed(int status) {
+                                                                        loading.hideDialog();
+                                                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                loading.hideDialog();
+                                                                ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
+
+                                                                try {
+                                                                    xmppHandler.sendMessage(chatItem);
+                                                                } catch (SmackException e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                                RosterTable table = new RosterTable();
+                                                                table.id = jid.asUnescapedString();
+                                                                table.rosterName = etContactName.getText().toString();
+                                                                table.name = "";
+                                                                table.status = 0;
+                                                                table.unreadCount = 0;
+                                                                table.nick_name = "";
+                                                                table.imageUrl = "";
+                                                                table.time = chatItem.getLognTime();
+                                                                table.lastMessage = new Gson().toJson(chatItem);
+                                                                AsyncTask.execute(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        Logger.d("NEW ENTRY");
+                                                                        AppController.database.taskDao().addRoster(table);
+                                                                    }
+                                                                });
+                                                                startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) table));
+
+                                                            }
+                                                        } catch (XmppStringprepException e) {
                                                             e.printStackTrace();
                                                         }
-                                                        RosterTable table = new RosterTable();
-                                                        table.id = jid.asUnescapedString();
-                                                        table.rosterName = etContactName.getText().toString();
-                                                        table.name = "";
-                                                        table.status = 0;
-                                                        table.unreadCount = 0;
-                                                        table.nick_name = "";
-                                                        table.imageUrl = "";
-                                                        table.time = chatItem.getLognTime();
-                                                        table.lastMessage = new Gson().toJson(chatItem);
-                                                        AsyncTask.execute(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                Logger.d("NEW ENTRY");
-                                                                AppController.database.taskDao().addRoster(table);
-                                                            }
-                                                        });
-                                                        startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) table));
 
+
+                                                    } else {
+                                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                                                     }
-                                                } catch (XmppStringprepException e) {
-                                                    e.printStackTrace();
                                                 }
 
-
-                                            } else {
-                                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                                            }
+                                                @Override
+                                                public void onFailed(int status) {
+                                                    loading.hideDialog();
+                                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
                                         }
 
                                         @Override
                                         public void onFailed(int status) {
-                                            loading.hideDialog();
-                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+
                                         }
                                     });
+
+
                                 } else {
                                     startXmppService();
                                 }
@@ -702,47 +727,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         dialog.show();
 
-//        xmppHandler.createGroupChat(CredentialManager.getUserName(), "EvalyGroup");
-//        xmppHandler.sendRequestTo("01673375194", CredentialManager.getUserData().getFirst_name());
-//        String id = CredentialManager.getUserName();
-//        if (!id.contains("@")) {
-//            id = id + "@" + Constants.XMPP_DOMAIN;
-//        }
-//
-//        BareJid jid = null;
-//        try {
-//            jid = JidCreate.bareFrom(id);
-//        } catch (XmppStringprepException e) {
-//            e.printStackTrace();
-//        }
-//        xmppHandler.confirmSubscription(jid, false);
-    }
-
-    private void addRosterByOther() {
-        String name;
-
-        name = CredentialManager.getUserData().getFirst_name();
-
-
-        HashMap<String, String> data = new HashMap<>();
-        data.put("localuser", etPhoneNumber.getText().toString());
-        data.put("localserver", Constants.XMPP_HOST);
-        data.put("user", CredentialManager.getUserName());
-        data.put("server", Constants.XMPP_HOST);
-        data.put("nick", name);
-        data.put("subs", "both");
-        data.put("group", "evaly");
-        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-            @Override
-            public void onDataFetched(Response<JsonPrimitive> response) {
-
-            }
-
-            @Override
-            public void onFailed(int status) {
-
-            }
-        });
     }
 
     private RosterTable getContactFromRoster(String number) {

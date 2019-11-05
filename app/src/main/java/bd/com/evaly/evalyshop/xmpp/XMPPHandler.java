@@ -1543,38 +1543,40 @@ public class XMPPHandler {
             ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
             Logger.d(new Gson().toJson(chatItem));
 
-            int pos = getListPosition(chatItem);
-            if (pos == -1) {
-                RosterTable table = new RosterTable();
-                try {
-                    VCard vCard = getUserDetails(JidCreate.entityBareFrom(chatItem.getSender()));
-                    table.id = vCard.getFrom().asUnescapedString();
-                    table.nick_name = vCard.getNickName();
-                    table.name = vCard.getFirstName() + " " + vCard.getLastName();
-                    table.imageUrl = vCard.getField("URL");
-                    table.lastMessage = new Gson().toJson(chatItem);
-                    table.time = chatItem.getLognTime();
-                    table.status = 1;
-                    table.rosterName = "";
-                    table.unreadCount = 1;
-                    if (!table.id.contains(Constants.EVALY_NUMBER)){
-                        AsyncTask.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                AppController.database.taskDao().addRoster(table);
-                            }
-                        });
+            if (!from.asUnescapedString().contains(CredentialManager.getUserName())) {
+                int pos = getListPosition(chatItem);
+                if (pos == -1) {
+                    RosterTable table = new RosterTable();
+                    try {
+                        VCard vCard = getUserDetails(JidCreate.entityBareFrom(chatItem.getSender()));
+                        table.id = vCard.getFrom().asUnescapedString();
+                        table.nick_name = vCard.getNickName();
+                        table.name = vCard.getFirstName() + " " + vCard.getLastName();
+                        table.imageUrl = vCard.getField("URL");
+                        table.lastMessage = new Gson().toJson(chatItem);
+                        table.time = chatItem.getLognTime();
+                        table.status = 1;
+                        table.rosterName = "";
+                        table.unreadCount = 1;
+                        if (!table.id.contains(Constants.EVALY_NUMBER)) {
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    AppController.database.taskDao().addRoster(table);
+                                }
+                            });
+                        }
+                    } catch (XmppStringprepException e) {
+                        e.printStackTrace();
                     }
-                } catch (XmppStringprepException e) {
-                    e.printStackTrace();
+                } else {
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), from.asUnescapedString(), 1);
+                        }
+                    });
                 }
-            } else {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), from.asUnescapedString(), 1);
-                    }
-                });
             }
             service.onNewMessage(new Gson().toJson(chatItem));
         }
