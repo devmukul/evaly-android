@@ -739,7 +739,7 @@ public class ShopFragment extends Fragment implements ProductListener {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
 
-                NetworkResponse response = error.networkResponse
+                NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     if (error.networkResponse.statusCode == 401){
 
