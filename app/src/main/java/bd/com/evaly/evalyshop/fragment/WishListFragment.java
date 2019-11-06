@@ -119,10 +119,10 @@ public class WishListFragment extends Fragment {
             wishLists.add(new WishList(res.getString(0),res.getString(1),res.getString(2),res.getString(3),res.getString(4),res.getLong(5)));
             adapter.notifyItemInserted(wishLists.size());
 
-            checkListEmpty();
         }
 
 
+        checkListEmpty();
 
 
 
@@ -136,13 +136,14 @@ public class WishListFragment extends Fragment {
         NestedScrollView scrollView = view.findViewById(R.id.scroller);
         Button button = view.findViewById(R.id.button);
 
-        if (wishLists.size() == 0) {
-            empty.setVisibility(View.VISIBLE);
-            scrollView.setBackgroundColor(Color.WHITE);
-        } else {
-
+        if (wishLists.size() > 0) {
             empty.setVisibility(View.GONE);
             scrollView.setBackgroundColor(Color.parseColor("#fafafa"));
+        } else {
+
+
+            empty.setVisibility(View.VISIBLE);
+            scrollView.setBackgroundColor(Color.WHITE);
 
         }
 
