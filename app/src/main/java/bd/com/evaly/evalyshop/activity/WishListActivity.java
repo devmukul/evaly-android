@@ -49,7 +49,12 @@ public class WishListActivity extends BaseActivity
 
         manager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
-        adapter=new WishListAdapter(wishLists,this);
+        adapter=new WishListAdapter(wishLists,this,new WishListAdapter.WishListListener () {
+            @Override
+            public void checkEmpty() {
+
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         getWishList();

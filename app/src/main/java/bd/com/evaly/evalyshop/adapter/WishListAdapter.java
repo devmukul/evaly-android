@@ -38,10 +38,22 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
 
     WishListAdapter instance;
 
-    public WishListAdapter(ArrayList<WishList> wishlist, Context context) {
+    WishListListener listener;
+
+
+    public interface WishListListener{
+
+        public void checkEmpty();
+
+    }
+
+    public WishListAdapter(ArrayList<WishList> wishlist, Context context, WishListListener listener) {
         this.wishlist = wishlist;
         this.context = context;
-        db=new DbHelperWishList(context);
+        this.listener = listener;
+
+        db = new DbHelperWishList(context);
+
 
         instance = this;
 
@@ -93,6 +105,8 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
                 wishlist.remove(i);
                 instance.notifyItemRemoved(i);
                 notifyItemRangeChanged(i, wishlist.size());
+
+                listener.checkEmpty();
 
             }
         });

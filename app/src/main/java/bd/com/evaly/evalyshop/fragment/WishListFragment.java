@@ -79,29 +79,20 @@ public class WishListFragment extends Fragment {
         alert = new ViewDialog(getActivity());
 
 
-        manager=new LinearLayoutManager(getContext());
+        manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
-        adapter=new WishListAdapter(wishLists,getContext());
+        adapter = new WishListAdapter(wishLists,getContext(), new WishListAdapter.WishListListener () {
+
+            @Override
+            public void checkEmpty() {
+
+                checkListEmpty();
+            }
+        });
+
+
         recyclerView.setAdapter(adapter);
 
-
-
-
-//        view.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-//                    //((MainActivity) getActivity()).finish();
-//                    if(getFragmentManager().getBackStackEntryCount() > 0) {
-//                        getFragmentManager().popBackStack();
-//                    }else {
-//                        ((MainActivity) getActivity()).finish();
-//                    }
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
 
 
     }
@@ -121,33 +112,42 @@ public class WishListFragment extends Fragment {
         wishLists.clear();
         adapter.notifyDataSetChanged();
 
-        db=new DbHelperWishList(getContext());
-        Cursor res=db.getData();
-        if(res.getCount()==0){
+        db = new DbHelperWishList(getContext());
+        Cursor res = db.getData();
 
-            LinearLayout empty = view.findViewById(R.id.empty);
+        while(res.moveToNext()){
+            wishLists.add(new WishList(res.getString(0),res.getString(1),res.getString(2),res.getString(3),res.getString(4),res.getLong(5)));
+            adapter.notifyItemInserted(wishLists.size());
 
-            empty.setVisibility(View.VISIBLE);
-
-            Button button = view.findViewById(R.id.button);
-
-            NestedScrollView scrollView = view.findViewById(R.id.scroller);
-            scrollView.setBackgroundColor(Color.WHITE);
-
-
-
-        }else{
-            while(res.moveToNext()){
-                wishLists.add(new WishList(res.getString(0),res.getString(1),res.getString(2),res.getString(3),res.getString(4),res.getLong(5)));
-//                Collections.sort(wishLists, new Comparator<WishList>(){
-//                    public int compare(WishList o1, WishList o2) {
-//                        return o2.getTime() > o1.getTime();
-//                    }
-//                });
-                adapter.notifyItemInserted(wishLists.size());
-            }
+            checkListEmpty();
         }
+
+
+
+
+
     }
+
+
+    private void checkListEmpty(){
+
+
+        LinearLayout empty = view.findViewById(R.id.empty);
+        NestedScrollView scrollView = view.findViewById(R.id.scroller);
+        Button button = view.findViewById(R.id.button);
+
+        if (wishLists.size() == 0) {
+            empty.setVisibility(View.VISIBLE);
+            scrollView.setBackgroundColor(Color.WHITE);
+        } else {
+
+            empty.setVisibility(View.GONE);
+            scrollView.setBackgroundColor(Color.parseColor("#fafafa"));
+
+        }
+
+    }
+
 
     @Override
     public void onDestroy() {

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -1134,7 +1135,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -1150,7 +1153,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                     return;
 
-                }
+                }}
 
                 progressContainer.setVisibility(View.GONE);
                 bottomProgressBar.setVisibility(View.INVISIBLE);
@@ -1240,7 +1243,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -1256,7 +1261,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                     return;
 
-                }
+                }}
 
                 Log.e("onErrorResponse", error.toString());
                 Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
@@ -1306,7 +1311,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -1322,7 +1329,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                     return;
 
-                }
+                }}
 
                 Log.e("onErrorResponse", error.toString());
                 Toast.makeText(context, "Couldn't like the status.", Toast.LENGTH_SHORT).show();

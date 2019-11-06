@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -105,7 +106,9 @@ public class InitializeActionBar {
             public void onErrorResponse(VolleyError error) {
 
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(context, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -121,7 +124,7 @@ public class InitializeActionBar {
 
                     return;
 
-                }
+                }}
 
                 Log.e("onErrorResponse", error.toString());
             }

@@ -386,7 +386,9 @@ public class EditProfileActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
-                        if (error.networkResponse.statusCode == 401){
+                        NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                             AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                                 @Override
@@ -395,14 +397,14 @@ public class EditProfileActivity extends BaseActivity {
                                 }
 
                                 @Override
-                                public void onFailed(int status) {
-
-                                }
-                            });
-
-                            return;
+                        public void onFailed(int status) {
 
                         }
+                    });
+
+                    return;
+
+                }}
 
 
                         dialog.dismiss();
@@ -511,7 +513,9 @@ public class EditProfileActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -527,7 +531,7 @@ public class EditProfileActivity extends BaseActivity {
 
                     return;
 
-                }
+                }}
 
 
             }
@@ -592,7 +596,9 @@ public class EditProfileActivity extends BaseActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -608,7 +614,7 @@ public class EditProfileActivity extends BaseActivity {
 
                     return;
 
-                }
+                }}
 
             }
         }) {
