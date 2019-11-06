@@ -1136,6 +1136,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Log.e("onErrorResponse", error.toString());
 
                 NetworkResponse response = error.networkResponse;
+
                 if (response != null && response.data != null) {
                     if (error.networkResponse.statusCode == 401){
 
@@ -1172,6 +1173,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
+
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -1213,13 +1215,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         JSONObject parameters = new JSONObject();
         JSONObject parametersPost = new JSONObject();
         try {
-
             parameters.put("body", commentInput.getText().toString());
-
             parametersPost.put("comment", parameters);
-
-
-
         } catch (Exception e) {
         }
 

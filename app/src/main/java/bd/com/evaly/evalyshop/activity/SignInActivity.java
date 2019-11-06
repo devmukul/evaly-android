@@ -241,12 +241,17 @@ public class SignInActivity extends BaseActivity {
 
                     NetworkResponse response = error.networkResponse;
                     if (response != null && response.data != null) {
+
+
+                        JSONObject jsonObject = new JSONObject(new String(response.data));
+
                         switch (response.statusCode) {
-                            case 401:
-                                Toast.makeText(SignInActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
-                                break;
+
                             case 500:
                                 Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
+                                break;
+                            default:
+                                Toast.makeText(SignInActivity.this, jsonObject.getString("detail") , Toast.LENGTH_SHORT).show();
                         }
                         //Additional cases
                     }

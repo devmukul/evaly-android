@@ -60,7 +60,6 @@ public class NewsfeedNotification extends AppCompatActivity {
 
     RequestQueue queue;
 
-
     // newfeed scroller
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
@@ -296,13 +295,6 @@ public class NewsfeedNotification extends AppCompatActivity {
 
 
     }
-
-
-
-
-
-
-
 
 
 }

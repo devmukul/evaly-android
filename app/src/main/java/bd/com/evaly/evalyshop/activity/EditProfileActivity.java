@@ -475,6 +475,7 @@ public class EditProfileActivity extends BaseActivity {
             parameters.put("key", "value");
         } catch (Exception e) {
         }
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
