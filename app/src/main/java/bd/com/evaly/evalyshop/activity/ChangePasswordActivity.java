@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -217,23 +218,25 @@ public class ChangePasswordActivity extends BaseActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
 
+                            NetworkResponse response = error.networkResponse;
+                            if (response != null && response.data != null) {
+                                if (error.networkResponse.statusCode == 401) {
 
-                            if (error.networkResponse.statusCode == 401){
+                                    AuthApiHelper.refreshToken(ChangePasswordActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                        @Override
+                                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                            Toast.makeText(ChangePasswordActivity.this, "Please try again now", Toast.LENGTH_SHORT).show();
+                                        }
 
-                                AuthApiHelper.refreshToken(ChangePasswordActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                                    @Override
-                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                        Toast.makeText(ChangePasswordActivity.this, "Please try again now", Toast.LENGTH_SHORT).show();
-                                    }
+                                        @Override
+                                        public void onFailed(int status) {
 
-                                    @Override
-                                    public void onFailed(int status) {
+                                        }
+                                    });
 
-                                    }
-                                });
+                                    return;
 
-                                return;
-
+                                }
                             }
 
                             try {

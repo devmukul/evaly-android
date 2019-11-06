@@ -346,7 +346,9 @@ public class VoucherMyListFragment extends Fragment {
                 Log.e("onErrorResponse", error.toString());
 
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -362,7 +364,7 @@ public class VoucherMyListFragment extends Fragment {
 
                     return;
 
-                }
+                }}
 
 
                 if(page.equals("1")) {
@@ -451,7 +453,9 @@ public class VoucherMyListFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -467,7 +471,7 @@ public class VoucherMyListFragment extends Fragment {
 
                     return;
 
-                }
+                }}
 
                 Log.e("onErrorResponse", error.toString());
             }
@@ -552,7 +556,9 @@ public class VoucherMyListFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -568,7 +574,7 @@ public class VoucherMyListFragment extends Fragment {
 
                     return;
 
-                }
+                }}
 
             }
         }) {
@@ -627,7 +633,9 @@ public class VoucherMyListFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -643,7 +651,7 @@ public class VoucherMyListFragment extends Fragment {
 
                     return;
 
-                }
+                }}
 
             }
         }) {
@@ -820,7 +828,9 @@ public class VoucherMyListFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -836,7 +846,7 @@ public class VoucherMyListFragment extends Fragment {
 
                     return;
 
-                }
+                }}
 
             }
         }) {
@@ -975,7 +985,9 @@ public class VoucherMyListFragment extends Fragment {
                         @Override
                         public void onErrorResponse(VolleyError error) {
 
-                            if (error.networkResponse.statusCode == 401){
+                            NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                                 AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                                     @Override
@@ -984,14 +996,14 @@ public class VoucherMyListFragment extends Fragment {
                                     }
 
                                     @Override
-                                    public void onFailed(int status) {
+                        public void onFailed(int status) {
 
-                                    }
-                                });
+                        }
+                    });
 
-                                return;
+                    return;
 
-                            }
+                }}
 
                             dialog.dismiss();
                             Toast.makeText(context, "Image upload error", Toast.LENGTH_SHORT).show();

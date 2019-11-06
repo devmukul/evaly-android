@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -177,7 +178,9 @@ public class TransactionHistory extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(TransactionHistory.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -193,7 +196,7 @@ public class TransactionHistory extends AppCompatActivity {
 
                     return;
 
-                }
+                }}
 
                 progressBar.setVisibility(View.GONE);
             }
@@ -238,7 +241,9 @@ public class TransactionHistory extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(TransactionHistory.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -254,7 +259,7 @@ public class TransactionHistory extends AppCompatActivity {
 
                     return;
 
-                }
+                }}
 
             }
         }) {

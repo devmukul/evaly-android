@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -255,7 +256,9 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -271,7 +274,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
                     return;
 
-                }
+                }}
 
                 Log.e("onErrorResponse", error.toString());
                // Toast.makeText(context, "Couldn't delete post", Toast.LENGTH_SHORT).show();
@@ -340,7 +343,9 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -356,7 +361,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
                     return;
 
-                }
+                }}
 
                 Log.e("onErrorResponse", error.toString());
 
@@ -457,7 +462,9 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -473,7 +480,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
                     return;
 
-                }
+                }}
 
                 progressContainer.setVisibility(View.GONE);
                 bottomProgressBar.setVisibility(View.INVISIBLE);

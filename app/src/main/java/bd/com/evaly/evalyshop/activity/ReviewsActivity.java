@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -516,7 +517,9 @@ public class ReviewsActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(ReviewsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -532,7 +535,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
                     return;
 
-                }
+                }}
 
             }
         }) {
@@ -596,7 +599,9 @@ public class ReviewsActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(ReviewsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -612,7 +617,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
                     return;
 
-                }
+                }}
 
             }
         }) {
@@ -661,7 +666,9 @@ public class ReviewsActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(ReviewsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -677,7 +684,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
                     return;
 
-                }
+                }}
 
             }
         }) {

@@ -436,7 +436,9 @@ public class NewsfeedActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -452,7 +454,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
                     return;
 
-                }
+                }}
 
             }
         }) {
@@ -552,7 +554,9 @@ public class NewsfeedActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
-                if (error.networkResponse.statusCode == 401){
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                     AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -568,7 +572,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
                     return;
 
-                }
+                }}
 
                 Toast.makeText(context, "Couldn't create status", Toast.LENGTH_SHORT).show();
                 createBtn.setEnabled(true);
@@ -786,7 +790,9 @@ public class NewsfeedActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
-                        if (error.networkResponse.statusCode == 401){
+                        NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
 
                             AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                                 @Override
@@ -795,14 +801,14 @@ public class NewsfeedActivity extends AppCompatActivity {
                                 }
 
                                 @Override
-                                public void onFailed(int status) {
-
-                                }
-                            });
-
-                            return;
+                        public void onFailed(int status) {
 
                         }
+                    });
+
+                    return;
+
+                }}
 
                         dialog.dismiss();
                         Log.e("json error", error.toString());
