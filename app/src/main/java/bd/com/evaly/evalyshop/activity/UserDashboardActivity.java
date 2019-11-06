@@ -392,8 +392,6 @@ public class UserDashboardActivity extends BaseActivity {
                         @Override
                         public void onDataFetched(JSONObject response) {
 
-
-
                             Toast.makeText(context, "Successfully logged out...", Toast.LENGTH_SHORT).show();
 
                             AppController.logout(UserDashboardActivity.this);

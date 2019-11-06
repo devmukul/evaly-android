@@ -303,7 +303,7 @@ public class MainActivity extends BaseActivity {
 
         Logger.d(strNew);
         try {
-            FirebaseMessaging.getInstance().subscribeToTopic(strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
+            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD+"_"+strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     Logger.d(task.isSuccessful());

@@ -2,14 +2,17 @@ package bd.com.evaly.evalyshop.util;
 
 public class Constants {
     //DEV
-    public static final String XMPP_DOMAIN = "chat-dev.evaly.com.bd";
-    public static final String XMPP_HOST = "chat-dev.evaly.com.bd";
-    public static final String EVALY_NUMBER = "09638111667";
+//    public static final String XMPP_DOMAIN = "chat-dev.evaly.com.bd";
+//    public static final String XMPP_HOST = "chat-dev.evaly.com.bd";
+//    public static final String EVALY_NUMBER = "09638111667";
+//    public static final String BUILD = "dev";
 
     //PROD
-//    public static final String XMPP_DOMAIN = "chat.evaly.com.bd";
-//    public static final String XMPP_HOST = "chat.evaly.com.bd";
-//    public static final String EVALY_NUMBER = "09638111666";
+    public static final String XMPP_DOMAIN = "chat.evaly.com.bd";
+    public static final String XMPP_HOST = "chat.evaly.com.bd";
+    public static final String EVALY_NUMBER = "09638111666";
+    public static final String BUILD = "prod";
+
     public static final int XMPP_PORT = 5222;
     public static final String XMPP_RESOURCE = "xmppdemo";
     public static final boolean XMPP_DEBUG = true;
@@ -80,4 +83,7 @@ public class Constants {
     public static final String TYPE_AUDIO = "media/audio";
     public static final String TYPE_VIDEO = "media/video";
     public static final String TYPE_TEXT = "text";
+
+    public static final String EVALY_LOGO = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/media/2019-08-04_090235.843922android-icon-200x200.png";
+
 }

@@ -201,14 +201,11 @@ public class AppController extends Application implements Application.ActivityLi
 
     public static void logout(Activity context) {
 
-
-
-
         try {
             String email = CredentialManager.getUserName();
             String strNew = email.replaceAll("[^A-Za-z0-9]", "");
 
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(strNew);
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.BUILD+"_"+strNew);
         }catch (Exception e){
             e.printStackTrace();
         }
