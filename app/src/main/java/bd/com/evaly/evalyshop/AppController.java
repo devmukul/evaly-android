@@ -169,7 +169,7 @@ public class AppController extends Application implements Application.ActivityLi
 
     @Override
     public void onActivityResumed(Activity activity) {
-        Logger.d("RESUMED");
+//        Logger.d("RESUMED");
         registerReceiver(mEventReceiver, intentFilter);
     }
 

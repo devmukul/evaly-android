@@ -552,10 +552,10 @@ public class XMPPHandler {
                             new RoasterModel(entry.getJid(), presence.getFrom(), presence.getStatus(), mode, status, entry.getName()));
 
                     if (debug) {
-                        Logger.e(entry.getUser() + "   " + entry.getName() + "   " + presence.getType().name() + "   " + presence.getStatus() + "   " + presence.getMode() + "   " + entry.getType());
+//                        Logger.e(entry.getUser() + "   " + entry.getName() + "   " + presence.getType().name() + "   " + presence.getStatus() + "   " + presence.getMode() + "   " + entry.getType());
 
                         String isSubscribePending = (entry.getType() == RosterPacket.ItemType.both) ? "Yes" : "No";
-                        Log.e(TAG, "sub: " + isSubscribePending);
+        //                Log.e(TAG, "sub: " + isSubscribePending);
                     }
                 }
 
@@ -1195,8 +1195,8 @@ public class XMPPHandler {
 
         @Override
         public void authenticated(XMPPConnection connection, boolean resumed) {
-            Logger.d("AUTHENTICATED");
-            Logger.d(userId + "    " + userPassword + "        " + connection.getUser().asEntityBareJidString() + "    ");
+//            Logger.d("AUTHENTICATED");
+//            Logger.d(userId + "    " + userPassword + "        " + connection.getUser().asEntityBareJidString() + "    ");
             chatInstanceIterator(chat_created_for);
             loggedin = true;
 
@@ -1220,7 +1220,7 @@ public class XMPPHandler {
                     @Override
                     public void run() {
                         roasterList = getAllRoaster();
-                        Logger.d(roasterList.size() + "    ()()()()()()(()");
+  //                      Logger.d(roasterList.size() + "    ()()()()()()(()");
                         List<RosterTable> list = new ArrayList<>();
                         for (RoasterModel model : roasterList) {
                             RosterTable table = new RosterTable();
@@ -1507,7 +1507,7 @@ public class XMPPHandler {
             Logger.d(count + "    ==========");
 
             for (RosterTable table : list) {
-                Logger.d(Constants.EVALY_NUMBER+"      "+table.id);
+                // Logger.d(Constants.EVALY_NUMBER+"      "+table.id);
                 if (!table.id.contains(Constants.EVALY_NUMBER)){
                     AsyncTask.execute(new Runnable() {
                         @Override
@@ -1856,7 +1856,7 @@ public class XMPPHandler {
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
-                            Logger.d(new Gson().toJson(table));
+//                            Logger.d(new Gson().toJson(table));
                             AppController.database.taskDao().addRoster(table);
                         }
                     });
