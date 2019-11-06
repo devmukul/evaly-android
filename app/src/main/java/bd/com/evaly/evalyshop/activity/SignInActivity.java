@@ -236,40 +236,34 @@ public class SignInActivity extends BaseActivity {
             public void onErrorResponse(VolleyError error) {
 
                 error.printStackTrace();
-                if (attempt < 2) {
 
-                    signInUser();
+                try {
 
-                    attempt++;
-
-                } else {
-
-                    try {
-
-                        alert.hideDialog();
-                        error.printStackTrace();
-
-                        String json = null;
-                        JSONObject jsonObject;
-
-                        NetworkResponse response = error.networkResponse;
-                        if (response != null && response.data != null) {
-                            switch (response.statusCode) {
-                                case 401:
-                                    Toast.makeText(SignInActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 500:
-                                    Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
-                            }
-                            //Additional cases
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
+                        switch (response.statusCode) {
+                            case 401:
+                                Toast.makeText(SignInActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 500:
+                                Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Logger.d(e.getMessage());
-                        Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
+                        //Additional cases
                     }
+
+                    alert.hideDialog();
+                    error.printStackTrace();
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Logger.d(e.getMessage());
+                    Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
                 }
+
+
+
             }
         }) {
 
