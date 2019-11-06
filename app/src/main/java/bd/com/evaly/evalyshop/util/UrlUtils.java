@@ -29,7 +29,7 @@ public class UrlUtils {
     public static final String PUBLIC_PRODUCTS = BASE_URL + "public/products/";
 
 
-    public static final String CHANGE_PASSWORD = BASE_URL + "change-password/";
+    public static final String CHANGE_PASSWORD = BASE_URL_AUTH + "change-password/";
 
     // changed
     public static final String SET_PASSWORD = BASE_URL_AUTH + "set-password/";
@@ -37,8 +37,8 @@ public class UrlUtils {
     public static final String REFRESH_TOKEN = BASE_URL_AUTH_API + "refresh/";
 
 
-    public static final String REGISTER = DOMAIN5000 + "register/";
-    public static final String SEND_CUSTOM_MESSAGE = DOMAIN5000 + "custom-message/";
+    public static final String REGISTER = BASE_URL_AUTH + "register/";
+    public static final String SEND_CUSTOM_MESSAGE = BASE_URL_AUTH + "custom-message/";
 
 
     public static final String CHANGE_XMPP_PASSWORD = "/api/change_password";
