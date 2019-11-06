@@ -1430,6 +1430,17 @@ public class XMPPHandler {
 //        }
     }
 
+    public void changePresence() {
+        Presence presence = new Presence(Presence.Type.unavailable);
+        try {
+            connection.sendStanza(presence);
+        } catch (SmackException.NotConnectedException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void updateRoster(List<RosterTable> roasterList) {
         List<RosterTable> list = new ArrayList<>();
         for (int i = 0; i < roasterList.size(); i++) {
@@ -1458,6 +1469,7 @@ public class XMPPHandler {
 
 
     }
+
 
     private void updateMessage(List<RosterTable> roasterList) {
         List<RosterTable> list = roasterList;

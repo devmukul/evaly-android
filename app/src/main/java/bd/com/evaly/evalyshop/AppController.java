@@ -244,12 +244,6 @@ public class AppController extends Application implements Application.ActivityLi
         }, 400);
 
 
-
-
-
-
-
-
     }
 
     public boolean isNetworkConnected() {

@@ -729,6 +729,9 @@ public class MainActivity extends BaseActivity {
             dbHelperWishList.close();
         }
         if (xmppHandler != null){
+            if (xmppHandler.isConnected()){
+                xmppHandler.changePresence();
+            }
             xmppHandler.disconnect();
         }
         super.onDestroy();

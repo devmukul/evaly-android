@@ -1039,6 +1039,48 @@ public class OrderDetailsActivity extends BaseActivity {
                     }
                 }catch(Exception e){}
 
+                boolean delivery_confirmed, delivery_confirmation_required;
+                try {
+                    delivery_confirmation_required = response.getBoolean("delivery_confirmation_required");
+                    delivery_confirmed = response.getBoolean("delivery_confirmed");
+
+                    if (!delivery_confirmed && delivery_confirmation_required){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailsActivity.this);
+                        builder.setTitle("Did you receive the product?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                HashMap<String, String> data = new HashMap<>();
+                                data.put("invoice_no", invoice_no);
+                                AuthApiHelper.updateProductStatus(data, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                    @Override
+                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                        if (response.code() == 200 || response.code() == 201){
+                                            dialog.hideDialog();
+                                            Toast.makeText(getApplicationContext(), "Order Updated", Toast.LENGTH_LONG).show();
+                                        }else {
+                                            dialog.hideDialog();
+                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailed(int status) {
+                                        dialog.hideDialog();
+                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }).setNegativeButton("No", null);
+
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
 
                 try {
                     orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getString("date")));
