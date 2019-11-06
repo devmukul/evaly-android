@@ -39,7 +39,7 @@ public class SplashActivity extends AppCompatActivity {
                         int v = Integer.parseInt(version);
                         Logger.d(v+"      "+isForce+"     "+versionCode);
 
-                        if (versionCode != v && isForce){
+                        if (versionCode < v && isForce){
                             userDetails.clearAll();
                             MyPreference.with(SplashActivity.this).clearAll();
                             update();

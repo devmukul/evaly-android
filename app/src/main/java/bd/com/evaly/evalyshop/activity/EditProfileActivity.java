@@ -475,7 +475,8 @@ public class EditProfileActivity extends BaseActivity {
             parameters.put("key", "value");
         } catch (Exception e) {
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("onResponse", response.toString());
@@ -485,7 +486,7 @@ public class EditProfileActivity extends BaseActivity {
                     UserModel userModel = new Gson().fromJson(userJson.toString(), UserModel.class);
 
                     CredentialManager.saveUserData(userModel);
-                    JSONObject userInfo = userJson.getJSONObject("user_info");
+                    JSONObject userInfo = userJson.getJSONObject("user");
                     userInfo.put("first_name", firstname.getText().toString());
                     userInfo.put("last_name", lastName.getText().toString());
                     userInfo.put("email", email.getText().toString());
@@ -568,7 +569,7 @@ public class EditProfileActivity extends BaseActivity {
 
     public void setUserData(JSONObject payload) {
 
-        String url = UrlUtils.BASE_URL+"user-info-update/";
+        String url = UrlUtils.BASE_URL_AUTH+"user-info-update/";
         Log.d("json user info url", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, payload, new Response.Listener<JSONObject>() {
             @Override

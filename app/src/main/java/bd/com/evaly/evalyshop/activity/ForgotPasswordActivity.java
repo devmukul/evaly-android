@@ -45,7 +45,6 @@ public class ForgotPasswordActivity extends BaseActivity {
     Button reset;
     ImageView close;
     ViewDialog dialog;
-
     String userAgent;
 
     @Override
@@ -90,9 +89,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         JSONObject params = new JSONObject();
         try {
             params.put("phone_number", number.getText().toString());
-
         } catch (Exception e) {
-
         }
 
         String url = UrlUtils.BASE_URL_AUTH + "forgot-password";
@@ -106,7 +103,6 @@ public class ForgotPasswordActivity extends BaseActivity {
                 finish();
                 startActivity(il);
 
-
                 Log.d("change_password", response.toString());
             }
 
@@ -116,7 +112,6 @@ public class ForgotPasswordActivity extends BaseActivity {
                 try {
 
                     dialog.hideDialog();
-
 
                     String json = null;
                     JSONObject jsonObject;
@@ -144,12 +139,10 @@ public class ForgotPasswordActivity extends BaseActivity {
 
                                         }
                                     });
-
                                     return;
 
                             case 500:
                                 Toast.makeText(ForgotPasswordActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
-
                         }
                         //Additional cases
                     }
@@ -158,8 +151,6 @@ public class ForgotPasswordActivity extends BaseActivity {
                 } catch (Exception e) {
 
                     Toast.makeText(ForgotPasswordActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
-
-
                 }
             }
         }) {

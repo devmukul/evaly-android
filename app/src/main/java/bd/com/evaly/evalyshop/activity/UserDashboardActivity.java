@@ -343,6 +343,7 @@ public class UserDashboardActivity extends BaseActivity {
 
 
         if (!userDetails.getProfilePictureSM().equals("null")) {
+
             Glide.with(this)
                     .asBitmap()
                     .load(userDetails.getProfilePictureSM())
