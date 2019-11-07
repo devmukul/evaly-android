@@ -128,7 +128,6 @@ public class SignUpActivity extends BaseActivity {
         final ViewDialog alert = new ViewDialog(this);
 
         alert.showDialog();
-
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("first_name", firstName.getText().toString());
         hashMap.put("last_name", lastName.getText().toString());
