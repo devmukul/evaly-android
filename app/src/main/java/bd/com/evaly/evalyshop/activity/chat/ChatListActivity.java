@@ -20,6 +20,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -913,6 +915,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+        }else if (item.getItemId() == R.id.nav_request){
+            Logger.d("=====");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -947,6 +951,15 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             }
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.chat_list_menu, menu);
+
+        return true;
+    }
+
 
     @Override
     public void onAllDataLoaded(List<RoasterModel> list) {

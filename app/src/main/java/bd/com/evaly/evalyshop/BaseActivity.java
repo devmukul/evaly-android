@@ -20,7 +20,9 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.NetworkErrorActivity;
 import bd.com.evaly.evalyshop.activity.WishListActivity;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.xmpp.XMPPService;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -111,7 +113,8 @@ public class BaseActivity extends AppCompatActivity {
            if (AppController.getmService().xmpp.isConnected()){
                XMPPHandler xmppHandler = AppController.getmService().xmpp;
                xmppHandler.changePresence();
-               xmppHandler.disconnect();
+               XMPPHandler.disconnect();
+
            }
         }
         super.onUserLeaveHint();

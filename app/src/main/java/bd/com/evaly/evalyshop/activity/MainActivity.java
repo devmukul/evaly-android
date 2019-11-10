@@ -731,8 +731,8 @@ public class MainActivity extends BaseActivity {
         if (xmppHandler != null){
             if (xmppHandler.isConnected()){
                 xmppHandler.changePresence();
+                xmppHandler.disconnect();
             }
-            xmppHandler.disconnect();
         }
         super.onDestroy();
 

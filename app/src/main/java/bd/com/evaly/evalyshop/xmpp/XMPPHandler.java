@@ -111,6 +111,7 @@ public class XMPPHandler {
     MamManager mamManager;
     MamManager.MamQueryArgs mamQueryArgs;
     MamManager.MamQuery mamQueryResult;
+    static ReconnectionManager reconnectionManager;
 
     Gson gson;
     public XMPPService service;
@@ -201,13 +202,13 @@ public class XMPPHandler {
                     });
 
 
-                    ReconnectionManager reconnectionManager = ReconnectionManager.getInstanceFor(connection);
+                    reconnectionManager = ReconnectionManager.getInstanceFor(connection);
                     reconnectionManager.enableAutomaticReconnection();
                     reconnectionManager.addReconnectionListener(new ReconnectionListener() {
                         @Override
                         public void reconnectingIn(int seconds) {
                             service.onReConnection();
-                            Logger.e("Reconnection    "+seconds);
+                            Logger.e("Reconnection    " + seconds);
                             loggedin = false;
                         }
 
@@ -368,16 +369,14 @@ public class XMPPHandler {
 
     //Explicitly Disconnect a connection
     public static void disconnect() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+
+        try {
+            reconnectionManager.disableAutomaticReconnection();
+            connection.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public VCard getCurrentUserDetails() {
@@ -555,7 +554,7 @@ public class XMPPHandler {
 //                        Logger.e(entry.getUser() + "   " + entry.getName() + "   " + presence.getType().name() + "   " + presence.getStatus() + "   " + presence.getMode() + "   " + entry.getType());
 
                         String isSubscribePending = (entry.getType() == RosterPacket.ItemType.both) ? "Yes" : "No";
-        //                Log.e(TAG, "sub: " + isSubscribePending);
+                        //                Log.e(TAG, "sub: " + isSubscribePending);
                     }
                 }
 
@@ -1220,7 +1219,7 @@ public class XMPPHandler {
                     @Override
                     public void run() {
                         roasterList = getAllRoaster();
-  //                      Logger.d(roasterList.size() + "    ()()()()()()(()");
+                        //                      Logger.d(roasterList.size() + "    ()()()()()()(()");
                         List<RosterTable> list = new ArrayList<>();
                         for (RoasterModel model : roasterList) {
                             RosterTable table = new RosterTable();
@@ -1520,7 +1519,7 @@ public class XMPPHandler {
 
             for (RosterTable table : list) {
                 // Logger.d(Constants.EVALY_NUMBER+"      "+table.id);
-                if (!table.id.contains(Constants.EVALY_NUMBER)){
+                if (!table.id.contains(Constants.EVALY_NUMBER)) {
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
@@ -1552,6 +1551,7 @@ public class XMPPHandler {
         public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
 //            chat.addMessageListener((ChatMessageListener) mMessageListener);
             Logger.d(message.getBody());
+            Logger.d(connection.isConnected());
             ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
             Logger.d(new Gson().toJson(chatItem));
 
@@ -1864,7 +1864,7 @@ public class XMPPHandler {
                 unreadCount = Integer.valueOf(value);
                 table.unreadCount = unreadCount;
 
-                if (!table.id.contains(Constants.EVALY_NUMBER)){
+                if (!table.id.contains(Constants.EVALY_NUMBER)) {
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
