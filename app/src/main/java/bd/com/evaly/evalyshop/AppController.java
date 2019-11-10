@@ -19,6 +19,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.AndroidLogAdapter;
@@ -242,12 +243,6 @@ public class AppController extends Application implements Application.ActivityLi
                 System.exit(1);
             }
         }, 400);
-
-
-
-
-
-
 
 
     }

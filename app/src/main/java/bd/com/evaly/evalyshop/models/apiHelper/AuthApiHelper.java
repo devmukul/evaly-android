@@ -187,6 +187,26 @@ public class AuthApiHelper {
 
     }
 
+    public static void updateProductStatus(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {
+
+        IApiClient iApiClient = ApiClient.getClient().create(IApiClient.class);
+        Call<JsonObject> call = iApiClient.updateProductStatus(CredentialManager.getToken(), data);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
+
+    }
+
     public static void uploadImage(final Context context, Bitmap profileImg, ImageUploadView view) {
         IApiClient iApiClient = getiApiClient();
 

@@ -115,7 +115,8 @@
                 android:paddingBottom="15dp"
                 android:paddingTop="15dp"
                 android:clipToPadding="false"
-                app:stackFromEnd="true"/>
+                app:stackFromEnd="true"
+                tools:listitem="@layout/sent_message_view"/>
 
             <ProgressBar
                 android:id="@+id/imageUploadProgress"
@@ -201,6 +202,11 @@
                 android:paddingBottom="14dp"
                 android:textColorHint="#666"
                 android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:visibility="gone"/>
 
 
             <ImageView

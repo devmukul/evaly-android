@@ -112,9 +112,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
     ImageView emojiBtn;
 
 
-
-
-
     private ChatDetailsAdapter adapter;
     private VCard mVCard;
 

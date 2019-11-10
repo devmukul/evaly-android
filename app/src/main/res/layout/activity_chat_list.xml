@@ -35,11 +35,28 @@
                 android:layout_marginRight="20dp"/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Messages"
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:layout_marginRight="24dp" />
+
+            <LinearLayout
+                android:id="@+id/llRequest"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:gravity="right">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/followers"
+                    android:layout_marginRight="10dp"
+                    android:padding="8dp"
+                    android:background="@drawable/light_black_circle"
+                    android:tint="@color/white"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
 
@@ -198,6 +215,7 @@
                     android:background="@color/white"
                     android:paddingBottom="100dp"
                     android:clipToPadding="false"
+                    tools:listitem="@layout/chat_item_view"
                     android:nestedScrollingEnabled="false"/>
             </LinearLayout>
 

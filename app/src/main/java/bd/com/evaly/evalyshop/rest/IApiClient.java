@@ -35,6 +35,9 @@ public interface IApiClient {
     @POST(UrlUtils.SEND_CUSTOM_MESSAGE)
     Call<JsonObject> sendCustomMessage(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
+    @POST(UrlUtils.UPDATE_PRODUCT_STATUS)
+    Call<JsonObject> updateProductStatus(@Header("Authorization") String token, @Body HashMap<String, String> data);
+
 
     @Multipart
     @POST(UrlUtils.IMAGE_UPLOAD)
