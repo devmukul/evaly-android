@@ -585,6 +585,7 @@ public class CartActivity extends BaseActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Origin", "app");
                 return headers;
             }
 
