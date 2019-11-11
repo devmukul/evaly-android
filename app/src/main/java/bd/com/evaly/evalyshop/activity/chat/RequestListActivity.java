@@ -9,6 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -51,6 +53,9 @@ public class RequestListActivity extends BaseActivity implements RequestListAdap
     XMPPHandler xmppHandler;
     XMPPEventReceiver xmppEventReceiver;
 
+    @BindView(R.id.noItem)
+    LinearLayout noitem;
+
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
         //On User Presence Changed
@@ -68,6 +73,13 @@ public class RequestListActivity extends BaseActivity implements RequestListAdap
                     list.clear();
                     list.addAll(xmppHandler.getPendingRequests());
                     adapter.notifyDataSetChanged();
+
+                    if (list.size() == 0){
+                        noitem.setVisibility(View.VISIBLE);
+                    } else {
+                        noitem.setVisibility(View.GONE);
+                    }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
