@@ -161,6 +161,12 @@ public class CartActivity extends BaseActivity {
         checkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(userDetails.getToken().equals("")) {
+                    Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 boolean selected=false;
                 for (int i = 0; i < itemList.size(); i++){
                     if(itemList.get(i).isSelected()){
