@@ -513,6 +513,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     } else {
                         Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
                         BuyNowFragment.this.dismiss();
+                    }
 
                 } catch (Exception e){}
 
