@@ -161,6 +161,12 @@ public class CartActivity extends BaseActivity {
         checkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(userDetails.getToken().equals("")) {
+                    Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 boolean selected=false;
                 for (int i = 0; i < itemList.size(); i++){
                     if(itemList.get(i).isSelected()){
@@ -222,10 +228,6 @@ public class CartActivity extends BaseActivity {
                     return;
                 }
 
-                if (totalPriceDouble < 500){
-                    Toast.makeText(context, "You can't order below 500 Tk.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
 
                 if (!Utils.isValidNumber(contact_number.getText().toString())){
@@ -233,7 +235,12 @@ public class CartActivity extends BaseActivity {
                     return;
                 }
 
-                 placeOrder(generateOrderJson(), dialog);
+
+
+
+                placeOrder(generateOrderJson(), dialog);
+
+
 
                 //generateOrderJson();
 
@@ -493,13 +500,43 @@ public class CartActivity extends BaseActivity {
 
         alert.showDialog();
 
+        try{
+
+            int countItems = payload.getJSONArray("order_items").length();
+
+
+            Log.d("jsonz count", countItems+"");
+
+            if (countItems == 0) {
+
+
+                alert.hideDialog();
+                dialog.hideDialog();
+                return;
+            }
+
+        } catch (Exception e){
+
+        }
+
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
 
+
+                String errorMsg = "Couldn't place order, might be a server error";
+
                 Log.d("json order", response.toString());
 
+                try {
+
+                    errorMsg = response.getString("message");
+
+                }catch (Exception e){
+
+                }
 
 
                 try {
@@ -508,21 +545,26 @@ public class CartActivity extends BaseActivity {
                         dialog.hideDialog();
                         // Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
 
-                        Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
 
                         return;
                     } else {
 
-                        Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
 
                         orderPlaced();
                         dialog.hideDialog();
+
+
+                        errorMsg = response.getString("message");
 
                     }
 
                 } catch (Exception e){
 
                 }
+
+
 
 
                 try {
@@ -543,7 +585,9 @@ public class CartActivity extends BaseActivity {
                 } catch (Exception e) {
 
                     Log.e("json exception", e.toString());
-                    Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, errorMsg , Toast.LENGTH_SHORT).show();
+
+                    dialog.hideDialog();
 
                 }
 
@@ -574,8 +618,10 @@ public class CartActivity extends BaseActivity {
 
                 }}
 
-                Toast.makeText(context, "Couldn't place holder, might be a server error.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Couldn't place holder", Toast.LENGTH_SHORT).show();
                 dialog.hideDialog();
+
+                alert.hideDialog();
 
                 // orderPlaced();
 
@@ -674,17 +720,38 @@ public class CartActivity extends BaseActivity {
                         if (sellerJson.getString("shop_slug").equals("evaly-amol-1")) {
 
 
-                            Date joinDate = Utils.formattedDateFromString("", userDetails.getCreatedAt());
+//                            Date joinDate = Utils.formattedDateFromString("", userDetails.getCreatedAt());
+//
+//                            if (joinDate.after(septemberDate) && joinDate.before(septemberDate2)) {
+//                                items.put(itemsObject);
+//
+//                            } else {
+//                                Toast.makeText(context, "10 Tk pendrive offer is only available to users who joined after 1st September, 2019", Toast.LENGTH_LONG).show();
+//                            }
 
-                            if (joinDate.after(septemberDate) && joinDate.before(septemberDate2)) {
+
+                            if (adapterItems.get(i).getPrice()*adapterItems.get(i).getQuantity() != 16) {
+
+                                Toast.makeText(context, "You can't order below or more than 16 Tk from Evaly Amol.", Toast.LENGTH_SHORT).show();
+
+                                return obj;
+
+                            } else{
+
                                 items.put(itemsObject);
-
-                            } else {
-                                Toast.makeText(context, "10 Tk pendrive offer is only available to users who joined after 1st September, 2019", Toast.LENGTH_LONG).show();
                             }
                         }
-                        else
-                            items.put(itemsObject);
+                        else {
+
+
+                            if (totalPriceDouble  < 500){
+                                Toast.makeText(context, "You can't order below 500 Tk from "+sellerJson.getString("shop_name"), Toast.LENGTH_SHORT).show();
+                                return obj;
+                            } else {
+
+                                items.put(itemsObject);
+                            }
+                        }
 
                     } catch (Exception e){
                     }
@@ -702,93 +769,6 @@ public class CartActivity extends BaseActivity {
         return obj;
 
     }
-
-
-    private JSONObject generateOrderJsonOld(){
-
-        JSONObject obj = new JSONObject();
-
-        try {
-
-            JSONObject addressObj = new JSONObject();
-
-            if(!addressSwitch.isChecked()) {
-                addressObj.put("address", JSONObject.NULL);
-                addressObj.put("address_id", spinnerArrayID.get(spinnerPosition));
-
-                Log.d("json", ""+spinnerArrayID.get(spinnerPosition));
-
-            } else {
-
-                addressObj.put("address", customAddress.getText().toString());
-                addressObj.put("address_id", JSONObject.NULL);
-
-            }
-
-            if(paymentMethod == 1)
-                obj.put("payment_method", "cod");
-            else if(paymentMethod == 2)
-                obj.put("payment_method", "evaly_pay");
-
-            // get items jsonArray
-
-            obj.put("items", new JSONArray());
-            obj.put("customer_address", addressObj);
-
-            JSONArray items = obj.getJSONArray("items");
-
-            int index=0;
-
-            ArrayList<CartItem> adapterItems = adapter.getItemList();
-
-
-            for(int i=0; i < adapterItems.size(); i++) {
-
-                if(adapterItems.get(i).isSelected()) {
-                    String fromShopJson = adapterItems.get(i).getSellerJson();
-                    // Log.d("json seller", fromShopJson);
-
-                    items.put(new JSONObject());
-
-                    // add "bought from shop" data to json (comes from db)
-                    items.optJSONObject(index).put("shop_product_item", new JSONObject(fromShopJson));
-
-                    JSONObject itemsObject = items.getJSONObject(index);  // get the current object from items array
-
-                    // put quantity
-                    itemsObject.put("quantity", adapterItems.get(i).getQuantity());
-
-
-                    JSONObject shop_product_item = itemsObject.getJSONObject("shop_product_item"); // get shop_product_item jsonObject
-                    // product_item
-                    //shop_product_item.put("product_item", new JSONObject());
-
-
-                    JSONObject product_item = shop_product_item.getJSONObject("product_item"); // get shop_product_item product_item
-
-                    // put product details (comes from db) - don't need now as shop has that
-                    //product_item.put("product", new JSONObject(productJson));
-
-
-                    JSONObject product = product_item.getJSONObject("product");
-
-                    // put varying_options (come from db)
-                    // product_item.put("varying_options", new JSONArray());
-
-                    index++;
-                }
-            }
-
-            largeLog("json", obj.toString());
-
-        } catch (Exception e) {
-            Log.e("json", "Could not parse malformed JSON: "+e.toString());
-        }
-
-        return obj;
-
-    }
-
 
     public void orderPlaced(){
 

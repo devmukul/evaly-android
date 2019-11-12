@@ -413,18 +413,26 @@ public class MainActivity extends BaseActivity {
             Intent intent;
             switch (menuItem.getItemId()) {
                 case R.id.nav_home:
-//                    while (fragmentManager.getBackStackEntryCount() > 0) {
-//                        fragmentManager.popBackStackImmediate();
-//                    }
-//
-//                    showHomeFragment();
 
 
 
 
-                    ft.hide(fragmentWishtList);
-                    ft.show(homeFragment);
-                    ft.commit();
+                    WishListFragment myFragment = (WishListFragment) getSupportFragmentManager().findFragmentByTag("wishlist");
+                    if (myFragment != null && myFragment.isVisible()) {
+                        ft.hide(fragmentWishtList);
+                        ft.show(homeFragment);
+                        ft.commit();
+                    } else {
+
+                        while (fragmentManager.getBackStackEntryCount() > 0) {
+                            fragmentManager.popBackStackImmediate();
+                        }
+
+                    showHomeFragment();
+
+                    }
+
+
 
                     break;
                 case R.id.nav_wishlist:

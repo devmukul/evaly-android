@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
@@ -47,15 +47,17 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:gravity="right">
+
                 <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/followers"
+                    android:visibility="gone"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center"
                     android:layout_marginRight="10dp"
                     android:padding="8dp"
-                    android:background="@drawable/light_black_circle"
-                    android:tint="@color/white"
-                    android:layout_gravity="center"/>
+                    app:srcCompat="@drawable/ic_pending_user"
+                    android:tint="#333"
+                    android:background="?android:attr/selectableItemBackground"/>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
 

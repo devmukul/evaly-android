@@ -120,6 +120,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     RecyclerView recyclerVariation;
     private VariationAdapter adapterVariation;
     private ViewDialog dialog;
+    private List<OrderItemsItem> list;
 
     @Override
     public void selectVariation(int position) {
@@ -224,6 +225,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
 
+
+        list = new ArrayList<>();
+
         btnBottomSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -256,7 +260,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
                 item.setShopItemId(shop_item_id);
 
-                List<OrderItemsItem> list = new ArrayList<>();
+
+                list = new ArrayList<>();
+
                 list.add(item);
 
                 orderJson.setOrderItems(list);
@@ -288,9 +294,29 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 return;
             }
 
-            if (productPriceInt*quantityCount < 500){
-                Toast.makeText(context, "You can't order below 500 TK", Toast.LENGTH_LONG).show();
-                return;
+
+            int totalPrice = 0;
+
+            try {
+                totalPrice = Integer.parseInt(productTotalPrice.getText().toString());
+            } catch (Exception e){
+
+            }
+
+            if (shop_slug.equals("evaly-amol-1")){
+
+                if (productPriceInt*quantityCount != 16){
+                    Toast.makeText(context, "You can't order below or more than 16 Tk from Evaly Amol.", Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+
+            } else {
+                if (productPriceInt*quantityCount < 500){
+                    Toast.makeText(context, "You can't order below 500 Tk.", Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
             }
 
 
@@ -467,6 +493,19 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 bottomSheetDialog.hide();
                 dialog.hideDialog();
 
+
+                String errorMsg = "Couldn't place order, might be a server error";
+
+                Log.d("json order", response.toString());
+
+                try {
+
+                    errorMsg = response.getString("message");
+
+                }catch (Exception e){
+
+                }
+
                 try {
                     if (response.getJSONArray("data").length() < 1) {
                         Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
@@ -492,7 +531,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 } catch (Exception e) {
 
                     Log.e("json exception", e.toString());
-                    Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -532,6 +571,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Origin", "app");
                 return headers;
             }
 

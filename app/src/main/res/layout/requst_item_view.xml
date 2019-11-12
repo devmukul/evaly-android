@@ -6,8 +6,6 @@
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
     android:foreground="?selectableItemBackground"
     android:orientation="vertical">
 
@@ -24,6 +22,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginRight="10dp"
+            android:layout_marginLeft="15dp"
             android:src="@drawable/user_image" />
 
         <LinearLayout
@@ -67,6 +66,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:layout_marginBottom="2dp"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:paddingRight="10dp"
@@ -97,10 +97,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:padding="5dp"
+                    android:padding="7dp"
                     android:gravity="center"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/round_box"
+                    android:background="@drawable/round_box_less"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="20dp"
@@ -112,6 +112,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="#555"
                         android:text="Accept"/>
                 </LinearLayout>
 
@@ -120,10 +121,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:padding="5dp"
+                    android:padding="7dp"
                     android:gravity="center"
                     android:layout_marginLeft="10dp"
-                    android:background="@drawable/round_box"
+                    android:background="@drawable/round_box_less"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="20dp"
@@ -135,6 +136,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="#555"
                         android:text="Reject"/>
                 </LinearLayout>
             </LinearLayout>
