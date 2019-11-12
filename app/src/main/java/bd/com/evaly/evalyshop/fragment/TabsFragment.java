@@ -71,7 +71,7 @@ public class TabsFragment extends Fragment {
     public static String[] titleCategory = {
             "Bags & Luggage",
             "Beauty & Body Care",
-            "Books",
+//            "Books",
             "Burmese Products",
             "Construction Materials",
             "Decoration Materials",
@@ -113,7 +113,7 @@ public class TabsFragment extends Fragment {
     public static int[] imageCategory = {
             R.drawable.ic_bags_set,
             R.drawable.ic_color_lotion,
-            R.drawable.ic_color_books,
+//            R.drawable.ic_color_books,
             R.drawable.burmes_item,
             R.drawable.ic_color_construction,
             R.drawable.ic_color_decoration,
