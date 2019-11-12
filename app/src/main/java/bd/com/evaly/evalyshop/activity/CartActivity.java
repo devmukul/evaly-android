@@ -724,7 +724,7 @@ public class CartActivity extends BaseActivity {
 //                            }
 
 
-                            if (totalPriceDouble != 16) {
+                            if (adapterItems.get(i).getPrice()*adapterItems.get(i).getQuantity() != 16) {
 
                                 Toast.makeText(context, "You can't order below or more than 16 Tk from Evaly Amol.", Toast.LENGTH_SHORT).show();
 
@@ -738,7 +738,7 @@ public class CartActivity extends BaseActivity {
                         else {
 
 
-                            if (totalPriceDouble < 500){
+                            if (totalPriceDouble  < 500){
                                 Toast.makeText(context, "You can't order below 500 Tk from "+sellerJson.getString("shop_name"), Toast.LENGTH_SHORT).show();
                                 return obj;
                             } else {
