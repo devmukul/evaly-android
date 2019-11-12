@@ -501,7 +501,8 @@ public class EditProfileActivity extends BaseActivity {
                     userDetails.setJsonAddress(address.getText().toString());
 
                     setUserData(userInfo);
-                    Token.update(EditProfileActivity.this, false);
+
+                    // Token.update(EditProfileActivity.this, false);
 
 
                     Log.d("json user info", userJson.toString());
@@ -575,6 +576,9 @@ public class EditProfileActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
 
+
+                mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+
                 dialog.hideDialog();
                 Log.d("json user info response", response.toString());
                 JSONObject data = null;
@@ -638,7 +642,7 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+
     }
 
     @Override
