@@ -409,8 +409,26 @@ public class XMPPHandler {
         return (presence.getFrom().toString().contains(roasterModel));
     }
 
+    public boolean isAlreadyInvited(String id){
+        Collection<RosterEntry> entries = roster.getEntries();
+
+        for (RosterEntry entry : entries) {
+//            confirmSubscription(entry.getJid(), true);
+            try {
+                Presence presence = roster.getPresence(entry.getJid());
+//                Logger.e(entry.getJid().asUnescapedString()+"    "+ entry.getType());
+                if (entry.getJid().asUnescapedString().contains(id)){
+                    return false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
     //Sends a subscription request to particular user (JID)
-    public void sendRequestTo(String id, String name) {
+    public boolean sendRequestTo(String id, String name) {
 
         //Making the Full JID
         if (!id.contains("@")) {
@@ -460,6 +478,9 @@ public class XMPPHandler {
                 e.printStackTrace();
             }
             roster.getEntry(jid);
+            return true;
+        }else {
+            return false;
         }
     }
 
@@ -554,7 +575,7 @@ public class XMPPHandler {
                             new RoasterModel(entry.getJid(), presence.getFrom(), presence.getStatus(), mode, status, entry.getName()));
 
                     if (debug) {
-//                        Logger.e(entry.getUser() + "   " + entry.getName() + "   " + presence.getType().name() + "   " + presence.getStatus() + "   " + presence.getMode() + "   " + entry.getType());
+                        Logger.e( entry.getName() + "   " + entry.getType());
 
                         String isSubscribePending = (entry.getType() == RosterPacket.ItemType.both) ? "Yes" : "No";
                         //                Log.e(TAG, "sub: " + isSubscribePending);
@@ -637,6 +658,8 @@ public class XMPPHandler {
         } catch (SmackException.NotConnectedException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e){
             e.printStackTrace();
         }
         return vCard;

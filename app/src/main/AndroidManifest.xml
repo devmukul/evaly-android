@@ -23,7 +23,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.chat.RequestListActivity"></activity>
+        <activity
+            android:name=".activity.chat.invite.InviteActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.chat.RequestListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait"
@@ -134,7 +140,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:largeHeap="true"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar"

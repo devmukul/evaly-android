@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,17 +30,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
-import com.vanniktech.emoji.EmojiEditText;
-import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiPopup;
-import com.vanniktech.emoji.google.GoogleEmojiProvider;
-import com.vanniktech.emoji.listeners.OnEmojiBackspaceClickListener;
-import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
 import com.vanniktech.emoji.listeners.OnSoftKeyboardCloseListener;
 
 import org.jivesoftware.smack.SmackException;
@@ -56,7 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
-import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
@@ -64,7 +56,6 @@ import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.ChatStateModel;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
-import bd.com.evaly.evalyshop.models.xmpp.VCardObject;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;

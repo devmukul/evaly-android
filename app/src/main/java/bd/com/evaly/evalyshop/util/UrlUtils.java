@@ -48,6 +48,7 @@ public class UrlUtils {
     public static final String IMAGE_UPLOAD = "image/upload/";
 
     public static final String CHECK_UPDATE = BASE_URL + "apps/versions/current";
+    public static final String EVALY_USERS = DOMAIN5000 + "evaly-users/";
 
 
 }

@@ -405,13 +405,11 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
     public void showProductsByCategory(String categoryName, String categorySlug, int position) {
-
         reset.setVisibility(View.VISIBLE);
         categoryTitle.setText(categoryName);
         productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, categorySlug, 1, view.findViewById(R.id.progressBar));
         productGrid.setScrollView(nestedSV);
         productGrid.setListener(this);
-
     }
 
     public void getShopProductCount() {

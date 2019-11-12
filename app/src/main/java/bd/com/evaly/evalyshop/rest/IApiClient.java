@@ -14,6 +14,8 @@ import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface IApiClient {
 
@@ -38,11 +40,13 @@ public interface IApiClient {
     @POST(UrlUtils.UPDATE_PRODUCT_STATUS)
     Call<JsonObject> updateProductStatus(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
-
     @Multipart
     @POST(UrlUtils.IMAGE_UPLOAD)
     Call<JsonObject> imageUpload(@Header("Authorization") String token, @Header("Content_Type") String contentType, @Part MultipartBody.Part image);
 
     @GET(UrlUtils.CHECK_UPDATE)
     Call<JsonObject> checkUpdate();
+
+    @GET(UrlUtils.EVALY_USERS)
+    Call<JsonObject> searchEvalyUsers(@Header("Authorization") String token, @Query("search") String search, @Query("page") int page);
 }

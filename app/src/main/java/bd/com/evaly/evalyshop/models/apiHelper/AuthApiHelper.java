@@ -207,6 +207,24 @@ public class AuthApiHelper {
 
     }
 
+    public static void searchUser(String search, int page, DataFetchingListener<Response<JsonObject>> listener) {
+
+        IApiClient iApiClient = getiApiClient();
+        Call<JsonObject> call = iApiClient.searchEvalyUsers(CredentialManager.getToken(),search, page);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                listener.onFailed(0);
+            }
+        });
+
+    }
+
     public static void uploadImage(final Context context, Bitmap profileImg, ImageUploadView view) {
         IApiClient iApiClient = getiApiClient();
 
