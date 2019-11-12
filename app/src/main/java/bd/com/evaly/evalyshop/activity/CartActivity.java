@@ -506,6 +506,7 @@ public class CartActivity extends BaseActivity {
 
 
             Log.d("jsonz count", countItems+"");
+            Logger.d(payload);
 
             if (countItems == 0) {
 

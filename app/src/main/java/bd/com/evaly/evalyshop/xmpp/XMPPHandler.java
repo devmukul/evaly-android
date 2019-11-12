@@ -208,6 +208,8 @@ public class XMPPHandler {
 
                     reconnectionManager = ReconnectionManager.getInstanceFor(connection);
                     reconnectionManager.enableAutomaticReconnection();
+                    reconnectionManager.setReconnectionPolicy(ReconnectionManager.ReconnectionPolicy.FIXED_DELAY);
+                    reconnectionManager.setFixedDelay(5);
                     reconnectionManager.addReconnectionListener(new ReconnectionListener() {
                         @Override
                         public void reconnectingIn(int seconds) {
@@ -575,7 +577,7 @@ public class XMPPHandler {
                             new RoasterModel(entry.getJid(), presence.getFrom(), presence.getStatus(), mode, status, entry.getName()));
 
                     if (debug) {
-                        Logger.e( entry.getName() + "   " + entry.getType());
+                        Logger.e( entry.getJid().asUnescapedString() + "   " + entry.getType());
 
                         String isSubscribePending = (entry.getType() == RosterPacket.ItemType.both) ? "Yes" : "No";
                         //                Log.e(TAG, "sub: " + isSubscribePending);
