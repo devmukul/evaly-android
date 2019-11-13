@@ -1,15 +1,21 @@
 package bd.com.evaly.evalyshop.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
@@ -17,15 +23,20 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
@@ -52,19 +63,29 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.adapter.AvailableShopAdapter;
+import bd.com.evaly.evalyshop.adapter.ContactShareAdapter;
 import bd.com.evaly.evalyshop.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.adapter.ViewProductSliderAdapter;
+import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.ProductVariants;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.reviewratings.RatingReviews;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Data;
+import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.models.WishList;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
@@ -82,7 +103,8 @@ public class ViewProductActivity extends BaseActivity {
 
     ImageView back;
     TextView productName, sku, description;
-    String slug = "", category = "", name = "";
+    String slug = "", category = "", name = "", productImage = "";
+    int productPrice;
     ArrayList<Products> products;
     NestedScrollView nestedSV;
     ArrayList<AvailableShop> availableShops;
@@ -144,6 +166,8 @@ public class ViewProductActivity extends BaseActivity {
     Map<Integer, ProductVariants> productVariantsMap;
     ArrayList<Integer> buttonIDs;
 
+    private BottomSheetDialog bottomSheetDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +185,9 @@ public class ViewProductActivity extends BaseActivity {
 
         getSupportActionBar().setTitle("View Product");
 
+        productPrice = getIntent().getIntExtra("product_price", -1);
+        productImage = getIntent().getStringExtra("product_image");
+
         rqShop = Volley.newRequestQueue(context);
         rq = Volley.newRequestQueue(context);
 
@@ -169,14 +196,34 @@ public class ViewProductActivity extends BaseActivity {
         shareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    sharingIntent.setType("text/plain");
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareURL);
-                    startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_via)));
-                } catch (Exception e) {
-                    Toast.makeText(context, "Can't share the product.", Toast.LENGTH_SHORT).show();
-                }
+
+                PopupMenu popup = new PopupMenu(context, shareBtn);
+                popup.getMenuInflater().inflate(R.menu.share_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_share_contacts:
+                                shareWithContacts();
+                                break;
+                            case R.id.action_share_newsfeed:
+
+                                break;
+                            case R.id.action_share_other:
+                                try {
+                                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                                    sharingIntent.setType("text/plain");
+                                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareURL);
+                                    startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_via)));
+                                } catch (Exception e) {
+                                    Toast.makeText(context, "Can't share the product.", Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                        }
+
+                        return true;
+                    }
+                });
+                popup.show();
             }
         });
 
@@ -354,6 +401,86 @@ public class ViewProductActivity extends BaseActivity {
 
 
         });
+    }
+
+    private void shareWithContacts() {
+        bottomSheetDialog = new BottomSheetDialog(ViewProductActivity.this, R.style.BottomSheetDialogTheme);
+        bottomSheetDialog.setContentView(R.layout.share_with_contact_view);
+
+        View bottomSheetInternal = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        bottomSheetInternal.setPadding(0, 0, 0, 0);
+
+        new KeyboardUtil(ViewProductActivity.this, bottomSheetInternal);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+
+                    bottomSheet.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
+
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_HALF_EXPANDED)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        bottomSheetDialog.setCanceledOnTouchOutside(false);
+        RecyclerView rvContacts = bottomSheetDialog.findViewById(R.id.rvContacts);
+        ImageView ivBack = bottomSheetDialog.findViewById(R.id.back);
+        EditText etSearch = bottomSheetDialog.findViewById(R.id.etSearch);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(ViewProductActivity.this);
+        rvContacts.setLayoutManager(layoutManager);
+        AsyncTask.execute(() -> {
+            List<RosterTable> list = AppController.database.taskDao().getAllRosterWithoutObserve();
+            runOnUiThread(() -> {
+                ContactShareAdapter adapter = new ContactShareAdapter(ViewProductActivity.this, list, new RecyclerViewOnItemClickListener() {
+                    @Override
+                    public void onRecyclerViewItemClicked(Object object) {
+                        RosterTable table = (RosterTable) object;
+                        HashMap<String, String> data = new HashMap<>();
+                        data.put("p_slug", slug);
+                        data.put("p_name", name);
+                        data.put("p_image", productImage);
+                        data.put("p_price", String.valueOf(productPrice));
+
+                        JSONObject jsonObject = new JSONObject(data);
+
+                        ChatItem chatItem = new ChatItem(jsonObject.toString(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName()+"@"+ Constants.XMPP_HOST, table.id, Constants.TYPE_PRODUCT, true, "");
+
+                    }
+                });
+
+                rvContacts.setAdapter(adapter);
+                etSearch.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        adapter.getFilter().filter(charSequence);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        adapter.getFilter().filter(charSequence);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+            });
+        });
+
+
+
+        ivBack.setOnClickListener(view -> bottomSheetDialog.dismiss());
+
+        bottomSheetDialog.show();
     }
 
     @Override
@@ -639,8 +766,6 @@ public class ViewProductActivity extends BaseActivity {
                         JSONArray productSpecifications = response.getJSONArray("product_specifications");
 
 
-
-
                         for (int i = 0; i < productSpecifications.length(); i++) {
                             specTitle.add(productSpecifications.getJSONObject(i).getString("specification_name"));
                             specValue.add(productSpecifications.getJSONObject(i).getString("specification_value"));
@@ -746,8 +871,6 @@ public class ViewProductActivity extends BaseActivity {
 //                                addButtons();
 //                            }
 //                        }
-
-
 
 
                         ProductGrid productGrid = new ProductGrid(context, findViewById(R.id.products), firstVariant.getString("category_slug"), findViewById(R.id.progressBar));
@@ -870,7 +993,7 @@ public class ViewProductActivity extends BaseActivity {
                         drawable.setColor(Color.parseColor("#d1ecf2"));
                         getAvailableShops(productVariants.getVariantID());
 
-                    } catch (Exception e){
+                    } catch (Exception e) {
 
                         Crashlytics.logException(e);
 
@@ -918,7 +1041,7 @@ public class ViewProductActivity extends BaseActivity {
         isShopLoading = true;
 
         Log.d("json_shop", shopURL);
-        shopURL = UrlUtils.BASE_URL+"public/product/shops/" + variationID + "/";
+        shopURL = UrlUtils.BASE_URL + "public/product/shops/" + variationID + "/";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, shopURL, (String) null,
                 response -> {
 

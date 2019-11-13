@@ -83,6 +83,7 @@ public class Constants {
     public static final String TYPE_AUDIO = "media/audio";
     public static final String TYPE_VIDEO = "media/video";
     public static final String TYPE_TEXT = "text";
+    public static final String TYPE_PRODUCT = "product";
 
     public static final String EVALY_LOGO = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/media/2019-08-04_090235.843922android-icon-200x200.png";
 
