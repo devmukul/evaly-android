@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.rest;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -33,6 +34,9 @@ public interface IApiClient {
 
     @POST(UrlUtils.ADD_ROSTER)
     Call<JsonPrimitive> addRoster(@Body HashMap<String, String> data);
+
+    @GET(UrlUtils.INVITATION_LIST+"{phone}/")
+    Call<JsonArray> getInvitationList(@Path("phone") String phone);
 
     @POST(UrlUtils.SEND_CUSTOM_MESSAGE)
     Call<JsonObject> sendCustomMessage(@Header("Authorization") String token, @Body HashMap<String, String> data);

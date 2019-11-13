@@ -15,26 +15,33 @@ import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.models.chat.RequestedUserModel;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
 public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.RequestListViewHolder> {
-    private List<Jid> list;
+    private List<RequestedUserModel> list;
     private Activity context;
     private OnAcceptRejectListener listener;
+    private List<String> nameList;
 
-    public RequestListAdapter(List<Jid> list, Activity context, OnAcceptRejectListener listener) {
+    public RequestListAdapter(List<RequestedUserModel> list, Activity context, OnAcceptRejectListener listener) {
         this.list = list;
         this.context = context;
         this.listener = listener;
+        nameList = new ArrayList<>();
     }
 
     @NonNull
@@ -43,37 +50,26 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         return new RequestListViewHolder(LayoutInflater.from(context).inflate(R.layout.requst_item_view, parent, false));
     }
 
-    public interface OnAcceptRejectListener{
-        void onRequestAccept(Jid jid);
-        void onRequestReject(Jid jid);
+    public interface OnAcceptRejectListener {
+        void onRequestAccept(RequestedUserModel jid, String name);
+
+        void onRequestReject(RequestedUserModel jid, String name);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RequestListViewHolder holder, int position) {
-        Jid model = list.get(position);
-//        Logger.d(list.size() + "     " + position);
+        RequestedUserModel model = list.get(position);
 
+        XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
+//        Logger.json(xmlToJson.toJson().toString());
         try {
-            VCard vCard = AppController.getmService().xmpp.getUserDetails((EntityBareJid) model);
-
-//            Logger.json(new Gson().toJson(vCard));
-            if (vCard.getFirstName() == null || vCard.getLastName().equalsIgnoreCase("")) {
-                if (vCard.getNickName() == null || vCard.getNickName().replaceAll("\\s+$", "").equals("")) {
-                    holder.tvName.setText("Customer");
-                } else {
-                    holder.tvName.setText(vCard.getNickName());
-                }
-            } else {
-                holder.tvName.setText(vCard.getFirstName() + " " + vCard.getLastName());
+            String name = xmlToJson.toJson().getJSONObject("vCard").getString("FN");
+            if (name == null) {
+                name = "";
             }
-            Glide.with(context)
-                    .load(vCard.getField("URL"))
-                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
-                    .into(holder.ivProfileImage);
-//            vCardList.add(vCard);
-
-        } catch (Exception e) {
-//            holder.tvName.setText(model.getRoasterPresenceFrom().getLocalpartOrNull().toString());
+            holder.tvName.setText(name);
+            nameList.add(name);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -107,14 +103,14 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
             llAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onRequestAccept(list.get(getLayoutPosition()));
+                    listener.onRequestAccept(list.get(getLayoutPosition()), nameList.get(getLayoutPosition()));
                 }
             });
 
             llReject.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onRequestReject(list.get(getLayoutPosition()));
+                    listener.onRequestReject(list.get(getLayoutPosition()), nameList.get(getLayoutPosition()));
                 }
             });
         }

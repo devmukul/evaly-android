@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
@@ -160,6 +161,25 @@ public class AuthApiHelper {
 
             @Override
             public void onFailure(Call<JsonPrimitive> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
+
+    }
+
+    public static void getInvitationList(String phone, DataFetchingListener<Response<JsonArray>> listener) {
+
+        IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
+        Call<JsonArray> call = iApiClient.getInvitationList(phone);
+        call.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
                 Logger.d(t.getMessage());
                 listener.onFailed(0);
             }

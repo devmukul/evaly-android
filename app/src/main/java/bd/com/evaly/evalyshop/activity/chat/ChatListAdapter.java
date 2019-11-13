@@ -122,7 +122,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                 holder.tvTime.setText(chatItem.getTime());
 
                 if (model.unreadCount > 0) {
-                    Logger.d(model.unreadCount);
+//                    Logger.d(model.unreadCount);
                     holder.tvUnreadCount.setText(String.valueOf(model.unreadCount));
                     holder.tvUnreadCount.setVisibility(View.VISIBLE);
                 } else {

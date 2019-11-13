@@ -1500,7 +1500,7 @@ public class XMPPHandler {
         List<RosterTable> list = roasterList;
         int count = 0;
 
-        Logger.d(new Gson().toJson(list));
+//        Logger.d(new Gson().toJson(list));
         for (int i = 0; i < list.size(); i++) {
             try {
                 ChatItem chatItem = getLastMessage(JidCreate.bareFrom(list.get(i).id));

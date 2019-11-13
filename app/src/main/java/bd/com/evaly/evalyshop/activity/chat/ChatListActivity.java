@@ -120,8 +120,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         public void onPresenceChanged(PresenceModel presenceModel) {
 
-            Logger.d(presenceModel.getUserStatus());
-
+//            Logger.d(presenceModel.getUserStatus());
 
             try {
                 for (int i = 0; i < rosterList.size(); i++) {

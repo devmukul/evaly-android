@@ -1,122 +1,57 @@
 package bd.com.evaly.evalyshop.activity.chat;
 
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
 import com.orhanobut.logger.Logger;
 
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.Jid;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.chat.RequestedUserModel;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
-import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
-import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
+import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.internal.Util;
+import retrofit2.Response;
 
 public class RequestListActivity extends BaseActivity implements RequestListAdapter.OnAcceptRejectListener {
 
     @BindView(R.id.rvRequest)
     RecyclerView rvRequest;
-
-    private RequestListAdapter adapter;
-
-    private List<Jid> list;
-
-    AppController mChatApp = AppController.getInstance();
-
-    XMPPHandler xmppHandler;
-    XMPPEventReceiver xmppEventReceiver;
-
     @BindView(R.id.noItem)
     LinearLayout noitem;
 
-    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+    private RequestListAdapter adapter;
+    private List<RequestedUserModel> requestList;
 
-        //On User Presence Changed
-        public void onLoggedIn() {
-            xmppHandler = AppController.getmService().xmpp;
-            list.clear();
-            list.addAll(xmppHandler.getPendingRequests());
-            adapter.notifyDataSetChanged();
-        }
-
-        public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-            try {
-                if (xmppHandler.isLoggedin()){
-                    list.clear();
-                    list.addAll(xmppHandler.getPendingRequests());
-                    adapter.notifyDataSetChanged();
-
-                    if (list.size() == 0){
-                        noitem.setVisibility(View.VISIBLE);
-                    } else {
-                        noitem.setVisibility(View.GONE);
-                    }
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void onLoginFailed(String msg) {
-            if (msg.contains("already logged in")) {
-                xmppHandler = AppController.getmService().xmpp;
-                list.clear();
-                list.addAll(xmppHandler.getPendingRequests());
-                adapter.notifyDataSetChanged();
-
-                Logger.d(list.size()+"   =========");
-            }
-        }
-
-
-        public void onSubscriptionRequest(final String fromUserID) {
-            Logger.e("New request - " + fromUserID);
-            Logger.d(xmppHandler.isConnected()+"    "+xmppHandler.isLoggedin());
-            try {
-                Jid jid = JidCreate.from(fromUserID);
-                list.add(0, jid);
-                Logger.e(list.size()+"");
-                adapter.notifyDataSetChanged();
-            } catch (XmppStringprepException e) {
-                e.printStackTrace();
-            }
-//            try {
-//                xmppHandler.confirmSubscription(JidCreate.bareFrom(fromUserID), true);
-//            } catch (XmppStringprepException e) {
-//                e.printStackTrace();
-//            }
-        }
-    };
-
+    private ViewDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,52 +64,43 @@ public class RequestListActivity extends BaseActivity implements RequestListAdap
         getSupportActionBar().setTitle("Message Request");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        list = new ArrayList<>();
+        dialog = new ViewDialog(this);
 
-        adapter = new RequestListAdapter(list, this, this);
+        requestList = new ArrayList<>();
+
+        adapter = new RequestListAdapter(requestList, this, this);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvRequest.setLayoutManager(layoutManager);
         rvRequest.setAdapter(adapter);
 
-
-        xmppEventReceiver = mChatApp.getEventReceiver();
-
-        xmppHandler = AppController.getmService().xmpp;
-
-        if (xmppHandler != null && xmppHandler.isLoggedin()){
-            xmppHandler = AppController.getmService().xmpp;
-            list.clear();
-            list.addAll(xmppHandler.getPendingRequests());
-            adapter.notifyDataSetChanged();
-            Logger.d(list.size()+"    =======");
-        }else {
-            startXmppService();
-        }
-
-    }
-
-    private void startXmppService() {
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(this, XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-        } else {
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
-            } else {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
+        dialog.showDialog();
+        AuthApiHelper.getInvitationList(CredentialManager.getUserName(), new DataFetchingListener<Response<JsonArray>>() {
+            @Override
+            public void onDataFetched(Response<JsonArray> response) {
+                dialog.hideDialog();
+                if (response.code() == 200 || response.code() == 201) {
+                    List<RequestedUserModel> list = new Gson().fromJson(response.body(), new TypeToken<List<RequestedUserModel>>() {
+                    }.getType());
+                    requestList.addAll(list);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
             }
-        }
+
+            @Override
+            public void onFailed(int status) {
+                dialog.hideDialog();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-        xmppEventReceiver.setListener(xmppCustomEventListener);
 
     }
 
@@ -185,35 +111,92 @@ public class RequestListActivity extends BaseActivity implements RequestListAdap
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onRequestAccept(Jid jid) {
-        xmppHandler.confirmSubscription((BareJid) jid, true);
-        Toast.makeText(getApplicationContext(), "Request Accepted!", Toast.LENGTH_LONG).show();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                list.remove(jid);
-                adapter.notifyDataSetChanged();
-            }
-        }, 500);
+    public void onRequestAccept(RequestedUserModel model, String name) {
+        addRoster(model, name, "both");
     }
 
     @Override
-    public void onRequestReject(Jid jid) {
-        xmppHandler.confirmSubscription((BareJid) jid, false);
-        Toast.makeText(getApplicationContext(), "Request Rejected!", Toast.LENGTH_LONG).show();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                list.remove(jid);
-                adapter.notifyDataSetChanged();
-            }
-        }, 500);
+    public void onRequestReject(RequestedUserModel model, String name) {
+        addRoster(model, name, "none");
+
     }
+
+    private void addRoster(RequestedUserModel model, String name, String type) {
+        String[] user = model.getUser_jid().split("@");
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("localuser", CredentialManager.getUserName());
+        data.put("localserver", Constants.XMPP_HOST);
+        data.put("user", user[0]);
+        data.put("server", Constants.XMPP_HOST);
+        data.put("nick", name);
+        data.put("subs", type);
+        data.put("group", "evaly");
+
+        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+            @Override
+            public void onDataFetched(Response<JsonPrimitive> response) {
+
+
+                if (response.code() == 200 || response.code() == 201) {
+                    RosterTable table = new RosterTable();
+                    table.id = model.getUser_jid();
+                    table.rosterName = name;
+                    table.name = name;
+                    table.status = 0;
+                    table.unreadCount = 1;
+                    ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName()+"@"+Constants.XMPP_HOST, model.getUser_jid(), Constants.TYPE_TEXT, true, "");
+                    try {
+                        if (AppController.getmService().xmpp.isLoggedin()){
+                            AppController.getmService().xmpp.sendMessage(chatItem);
+                            table.lastMessage = chatItem.getChat();
+                            table.time = chatItem.getLognTime();
+                        }
+                    } catch (SmackException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Logger.e(new Gson().toJson(table));
+                            AppController.database.taskDao().addRoster(table);
+                        }
+                    });
+
+                    requestList.remove(model);
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(getApplicationContext(), "Request accepted!", Toast.LENGTH_LONG).show();
+
+
+                } else if (response.code() == 401) {
+                    AuthApiHelper.refreshToken(RequestListActivity.this, new DataFetchingListener<Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(Response<JsonObject> response) {
+                            addRoster(model, name, type);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailed(int status) {
+
+            }
+        });
+    }
+
 }

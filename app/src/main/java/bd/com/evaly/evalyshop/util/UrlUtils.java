@@ -45,6 +45,7 @@ public class UrlUtils {
     public static final String CHANGE_XMPP_PASSWORD = "/api/change_password";
 
     public static final String ADD_ROSTER = "api/add_rosteritem";
+    public static final String INVITATION_LIST = "rest/messages/invitations/";
     public static final String IMAGE_UPLOAD = "image/upload/";
 
     public static final String CHECK_UPDATE = BASE_URL + "apps/versions/current";

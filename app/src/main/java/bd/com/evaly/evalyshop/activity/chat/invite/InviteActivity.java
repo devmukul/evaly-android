@@ -431,13 +431,7 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
             });
         } else {
             loading.hideDialog();
-            ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
 
-            try {
-                xmppHandler.sendMessage(chatItem);
-            } catch (SmackException e) {
-                e.printStackTrace();
-            }
             RosterTable table = new RosterTable();
             table.id = jid.asUnescapedString();
             table.rosterName = etContactName.getText().toString();
@@ -446,8 +440,7 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
             table.unreadCount = 0;
             table.nick_name = "";
             table.imageUrl = "";
-            table.time = chatItem.getLognTime();
-            table.lastMessage = new Gson().toJson(chatItem);
+
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -536,6 +529,7 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+                AppController.allDataLoaded = true;
                 rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
             }
         });
@@ -562,22 +556,7 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
     public void onRecyclerViewItemClicked(Object object) {
         EvalyUserModel model = (EvalyUserModel) object;
         if (xmppHandler.isLoggedin()) {
-
-            boolean invited = xmppHandler.isAlreadyInvited(model.getUsername());
-
-            if (!invited) {
-                Toast.makeText(getApplicationContext(), "Already invited", Toast.LENGTH_LONG).show();
-                return;
-            }
-
             addRoster(model);
-
-//            boolean invited = xmppHandler.sendRequestTo(model.getUsername(), model.getFirst_name() + " " + model.getLast_name());
-//            if (invited) {
-//                Toast.makeText(getApplicationContext(), "Invitation sent", Toast.LENGTH_LONG).show();
-//            } else {
-//                Toast.makeText(getApplicationContext(), "Already invited", Toast.LENGTH_LONG).show();
-//            }
         }
     }
 
