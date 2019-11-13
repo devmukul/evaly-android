@@ -138,6 +138,8 @@ public class TabsFragment extends Fragment {
 
             adapter2 = new HomeCategoryAdapter2(context, categoryItems);
             recyclerView.setAdapter(adapter2);
+
+
             adapter2.notifyDataSetChanged();
 
             Calendar calendar = Calendar.getInstance();
@@ -148,6 +150,9 @@ public class TabsFragment extends Fragment {
                     public void onDataFetched(ArrayList<CategoryItem> response) {
                         categoryItems.addAll(response);
                         adapter2.notifyDataSetChanged();
+
+                       // skeletonScreen.hide();
+
                     }
 
                     @Override
@@ -159,6 +164,8 @@ public class TabsFragment extends Fragment {
 
                 categoryItems.addAll(categoryUtils.getCategoryArrayList(""));
                 adapter2.notifyDataSetChanged();
+
+                //skeletonScreen.hide();
 
             }
 

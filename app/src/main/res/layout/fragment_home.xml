@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/swipe_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_coordinator"
@@ -8,6 +16,7 @@
 
 
     <include layout="@layout/fragment_app_bar_header"/>
+
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/stickyScrollView"
@@ -327,4 +336,8 @@
 
     </android.support.v4.widget.NestedScrollView>
 
+
+
 </android.support.design.widget.CoordinatorLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

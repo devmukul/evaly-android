@@ -103,7 +103,6 @@ public class MyPreference {
             return null;
         }
 
-
         public Builder remove(String key) {
             editor.remove(key);
             editor.commit();
