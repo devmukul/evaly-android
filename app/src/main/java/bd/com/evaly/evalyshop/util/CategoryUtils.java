@@ -32,21 +32,25 @@ public class CategoryUtils {
     }
 
     public void saveCategoryJson(String json) {
-        MyPreference.with(context, "drawable_db").addString("drawable_json", json).save();
+        MyPreference.with(context, "category_db").addString("category_json", json).save();
+
     }
 
     public String getCategoryJson() {
-        return MyPreference.with(context, "drawable_db").getString("drawable_json", "");
+        return MyPreference.with(context, "category_db").getString("category_json", "");
     }
 
     public long getLastUpdated(){
-        return MyPreference.with(context, "drawable_db").getLong("last_updated", 0);
+        return MyPreference.with(context, "category_db").getLong("last_updated", 0);
     }
 
     public void setLastUpdated(){
 
         Calendar calendar = Calendar.getInstance();
-        MyPreference.with(context, "drawable_db").addLong("last_updated", calendar.getTimeInMillis());
+
+        Log.d("jsonz response time set", calendar.getTimeInMillis() + "");
+
+        MyPreference.with(context, "category_db").addLong("last_updated", calendar.getTimeInMillis()).save();
     }
 
     public ArrayList<CategoryItem> getCategoryArrayList(String json) {
@@ -74,12 +78,7 @@ public class CategoryUtils {
                 item.setDrawable(getDrawableFromName(item.getName()));
                 list.add(item);
 
-
-                Log.d("jsonz added", list.toString());
-
             } catch (Exception e){
-
-                Log.d("jsonz added error", e.toString());
             }
 
         }

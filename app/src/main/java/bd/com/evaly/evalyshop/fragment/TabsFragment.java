@@ -139,6 +139,7 @@ public class TabsFragment extends Fragment {
             recyclerView.setAdapter(adapter2);
             adapter2.notifyDataSetChanged();
 
+            Log.d("jsonz time", categoryUtils.getLastUpdated() + "");
 
             if (categoryUtils.getLastUpdated() == 0){
                 categoryUtils.updateFromApi(new DataFetchingListener<ArrayList<CategoryItem>>() {
