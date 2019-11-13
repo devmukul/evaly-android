@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -139,9 +140,9 @@ public class TabsFragment extends Fragment {
             recyclerView.setAdapter(adapter2);
             adapter2.notifyDataSetChanged();
 
-            Log.d("jsonz time", categoryUtils.getLastUpdated() + "");
+            Calendar calendar = Calendar.getInstance();
 
-            if (categoryUtils.getLastUpdated() == 0){
+            if (categoryUtils.getLastUpdated() == 0 || (categoryUtils.getLastUpdated() != 0 && calendar.getTimeInMillis() - categoryUtils.getLastUpdated() > 43200000)){
                 categoryUtils.updateFromApi(new DataFetchingListener<ArrayList<CategoryItem>>() {
                     @Override
                     public void onDataFetched(ArrayList<CategoryItem> response) {
