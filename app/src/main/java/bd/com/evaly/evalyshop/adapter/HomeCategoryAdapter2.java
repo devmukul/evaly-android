@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +21,16 @@ import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
+import bd.com.evaly.evalyshop.models.category.CategoryItem;
 
 public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapter2.MyViewHolder>{
 
     Context context;
-    ArrayList<String> titleCategory;
-    ArrayList<Integer> imageCategory;
+    ArrayList<CategoryItem> itemList;
 
-    public HomeCategoryAdapter2(Context ctx,ArrayList s,ArrayList i){
+    public HomeCategoryAdapter2(Context ctx,ArrayList<CategoryItem> list){
         context=ctx;
-        titleCategory= s;
-        imageCategory= i;
+        itemList = list;
     }
 
     @Override
@@ -43,31 +41,36 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.tv.setText(titleCategory.get(position));
+
+        holder.tv.setText(itemList.get(position).getName());
 
 
         try {
 
-            if (position == 3 || position == 6 || position == 38) {
-
-                // Log.d("image position ", position+"");
+            if (itemList.get(position).getDrawable() == 0) {
                 Glide.with(context)
                         .asBitmap()
-                        .load(imageCategory.get(position))
+                        .load(itemList.get(position).getImageUrl())
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .apply(new RequestOptions().override(300, 200)).into(holder.iv);
-
             }
             else {
 
+                if (itemList.get(position).getName().contains("Dhaka") ||  itemList.get(position).getName().contains("Burmese")){
 
-                //holder.iv.setImageResource(imageCategory.get(position));
-                holder.iv.post( new Runnable() {
-                    public void run() {
-                        holder.iv.setImageDrawable(context.getResources().getDrawable(imageCategory.get(position)));
-                    }
-                });
+                    Glide.with(context)
+                            .asBitmap()
+                            .load(itemList.get(position).getDrawable())
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                            .apply(new RequestOptions().override(300, 200)).into(holder.iv);
 
+                } else {
+                    holder.iv.post(new Runnable() {
+                        public void run() {
+                            holder.iv.setImageDrawable(context.getResources().getDrawable(itemList.get(position).getDrawable()));
+                        }
+                    });
+                }
 
             }
 
@@ -75,7 +78,7 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
 
             Glide.with(context)
                     .asBitmap()
-                    .load(imageCategory.get(position))
+                    .load(itemList.get(position).getDrawable())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(300, 200)).into(holder.iv);
 
@@ -85,7 +88,7 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
 
     @Override
     public int getItemCount() {
-        return titleCategory.size();
+        return itemList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
@@ -209,13 +212,6 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
         }
     }
 
-    public void setFilter(ArrayList s,ArrayList i){
-        titleCategory=new ArrayList<>();
-        imageCategory=new ArrayList<>();
-        titleCategory.addAll(s);
-        imageCategory.addAll(i);
-        notifyDataSetChanged();
-    }
 
     public static String getTypeOfDrawable(int drawableId,Context context) {
         Drawable resImg = context.getResources().getDrawable(drawableId);
