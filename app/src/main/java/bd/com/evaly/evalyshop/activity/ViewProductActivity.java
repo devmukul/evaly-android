@@ -53,8 +53,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,6 +80,7 @@ import bd.com.evaly.evalyshop.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.adapter.ViewProductSliderAdapter;
 import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.ProductShareModel;
 import bd.com.evaly.evalyshop.models.ProductVariants;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
@@ -443,16 +446,20 @@ public class ViewProductActivity extends BaseActivity {
                     @Override
                     public void onRecyclerViewItemClicked(Object object) {
                         RosterTable table = (RosterTable) object;
-                        HashMap<String, String> data = new HashMap<>();
-                        data.put("p_slug", slug);
-                        data.put("p_name", name);
-                        data.put("p_image", productImage);
-                        data.put("p_price", String.valueOf(productPrice));
 
-                        JSONObject jsonObject = new JSONObject(data);
+                        ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
 
-                        ChatItem chatItem = new ChatItem(jsonObject.toString(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName()+"@"+ Constants.XMPP_HOST, table.id, Constants.TYPE_PRODUCT, true, "");
-
+                        ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName()+"@"+ Constants.XMPP_HOST, table.id, Constants.TYPE_PRODUCT, true, "");
+                        if (AppController.getmService().xmpp.isLoggedin()){
+                            try {
+                                AppController.getmService().xmpp.sendMessage(chatItem);
+                                Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
+                            } catch (SmackException e) {
+                                e.printStackTrace();
+                            }
+                        }else {
+                            AppController.getmService().xmpp.connect();
+                        }
                     }
                 });
 

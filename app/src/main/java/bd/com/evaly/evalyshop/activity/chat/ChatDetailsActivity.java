@@ -520,6 +520,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                     Logger.d(new Gson().toJson(rosterTable));
 
                     chatItemList = xmppHandler.getChatHistoryWithJID(JidCreate.bareFrom(senderId), 20, false);
+                    Logger.json(new Gson().toJson(chatItemList));
                     if (rosterTable.unreadCount > 0) {
                         chatItemList.get(chatItemList.size() - rosterTable.unreadCount).setUnread(true);
                     }

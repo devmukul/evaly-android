@@ -108,6 +108,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                 if (chatItem.getSender().contains(CredentialManager.getUserName())) {
                     if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
                         holder.tvBody.setText("You: Sent an image");
+                    } else if(chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_PRODUCT)){
+                        holder.tvBody.setText("You: Share a product");
                     } else {
                         holder.tvBody.setText("You: " + chatItem.getChat());
                     }
@@ -115,7 +117,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                 } else {
                     if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
                         holder.tvBody.setText("Sent an image");
-                    } else {
+                    } else if(chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_PRODUCT)){
+                        holder.tvBody.setText("Share a product");
+                    }else {
                         holder.tvBody.setText(chatItem.getChat());
                     }
                 }

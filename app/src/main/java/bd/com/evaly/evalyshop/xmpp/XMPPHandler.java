@@ -1678,7 +1678,7 @@ public class XMPPHandler {
         public void newOutgoingMessage(EntityBareJid to, Message message, Chat chat) {
 //            Logger.d(message.getBody());
             ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
-//            Logger.d(new Gson().toJson(chatItem));
+            Logger.e(new Gson().toJson(chatItem));
             service.onNewMessageSent(new Gson().toJson(chatItem));
         }
 
