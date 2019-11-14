@@ -6,6 +6,7 @@ import com.google.gson.JsonPrimitive;
 
 import java.util.HashMap;
 
+import bd.com.evaly.evalyshop.models.CreatePostModel;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -53,4 +54,7 @@ public interface IApiClient {
 
     @GET(UrlUtils.EVALY_USERS)
     Call<JsonObject> searchEvalyUsers(@Header("Authorization") String token, @Query("search") String search, @Query("page") int page);
+
+    @POST(UrlUtils.NEWS_FEED)
+    Call<JsonObject> createPost(@Header("Authorization") String header, @Body HashMap<String, CreatePostModel> data);
 }

@@ -54,6 +54,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smack.SmackException;
@@ -78,10 +79,13 @@ import bd.com.evaly.evalyshop.adapter.AvailableShopAdapter;
 import bd.com.evaly.evalyshop.adapter.ContactShareAdapter;
 import bd.com.evaly.evalyshop.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.adapter.ViewProductSliderAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CreatePostModel;
 import bd.com.evaly.evalyshop.models.ProductShareModel;
 import bd.com.evaly.evalyshop.models.ProductVariants;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.reviewratings.BarLabels;
@@ -91,12 +95,15 @@ import bd.com.evaly.evalyshop.util.Data;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.models.WishList;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 import bd.com.evaly.evalyshop.models.AvailableShop;
 import bd.com.evaly.evalyshop.models.CartItem;
 import bd.com.evaly.evalyshop.models.Products;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.views.SliderViewPager;
+import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
+import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 
 import java.util.TreeMap;
@@ -170,6 +177,7 @@ public class ViewProductActivity extends BaseActivity {
     ArrayList<Integer> buttonIDs;
 
     private BottomSheetDialog bottomSheetDialog;
+    private BottomSheetDialog newsfeedShareDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -209,7 +217,7 @@ public class ViewProductActivity extends BaseActivity {
                                 shareWithContacts();
                                 break;
                             case R.id.action_share_newsfeed:
-
+                                shareToNewsFeed(shareURL);
                                 break;
                             case R.id.action_share_other:
                                 try {
@@ -405,6 +413,111 @@ public class ViewProductActivity extends BaseActivity {
 
         });
     }
+
+    private void shareToNewsFeed(String shareURL) {
+        newsfeedShareDialog = new BottomSheetDialog(ViewProductActivity.this, R.style.BottomSheetDialogTheme);
+        newsfeedShareDialog.setContentView(R.layout.share_to_newsfeed_view);
+
+        View bottomSheetInternal = newsfeedShareDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        bottomSheetInternal.setPadding(0, 0, 0, 0);
+
+        new KeyboardUtil(ViewProductActivity.this, bottomSheetInternal);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+
+                    bottomSheet.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
+
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_HALF_EXPANDED)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        newsfeedShareDialog.setCanceledOnTouchOutside(false);
+        ImageView ivBack = newsfeedShareDialog.findViewById(R.id.close);
+        EditText etBody = newsfeedShareDialog.findViewById(R.id.etBody);
+        Button btnShare = newsfeedShareDialog.findViewById(R.id.btnShare);
+
+        RichLinkView linkPreview = newsfeedShareDialog.findViewById(R.id.linkPreview);
+
+        linkPreview.setLink(shareURL, new ViewListener() {
+            @Override
+            public void onSuccess(boolean status) {
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
+        btnShare.setOnClickListener(view -> {
+            HashMap<String, String> data = new HashMap<>();
+            data.put("body", etBody.getText().toString());
+            data.put("url", shareURL);
+            data.put("type", "product");
+
+            createPost(new Gson().toJson(data));
+
+        });
+
+        ivBack.setOnClickListener(view -> newsfeedShareDialog.dismiss());
+
+        newsfeedShareDialog.show();
+    }
+
+    private void createPost(String postBody) {
+        CreatePostModel createPostModel = new CreatePostModel("", "public", postBody, null);
+        HashMap<String, CreatePostModel> data = new HashMap<>();
+        data.put("post", createPostModel);
+
+        ViewDialog dialog = new ViewDialog(this);
+        AuthApiHelper.createPost(data, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+            @Override
+            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+
+                dialog.showDialog();
+                if (response.code() == 200 || response.code() == 201) {
+//                    createPostDialog.dismiss();
+                    dialog.hideDialog();
+                    newsfeedShareDialog.cancel();
+                    Toast.makeText(getApplicationContext(), "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
+
+                } else if (response.code() == 401) {
+                    AuthApiHelper.refreshToken(ViewProductActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            createPost(postBody);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    dialog.hideDialog();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailed(int status) {
+                dialog.hideDialog();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
     private void shareWithContacts() {
         bottomSheetDialog = new BottomSheetDialog(ViewProductActivity.this, R.style.BottomSheetDialogTheme);

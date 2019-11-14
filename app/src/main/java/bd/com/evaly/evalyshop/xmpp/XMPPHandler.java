@@ -1478,7 +1478,7 @@ public class XMPPHandler {
                     table.nick_name = vCard.getNickName();
                     table.imageUrl = vCard.getField("URL");
                     list.add(table);
-                    Logger.d(list.size() + "    " + roasterList.size());
+//                    Logger.d(list.size() + "    " + roasterList.size());
                 }
 
                 if (list.size() == roasterList.size()) {
@@ -1529,7 +1529,7 @@ public class XMPPHandler {
 //                       }
 //                       unreadCount.add(Integer.parseInt(value));
                 } catch (Exception e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
                 count = count + 1;
             } catch (XmppStringprepException e) {
@@ -1541,7 +1541,7 @@ public class XMPPHandler {
             AppController.allDataLoaded = true;
         }
         if (count == list.size()) {
-            Logger.d(count + "    ==========");
+//            Logger.d(count + "    ==========");
 
             for (RosterTable table : list) {
                 // Logger.d(Constants.EVALY_NUMBER+"      "+table.id);

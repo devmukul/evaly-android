@@ -21,6 +21,7 @@ import java.util.HashMap;
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CreatePostModel;
 import bd.com.evaly.evalyshop.models.SetPasswordModel;
 import bd.com.evaly.evalyshop.models.User;
 import bd.com.evaly.evalyshop.rest.ApiClient;
@@ -196,6 +197,27 @@ public class AuthApiHelper {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
+
+    }
+
+    public static void createPost(HashMap<String, CreatePostModel> data, DataFetchingListener<Response<JsonObject>> listener) {
+        Logger.d("{}{}{}{}{}{}{}");
+        IApiClient iApiClient = getiApiClient();
+        Call<JsonObject> call = iApiClient.createPost(CredentialManager.getToken(), data);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Logger.d(response.body());
+                listener.onDataFetched(response);
+
             }
 
             @Override

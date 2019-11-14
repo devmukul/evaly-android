@@ -55,4 +55,5 @@ public class UrlUtils {
     public static final String EVALY_USERS = DOMAIN5000 + "evaly-users/";
 
 
+    public static final String NEWS_FEED = DOMAIN + "newsfeed/posts";
 }

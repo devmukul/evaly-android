@@ -279,6 +279,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             linkPreview.setDefaultClickListener(false);
             linkPreview.setClickListener(null);
+            linkPreview.setBackground(context.getResources().getColor(R.color.bg_card));
             linkPreview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

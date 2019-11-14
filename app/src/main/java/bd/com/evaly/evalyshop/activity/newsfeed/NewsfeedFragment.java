@@ -11,6 +11,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -47,6 +48,7 @@ import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -69,6 +71,8 @@ import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
+import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
+import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -538,7 +542,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
         if (commentDialog != null){
-
             currentCommentPage = 1;
             maxCountComment = -1;
             selectedPostID = id;
@@ -570,6 +573,22 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
+
+    public boolean isJSONValid(String test) {
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+            // edited, to include @Arthur's comment
+            // e.g. in case JSONArray is valid as well...
+            try {
+                new JSONArray(test);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void initCommentHeader(String authorName, String authorImage, boolean isAdmin, String postText, String date, String postImageUrl){
 
 
@@ -597,7 +616,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
 
-        ((TextView) commentDialog.findViewById(R.id.text)).setText(postText);
+        TextView tvMessage =  commentDialog.findViewById(R.id.text);
+        tvMessage.setText(postText);
         ImageView userPic = commentDialog.findViewById(R.id.picture);
         Glide.with(context)
                 .load(authorImage)
@@ -627,6 +647,41 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 }
             });
 
+        }
+
+        RichLinkView linkPreview = commentDialog.findViewById(R.id.linkPreview);
+        CardView cardLink = commentDialog.findViewById(R.id.cardLink);
+        if (isJSONValid(postText)) {
+            try {
+                JSONObject object = new JSONObject(postText);
+                linkPreview.setLink(object.getString("url"), new ViewListener() {
+                    @Override
+                    public void onSuccess(boolean status) {
+                        Logger.d("Success");
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Logger.e(e.getMessage());
+                    }
+                });
+
+                String body = object.getString("body");
+                if (body == null || body.equalsIgnoreCase("")){
+                    tvMessage.setVisibility(View.GONE);
+                }else {
+                    tvMessage.setVisibility(View.VISIBLE);
+                    tvMessage.setText(Html.fromHtml(Utils.truncateText(body, 180, "... <b>Show more</b>")));
+                }
+                cardLink.setVisibility(View.VISIBLE);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            tvMessage.setVisibility(View.VISIBLE);
+            cardLink.setVisibility(View.GONE);
+            tvMessage.setText(Html.fromHtml(Utils.truncateText(postText, 180, "... <b>Show more</b>")));
         }
 
 
