@@ -165,8 +165,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
 
                 Intent ni = new Intent(context, EvalyStoreActivity.class);
-                ni.putExtra("title", "Dark Night");
-                ni.putExtra("slug", "dark-night");
+                ni.putExtra("title", "Mega Flash Sale");
+                ni.putExtra("slug", "mega-flash-sale");
                 startActivity(ni);
 
             }

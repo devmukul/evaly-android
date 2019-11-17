@@ -20,6 +20,9 @@ public class ChatItem implements Parcelable {
     private String messageId;
     private boolean isUnread;
     private String large_image;
+    private boolean invitation;
+    private String receiver_name;
+
 
 
     public ChatItem(String chat, String name, String image, String nick_name, long time, String sender, String receiver, String messageType, boolean isMine, String large_image) {
@@ -33,6 +36,22 @@ public class ChatItem implements Parcelable {
         this.isMine = isMine;
         this.messageType = messageType;
         this.large_image = large_image;
+    }
+
+    public String getReceiver_name() {
+        return receiver_name;
+    }
+
+    public void setReceiver_name(String receiver_name) {
+        this.receiver_name = receiver_name;
+    }
+
+    public boolean isInvitation() {
+        return invitation;
+    }
+
+    public void setInvitation(boolean invitation) {
+        this.invitation = invitation;
     }
 
     public void setReceiver(String receiver) {

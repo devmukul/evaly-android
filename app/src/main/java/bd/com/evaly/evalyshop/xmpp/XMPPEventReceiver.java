@@ -90,8 +90,6 @@ public class XMPPEventReceiver extends BroadcastReceiver {
 
             case Constants.EVT_NEW_MSG:
                 String data = intent.getStringExtra(Constants.INTENT_KEY_NEWMSG);
-                Logger.d(data);
-
                 ChatItem chatItem = new Gson().fromJson(data, ChatItem.class);
                 Logger.d(new Gson().toJson(chatItem));
                 if(xmppCustomEventListener != null) xmppCustomEventListener.onNewMessageReceived(chatItem);

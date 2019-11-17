@@ -4,13 +4,13 @@ public class UrlUtils {
 
     /* Dev mode */
 
-    public static final String DOMAIN = "https://api-dev.evaly.com.bd/";
-    public static final String PRODUCT_BASE_URL = "https://beta.evaly.com.bd/products/";
+//    public static final String DOMAIN = "https://api-dev.evaly.com.bd/";
+//    public static final String PRODUCT_BASE_URL = "https://beta.evaly.com.bd/products/";
 
 
     /* Production */
-//    public static final String DOMAIN = "https://api.evaly.com.bd/";
-//    public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
+    public static final String DOMAIN = "https://api.evaly.com.bd/";
+    public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
 
 
     public static final String DOMAIN5000 = DOMAIN+"auth/";
@@ -49,6 +49,7 @@ public class UrlUtils {
 
     public static final String ADD_ROSTER = "api/add_rosteritem";
     public static final String INVITATION_LIST = "rest/messages/invitations/";
+    public static final String ROSTER_LIST = "rest/messages/user/last-messages/";
     public static final String IMAGE_UPLOAD = "image/upload/";
 
     public static final String CHECK_UPDATE = BASE_URL + "apps/versions/current";

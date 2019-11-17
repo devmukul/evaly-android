@@ -58,7 +58,7 @@ public class AppController extends Application implements Application.ActivityLi
 
     public static XMPPService xmppService;
     public Boolean mBounded = false;
-    public static AppDatabase database;
+//    public static AppDatabase database;
 
     static UserDetails userDetails;
     IntentFilter intentFilter;
@@ -74,11 +74,10 @@ public class AppController extends Application implements Application.ActivityLi
     @Override
     public void onCreate() {
         super.onCreate();
-
         mAppController = this;
         mContext = getApplicationContext();
 
-        database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "evalyDB").build();
+//        database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "evalyDB").build();
 
         userDetails = new UserDetails(this);
 
@@ -224,12 +223,12 @@ public class AppController extends Application implements Application.ActivityLi
         } catch (Exception e) {
             e.printStackTrace();
         }
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                database.clearAllTables();
-            }
-        });
+//        AsyncTask.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                database.clearAllTables();
+//            }
+//        });
 
 
         new Handler().postDelayed(new Runnable() {

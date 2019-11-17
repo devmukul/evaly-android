@@ -71,6 +71,7 @@
             android:layout_height="match_parent">
 
             <android.support.v4.widget.NestedScrollView
+                android:id="@+id/nestedScroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -218,6 +219,16 @@
                     android:clipToPadding="false"
                     tools:listitem="@layout/chat_item_view"
                     android:nestedScrollingEnabled="false"/>
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="0"
+                    android:background="#fafafa"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp" />
             </LinearLayout>
 
 

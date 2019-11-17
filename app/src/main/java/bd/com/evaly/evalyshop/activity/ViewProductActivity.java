@@ -2,6 +2,8 @@ package bd.com.evaly.evalyshop.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -101,6 +103,7 @@ import bd.com.evaly.evalyshop.models.AvailableShop;
 import bd.com.evaly.evalyshop.models.CartItem;
 import bd.com.evaly.evalyshop.models.Products;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
+import bd.com.evaly.evalyshop.viewmodel.RoomWIthRxViewModel;
 import bd.com.evaly.evalyshop.views.SliderViewPager;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
@@ -143,6 +146,8 @@ public class ViewProductActivity extends BaseActivity {
     LinearLayout productHolder;
     LinearLayout stickyButtons;
     TextView relatedTitle;
+
+    RoomWIthRxViewModel viewModel;
 
 
     int buttonCount = 0;
@@ -201,6 +206,8 @@ public class ViewProductActivity extends BaseActivity {
 
         rqShop = Volley.newRequestQueue(context);
         rq = Volley.newRequestQueue(context);
+
+        viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
 
         ImageView shareBtn = findViewById(R.id.share);
 
@@ -553,46 +560,53 @@ public class ViewProductActivity extends BaseActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(ViewProductActivity.this);
         rvContacts.setLayoutManager(layoutManager);
         AsyncTask.execute(() -> {
-            List<RosterTable> list = AppController.database.taskDao().getAllRosterWithoutObserve();
+//            List<RosterTable> list = AppController.database.taskDao().getAllRosterWithoutObserve();
             runOnUiThread(() -> {
-                ContactShareAdapter adapter = new ContactShareAdapter(ViewProductActivity.this, list, new RecyclerViewOnItemClickListener() {
+                viewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
+                viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
                     @Override
-                    public void onRecyclerViewItemClicked(Object object) {
-                        RosterTable table = (RosterTable) object;
+                    public void onChanged(@Nullable List<RosterTable> rosterTables) {
+                        ContactShareAdapter adapter = new ContactShareAdapter(ViewProductActivity.this, rosterTables, new RecyclerViewOnItemClickListener() {
+                            @Override
+                            public void onRecyclerViewItemClicked(Object object) {
+                                RosterTable table = (RosterTable) object;
 
-                        ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
+                                ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
 
-                        ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName()+"@"+ Constants.XMPP_HOST, table.id, Constants.TYPE_PRODUCT, true, "");
-                        if (AppController.getmService().xmpp.isLoggedin()){
-                            try {
-                                AppController.getmService().xmpp.sendMessage(chatItem);
-                                Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
-                            } catch (SmackException e) {
-                                e.printStackTrace();
+                                ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName()+"@"+ Constants.XMPP_HOST, table.id, Constants.TYPE_PRODUCT, true, "");
+                                if (AppController.getmService().xmpp.isLoggedin()){
+                                    try {
+                                        AppController.getmService().xmpp.sendMessage(chatItem);
+                                        Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
+                                    } catch (SmackException e) {
+                                        e.printStackTrace();
+                                    }
+                                }else {
+                                    AppController.getmService().xmpp.connect();
+                                }
                             }
-                        }else {
-                            AppController.getmService().xmpp.connect();
-                        }
+                        });
+
+                        rvContacts.setAdapter(adapter);
+                        etSearch.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                adapter.getFilter().filter(charSequence);
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                adapter.getFilter().filter(charSequence);
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+
+                            }
+                        });
                     }
                 });
 
-                rvContacts.setAdapter(adapter);
-                etSearch.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        adapter.getFilter().filter(charSequence);
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        adapter.getFilter().filter(charSequence);
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-
-                    }
-                });
             });
         });
 

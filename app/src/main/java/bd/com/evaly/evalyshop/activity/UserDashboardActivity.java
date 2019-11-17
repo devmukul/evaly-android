@@ -52,6 +52,7 @@ import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
@@ -80,6 +81,8 @@ public class UserDashboardActivity extends BaseActivity {
 
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
+    XMPPEventReceiver xmppEventReceiver;
+
 //    private SessionManager sessionManager;
 
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
@@ -98,12 +101,12 @@ public class UserDashboardActivity extends BaseActivity {
             if (xmppHandler == null){
                 xmppHandler = AppController.getmService().xmpp;
             }
-            Logger.d("LOGIN =========");
-            Logger.d(xmppHandler.isConnected());
+//            Logger.d("LOGIN =========");
+//            Logger.d(xmppHandler.isConnected());
             VCard vCard = xmppHandler.mVcard;
 //            Logger.d(vCard.getFirstName());
             if (vCard == null) {
-                Logger.d("========");
+//                Logger.d("========");
                 xmppHandler.updateUserInfo(CredentialManager.getUserData());
             }else if (vCard.getLastName() == null){
                 Logger.d("========");
@@ -113,7 +116,7 @@ public class UserDashboardActivity extends BaseActivity {
         }
 
         public void onLoginFailed(String msg) {
-            Logger.d(msg);
+//            Logger.d(msg);
             alert.hideDialog();
             if (!msg.contains("already logged in")) {
                 if (CredentialManager.getPassword() != null && !CredentialManager.getPassword().equals("")) {
@@ -203,6 +206,8 @@ public class UserDashboardActivity extends BaseActivity {
                 }
             });
         }
+
+        xmppEventReceiver = mChatApp.getEventReceiver();
 
         name = findViewById(R.id.name);
         balance = findViewById(R.id.balance);
@@ -335,6 +340,7 @@ public class UserDashboardActivity extends BaseActivity {
         super.onResume();
 
         mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+        xmppEventReceiver.setListener(xmppCustomEventListener);
 
         Balance.update(this, balance);
         Token.update(this, false);

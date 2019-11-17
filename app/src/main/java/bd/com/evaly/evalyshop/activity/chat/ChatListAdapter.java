@@ -26,6 +26,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
+import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import butterknife.BindView;
@@ -83,7 +84,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 //            }
             if (model.rosterName == null || model.rosterName.equals("")) {
                 if (model.nick_name == null || model.nick_name.replaceAll("\\s+$", "").equals("")) {
-                    holder.tvName.setText("Customer");
+                    holder.tvName.setText("Evaly User");
                 } else {
                     holder.tvName.setText(model.nick_name);
                 }

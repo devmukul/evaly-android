@@ -5,8 +5,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import java.util.HashMap;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.models.CreatePostModel;
+import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -38,6 +40,9 @@ public interface IApiClient {
 
     @GET(UrlUtils.INVITATION_LIST+"{phone}/")
     Call<JsonArray> getInvitationList(@Path("phone") String phone);
+
+    @GET(UrlUtils.ROSTER_LIST+"{phone}/")
+    Call<List<RosterItemModel>> getRosterList(@Path("phone") String phone, @Query("page") int page, @Query("limit") int limit);
 
     @POST(UrlUtils.SEND_CUSTOM_MESSAGE)
     Call<JsonObject> sendCustomMessage(@Header("Authorization") String token, @Body HashMap<String, String> data);

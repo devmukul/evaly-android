@@ -131,11 +131,11 @@ public class ShopFragment extends Fragment implements ProductListener {
     AppController mChatApp = AppController.getInstance();
 
     XMPPHandler xmppHandler;
-    private List<RosterTable> rosterList;
+    private List<String> rosterList;
 
 
     @Override
-    public void buyNow(String productSlug){
+    public void buyNow(String productSlug) {
 
         BuyNowFragment addPhotoBottomDialogFragment =
                 BuyNowFragment.newInstance(slug, productSlug);
@@ -145,7 +145,7 @@ public class ShopFragment extends Fragment implements ProductListener {
     }
 
     @Override
-    public void onSuccess(int count){
+    public void onSuccess(int count) {
 
     }
 
@@ -161,35 +161,35 @@ public class ShopFragment extends Fragment implements ProductListener {
 
             Logger.d(presenceModel.getUserStatus());
 
-
-            try {
-                for (int i = 0; i < rosterList.size(); i++) {
-
-                    RosterTable model = rosterList.get(i);
-//                    Logger.d(new Gson().toJson(model));
-//                    Logger.d(new Gson().toJson(presenceModel));
-
-
-                    try {
-                        if (AppController.getmService().xmpp.checkSender(JidCreate.bareFrom(model.id), JidCreate.bareFrom(presenceModel.getUser()))) {
-                            model.status = presenceModel.getUserStatus();
-                            rosterList.set(i, model);
-                            adapter.notifyItemChanged(i);
-                            break;
-                        }
-                    } catch (XmppStringprepException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (Exception e) {
-                e.getMessage();
-            }
+//            try {
+//                for (int i = 0; i < rosterList.size(); i++) {
+//
+//                    String model = rosterList.get(i);
+////                    Logger.d(new Gson().toJson(model));
+////                    Logger.d(new Gson().toJson(presenceModel));
+//
+//
+//                    try {
+//                        if (AppController.getmService().xmpp.checkSender(JidCreate.bareFrom(model.id), JidCreate.bareFrom(presenceModel.getUser()))) {
+//                            model.status = presenceModel.getUserStatus();
+//                            rosterList.set(i, model);
+//                            adapter.notifyItemChanged(i);
+//                            break;
+//                        }
+//                    } catch (XmppStringprepException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.getMessage();
+//            }
 //            adapter.notifyDataSetChanged();
         }
 
-        public void onConnected(){
+        public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
-            if (!owner_number.equals("")){
+            rosterList = xmppHandler.rosterList;
+            if (!owner_number.equals("")) {
                 try {
                     Logger.d(owner_number);
                     EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
@@ -211,7 +211,7 @@ public class ShopFragment extends Fragment implements ProductListener {
         mainActivity = (MainActivity) getActivity();
         rq = Volley.newRequestQueue(context);
 
-        if (!CredentialManager.getToken().equals("")){
+        if (!CredentialManager.getToken().equals("")) {
             startXmppService();
         }
 
@@ -255,12 +255,9 @@ public class ShopFragment extends Fragment implements ProductListener {
 
         rosterList = new ArrayList<>();
 
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
-            }
-        });
+        if (xmppHandler != null) {
+            rosterList = xmppHandler.rosterList;
+        }
 
         try {
 
@@ -433,18 +430,32 @@ public class ShopFragment extends Fragment implements ProductListener {
                         llInbox.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (userDetails.getToken() == null || userDetails.getToken().equals("")){
+                                if (userDetails.getToken() == null || userDetails.getToken().equals("")) {
                                     startActivity(new Intent(getActivity(), SignInActivity.class));
                                     getActivity().finish();
-                                }else {
-                                    if (xmppHandler != null && xmppHandler.isConnected() && xmppHandler.isLoggedin()){
-                                        RosterTable roasterModel = getContactFromRoster(owner_number);
-                                        Logger.d(new Gson().toJson(roasterModel));
+                                } else {
+                                    if (xmppHandler != null && xmppHandler.isConnected() && xmppHandler.isLoggedin()) {
+                                        String jid = getContactFromRoster(owner_number);
                                         if (!CredentialManager.getUserName().equalsIgnoreCase(owner_number)) {
-                                            if (roasterModel != null) {
+                                            if (jid != null) {
                                                 dialog.hideDialog();
-                                                Logger.d(new Gson().toJson(roasterModel));
-                                                startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", roasterModel));
+                                                VCard vCard = null;
+                                                try {
+                                                    vCard = xmppHandler.getUserDetails(JidCreate.entityBareFrom(jid));
+                                                    RosterTable rosterTable = new RosterTable();
+                                                    rosterTable.name = vCard.getFirstName() + " " + vCard.getLastName();
+                                                    rosterTable.id = vCard.getFrom().asUnescapedString();
+                                                    rosterTable.imageUrl = vCard.getField("URL");
+                                                    rosterTable.status = 0;
+                                                    rosterTable.lastMessage = "";
+                                                    rosterTable.nick_name = vCard.getNickName();
+                                                    rosterTable.time = 0;
+                                                    Logger.d(new Gson().toJson(rosterTable));
+                                                    startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
+
+                                                } catch (XmppStringprepException e) {
+                                                    e.printStackTrace();
+                                                }
                                             } else {
                                                 dialog.showDialog();
                                                 HashMap<String, String> data = new HashMap<>();
@@ -456,7 +467,6 @@ public class ShopFragment extends Fragment implements ProductListener {
                                                 data.put("subs", "both");
                                                 data.put("group", "evaly");
 
-                                                addRosterByOther();
 
                                                 Logger.d(data);
                                                 AuthApiHelper.addRoster(data, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
@@ -464,52 +474,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                                                     public void onDataFetched(retrofit2.Response<JsonPrimitive> response) {
 
                                                         if (response.code() == 200 || response.code() == 201) {
-                                                            try {
-                                                                EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
-                                                                        + Constants.XMPP_HOST);
-                                                                VCard vCard = xmppHandler.getUserDetails(jid);
-                                                                HashMap<String, String> data1 = new HashMap<>();
-                                                                data1.put("phone_number", owner_number);
-                                                                data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
-
-                                                                Logger.d(new Gson().toJson(vCard.getFirstName())+"       ====");
-                                                                if (vCard.getFirstName() == null) {
-                                                                    dialog.hideDialog();
-                                                                    RosterTable table = new RosterTable();
-                                                                    table.id = jid.asUnescapedString();
-                                                                    table.rosterName = shop_name;
-                                                                    table.name = "";
-                                                                    table.status = 0;
-                                                                    table.unreadCount = 0;
-                                                                    table.nick_name = "";
-                                                                    table.imageUrl = "";
-                                                                    table.lastMessage = "";
-                                                                    AsyncTask.execute(new Runnable() {
-                                                                        @Override
-                                                                        public void run() {
-                                                                            Logger.d("NEW ENTRY");
-                                                                            AppController.database.taskDao().addRoster(table);
-                                                                        }
-                                                                    });
-                                                                    startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", table));
-                                                                } else {
-                                                                    dialog.hideDialog();
-                                                                    RosterTable rosterTable = new RosterTable();
-                                                                    rosterTable.name = vCard.getFirstName() + " " + vCard.getLastName();
-                                                                    rosterTable.id = vCard.getFrom().asUnescapedString();
-                                                                    rosterTable.imageUrl = vCard.getField("URL");
-                                                                    rosterTable.status = 0;
-                                                                    rosterTable.lastMessage = "";
-                                                                    rosterTable.nick_name = vCard.getNickName();
-                                                                    rosterTable.time = 0;
-                                                                    startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
-
-                                                                }
-                                                            } catch (XmppStringprepException e) {
-                                                                e.printStackTrace();
-                                                            }catch (Exception e){
-                                                                e.printStackTrace();
-                                                            }
+                                                            addRosterByOther();
 
 
                                                         } else {
@@ -527,7 +492,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                                         } else {
                                             Toast.makeText(getApplicationContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
                                         }
-                                    }else {
+                                    } else {
                                         startXmppService();
                                     }
                                 }
@@ -739,23 +704,24 @@ public class ShopFragment extends Fragment implements ProductListener {
 
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    if (error.networkResponse.statusCode == 401) {
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getShopProductCount();
-                        }
+                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                getShopProductCount();
+                            }
 
-                        @Override
-                        public void onFailed(int status) {
+                            @Override
+                            public void onFailed(int status) {
 
-                        }
-                    });
+                            }
+                        });
 
-                    return;
+                        return;
 
-                }}
+                    }
+                }
 
             }
         }) {
@@ -806,10 +772,10 @@ public class ShopFragment extends Fragment implements ProductListener {
         rq.add(request);
     }
 
-    private RosterTable getContactFromRoster(String number) {
-        RosterTable roasterModel = null;
-        for (RosterTable model : rosterList) {
-            if (model.id.contains(number)) {
+    private String getContactFromRoster(String number) {
+        String roasterModel = null;
+        for (String model : rosterList) {
+            if (model.contains(number)) {
                 roasterModel = model;
             }
         }
@@ -955,7 +921,46 @@ public class ShopFragment extends Fragment implements ProductListener {
         AuthApiHelper.addRoster(data, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
             @Override
             public void onDataFetched(retrofit2.Response<JsonPrimitive> response) {
+                try {
+                    EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
+                            + Constants.XMPP_HOST);
+                    VCard mVCard = xmppHandler.getUserDetails(jid);
+                    HashMap<String, String> data1 = new HashMap<>();
+                    data1.put("phone_number", owner_number);
+                    data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
 
+                    Logger.d(new Gson().toJson(mVCard.getFirstName()) + "       ====");
+                    if (mVCard.getFirstName() == null) {
+                        dialog.hideDialog();
+                        RosterTable table = new RosterTable();
+                        table.id = jid.asUnescapedString();
+                        table.rosterName = shop_name;
+                        table.name = "";
+                        table.status = 0;
+                        table.unreadCount = 0;
+                        table.nick_name = "";
+                        table.imageUrl = "";
+                        table.lastMessage = "";
+
+                        startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", table));
+                    } else {
+                        dialog.hideDialog();
+                        RosterTable rosterTable = new RosterTable();
+                        rosterTable.name = vCard.getFirstName() + " " + vCard.getLastName();
+                        rosterTable.id = vCard.getFrom().asUnescapedString();
+                        rosterTable.imageUrl = vCard.getField("URL");
+                        rosterTable.status = 0;
+                        rosterTable.lastMessage = "";
+                        rosterTable.nick_name = vCard.getNickName();
+                        rosterTable.time = 0;
+                        startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
+
+                    }
+                } catch (XmppStringprepException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -1006,23 +1011,24 @@ public class ShopFragment extends Fragment implements ProductListener {
 
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    if (error.networkResponse.statusCode == 401) {
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            subscribe();
-                        }
+                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                subscribe();
+                            }
 
-                        @Override
-                        public void onFailed(int status) {
+                            @Override
+                            public void onFailed(int status) {
 
-                        }
-                    });
+                            }
+                        });
 
-                    return;
+                        return;
 
-                }}
+                    }
+                }
 
             }
         }) {

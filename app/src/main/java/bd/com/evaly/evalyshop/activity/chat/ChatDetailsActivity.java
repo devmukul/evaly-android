@@ -156,16 +156,22 @@ public class ChatDetailsActivity extends AppCompatActivity {
             Logger.d(chatItem.getChat());
             chatItem.setIsMine(false);
 
+            if (chatItemList.size()>0){
+                if (chatItemList.get(chatItemList.size()-1).getChat().equalsIgnoreCase(chatItem.getChat())){
+                    return;
+                }
+            }
+
             Logger.d(mVCard.getFrom().toString() + "    " + chatItem.getReceiver());
             Logger.d(new Gson().toJson(chatItem));
             //                if( AppController.getmService().xmpp.checkSender(mVCard.getFrom(), JidCreate.bareFrom(chatItem.getSender()))) {
             if (mVCard.getFrom().toString().contains(chatItem.getReceiver())) {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), rosterTable.id, 0);
-                    }
-                });
+//                AsyncTask.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), rosterTable.id, 0);
+//                    }
+//                });
                 if (chatItem.getSender().contains(rosterTable.id)){
                     chatItemList.add(chatItem);
                     if (adapter != null) {
@@ -193,7 +199,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
-                    AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), rosterTable.id, 0);
+//                    AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), rosterTable.id, 0);
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -335,7 +341,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 if (rosterTable.name != null) {
                     tvName.setText(rosterTable.name);
                 } else if (rosterTable.nick_name == null) {
-                    tvName.setText("Customer");
+                    tvName.setText("Evaly User");
                 } else {
                     tvName.setText(rosterTable.nick_name);
                 }
@@ -345,7 +351,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                     if (rosterTable.name != null) {
                         tvName.setText(rosterTable.name);
                     } else if (rosterTable.nick_name == null) {
-                        tvName.setText("Customer");
+                        tvName.setText("Evaly User");
                     } else {
                         tvName.setText(rosterTable.nick_name);
                     }
@@ -385,6 +391,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
         }
 
         startXmppService();
+        xmppHandler = AppController.getmService().xmpp;
 
         layoutManager = new LinearLayoutManager(ChatDetailsActivity.this);
 
@@ -485,14 +492,16 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         try {
             if (rosterTable.unreadCount > 0) {
+                Logger.d("&&&&&&&&&&&&");
                 ChatItem chatItem = new Gson().fromJson(rosterTable.lastMessage, ChatItem.class);
-                xmppHandler.markAsRead(chatItem.getMessageId(), JidCreate.bareFrom(rosterTable.id), xmppHandler.mVcard.getFrom());
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        AppController.database.taskDao().updateUnreadCount(0, rosterTable.id);
-                    }
-                });
+                Logger.d(new Gson().toJson(chatItem));
+                xmppHandler.markAsRead(rosterTable.messageId, JidCreate.bareFrom(rosterTable.id), xmppHandler.mVcard.getFrom());
+//                AsyncTask.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        AppController.database.taskDao().updateUnreadCount(0, rosterTable.id);
+//                    }
+//                });
             }
         } catch (XmppStringprepException e) {
             e.printStackTrace();
@@ -520,7 +529,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                     Logger.d(new Gson().toJson(rosterTable));
 
                     chatItemList = xmppHandler.getChatHistoryWithJID(JidCreate.bareFrom(senderId), 20, false);
-                    Logger.json(new Gson().toJson(chatItemList));
+//                    Logger.json(new Gson().toJson(chatItemList));
                     if (rosterTable.unreadCount > 0) {
                         chatItemList.get(chatItemList.size() - rosterTable.unreadCount).setUnread(true);
                     }

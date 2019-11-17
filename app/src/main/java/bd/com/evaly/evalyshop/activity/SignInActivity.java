@@ -160,12 +160,12 @@ public class SignInActivity extends BaseActivity {
                     Toast.makeText(SignInActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
                 } else {
                     alert.showDialog();
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            AppController.database.clearAllTables();
-                        }
-                    });
+//                    AsyncTask.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            AppController.database.clearAllTables();
+//                        }
+//                    });
                     signInUser();
                 }
             }

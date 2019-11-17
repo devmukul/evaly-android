@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -24,6 +25,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
 import bd.com.evaly.evalyshop.models.SetPasswordModel;
 import bd.com.evaly.evalyshop.models.User;
+import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -170,7 +172,6 @@ public class AuthApiHelper {
     }
 
     public static void getInvitationList(String phone, DataFetchingListener<Response<JsonArray>> listener) {
-
         IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
         Call<JsonArray> call = iApiClient.getInvitationList(phone);
         call.enqueue(new Callback<JsonArray>() {
@@ -185,7 +186,23 @@ public class AuthApiHelper {
                 listener.onFailed(0);
             }
         });
+    }
 
+    public static void getRosterList(String phone, int page, int limit, DataFetchingListener<Response<List<RosterItemModel>>> listener) {
+        IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
+        Call<List<RosterItemModel>> call = iApiClient.getRosterList(phone, page, limit);
+        call.enqueue(new Callback<List<RosterItemModel>>() {
+            @Override
+            public void onResponse(Call<List<RosterItemModel>> call, Response<List<RosterItemModel>> response) {
+                listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<List<RosterItemModel>> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
     }
 
     public static void sendCustomMessage(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {

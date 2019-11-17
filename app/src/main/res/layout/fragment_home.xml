@@ -150,7 +150,7 @@
                         android:background="@drawable/circle_bg"
                         android:clickable="false"
                         android:tint="#2ab5d2 "
-                        app:srcCompat="@drawable/ic_night" />
+                        app:srcCompat="@drawable/ic_flash" />
 
                     <TextView
                         android:id="@+id/textView3"
@@ -159,7 +159,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_weight="0"
                         android:clickable="false"
-                        android:text="Dark Night"
+                        android:text="Mega Flash Sale"
                         android:textAlignment="center" />
                 </LinearLayout>
 

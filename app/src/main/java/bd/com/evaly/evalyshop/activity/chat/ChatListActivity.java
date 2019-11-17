@@ -1,19 +1,27 @@
 package bd.com.evaly.evalyshop.activity.chat;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -26,7 +34,9 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
@@ -36,6 +46,7 @@ import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
+import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.viewmodel.RoomWIthRxViewModel;
@@ -66,8 +77,15 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     TextView tvBody;
     @BindView(R.id.tvTime)
     TextView tvTime;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.nestedScroll)
+    NestedScrollView nestedScroll;
 
     private boolean isFirst;
+    int limit = 20;
+    int currentPage = 1;
+    boolean hasNext;
 
     private ChatListAdapter adapter;
     private List<RosterTable> rosterList;
@@ -162,12 +180,12 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                     updateEvalyChat(chatItem);
                 } else {
 
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), roasterModel.id, roasterModel.unreadCount + 1);
-                        }
-                    });
+//                    AsyncTask.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            AppController.database.taskDao().updateLastMessage(new Gson().toJson(chatItem), chatItem.getLognTime(), roasterModel.id, roasterModel.unreadCount + 1);
+//                        }
+//                    });
                     roasterModel.lastMessage = new Gson().toJson(chatItem);
 //                roasterModel.unreadCount = roasterModel.unreadCount + 1;
                     rosterList.set(position, roasterModel);
@@ -185,7 +203,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         }
 
         public void onNewMessageSent(ChatItem chatItem) {
-//            Logger.d("++++++++    SENT   ++++++++");
+            Logger.d("++++++++    SENT   ++++++++");
 //            chatItem.setIsMine(true);
 //            int position = getListPosition(chatItem);
 //
@@ -227,77 +245,106 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         loading = new ViewDialog(this);
 
-//        xmppHandler = AppController.getmService().xmpp;
         rosterList = new ArrayList<>();
 
-        AsyncTask.execute(new Runnable() {
+        viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
+
+        viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
             @Override
-            public void run() {
-                rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        populateData(rosterList);
+            public void onChanged(@Nullable List<RosterTable> rosterItemModels) {
+                loading.hideDialog();
+                rosterList.addAll(rosterItemModels);
+                progressBar.setVisibility(View.GONE);
+                populateData(rosterList);
+            }
+        });
+
+        viewModel.isSuccess.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                progressBar.setVisibility(View.GONE);
+                if (!aBoolean) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        viewModel.hasNext.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                if (aBoolean){
+                    currentPage = currentPage+1;
+                }
+                Logger.d(aBoolean+"    =======");
+                hasNext = aBoolean;
+            }
+        });
+
+        nestedScroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                String TAG = "nested_sync";
+//
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+
+                    try {
+                        if (hasNext){
+                            viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
+                        }
+
+                    } catch (Exception e) {
+                        Log.e("load more product", e.toString());
                     }
-                });
+
+
+                }
             }
         });
 
-
-        viewModel = new RoomWIthRxViewModel(getApplication());
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                viewModel.getList()
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(list -> {
-                            if (AppController.allDataLoaded) {
-                                rosterList.clear();
-                                rosterList.addAll(list);
-                                for (int i = 0; i < rosterList.size(); i++) {
-                                    if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
-                                        RosterTable table = rosterList.get(i);
-                                        if (table.lastMessage == null || table.lastMessage.trim().equals("")) {
-//                                            sendMessage();
-                                        }
-                                        Logger.d(new Gson().toJson(table));
-
-                                        table.status = 1;
-                                        rosterList.remove(i);
-                                        rosterList.add(0, table);
-                                    }
-                                }
-//                                if (rosterList.size() > 0) {
-//                                    not.setVisibility(View.GONE);
-//                                } else {
-//                                    not.setVisibility(View.VISIBLE);
-//                                }
-                                if (adapter != null) {
-                                    adapter.notifyDataSetChanged();
-                                }
-                            }
-                            Logger.d(list.size() + "  =======");
-//                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    populateData(rosterList);
-//                                }
-//                            });
-                        }, e -> {
-
-                        });
-
-//                Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
-            }
-        });
-
-//        Logger.d(mUserList.size());
-//        showLoading();
-//        new Handler().post(new Runnable() {
+//        AsyncTask.execute(new Runnable() {
 //            @Override
 //            public void run() {
-//                loadRoster();
+//
+//                viewModel.getList()
+//                        .subscribeOn(Schedulers.computation())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(list -> {
+//                            rosterList.clear();
+//                            rosterList.addAll(list);
+//                            for (int i = 0; i < rosterList.size(); i++) {
+//                                if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
+//                                    RosterTable table = rosterList.get(i);
+//                                    if (table.lastMessage == null || table.lastMessage.trim().equals("")) {
+////                                            sendMessage();
+//                                    }
+//                                    Logger.d(new Gson().toJson(table));
+//
+//                                    table.status = 1;
+//                                    rosterList.remove(i);
+//                                    rosterList.add(0, table);
+//                                }
+//                            }
+////                                if (rosterList.size() > 0) {
+////                                    not.setVisibility(View.GONE);
+////                                } else {
+////                                    not.setVisibility(View.VISIBLE);
+////                                }
+//                            if (adapter != null) {
+//                                adapter.notifyDataSetChanged();
+//                            }
+//
+//                            Logger.d(list.size() + "  =======");
+////                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+////                                @Override
+////                                public void run() {
+////                                    populateData(rosterList);
+////                                }
+////                            });
+//                        }, e -> {
+//
+//                        });
+//
+////                Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
 //            }
 //        });
 
@@ -319,42 +366,46 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-
-//                        rosterList = (List<RosterTable>) AppController.database.taskDao().getAllRoster()
-//                                .subscribeOn(Schedulers.computation())
-//                                .observeOn(AndroidSchedulers.mainThread())
-//                                .subscribe(list -> {
-//                                    //consume modelClasses here which is a list of ModelClass
-//                                    Logger.d("RoomWithRx: " + list.size());
+                currentPage = 1;
+                rosterList.clear();
+//                hasNext = false;
+                viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
+//                AsyncTask.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
 //
-//                                }, e -> System.out.println("RoomWithRx: " +e.getMessage()));
-                        rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
-                        for (int i = 0; i < rosterList.size(); i++) {
-                            if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
-                                RosterTable table = rosterList.get(i);
-                                table.status = 1;
-                                rosterList.remove(i);
-                                rosterList.add(0, table);
-                            }
-                        }
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                populateData(rosterList);
-                            }
-                        });
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                populateData(rosterList);
-                            }
-                        });
-                        Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
-                    }
-                });
+////                        rosterList = (List<RosterTable>) AppController.database.taskDao().getAllRoster()
+////                                .subscribeOn(Schedulers.computation())
+////                                .observeOn(AndroidSchedulers.mainThread())
+////                                .subscribe(list -> {
+////                                    //consume modelClasses here which is a list of ModelClass
+////                                    Logger.d("RoomWithRx: " + list.size());
+////
+////                                }, e -> System.out.println("RoomWithRx: " +e.getMessage()));
+////                        rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+////                        for (int i = 0; i < rosterList.size(); i++) {
+////                            if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
+////                                RosterTable table = rosterList.get(i);
+////                                table.status = 1;
+////                                rosterList.remove(i);
+////                                rosterList.add(0, table);
+////                            }
+////                        }
+////                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+////                            @Override
+////                            public void run() {
+////                                populateData(rosterList);
+////                            }
+////                        });
+////                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+////                            @Override
+////                            public void run() {
+////                                populateData(rosterList);
+////                            }
+////                        });
+////                        Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
+//                    }
+//                });
             }
         });
 
@@ -393,45 +444,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         }
     }
 
-    private void sendMessage() {
-        try {
-            EntityBareJid jid = JidCreate.entityBareFrom(Constants.EVALY_NUMBER + "@"
-                    + Constants.XMPP_HOST);
-
-            EntityBareJid mJid = JidCreate.entityBareFrom(CredentialManager.getUserName() + "@"
-                    + Constants.XMPP_HOST);
-
-            ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), mJid.asUnescapedString(), jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
-
-            try {
-                xmppHandler.sendMessage(chatItem);
-            } catch (SmackException e) {
-                e.printStackTrace();
-            }
-
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    RosterTable table = new RosterTable();
-                    table.id = jid.asUnescapedString();
-                    table.rosterName = "Evaly";
-                    table.name = "";
-                    table.status = 0;
-                    table.unreadCount = 0;
-                    table.nick_name = "";
-                    table.imageUrl = "";
-                    table.time = chatItem.getLognTime();
-                    table.lastMessage = new Gson().toJson(chatItem);
-                    Logger.d("NEW ENTRY");
-                    AppController.database.taskDao().addRoster(table);
-
-                }
-            });
-        } catch (XmppStringprepException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void populateData(List<RosterTable> roasterModelList) {
         swipeRefreshLayout.setRefreshing(false);
         rosterList = roasterModelList;
@@ -463,7 +475,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     }
 
     @OnClick(R.id.llRequest)
-    void showRequest(){
+    void showRequest() {
         startActivity(new Intent(ChatListActivity.this, RequestListActivity.class));
     }
 
@@ -478,55 +490,40 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         super.onResume();
         mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
-        if (isFirst) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-//                            rosterList = (List<RosterTable>) AppController.database.taskDao().getAllRoster()
-//                                    .subscribeOn(Schedulers.computation())
-//                                    .observeOn(AndroidSchedulers.mainThread())
-//                                    .subscribe(list -> {
-//                                        //consume modelClasses here which is a list of ModelClass
-//                                        Logger.d("RoomWithRx: " + list.size());
-//
-//                                    }, e -> System.out.println("RoomWithRx: " +e.getMessage()));
-                            rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
-                            for (int i = 0; i < rosterList.size(); i++) {
-                                if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
-                                    RosterTable table = rosterList.get(i);
-                                    table.status = 1;
-                                    rosterList.remove(i);
-                                    rosterList.add(0, table);
-                                }
-                            }
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    populateData(rosterList);
-                                }
-                            });
-//                            runOnUiThread(new Runnable() {
+        progressBar.setVisibility(View.VISIBLE);
+        rosterList.clear();
+        currentPage = 1;
+        viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
+//        if (isFirst) {
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    AsyncTask.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+//                            for (int i = 0; i < rosterList.size(); i++) {
+//                                if (rosterList.get(i).id.contains(Constants.EVALY_NUMBER)) {
+//                                    RosterTable table = rosterList.get(i);
+//                                    table.status = 1;
+//                                    rosterList.remove(i);
+//                                    rosterList.add(0, table);
+//                                }
+//                            }
+//                            new Handler(Looper.getMainLooper()).post(new Runnable() {
 //                                @Override
 //                                public void run() {
-//                                    if (rosterList.size() > 0) {
-//                                        not.setVisibility(View.GONE);
-//                                    } else {
-//                                        not.setVisibility(View.VISIBLE);
-//                                    }
+//                                    populateData(rosterList);
 //                                }
 //                            });
-//                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
-                        }
-                    });
-                }
-            }, 300);
-        }
-        isFirst = true;
+//                        }
+//                    });
+//                }
+//            }, 300);
+//        }
+//        isFirst = true;
 
-        if (xmppHandler != null){
+        if (xmppHandler != null) {
             try {
                 ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
                 updateEvalyChat(chatItem);

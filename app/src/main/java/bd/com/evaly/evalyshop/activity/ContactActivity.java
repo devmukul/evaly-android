@@ -63,7 +63,7 @@ public class ContactActivity extends BaseActivity {
     TextView call1, call2, call3;
 
     ViewDialog dialog;
-    private List<RosterTable> rosterList;
+    private List<String> rosterList;
 
     AppController mChatApp = AppController.getInstance();
 
@@ -80,8 +80,8 @@ public class ContactActivity extends BaseActivity {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
-//
-                    rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+                    xmppHandler = AppController.getmService().xmpp;
+                    rosterList = xmppHandler.rosterList;
 //                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
                 }
             });
@@ -128,7 +128,7 @@ public class ContactActivity extends BaseActivity {
                     @Override
                     public void run() {
 //
-                        rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+                        rosterList = xmppHandler.rosterList;
 //                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
                     }
                 });
@@ -212,16 +212,6 @@ public class ContactActivity extends BaseActivity {
 
     }
 
-    private RosterTable getContactFromRoster(String number) {
-        RosterTable roasterModel = null;
-        for (RosterTable model : rosterList) {
-            if (model.id.contains(number)) {
-                roasterModel = model;
-            }
-        }
-        return roasterModel;
-    }
-
     private void addRosterByOther() {
         HashMap<String, String> data = new HashMap<>();
         data.put("localuser", Constants.EVALY_NUMBER);
@@ -270,9 +260,9 @@ public class ContactActivity extends BaseActivity {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-//
-                rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
-//                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
+                if (xmppHandler != null){
+                    rosterList = xmppHandler.rosterList;
+                }
             }
         });
     }

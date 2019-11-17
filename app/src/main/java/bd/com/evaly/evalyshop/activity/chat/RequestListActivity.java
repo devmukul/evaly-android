@@ -152,29 +152,14 @@ public class RequestListActivity extends BaseActivity implements RequestListAdap
                     table.name = name;
                     table.status = 0;
                     table.unreadCount = 1;
-                    ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName()+"@"+Constants.XMPP_HOST, model.getUser_jid(), Constants.TYPE_TEXT, true, "");
-                    try {
-                        if (AppController.getmService().xmpp.isLoggedin()){
-                            AppController.getmService().xmpp.sendMessage(chatItem);
-                            table.lastMessage = chatItem.getChat();
-                            table.time = chatItem.getLognTime();
-                        }
-                    } catch (SmackException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            Logger.e(new Gson().toJson(table));
-                            AppController.database.taskDao().addRoster(table);
-                        }
-                    });
 
                     requestList.remove(model);
                     adapter.notifyDataSetChanged();
-                    Toast.makeText(getApplicationContext(), "Request accepted!", Toast.LENGTH_LONG).show();
+                    if (type.equalsIgnoreCase("both")){
+                        Toast.makeText(getApplicationContext(), "Request accepted!", Toast.LENGTH_LONG).show();
+                    }else {
+                        Toast.makeText(getApplicationContext(), "Request rejected!", Toast.LENGTH_LONG).show();
+                    }
 
 
                 } else if (response.code() == 401) {

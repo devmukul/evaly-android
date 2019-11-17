@@ -97,7 +97,7 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
     String query = "";
 
     private List<EvalyUserModel> evalyUserList;
-    private List<RosterTable> rosterList;
+    private List<String> rosterList;
 
     AppController mChatApp = AppController.getInstance();
 
@@ -109,11 +109,12 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
         //On User Presence Changed
         public void onLoggedIn() {
             xmppHandler = AppController.getmService().xmpp;
+            rosterList = xmppHandler.rosterList;
         }
 
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
-
+            rosterList = xmppHandler.rosterList;
         }
 
         public void onLoginFailed(String msg) {
@@ -139,6 +140,8 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
         rvInvite.setLayoutManager(layoutManager);
         rvInvite.setAdapter(adapter);
 
+        rosterList = new ArrayList<>();
+
         xmppEventReceiver = mChatApp.getEventReceiver();
         xmppHandler = AppController.getmService().xmpp;
 
@@ -148,6 +151,10 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
             }
         } else {
             startXmppService();
+        }
+
+        if (xmppHandler != null && xmppHandler.isLoggedin()) {
+            rosterList = xmppHandler.rosterList;
         }
 
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -320,12 +327,21 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
     private void invite() {
         if (etPhoneNumber.getText().toString().matches("^(01)[3-9][0-9]{8}$")) {
 
-            RosterTable roasterModel = getContactFromRoster(etPhoneNumber.getText().toString());
+            String roasterModel = getContactFromRoster(etPhoneNumber.getText().toString());
             Logger.d(new Gson().toJson(roasterModel));
             if (!CredentialManager.getUserName().equalsIgnoreCase(etPhoneNumber.getText().toString())) {
                 if (roasterModel != null) {
                     loading.hideDialog();
                     dialog.dismiss();
+
+                    RosterTable table = new RosterTable();
+                    table.id = roasterModel;
+                    table.rosterName = etContactName.getText().toString();
+                    table.name = "";
+                    table.status = 0;
+                    table.unreadCount = 0;
+                    table.nick_name = "";
+                    table.imageUrl = "";
 
                     startActivity(new Intent(InviteActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) roasterModel));
                 } else {
@@ -333,10 +349,16 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
                         loading.showDialog();
                         dialog.dismiss();
 
-                        xmppHandler.sendRequestTo(etPhoneNumber.getText().toString(), etContactName.getText().toString());
-                        Toast.makeText(getApplicationContext(), "Invitation sent", Toast.LENGTH_LONG).show();
+                        EvalyUserModel model = new EvalyUserModel();
+                        model.setFirst_name(etContactName.getText().toString());
+                        model.setLast_name("");
+                        model.setUsername(etPhoneNumber.getText().toString());
+                        addRoster(model);
 
-                        sendCustomMessage();
+//                        xmppHandler.sendRequestTo(etPhoneNumber.getText().toString(), etContactName.getText().toString());
+//                        Toast.makeText(getApplicationContext(), "Invitation sent", Toast.LENGTH_LONG).show();
+
+                        sendCustomMessage(etPhoneNumber.getText().toString(), etContactName.getText().toString());
 
 
                     } else {
@@ -351,20 +373,22 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
         }
     }
 
-    private void sendCustomMessage() {
+    private void sendCustomMessage(String id, String name) {
 
         EntityBareJid jid = null;
         try {
-            jid = JidCreate.entityBareFrom(etPhoneNumber.getText().toString().trim() + "@"
+            jid = JidCreate.entityBareFrom(id + "@"
                     + Constants.XMPP_HOST);
         } catch (XmppStringprepException e) {
             e.printStackTrace();
         }
         VCard vCard = xmppHandler.getUserDetails(jid);
 
+        Logger.d(new Gson().toJson(vCard));
+
         if (vCard == null || vCard.getFirstName() == null) {
             HashMap<String, String> data2 = new HashMap<>();
-            data2.put("phone_number", etPhoneNumber.getText().toString().trim());
+            data2.put("phone_number", id);
             data2.put("text", "You are invited to chat with " + CredentialManager.getUserData().getFirst_name() + " at Evaly. Please download Evaly app from here, \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant and start conversation");
 
             EntityBareJid finalJid = jid;
@@ -377,38 +401,25 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
 //                            xmppHandler.sendRequestTo(etPhoneNumber.getText().toString(), etPhoneNumber.getText().toString());
                         Logger.d("[[[[[[[[[[[");
                         ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), finalJid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
-
+                        chatItem.setReceiver_name(name);
                         try {
                             xmppHandler.sendMessage(chatItem);
                         } catch (SmackException e) {
                             e.printStackTrace();
                         }
+                        Toast.makeText(getApplicationContext(), "Invitation sent", Toast.LENGTH_LONG).show();
 
-                        RosterTable table = new RosterTable();
-                        table.id = finalJid.asUnescapedString();
-                        table.rosterName = etContactName.getText().toString();
-                        table.name = "";
-                        table.status = 0;
-                        table.unreadCount = 0;
-                        table.nick_name = "";
-                        table.imageUrl = "";
-                        table.time = chatItem.getLognTime();
-                        table.lastMessage = new Gson().toJson(chatItem);
-                        AsyncTask.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                Logger.d("NEW ENTRY");
-                                AppController.database.taskDao().addRoster(table);
-                            }
-                        });
+
                         Logger.d(new Gson().toJson(xmppHandler.mVcard));
 
-                        dialog.dismiss();
+                        if (dialog != null) {
+                            dialog.dismiss();
+                        }
                     } else if (response.code() == 401) {
                         AuthApiHelper.refreshToken(InviteActivity.this, new DataFetchingListener<Response<JsonObject>>() {
                             @Override
                             public void onDataFetched(Response<JsonObject> response) {
-                                sendCustomMessage();
+                                sendCustomMessage(id, name);
                             }
 
                             @Override
@@ -434,30 +445,29 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
 
             RosterTable table = new RosterTable();
             table.id = jid.asUnescapedString();
-            table.rosterName = etContactName.getText().toString();
+            table.rosterName = vCard.getFirstName();
             table.name = "";
             table.status = 0;
             table.unreadCount = 0;
             table.nick_name = "";
             table.imageUrl = "";
-
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    Logger.d("NEW ENTRY");
-                    AppController.database.taskDao().addRoster(table);
-                }
-            });
+            ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, jid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
+            chatItem.setInvitation(true);
+            try {
+                xmppHandler.sendMessage(chatItem);
+            } catch (SmackException e) {
+                e.printStackTrace();
+            }
             startActivity(new Intent(InviteActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) table));
 
         }
 
     }
 
-    private RosterTable getContactFromRoster(String number) {
-        RosterTable roasterModel = null;
-        for (RosterTable model : rosterList) {
-            if (model.id.contains(number)) {
+    private String getContactFromRoster(String number) {
+        String roasterModel = null;
+        for (String model : rosterList) {
+            if (model.contains(number)) {
                 roasterModel = model;
             }
         }
@@ -526,13 +536,13 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
         super.onResume();
         xmppEventReceiver.setListener(xmppCustomEventListener);
 
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                AppController.allDataLoaded = true;
-                rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
-            }
-        });
+//        AsyncTask.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                AppController.allDataLoaded = true;
+//                rosterList = AppController.database.taskDao().getAllRosterWithoutObserve();
+//            }
+//        });
     }
 
     private void loadMore(int currentPage) {
@@ -555,16 +565,35 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
     @Override
     public void onRecyclerViewItemClicked(Object object) {
         EvalyUserModel model = (EvalyUserModel) object;
+
+        if (model.getUsername().contains(CredentialManager.getUserName())){
+            Toast.makeText(getApplicationContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if (xmppHandler.isLoggedin()) {
             addRoster(model);
         }
     }
 
     private void addRoster(EvalyUserModel model) {
+        String roasterModel = getContactFromRoster(model.getUsername());
+        if (roasterModel != null) {
+            RosterTable table = new RosterTable();
+            table.id = roasterModel;
+            table.rosterName = model.getFirst_name() + " " + model.getLast_name();
+            table.name = "";
+            table.status = 0;
+            table.unreadCount = 0;
+            table.nick_name = "";
+            table.imageUrl = "";
+            startActivity(new Intent(InviteActivity.this, ChatDetailsActivity.class).putExtra("roster", (Serializable) table));
+            return;
+        }
         HashMap<String, String> data = new HashMap<>();
-        data.put("localuser", model.getUsername());
+        data.put("localuser", CredentialManager.getUserName());
         data.put("localserver", Constants.XMPP_HOST);
-        data.put("user", CredentialManager.getUserName());
+        data.put("user", model.getUsername());
         data.put("server", Constants.XMPP_HOST);
         data.put("nick", model.getFirst_name() + " " + model.getLast_name());
         data.put("subs", "both");
@@ -576,7 +605,7 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
 
 
                 if (response.code() == 200 || response.code() == 201) {
-                    sendCustomMessage();
+                    sendCustomMessage(model.getUsername(), model.getFirst_name() + " " + model.getLast_name());
                 } else if (response.code() == 401) {
                     AuthApiHelper.refreshToken(InviteActivity.this, new DataFetchingListener<Response<JsonObject>>() {
                         @Override
@@ -598,4 +627,5 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
             }
         });
     }
+
 }
