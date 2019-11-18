@@ -52,6 +52,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="inbox">Inbox</string>
     <string name="conversations">Conversations</string>
     <string name="default_notification_channel_id">notification_ch_1</string>
+    <string name="submit">Submit</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="search_categories">

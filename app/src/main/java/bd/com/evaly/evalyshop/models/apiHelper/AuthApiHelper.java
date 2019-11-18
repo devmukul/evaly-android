@@ -25,6 +25,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
 import bd.com.evaly.evalyshop.models.SetPasswordModel;
 import bd.com.evaly.evalyshop.models.User;
+import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
@@ -246,6 +247,29 @@ public class AuthApiHelper {
 
     }
 
+    public static void submitIssue(OrderIssueModel model, String invoice, DataFetchingListener<Response<JsonObject>> listener) {
+        Logger.d("{}{}{}{}{}{}{}       "+invoice );
+        IApiClient iApiClient = getiApiClient();
+        HashMap<String, OrderIssueModel> data = new HashMap<>();
+        data.put("order_issue", model);
+        Call<JsonObject> call = iApiClient.submitIssue(CredentialManager.getToken(), invoice, data);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Logger.d(response.body());
+                listener.onDataFetched(response);
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
+
+    }
+
     public static void updateProductStatus(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {
 
         IApiClient iApiClient = ApiClient.getClient().create(IApiClient.class);
@@ -313,6 +337,7 @@ public class AuthApiHelper {
             Logger.d(e.getMessage());
             e.printStackTrace();
         }
+        Logger.d("============");
 
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), f);
         MultipartBody.Part body = MultipartBody.Part.createFormData("image", f.getName(), requestFile);

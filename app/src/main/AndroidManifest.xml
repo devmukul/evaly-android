@@ -40,7 +40,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.newsfeed.NewsfeedNotification" />
+        <activity
+            android:name=".activity.newsfeed.NewsfeedNotification"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.newsfeed.NewsfeedActivity"
             android:theme="@style/AppTheme">

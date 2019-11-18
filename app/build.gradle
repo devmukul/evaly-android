@@ -84,7 +84,6 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-android:4.3.0"
     implementation "org.igniterealtime.smack:smack-experimental:4.3.0"
 
-
     implementation 'com.vanniktech:emoji:0.6.0'
     implementation 'com.vanniktech:emoji-google:0.6.0'
 

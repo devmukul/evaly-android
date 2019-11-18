@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.models.CreatePostModel;
+import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
@@ -62,4 +63,7 @@ public interface IApiClient {
 
     @POST(UrlUtils.NEWS_FEED)
     Call<JsonObject> createPost(@Header("Authorization") String header, @Body HashMap<String, CreatePostModel> data);
+
+    @POST(UrlUtils.SUBMIT_ISSUE+"{invoice}/"+"order-issues/")
+    Call<JsonObject> submitIssue(@Header("Authorization") String header, @Path("invoice") String invoice, @Body HashMap<String, OrderIssueModel> data);
 }
