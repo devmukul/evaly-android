@@ -118,6 +118,7 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
         ImageView ivIssueImage = bottomSheetDialog.findViewById(R.id.ivIssueImage);
         RecyclerView rvReply = bottomSheetDialog.findViewById(R.id.rvReply);
         TextView tvDate = bottomSheetDialog.findViewById(R.id.tvDate);
+        TextView tvBody = bottomSheetDialog.findViewById(R.id.tvBody);
 
         List<String> options = new ArrayList<>();
         List<OrderIssueModel> list = Constants.getDelivaryIssueList();
@@ -132,6 +133,7 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
         rvReply.setAdapter(adapter);
 
         tvDate.setText(Utils.getConvertedTime(model.getCreated_at()));
+        tvBody.setText(model.getDescription());
         if (model.getAttachment() != null){
             ivIssueImage.setVisibility(View.VISIBLE);
             Glide.with(this)

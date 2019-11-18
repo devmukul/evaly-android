@@ -86,6 +86,7 @@ dependencies {
 
     implementation 'com.vanniktech:emoji:0.6.0'
     implementation 'com.vanniktech:emoji-google:0.6.0'
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
     configurations {
         all*.exclude group: 'xpp3', module: 'xpp3'

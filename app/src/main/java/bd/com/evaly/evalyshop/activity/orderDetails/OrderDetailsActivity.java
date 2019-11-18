@@ -486,6 +486,7 @@ public class OrderDetailsActivity extends BaseActivity {
                 model.setAttachment(imageUrl);
                 dialog.showDialog();
                 submitIssue(model, bottomSheetDialog);
+                imageUrl = "";
             }
         });
 

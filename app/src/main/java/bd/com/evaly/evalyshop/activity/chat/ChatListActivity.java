@@ -227,7 +227,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     private int getListPosition(ChatItem chatItem) {
         int pos = -1;
         for (int i = 0; i < rosterList.size(); i++) {
-            Logger.d(chatItem.getSender() + "      " + rosterList.get(i).id);
+//            Logger.d(chatItem.getSender() + "      " + rosterList.get(i).id);
             if (rosterList.get(i).id.equalsIgnoreCase(chatItem.getSender())) {
                 pos = i;
             }

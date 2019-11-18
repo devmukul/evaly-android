@@ -7,11 +7,13 @@ import android.arch.lifecycle.ViewModel;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,26 +58,27 @@ public class RoomWIthRxViewModel extends ViewModel {
                             RosterTable table = new RosterTable();
                             if (model.getVcard() != null) {
                                 XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
-
-                                table.id = model.getJid();
+                                Logger.json(xmlToJson.toJson().toString());
                                 try {
-//                                Logger.json(xmlToJson.toJson().toString());
-                                    String name = xmlToJson.toJson().getJSONObject("vCard").getString("FN");
+                                    JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
+                                    String name = object.getString("FN");
                                     if (name == null) {
                                         name = "";
                                     }
 
                                     table.name = name;
-                                    table.nick_name = xmlToJson.toJson().getJSONObject("vCard").getString("NICKNAME");
-                                    table.imageUrl = xmlToJson.toJson().getJSONObject("VCard").getString("URL");
+                                    table.nick_name = object.getString("NICKNAME");
+                                    table.imageUrl = object.get("URL").toString();
+
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
+
+                                table.id = model.getJid();
                                 table.lastMessage = model.getLast_message();
                                 table.unreadCount = model.getUnseen_messages();
                                 table.messageId = model.getLast_unread_message_id();
+                                Logger.json(new Gson().toJson(table));
                                 tableList.add(table);
                             } else {
                                 table.id = model.getJid();

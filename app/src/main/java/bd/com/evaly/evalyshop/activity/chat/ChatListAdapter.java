@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
@@ -66,7 +67,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
     @Override
     public void onBindViewHolder(@NonNull ChatListViewHolder holder, int position) {
         RosterTable model = list.get(position);
-//        Logger.d(list.size() + "     " + position);
+//        Logger.d(model.imageUrl+"     ======");
 
 
         try {
@@ -91,10 +92,55 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             } else {
                 holder.tvName.setText(model.rosterName);
             }
-            Glide.with(context)
-                    .load(model.imageUrl)
-                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
-                    .into(holder.ivProfileImage);
+
+            if (model.imageUrl == null || model.imageUrl.trim().isEmpty()) {
+                StringBuilder initials = new StringBuilder();
+                for (String s : holder.tvName.getText().toString().split(" ")) {
+//            Logger.d(s);
+                    if (!s.trim().isEmpty()) {
+                        if (initials.length() < 2) {
+                            initials.append(s.charAt(0));
+                        }
+                    }
+                }
+                holder.tvShortName.setVisibility(View.VISIBLE);
+                holder.tvShortName.setText(initials.toString().toUpperCase());
+                holder.ivProfileImage.setVisibility(View.GONE);
+            } else {
+                holder.ivProfileImage.setVisibility(View.VISIBLE);
+                holder.tvShortName.setVisibility(View.GONE);
+                Glide.with(context)
+                        .load(model.imageUrl)
+                        .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                        .into(holder.ivProfileImage);
+            }
+
+
+//            if (model.imageUrl != null && !model.imageUrl.equalsIgnoreCase("")) {
+//
+//                Glide.with(context)
+//                        .load(model.imageUrl)
+//                        .apply(new RequestOptions().placeholder(R.drawable.user_image))
+//                        .into(holder.ivProfileImage);
+//            } else {
+//                StringBuilder initials = new StringBuilder();
+//                for (String s : model.name.split(" ")) {
+////            Logger.d(s);
+//                    if (!s.trim().isEmpty()) {
+//                        if (initials.length()<2){
+//                            initials.append(s.charAt(0));
+//                        }
+//                    }
+//                }
+//                TextDrawable drawable = TextDrawable.builder()
+//                        .beginConfig()
+//                        .width(60)  // width in px
+//                        .height(60) // height in px
+//                        .endConfig()
+//                        .buildRect(initials.toString().toUpperCase(), context.getResources().getColor(R.color.evaly_color));
+//
+//                holder.ivProfileImage.setImageDrawable(drawable);
+//            }
 //            vCardList.add(vCard);
             if (model.status == Constants.PRESENCE_MODE_AVAILABLE_INT) {
                 holder.llOnlineStatus.setVisibility(View.VISIBLE);
@@ -109,7 +155,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                 if (chatItem.getSender().contains(CredentialManager.getUserName())) {
                     if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
                         holder.tvBody.setText("You: Sent an image");
-                    } else if(chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_PRODUCT)){
+                    } else if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_PRODUCT)) {
                         holder.tvBody.setText("You: Share a product");
                     } else {
                         holder.tvBody.setText("You: " + chatItem.getChat());
@@ -118,9 +164,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                 } else {
                     if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
                         holder.tvBody.setText("Sent an image");
-                    } else if(chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_PRODUCT)){
+                    } else if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_PRODUCT)) {
                         holder.tvBody.setText("Share a product");
-                    }else {
+                    } else {
                         holder.tvBody.setText(chatItem.getChat());
                     }
                 }
@@ -170,6 +216,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         LinearLayout llOnlineStatus;
         @BindView(R.id.tvUnreadCount)
         TextView tvUnreadCount;
+        @BindView(R.id.tvShortName)
+        TextView tvShortName;
 
 
         public ChatListViewHolder(@NonNull View itemView) {

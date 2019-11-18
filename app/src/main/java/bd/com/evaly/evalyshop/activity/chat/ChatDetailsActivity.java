@@ -391,7 +391,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
         }
 
         startXmppService();
-        xmppHandler = AppController.getmService().xmpp;
 
         layoutManager = new LinearLayoutManager(ChatDetailsActivity.this);
 

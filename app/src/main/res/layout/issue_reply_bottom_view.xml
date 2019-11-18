@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:autoLink="all"
         android:padding="15dp"
-        android:text="adfadsfsdfasfasdgfqfasdfas\nsfgdfgsfgsfgdfgdgsfg"
         android:textColor="#444"
         android:textSize="16sp" />
 
