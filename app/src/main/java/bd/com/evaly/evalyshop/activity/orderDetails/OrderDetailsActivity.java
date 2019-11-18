@@ -70,6 +70,7 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.activity.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -422,6 +423,11 @@ public class OrderDetailsActivity extends BaseActivity {
 
     }
 
+    @OnClick(R.id.tvViewIssue)
+    void viewIssues(){
+        startActivity(new Intent(OrderDetailsActivity.this, IssuesActivity.class).putExtra("invoice", invoice_no));
+    }
+
     @OnClick(R.id.tvReport)
     void report(){
         Logger.d("CLicked");
@@ -560,7 +566,6 @@ public class OrderDetailsActivity extends BaseActivity {
                     .fitCenter()
                     .optionalCenterCrop()
                     .placeholder(R.drawable.half_dp_bg_light)
-                    .apply(new RequestOptions().override(500, 500))
                     .into((ImageView) bottomSheetDialog.findViewById(R.id.postImage));
         }
 
@@ -1208,17 +1213,17 @@ public class OrderDetailsActivity extends BaseActivity {
                     }
 
 
-                    if (selectedImage != null && bottomSheetDialog.isShowing()) {
-                        Glide.with(this)
-                                .asBitmap()
-                                .load(selectedImage)
-                                .skipMemoryCache(true)
-                                .fitCenter()
-                                .optionalCenterCrop()
-                                .placeholder(R.drawable.half_dp_bg_light)
-                                .apply(new RequestOptions().override(300, 300))
-                                .into((ImageView) bottomSheetDialog.findViewById(R.id.postImage));
-                    }
+//                    if (selectedImage != null && bottomSheetDialog.isShowing()) {
+//                        Glide.with(this)
+//                                .asBitmap()
+//                                .load(selectedImage)
+//                                .skipMemoryCache(true)
+//                                .fitCenter()
+//                                .optionalCenterCrop()
+//                                .placeholder(R.drawable.half_dp_bg_light)
+//                                .apply(new RequestOptions().override(300, 300))
+//                                .into((ImageView) bottomSheetDialog.findViewById(R.id.postImage));
+//                    }
                     dialog.showDialog();
 
                     Logger.d("+_+_+_+_+_+");

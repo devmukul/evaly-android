@@ -239,9 +239,8 @@ public class AppController extends Application implements Application.ActivityLi
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 context.finish();
-                System.exit(1);
             }
-        }, 400);
+        }, 300);
 
 
     }

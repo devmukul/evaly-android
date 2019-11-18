@@ -23,6 +23,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activity.issue.IssuesActivity"></activity>
         <activity
             android:name=".activity.chat.invite.InviteActivity"
             android:screenOrientation="portrait"
@@ -43,7 +44,6 @@
         <activity
             android:name=".activity.newsfeed.NewsfeedNotification"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.newsfeed.NewsfeedActivity"
             android:theme="@style/AppTheme">

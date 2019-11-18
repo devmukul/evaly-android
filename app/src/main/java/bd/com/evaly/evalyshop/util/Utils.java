@@ -11,6 +11,8 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.orhanobut.logger.Logger;
+
 import org.jivesoftware.smackx.chatstates.ChatState;
 
 import java.io.UnsupportedEncodingException;
@@ -40,6 +42,30 @@ public class  Utils {
     public static boolean isValidNumber(String text){
 
         return text.matches("^(01)[3-9][0-9]{8}$");
+    }
+
+    public static String getConvertedTime(String time) {
+        String dateTime = "";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+6"));
+        Date date = new Date();
+        try {
+            date = dateFormat.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            Logger.d(e.getMessage());
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR, 6);
+
+        dateFormat = new SimpleDateFormat("dd MMM, yyyy hh:mm aaa");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+6"));
+        dateTime = dateFormat.format(calendar.getTime());
+
+
+        return dateTime;
     }
 
     public static String isStrongPassword(String password){

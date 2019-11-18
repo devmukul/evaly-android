@@ -44,17 +44,17 @@ public class RoomWIthRxViewModel extends ViewModel {
             @Override
             public void onDataFetched(Response<List<RosterItemModel>> response) {
                 if (response.code() == 200) {
-                    if (response.body().size() == limit){
+                    if (response.body().size() == limit) {
                         hasNext.setValue(true);
-                    }else {
+                    } else {
                         hasNext.setValue(false);
                     }
 
                     List<RosterTable> tableList = new ArrayList<>();
                     for (RosterItemModel model : response.body()) {
-                        if (!model.getJid().contains(Constants.EVALY_NUMBER)){
+                        if (!model.getJid().contains(Constants.EVALY_NUMBER)) {
                             RosterTable table = new RosterTable();
-                            if (model.getVcard()!= null) {
+                            if (model.getVcard() != null) {
                                 XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
 
                                 table.id = model.getJid();
@@ -67,7 +67,7 @@ public class RoomWIthRxViewModel extends ViewModel {
 
                                     table.name = name;
                                     table.nick_name = xmlToJson.toJson().getJSONObject("vCard").getString("NICKNAME");
-//                            table.imageUrl = xmlToJson.toJson().getJSONObject("VCard").getString("URL");
+                                    table.imageUrl = xmlToJson.toJson().getJSONObject("VCard").getString("URL");
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 } catch (Exception e) {
@@ -77,7 +77,7 @@ public class RoomWIthRxViewModel extends ViewModel {
                                 table.unreadCount = model.getUnseen_messages();
                                 table.messageId = model.getLast_unread_message_id();
                                 tableList.add(table);
-                            }else {
+                            } else {
                                 table.id = model.getJid();
                                 table.lastMessage = model.getLast_message();
                                 table.unreadCount = model.getUnseen_messages();

@@ -39,10 +39,10 @@ public interface IApiClient {
     @POST(UrlUtils.ADD_ROSTER)
     Call<JsonPrimitive> addRoster(@Body HashMap<String, String> data);
 
-    @GET(UrlUtils.INVITATION_LIST+"{phone}/")
+    @GET(UrlUtils.INVITATION_LIST + "{phone}/")
     Call<JsonArray> getInvitationList(@Path("phone") String phone);
 
-    @GET(UrlUtils.ROSTER_LIST+"{phone}/")
+    @GET(UrlUtils.ROSTER_LIST + "{phone}/")
     Call<List<RosterItemModel>> getRosterList(@Path("phone") String phone, @Query("page") int page, @Query("limit") int limit);
 
     @POST(UrlUtils.SEND_CUSTOM_MESSAGE)
@@ -64,6 +64,12 @@ public interface IApiClient {
     @POST(UrlUtils.NEWS_FEED)
     Call<JsonObject> createPost(@Header("Authorization") String header, @Body HashMap<String, CreatePostModel> data);
 
-    @POST(UrlUtils.SUBMIT_ISSUE+"{invoice}/"+"order-issues/")
+    @POST(UrlUtils.SUBMIT_ISSUE + "{invoice}/" + "order-issues/")
     Call<JsonObject> submitIssue(@Header("Authorization") String header, @Path("invoice") String invoice, @Body HashMap<String, OrderIssueModel> data);
+
+    @POST(UrlUtils.BASE_URL + "order-issues/{invoice}/issue-replies")
+    Call<JsonObject> replyIssue(@Header("Authorization") String header, @Path("invoice") String invoice, @Body HashMap<String, HashMap> data);
+
+    @GET(UrlUtils.SUBMIT_ISSUE + "{invoice}/" + "order-issues/")
+    Call<JsonObject> getIssueList(@Header("Authorization") String header, @Path("invoice") String invoice);
 }

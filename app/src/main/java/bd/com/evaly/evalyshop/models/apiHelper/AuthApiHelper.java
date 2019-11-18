@@ -258,6 +258,47 @@ public class AuthApiHelper {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Logger.d(response.body());
                 listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
+    }
+
+    public static void replyIssue(String reply, String id, DataFetchingListener<Response<JsonObject>> listener) {
+        IApiClient iApiClient = getiApiClient();
+        HashMap<String, String> data = new HashMap<>();
+        data.put("body", reply);
+        HashMap<String, HashMap> body = new HashMap<>();
+        body.put("issue_reply", data);
+        Call<JsonObject> call = iApiClient.replyIssue(CredentialManager.getToken(), id, body);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Logger.d(response.body());
+                listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
+    }
+
+    public static void getIssueList(String invoice, DataFetchingListener<Response<JsonObject>> listener) {
+        Logger.d("{}{}{}{}{}{}{}       "+invoice );
+        IApiClient iApiClient = getiApiClient();
+        Call<JsonObject> call = iApiClient.getIssueList(CredentialManager.getToken(), invoice);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Logger.d(response.body());
+                listener.onDataFetched(response);
 
             }
 
@@ -267,7 +308,6 @@ public class AuthApiHelper {
                 listener.onFailed(0);
             }
         });
-
     }
 
     public static void updateProductStatus(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {
