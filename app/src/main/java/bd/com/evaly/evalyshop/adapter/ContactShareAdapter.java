@@ -150,7 +150,7 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
             llSend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onRecyclerViewItemClicked(list.get(getLayoutPosition()));
+                    listener.onRecyclerViewItemClicked(listFiltered.get(getLayoutPosition()));
                 }
             });
         }

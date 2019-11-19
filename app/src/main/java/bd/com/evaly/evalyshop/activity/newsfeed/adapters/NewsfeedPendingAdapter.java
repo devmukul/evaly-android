@@ -4,6 +4,7 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -26,7 +27,10 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.orhanobut.logger.Logger;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,6 +44,8 @@ import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
+import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
+import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 
 public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPendingAdapter.MyViewHolder>{
@@ -88,6 +94,39 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
 
             }
         });
+
+        if (isJSONValid(itemsList.get(i).getBody())) {
+            try {
+                JSONObject object = new JSONObject(itemsList.get(i).getBody());
+                myViewHolder.linkPreview.setLink(object.getString("url"), new ViewListener() {
+                    @Override
+                    public void onSuccess(boolean status) {
+                        Logger.d("Success");
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Logger.e(e.getMessage());
+                    }
+                });
+
+                String body = object.getString("body");
+                if (body == null || body.equalsIgnoreCase("")){
+                    myViewHolder.statusView.setVisibility(View.GONE);
+                }else {
+                    myViewHolder.statusView.setVisibility(View.VISIBLE);
+                    myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(body, 180, "... <b>Show more</b>")));
+                }
+                myViewHolder.cardLink.setVisibility(View.VISIBLE);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            myViewHolder.statusView.setVisibility(View.VISIBLE);
+            myViewHolder.cardLink.setVisibility(View.GONE);
+            myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
+        }
 
         Glide.with(context)
                 .load(itemsList.get(i).getAuthorImage())
@@ -169,6 +208,9 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
         ImageView userImage, postImage;
         View view;
         LinearLayout deleteHolder, rejectHolder, approveHolder;
+        RichLinkView linkPreview;
+        CardView cardLink;
+
         public MyViewHolder(final View itemView) {
             super(itemView);
 
@@ -182,16 +224,26 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
             deleteHolder = itemView.findViewById(R.id.deleteHolder);
             rejectHolder = itemView.findViewById(R.id.rejectHolder);
             approveHolder = itemView.findViewById(R.id.approveHolder);
-
+            cardLink = itemView.findViewById(R.id.cardLink);
+            linkPreview = itemView.findViewById(R.id.linkPreview);
 
             view = itemView;
         }
     }
 
-
-
-
-
-
+    public boolean isJSONValid(String test) {
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+            // edited, to include @Arthur's comment
+            // e.g. in case JSONArray is valid as well...
+            try {
+                new JSONArray(test);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

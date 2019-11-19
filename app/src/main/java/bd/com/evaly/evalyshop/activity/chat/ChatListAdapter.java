@@ -83,14 +83,28 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 //            } else {
 //                tvName.setText(rosterTable.name);
 //            }
-            if (model.rosterName == null || model.rosterName.equals("")) {
+            if (model.name == null || model.name.equals("")) {
+                ChatItem chatItem = new Gson().fromJson(model.lastMessage, ChatItem.class);
                 if (model.nick_name == null || model.nick_name.replaceAll("\\s+$", "").equals("")) {
-                    holder.tvName.setText("Evaly User");
+                    if (chatItem.getSender().contains(CredentialManager.getUserName())){
+                        if (chatItem.getReceiver_name() == null || chatItem.getReceiver_name().trim().isEmpty()){
+                            holder.tvName.setText("Evaly User");
+                        }else {
+                            holder.tvName.setText(chatItem.getReceiver_name());
+                        }
+                    } else {
+                        if (chatItem.getName() == null || chatItem.getName().trim().isEmpty()){
+                            holder.tvName.setText("Evaly User");
+                        }else {
+                            holder.tvName.setText(chatItem.getName());
+                        }
+                    }
+
                 } else {
                     holder.tvName.setText(model.nick_name);
                 }
             } else {
-                holder.tvName.setText(model.rosterName);
+                holder.tvName.setText(model.name);
             }
 
             if (model.imageUrl == null || model.imageUrl.trim().isEmpty()) {

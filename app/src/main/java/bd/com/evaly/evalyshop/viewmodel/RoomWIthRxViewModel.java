@@ -73,11 +73,11 @@ public class RoomWIthRxViewModel extends ViewModel {
                                 table.lastMessage = model.getLast_message();
                                 table.unreadCount = model.getUnseen_messages();
                                 table.messageId = model.getLast_unread_message_id();
-                                Logger.json(new Gson().toJson(table));
+//                                Logger.json(new Gson().toJson(table));
                                 tableList.add(table);
                             } else {
                                 table.id = model.getJid();
-                                table.name = "Evaly User";
+//                                table.name = "Evaly User";
                                 table.lastMessage = model.getLast_message();
                                 table.unreadCount = model.getUnseen_messages();
                                 table.messageId = model.getLast_unread_message_id();
