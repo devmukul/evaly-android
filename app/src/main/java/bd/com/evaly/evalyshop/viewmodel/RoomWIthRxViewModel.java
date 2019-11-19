@@ -36,11 +36,6 @@ public class RoomWIthRxViewModel extends ViewModel {
     public MutableLiveData<Boolean> hasNext = new MutableLiveData<>();
 
 
-//    public Flowable<List<RosterTable>> getList() {
-//        Logger.d("UPDATE");
-//        return appDatabase.taskDao().getAllRoster();
-//    }
-
     public void loadRosterList(String userName, int page, int limit) {
         AuthApiHelper.getRosterList(userName, page, limit, new DataFetchingListener<Response<List<RosterItemModel>>>() {
             @Override
@@ -58,7 +53,7 @@ public class RoomWIthRxViewModel extends ViewModel {
                             RosterTable table = new RosterTable();
                             if (model.getVcard() != null) {
                                 XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
-                                Logger.json(xmlToJson.toJson().toString());
+//                                Logger.json(xmlToJson.toJson().toString());
                                 try {
                                     JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
                                     String name = object.getString("FN");
@@ -82,6 +77,7 @@ public class RoomWIthRxViewModel extends ViewModel {
                                 tableList.add(table);
                             } else {
                                 table.id = model.getJid();
+                                table.name = "Evaly User";
                                 table.lastMessage = model.getLast_message();
                                 table.unreadCount = model.getUnseen_messages();
                                 table.messageId = model.getLast_unread_message_id();

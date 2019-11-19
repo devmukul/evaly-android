@@ -866,9 +866,6 @@ public class XMPPHandler {
             service.onUpdateUserFailed(condition.toString());
         }
 
-//        Logger.d(vCard.getAddressFieldHome("REGION"));
-//        Logger.d(vCard.getField("URL"));
-//        Logger.d(vCard.getPhoneHome("mobile"));
 
     }
 
@@ -959,29 +956,6 @@ public class XMPPHandler {
 
             Logger.d(connection.isConnected() + "   [[[[[[[");
             service.onSignupSuccess();
-//            Logger.d("%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//            HashMap<String, String> data = new HashMap<>();
-//            data.put("localuser", CredentialManager.getUserName());
-//            data.put("localserver", Constants.XMPP_HOST);
-//            data.put("user", Constants.EVALY_NUMBER);
-//            data.put("server", Constants.XMPP_HOST);
-//            data.put("nick", "Evaly");
-//            data.put("subs", "both");
-//            data.put("group", "evaly");
-//
-//            AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-//                @Override
-//                public void onDataFetched(Response<JsonPrimitive> response) {
-//                    if (response.code() == 200 || response.code() == 201) {
-//                        addRosterByOther(name);
-//                    } else {
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailed(int status) {
-//                }
-//            });
 
 
         } else {
@@ -1246,38 +1220,6 @@ public class XMPPHandler {
 
             getAllRoaster();
 
-//            if (!isFirstTime) {
-//
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        roasterList = getAllRoaster();
-//                        //                      Logger.d(roasterList.size() + "    ()()()()()()(()");
-//                        List<RosterTable> list = new ArrayList<>();
-//                        for (RoasterModel model : roasterList) {
-//                            RosterTable table = new RosterTable();
-//                            table.id = model.getRoasterEntryUser().asUnescapedString();
-//                            table.rosterName = model.getName();
-//                            table.status = model.getStatus();
-//                            list.add(table);
-//                        }
-//
-//                        updateRoster(list);
-//
-////                        AsyncTask.execute(new Runnable() {
-////                            @Override
-////                            public void run() {
-////                                AppController.database.taskDao().addAllRoster(list);
-////                            }
-////                        });
-//                    }
-//                }).start();
-//                isFirstTime = true;
-//            }
-//
-
-
-            //Wait for 500ms before showing we are authenticated
             new Thread(new Runnable() {
 
                 @Override
@@ -1371,95 +1313,6 @@ public class XMPPHandler {
             loggedin = false;
         }
 
-//        //Our connection has closed, due to error. Still, it is same thing as above. Reset everything
-//        @Override
-//        public void connectionClosedOnError(Exception arg0) {
-//
-//            service.onConnectionClosed();
-//
-//            if (isToasted)
-//
-//                new Handler(Looper.getMainLooper()).post(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        Toast.makeText(service, "ConnectionClosedOn Error!!",
-//                                Toast.LENGTH_SHORT).show();
-//
-//                    }
-//                });
-//
-//            if( debug ) Log.d(TAG, "ConnectionClosedOn Error!");
-//
-//            connected = false;
-//            chatInstanceIterator(chat_created_for);
-//            loggedin = false;
-//        }
-//
-//        @Override
-//        public void reconnectingIn(int arg0) {
-//
-//            service.onReConnection();
-//            if( debug ) Log.d(TAG, "Reconnectingin " + arg0);
-//            loggedin = false;
-//        }
-//
-//        // Our reconnection attemp failed. Reset everything. Basically, we reset whenever our connection failed,
-//        // no matter whatever the cause is
-//        @Override
-//        public void reconnectionFailed(Exception arg0) {
-//
-//            service.onReConnectionError();
-//
-//            if( debug ) Log.d(TAG, "ReconnectionFailed!");
-//
-//            //Reset the variables
-//            connected = false;
-//            chatInstanceIterator(chat_created_for);
-//            loggedin = false;
-//        }
-//
-//        //Below two methods are quite useful. These handles a successfull connection attempt.
-//        @Override
-//        public void reconnectionSuccessful() {
-//
-//            service.onReConnected();
-//
-//            if( debug ) Log.d(TAG, "ReconnectionSuccessful");
-//
-//            //We are only connected, not authenticated yet. See the next method
-//            connected = true;
-//            chatInstanceIterator(chat_created_for);
-//            loggedin = false;
-//        }
-//
-//        //This is main method, we authentication stuff happens
-//        @Override
-//        public void authenticated(XMPPConnection connectionNew, boolean resumed) {
-//
-//            chatInstanceIterator(chat_created_for);
-//            loggedin = true;
-//
-//            ChatManager.getInstanceFor(connection).addChatListener(mChatManagerListener);
-//
-//            //Wait for 500ms before showing we are authenticated
-//            new Thread(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }
-//            }).start();
-//
-//            if( debug ) Log.d(TAG,"Yay!! We are now authenticated!!");
-//
-//            service.onAuthenticated();
-//        }
     }
 
     public void changePresence() {
@@ -1979,37 +1832,21 @@ public class XMPPHandler {
 //                forwardedMessages = mamQueryResult.getMessages();
 //            }
             List<Message> forwardedMessages = mamQueryResult.getMessages();
-//            Logger.d("||||||||||||||||||||");
 
             Iterator<Message> forwardedIterator = forwardedMessages.iterator();
-//            Logger.d(forwardedMessages.size());
-//            Logger.d(new Gson().toJson(forwardedMessages));
 
             while (forwardedIterator.hasNext()) {
                 Message message = forwardedIterator.next();
-//                Logger.d(message);
-
-//                Logger.d(message.toXML("stanza-id"));
-//                Logger.d(message.getBody());
-//                Stanza stanza = forwarded.getBody();
-//                if (stanza instanceof Message) {
-//                    String messageId = stanza.getStanzaId();
-//                    mMessageListener.processMessage((Message) stanza);
-////                    xmppTcpConnection.processMessage((Message) stanza);
-//                }
 
                 ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
                 JSONObject jsonObject = new JSONObject(new Gson().toJson(message));
 
                 JSONObject ob1 = jsonObject.getJSONObject("packetExtensions").getJSONObject("map");
                 String json = ob1.toString();
-//                Logger.d(json);
                 String json1 = "{\"" + json.substring(json.indexOf("urn:xmpp:sid:0"));
                 JSONObject object = new JSONObject(json1);
-//                Logger.d(json1);
                 JSONArray jsonArray = object.getJSONArray("urn:xmpp:sid:0");
                 String id = jsonArray.getJSONObject(0).getString("id");
-//                Logger.d(id+" ==========");
                 chatItem.setMessageId(id);
                 chatMessageList.add(chatItem);
             }
@@ -2026,7 +1863,6 @@ public class XMPPHandler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        Logger.d(new Gson().toJson(chatMessageList));
         return chatMessageList;
     }
 

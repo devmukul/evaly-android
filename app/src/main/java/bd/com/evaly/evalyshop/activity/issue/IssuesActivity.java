@@ -48,6 +48,7 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
 
     @BindView(R.id.rvIssues)
     RecyclerView rvIssues;
+    @BindView(R.id.noIssue) TextView noIssue;
 
     IssuesAdapter adapter;
 
@@ -83,6 +84,12 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
                 List<IssuesModel> models = new Gson().fromJson(response.body().get("results"), new TypeToken<List<IssuesModel>>(){}.getType());
                 list.addAll(models);
                 adapter.notifyDataSetChanged();
+
+                if (list.size() == 0){
+                    noIssue.setVisibility(View.VISIBLE);
+                }else {
+                    noIssue.setVisibility(View.GONE);
+                }
             }
 
             @Override

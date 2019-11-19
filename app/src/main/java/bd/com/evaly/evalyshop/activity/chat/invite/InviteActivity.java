@@ -402,6 +402,7 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
                         Logger.d("[[[[[[[[[[[");
                         ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), finalJid.asUnescapedString(), Constants.TYPE_TEXT, true, "");
                         chatItem.setReceiver_name(name);
+                        chatItem.setInvitation(true);
                         try {
                             xmppHandler.sendMessage(chatItem);
                         } catch (SmackException e) {

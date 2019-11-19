@@ -591,11 +591,13 @@ public class ViewProductActivity extends BaseActivity {
                         etSearch.addTextChangedListener(new TextWatcher() {
                             @Override
                             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                rvContacts.getRecycledViewPool().clear();
                                 adapter.getFilter().filter(charSequence);
                             }
 
                             @Override
                             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                rvContacts.getRecycledViewPool().clear();
                                 adapter.getFilter().filter(charSequence);
                             }
 

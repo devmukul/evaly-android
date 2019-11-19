@@ -110,6 +110,7 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
+//                        Logger.d(table.name+"    "+charString+"      "+table.id);
                         if (table.name.toLowerCase().contains(charString.toLowerCase()) || table.id.toLowerCase().contains(charSequence)) {
                             filteredList.add(table);
                         }
@@ -126,6 +127,7 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 listFiltered = ((List<RosterTable>) results.values);
+
                 notifyDataSetChanged();
             }
         };
