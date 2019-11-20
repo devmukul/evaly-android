@@ -469,7 +469,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
     @OnClick(R.id.fab)
     void fab() {
-
         startActivity(new Intent(ChatListActivity.this, InviteActivity.class));
 
     }

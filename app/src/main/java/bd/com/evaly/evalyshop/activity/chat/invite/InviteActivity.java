@@ -171,6 +171,9 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
                 if (query.length() > 2) {
                     evalyUserList.clear();
                     inviteViewModel.findUsers(query, currentPage, InviteActivity.this);
+                }else {
+                    evalyUserList.clear();
+                    adapter.notifyDataSetChanged();
                 }
             }
 

@@ -40,6 +40,8 @@ import retrofit2.Response;
 
 public class AuthApiHelper {
 
+    public static Call<JsonObject> call;
+
     public static void checkUpdate(DataFetchingListener<Response<JsonObject>> listener) {
 
         IApiClient iApiClient = getiApiClient();
@@ -248,7 +250,7 @@ public class AuthApiHelper {
     }
 
     public static void submitIssue(OrderIssueModel model, String invoice, DataFetchingListener<Response<JsonObject>> listener) {
-        Logger.d("{}{}{}{}{}{}{}       "+invoice );
+        Logger.d("{}{}{}{}{}{}{}       " + invoice);
         IApiClient iApiClient = getiApiClient();
         HashMap<String, OrderIssueModel> data = new HashMap<>();
         data.put("order_issue", model);
@@ -291,7 +293,7 @@ public class AuthApiHelper {
     }
 
     public static void getIssueList(String invoice, DataFetchingListener<Response<JsonObject>> listener) {
-        Logger.d("{}{}{}{}{}{}{}       "+invoice );
+        Logger.d("{}{}{}{}{}{}{}       " + invoice);
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call = iApiClient.getIssueList(CredentialManager.getToken(), invoice);
         call.enqueue(new Callback<JsonObject>() {
@@ -333,7 +335,10 @@ public class AuthApiHelper {
     public static void searchUser(String search, int page, DataFetchingListener<Response<JsonObject>> listener) {
 
         IApiClient iApiClient = getiApiClient();
-        Call<JsonObject> call = iApiClient.searchEvalyUsers(CredentialManager.getToken(),search, page);
+        if (call != null) {
+            call.cancel();
+        }
+        call = iApiClient.searchEvalyUsers(CredentialManager.getToken(), search, page);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
