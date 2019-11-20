@@ -101,7 +101,6 @@ public class RequestListActivity extends BaseActivity implements RequestListAdap
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override
@@ -155,7 +154,19 @@ public class RequestListActivity extends BaseActivity implements RequestListAdap
 
                     requestList.remove(model);
                     adapter.notifyDataSetChanged();
+
+
                     if (type.equalsIgnoreCase("both")){
+                        if (AppController.getmService() != null && AppController.getmService().xmpp != null && AppController.getmService().xmpp.isLoggedin()){
+                            ChatItem chatItem = new ChatItem("Your request has been accepted", CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, model.getUser_jid(), Constants.TYPE_TEXT, true, "");
+                            chatItem.setInvitation(false);
+                            chatItem.setAccepted(true);
+                            try {
+                                AppController.getmService().xmpp.sendMessage(chatItem);
+                            } catch (SmackException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         Toast.makeText(getApplicationContext(), "Request accepted!", Toast.LENGTH_LONG).show();
                     }else {
                         Toast.makeText(getApplicationContext(), "Request rejected!", Toast.LENGTH_LONG).show();

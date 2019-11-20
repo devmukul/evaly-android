@@ -22,6 +22,7 @@ public class ChatItem implements Parcelable {
     private String large_image;
     private boolean invitation;
     private String receiver_name;
+    private boolean accepted;
 
 
 
@@ -36,6 +37,14 @@ public class ChatItem implements Parcelable {
         this.isMine = isMine;
         this.messageType = messageType;
         this.large_image = large_image;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 
     public String getReceiver_name() {

@@ -23,6 +23,7 @@ import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.AppDatabase;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
@@ -50,38 +51,41 @@ public class RoomWIthRxViewModel extends ViewModel {
                     List<RosterTable> tableList = new ArrayList<>();
                     for (RosterItemModel model : response.body()) {
                         if (!model.getJid().contains(Constants.EVALY_NUMBER)) {
-                            RosterTable table = new RosterTable();
-                            if (model.getVcard() != null) {
-                                XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
+                            ChatItem chatItem = new Gson().fromJson(model.getLast_message(), ChatItem.class);
+                            if (!chatItem.isInvitation()) {
+                                RosterTable table = new RosterTable();
+                                if (model.getVcard() != null) {
+                                    XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
 //                                Logger.json(xmlToJson.toJson().toString());
-                                try {
-                                    JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
-                                    String name = object.getString("FN");
-                                    if (name == null) {
-                                        name = "";
+                                    try {
+                                        JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
+                                        String name = object.getString("FN");
+                                        if (name == null) {
+                                            name = "";
+                                        }
+
+                                        table.name = name;
+                                        table.nick_name = object.getString("NICKNAME");
+                                        table.imageUrl = object.get("URL").toString();
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
 
-                                    table.name = name;
-                                    table.nick_name = object.getString("NICKNAME");
-                                    table.imageUrl = object.get("URL").toString();
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                                table.id = model.getJid();
-                                table.lastMessage = model.getLast_message();
-                                table.unreadCount = model.getUnseen_messages();
-                                table.messageId = model.getLast_unread_message_id();
+                                    table.id = model.getJid();
+                                    table.lastMessage = model.getLast_message();
+                                    table.unreadCount = model.getUnseen_messages();
+                                    table.messageId = model.getLast_unread_message_id();
 //                                Logger.json(new Gson().toJson(table));
-                                tableList.add(table);
-                            } else {
-                                table.id = model.getJid();
+                                    tableList.add(table);
+                                } else {
+                                    table.id = model.getJid();
 //                                table.name = "Evaly User";
-                                table.lastMessage = model.getLast_message();
-                                table.unreadCount = model.getUnseen_messages();
-                                table.messageId = model.getLast_unread_message_id();
-                                tableList.add(table);
+                                    table.lastMessage = model.getLast_message();
+                                    table.unreadCount = model.getUnseen_messages();
+                                    table.messageId = model.getLast_unread_message_id();
+                                    tableList.add(table);
+                                }
                             }
                         }
                     }

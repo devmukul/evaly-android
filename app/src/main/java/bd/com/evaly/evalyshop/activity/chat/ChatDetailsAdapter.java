@@ -279,6 +279,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             linkPreview.setDefaultClickListener(false);
             linkPreview.setClickListener(null);
+            linkPreview.setPrice(model.getP_price());
             linkPreview.setBackground(context.getResources().getColor(R.color.bg_card));
             linkPreview.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -493,6 +494,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ProductShareModel model = new Gson().fromJson(chatItem.getChat(), ProductShareModel.class);
             linkPreview.setDefaultClickListener(false);
             linkPreview.setClickListener(null);
+            linkPreview.setPrice(model.getP_price());
             linkPreview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
