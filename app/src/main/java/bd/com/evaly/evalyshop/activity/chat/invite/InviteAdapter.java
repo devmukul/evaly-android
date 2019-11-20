@@ -64,6 +64,7 @@ public class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.InviteView
                 @Override
                 public void onClick(View view) {
                     listener.onRecyclerViewItemClicked(list.get(getLayoutPosition()));
+                    llInvite.setVisibility(View.GONE);
                 }
             });
         }

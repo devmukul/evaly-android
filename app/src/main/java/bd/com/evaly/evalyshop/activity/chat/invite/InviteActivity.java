@@ -573,6 +573,7 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
         }
 
         if (xmppHandler.isLoggedin()) {
+            xmppHandler.getAllRoaster();
             if (xmppHandler.rosterList.contains(model.getUsername()+"@"+Constants.XMPP_HOST)){
                 Toast.makeText(getApplicationContext(), "Already Invited!", Toast.LENGTH_LONG ).show();
                 return;

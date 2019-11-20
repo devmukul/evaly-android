@@ -320,9 +320,11 @@ public class ViewProductActivity extends BaseActivity {
 
             productName.setVisibility(View.GONE);
 
-            productName.setText(Html.fromHtml(name));
+            if(name != null){
+                productName.setText(Html.fromHtml(name));
+                collapsingToolbarLayout.setTitle(Html.fromHtml(name));
+            }
 
-            collapsingToolbarLayout.setTitle(Html.fromHtml(name));
 
             collapsingToolbarLayout.setVisibility(View.INVISIBLE);
 
@@ -834,6 +836,9 @@ public class ViewProductActivity extends BaseActivity {
                         }
 
                         for (int i = 0; i < product_variants.length(); i++) {
+                            name = product_variants.getJSONObject(0).getString("product_name");
+                            productName.setText(name);
+                            collapsingToolbarLayout.setTitle(Html.fromHtml(name));
 
                             if (response.getJSONArray("attributes").length() == 0) {
                                 JSONArray variantArr = product_variants.getJSONObject(i).getJSONArray("product_images");
@@ -851,7 +856,7 @@ public class ViewProductActivity extends BaseActivity {
                             } else {
                                 JSONArray variantArr = product_variants.getJSONObject(i).getJSONArray("product_images");
                                 int variantID = product_variants.getJSONObject(i).getInt("variant_id");
-                                String name = product_variants.getJSONObject(i).getString("product_name");
+                                name = product_variants.getJSONObject(i).getString("product_name");
                                 category = product_variants.getJSONObject(i).getString("category_slug");
                                 int minPrice = product_variants.getJSONObject(i).getInt("min_price");
                                 int maxPrice = product_variants.getJSONObject(i).getInt("max_price");
