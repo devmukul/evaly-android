@@ -43,11 +43,27 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/ivProfileImage"
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/user_image" />
+                        android:layout_height="match_parent">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/ivProfileImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/user_image" />
+
+                        <TextView
+                            android:id="@+id/tvShortName"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="IA"
+                            android:background="@drawable/circle_green"
+                            android:backgroundTint="@color/colorAccentBlue"
+                            android:textColor="@color/white"
+                            android:textSize="20dp"
+                            android:visibility="gone"
+                            android:gravity="center"/>
+                    </FrameLayout>
 
                     <LinearLayout
                         android:id="@+id/llOnlineStatus"

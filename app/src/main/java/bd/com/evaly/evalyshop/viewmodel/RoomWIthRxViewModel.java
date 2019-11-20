@@ -20,6 +20,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.AppDatabase;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
@@ -85,6 +86,42 @@ public class RoomWIthRxViewModel extends ViewModel {
                                     table.unreadCount = model.getUnseen_messages();
                                     table.messageId = model.getLast_unread_message_id();
                                     tableList.add(table);
+                                }
+                            }else {
+                                if (chatItem.getSender().contains(CredentialManager.getUserName())){
+                                    RosterTable table = new RosterTable();
+                                    if (model.getVcard() != null) {
+                                        XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
+//                                Logger.json(xmlToJson.toJson().toString());
+                                        try {
+                                            JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
+                                            String name = object.getString("FN");
+                                            if (name == null) {
+                                                name = "";
+                                            }
+
+                                            table.name = name;
+                                            table.nick_name = object.getString("NICKNAME");
+                                            table.imageUrl = object.get("URL").toString();
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        table.id = model.getJid();
+                                        table.lastMessage = model.getLast_message();
+                                        table.unreadCount = model.getUnseen_messages();
+                                        table.messageId = model.getLast_unread_message_id();
+//                                Logger.json(new Gson().toJson(table));
+                                        tableList.add(table);
+                                    } else {
+                                        table.id = model.getJid();
+//                                table.name = "Evaly User";
+                                        table.lastMessage = model.getLast_message();
+                                        table.unreadCount = model.getUnseen_messages();
+                                        table.messageId = model.getLast_unread_message_id();
+                                        tableList.add(table);
+                                    }
                                 }
                             }
                         }

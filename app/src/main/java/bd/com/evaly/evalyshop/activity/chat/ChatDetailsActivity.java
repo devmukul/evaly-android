@@ -84,6 +84,8 @@ public class ChatDetailsActivity extends AppCompatActivity {
     TextView tvTyping;
     @BindView(R.id.tvName)
     TextView tvName;
+    @BindView(R.id.tvShortName)
+    TextView tvShortName;
     @BindView(R.id.tvOnlineStatus)
     TextView tvOnlineStatus;
     @BindView(R.id.llTyping)
@@ -374,10 +376,27 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 tvOnlineStatus.setText("Online");
                 llOnlineStatus.setVisibility(View.VISIBLE);
             }else {
-                Glide.with(this)
-                        .load(rosterTable.imageUrl)
-                        .apply(new RequestOptions().placeholder(R.drawable.user_image))
-                        .into(ivProfileImage);
+                if (rosterTable.imageUrl == null || rosterTable.imageUrl.trim().isEmpty()) {
+                    StringBuilder initials = new StringBuilder();
+                    for (String s : tvName.getText().toString().split(" ")) {
+//            Logger.d(s);
+                        if (!s.trim().isEmpty()) {
+                            if (initials.length() < 2) {
+                                initials.append(s.charAt(0));
+                            }
+                        }
+                    }
+                    tvShortName.setVisibility(View.VISIBLE);
+                    tvShortName.setText(initials.toString().toUpperCase());
+                    ivProfileImage.setVisibility(View.GONE);
+                } else {
+                    ivProfileImage.setVisibility(View.VISIBLE);
+                    tvShortName.setVisibility(View.GONE);
+                    Glide.with(this)
+                            .load(rosterTable.imageUrl)
+                            .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                            .into(ivProfileImage);
+                }
             }
         }else {
             senderId = getIntent().getExtras().get("sender").toString();

@@ -296,11 +296,11 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (chatItem.getChat() != null || !chatItem.getChat().equalsIgnoreCase("")) {
                 if (model.getP_slug() != null) {
                     String link = UrlUtils.PRODUCT_BASE_URL + model.getP_slug();
-                    Logger.e(link);
+//                    Logger.e(link);
                     linkPreview.setLink(link, new ViewListener() {
                         @Override
                         public void onSuccess(boolean status) {
-                            Logger.d("SUCCESS");
+//                            Logger.d("SUCCESS");
                         }
 
                         @Override
@@ -341,6 +341,8 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ProgressBar imageProgress;
         @BindView(R.id.tvUnreadMessage)
         TextView tvUnreadMessage;
+        @BindView(R.id.tvShortName)
+        TextView tvShortName;
 
         boolean isShow = false;
 
@@ -386,12 +388,53 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                     } else {
                         ivProfile.setVisibility(View.VISIBLE);
+                        if (vCard.imageUrl == null || vCard.imageUrl.trim().isEmpty()) {
+                            StringBuilder initials = new StringBuilder();
+                            for (String s : chatItem.getName().split(" ")) {
+//            Logger.d(s);
+                                if (!s.trim().isEmpty()) {
+                                    if (initials.length() < 2) {
+                                        initials.append(s.charAt(0));
+                                    }
+                                }
+                            }
+                            tvShortName.setVisibility(View.VISIBLE);
+                            tvShortName.setText(initials.toString().toUpperCase());
+                            ivProfile.setVisibility(View.GONE);
+                        } else {
+                            ivProfile.setVisibility(View.VISIBLE);
+                            tvShortName.setVisibility(View.GONE);
+                            Glide.with(context)
+                                    .load(vCard.imageUrl)
+                                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                                    .into(ivProfile);
+                        }
                         tvMessage.setBackgroundResource(R.drawable.other_chat_back);
 //                        Logger.d("CHANGED BACK =======");
 
                     }
                 } else if (getLayoutPosition() + 1 == chatItemList.size()) {
                     ivProfile.setVisibility(View.VISIBLE);
+                    if (vCard.imageUrl == null || vCard.imageUrl.trim().isEmpty()) {
+                        StringBuilder initials = new StringBuilder();
+                        for (String s : chatItem.getName().split(" ")) {
+                            if (!s.trim().isEmpty()) {
+                                if (initials.length() < 2) {
+                                    initials.append(s.charAt(0));
+                                }
+                            }
+                        }
+                        tvShortName.setVisibility(View.VISIBLE);
+                        tvShortName.setText(initials.toString().toUpperCase());
+                        ivProfile.setVisibility(View.GONE);
+                    } else {
+                        ivProfile.setVisibility(View.VISIBLE);
+                        tvShortName.setVisibility(View.GONE);
+                        Glide.with(context)
+                                .load(vCard.imageUrl)
+                                .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                                .into(ivProfile);
+                    }
                     tvMessage.setBackgroundResource(R.drawable.other_chat_back);
 //                    Logger.d("CHANGED BACK +++++");
                 }
@@ -455,10 +498,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
 
             tvMessage.setText(chatItem.getChat());
-            Glide.with(context)
-                    .load(vCard.imageUrl)
-                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
-                    .into(ivProfile);
+
 
 
             tvChatTime.setText(Utils.getTimeAgo(chatItem.getLognTime()));
@@ -478,6 +518,8 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         LinearLayout llContainer;
         @BindView(R.id.tvUnreadMessage)
         TextView tvUnreadMessage;
+        @BindView(R.id.tvShortName)
+        TextView tvShortName;
         @BindView(R.id.linkPreview)
         RichLinkView linkPreview;
 
@@ -515,12 +557,54 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                     } else {
                         ivProfile.setVisibility(View.VISIBLE);
+                        if (vCard.imageUrl == null || vCard.imageUrl.trim().isEmpty()) {
+                            StringBuilder initials = new StringBuilder();
+                            for (String s : chatItem.getName().split(" ")) {
+//            Logger.d(s);
+                                if (!s.trim().isEmpty()) {
+                                    if (initials.length() < 2) {
+                                        initials.append(s.charAt(0));
+                                    }
+                                }
+                            }
+                            tvShortName.setVisibility(View.VISIBLE);
+                            tvShortName.setText(initials.toString().toUpperCase());
+                            ivProfile.setVisibility(View.GONE);
+                        } else {
+                            ivProfile.setVisibility(View.VISIBLE);
+                            tvShortName.setVisibility(View.GONE);
+                            Glide.with(context)
+                                    .load(vCard.imageUrl)
+                                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                                    .into(ivProfile);
+                        }
                         linkPreview.setBackgroundResource(R.drawable.other_chat_back);
 //                        Logger.d("CHANGED BACK =======");
 
                     }
                 } else if (getLayoutPosition() + 1 == chatItemList.size()) {
                     ivProfile.setVisibility(View.VISIBLE);
+                    if (vCard.imageUrl == null || vCard.imageUrl.trim().isEmpty()) {
+                        StringBuilder initials = new StringBuilder();
+                        for (String s : chatItem.getName().split(" ")) {
+//            Logger.d(s);
+                            if (!s.trim().isEmpty()) {
+                                if (initials.length() < 2) {
+                                    initials.append(s.charAt(0));
+                                }
+                            }
+                        }
+                        tvShortName.setVisibility(View.VISIBLE);
+                        tvShortName.setText(initials.toString().toUpperCase());
+                        ivProfile.setVisibility(View.GONE);
+                    } else {
+                        ivProfile.setVisibility(View.VISIBLE);
+                        tvShortName.setVisibility(View.GONE);
+                        Glide.with(context)
+                                .load(vCard.imageUrl)
+                                .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                                .into(ivProfile);
+                    }
                     linkPreview.setBackgroundResource(R.drawable.other_chat_back);
 //                    Logger.d("CHANGED BACK +++++");
                 }
@@ -552,11 +636,6 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             } else {
                 tvUnreadMessage.setVisibility(View.GONE);
             }
-
-            Glide.with(context)
-                    .load(vCard.imageUrl)
-                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
-                    .into(ivProfile);
 
             tvChatTime.setText(Utils.getTimeAgo(chatItem.getLognTime()));
 

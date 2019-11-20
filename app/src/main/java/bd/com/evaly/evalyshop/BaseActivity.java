@@ -108,16 +108,16 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onUserLeaveHint() {
-        Logger.d("HOME PRESSED");
-        if (AppController.getmService() !=  null && AppController.getmService().xmpp != null){
-           if (AppController.getmService().xmpp.isConnected()){
-               XMPPHandler xmppHandler = AppController.getmService().xmpp;
-               xmppHandler.changePresence();
-               XMPPHandler.disconnect();
-
-           }
-        }
-        super.onUserLeaveHint();
+//        Logger.d("HOME PRESSED");
+//        if (AppController.getmService() !=  null && AppController.getmService().xmpp != null){
+//           if (AppController.getmService().xmpp.isConnected()){
+//               XMPPHandler xmppHandler = AppController.getmService().xmpp;
+//               xmppHandler.changePresence();
+//               XMPPHandler.disconnect();
+//
+//           }
+//        }
+//        super.onUserLeaveHint();
     }
 
     @Override

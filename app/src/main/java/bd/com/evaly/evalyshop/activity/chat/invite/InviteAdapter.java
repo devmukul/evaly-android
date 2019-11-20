@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -55,6 +56,8 @@ public class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.InviteView
         TextView tvNumber;
         @BindView(R.id.llInvite)
         LinearLayout llInvite;
+        @BindView(R.id.llInvited)
+        LinearLayout llInvited;
 
         public InviteViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,8 +66,11 @@ public class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.InviteView
             llInvite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onRecyclerViewItemClicked(list.get(getLayoutPosition()));
-                    llInvite.setVisibility(View.GONE);
+                    if (llInvited.getVisibility() == View.GONE){
+                        listener.onRecyclerViewItemClicked(list.get(getLayoutPosition()));
+                        llInvite.setVisibility(View.GONE);
+                        llInvited.setVisibility(View.VISIBLE);
+                    }
                 }
             });
         }

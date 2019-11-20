@@ -176,7 +176,7 @@ public class AuthApiHelper {
 
     public static void getInvitationList(String phone, DataFetchingListener<Response<JsonArray>> listener) {
         IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
-        Call<JsonArray> call = iApiClient.getInvitationList(phone);
+        Call<JsonArray> call = iApiClient.getInvitationList(CredentialManager.getToken(), phone);
         call.enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
@@ -193,7 +193,7 @@ public class AuthApiHelper {
 
     public static void getRosterList(String phone, int page, int limit, DataFetchingListener<Response<List<RosterItemModel>>> listener) {
         IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
-        Call<List<RosterItemModel>> call = iApiClient.getRosterList(phone, page, limit);
+        Call<List<RosterItemModel>> call = iApiClient.getRosterList(CredentialManager.getToken(), phone, page, limit);
         call.enqueue(new Callback<List<RosterItemModel>>() {
             @Override
             public void onResponse(Call<List<RosterItemModel>> call, Response<List<RosterItemModel>> response) {

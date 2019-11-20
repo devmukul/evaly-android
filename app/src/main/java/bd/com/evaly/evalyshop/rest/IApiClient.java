@@ -40,10 +40,10 @@ public interface IApiClient {
     Call<JsonPrimitive> addRoster(@Body HashMap<String, String> data);
 
     @GET(UrlUtils.INVITATION_LIST + "{phone}/")
-    Call<JsonArray> getInvitationList(@Path("phone") String phone);
+    Call<JsonArray> getInvitationList(@Header("Authorization") String token,@Path("phone") String phone);
 
     @GET(UrlUtils.ROSTER_LIST + "{phone}/")
-    Call<List<RosterItemModel>> getRosterList(@Path("phone") String phone, @Query("page") int page, @Query("limit") int limit);
+    Call<List<RosterItemModel>> getRosterList(@Header("Authorization") String token, @Path("phone") String phone, @Query("page") int page, @Query("limit") int limit);
 
     @POST(UrlUtils.SEND_CUSTOM_MESSAGE)
     Call<JsonObject> sendCustomMessage(@Header("Authorization") String token, @Body HashMap<String, String> data);
