@@ -301,7 +301,7 @@ public class MainActivity extends BaseActivity {
         String email = CredentialManager.getUserName();
         String strNew = email.replaceAll("[^A-Za-z0-9]", "");
 
-        Logger.d(strNew);
+//        Logger.d(strNew);
         try {
             FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD+"_"+strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bottom_sheet_round_create_post"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
@@ -35,9 +36,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#fff"
-            android:hint="Search here?"
+            android:hint="Search with phone number"
             android:imeOptions="actionDone"
-            android:inputType="text"
+            android:inputType="phone"
             android:maxLines="1"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
@@ -58,6 +59,29 @@
             android:tint="#444"
             app:srcCompat="@drawable/ic_search" />
 
+        <LinearLayout
+            android:id="@+id/llSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="7dp"
+            android:background="@drawable/round_box_less"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tvCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#555"
+                android:textStyle="bold"
+                android:text="(0) " />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#555"
+                android:text="Send" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <View
@@ -69,6 +93,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvContacts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        tools:listitem="@layout/share_with_contact_item"/>
 
 </LinearLayout>

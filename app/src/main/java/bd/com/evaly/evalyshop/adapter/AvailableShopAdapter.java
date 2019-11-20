@@ -249,18 +249,6 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
         // circle buttons clicks
 
         myViewHolder.shop.setTag(i);

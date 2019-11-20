@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
@@ -20,6 +21,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -40,13 +42,17 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
     private Activity context;
     private List<RosterTable> list;
     private List<RosterTable> listFiltered;
-    private RecyclerViewOnItemClickListener listener;
+    private OnUserSelectedListener listener;
 
-    public ContactShareAdapter(Activity context, List<RosterTable> list, RecyclerViewOnItemClickListener listener) {
+    public ContactShareAdapter(Activity context, List<RosterTable> list, OnUserSelectedListener listener) {
         this.context = context;
         this.list = list;
         this.listFiltered = list;
         this.listener = listener;
+    }
+
+    public interface OnUserSelectedListener<T>{
+        void onUserSelected(T object, boolean status);
     }
 
     @NonNull
@@ -58,15 +64,31 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
     @Override
     public void onBindViewHolder(@NonNull ContactShareViewHolder holder, int i) {
         RosterTable model = listFiltered.get(i);
-        if (model.rosterName == null || model.rosterName.equals("")) {
+        if (model.name == null || model.name.equals("")) {
+            ChatItem chatItem = new Gson().fromJson(model.lastMessage, ChatItem.class);
             if (model.nick_name == null || model.nick_name.replaceAll("\\s+$", "").equals("")) {
-                holder.tvName.setText("Evaly User");
+                if (chatItem.getSender().contains(CredentialManager.getUserName())){
+                    if (chatItem.getReceiver_name() == null || chatItem.getReceiver_name().trim().isEmpty()){
+                        holder.tvName.setText("Evaly User");
+                    }else {
+                        holder.tvName.setText(chatItem.getReceiver_name());
+                    }
+                } else {
+                    if (chatItem.getName() == null || chatItem.getName().trim().isEmpty()){
+                        holder.tvName.setText("Evaly User");
+                    }else {
+                        holder.tvName.setText(chatItem.getName());
+                    }
+                }
+
             } else {
                 holder.tvName.setText(model.nick_name);
             }
         } else {
-            holder.tvName.setText(model.rosterName);
+            holder.tvName.setText(model.name);
         }
+
+        holder.cbUsers.setChecked(model.isSelected);
 
         if (model.imageUrl == null || model.imageUrl.trim().isEmpty()) {
             StringBuilder initials = new StringBuilder();
@@ -89,6 +111,7 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
                     .apply(new RequestOptions().placeholder(R.drawable.user_image))
                     .into(holder.ivProfileImage);
         }
+
     }
 
     @Override
@@ -111,7 +134,7 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
 //                        Logger.d(table.name+"    "+charString+"      "+table.id);
-                        if (table.name.toLowerCase().contains(charString.toLowerCase()) || table.id.toLowerCase().contains(charSequence)) {
+                        if (table.id.toLowerCase().contains(charSequence)) {
                             filteredList.add(table);
                         }
                     }
@@ -127,8 +150,9 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 listFiltered = ((List<RosterTable>) results.values);
-
-                notifyDataSetChanged();
+                if (listFiltered != null){
+                    notifyDataSetChanged();
+                }
             }
         };
     }
@@ -138,21 +162,44 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
         TextView tvName;
         @BindView(R.id.tvShortName)
         TextView tvShortName;
-        @BindView(R.id.llSend)
-        LinearLayout llSend;
+        @BindView(R.id.llContainer)
+        LinearLayout llContainer;
         @BindView(R.id.ivProfileImage)
         CircleImageView ivProfileImage;
+        @BindView(R.id.cbUsers)
+        CheckBox cbUsers;
 
         public ContactShareViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            llSend.setOnClickListener(new View.OnClickListener() {
+            llContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onRecyclerViewItemClicked(listFiltered.get(getLayoutPosition()));
+//                    cbUsers.setChecked(!cbUsers.isChecked());
+                    list.get(getLayoutPosition()).isSelected = !list.get(getLayoutPosition()).isSelected;
+                    notifyItemChanged(getLayoutPosition());
+                    listener.onUserSelected(list.get(getLayoutPosition()), list.get(getLayoutPosition()).isSelected);
                 }
             });
+
+            cbUsers.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    list.get(getLayoutPosition()).isSelected = !list.get(getLayoutPosition()).isSelected;
+                    notifyItemChanged(getLayoutPosition());
+                    listener.onUserSelected(list.get(getLayoutPosition()), list.get(getLayoutPosition()).isSelected);
+                }
+            });
+
+//            llSend.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    listener.onRecyclerViewItemClicked(listFiltered.get(getLayoutPosition()));
+//                }
+//            });
+
+
         }
     }
 }

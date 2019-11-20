@@ -14,6 +14,6 @@ public class RosterTable implements Serializable {
     public String nick_name;
     public String imageUrl;
     public String messageId;
-
+    public boolean isSelected;
 
 }

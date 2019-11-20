@@ -221,10 +221,18 @@ public class ViewProductActivity extends BaseActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_share_contacts:
-                                shareWithContacts();
+                                if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
+                                    Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
+                                } else {
+                                    shareWithContacts();
+                                }
                                 break;
                             case R.id.action_share_newsfeed:
-                                shareToNewsFeed(shareURL);
+                                if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
+                                    Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
+                                } else {
+                                    shareToNewsFeed(shareURL);
+                                }
                                 break;
                             case R.id.action_share_other:
                                 try {
@@ -320,7 +328,7 @@ public class ViewProductActivity extends BaseActivity {
 
             productName.setVisibility(View.GONE);
 
-            if(name != null){
+            if (name != null) {
                 productName.setText(Html.fromHtml(name));
                 collapsingToolbarLayout.setTitle(Html.fromHtml(name));
             }
@@ -559,62 +567,82 @@ public class ViewProductActivity extends BaseActivity {
         RecyclerView rvContacts = bottomSheetDialog.findViewById(R.id.rvContacts);
         ImageView ivBack = bottomSheetDialog.findViewById(R.id.back);
         EditText etSearch = bottomSheetDialog.findViewById(R.id.etSearch);
+        TextView tvCount = bottomSheetDialog.findViewById(R.id.tvCount);
+        LinearLayout llSend = bottomSheetDialog.findViewById(R.id.llSend);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(ViewProductActivity.this);
         rvContacts.setLayoutManager(layoutManager);
-        AsyncTask.execute(() -> {
-//            List<RosterTable> list = AppController.database.taskDao().getAllRosterWithoutObserve();
-            runOnUiThread(() -> {
-                viewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
-                viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
-                    @Override
-                    public void onChanged(@Nullable List<RosterTable> rosterTables) {
-                        ContactShareAdapter adapter = new ContactShareAdapter(ViewProductActivity.this, rosterTables, new RecyclerViewOnItemClickListener() {
-                            @Override
-                            public void onRecyclerViewItemClicked(Object object) {
-                                RosterTable table = (RosterTable) object;
+        runOnUiThread(() -> {
+            viewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
+            viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
+                @Override
+                public void onChanged(@Nullable List<RosterTable> rosterTables) {
+                    List<RosterTable> selectedRosterList = new ArrayList<>();
+                    List<RosterTable> rosterList = rosterTables;
+                    ContactShareAdapter contactShareAdapter = new ContactShareAdapter(ViewProductActivity.this, rosterList, new ContactShareAdapter.OnUserSelectedListener() {
+                        @Override
+                        public void onUserSelected(Object object, boolean status) {
+                            RosterTable table = (RosterTable) object;
 
-                                ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
-
-                                ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName()+"@"+ Constants.XMPP_HOST, table.id, Constants.TYPE_PRODUCT, true, "");
-                                if (AppController.getmService().xmpp.isLoggedin()){
-                                    try {
-                                        AppController.getmService().xmpp.sendMessage(chatItem);
-                                        Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
-                                    } catch (SmackException e) {
-                                        e.printStackTrace();
-                                    }
-                                }else {
-                                    AppController.getmService().xmpp.connect();
+                            if (status && !selectedRosterList.contains(table)) {
+                                selectedRosterList.add(table);
+                            } else {
+                                if (selectedRosterList.contains(table)) {
+                                    selectedRosterList.remove(table);
                                 }
                             }
-                        });
 
-                        rvContacts.setAdapter(adapter);
-                        etSearch.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                rvContacts.getRecycledViewPool().clear();
-                                adapter.getFilter().filter(charSequence);
+                            tvCount.setText("(" + selectedRosterList.size() + ") ");
+                        }
+                    });
+
+                    llSend.setOnClickListener(view -> {
+                        ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
+
+                        if (AppController.getmService().xmpp.isLoggedin()) {
+                            try {
+                                for (RosterTable rosterTable : selectedRosterList) {
+                                    ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
+                                    AppController.getmService().xmpp.sendMessage(chatItem);
+                                }
+                                for (int i = 0; i<rosterList.size(); i++){
+                                    rosterList.get(i).isSelected = false;
+                                }
+                                contactShareAdapter.notifyDataSetChanged();
+                                selectedRosterList.clear();
+                                tvCount.setText("(" + selectedRosterList.size() + ") ");
+                                Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
+                            } catch (SmackException e) {
+                                e.printStackTrace();
                             }
+                        } else {
+                            AppController.getmService().xmpp.connect();
+                        }
+                    });
 
-                            @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                rvContacts.getRecycledViewPool().clear();
-                                adapter.getFilter().filter(charSequence);
-                            }
+                    rvContacts.setAdapter(contactShareAdapter);
+                    etSearch.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            rvContacts.getRecycledViewPool().clear();
+                            contactShareAdapter.getFilter().filter(charSequence);
+                        }
 
-                            @Override
-                            public void afterTextChanged(Editable editable) {
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            rvContacts.getRecycledViewPool().clear();
+                            contactShareAdapter.getFilter().filter(charSequence);
+                        }
 
-                            }
-                        });
-                    }
-                });
+                        @Override
+                        public void afterTextChanged(Editable editable) {
 
+                        }
+                    });
+                }
             });
+
         });
-
-
 
         ivBack.setOnClickListener(view -> bottomSheetDialog.dismiss());
 
