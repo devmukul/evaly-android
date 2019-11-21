@@ -129,17 +129,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
     long last_text_edit = 0;
     final Handler mHandler = new Handler();
 
-//    private Runnable input_finish_checker = new Runnable() {
-//        public void run() {
-//            if (System.currentTimeMillis() > (last_text_edit + delay - 500)) {
-//                // TODO: do what you need here
-//                // ............
-//                // ............
-//                Logger.d("+++++++++++++++");
-////                DoStaff();
-//            }
-//        }
-//    };
 
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
