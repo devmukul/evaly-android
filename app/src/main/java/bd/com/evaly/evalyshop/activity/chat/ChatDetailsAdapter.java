@@ -37,6 +37,7 @@ import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.models.ProductShareModel;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.newsfeed.FeedShareModel;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.VCardObject;
 import bd.com.evaly.evalyshop.util.AnimationUtils;
@@ -56,6 +57,8 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
     private static final int VIEW_TYPE_MESSAGE_SENT_PRODUCT = 3;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED_PRODUCT = 4;
+    private static final int VIEW_TYPE_MESSAGE_RECEIVED_FEED = 5;
+    private static final int VIEW_TYPE_MESSAGE_SENT_FEED = 6;
 
     private Activity context;
     private RosterTable vCard;
@@ -77,12 +80,16 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (!chatItem.getSender().contains(vCard.id)) {
                 if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_PRODUCT)) {
                     return VIEW_TYPE_MESSAGE_SENT_PRODUCT;
+                } else if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_FEED)) {
+                    return VIEW_TYPE_MESSAGE_SENT_FEED;
                 } else {
                     return VIEW_TYPE_MESSAGE_SENT;
                 }
             } else {
                 if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_PRODUCT)) {
                     return VIEW_TYPE_MESSAGE_RECEIVED_PRODUCT;
+                } else if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_FEED)) {
+                    return VIEW_TYPE_MESSAGE_RECEIVED_FEED;
                 } else {
                     return VIEW_TYPE_MESSAGE_RECEIVED;
                 }
@@ -112,8 +119,15 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             received = true;
             sent = false;
             return new SentProductMessageViewHolder(LayoutInflater.from(context).inflate(R.layout.sent_product_link_view, parent, false));
+        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED_FEED) {
+            received = true;
+            sent = false;
+            return new ReceiveFeedMessageViewHolder(LayoutInflater.from(context).inflate(R.layout.received_feed_chat_view, parent, false));
+        } else if (viewType == VIEW_TYPE_MESSAGE_SENT_FEED) {
+            received = true;
+            sent = false;
+            return new SentFeedMessageViewHolder(LayoutInflater.from(context).inflate(R.layout.sent_feed_chat_view, parent, false));
         }
-
         return null;
     }
 
@@ -133,6 +147,13 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 break;
             case VIEW_TYPE_MESSAGE_SENT_PRODUCT:
                 ((SentProductMessageViewHolder) holder).bind(chatItem);
+                break;
+            case VIEW_TYPE_MESSAGE_SENT_FEED:
+                ((SentFeedMessageViewHolder) holder).bind(chatItem);
+                break;
+            case VIEW_TYPE_MESSAGE_RECEIVED_FEED:
+                ((ReceiveFeedMessageViewHolder) holder).bind(chatItem);
+                break;
         }
 //        Logger.d(vCard.getJid() +"  =======   "+ chatItem.getSender().toString());
 
@@ -279,17 +300,17 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             linkPreview.setDefaultClickListener(false);
             linkPreview.setClickListener(null);
-            linkPreview.setPrice(model.getP_price());
             linkPreview.setBackground(context.getResources().getColor(R.color.bg_card));
+            linkPreview.setPrice(model.getP_price());
             linkPreview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Logger.d("CLICKED ==== ");
                     context.startActivity(new Intent(context, ViewProductActivity.class)
-                            .putExtra("product_slug", model.getP_slug())
-                            .putExtra("product_name", model.getP_name())
-                            .putExtra("product_price", Integer.parseInt(model.getP_price()))
-                            .putExtra("product_image", model.getP_image()));
+                            .putExtra("slug", model.getP_slug())
+                            .putExtra("name", model.getP_name())
+                            .putExtra("price", Double.parseDouble(model.getP_price()))
+                            .putExtra("image", model.getP_image()));
                 }
             });
 
@@ -308,6 +329,96 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             Logger.e(e.getMessage());
                         }
                     });
+                }
+
+            }
+
+            if (chatItem.isUnread()) {
+                tvUnreadMessage.setVisibility(View.VISIBLE);
+            } else {
+                tvUnreadMessage.setVisibility(View.GONE);
+            }
+            tvChatTime.setText(Utils.getTimeAgo(chatItem.getLognTime()));
+        }
+    }
+
+    class SentFeedMessageViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.tvSeen)
+        TextView tvSeen;
+        @BindView(R.id.tvChatTime)
+        TextView tvChatTime;
+        @BindView(R.id.llContainer)
+        LinearLayout llContainer;
+        @BindView(R.id.llBodyContainer)
+        LinearLayout llBodyContainer;
+        @BindView(R.id.tvUnreadMessage)
+        TextView tvUnreadMessage;
+        @BindView(R.id.tvLikeCount)
+        TextView tvLikeCount;
+        @BindView(R.id.tvCommentCount)
+        TextView tvCommentCount;
+        @BindView(R.id.tvBody)
+        TextView tvBody;
+        @BindView(R.id.tvName)
+        TextView tvName;
+        @BindView(R.id.linkPreview)
+        RichLinkView linkPreview;
+        boolean isShow = false;
+
+
+        public SentFeedMessageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+
+        }
+
+        void bind(ChatItem chatItem) {
+            FeedShareModel model = new Gson().fromJson(chatItem.getChat(), FeedShareModel.class);
+            llBodyContainer.setBackgroundResource(R.drawable.self_chat_back);
+            linkPreview.setDefaultClickListener(false);
+            linkPreview.setClickListener(null);
+//            linkPreview.setPrice(model.getP_price());
+//            linkPreview.setOnClickListener(view -> {
+//                Logger.d("CLICKED ==== ");
+//                context.startActivity(new Intent(context, ProductDetailsActivity.class)
+//                        .putExtra("slug", model.getF_slug()));
+//            });
+            JSONObject jsonObject;
+            String url = null;
+            String body;
+            try {
+                jsonObject = new JSONObject(model.getF_body());
+                body = jsonObject.getString("body");
+                url = jsonObject.getString("url");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                body = model.getF_body();
+            }
+            tvBody.setText(body);
+            tvLikeCount.setText(model.getF_favorites_count()+" Like");
+            tvCommentCount.setText(model.getF_comments_count()+" Comments");
+            tvName.setText(model.getF_author_full_name());
+
+            if (chatItem.getChat() != null || !chatItem.getChat().equalsIgnoreCase("")) {
+                if (model.getF_slug() != null) {
+                    String link = UrlUtils.PRODUCT_BASE_URL + model.getF_slug();
+//                    Logger.e(link);
+                    if (url != null){
+                        linkPreview.setLink(url, new ViewListener() {
+                            @Override
+                            public void onSuccess(boolean status) {
+//                            Logger.d("SUCCESS");
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                Logger.e(e.getMessage());
+                            }
+                        });
+                    }else {
+                        linkPreview.setVisibility(View.GONE);
+                    }
                 }
 
             }
@@ -418,6 +529,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     if (vCard.imageUrl == null || vCard.imageUrl.trim().isEmpty()) {
                         StringBuilder initials = new StringBuilder();
                         for (String s : chatItem.getName().split(" ")) {
+//            Logger.d(s);
                             if (!s.trim().isEmpty()) {
                                 if (initials.length() < 2) {
                                     initials.append(s.charAt(0));
@@ -499,8 +611,6 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             tvMessage.setText(chatItem.getChat());
 
-
-
             tvChatTime.setText(Utils.getTimeAgo(chatItem.getLognTime()));
 
         }
@@ -542,10 +652,9 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View view) {
                     Logger.d("CLICKED ==== ");
                     context.startActivity(new Intent(context, ViewProductActivity.class)
-                            .putExtra("product_slug", model.getP_slug())
+                            .putExtra("slug", model.getP_slug())
                             .putExtra("product_name", model.getP_name())
-                            .putExtra("product_price", Integer.parseInt(model.getP_price()))
-                            .putExtra("product_image", model.getP_image()));
+                            .putExtra("price", Integer.parseInt(model.getP_price())));
                 }
             });
             try {
@@ -557,6 +666,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                     } else {
                         ivProfile.setVisibility(View.VISIBLE);
+
                         if (vCard.imageUrl == null || vCard.imageUrl.trim().isEmpty()) {
                             StringBuilder initials = new StringBuilder();
                             for (String s : chatItem.getName().split(" ")) {
@@ -584,6 +694,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     }
                 } else if (getLayoutPosition() + 1 == chatItemList.size()) {
                     ivProfile.setVisibility(View.VISIBLE);
+
                     if (vCard.imageUrl == null || vCard.imageUrl.trim().isEmpty()) {
                         StringBuilder initials = new StringBuilder();
                         for (String s : chatItem.getName().split(" ")) {
@@ -615,7 +726,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (chatItem.getChat() != null || !chatItem.getChat().equalsIgnoreCase("")) {
                 if (model.getP_slug() != null) {
                     String link = UrlUtils.PRODUCT_BASE_URL + model.getP_slug();
-                    Logger.e(link);
+//                    Logger.e(link);
                     linkPreview.setLink(link, new ViewListener() {
                         @Override
                         public void onSuccess(boolean status) {
@@ -639,6 +750,164 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             tvChatTime.setText(Utils.getTimeAgo(chatItem.getLognTime()));
 
+        }
+    }
+
+    class ReceiveFeedMessageViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.ivProfile)
+        CircleImageView ivProfile;
+        @BindView(R.id.tvSeen)
+        TextView tvSeen;
+        @BindView(R.id.tvBody)
+        TextView tvBody;
+        @BindView(R.id.tvName)
+        TextView tvName;
+        @BindView(R.id.tvChatTime)
+        TextView tvChatTime;
+        @BindView(R.id.llContainer)
+        LinearLayout llContainer;
+        @BindView(R.id.llBodyContainer)
+        LinearLayout llBodyContainer;
+        @BindView(R.id.tvUnreadMessage)
+        TextView tvUnreadMessage;
+        @BindView(R.id.tvShortName)
+        TextView tvShortName;
+        @BindView(R.id.tvLikeCount)
+        TextView tvLikeCount;
+        @BindView(R.id.tvCommentCount)
+        TextView tvCommentCount;
+        @BindView(R.id.linkPreview)
+        RichLinkView linkPreview;
+
+        boolean isShow = false;
+
+        public ReceiveFeedMessageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+
+        }
+
+        void bind(ChatItem chatItem) {
+            FeedShareModel model = new Gson().fromJson(chatItem.getChat(), FeedShareModel.class);
+            llBodyContainer.setBackgroundResource(R.drawable.other_chat_back);
+            linkPreview.setDefaultClickListener(false);
+            linkPreview.setClickListener(null);
+//            linkPreview.setPrice(model.getP_price());
+//            linkPreview.setOnClickListener(view -> {
+//                Logger.d("CLICKED ==== ");
+//                context.startActivity(new Intent(context, ProductDetailsActivity.class)
+//                        .putExtra("slug", model.getF_slug()));
+//            });
+            JSONObject jsonObject;
+            String url = null;
+            String body;
+            try {
+                jsonObject = new JSONObject(model.getF_body());
+                body = jsonObject.getString("body");
+                url = jsonObject.getString("url");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                body = model.getF_body();
+            }
+            tvBody.setText(body);
+            tvLikeCount.setText(model.getF_favorites_count()+" Like");
+            tvCommentCount.setText(model.getF_comments_count()+" Comments");
+            tvName.setText(model.getF_author_full_name());
+            try {
+                if (getLayoutPosition() + 1 < chatItemList.size()) {
+                    if (chatItemList.get(getLayoutPosition() + 1).getSender().contains(vCard.id)) {
+                        ivProfile.setVisibility(View.INVISIBLE);
+//                        Logger.d("CHANGED BACK");
+
+                    } else {
+                        ivProfile.setVisibility(View.VISIBLE);
+
+                        if (vCard.imageUrl == null || vCard.imageUrl.trim().isEmpty()) {
+                            StringBuilder initials = new StringBuilder();
+                            for (String s : chatItem.getName().split(" ")) {
+//            Logger.d(s);
+                                if (!s.trim().isEmpty()) {
+                                    if (initials.length() < 2) {
+                                        initials.append(s.charAt(0));
+                                    }
+                                }
+                            }
+                            tvShortName.setVisibility(View.VISIBLE);
+                            tvShortName.setText(initials.toString().toUpperCase());
+                            ivProfile.setVisibility(View.GONE);
+                        } else {
+                            ivProfile.setVisibility(View.VISIBLE);
+                            tvShortName.setVisibility(View.GONE);
+                            Glide.with(context)
+                                    .load(vCard.imageUrl)
+                                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                                    .into(ivProfile);
+                        }
+//                        linkPreview.setBackgroundResource(R.drawable.other_chat_back);
+//                        Logger.d("CHANGED BACK =======");
+
+                    }
+                } else if (getLayoutPosition() + 1 == chatItemList.size()) {
+                    ivProfile.setVisibility(View.VISIBLE);
+
+                    if (vCard.imageUrl == null || vCard.imageUrl.trim().isEmpty()) {
+                        StringBuilder initials = new StringBuilder();
+                        for (String s : chatItem.getName().split(" ")) {
+//            Logger.d(s);
+                            if (!s.trim().isEmpty()) {
+                                if (initials.length() < 2) {
+                                    initials.append(s.charAt(0));
+                                }
+                            }
+                        }
+                        tvShortName.setVisibility(View.VISIBLE);
+                        tvShortName.setText(initials.toString().toUpperCase());
+                        ivProfile.setVisibility(View.GONE);
+                    } else {
+                        ivProfile.setVisibility(View.VISIBLE);
+                        tvShortName.setVisibility(View.GONE);
+                        Glide.with(context)
+                                .load(vCard.imageUrl)
+                                .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                                .into(ivProfile);
+                    }
+//                    linkPreview.setBackgroundResource(R.drawable.other_chat_back);
+//                    Logger.d("CHANGED BACK +++++");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (chatItem.getChat() != null || !chatItem.getChat().equalsIgnoreCase("")) {
+                if (model.getF_slug() != null) {
+                    String link = UrlUtils.PRODUCT_BASE_URL + model.getF_slug();
+//                    Logger.e(link);
+                    if (url != null){
+                        linkPreview.setLink(url, new ViewListener() {
+                            @Override
+                            public void onSuccess(boolean status) {
+                                Logger.d("SUCCESS");
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                Logger.e(e.getMessage());
+                            }
+                        });
+                    }else {
+                        linkPreview.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            if (chatItem.isUnread()) {
+                tvUnreadMessage.setVisibility(View.VISIBLE);
+            } else {
+                tvUnreadMessage.setVisibility(View.GONE);
+            }
+
+            tvChatTime.setText(Utils.getTimeAgo(chatItem.getLognTime()));
         }
     }
 }

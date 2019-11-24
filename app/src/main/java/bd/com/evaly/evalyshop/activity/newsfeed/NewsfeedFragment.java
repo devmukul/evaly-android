@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -14,7 +16,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,14 +51,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.ImagePreview;
@@ -62,19 +69,27 @@ import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.ReplyAdapter;
+import bd.com.evaly.evalyshop.adapter.ContactShareAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.newsfeed.FeedShareModel;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
+import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
+import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.viewmodel.RoomWIthRxViewModel;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
-public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, NewsfeedAdapter.NewsFeedShareListener {
 
     private String type;
     private RecyclerView recyclerView;
@@ -132,6 +147,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private int maxCountComment;
     private int maxCountReply;
 
+    private BottomSheetDialog bottomSheetDialog;
+    private RoomWIthRxViewModel viewModel;
 
     public NewsfeedFragment() {
         // Required empty public constructor
@@ -200,6 +217,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         // Reply bottom sheet
 
         currentReplyPage = 1;
+
+        viewModel = ViewModelProviders.of(activity).get(RoomWIthRxViewModel.class);
 
         replyDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         replyDialog.setContentView(R.layout.alert_replies);
@@ -438,7 +457,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         LinearLayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
 
-        adapter = new NewsfeedAdapter(itemsList, context, this);
+        adapter = new NewsfeedAdapter(itemsList, context, this, this);
 
         recyclerView.setAdapter(adapter);
 
@@ -1412,5 +1431,122 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyDialog.dismiss();
     }
 
+
+    @Override
+    public void onSharePost(Object object) {
+        NewsfeedItem model = (NewsfeedItem) object;
+        shareWithContacts(model);
+    }
+
+    private void shareWithContacts(NewsfeedItem model) {
+        bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
+        bottomSheetDialog.setContentView(R.layout.share_with_contact_view);
+
+        View bottomSheetInternal = bottomSheetDialog.findViewById(R.id.design_bottom_sheet);
+        bottomSheetInternal.setPadding(0, 0, 0, 0);
+
+        new KeyboardUtil(getActivity(), bottomSheetInternal);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+
+                    bottomSheet.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
+
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_HALF_EXPANDED)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        bottomSheetDialog.setCanceledOnTouchOutside(false);
+        RecyclerView rvContacts = bottomSheetDialog.findViewById(R.id.rvContacts);
+        ImageView ivBack = bottomSheetDialog.findViewById(R.id.back);
+        EditText etSearch = bottomSheetDialog.findViewById(R.id.etSearch);
+        TextView tvCount = bottomSheetDialog.findViewById(R.id.tvCount);
+        LinearLayout llSend = bottomSheetDialog.findViewById(R.id.llSend);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        rvContacts.setLayoutManager(layoutManager);
+//            List<RosterTable> list = AppController.database.taskDao().getAllRosterWithoutObserve();
+        viewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
+        viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
+            @Override
+            public void onChanged(@Nullable List<RosterTable> rosterTables) {
+                List<RosterTable> selectedRosterList = new ArrayList<>();
+                List<RosterTable> rosterList = rosterTables;
+                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(getActivity(), rosterList, new ContactShareAdapter.OnUserSelectedListener() {
+                    @Override
+                    public void onUserSelected(Object object, boolean status) {
+                        RosterTable table = (RosterTable) object;
+
+                        if (status && !selectedRosterList.contains(table)) {
+                            selectedRosterList.add(table);
+                        } else {
+                            if (selectedRosterList.contains(table)) {
+                                selectedRosterList.remove(table);
+                            }
+                        }
+
+                        tvCount.setText("(" + selectedRosterList.size() + ") ");
+                    }
+                });
+
+                llSend.setOnClickListener(view -> {
+                    FeedShareModel feedShareModel = new FeedShareModel(model.getSlug(),model.getBody(), model.getAttachment(), model.getCommentsCount()+"", model.getFavoriteCount()+"", model.getAuthorFullName());
+
+                    if (AppController.getmService().xmpp.isLoggedin()) {
+                        try {
+                            for (RosterTable rosterTable : selectedRosterList) {
+                                ChatItem chatItem = new ChatItem(new Gson().toJson(feedShareModel), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_FEED, true, "");
+                                AppController.getmService().xmpp.sendMessage(chatItem);
+                            }
+                            for (int i = 0; i<rosterList.size(); i++){
+                                rosterList.get(i).isSelected = false;
+                            }
+                            contactShareAdapter.notifyDataSetChanged();
+                            selectedRosterList.clear();
+                            tvCount.setText("(" + selectedRosterList.size() + ") ");
+                            Toast.makeText(getActivity(), "Sent!", Toast.LENGTH_LONG).show();
+                        } catch (SmackException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        AppController.getmService().xmpp.connect();
+                    }
+                });
+
+                rvContacts.setAdapter(contactShareAdapter);
+                etSearch.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        rvContacts.getRecycledViewPool().clear();
+                        contactShareAdapter.getFilter().filter(charSequence);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        rvContacts.getRecycledViewPool().clear();
+                        contactShareAdapter.getFilter().filter(charSequence);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+            }
+        });
+
+        ivBack.setOnClickListener(view -> bottomSheetDialog.dismiss());
+
+        bottomSheetDialog.show();
+    }
 
 }

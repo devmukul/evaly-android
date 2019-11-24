@@ -51,11 +51,13 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
     ArrayList<NewsfeedItem> itemsList;
     Context context;
     NewsfeedFragment fragment;
+    NewsFeedShareListener listener;
 
-    public NewsfeedAdapter(ArrayList<NewsfeedItem> itemsList, Context context, NewsfeedFragment fragment) {
+    public NewsfeedAdapter(ArrayList<NewsfeedItem> itemsList, Context context, NewsfeedFragment fragment, NewsFeedShareListener listener) {
         this.itemsList = itemsList;
         this.context = context;
         this.fragment = fragment;
+        this.listener = listener;
     }
 
     @NonNull
@@ -110,9 +112,9 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                 });
 
                 String body = object.getString("body");
-                if (body == null || body.equalsIgnoreCase("")){
+                if (body == null || body.equalsIgnoreCase("")) {
                     myViewHolder.statusView.setVisibility(View.GONE);
-                }else {
+                } else {
                     myViewHolder.statusView.setVisibility(View.VISIBLE);
                     myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(body, 180, "... <b>Show more</b>")));
                 }
@@ -137,6 +139,13 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             myViewHolder.cardLink.setVisibility(View.GONE);
             myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
         }
+
+        myViewHolder.llShareHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onSharePost(itemsList.get(i));
+            }
+        });
 
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
@@ -284,6 +293,10 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
     }
 
+    public interface NewsFeedShareListener<T> {
+        void onSharePost(T object);
+    }
+
     private String wordBeautify(int count, boolean like) {
 
         if (count == 0)
@@ -317,7 +330,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         TextView userNameView, timeView, statusView, likeCountView, commentCountView;
         ImageView userImage, likeIcon, commentIcon, menuIcon, postImage;
         View view;
-        LinearLayout likeHolder, commentHolder;
+        LinearLayout likeHolder, commentHolder, llShareHolder;
         RichLinkView linkPreview;
         CardView cardLink;
 
@@ -341,7 +354,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             commentHolder = itemView.findViewById(R.id.commentHolder);
             cardLink = itemView.findViewById(R.id.cardLink);
             linkPreview = itemView.findViewById(R.id.linkPreview);
-
+            llShareHolder = itemView.findViewById(R.id.llShareHolder);
 
             view = itemView;
         }

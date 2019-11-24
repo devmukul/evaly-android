@@ -97,8 +97,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
     RoomWIthRxViewModel viewModel;
 
-    ViewDialog loading;
-
 
     VCard mVCard;
 
@@ -243,8 +241,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         setSupportActionBar(toolbar);
 
-        loading = new ViewDialog(this);
-
         rosterList = new ArrayList<>();
 
         viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
@@ -252,7 +248,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
             @Override
             public void onChanged(@Nullable List<RosterTable> rosterItemModels) {
-                loading.hideDialog();
                 if (currentPage == 1){
                     rosterList.clear();
                 }
@@ -412,7 +407,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         progressBar.setVisibility(View.VISIBLE);
         currentPage = 1;
-        loading.showDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
