@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.activity.issue;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -65,6 +66,9 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
         ButterKnife.bind(this);
 
         invoice = getIntent().getStringExtra("invoice");
+        if (invoice == null){
+            invoice = getIntent().getExtras().getString("resource_id");
+        }
 
         getSupportActionBar().setTitle(invoice);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -214,5 +218,11 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
 
         bottomSheetDialog.show();
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
     }
 }

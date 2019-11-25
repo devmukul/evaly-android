@@ -23,7 +23,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.issue.IssuesActivity"></activity>
+        <activity android:name=".activity.issue.IssuesActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="OPEN_ISSUES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.chat.invite.InviteActivity"
             android:screenOrientation="portrait"
