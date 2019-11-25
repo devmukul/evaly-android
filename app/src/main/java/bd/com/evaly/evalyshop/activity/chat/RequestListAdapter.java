@@ -62,15 +62,40 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
 
         XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
 //        Logger.json(xmlToJson.toJson().toString());
+        String name, imageUrl = null;
         try {
-            String name = xmlToJson.toJson().getJSONObject("vCard").getString("FN");
+            JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
+            name = object.getString("FN");
             if (name == null) {
                 name = "";
             }
+            imageUrl = object.getString("URL");
             holder.tvName.setText(name);
             nameList.add(name);
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        if (imageUrl == null || imageUrl.trim().isEmpty()) {
+            StringBuilder initials = new StringBuilder();
+            for (String s : holder.tvName.getText().toString().split(" ")) {
+//            Logger.d(s);
+                if (!s.trim().isEmpty()) {
+                    if (initials.length() < 2) {
+                        initials.append(s.charAt(0));
+                    }
+                }
+            }
+            holder.tvShortName.setVisibility(View.VISIBLE);
+            holder.tvShortName.setText(initials.toString().toUpperCase());
+            holder.ivProfileImage.setVisibility(View.GONE);
+        } else {
+            holder.ivProfileImage.setVisibility(View.VISIBLE);
+            holder.tvShortName.setVisibility(View.GONE);
+            Glide.with(context)
+                    .load(imageUrl)
+                    .apply(new RequestOptions().placeholder(R.drawable.user_image))
+                    .into(holder.ivProfileImage);
         }
 
     }
@@ -85,6 +110,8 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         CircleImageView ivProfileImage;
         @BindView(R.id.tvName)
         TextView tvName;
+        @BindView(R.id.tvShortName)
+        TextView tvShortName;
         @BindView(R.id.llAccept)
         LinearLayout llAccept;
         @BindView(R.id.llReject)
