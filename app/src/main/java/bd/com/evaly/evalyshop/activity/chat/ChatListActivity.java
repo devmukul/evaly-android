@@ -77,6 +77,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     TextView tvBody;
     @BindView(R.id.tvTime)
     TextView tvTime;
+    @BindView(R.id.tvEvalyUnreadCount)
+    TextView tvEvalyUnreadCount;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     @BindView(R.id.nestedScroll)
@@ -96,6 +98,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     XMPPEventReceiver xmppEventReceiver;
 
     RoomWIthRxViewModel viewModel;
+    RosterTable evalyTable;
 
 
     VCard mVCard;
@@ -168,6 +171,12 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             chatItem.setIsMine(false);
             int position = getListPosition(chatItem);
 
+            if (chatItem.getSender().contains(Constants.EVALY_NUMBER)) {
+                evalyTable.unreadCount = evalyTable.unreadCount + 1;
+                tvEvalyUnreadCount.setVisibility(View.VISIBLE);
+                tvEvalyUnreadCount.setText(evalyTable.unreadCount + "");
+                updateEvalyChat(chatItem);
+            }
 
             if (position == -1) {
 
@@ -185,7 +194,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 //                        }
 //                    });
                     roasterModel.lastMessage = new Gson().toJson(chatItem);
-//                roasterModel.unreadCount = roasterModel.unreadCount + 1;
+                    roasterModel.unreadCount = roasterModel.unreadCount + 1;
                     rosterList.set(position, roasterModel);
                     adapter.notifyItemChanged(position);
 
@@ -242,13 +251,14 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         setSupportActionBar(toolbar);
 
         rosterList = new ArrayList<>();
+        evalyTable = new RosterTable();
 
         viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
 
         viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
             @Override
             public void onChanged(@Nullable List<RosterTable> rosterItemModels) {
-                if (currentPage == 1){
+                if (currentPage == 1) {
                     rosterList.clear();
                 }
                 rosterList.addAll(rosterItemModels);
@@ -270,10 +280,10 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         viewModel.hasNext.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
-                if (aBoolean){
-                    currentPage = currentPage+1;
+                if (aBoolean) {
+                    currentPage = currentPage + 1;
                 }
-                Logger.d(aBoolean+"    =======");
+                Logger.d(aBoolean + "    =======");
                 hasNext = aBoolean;
             }
         });
@@ -286,7 +296,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
 
                     try {
-                        if (hasNext){
+                        if (hasNext) {
                             viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
                         }
 

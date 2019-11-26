@@ -35,7 +35,7 @@
                 android:backgroundTint="@color/colorAccentBlue"
                 android:textColor="@color/white"
                 android:textSize="28dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:gravity="center"/>
         </FrameLayout>
 

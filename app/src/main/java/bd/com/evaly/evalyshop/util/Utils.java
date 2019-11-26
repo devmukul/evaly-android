@@ -20,12 +20,15 @@ import java.net.URLEncoder;
 import java.text.BreakIterator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.TimeZone;
 
 import bd.com.evaly.evalyshop.R;
@@ -705,6 +708,21 @@ public class  Utils {
 
 
 
+    public static int getRandomColor(Context context){
+        int num = new Random().nextInt(10);
+        List<Integer> colors = new ArrayList<>();
+        colors.add(R.color.color1);
+        colors.add(R.color.color2);
+        colors.add(R.color.color3);
+        colors.add(R.color.color4);
+        colors.add(R.color.color5);
+        colors.add(R.color.color6);
+        colors.add(R.color.color7);
+        colors.add(R.color.color8);
+        colors.add(R.color.color9);
+        colors.add(R.color.color10);
+        return colors.get(num);
+    }
 
 
 }

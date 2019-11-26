@@ -153,7 +153,7 @@ public class ContactActivity extends BaseActivity {
                 RosterTable roasterModel = new RosterTable();
                 roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
                 roasterModel.rosterName = "Evaly";
-                roasterModel.imageUrl = "evaly";
+                roasterModel.imageUrl = Constants.EVALY_LOGO;
                 startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class)
                         .putExtra("roster", (Serializable) roasterModel));
 

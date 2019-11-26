@@ -65,4 +65,15 @@
     <color name="gray_border">#eff1f3</color>
     <color name="red_app">#d21034</color>
 
+    <color name="color1">#FCBC5A</color>
+    <color name="color2">#FC5A7F</color>
+    <color name="color3">#F25AFC</color>
+    <color name="color4">#5A90FC</color>
+    <color name="color5">#5AF7FC</color>
+    <color name="color6">#5AFC77</color>
+    <color name="color7">#F85757</color>
+    <color name="color8">#892702</color>
+    <color name="color9">#C4CBEA</color>
+    <color name="color10">#EAC4C4</color>
+
 </resources>

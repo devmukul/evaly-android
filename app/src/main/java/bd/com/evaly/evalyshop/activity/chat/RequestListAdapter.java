@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.activity.chat;
 
 import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.chat.RequestedUserModel;
+import bd.com.evaly.evalyshop.util.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -87,6 +89,8 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
                 }
             }
             holder.tvShortName.setVisibility(View.VISIBLE);
+//            holder.tvShortName.setBackgroundTintList(ColorStateList.valueOf(Utils.getRandomColor()));
+//            holder.tvShortName.setBackgroundColor(Utils.getRandomColor());
             holder.tvShortName.setText(initials.toString().toUpperCase());
             holder.ivProfileImage.setVisibility(View.GONE);
         } else {
