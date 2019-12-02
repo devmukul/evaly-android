@@ -4,13 +4,13 @@ public class UrlUtils {
 
     /* Dev mode */
 
-    public static final String DOMAIN = "https://api-dev.evaly.com.bd/";
-    public static final String PRODUCT_BASE_URL = "https://beta.evaly.com.bd/products/";
+//    public static final String DOMAIN = "https://api-dev.evaly.com.bd/";
+//    public static final String PRODUCT_BASE_URL = "https://beta.evaly.com.bd/products/";
 
 
-//    /* Production */
-//    public static final String DOMAIN = "https://api.evaly.com.bd/";
-//    public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
+    /* Production */
+    public static final String DOMAIN = "https://api.evaly.com.bd/";
+    public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
 
 
     public static final String DOMAIN5000 = DOMAIN+"auth/";
