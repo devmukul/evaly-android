@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -18,6 +19,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -85,7 +87,7 @@ public class MainActivity extends BaseActivity {
     BottomNavigationView bottomNavigationView;
     DrawerLayout drawer;
     Toolbar toolbar;
-    NavigationView navigationView,navigationView2;
+    NavigationView navigationView, navigationView2;
     ImageView menuBtn, user;
     String TAG1 = "first", TAG2 = "second", TAG3 = "third";
     UserDetails userDetails;
@@ -116,89 +118,40 @@ public class MainActivity extends BaseActivity {
 
             Logger.d("LOGIN =========");
             Logger.d(xmppHandler.isConnected());
-            VCard vCard = xmppHandler.getCurrentUserDetails();
-//            Logger.d(vCard.getFirstName());
-            if (CredentialManager.getUserData() != null){
-                if ( vCard.getLastName() == null){
-                    Logger.d("========");
-                    xmppHandler.updateUserInfo(CredentialManager.getUserData());
+            if (xmppHandler.isLoggedin()) {
+                VCard vCard = xmppHandler.getCurrentUserDetails();
+                if (CredentialManager.getUserData() != null) {
+                    if (vCard.getFirstName() == null) {
+                        Logger.d("========");
+                        xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                        XMPPHandler.disconnect();
+                    } else {
+                        XMPPHandler.disconnect();
+                    }
                 }
             }
 
         }
 
         public void onLoginFailed(String msg) {
-            if (!msg.contains("already logged in")){
+            Logger.d("======");
+            if (!msg.contains("already logged in")) {
                 xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()), CredentialManager.getUserData().getFirst_name());
+            } else {
+                XMPPHandler.disconnect();
             }
         }
 
-        public void onSignupSuccess(){
+        public void onSignupSuccess() {
             Logger.d("Signup success");
-
-//            HashMap<String, String> data = new HashMap<>();
-//            data.put("localuser", CredentialManager.getUserName());
-//            data.put("localserver", Constants.XMPP_HOST);
-//            data.put("user", "09638111666");
-//            data.put("server", Constants.XMPP_HOST);
-//            data.put("nick", "Evaly");
-//            data.put("subs", "both");
-//            data.put("group", "evaly");
-//            addRosterByOther();
-//
-//            AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-//                @Override
-//                public void onDataFetched(Response<JsonPrimitive> response) {
-//                    dialog.hideDialog();
-//                    if (response.code() == 200 || response.code() == 201) {
-//                        try {
-//                            EntityBareJid jid = JidCreate.entityBareFrom("09638111666" + "@"
-//                                    + Constants.XMPP_HOST);
-//
-//                            ChatItem chatItem = new ChatItem("Let's start a conversation", CredentialManager.getUserData().getFirst_name()+" "+CredentialManager.getUserData().getLast_name(), xmppHandler.mVcard.getField("URL"), xmppHandler.mVcard.getNickName(), System.currentTimeMillis(), xmppHandler.mVcard.getFrom().asBareJid().toString(), jid.asUnescapedString() , Constants.TYPE_TEXT, true, "");
-//
-//                            try {
-//                                xmppHandler.sendMessage(chatItem);
-//                            } catch (SmackException e) {
-//                                e.printStackTrace();
-//                            }
-//                            RosterTable table = new RosterTable();
-//                            table.id = jid.asUnescapedString();
-//                            table.rosterName = "Evaly";
-//                            table.name = "";
-//                            table.status = 0;
-//                            table.unreadCount = 0;
-//                            table.nick_name = "";
-//                            table.imageUrl = "";
-//                            table.time = chatItem.getLognTime();
-//                            table.lastMessage = new Gson().toJson(chatItem);
-//                            AsyncTask.execute(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    Logger.d("NEW ENTRY");
-//                                    AppController.database.taskDao().addRoster(table);
-//                                }
-//                            });
-//
-//                        } catch (XmppStringprepException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//
-//                    } else {
-//                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailed(int status) {
-//                    dialog.hideDialog();
-//                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-//                }
-//            });
 
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
             xmppHandler.login();
+            XMPPHandler.disconnect();
+        }
+
+        public void onSignupFailed(String msg) {
+
         }
     };
 
@@ -210,7 +163,6 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
 
-
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
@@ -218,51 +170,51 @@ public class MainActivity extends BaseActivity {
         headerView = navigationView.getHeaderView(0);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        userNameNavHeader=headerView.findViewById(R.id.userNameNavHeader);
+        userNameNavHeader = headerView.findViewById(R.id.userNameNavHeader);
         phoneNavHeader = headerView.findViewById(R.id.phone);
 //        homeFragment = new HomeFragment();
-        userDetails=new UserDetails(this);
+        userDetails = new UserDetails(this);
 
         dialog = new ViewDialog(this);
 
-        dbHelperWishList=new DbHelperWishList(this);
-        dbHelperCart=new DbHelperCart(this);
+        dbHelperWishList = new DbHelperWishList(this);
+        dbHelperCart = new DbHelperCart(this);
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(R.id.nav_wishlist);
         BottomNavigationItemView itemView2 = bottomNavigationView.findViewById(R.id.nav_cart);
         View badge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView text = badge.findViewById(R.id.notification);
-        text.setText(dbHelperWishList.size()+"");
+        text.setText(dbHelperWishList.size() + "");
         itemView.addView(badge);
 
-        if(dbHelperWishList.size()==0){
+        if (dbHelperWishList.size() == 0) {
             badge.setVisibility(View.GONE);
         }
 
         View badge2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView text2 = badge2.findViewById(R.id.notification);
-        text2.setText(dbHelperCart.size()+"");
+        text2.setText(dbHelperCart.size() + "");
         itemView2.addView(badge2);
 
-        if(dbHelperCart.size()==0){
+        if (dbHelperCart.size() == 0) {
             badge2.setVisibility(View.GONE);
         }
 
         Handler handler = new Handler();
         int delay = 3000;
-        handler.postDelayed(new Runnable(){
-            public void run(){
-                if(dbHelperWishList.size()==0){
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                if (dbHelperWishList.size() == 0) {
                     badge.setVisibility(View.GONE);
-                }else{
+                } else {
                     badge.setVisibility(View.VISIBLE);
                 }
-                if(dbHelperCart.size()==0){
+                if (dbHelperCart.size() == 0) {
                     badge2.setVisibility(View.GONE);
-                }else{
+                } else {
                     badge2.setVisibility(View.VISIBLE);
                 }
-                text.setText(dbHelperWishList.size()+"");
-                text2.setText(dbHelperCart.size()+"");
+                text.setText(dbHelperWishList.size() + "");
+                text2.setText(dbHelperCart.size() + "");
                 handler.postDelayed(this, delay);
             }
         }, delay);
@@ -272,18 +224,17 @@ public class MainActivity extends BaseActivity {
         toggle.syncState();
 
 
-
-        if(!isConnected(MainActivity.this)){
+        if (!isConnected(MainActivity.this)) {
             buildDialog(MainActivity.this).show();
         }
 
-        if (!CredentialManager.getToken().equals("")){
-            if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals("")){
+        if (!CredentialManager.getToken().equals("")) {
+            if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals("")) {
                 AppController.logout(MainActivity.this);
-            }else {
-                if (!CredentialManager.getToken().equals("")){
+            } else {
+                if (!CredentialManager.getToken().equals("")) {
                     Logger.d("===========");
-                    if (AppController.getInstance().isNetworkConnected()){
+                    if (AppController.getInstance().isNetworkConnected()) {
                         AsyncTask.execute(new Runnable() {
                             @Override
                             public void run() {
@@ -303,34 +254,32 @@ public class MainActivity extends BaseActivity {
 
 //        Logger.d(strNew);
         try {
-            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD+"_"+strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
+            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     Logger.d(task.isSuccessful());
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-
-
-        if(userDetails.getToken().equals("")){
+        if (userDetails.getToken().equals("")) {
             drawer.removeView(navigationView);
             navigationView2.setNavigationItemSelectedListener(menuItem -> {
-                switch(menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.nav_wishlist:
-                        startActivity(new Intent(MainActivity.this,WishListActivity.class));
+                        startActivity(new Intent(MainActivity.this, WishListActivity.class));
                         break;
                     case R.id.nav_contact:
-                        startActivity(new Intent(MainActivity.this,ContactActivity.class));
+                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
                         break;
 //                    case R.id.nav_about:
 //                        startActivity(new Intent(MainActivity.this,AboutActivity.class));
 //                        break;
                     case R.id.nav_sign_in:
-                        startActivity(new Intent(MainActivity.this,SignInActivity.class));
+                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         break;
                     case R.id.nav_home:
                         finish();
@@ -344,21 +293,21 @@ public class MainActivity extends BaseActivity {
             });
 
 
-        }else{
+        } else {
 
 
-            FirebaseMessaging.getInstance().subscribeToTopic("USER."+userDetails.getUserName());
+            FirebaseMessaging.getInstance().subscribeToTopic("USER." + userDetails.getUserName());
 
-            userNameNavHeader.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
+            userNameNavHeader.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
             phoneNavHeader.setText(userDetails.getUserName());
             drawer.removeView(navigationView2);
             navigationView.setNavigationItemSelectedListener(menuItem -> {
-                switch(menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.nav_wishlist:
-                        startActivity(new Intent(MainActivity.this,WishListActivity.class));
+                        startActivity(new Intent(MainActivity.this, WishListActivity.class));
                         break;
                     case R.id.nav_contact:
-                        startActivity(new Intent(MainActivity.this,ContactActivity.class));
+                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
                         break;
 //                    case R.id.nav_about:
 //                        startActivity(new Intent(MainActivity.this,AboutActivity.class));
@@ -369,13 +318,13 @@ public class MainActivity extends BaseActivity {
                         //this.overridePendingTransition(0, 0);
                         break;
                     case R.id.nav_account:
-                        startActivity(new Intent(MainActivity.this,UserDashboardActivity.class));
+                        startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
                         break;
                     case R.id.nav_orders:
-                        startActivity(new Intent(MainActivity.this,OrderListActivity.class));
+                        startActivity(new Intent(MainActivity.this, OrderListActivity.class));
                         break;
                     case R.id.nav_cart:
-                        startActivity(new Intent(MainActivity.this,CartActivity.class));
+                        startActivity(new Intent(MainActivity.this, CartActivity.class));
                         break;
                     case R.id.nav_invite_ref:
                         startActivity(new Intent(MainActivity.this, InviteEarn.class));
@@ -389,7 +338,7 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_followed_shops:
                         Intent inf = new Intent(MainActivity.this, EvalyStoreActivity.class);
                         inf.putExtra("title", "Followed Shop");
-                        inf.putExtra("slug","shop-subscriptions");
+                        inf.putExtra("slug", "shop-subscriptions");
                         startActivity(inf);
 
                 }
@@ -399,8 +348,7 @@ public class MainActivity extends BaseActivity {
         }
 
 
-
-        final FragmentManager  fragmentManager= getSupportFragmentManager();
+        final FragmentManager fragmentManager = getSupportFragmentManager();
 
         Fragment fragmentWishtList = WishListFragment.newInstance();
 
@@ -415,8 +363,6 @@ public class MainActivity extends BaseActivity {
                 case R.id.nav_home:
 
 
-
-
                     WishListFragment myFragment = (WishListFragment) getSupportFragmentManager().findFragmentByTag("wishlist");
                     if (myFragment != null && myFragment.isVisible()) {
                         ft.hide(fragmentWishtList);
@@ -428,17 +374,15 @@ public class MainActivity extends BaseActivity {
                             fragmentManager.popBackStackImmediate();
                         }
 
-                    showHomeFragment();
+                        showHomeFragment();
 
                     }
-
 
 
                     break;
                 case R.id.nav_wishlist:
 //                    intent = new Intent(MainActivity.this, WishListActivity.class);
 //                    startActivity(intent);
-
 
 
                     Fragment fragmentW = fragmentManager.findFragmentByTag("wishlist");
@@ -460,13 +404,12 @@ public class MainActivity extends BaseActivity {
                     startActivity(intent);
                     break;
                 case R.id.nav_dashboard:
-                    if(userDetails.getToken().equals("")){
+                    if (userDetails.getToken().equals("")) {
                         startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                    }else{
+                    } else {
                         startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
                     }
                     break;
-
 
 
             }
@@ -476,8 +419,7 @@ public class MainActivity extends BaseActivity {
 
         Intent data = getIntent();
 
-        if(data.hasExtra("type")){
-
+        if (data.hasExtra("type")) {
 
 
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -501,7 +443,7 @@ public class MainActivity extends BaseActivity {
                 ft.addToBackStack(null);
                 ft.commit();
 
-            }else if (type == 3){
+            } else if (type == 3) {
 
                 isLaunchActivity = false;
                 bundle.putInt("type", type);
@@ -515,7 +457,7 @@ public class MainActivity extends BaseActivity {
                 ft.replace(R.id.fragment_container, fragment3, data.getStringExtra("slug"));
                 ft.addToBackStack(null);
                 ft.commit();
-            } else if (type == 4){
+            } else if (type == 4) {
 
                 isLaunchActivity = false;
 
@@ -525,7 +467,7 @@ public class MainActivity extends BaseActivity {
                 bundle2.putString("slug", data.getStringExtra("category_slug"));
                 bundle2.putString("category", "root");
                 fragment3.setArguments(bundle2);
-                ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
+                ft.setCustomAnimations(R.animator.slide_in_left, R.animator.abc_popup_exit, 0, 0);
                 ft.replace(R.id.fragment_container, fragment3, data.getStringExtra("category_slug"));
                 ft.addToBackStack(null);
                 ft.commit();
@@ -537,7 +479,7 @@ public class MainActivity extends BaseActivity {
             showHomeFragment();
         }
 
-        if(data.hasExtra("fromBalance")) {
+        if (data.hasExtra("fromBalance")) {
             Intent ip = new Intent(this, UserDashboardActivity.class);
             Toast.makeText(this, "Payment Successful!", Toast.LENGTH_SHORT).show();
             startActivity(ip);
@@ -572,19 +514,18 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
     public void showHomeFragment() {
-       try {
-           homeFragment = new HomeFragment();
-           FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-           // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-           ft.replace(R.id.fragment_container, homeFragment, "Home");
-           ft.setReorderingAllowed(true);
-           ft.addToBackStack("home");
-           ft.commit();
-       }catch (Exception e){
+        try {
+            homeFragment = new HomeFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
+            ft.replace(R.id.fragment_container, homeFragment, "Home");
+            ft.setReorderingAllowed(true);
+            ft.addToBackStack("home");
+            ft.commit();
+        } catch (Exception e) {
 
-       }
+        }
 
         Token.update(this, false);
 
@@ -594,7 +535,7 @@ public class MainActivity extends BaseActivity {
     AlertDialog exitDialog;
     AlertDialog.Builder exitDialogBuilder;
 
-    public UserDetails getUserDetails(){
+    public UserDetails getUserDetails() {
 
         return userDetails;
 
@@ -602,7 +543,6 @@ public class MainActivity extends BaseActivity {
 
 
     private void startXmppService() {
-
         startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
 
         //Start XMPP Service (if not running already)
@@ -621,7 +561,6 @@ public class MainActivity extends BaseActivity {
 //        }
 
     }
-
 
 
     @Override
@@ -682,16 +621,15 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        // mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-
-        if(bottomNavigationView!=null){
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+        if (bottomNavigationView != null) {
             Menu menu = bottomNavigationView.getMenu();
             MenuItem item = menu.getItem(0);
             item.setChecked(true);
         }
 
 
-        if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()){
+        if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()) {
             Token.update(this, false);
 
             ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
@@ -711,14 +649,11 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
-
     @Override
     protected void onPause() {
         super.onPause();
 
-        if ( exitDialog!=null && exitDialog.isShowing() )
-        {
+        if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
     }
@@ -726,18 +661,17 @@ public class MainActivity extends BaseActivity {
     // 2) :
     @Override
     protected void onDestroy() {
-        if ( exitDialog!=null && exitDialog.isShowing())
-        {
+        if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
-        if(dbHelperCart!=null){
+        if (dbHelperCart != null) {
             dbHelperCart.close();
         }
-        if(dbHelperWishList!=null){
+        if (dbHelperWishList != null) {
             dbHelperWishList.close();
         }
-        if (xmppHandler != null){
-            if (xmppHandler.isConnected()){
+        if (xmppHandler != null) {
+            if (xmppHandler.isConnected()) {
                 xmppHandler.changePresence();
                 xmppHandler.disconnect();
             }
@@ -750,19 +684,18 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
     public boolean isConnected(Context context) {
-        ConnectivityManager cm=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork=cm.getActiveNetworkInfo();
-        if(activeNetwork!=null){
-            if(activeNetwork.getType()== ConnectivityManager.TYPE_WIFI){
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
                 return true;
-            }else if(activeNetwork.getType()== ConnectivityManager.TYPE_MOBILE){
+            } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
-        }else {
+        } else {
             return false;
         }
     }
@@ -770,29 +703,29 @@ public class MainActivity extends BaseActivity {
     public AlertDialog.Builder buildDialog(final Context c) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setTitle("No Internet Connection");
-        final String[] a={"Turn on Wi-Fi","Turn on Mobile Data"};
+        final String[] a = {"Turn on Wi-Fi", "Turn on Mobile Data"};
         final int[] select = new int[1];
         builder.setSingleChoiceItems(a, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(i==0)
-                    select[0]=1;
-                else if(i==1)
-                    select[0]=2;
+                if (i == 0)
+                    select[0] = 1;
+                else if (i == 1)
+                    select[0] = 2;
             }
         });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(select[0]==1){
-                    WifiManager wifiManager = (WifiManager)c.getSystemService(Context.WIFI_SERVICE);
+                if (select[0] == 1) {
+                    WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
                     wifiManager.setWifiEnabled(true);
                     Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
 
-                }else if(select[0]==2){
+                } else if (select[0] == 2) {
                     startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                }else{
-                    WifiManager wifiManager = (WifiManager)c.getSystemService(Context.WIFI_SERVICE);
+                } else {
+                    WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
                     wifiManager.setWifiEnabled(true);
                     Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
                 }

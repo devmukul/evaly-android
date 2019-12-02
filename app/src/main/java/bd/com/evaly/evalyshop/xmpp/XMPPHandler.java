@@ -381,6 +381,7 @@ public class XMPPHandler {
         try {
             reconnectionManager.disableAutomaticReconnection();
             connection.disconnect();
+            Logger.d(connection.isConnected());
         } catch (Exception e) {
             e.printStackTrace();
         }
