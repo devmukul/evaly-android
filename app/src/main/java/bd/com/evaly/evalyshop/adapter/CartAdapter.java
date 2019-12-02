@@ -295,14 +295,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
                         myViewHolder.wholeSalePrice.setVisibility(View.GONE);
                         priceTemp = price;
-
                     }
-
-
-
-
-
-
 
                 } catch (Exception e){
 
@@ -312,12 +305,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
                 }
 
-
-
                 myViewHolder.totalPrice.setText("৳ "+(priceTemp * itemList.get(i).getQuantity()));
                 myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
-
-
                 myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
 
 
@@ -341,16 +330,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         });
 
 
-
-
-
         myViewHolder.productName.setText(Html.fromHtml(itemList.get(i).getName()));
         myViewHolder.time.setText(Utils.getTimeAgo(itemList.get(i).getTime()));
-
-
         myViewHolder.quantity.setText(itemList.get(i).getQuantity()+"");
-
-
 
 //        myViewHolder.price.setText("৳ "+itemList.get(i).getPrice() + " x " + itemList.get(i).getQuantity());
 //        myViewHolder.totalPrice.setText("৳ "+(itemList.get(i).getPrice() * itemList.get(i).getQuantity()));
@@ -377,8 +359,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             }
 
 
-
-
             int current = itemList.get(i).getQuantity();
 
 
@@ -397,16 +377,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             //myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
 
         }
-
-
-
-
-
-
-
-
-
-
 
         Glide.with(context)
                 .load(itemList.get(i).getImage())
@@ -456,32 +426,29 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         });
 
 
+//        try{
+//            JSONObject product_item = jsonObject.getJSONObject("product_item"); // get shop_product_item product_item
+//            Log.d("cart_print",product_item.toString());
+//            if(product_item.getJSONArray("varying_options").length() > 0) {
+//                //for(int j=0;j<product_item.getJSONArray("varying_options").length();j++){
+//                    String attr = product_item.getJSONArray("varying_options").getJSONArray(0).getJSONObject(0).getJSONObject("attribute").getString("name");
+//                    String variation = product_item.getJSONArray("varying_options").getJSONArray(0).getJSONObject(0).getJSONObject("option").getString("value");
+//                    myViewHolder.variation.setVisibility(View.VISIBLE);
+//                    if(myViewHolder.variation.getText().toString().equals("")){
+//                        myViewHolder.variation.setText(attr+": "+variation);
+//                    }else{
+//                        myViewHolder.variation.setText(myViewHolder.variation.getText()+"\n"+attr+": "+variation);
+//                    }
+//               // }
+//            } else
+//                myViewHolder.variation.setVisibility(View.GONE);
+//        } catch (Exception e){
+//
+//            Log.e("json error", e.toString());
+//        }
 
 
-        try{
-            JSONObject product_item = jsonObject.getJSONObject("product_item"); // get shop_product_item product_item
-            Log.d("cart_print",product_item.toString());
-            if(product_item.getJSONArray("varying_options").length() > 0) {
-                //for(int j=0;j<product_item.getJSONArray("varying_options").length();j++){
-                    String attr = product_item.getJSONArray("varying_options").getJSONArray(0).getJSONObject(0).getJSONObject("attribute").getString("name");
-                    String variation = product_item.getJSONArray("varying_options").getJSONArray(0).getJSONObject(0).getJSONObject("option").getString("value");
-                    myViewHolder.variation.setVisibility(View.VISIBLE);
-                    if(myViewHolder.variation.getText().toString().equals("")){
-                        myViewHolder.variation.setText(attr+": "+variation);
-                    }else{
-                        myViewHolder.variation.setText(myViewHolder.variation.getText()+"\n"+attr+": "+variation);
-                    }
-               // }
-            } else
-                myViewHolder.variation.setVisibility(View.GONE);
-        } catch (Exception e){
-
-            myViewHolder.variation.setVisibility(View.GONE);
-
-
-            Log.e("json error", e.toString());
-
-        }
+        myViewHolder.variation.setVisibility(View.GONE);
 
 
 

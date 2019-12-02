@@ -4,15 +4,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -44,8 +41,6 @@ import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
-import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -57,13 +52,11 @@ import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.models.order.OrderItems;
 import bd.com.evaly.evalyshop.models.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.shopItem.AttributesItem;
@@ -277,9 +270,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                 }catch (Exception e){}
 
-
-
-
             }
         });
 
@@ -293,32 +283,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
-
-
-            int totalPrice = 0;
-
-            try {
-                totalPrice = Integer.parseInt(productTotalPrice.getText().toString());
-            } catch (Exception e){
-
-            }
-
-            if (shop_slug.equals("evaly-amol-1")){
-
-                if (productPriceInt*quantityCount != 16){
-                    Toast.makeText(context, "You can't order below or more than 16 Tk from Evaly Amol.", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-
-            } else {
-                if (productPriceInt*quantityCount < 500){
-                    Toast.makeText(context, "You can't order below 500 Tk.", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-            }
-
 
             bottomSheetDialog.show();
 
