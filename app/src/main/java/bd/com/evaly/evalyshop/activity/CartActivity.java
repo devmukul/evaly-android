@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -41,16 +40,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
@@ -60,6 +58,8 @@ import bd.com.evaly.evalyshop.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.CartItem;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.placeOrder.OrderItemsItem;
+import bd.com.evaly.evalyshop.models.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -80,32 +80,23 @@ public class CartActivity extends BaseActivity {
     LinearLayoutManager manager;
     ImageView back,person;
     Context context;
-
     CheckBox selectAll;
-    Button checkout;
-    Button btnBottomSheet;
-
+    Button checkout, btnBottomSheet;
     EditText customAddress, contact_number;
     Switch addressSwitch;
     Spinner addressSpinner;
     ArrayAdapter<String> spinnerArrayAdapter;
-    int spinnerPosition;
     ArrayList<String> spinnerArray;
-
     ArrayList<Integer> spinnerArrayID;
     UserDetails userDetails;
     ViewDialog dialog;
     boolean cartItem=false;
     ViewDialog alert;
-    int paymentMethod = 2;
-
+    int spinnerPosition, paymentMethod = 2;
     String userAgent;
     boolean isCheckedFromAdapter = false;
-
     double totalPriceDouble = 0;
-
     CompoundButton.OnCheckedChangeListener selectAllListener;
-
     BottomSheetDialog bottomSheetDialog;
     View bottomSheetView;
 
@@ -117,11 +108,7 @@ public class CartActivity extends BaseActivity {
         //getSupportActionBar().setElevation(0);
 
         context = this;
-        try {
-            userAgent = WebSettings.getDefaultUserAgent(this);
-        } catch (Exception e) {
-            userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-        }
+
         dialog = new ViewDialog(this);
 
         getSupportActionBar().setElevation(4f);
@@ -150,95 +137,62 @@ public class CartActivity extends BaseActivity {
         bottomSheetDialog.setContentView(bottomSheetView);
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
 
-
-        checkout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(userDetails.getToken().equals("")) {
-                    Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
-                    return;
+        checkout.setOnClickListener(view -> {
+            if(userDetails.getToken().equals("")) {
+                Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            boolean selected=false;
+            for (int i = 0; i < itemList.size(); i++){
+                if(itemList.get(i).isSelected()){
+                    bottomSheetDialog.show();
+                    selected=true;
+                    break;
                 }
-
-                boolean selected=false;
-                for (int i = 0; i < itemList.size(); i++){
-                    if(itemList.get(i).isSelected()){
-//                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-//                        mViewBg.setVisibility(View.VISIBLE);
-
-                        bottomSheetDialog.show();
-
-                        selected=true;
-                        break;
-                    }
-                }
-                if(!selected){
-                    Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();
-                }
-                // generateOrderJson();
-
+            }
+            if(!selected){
+                Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();
             }
         });
 
+        selectAllListener = (buttonView, isChecked) -> {
+            for (int i = 0; i < itemList.size(); i++)
+                itemList.get(i).setSelected(isChecked);
 
-        selectAllListener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                for (int i = 0; i < itemList.size(); i++)
-                    itemList.get(i).setSelected(isChecked);
-
-                adapter.notifyDataSetChanged();
-            }
+            adapter.notifyDataSetChanged();
         };
 
 
-
         TextView privacyText = bottomSheetView.findViewById(R.id.privacyText);
-
         privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         privacyText.setMovementMethod(LinkMovementMethod.getInstance());
-
         CheckBox checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
-
         selectAll.setOnCheckedChangeListener(selectAllListener);
-        btnBottomSheet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnBottomSheet.setOnClickListener(v -> {
 
-                if(userDetails.getToken().equals("")) {
-                    startActivity(new Intent(CartActivity.this, SignInActivity.class));
-                    return;
-                }
-
-                if (!checkBox.isChecked()){
-                    Toast.makeText(CartActivity.this, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (addressSwitch.isChecked() && customAddress.getText().toString().equals("")){
-                    Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-
-                if (!Utils.isValidNumber(contact_number.getText().toString())){
-                    Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-
-
-                placeOrder(generateOrderJson(), dialog);
-
-
-
-                //generateOrderJson();
-
-
+            if(userDetails.getToken().equals("")) {
+                startActivity(new Intent(CartActivity.this, SignInActivity.class));
+                return;
             }
+
+            if (!checkBox.isChecked()){
+                Toast.makeText(CartActivity.this, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (addressSwitch.isChecked() && customAddress.getText().toString().equals("")){
+                Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!Utils.isValidNumber(contact_number.getText().toString())){
+                Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            placeOrder(generateOrderJson(), dialog);
+
         });
 
         // bottom sheet
@@ -254,20 +208,18 @@ public class CartActivity extends BaseActivity {
 
         customAddress.setText(userDetails.getJsonAddress());
 
-        addressSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        addressSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-                if(isChecked){
-                    customAddress.setVisibility(View.VISIBLE);
-                    addressSpinner.setVisibility(View.GONE);
+            if(isChecked){
+                customAddress.setVisibility(View.VISIBLE);
+                addressSpinner.setVisibility(View.GONE);
 
-                } else{
-                    customAddress.setVisibility(View.GONE);
-                    addressSpinner.setVisibility(View.VISIBLE);
-
-                }
+            } else{
+                customAddress.setVisibility(View.GONE);
+                addressSpinner.setVisibility(View.VISIBLE);
 
             }
+
         });
 
         addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -290,45 +242,23 @@ public class CartActivity extends BaseActivity {
         }
 
         // updateAddress();
-
         ImageView cod = bottomSheetView.findViewById(R.id.cod);
         ImageView evalyPay = bottomSheetView.findViewById(R.id.evaly_pay);
 
-
         // select payment method
+        cod.setOnClickListener(v -> paymentMethod = 1);
 
-        cod.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                paymentMethod = 1;
-                Log.d("json p", "cod");
-
+        cod.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.performClick();
             }
         });
 
+        evalyPay.setOnClickListener(v -> paymentMethod = 2);
 
-        cod.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    v.performClick();
-                }
-            }
-        });
-
-
-        evalyPay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                paymentMethod = 2;
-                Log.d("json p", "evaly pay");
-            }
-        });
-
-        evalyPay.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    v.performClick();
-                }
+        evalyPay.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.performClick();
             }
         });
 
@@ -354,7 +284,6 @@ public class CartActivity extends BaseActivity {
                     break;
                 }
             }
-
             selectAll.setOnCheckedChangeListener(null);
             selectAll.setChecked(isAllSelected);
             selectAll.setOnCheckedChangeListener(selectAllListener);
@@ -376,18 +305,14 @@ public class CartActivity extends BaseActivity {
                             .setMessage("Are you sure you want to delete the selected products from the cart?")
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
                                 public void onClick(DialogInterface dialog, int whichButton) {
 
                                     ArrayList<CartItem> listAdapter = adapter.getItemList();
-
                                     for (int i = 0; i < listAdapter.size(); i++){
                                         if(listAdapter.get(i).isSelected()){
                                             db.deleteData(listAdapter.get(i).getId());
-
                                         }
                                     }
-
                                     getCartList();
 
                                 }})
@@ -413,35 +338,22 @@ public class CartActivity extends BaseActivity {
             button.setVisibility(View.GONE);
             NestedScrollView scrollView = findViewById(R.id.scroller);
             scrollView.setBackgroundColor(Color.WHITE);
-
-
         }else{
 
             totalPriceDouble = 0;
-
             cartItem=true;
             while(res.moveToNext()){
                 itemList.add(new CartItem(res.getString(0),res.getString(1),res.getString(2),res.getString(3),res.getInt(4),res.getLong(5),res.getString(6),res.getInt(7),true, res.getString(8), res.getString(9)));
-
                 totalPriceDouble +=  res.getInt(4);
-
-
-                        //                Collections.sort(itemList, new Comparator<WishList>(){
-//                    public int compare(WishList o1, WishList o2) {
-//                        return o2.getTime() > o1.getTime();
-//                    }
-//                });
                 adapter.notifyItemInserted(itemList.size());
                 updateCartFromRecycler();
             }
-
              adapter.notifyDataSetChanged();
         }
     }
 
 
     public void updateCartFromRecycler(){
-
 
         ArrayList<CartItem> listAdapter = adapter.getItemList();
         int totalPrice = 0;
@@ -472,7 +384,6 @@ public class CartActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.delete_btn, menu);
         return true;
     }
@@ -480,98 +391,63 @@ public class CartActivity extends BaseActivity {
 
     @Override
     public void onBackPressed(){
-
         super.onBackPressed();
-
     }
 
     public void placeOrder(JSONObject payload, ViewDialog alert){
 
         String url = UrlUtils.BASE_URL+"custom/order/create/";
-
-        Log.d("json order url", url);
-
         alert.showDialog();
 
         try{
-
             int countItems = payload.getJSONArray("order_items").length();
-
-
-            Log.d("jsonz count", countItems+"");
-            Logger.d(payload);
-
             if (countItems == 0) {
-
-
                 alert.hideDialog();
                 dialog.hideDialog();
                 return;
             }
 
-        } catch (Exception e){
-
-        }
+        } catch (Exception e){ }
 
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
-
-
                 String errorMsg = "Couldn't place order, might be a server error";
-
                 Log.d("json order", response.toString());
-
                 try {
 
                     errorMsg = response.getString("message");
 
-                }catch (Exception e){
-
-                }
-
+                }catch (Exception e){ }
 
                 try {
 
                     if (response.getJSONArray("data").length() < 1) {
                         dialog.hideDialog();
                         // Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
-
                         Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-
                         return;
                     } else {
 
                         Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-
                         orderPlaced();
                         dialog.hideDialog();
-
-
                         errorMsg = response.getString("message");
-
                     }
 
-                } catch (Exception e){
-
-                }
-
-
-
+                } catch (Exception e){ }
 
                 try {
 
                     JSONArray data = response.getJSONArray("data");
                     for (int i = 0; i < data.length(); i++) {
-
                         JSONObject item = data.getJSONObject(i);
                         String invoice = item.getString("invoice_no");
                         Intent intent = new Intent(context, OrderDetailsActivity.class);
                         intent.putExtra("orderID", invoice);
                         startActivity(intent);
-
                         //makePayment(invoice, alert, response.length()-1, i);
                     }
 
@@ -580,9 +456,7 @@ public class CartActivity extends BaseActivity {
 
                     Log.e("json exception", e.toString());
                     Toast.makeText(context, errorMsg , Toast.LENGTH_SHORT).show();
-
                     dialog.hideDialog();
-
                 }
 
             }
@@ -590,8 +464,6 @@ public class CartActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
-
-
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     if (error.networkResponse.statusCode == 401){
@@ -601,24 +473,17 @@ public class CartActivity extends BaseActivity {
                         public void onDataFetched(retrofit2.Response<JsonObject> response) {
                             placeOrder(payload, alert);
                         }
-
                         @Override
                         public void onFailed(int status) {
 
                         }
                     });
-
                     return;
-
                 }}
 
                 Toast.makeText(context, "Couldn't place holder", Toast.LENGTH_SHORT).show();
                 dialog.hideDialog();
-
                 alert.hideDialog();
-
-                // orderPlaced();
-
             }
         }) {
             @Override
@@ -640,81 +505,45 @@ public class CartActivity extends BaseActivity {
 
     private JSONObject generateOrderJson(){
 
+        PlaceOrderItem orderObejct = new PlaceOrderItem();
 
+        orderObejct.setContactNumber(contact_number.getText().toString());
+        orderObejct.setCustomerAddress(customAddress.getText().toString());
+        orderObejct.setPaymentMethod("evaly_pay");
 
+        List<OrderItemsItem> productList = new ArrayList<>();
 
-        JSONObject obj = new JSONObject();
-        try {
+        ArrayList<CartItem> adapterItems = adapter.getItemList();
 
-            JSONObject addressObj = new JSONObject();
+        for(int i=0; i < adapterItems.size(); i++) {
 
-            if(!addressSwitch.isChecked()) {
+            if(adapterItems.get(i).isSelected()) {
 
-                addressObj.put("address", JSONObject.NULL);
-                addressObj.put("address_id", spinnerArrayID.get(spinnerPosition));
+                String fromShopJson = adapterItems.get(i).getSellerJson();
+                OrderItemsItem item = new OrderItemsItem();
+                item.setQuantity(adapterItems.get(i).getQuantity());
 
-                Log.d("json", ""+spinnerArrayID.get(spinnerPosition));
+                try{
+                    JSONObject sellerJson = new JSONObject(fromShopJson);
+                    String item_id = sellerJson.getString("shop_item_id");
+                    item.setShopItemId(Integer.parseInt(item_id));
+                    productList.add(item);
 
-            } else {
-
-                addressObj.put("customer_address", customAddress.getText().toString());
-                // addressObj.put("address_id", JSONObject.NULL);
+                } catch (Exception e){ }
 
             }
-
-            obj.put("payment_method", "evaly_pay");
-
-            // get items jsonArray
-
-            obj.put("order_items", new JSONArray());
-            obj.put("customer_address", customAddress.getText().toString());
-            if (contact_number.getText().toString().equals(""))
-                obj.put("contact_number", userDetails.getUserName());
-            else
-                obj.put("contact_number", contact_number.getText().toString());
-
-
-            JSONArray items = obj.getJSONArray("order_items");
-
-            int index=0;
-
-            ArrayList<CartItem> adapterItems = adapter.getItemList();
-
-            for(int i=0; i < adapterItems.size(); i++) {
-
-                if(adapterItems.get(i).isSelected()) {
-
-                    String fromShopJson = adapterItems.get(i).getSellerJson();
-                    Logger.d(fromShopJson);
-                    // add "bought from shop" data to json (comes from db)
-                    //items.optJSONObject(index).put("shop_product_item", new JSONObject(fromShopJson));
-
-                    JSONObject itemsObject = new JSONObject();  // get the current object from items array
-
-                    // put quantity
-                    itemsObject.put("quantity", adapterItems.get(i).getQuantity());
-
-                    try{
-                        JSONObject sellerJson = new JSONObject(fromShopJson);
-                        String item_id = sellerJson.getString("shop_item_id");
-                        itemsObject.put("shop_item_id", item_id);
-                        items.put(itemsObject);
-
-                    } catch (Exception e){
-                    }
-
-                    index++;
-                }
-            }
-
-            Logger.d(obj);
-
-        } catch (Exception e) {
-            Log.e("json", "Could not parse malformed JSON: "+e.toString());
         }
 
-        return obj;
+        orderObejct.setOrderItems(productList);
 
+        String payload = new Gson().toJson(orderObejct);
+
+        try {
+            JSONObject jsonPayload = new JSONObject(payload);
+            return jsonPayload;
+        }catch (Exception e){}
+
+        return new JSONObject();
     }
 
     public void orderPlaced(){
@@ -725,45 +554,13 @@ public class CartActivity extends BaseActivity {
         for (int i = 0; i < listAdapter.size(); i++){
             if(listAdapter.get(i).isSelected()){
                 db.deleteData(listAdapter.get(i).getId());
-
             }
         }
 
         bottomSheetDialog.hide();
-
         getCartList();
         Toast.makeText(context, "Your order has been placed!", Toast.LENGTH_LONG).show();
 
-    }
-
-
-    public String LoadData(String inFile) {
-        String tContents = "";
-
-        try {
-            InputStream stream = getAssets().open(inFile);
-
-            int size = stream.available();
-            byte[] buffer = new byte[size];
-            stream.read(buffer);
-            stream.close();
-            tContents = new String(buffer);
-        } catch (IOException e) {
-            // Handle exceptions here
-        }
-
-        return tContents;
-
-    }
-
-
-    public static void largeLog(String tag, String content) {
-        if (content.length() > 4000) {
-            Log.d(tag, content.substring(0, 4000));
-            largeLog(tag, content.substring(4000));
-        } else {
-            Log.d(tag, content);
-        }
     }
 
     @Override
