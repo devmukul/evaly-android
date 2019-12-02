@@ -6,12 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.NestedScrollView;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -40,7 +38,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -52,16 +49,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.orderDetails.AddBalanceActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -705,54 +698,7 @@ public class CartActivity extends BaseActivity {
                         JSONObject sellerJson = new JSONObject(fromShopJson);
                         String item_id = sellerJson.getString("shop_item_id");
                         itemsObject.put("shop_item_id", item_id);
-
-                        // september date for pendrive
-
-                        String currentDateString = "08/31/2019 1:00:00";
-                        Date septemberDate;
-
-                        String currentDateString2 = "09/20/2019 1:00:00";
-                        Date septemberDate2;
-
-                        SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
-                        septemberDate = sd.parse(currentDateString);
-                        septemberDate2 = sd.parse(currentDateString2);
-
-                        if (sellerJson.getString("shop_slug").equals("evaly-amol-1")) {
-
-
-//                            Date joinDate = Utils.formattedDateFromString("", userDetails.getCreatedAt());
-//
-//                            if (joinDate.after(septemberDate) && joinDate.before(septemberDate2)) {
-//                                items.put(itemsObject);
-//
-//                            } else {
-//                                Toast.makeText(context, "10 Tk pendrive offer is only available to users who joined after 1st September, 2019", Toast.LENGTH_LONG).show();
-//                            }
-
-
-                            if (adapterItems.get(i).getPrice()*adapterItems.get(i).getQuantity() != 16) {
-
-                                Toast.makeText(context, "You can't order below or more than 16 Tk from Evaly Amol.", Toast.LENGTH_SHORT).show();
-
-                                return obj;
-
-                            } else{
-
-                                items.put(itemsObject);
-                            }
-                        }
-                        else {
-
-
-                            if (totalPriceDouble  < 500){
-                                Toast.makeText(context, "You can't order below 500 Tk from "+sellerJson.getString("shop_name"), Toast.LENGTH_SHORT).show();
-                                return obj;
-                            } else {
-
-                                items.put(itemsObject);
-                            }
-                        }
+                        items.put(itemsObject);
 
                     } catch (Exception e){
                     }
