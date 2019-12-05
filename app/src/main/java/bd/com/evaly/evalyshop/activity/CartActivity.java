@@ -490,7 +490,7 @@ public class CartActivity extends BaseActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                headers.put("origin", "app");
+
                 return headers;
             }
 
@@ -509,6 +509,9 @@ public class CartActivity extends BaseActivity {
 
         orderObejct.setContactNumber(contact_number.getText().toString());
         orderObejct.setCustomerAddress(customAddress.getText().toString());
+        orderObejct.setOrderOrigin("app");
+
+
         orderObejct.setPaymentMethod("evaly_pay");
 
         List<OrderItemsItem> productList = new ArrayList<>();
