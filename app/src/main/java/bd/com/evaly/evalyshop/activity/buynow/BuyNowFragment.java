@@ -248,6 +248,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 orderJson.setContactNumber(contact_number.getText().toString());
                 orderJson.setCustomerAddress(customAddress.getText().toString());
                 orderJson.setPaymentMethod("evaly_pay");
+                orderJson.setOrderOrigin("app");
 
                 OrderItemsItem item = new OrderItemsItem();
                 item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
@@ -272,9 +273,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
             }
         });
-
-
-
 
 
         checkOutBtn.setOnClickListener(view1 -> {
@@ -528,14 +526,13 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
 
                 dialog.hideDialog();
-                Toast.makeText(context, "Couldn't place holder, might be a server error.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + userDetails.getToken());
-                headers.put("Origin", "app");
                 return headers;
             }
 

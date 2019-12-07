@@ -1,7 +1,8 @@
 package bd.com.evaly.evalyshop.models.placeOrder;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class PlaceOrderItem{
 
@@ -13,6 +14,9 @@ public class PlaceOrderItem{
 
 	@SerializedName("contact_number")
 	private String contactNumber;
+
+	@SerializedName("order_origin")
+	private String orderOrigin;
 
 	@SerializedName("order_items")
 	private List<OrderItemsItem> orderItems;
@@ -47,6 +51,14 @@ public class PlaceOrderItem{
 
 	public List<OrderItemsItem> getOrderItems(){
 		return orderItems;
+	}
+
+	public String getOrderOrigin() {
+		return orderOrigin;
+	}
+
+	public void setOrderOrigin(String orderOrigin) {
+		this.orderOrigin = orderOrigin;
 	}
 
 	@Override

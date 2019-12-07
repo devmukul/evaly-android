@@ -29,7 +29,6 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
-import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterListener;
@@ -39,15 +38,11 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.chatstates.ChatStateListener;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
-import org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider;
-import org.jivesoftware.smackx.iqlast.LastActivityManager;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatException;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
-import org.jivesoftware.smackx.offline.OfflineMessageHeader;
-import org.jivesoftware.smackx.offline.OfflineMessageManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
@@ -76,7 +71,6 @@ import java.util.Map;
 import java.util.Set;
 
 import bd.com.evaly.evalyshop.AppController;
-import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
@@ -91,41 +85,35 @@ import bd.com.evaly.evalyshop.util.Constants;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 import retrofit2.Response;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class XMPPHandler {
 
-    private final String TAG = getClass().getSimpleName();
     public static boolean connected = false;
-    public boolean loggedin = false;
     public static boolean isconnecting = false;
     public static boolean isToasted = false; //Show toast for events? set false to just print via Log
-    private HashMap<String, Boolean> chat_created_for = new HashMap<>(); //for single chat env
     public static AbstractXMPPConnection connection;
+    public static XMPPHandler instance = null;
+    public static boolean instanceCreated = false;
+    static ReconnectionManager reconnectionManager;
+    private final String TAG = getClass().getSimpleName();
+    private final boolean debug = Constants.XMPP_DEBUG;
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
+    public boolean loggedin = false;
     public String userId = CredentialManager.getUserName();
     public String userPassword = CredentialManager.getPassword();
     public boolean autoLogin;
     public VCard mVcard;
     public List<RoasterModel> roasterList;
     public List<String> rosterList;
+    public XMPPService service;
+    //XMPP Stuffs
+    public Chat mChat;
     Roster roster;
     MamManager mamManager;
     MamManager.MamQueryArgs mamQueryArgs;
     MamManager.MamQuery mamQueryResult;
-    static ReconnectionManager reconnectionManager;
-
     Gson gson;
-    public XMPPService service;
-    public static XMPPHandler instance = null;
-    public static boolean instanceCreated = false;
     boolean isFirstTime;
-
-    private final boolean debug = Constants.XMPP_DEBUG;
-
-    private final Handler mHandler = new Handler(Looper.getMainLooper());
-
-    //XMPP Stuffs
-    public Chat mChat;
+    private HashMap<String, Boolean> chat_created_for = new HashMap<>(); //for single chat env
     private XMPPConnectionListener mConnectionListener = new XMPPConnectionListener();
     private MyIncomingChatManagerListener mIncomingChatManagerListener;
     private MyOutGoingChatManagerListener mOutGoingChatManagerListener;
@@ -157,6 +145,27 @@ public class XMPPHandler {
     // Get XMPPHandler instance
     public static XMPPHandler getInstance() {
         return instance;
+    }
+
+    //This method sets every chat instances to false (in situations where connection closes, or error happens)
+    public static void chatInstanceIterator(Map<String, Boolean> mp) {
+
+        for (Map.Entry<String, Boolean> entry : mp.entrySet()) {
+            entry.setValue(false);
+        }
+    }
+
+    //Explicitly Disconnect a connection
+    public static void disconnect() {
+
+        try {
+            reconnectionManager.disableAutomaticReconnection();
+            connection.disconnect();
+            Logger.d(connection.isConnected());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void init() {
@@ -260,14 +269,6 @@ public class XMPPHandler {
     public void setUserPassword(String mUsername, String mPassword) {
         this.userId = mUsername;
         this.userPassword = mPassword;
-    }
-
-    //This method sets every chat instances to false (in situations where connection closes, or error happens)
-    public static void chatInstanceIterator(Map<String, Boolean> mp) {
-
-        for (Map.Entry<String, Boolean> entry : mp.entrySet()) {
-            entry.setValue(false);
-        }
     }
 
     //check if a connection is already established
@@ -375,25 +376,14 @@ public class XMPPHandler {
         connectionThread.execute();
     }
 
-    //Explicitly Disconnect a connection
-    public static void disconnect() {
-
-        try {
-            reconnectionManager.disableAutomaticReconnection();
-            connection.disconnect();
-            Logger.d(connection.isConnected());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
     public VCard getCurrentUserDetails() {
         VCardManager vCardManager = VCardManager.getInstanceFor(connection);
         VCard mCard = null;
         try {
-            mCard = vCardManager.loadVCard();
-            return mCard;
+            if (isLoggedin()) {
+                mCard = vCardManager.loadVCard();
+                return mCard;
+            }
         } catch (XMPPException.XMPPErrorException e) {
             e.printStackTrace();
         } catch (SmackException.NoResponseException e) {
@@ -401,6 +391,8 @@ public class XMPPHandler {
         } catch (SmackException.NotConnectedException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e){
             e.printStackTrace();
         }
 
@@ -619,18 +611,18 @@ public class XMPPHandler {
                     chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
 
 
-                JSONObject jsonObject = new JSONObject(new Gson().toJson(message));
+                    JSONObject jsonObject = new JSONObject(new Gson().toJson(message));
 
-                JSONObject ob1 = jsonObject.getJSONObject("packetExtensions").getJSONObject("map");
-                String json = ob1.toString();
+                    JSONObject ob1 = jsonObject.getJSONObject("packetExtensions").getJSONObject("map");
+                    String json = ob1.toString();
 //                Logger.d(json);
-                String json1 = "{\"" + json.substring(json.indexOf("urn:xmpp:sid:0"));
-                JSONObject object = new JSONObject(json1);
+                    String json1 = "{\"" + json.substring(json.indexOf("urn:xmpp:sid:0"));
+                    JSONObject object = new JSONObject(json1);
 //                Logger.d(json1);
-                JSONArray jsonArray = object.getJSONArray("urn:xmpp:sid:0");
-                String id = jsonArray.getJSONObject(0).getString("id");
+                    JSONArray jsonArray = object.getJSONArray("urn:xmpp:sid:0");
+                    String id = jsonArray.getJSONObject(0).getString("id");
 //                Logger.d(id+" ==========");
-                chatItem.setMessageId(id);
+                    chatItem.setMessageId(id);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -762,7 +754,7 @@ public class XMPPHandler {
 
 
     public void markAsRead(String id, Jid jid, Jid mJid) {
-        Logger.d("-----------    "+ id);
+        Logger.d("-----------    " + id);
         if (id != null) {
             IQ iq = new IQ("ack", "urn:xmpp:mark_as_read") {
                 @Override
@@ -1184,6 +1176,429 @@ public class XMPPHandler {
 
     }
 
+    public void changePresence() {
+        Presence presence = new Presence(Presence.Type.unavailable);
+        try {
+            connection.sendStanza(presence);
+        } catch (SmackException.NotConnectedException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateRoster(List<RosterTable> roasterList) {
+        List<RosterTable> list = new ArrayList<>();
+        for (int i = 0; i < roasterList.size(); i++) {
+            VCard vCard = null;
+            RosterTable table = roasterList.get(i);
+            try {
+                vCard = getUserDetails(JidCreate.bareFrom(table.id).asEntityBareJidIfPossible());
+                if (vCard != null) {
+                    table.name = vCard.getFirstName() + " " + vCard.getLastName();
+                    table.nick_name = vCard.getNickName();
+                    table.imageUrl = vCard.getField("URL");
+                    list.add(table);
+//                    Logger.d(list.size() + "    " + roasterList.size());
+                }
+
+                if (list.size() == roasterList.size()) {
+                    updateMessage(list);
+                }
+
+            } catch (XmppStringprepException e) {
+                e.printStackTrace();
+            }
+//                updateMessage(list);
+
+        }
+
+
+    }
+
+    private void updateMessage(List<RosterTable> roasterList) {
+        List<RosterTable> list = roasterList;
+        int count = 0;
+
+//        Logger.d(new Gson().toJson(list));
+        for (int i = 0; i < list.size(); i++) {
+            try {
+                ChatItem chatItem = getLastMessage(JidCreate.bareFrom(list.get(i).id));
+
+                if (chatItem != null) {
+                    list.get(i).lastMessage = new Gson().toJson(chatItem);
+                    list.get(i).time = chatItem.getLognTime();
+                }
+                try {
+                    Stanza stanza = getUnreadMessage(JidCreate.bareFrom(list.get(i).id), mVcard.getFrom());
+//                       Logger.d(new Gson().toJson(stanza));
+                    XmlToJson xmlToJson = new XmlToJson.Builder(stanza.toXML("unseen-messages").toString())
+                            .forceIntegerForPath("iq/unseen-messages/amount")
+                            .build();
+//                       Logger.d(xmlToJson);
+                    JSONObject jsonObject = new JSONObject(xmlToJson.toString());
+                    String value = jsonObject.getString("content").replace("<unseen-messages xmlns='urn:xmpp:mark_as_read' ", "").replaceAll("\\D", "");
+//                       Logger.d(value);
+                    list.get(i).unreadCount = Integer.valueOf(value);
+
+//                       if (Integer.parseInt(value)>0){
+//                           holder.tvUnreadCount.setText(value);
+//                           holder.tvUnreadCount.setVisibility(View.VISIBLE);
+//                       }else {
+//                           holder.tvUnreadCount.setVisibility(View.GONE);
+//                       }
+//                       unreadCount.add(Integer.parseInt(value));
+                } catch (Exception e) {
+//                    e.printStackTrace();
+                }
+                count = count + 1;
+            } catch (XmppStringprepException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (list.size() == 0) {
+            AppController.allDataLoaded = true;
+        }
+        if (count == list.size()) {
+//            Logger.d(count + "    ==========");
+
+            for (RosterTable table : list) {
+                // Logger.d(Constants.EVALY_NUMBER+"      "+table.id);
+                if (!table.id.contains(Constants.EVALY_NUMBER)) {
+//                    AsyncTask.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            AppController.database.taskDao().addRoster(table);
+//                        }
+//                    });
+                }
+            }
+            AppController.allDataLoaded = true;
+        }
+    }
+
+    private int getListPosition(ChatItem chatItem) {
+        int pos = -1;
+        for (int i = 0; i < roasterList.size(); i++) {
+//            Logger.d(chatItem.getSender() + "      " + roasterList.get(i).getRoasterEntryUser());
+            if (roasterList.get(i).getRoasterEntryUser().asUnescapedString().equalsIgnoreCase(chatItem.getSender())) {
+                pos = i;
+                break;
+            }
+        }
+        return pos;
+    }
+
+    /*
+     * Whenever a user sends a subscription request, you have to send him back two subscription requests:
+     * 1. Presence.Type.subscribe
+     * 2. Presence.Type.subscribed (you are now subscribed to user, at this point user can see your presence,
+     *    but you can not see his presence)
+     *
+     */
+    public void confirmSubscription(BareJid fromJID, boolean shouldSubscribe) {
+        final RosterEntry newEntry = roster.getEntry(fromJID);
+        //Prepare "subscribe" precense
+        Presence subscribe = new Presence(Presence.Type.subscribe);
+        subscribe.setTo(fromJID);
+
+        //Prepare "subscribed" precense
+        Presence subscribed = new Presence(Presence.Type.subscribed);
+        subscribed.setTo(fromJID);
+
+        //Prepare Unsubscribe
+        Presence unsubscribe = new Presence(Presence.Type.unsubscribe);
+        unsubscribe.setTo(fromJID);
+
+//        Logger.d("{{{{{{{{{{{{{{{{");
+        //Send both (or only subscribed, if user has already sent request)
+        try {
+            if (shouldSubscribe) {
+                if (newEntry == null || newEntry.getType() == RosterPacket.ItemType.from) {
+                    Logger.d("+++++++++++++");
+                    connection.sendStanza(subscribed);
+                    connection.sendStanza(subscribe);
+                } else {
+                    Logger.d("-----------");
+                    connection.sendStanza(subscribed);
+                }
+            } else {
+                Logger.d("UNSUBSCRIBE");
+                connection.sendStanza(unsubscribe);
+            }
+        } catch (SmackException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if (shouldSubscribe) {
+            if (newEntry != null) {
+                RosterTable table = new RosterTable();
+                table.id = newEntry.getJid().asUnescapedString();
+                table.rosterName = newEntry.getName();
+
+                try {
+                    VCard vCard = getUserDetails(newEntry.getJid().asEntityBareJidIfPossible());
+
+                    table.name = vCard.getFirstName() + " " + vCard.getLastName();
+                    table.imageUrl = vCard.getField("URL");
+                    ChatItem chatItem = getLastMessage(newEntry.getJid());
+                    table.lastMessage = new Gson().toJson(chatItem);
+                    table.time = System.currentTimeMillis();
+                    table.status = 0;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                int unreadCount = 0;
+                try {
+                    Stanza stanza = getUnreadMessage(newEntry.getJid(), mVcard.getFrom());
+//                       Logger.d(new Gson().toJson(stanza));
+                    XmlToJson xmlToJson = new XmlToJson.Builder(stanza.toXML("unseen_messages").toString())
+                            .forceIntegerForPath("iq/unseen_messages/amount")
+                            .build();
+//                       Logger.d(xmlToJson);
+                    JSONObject jsonObject = new JSONObject(xmlToJson.toString());
+                    String value = jsonObject.getString("content").replace("<unseen-messages xmlns='urn:xmpp:mark_as_read' ", "").replaceAll("\\D", "");
+//                       Logger.d(value);
+                    unreadCount = Integer.valueOf(value);
+                    table.unreadCount = unreadCount;
+
+                    if (!table.id.contains(Constants.EVALY_NUMBER)) {
+//                        AsyncTask.execute(new Runnable() {
+//                            @Override
+//                            public void run() {
+////                            Logger.d(new Gson().toJson(table));
+//                                AppController.database.taskDao().addRoster(table);
+//                            }
+//                        });
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+    }
+
+    public List<ChatItem> getChatHistoryWithJID(Jid jid, int maxResults, boolean isPaginated) {
+        List<ChatItem> chatMessageList = new ArrayList<>();
+
+//        Logger.d(jid);
+
+        try {
+            mamManager = MamManager.getInstanceFor(connection);
+            Logger.d(mamManager.isSupported());
+
+//            mamManager.queryMostRecentPage(jid, maxResults).pagePrevious(maxResults);
+
+
+            mamQueryArgs = MamManager.MamQueryArgs.builder()
+                    .setResultPageSize(maxResults)
+                    .limitResultsToJid(jid)
+                    .queryLastPage()
+                    .build();
+
+            mamQueryResult = mamManager.queryArchive(mamQueryArgs);
+//            mamQueryResult.pageNext(maxResults);
+//            List<Message> forwardedMessages;
+//            if (isPaginated && !mamQueryResult.isComplete()) {
+//                Logger.d(mamManager);
+//                Logger.d("PAGINATED");
+//                forwardedMessages = mamQueryResult.pagePrevious(maxResults);
+//            } else {
+//                Logger.d("NON PAGINATION");
+//                forwardedMessages = mamQueryResult.getMessages();
+//            }
+            List<Message> forwardedMessages = mamQueryResult.getMessages();
+
+            Iterator<Message> forwardedIterator = forwardedMessages.iterator();
+
+            while (forwardedIterator.hasNext()) {
+                Message message = forwardedIterator.next();
+
+                ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
+                JSONObject jsonObject = new JSONObject(new Gson().toJson(message));
+
+                JSONObject ob1 = jsonObject.getJSONObject("packetExtensions").getJSONObject("map");
+                String json = ob1.toString();
+                String json1 = "{\"" + json.substring(json.indexOf("urn:xmpp:sid:0"));
+                JSONObject object = new JSONObject(json1);
+                JSONArray jsonArray = object.getJSONArray("urn:xmpp:sid:0");
+                String id = jsonArray.getJSONObject(0).getString("id");
+                chatItem.setMessageId(id);
+                chatMessageList.add(chatItem);
+            }
+        } catch (XMPPException.XMPPErrorException e) {
+            e.printStackTrace();
+        } catch (SmackException.NotLoggedInException e) {
+            e.printStackTrace();
+        } catch (SmackException.NotConnectedException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (SmackException.NoResponseException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return chatMessageList;
+    }
+
+    public List<ChatItem> getChatHistoryWithPagination(Jid jid, int maxResults, String uid) {
+        List<ChatItem> chatMessageList = new ArrayList<>();
+
+//        Logger.d(uid);
+
+//        IQ iq = new IQ("query") {
+//            @Override
+//            protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+//                xml.rightAngleBracket();
+//                xml.append("<iq type='set' id='"+CredentialManager.getUserName()+System.currentTimeMillis()+"'>" +
+//                        "  <query xmlns='urn:xmpp:mam:2'>" +
+//                        "    <x xmlns='jabber:x:data' type='submit'>" +
+//                        "      <field var='FORM_TYPE' type='hidden'>" +
+//                        "        <value>urn:xmpp:mam:2</value>" +
+//                        "      </field>" +
+//                        "     <field var='with'>" +
+//                        "        <value>"+jid+"</value>" +
+//                        "      </field>" +
+//                        "    </x>" +
+//                        "    <set xmlns='http://jabber.org/protocol/rsm'>" +
+//                        "      <max>"+maxResults+"</max>" +
+//                        "      <before>"+uid+"</before>" +
+//                        "    </set>" +
+//                        "  </query>" +
+//                        "</iq>");
+//                Logger.d(xml);
+//                return xml;
+//            }
+//
+//
+////            "      <field var='start'>" +
+////                    "        <value>"+uid+"</value>" +
+////                    "      </field>" +
+//        };
+
+//        Logger.d(new Gson().toJson(iq));
+
+//        connection.sendIqRequestAsync(IQ.createResultIQ(iq));
+
+
+        try {
+//            MamManager mamManager = MamManager.getInstanceFor(connection);
+//            Logger.d(mamManager.isSupported());
+////            mamManager.queryMostRecentPage(jid, maxResults).pageNext(maxResults);
+//
+//
+            mamQueryArgs = MamManager.MamQueryArgs.builder()
+                    .beforeUid(uid)
+                    .setResultPageSize(maxResults)
+                    .limitResultsToJid(jid)
+                    .build();
+//
+            mamQueryResult = mamManager.queryArchive(mamQueryArgs);
+//            mamQueryResult.pagePrevious(maxResults);
+//            mamQueryResult.pageNext(maxResults);
+//            Logger.d(mamQueryResult.getMessageCount());
+
+
+            Logger.d(mamQueryResult.getPage().getMessages().size());
+            if (mamQueryResult.getPage().getMessages().size() != 0) {
+                List<Message> forwardedMessages = mamQueryResult.pagePrevious(maxResults);
+
+                Iterator<Message> forwardedIterator = forwardedMessages.iterator();
+//            Logger.d(forwardedMessages.size());
+//            Logger.d(new Gson().toJson(forwardedMessages));
+
+                while (forwardedIterator.hasNext()) {
+                    Message message = forwardedIterator.next();
+
+//                Logger.d(message.toXML("stanza-id"));
+//                Logger.d(message.getBody());
+//                Stanza stanza = forwarded.getBody();
+//                if (stanza instanceof Message) {
+//                    String messageId = stanza.getStanzaId();
+//                    mMessageListener.processMessage((Message) stanza);
+////                    xmppTcpConnection.processMessage((Message) stanza);
+//                }
+
+                    ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
+                    JSONObject jsonObject = new JSONObject(new Gson().toJson(message));
+
+                    JSONObject ob1 = jsonObject.getJSONObject("packetExtensions").getJSONObject("map");
+                    String json = ob1.toString();
+//                Logger.d(json);
+                    String json1 = "{\"" + json.substring(json.indexOf("urn:xmpp:sid:0"));
+                    JSONObject object = new JSONObject(json1);
+//                Logger.d(json1);
+                    JSONArray jsonArray = object.getJSONArray("urn:xmpp:sid:0");
+                    String id = jsonArray.getJSONObject(0).getString("id");
+//                Logger.d(id+" ==========");
+                    chatItem.setMessageId(id);
+                    chatMessageList.add(chatItem);
+                }
+            }
+
+        } catch (XMPPException.XMPPErrorException e) {
+            e.printStackTrace();
+        } catch (SmackException.NotLoggedInException e) {
+            e.printStackTrace();
+        } catch (SmackException.NotConnectedException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (SmackException.NoResponseException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        Logger.d(new Gson().toJson(chatMessageList));
+        return chatMessageList;
+    }
+
+    //Chat State events
+    public void updateChatStatus(String receiver, ChatState chatState) {
+//        Logger.d(receiver);
+        if (chat_created_for.get(receiver) == null)
+            chat_created_for.put(receiver, false);
+
+//        if (!chat_created_for.get(receiver)) {
+//            mChat = ChatManager.getInstanceFor(connection).createChat(
+//                    receiver,
+//                    mMessageListener);
+//
+//            updateChatEntryMap(receiver);
+//            chat_created_for.put(receiver,true);
+//        }
+
+        try {
+            mChat = ChatManager.getInstanceFor(connection).chatWith(JidCreate.entityBareFrom(receiver));
+        } catch (XmppStringprepException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            if (connection.isAuthenticated()) {
+//                Logger.d(chatState);
+//                Logger.d(mChat.getXmppAddressOfChatPartner());
+                if (mChat == null) {
+                    Logger.d("CHAT_NULL");
+                }
+                ChatStateManager.getInstance(connection).setCurrentState(chatState, mChat);
+            }
+        } catch (SmackException.NotConnectedException e) {
+            if (debug) Log.e(TAG, "status Not sent!-Not Connected!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (debug) Log.e(TAG, "status Not sent!" + e.getMessage());
+        }
+    }
 
     // Our own connection Listener
     // Here, you can handle several connection events in our own way
@@ -1314,121 +1729,6 @@ public class XMPPHandler {
             loggedin = false;
         }
 
-    }
-
-    public void changePresence() {
-        Presence presence = new Presence(Presence.Type.unavailable);
-        try {
-            connection.sendStanza(presence);
-        } catch (SmackException.NotConnectedException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateRoster(List<RosterTable> roasterList) {
-        List<RosterTable> list = new ArrayList<>();
-        for (int i = 0; i < roasterList.size(); i++) {
-            VCard vCard = null;
-            RosterTable table = roasterList.get(i);
-            try {
-                vCard = getUserDetails(JidCreate.bareFrom(table.id).asEntityBareJidIfPossible());
-                if (vCard != null) {
-                    table.name = vCard.getFirstName() + " " + vCard.getLastName();
-                    table.nick_name = vCard.getNickName();
-                    table.imageUrl = vCard.getField("URL");
-                    list.add(table);
-//                    Logger.d(list.size() + "    " + roasterList.size());
-                }
-
-                if (list.size() == roasterList.size()) {
-                    updateMessage(list);
-                }
-
-            } catch (XmppStringprepException e) {
-                e.printStackTrace();
-            }
-//                updateMessage(list);
-
-        }
-
-
-    }
-
-
-    private void updateMessage(List<RosterTable> roasterList) {
-        List<RosterTable> list = roasterList;
-        int count = 0;
-
-//        Logger.d(new Gson().toJson(list));
-        for (int i = 0; i < list.size(); i++) {
-            try {
-                ChatItem chatItem = getLastMessage(JidCreate.bareFrom(list.get(i).id));
-
-                if (chatItem != null) {
-                    list.get(i).lastMessage = new Gson().toJson(chatItem);
-                    list.get(i).time = chatItem.getLognTime();
-                }
-                try {
-                    Stanza stanza = getUnreadMessage(JidCreate.bareFrom(list.get(i).id), mVcard.getFrom());
-//                       Logger.d(new Gson().toJson(stanza));
-                    XmlToJson xmlToJson = new XmlToJson.Builder(stanza.toXML("unseen-messages").toString())
-                            .forceIntegerForPath("iq/unseen-messages/amount")
-                            .build();
-//                       Logger.d(xmlToJson);
-                    JSONObject jsonObject = new JSONObject(xmlToJson.toString());
-                    String value = jsonObject.getString("content").replace("<unseen-messages xmlns='urn:xmpp:mark_as_read' ", "").replaceAll("\\D", "");
-//                       Logger.d(value);
-                    list.get(i).unreadCount = Integer.valueOf(value);
-
-//                       if (Integer.parseInt(value)>0){
-//                           holder.tvUnreadCount.setText(value);
-//                           holder.tvUnreadCount.setVisibility(View.VISIBLE);
-//                       }else {
-//                           holder.tvUnreadCount.setVisibility(View.GONE);
-//                       }
-//                       unreadCount.add(Integer.parseInt(value));
-                } catch (Exception e) {
-//                    e.printStackTrace();
-                }
-                count = count + 1;
-            } catch (XmppStringprepException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (list.size() == 0) {
-            AppController.allDataLoaded = true;
-        }
-        if (count == list.size()) {
-//            Logger.d(count + "    ==========");
-
-            for (RosterTable table : list) {
-                // Logger.d(Constants.EVALY_NUMBER+"      "+table.id);
-                if (!table.id.contains(Constants.EVALY_NUMBER)) {
-//                    AsyncTask.execute(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            AppController.database.taskDao().addRoster(table);
-//                        }
-//                    });
-                }
-            }
-            AppController.allDataLoaded = true;
-        }
-    }
-
-    private int getListPosition(ChatItem chatItem) {
-        int pos = -1;
-        for (int i = 0; i < roasterList.size(); i++) {
-//            Logger.d(chatItem.getSender() + "      " + roasterList.get(i).getRoasterEntryUser());
-            if (roasterList.get(i).getRoasterEntryUser().asUnescapedString().equalsIgnoreCase(chatItem.getSender())) {
-                pos = i;
-                break;
-            }
-        }
-        return pos;
     }
 
     //Your own Chat Manager. We attach the message events here
@@ -1706,317 +2006,6 @@ public class XMPPHandler {
 //                }
 //            });
             service.onPresenceChange(presenceModel);
-        }
-    }
-
-    /*
-     * Whenever a user sends a subscription request, you have to send him back two subscription requests:
-     * 1. Presence.Type.subscribe
-     * 2. Presence.Type.subscribed (you are now subscribed to user, at this point user can see your presence,
-     *    but you can not see his presence)
-     *
-     */
-    public void confirmSubscription(BareJid fromJID, boolean shouldSubscribe) {
-        final RosterEntry newEntry = roster.getEntry(fromJID);
-        //Prepare "subscribe" precense
-        Presence subscribe = new Presence(Presence.Type.subscribe);
-        subscribe.setTo(fromJID);
-
-        //Prepare "subscribed" precense
-        Presence subscribed = new Presence(Presence.Type.subscribed);
-        subscribed.setTo(fromJID);
-
-        //Prepare Unsubscribe
-        Presence unsubscribe = new Presence(Presence.Type.unsubscribe);
-        unsubscribe.setTo(fromJID);
-
-//        Logger.d("{{{{{{{{{{{{{{{{");
-        //Send both (or only subscribed, if user has already sent request)
-        try {
-            if (shouldSubscribe) {
-                if (newEntry == null || newEntry.getType() == RosterPacket.ItemType.from) {
-                    Logger.d("+++++++++++++");
-                    connection.sendStanza(subscribed);
-                    connection.sendStanza(subscribe);
-                } else {
-                    Logger.d("-----------");
-                    connection.sendStanza(subscribed);
-                }
-            } else {
-                Logger.d("UNSUBSCRIBE");
-                connection.sendStanza(unsubscribe);
-            }
-        } catch (SmackException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        if (shouldSubscribe) {
-            if (newEntry != null) {
-                RosterTable table = new RosterTable();
-                table.id = newEntry.getJid().asUnescapedString();
-                table.rosterName = newEntry.getName();
-
-                try {
-                    VCard vCard = getUserDetails(newEntry.getJid().asEntityBareJidIfPossible());
-
-                    table.name = vCard.getFirstName() + " " + vCard.getLastName();
-                    table.imageUrl = vCard.getField("URL");
-                    ChatItem chatItem = getLastMessage(newEntry.getJid());
-                    table.lastMessage = new Gson().toJson(chatItem);
-                    table.time = System.currentTimeMillis();
-                    table.status = 0;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                int unreadCount = 0;
-                try {
-                    Stanza stanza = getUnreadMessage(newEntry.getJid(), mVcard.getFrom());
-//                       Logger.d(new Gson().toJson(stanza));
-                    XmlToJson xmlToJson = new XmlToJson.Builder(stanza.toXML("unseen_messages").toString())
-                            .forceIntegerForPath("iq/unseen_messages/amount")
-                            .build();
-//                       Logger.d(xmlToJson);
-                    JSONObject jsonObject = new JSONObject(xmlToJson.toString());
-                    String value = jsonObject.getString("content").replace("<unseen-messages xmlns='urn:xmpp:mark_as_read' ", "").replaceAll("\\D", "");
-//                       Logger.d(value);
-                    unreadCount = Integer.valueOf(value);
-                    table.unreadCount = unreadCount;
-
-                    if (!table.id.contains(Constants.EVALY_NUMBER)) {
-//                        AsyncTask.execute(new Runnable() {
-//                            @Override
-//                            public void run() {
-////                            Logger.d(new Gson().toJson(table));
-//                                AppController.database.taskDao().addRoster(table);
-//                            }
-//                        });
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
-    }
-
-    public List<ChatItem> getChatHistoryWithJID(Jid jid, int maxResults, boolean isPaginated) {
-        List<ChatItem> chatMessageList = new ArrayList<>();
-
-//        Logger.d(jid);
-
-        try {
-            mamManager = MamManager.getInstanceFor(connection);
-            Logger.d(mamManager.isSupported());
-
-//            mamManager.queryMostRecentPage(jid, maxResults).pagePrevious(maxResults);
-
-
-            mamQueryArgs = MamManager.MamQueryArgs.builder()
-                    .setResultPageSize(maxResults)
-                    .limitResultsToJid(jid)
-                    .queryLastPage()
-                    .build();
-
-            mamQueryResult = mamManager.queryArchive(mamQueryArgs);
-//            mamQueryResult.pageNext(maxResults);
-//            List<Message> forwardedMessages;
-//            if (isPaginated && !mamQueryResult.isComplete()) {
-//                Logger.d(mamManager);
-//                Logger.d("PAGINATED");
-//                forwardedMessages = mamQueryResult.pagePrevious(maxResults);
-//            } else {
-//                Logger.d("NON PAGINATION");
-//                forwardedMessages = mamQueryResult.getMessages();
-//            }
-            List<Message> forwardedMessages = mamQueryResult.getMessages();
-
-            Iterator<Message> forwardedIterator = forwardedMessages.iterator();
-
-            while (forwardedIterator.hasNext()) {
-                Message message = forwardedIterator.next();
-
-                ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
-                JSONObject jsonObject = new JSONObject(new Gson().toJson(message));
-
-                JSONObject ob1 = jsonObject.getJSONObject("packetExtensions").getJSONObject("map");
-                String json = ob1.toString();
-                String json1 = "{\"" + json.substring(json.indexOf("urn:xmpp:sid:0"));
-                JSONObject object = new JSONObject(json1);
-                JSONArray jsonArray = object.getJSONArray("urn:xmpp:sid:0");
-                String id = jsonArray.getJSONObject(0).getString("id");
-                chatItem.setMessageId(id);
-                chatMessageList.add(chatItem);
-            }
-        } catch (XMPPException.XMPPErrorException e) {
-            e.printStackTrace();
-        } catch (SmackException.NotLoggedInException e) {
-            e.printStackTrace();
-        } catch (SmackException.NotConnectedException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (SmackException.NoResponseException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return chatMessageList;
-    }
-
-    public List<ChatItem> getChatHistoryWithPagination(Jid jid, int maxResults, String uid) {
-        List<ChatItem> chatMessageList = new ArrayList<>();
-
-//        Logger.d(uid);
-
-//        IQ iq = new IQ("query") {
-//            @Override
-//            protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-//                xml.rightAngleBracket();
-//                xml.append("<iq type='set' id='"+CredentialManager.getUserName()+System.currentTimeMillis()+"'>" +
-//                        "  <query xmlns='urn:xmpp:mam:2'>" +
-//                        "    <x xmlns='jabber:x:data' type='submit'>" +
-//                        "      <field var='FORM_TYPE' type='hidden'>" +
-//                        "        <value>urn:xmpp:mam:2</value>" +
-//                        "      </field>" +
-//                        "     <field var='with'>" +
-//                        "        <value>"+jid+"</value>" +
-//                        "      </field>" +
-//                        "    </x>" +
-//                        "    <set xmlns='http://jabber.org/protocol/rsm'>" +
-//                        "      <max>"+maxResults+"</max>" +
-//                        "      <before>"+uid+"</before>" +
-//                        "    </set>" +
-//                        "  </query>" +
-//                        "</iq>");
-//                Logger.d(xml);
-//                return xml;
-//            }
-//
-//
-////            "      <field var='start'>" +
-////                    "        <value>"+uid+"</value>" +
-////                    "      </field>" +
-//        };
-
-//        Logger.d(new Gson().toJson(iq));
-
-//        connection.sendIqRequestAsync(IQ.createResultIQ(iq));
-
-
-        try {
-//            MamManager mamManager = MamManager.getInstanceFor(connection);
-//            Logger.d(mamManager.isSupported());
-////            mamManager.queryMostRecentPage(jid, maxResults).pageNext(maxResults);
-//
-//
-            mamQueryArgs = MamManager.MamQueryArgs.builder()
-                    .beforeUid(uid)
-                    .setResultPageSize(maxResults)
-                    .limitResultsToJid(jid)
-                    .build();
-//
-            mamQueryResult = mamManager.queryArchive(mamQueryArgs);
-//            mamQueryResult.pagePrevious(maxResults);
-//            mamQueryResult.pageNext(maxResults);
-//            Logger.d(mamQueryResult.getMessageCount());
-
-
-            Logger.d(mamQueryResult.getPage().getMessages().size());
-            if (mamQueryResult.getPage().getMessages().size() != 0) {
-                List<Message> forwardedMessages = mamQueryResult.pagePrevious(maxResults);
-
-                Iterator<Message> forwardedIterator = forwardedMessages.iterator();
-//            Logger.d(forwardedMessages.size());
-//            Logger.d(new Gson().toJson(forwardedMessages));
-
-                while (forwardedIterator.hasNext()) {
-                    Message message = forwardedIterator.next();
-
-//                Logger.d(message.toXML("stanza-id"));
-//                Logger.d(message.getBody());
-//                Stanza stanza = forwarded.getBody();
-//                if (stanza instanceof Message) {
-//                    String messageId = stanza.getStanzaId();
-//                    mMessageListener.processMessage((Message) stanza);
-////                    xmppTcpConnection.processMessage((Message) stanza);
-//                }
-
-                    ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
-                    JSONObject jsonObject = new JSONObject(new Gson().toJson(message));
-
-                    JSONObject ob1 = jsonObject.getJSONObject("packetExtensions").getJSONObject("map");
-                    String json = ob1.toString();
-//                Logger.d(json);
-                    String json1 = "{\"" + json.substring(json.indexOf("urn:xmpp:sid:0"));
-                    JSONObject object = new JSONObject(json1);
-//                Logger.d(json1);
-                    JSONArray jsonArray = object.getJSONArray("urn:xmpp:sid:0");
-                    String id = jsonArray.getJSONObject(0).getString("id");
-//                Logger.d(id+" ==========");
-                    chatItem.setMessageId(id);
-                    chatMessageList.add(chatItem);
-                }
-            }
-
-        } catch (XMPPException.XMPPErrorException e) {
-            e.printStackTrace();
-        } catch (SmackException.NotLoggedInException e) {
-            e.printStackTrace();
-        } catch (SmackException.NotConnectedException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (SmackException.NoResponseException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-//        Logger.d(new Gson().toJson(chatMessageList));
-        return chatMessageList;
-    }
-
-
-    //Chat State events
-    public void updateChatStatus(String receiver, ChatState chatState) {
-//        Logger.d(receiver);
-        if (chat_created_for.get(receiver) == null)
-            chat_created_for.put(receiver, false);
-
-//        if (!chat_created_for.get(receiver)) {
-//            mChat = ChatManager.getInstanceFor(connection).createChat(
-//                    receiver,
-//                    mMessageListener);
-//
-//            updateChatEntryMap(receiver);
-//            chat_created_for.put(receiver,true);
-//        }
-
-        try {
-            mChat = ChatManager.getInstanceFor(connection).chatWith(JidCreate.entityBareFrom(receiver));
-        } catch (XmppStringprepException e) {
-            e.printStackTrace();
-        }
-
-
-        try {
-            if (connection.isAuthenticated()) {
-//                Logger.d(chatState);
-//                Logger.d(mChat.getXmppAddressOfChatPartner());
-                if (mChat == null) {
-                    Logger.d("CHAT_NULL");
-                }
-                ChatStateManager.getInstance(connection).setCurrentState(chatState, mChat);
-            }
-        } catch (SmackException.NotConnectedException e) {
-            if (debug) Log.e(TAG, "status Not sent!-Not Connected!");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (debug) Log.e(TAG, "status Not sent!" + e.getMessage());
         }
     }
 }
