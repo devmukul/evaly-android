@@ -121,13 +121,16 @@ public class MainActivity extends BaseActivity {
             if (xmppHandler.isLoggedin()) {
                 VCard vCard = xmppHandler.getCurrentUserDetails();
                 if (CredentialManager.getUserData() != null) {
-                    if (vCard.getFirstName() == null) {
-                        Logger.d("========");
-                        xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                        XMPPHandler.disconnect();
-                    } else {
-                        XMPPHandler.disconnect();
+                    if (vCard != null){
+                        if (vCard.getFirstName() == null) {
+                            Logger.d("========");
+                            xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                            XMPPHandler.disconnect();
+                        } else {
+                            XMPPHandler.disconnect();
+                        }
                     }
+
                 }
             }
 

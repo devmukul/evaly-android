@@ -229,7 +229,6 @@ public class PayViaBkashActivity extends BaseActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setProgress(0);
 
-
             }
 
 
