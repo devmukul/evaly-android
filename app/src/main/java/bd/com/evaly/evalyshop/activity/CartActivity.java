@@ -481,7 +481,7 @@ public class CartActivity extends BaseActivity {
                     return;
                 }}
 
-                Toast.makeText(context, "Couldn't place holder", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Couldn't place order", Toast.LENGTH_SHORT).show();
                 dialog.hideDialog();
                 alert.hideDialog();
             }

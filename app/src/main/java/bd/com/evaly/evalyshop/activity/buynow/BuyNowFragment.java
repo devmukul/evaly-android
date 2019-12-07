@@ -526,7 +526,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
 
                 dialog.hideDialog();
-                Toast.makeText(context, "Couldn't place holder, might be a server error.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
