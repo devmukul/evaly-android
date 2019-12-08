@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.util;
 
+import bd.com.evaly.evalyshop.BuildConfig;
+
 public class UrlUtils {
 
     /* Dev mode */
@@ -9,7 +11,7 @@ public class UrlUtils {
 
 
     /* Production */
-    public static final String DOMAIN = "https://api.evaly.com.bd/";
+    public static final String DOMAIN = BuildConfig.BASE_URL;
     public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
 
 
