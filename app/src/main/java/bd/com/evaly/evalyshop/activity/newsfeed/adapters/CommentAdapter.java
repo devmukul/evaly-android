@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,15 +9,17 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.Author;
@@ -181,19 +182,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                         new AlertDialog.Builder(context)
                                 .setMessage("Are you sure you want to delete?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                                        fragment.deletePost(commentItem.getId()+"", "comment");
-
-
-                                    }})
+                                .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(commentItem.getId()+"", "comment"))
                                 .setNegativeButton("NO", null).show();
-
-
-
-
                         return false;
                     }
                 }
@@ -237,8 +227,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             reply1Text = itemView.findViewById(R.id.reply1Text);
             replyMoreCount = itemView.findViewById(R.id.replyViewCount);
             replyHolder = itemView.findViewById(R.id.replyHolder);
-
-
 
             view = itemView;
         }

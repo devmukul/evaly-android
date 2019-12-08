@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -27,14 +26,10 @@ import com.bumptech.glide.request.target.Target;
 
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.activity.OrderListActivity;
-import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedNotification;
-import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.models.Notifications;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -65,7 +60,6 @@ public class NotificationNewsfeedAdapter extends RecyclerView.Adapter<Notificati
 
         myViewHolder.messages.setText(Html.fromHtml(notifications.get(i).getMessage()));
 
-
         Glide.with(context)
                 .load(notifications.get(i).getImageURL())
                 .fitCenter()
@@ -89,41 +83,38 @@ public class NotificationNewsfeedAdapter extends RecyclerView.Adapter<Notificati
                 .into(myViewHolder.shopImage);
 
 
-        myViewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myViewHolder.view.setOnClickListener(v -> {
 
-                try {
+            try {
 
-                    JSONObject metaData = new JSONObject(notifications.get(i).getMeta_data());
+                JSONObject metaData = new JSONObject(notifications.get(i).getMeta_data());
 
-                    Intent intent = new Intent();
+                Intent intent = new Intent();
 
-                    if (metaData.has("post_slug"))
-                        intent.putExtra("status_id", metaData.getString("post_slug"));
-                    else
-                        intent.putExtra("status_id", "");
+                if (metaData.has("post_slug"))
+                    intent.putExtra("status_id", metaData.getString("post_slug"));
+                else
+                    intent.putExtra("status_id", "");
 
-                    if (metaData.has("comment_id"))
-                        intent.putExtra("comment_id", metaData.getString("comment_id"));
-                    else
-                        intent.putExtra("comment_id", "");
+                if (metaData.has("comment_id"))
+                    intent.putExtra("comment_id", metaData.getString("comment_id"));
+                else
+                    intent.putExtra("comment_id", "");
 
 
-                    if (notifications.get(i).getContent_type().equals("comment") || notifications.get(i).getContent_type().equals("reply")) {
-                        ((NewsfeedNotification) context).setResult(Activity.RESULT_OK, intent);
-                        ((NewsfeedNotification) context).finish();
-                    } else {
+                if (notifications.get(i).getContent_type().equals("comment") || notifications.get(i).getContent_type().equals("reply")) {
+                    ((NewsfeedNotification) context).setResult(Activity.RESULT_OK, intent);
+                    ((NewsfeedNotification) context).finish();
+                } else {
 
-                        ((NewsfeedNotification) context).finish();
-                    }
-
-
-                }catch (Exception e){
-
+                    ((NewsfeedNotification) context).finish();
                 }
 
+
+            }catch (Exception e){
+
             }
+
         });
 
 
@@ -152,7 +143,6 @@ public class NotificationNewsfeedAdapter extends RecyclerView.Adapter<Notificati
     private double colorDistance(int a, int b) {
         return Math.sqrt(Math.pow(Color.red(a) - Color.red(b), 2) + Math.pow(Color.blue(a) - Color.blue(b), 2) + Math.pow(Color.green(a) - Color.green(b), 2));
     }
-
 
     public Bitmap changeColor(Bitmap src, int fromColor, int targetColor) {
         if(src == null) {

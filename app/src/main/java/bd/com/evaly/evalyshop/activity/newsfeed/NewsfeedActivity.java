@@ -155,12 +155,7 @@ public class NewsfeedActivity extends AppCompatActivity {
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
 
-                    bottomSheet.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    });
+                    bottomSheet.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
 
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_HALF_EXPANDED)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -186,82 +181,61 @@ public class NewsfeedActivity extends AppCompatActivity {
             spinnerHolder.setVisibility(View.GONE);
 
 
-        addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openImageSelector();
-            }
+        addPhoto.setOnClickListener(view -> openImageSelector());
+
+        share.setOnClickListener(view -> {
+
+            postBody = text.getText().toString();
+
+            int typePosition = typeSpinner.getSelectedItemPosition();
+            if (typePosition == 0)
+                postType = "ceo";
+            else if (typePosition == 1)
+                postType = "announcement";
+            else
+                postType = "public";
+
+
+            createPost();
         });
 
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        close.setOnClickListener(view -> {
 
-                postBody = text.getText().toString();
-
-                int typePosition = typeSpinner.getSelectedItemPosition();
-                if (typePosition == 0)
-                    postType = "ceo";
-                else if (typePosition == 1)
-                    postType = "announcement";
-                else
-                    postType = "public";
-
-
-                createPost();
-            }
-        });
-
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (text.getText().toString().equals(""))
-                    createPostDialog.dismiss();
-                else {
-                    new AlertDialog.Builder(NewsfeedActivity.this)
-                            .setMessage("Are you sure you want to discard the status?")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    createPostDialog.hide();
-                                }})
-                            .setNegativeButton("NO", null).show();
-                }
+            if (text.getText().toString().equals(""))
+                createPostDialog.dismiss();
+            else {
+                new AlertDialog.Builder(NewsfeedActivity.this)
+                        .setMessage("Are you sure you want to discard the status?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton("YES", (dialog, whichButton) -> createPostDialog.hide())
+                        .setNegativeButton("NO", null).show();
             }
         });
         
-        createBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        createBtn.setOnClickListener(view -> {
 
-                selectedImage = "";
-                postType = "CEO";
-                postBody = "";
-                postSlug = "";
+            selectedImage = "";
+            postType = "CEO";
+            postBody = "";
+            postSlug = "";
 
-                spinnerHolder.setVisibility(View.VISIBLE);
-                postImageHolder.setVisibility(View.GONE);
-                text.setText("");
-                addPhotoText.setText("Add Photo");
+            spinnerHolder.setVisibility(View.VISIBLE);
+            postImageHolder.setVisibility(View.GONE);
+            text.setText("");
+            addPhotoText.setText("Add Photo");
 
-                createPostDialog.show();
+            createPostDialog.show();
 
-            }
         });
 
 
         cancelPostImage.setOnClickListener(view -> {
 
-
             selectedImage = "";
             postImageHolder.setVisibility(View.GONE);
             addPhotoText.setText("Add Photo");
 
-
         });
-
-
 
         if (userDetails.getToken().equals(""))
             createBtn.setVisibility(View.GONE);
@@ -284,18 +258,14 @@ public class NewsfeedActivity extends AppCompatActivity {
             pager.addFragment(myFragment,"MY POSTS");
         }
 
-
         if (userDetails.getGroups().contains("EvalyEmployee")) {
             NewsfeedPendingFragment pendingFragment = NewsfeedPendingFragment.newInstance("pending");
             pager.addFragment(pendingFragment,"Pending");
-
         }
 
         pager.notifyDataSetChanged();
 
-
     }
-
 
 
     @Override
@@ -383,27 +353,16 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         }
 
-
         createPostDialog.show();
 
-
     }
-
-
-
-
 
     @Override
     public void onResume(){
 
         getNotificationCount();
-
         super.onResume();
-
-
     }
-
-
 
     public void getNotificationCount(){
 
@@ -414,49 +373,39 @@ public class NewsfeedActivity extends AppCompatActivity {
         } catch (Exception e) {
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
+            Log.d("onResponse", response.toString());
 
-                try {
+            try {
+                int count = response.getInt("unread_notification_count");
+                updateHotCount(count);
 
-                    int count = response.getInt("unread_notification_count");
-
-
-                    updateHotCount(count);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        getNotificationCount();
+                    }
 
-                    AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getNotificationCount();
-                        }
+                    @Override
+                    public void onFailed(int status) {
 
-                        @Override
-                        public void onFailed(int status) {
+                    }
+                });
 
-                        }
-                    });
+                return;
 
-                    return;
+            }}
 
-                }}
-
-            }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -527,56 +476,50 @@ public class NewsfeedActivity extends AppCompatActivity {
         Log.d("json body", parametersPost.toString());
 
 
-        JsonObjectRequest request = new JsonObjectRequest((postSlug.equals("") ? Request.Method.POST : Request.Method.PUT), url, parametersPost,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("json response", response.toString());
-                createBtn.setEnabled(true);
-                try {
+        JsonObjectRequest request = new JsonObjectRequest((postSlug.equals("") ? Request.Method.POST : Request.Method.PUT), url, parametersPost, response -> {
+            Log.d("json response", response.toString());
+            createBtn.setEnabled(true);
+            try {
 
 
-                    if (!userDetails.getGroups().contains("EvalyEmployee"))
-                        Toast.makeText(context, "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
+                if (!userDetails.getGroups().contains("EvalyEmployee"))
+                    Toast.makeText(context, "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
 
-                    //JSONArray jsonArray = response.getJSONObject("data");
-                    createPostDialog.dismiss();
-                    finish();
-                    startActivity(getIntent());
+                //JSONArray jsonArray = response.getJSONObject("data");
+                createPostDialog.dismiss();
+                finish();
+                startActivity(getIntent());
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            createPost();
-                        }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-                        @Override
-                        public void onFailed(int status) {
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                        }
-                    });
+                AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        createPost();
+                    }
 
-                    return;
+                    @Override
+                    public void onFailed(int status) {
 
-                }}
+                    }
+                });
 
-                Toast.makeText(context, "Couldn't create status", Toast.LENGTH_SHORT).show();
-                createBtn.setEnabled(true);
-            }
+                return;
+
+            }}
+
+            Toast.makeText(context, "Couldn't create status", Toast.LENGTH_SHORT).show();
+            createBtn.setEnabled(true);
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -676,12 +619,9 @@ public class NewsfeedActivity extends AppCompatActivity {
                 String type = data.getStringExtra("type");
                 String status_id = data.getStringExtra("status_id");
                 String comment_id = data.getStringExtra("comment_id");
-
                 newsfeedFragment.openCommentBottomSheet(status_id,"","", false,"","","");
 
         }
-
-
 
         if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
@@ -747,8 +687,6 @@ public class NewsfeedActivity extends AppCompatActivity {
     }
 
 
-
-
     private void uploadProfilePicture(final Bitmap bitmap) {
 
         ProgressDialog dialog = ProgressDialog.show(this, "",
@@ -760,60 +698,54 @@ public class NewsfeedActivity extends AppCompatActivity {
         Logger.d(url);
 
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
-                new Response.Listener<NetworkResponse>() {
-                    @Override
-                    public void onResponse(NetworkResponse response) {
+                response -> {
 
-                        dialog.dismiss();
+                    dialog.dismiss();
 
-                        Log.d("json image" ,new String(response.data));
+                    Log.d("json image" ,new String(response.data));
 
 
-                        try {
-                            JSONObject jsonObject = new JSONObject(new String(response.data));
+                    try {
+                        JSONObject jsonObject = new JSONObject(new String(response.data));
 
-                            Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
 
-                            if(jsonObject.getBoolean("success")) {
-                                String image = jsonObject.getJSONObject("data").getString("url");
-                                selectedImage = image;
-                                setPostPic();
+                        if(jsonObject.getBoolean("success")) {
+                            String image = jsonObject.getJSONObject("data").getString("url");
+                            selectedImage = image;
+                            setPostPic();
 
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                error -> {
 
-                        NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
+                        if (error.networkResponse.statusCode == 401){
 
-                            AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                                @Override
-                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                    uploadProfilePicture(bitmap);
-                                }
+                                AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                    @Override
+                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                        uploadProfilePicture(bitmap);
+                                    }
 
-                                @Override
-                        public void onFailed(int status) {
+                                    @Override
+                            public void onFailed(int status) {
 
-                        }
-                    });
+                            }
+                        });
 
-                    return;
+                        return;
 
-                }}
+                    }}
 
-                        dialog.dismiss();
-                        Log.e("json error", error.toString());
-                        Toast.makeText(context, "Image upload error", Toast.LENGTH_SHORT).show();
-                    }
+                    dialog.dismiss();
+                    Log.e("json error", error.toString());
+                    Toast.makeText(context, "Image upload error", Toast.LENGTH_SHORT).show();
                 }) {
 
 

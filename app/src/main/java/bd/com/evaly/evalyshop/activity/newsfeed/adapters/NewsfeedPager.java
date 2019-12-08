@@ -4,13 +4,11 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
+
 import java.util.ArrayList;
 import java.util.List;
-import bd.com.evaly.evalyshop.views.WrapContentHeightViewPager;
 
 public class NewsfeedPager extends FragmentPagerAdapter {
 
@@ -44,8 +42,6 @@ public class NewsfeedPager extends FragmentPagerAdapter {
     }
 
 
-
-
     @Override
     public Fragment getItem(int position) {
         Log.i("PosTabItem",""+position);
@@ -56,8 +52,6 @@ public class NewsfeedPager extends FragmentPagerAdapter {
     public int getCount() {
         return mFragmentList.size();
     }
-
-
 
 //    @Override
 //    public int getItemPosition(Object object) {
