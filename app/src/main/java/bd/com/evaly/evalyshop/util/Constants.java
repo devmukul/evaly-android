@@ -8,13 +8,7 @@ import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 
 public class Constants {
-    //DEV
-//    public static final String XMPP_DOMAIN = "chat-dev.evaly.com.bd";
-//    public static final String XMPP_HOST = "chat-dev.evaly.com.bd";
-//    public static final String EVALY_NUMBER = "09638111667";
-//    public static final String BUILD = "dev";
 
-    //PROD
     public static final String XMPP_DOMAIN = BuildConfig.CHAT_BASE;
     public static final String XMPP_HOST = BuildConfig.CHAT_BASE;
     public static final String EVALY_NUMBER = BuildConfig.EVALY_NUMBER;
