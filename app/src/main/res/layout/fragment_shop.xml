@@ -185,7 +185,7 @@
 
 
                                     <LinearLayout
-                                        android:id="@+id/share_btn"
+                                        android:id="@+id/llInbox"
                                         android:layout_width="wrap_content"
                                         android:layout_height="34dp"
                                         android:layout_marginRight="10dp"
@@ -194,17 +194,16 @@
                                         android:clickable="true"
                                         android:gravity="center"
                                         android:orientation="horizontal"
-                                        android:paddingLeft="10dp"
+                                        android:paddingLeft="15dp"
                                         android:paddingTop="7dp"
                                         android:paddingRight="15dp"
                                         android:paddingBottom="7dp">
 
                                         <ImageView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="16dp"
-                                            android:layout_weight="0"
+                                            android:layout_width="18dp"
+                                            android:layout_height="20dp"
                                             android:tint="#333"
-                                            app:srcCompat="@drawable/ic_share" />
+                                            app:srcCompat="@drawable/ic_inbox" />
 
 
                                     </LinearLayout>

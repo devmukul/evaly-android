@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -22,7 +23,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.orhanobut.logger.Logger;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -32,29 +36,34 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
+import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 
-public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyViewHolder>{
+public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyViewHolder> {
 
     ArrayList<NewsfeedItem> itemsList;
     Context context;
     NewsfeedFragment fragment;
+    NewsFeedShareListener listener;
 
-    public NewsfeedAdapter(ArrayList<NewsfeedItem> itemsList, Context context, NewsfeedFragment fragment) {
+    public NewsfeedAdapter(ArrayList<NewsfeedItem> itemsList, Context context, NewsfeedFragment fragment, NewsFeedShareListener listener) {
         this.itemsList = itemsList;
         this.context = context;
         this.fragment = fragment;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public NewsfeedAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_newsfeed_list,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_newsfeed_list, viewGroup, false);
         return new NewsfeedAdapter.MyViewHolder(view);
     }
 
@@ -67,7 +76,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             myViewHolder.userNameView.setText("User");
 
 
-        String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", itemsList.get(i).getCreatedAt()));
+        String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", itemsList.get(i).getCreatedAt()));
 
 
         if (itemsList.get(i).getIsAdmin()) {
@@ -81,14 +90,63 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             myViewHolder.userNameView.setCompoundDrawablePadding(15);
             myViewHolder.timeView.setText(Html.fromHtml("<b>Admin</b> · " + timeAgo));
 
-        } else  {
+        } else {
 
             myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
             myViewHolder.timeView.setText(timeAgo);
         }
 
+        if (isJSONValid(itemsList.get(i).getBody())) {
+            try {
+                JSONObject object = new JSONObject(itemsList.get(i).getBody());
+                myViewHolder.linkPreview.setLink(object.getString("url"), new ViewListener() {
+                    @Override
+                    public void onSuccess(boolean status) {
+                        Logger.d("Success");
+                    }
 
-        myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
+                    @Override
+                    public void onError(Exception e) {
+                        Logger.e(e.getMessage());
+                    }
+                });
+
+                String body = object.getString("body");
+                if (body == null || body.equalsIgnoreCase("")) {
+                    myViewHolder.statusView.setVisibility(View.GONE);
+                } else {
+                    myViewHolder.statusView.setVisibility(View.VISIBLE);
+                    myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(body, 180, "... <b>Show more</b>")));
+                }
+                myViewHolder.cardLink.setVisibility(View.VISIBLE);
+                myViewHolder.cardLink.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Logger.json(object.toString());
+                        try {
+                            context.startActivity(new Intent(new Intent(context, ViewProductActivity.class))
+                                    .putExtra("product_slug", object.getString("url").replace(UrlUtils.PRODUCT_BASE_URL, "")));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            myViewHolder.statusView.setVisibility(View.VISIBLE);
+            myViewHolder.cardLink.setVisibility(View.GONE);
+            myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
+        }
+
+        myViewHolder.llShareHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onSharePost(itemsList.get(i));
+            }
+        });
+
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
         Glide.with(context)
@@ -102,7 +160,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         String postImage = itemsList.get(i).getAttachment();
 
-        if (postImage.equals("null")){
+        if (postImage.equals("null")) {
 
             myViewHolder.postImage.setVisibility(View.GONE);
 
@@ -123,7 +181,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         final TextView likeCount = myViewHolder.likeCountView;
         likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
 
-        if(itemsList.get(i).isFavorited() || (favorite.getTag() != null && favorite.getTag().toString().equals("yes"))){
+        if (itemsList.get(i).isFavorited() || (favorite.getTag() != null && favorite.getTag().toString().equals("yes"))) {
             favorite.setImageResource(R.drawable.ic_favorite_color);
             favorite.setTag("yes");
 
@@ -141,12 +199,12 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                     return;
                 }
 
-                if(favorite.getTag().equals("yes")){
+                if (favorite.getTag().equals("yes")) {
 
                     fragment.sendLike(itemsList.get(i).getSlug(), true);
                     favorite.setImageResource(R.drawable.ic_favorite);
                     favorite.setTag("no");
-                    itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount()-1 );
+                    itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount() - 1);
                     likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
 
                 } else {
@@ -154,13 +212,12 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                     fragment.sendLike(itemsList.get(i).getSlug(), false);
                     favorite.setImageResource(R.drawable.ic_favorite_color);
                     favorite.setTag("yes");
-                    itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount()+1 );
+                    itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount() + 1);
                     likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
 
                 }
             }
         });
-
 
 
         View.OnClickListener commentOpener = new View.OnClickListener() {
@@ -190,12 +247,12 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                     public boolean onMenuItemClick(MenuItem item) {
 
 
-                        switch (item.getItemId()){
+                        switch (item.getItemId()) {
                             case R.id.action_share:
                                 Intent in = new Intent(Intent.ACTION_SEND);
                                 in.setType("text/plain");
                                 in.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
-                                in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/"+itemsList.get(i).getSlug());
+                                in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/" + itemsList.get(i).getSlug());
                                 context.startActivity(Intent.createChooser(in, "Share Post"));
                                 break;
                             case R.id.action_delete:
@@ -212,11 +269,12 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
                                                 fragment.deletePost(itemsList.get(i).getSlug(), "post");
 
-                                            }})
+                                            }
+                                        })
                                         .setNegativeButton("NO", null).show();
                                 break;
 
-                            case  R.id.action_edit:
+                            case R.id.action_edit:
 
                                 NewsfeedActivity activity = (NewsfeedActivity) context;
                                 activity.openEditBottomSheet(itemsList.get(i));
@@ -233,13 +291,15 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         });
 
 
-
-
     }
 
-    private String wordBeautify(int count, boolean like){
+    public interface NewsFeedShareListener<T> {
+        void onSharePost(T object);
+    }
 
-        if (count  == 0)
+    private String wordBeautify(int count, boolean like) {
+
+        if (count == 0)
             if (like)
                 return "Like";
             else
@@ -249,11 +309,10 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                 return "1 Like";
             else
                 return "1 Comment";
-        else
-        if (like)
+        else if (like)
             return count + " Likes";
         else
-            return count +" Comments";
+            return count + " Comments";
 
     }
 
@@ -267,11 +326,14 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         return position;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView userNameView, timeView, statusView, likeCountView, commentCountView;
         ImageView userImage, likeIcon, commentIcon, menuIcon, postImage;
         View view;
-        LinearLayout likeHolder, commentHolder;
+        LinearLayout likeHolder, commentHolder, llShareHolder;
+        RichLinkView linkPreview;
+        CardView cardLink;
+
         public MyViewHolder(final View itemView) {
             super(itemView);
 
@@ -289,15 +351,28 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
             likeHolder = itemView.findViewById(R.id.likeHolder);
             commentHolder = itemView.findViewById(R.id.commentHolder);
-
-
+            commentHolder = itemView.findViewById(R.id.commentHolder);
+            cardLink = itemView.findViewById(R.id.cardLink);
+            linkPreview = itemView.findViewById(R.id.linkPreview);
+            llShareHolder = itemView.findViewById(R.id.llShareHolder);
 
             view = itemView;
         }
     }
 
+    public boolean isJSONValid(String test) {
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+            // edited, to include @Arthur's comment
+            // e.g. in case JSONArray is valid as well...
+            try {
+                new JSONArray(test);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-
-
-    
 }

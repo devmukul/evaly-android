@@ -13,6 +13,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,15 +25,16 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,46 +47,53 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import bd.com.evaly.evalyshop.ProductGrid;
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.EvalyStoreActivity;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
-import bd.com.evaly.evalyshop.activity.InviteEarn;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.OrderListActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
-import bd.com.evaly.evalyshop.activity.VoucherActivity;
-import bd.com.evaly.evalyshop.activity.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.activity.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
-import bd.com.evaly.evalyshop.ProductGrid;
-import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.SliderAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.BannerItem;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.SliderViewPager;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    MainActivity activity;
-
-    HomeTabPagerAdapter pager;
-    SliderViewPager sliderPager;
-    TabLayout sliderIndicator;
-    List<BannerItem> sliderImages;
-    LinearLayout homeSearch,evalyStore;
-    TabLayout tabLayout;
-    LinearLayout voucher;
-    ShimmerFrameLayout shimmer;
+    private MainActivity activity;
+    private HomeTabPagerAdapter pager;
+    private SliderViewPager sliderPager;
+    private TabLayout sliderIndicator;
+    private List<BannerItem> sliderImages;
+    private LinearLayout homeSearch,evalyStore;
+    private TabLayout tabLayout;
+    private LinearLayout voucher;
+    private ShimmerFrameLayout shimmer;
     private boolean isShimmerShowed = false;
-    Timer timer;
-    RequestQueue rq;
-    View view;
-    String defaultCategory = "root";
-    UserDetails userDetails;
-    Context context;
+    private Timer timer;
+    private RequestQueue rq;
+    private View view;
+    private String defaultCategory = "root";
+    private UserDetails userDetails;
+    private Context context;
+    private SwipeRefreshLayout swipeLayout;
+
+
+    @Override
+    public void onRefresh() {
+
+        swipeLayout.setRefreshing(false);
+        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    }
 
     public HomeFragment() {
         // Required empty public constructor
@@ -97,10 +106,8 @@ public class HomeFragment extends Fragment {
         context = getContext();
         rq = Volley.newRequestQueue(context);
 
-
-//        Random Dice = new Random();
-//        int n = Dice.nextInt(Data.homeRandomCategory.length);
-//        defaultCategory = Data.homeRandomCategory[n];
+        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        swipeLayout.setOnRefreshListener(this);
 
         return view;
     }
@@ -161,8 +168,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
 
                 Intent ni = new Intent(context, EvalyStoreActivity.class);
-                ni.putExtra("title", "Dark Night");
-                ni.putExtra("slug", "dark-night");
+                ni.putExtra("title", "Mega Flash Sale");
+                ni.putExtra("slug", "mega-flash-sale");
                 startActivity(ni);
 
             }
@@ -328,6 +335,26 @@ public class HomeFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getNotificationCount();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
             }
         }) {
             @Override

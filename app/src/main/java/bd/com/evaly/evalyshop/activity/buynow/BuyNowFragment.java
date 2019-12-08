@@ -4,15 +4,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,6 +27,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,8 +40,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
-import com.orhanobut.logger.Logger;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -55,11 +52,11 @@ import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.models.order.OrderItems;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.shopItem.AttributesItem;
@@ -116,6 +113,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     RecyclerView recyclerVariation;
     private VariationAdapter adapterVariation;
     private ViewDialog dialog;
+    private List<OrderItemsItem> list;
 
     @Override
     public void selectVariation(int position) {
@@ -220,6 +218,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
 
+
+        list = new ArrayList<>();
+
         btnBottomSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -247,12 +248,15 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 orderJson.setContactNumber(contact_number.getText().toString());
                 orderJson.setCustomerAddress(customAddress.getText().toString());
                 orderJson.setPaymentMethod("evaly_pay");
+                orderJson.setOrderOrigin("app");
 
                 OrderItemsItem item = new OrderItemsItem();
                 item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
                 item.setShopItemId(shop_item_id);
 
-                List<OrderItemsItem> list = new ArrayList<>();
+
+                list = new ArrayList<>();
+
                 list.add(item);
 
                 orderJson.setOrderItems(list);
@@ -267,14 +271,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                 }catch (Exception e){}
 
-
-
-
             }
         });
-
-
-
 
 
         checkOutBtn.setOnClickListener(view1 -> {
@@ -283,12 +281,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
-
-            if (productPriceInt*quantityCount < 501){
-                Toast.makeText(context, "You can't order below 500 TK", Toast.LENGTH_LONG).show();
-                return;
-            }
-
 
             bottomSheetDialog.show();
 
@@ -463,6 +455,19 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 bottomSheetDialog.hide();
                 dialog.hideDialog();
 
+
+                String errorMsg = "Couldn't place order, might be a server error";
+
+                Log.d("json order", response.toString());
+
+                try {
+
+                    errorMsg = response.getString("message");
+
+                }catch (Exception e){
+
+                }
+
                 try {
                     if (response.getJSONArray("data").length() < 1) {
                         Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
@@ -488,7 +493,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 } catch (Exception e) {
 
                     Log.e("json exception", e.toString());
-                    Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -497,8 +502,31 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
+                        if (response.statusCode == 401){
+
+                            AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                @Override
+                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                    placeOrder(payload);
+                                }
+
+                                @Override
+                                public void onFailed(int status) {
+
+                                }
+                            });
+
+                            return;
+
+                    }}
+
+
                 dialog.hideDialog();
-                Toast.makeText(context, "Couldn't place holder, might be a server error.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override

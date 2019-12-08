@@ -57,6 +57,12 @@ public class XMPPEventReceiver extends BroadcastReceiver {
                 if(xmppCustomEventListener != null) xmppCustomEventListener.onPasswordChanged();
                 break;
 
+            case Constants.EVT_PASSWORD_CHANGE_FAILED:
+                Bundle intentBundle4 = intent.getExtras();
+                String changeError = intentBundle4.getString( Constants.INTENT_KEY_CHANGE_PASS_FAILED );
+                if(xmppCustomEventListener != null) xmppCustomEventListener.onPasswordChangeFailed(changeError);
+                break;
+
             case Constants.EVT_RECONN_ERR:
                 if(xmppCustomEventListener != null) xmppCustomEventListener.onReConnectionError();
                 break;
@@ -84,8 +90,6 @@ public class XMPPEventReceiver extends BroadcastReceiver {
 
             case Constants.EVT_NEW_MSG:
                 String data = intent.getStringExtra(Constants.INTENT_KEY_NEWMSG);
-                Logger.d(data);
-
                 ChatItem chatItem = new Gson().fromJson(data, ChatItem.class);
                 Logger.d(new Gson().toJson(chatItem));
                 if(xmppCustomEventListener != null) xmppCustomEventListener.onNewMessageReceived(chatItem);
@@ -93,25 +97,33 @@ public class XMPPEventReceiver extends BroadcastReceiver {
 
             case Constants.EVT_NEW_MSG_SENT:
                 String da = intent.getStringExtra(Constants.INTENT_KEY_NEWMSG_SENT);
-                Logger.d(da);
+//                Logger.d(da);
 
                 ChatItem chat= new Gson().fromJson(da, ChatItem.class);
-                Logger.d(new Gson().toJson(chat));
+//                Logger.d(new Gson().toJson(chat));
                 if(xmppCustomEventListener != null) xmppCustomEventListener.onNewMessageSent(chat);
                 break;
 
             case Constants.EVT_PRESENCE_CHG:
-                Bundle bundle = intent.getExtras();
-                PresenceModel presenceModel = (PresenceModel) bundle.getSerializable( Constants.INTENT_KEY_PRESENCE );
+                try {
+                    Bundle bundle = intent.getExtras();
+                    PresenceModel presenceModel = (PresenceModel) bundle.getSerializable( Constants.INTENT_KEY_PRESENCE );
 //                Logger.d(new Gson().toJson(presenceModel));
-                if(xmppCustomEventListener != null) xmppCustomEventListener.onPresenceChanged(presenceModel);
+                    if(xmppCustomEventListener != null) xmppCustomEventListener.onPresenceChanged(presenceModel);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
 
             case Constants.EVT_CHATSTATE_CHG:
-                Bundle intentBundle = intent.getExtras();
-                ChatStateModel chatStateModel = (ChatStateModel) intentBundle.getParcelable( Constants.INTENT_KEY_CHATSTATE );
+                try {
+                    Bundle intentBundle = intent.getExtras();
+                    ChatStateModel chatStateModel = (ChatStateModel) intentBundle.getSerializable( Constants.INTENT_KEY_CHATSTATE );
 //                Logger.d(chatStateModel.getChatState());
-                if(xmppCustomEventListener != null) xmppCustomEventListener.onChatStateChanged(chatStateModel);
+                    if(xmppCustomEventListener != null) xmppCustomEventListener.onChatStateChanged(chatStateModel);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
 
             case Constants.EVT_REQUEST_SUBSCRIBE:
@@ -143,6 +155,7 @@ public class XMPPEventReceiver extends BroadcastReceiver {
         void onConnectionClosed();
         void onReConnection();
         void onPasswordChanged();
+        void onPasswordChangeFailed(String msg);
         void onLoginFailed(String msg);
         void onPresenceChanged(PresenceModel presenceModel);
         void onChatStateChanged(ChatStateModel chatStateModel);

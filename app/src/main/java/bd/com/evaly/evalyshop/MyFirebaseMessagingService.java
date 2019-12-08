@@ -17,8 +17,11 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.activity.issue.IssuesActivity;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -31,40 +34,45 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
+        Logger.d(new Gson().toJson(remoteMessage.getData()));
+
         //showNotification(remoteMessage.getNotification().getBody());
 
         Context context = getApplicationContext();
 
 
         // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
+        try {
+            if (remoteMessage.getData().size() > 0) {
 
 
-            String title = remoteMessage.getData().get("title");
-            String body = remoteMessage.getData().get("body");
-            String type = remoteMessage.getData().get("type");
-            String extra = remoteMessage.getData().get("pageUrl");
+                String title = remoteMessage.getData().get("title");
+                String body = remoteMessage.getData().get("body");
+                String type = remoteMessage.getData().get("type");
+                String extra = remoteMessage.getData().get("pageUrl");
+                String resource_id = remoteMessage.getData().get("resource_id");
 
 
 
 
-            if(type.equals("text")){
+                if(type.equals("text")){
+                    sendNotification(body, title, extra, type);
+                } else if(type.equals("image")){
+                    String image_url = remoteMessage.getData().get("image_url");
 
-                sendNotification(body, title, extra);
+                    new generatePictureStyleNotification(this,title, body,
+                            image_url, extra).execute();
 
-            } else if(type.equals("image")){
+                } else if (type.equalsIgnoreCase("issue")){
+                    sendNotification(body, title, resource_id, type );
+                }
 
-
-                String image_url = remoteMessage.getData().get("image_url");
-
-                new generatePictureStyleNotification(this,title, body,
-                        image_url, extra).execute();
 
             }
 
-
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
@@ -74,7 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
 
-    private void sendNotification(String messageBody, String messageTitle, String pageUrl) {
+    private void sendNotification(String messageBody, String messageTitle, String pageUrl, String type) {
 
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -91,12 +99,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationChannel.enableVibration(true);
             notificationManager.createNotificationChannel(notificationChannel);
         }
+        Intent intent;
 
 
+        if (type.equalsIgnoreCase("issue")){
+            intent = new Intent(this, IssuesActivity.class);
+            intent.putExtra("invoice", pageUrl);
+        }else {
+            intent = new Intent(this, MainActivity.class);
+            intent.putExtra("pageUrl", pageUrl);
+        }
 
-
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("pageUrl", pageUrl);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);

@@ -128,7 +128,6 @@ public class SignUpActivity extends BaseActivity {
         final ViewDialog alert = new ViewDialog(this);
 
         alert.showDialog();
-
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("first_name", firstName.getText().toString());
         hashMap.put("last_name", lastName.getText().toString());
@@ -149,10 +148,9 @@ public class SignUpActivity extends BaseActivity {
                     Toast.makeText(getApplicationContext(), "This mobile number has already been used", Toast.LENGTH_LONG).show();
                 }else if (response.code() ==201){
 
-
-
                     Intent il = new Intent(SignUpActivity.this, PasswordActivity.class);
                     il.putExtra("phone", phoneNumber.getText().toString());
+                    il.putExtra("name", firstName.getText().toString()+" "+lastName.getText().toString());
                     il.putExtra("type", "signup");
                     finish();
                     startActivity(il);

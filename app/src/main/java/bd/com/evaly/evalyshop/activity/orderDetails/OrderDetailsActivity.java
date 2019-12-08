@@ -1,16 +1,23 @@
 package bd.com.evaly.evalyshop.activity.orderDetails;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,47 +29,66 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.badoualy.stepperindicator.StepperIndicator;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
-import com.thefinestartist.finestwebview.FinestWebView;
-import com.thefinestartist.finestwebview.listeners.WebViewListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.activity.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.adapter.OrderStatusAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.OrderStatus;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.util.Balance;
+import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.KeyboardUtil;
+import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.viewmodel.ImageUploadView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class OrderDetailsActivity extends BaseActivity {
 
@@ -99,6 +125,8 @@ public class OrderDetailsActivity extends BaseActivity {
     TextView amountToPayView, evalyPayText;
     ImageView bkash,cards,evalyPay;
 
+    BottomSheetDialog bottomSheetDialog;
+
 
     int paymentMethod = -1;
 
@@ -106,11 +134,13 @@ public class OrderDetailsActivity extends BaseActivity {
     RequestQueue queue;
 
     String shopGroup = "";
+    private String imageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details);
+        ButterKnife.bind(this);
 
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle("Order Details");
@@ -159,7 +189,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
         // update balance
-        Balance.update(this);
+        Balance.update(this, false);
 
         mViewBg = findViewById(R.id.bg);
 
@@ -393,7 +423,190 @@ public class OrderDetailsActivity extends BaseActivity {
 
     }
 
+    @OnClick(R.id.tvViewIssue)
+    void viewIssues(){
+        startActivity(new Intent(OrderDetailsActivity.this, IssuesActivity.class).putExtra("invoice", invoice_no));
+    }
 
+    @OnClick(R.id.tvReport)
+    void report(){
+        Logger.d("CLicked");
+        OrderIssueModel model = new OrderIssueModel();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        View view = LayoutInflater.from(this).inflate(R.layout.report_view, null, false);
+//        builder.setView(view);
+//        builder.setCancelable(false);
+
+        bottomSheetDialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
+        bottomSheetDialog.setContentView(R.layout.report_view);
+
+        Spinner spinner = bottomSheetDialog.findViewById(R.id.spnDelivery);
+        EditText etDescription = bottomSheetDialog.findViewById(R.id.etDescription);
+        Button btnSubmit = bottomSheetDialog.findViewById(R.id.btnSubmit);
+        ImageView ivClose = bottomSheetDialog.findViewById(R.id.ivClose);
+        LinearLayout addPhoto = bottomSheetDialog.findViewById(R.id.addPhoto);
+
+        List<String> options = new ArrayList<>();
+        List<OrderIssueModel> list = Constants.getDelivaryIssueList();
+        for (int i = 0; i<list.size(); i++){
+            options.add(list.get(i).getDescription());
+        }
+
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, options);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                model.setIssue_type(list.get(i).getIssue_type());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        addPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openImageSelector();
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (etDescription.getText().toString().trim().isEmpty()){
+                    etDescription.setError("Required");
+                    return;
+                }
+                model.setDescription(etDescription.getText().toString());
+
+                model.setAttachment(imageUrl);
+                dialog.showDialog();
+                submitIssue(model, bottomSheetDialog);
+                imageUrl = "";
+            }
+        });
+
+
+        View bottomSheetInternal = bottomSheetDialog.findViewById(R.id.design_bottom_sheet);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
+        new KeyboardUtil(OrderDetailsActivity.this, bottomSheetInternal);
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int newState) {
+                if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    Logger.d("=---==========------");
+                    view.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        }
+                    });
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    bottomSheetDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+        bottomSheetDialog.setCancelable(false);
+
+        bottomSheetDialog.show();
+
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+    }
+
+    private void submitIssue(OrderIssueModel model, BottomSheetDialog bottomSheetDialog) {
+        AuthApiHelper.submitIssue(model, invoice_no, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+            @Override
+            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                dialog.hideDialog();
+                if (response.code() == 200 || response.code() == 201){
+                    Toast.makeText(getApplicationContext(), "Your issue has been submitted, you will be notified shortly", Toast.LENGTH_LONG).show();
+                    bottomSheetDialog.dismiss();
+                } else if (response.code() == 401){
+                    submitIssue(model, bottomSheetDialog);
+                }else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailed(int status) {
+                dialog.hideDialog();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
+    private void setPostPic() {
+
+        if (imageUrl != null && bottomSheetDialog.isShowing()) {
+
+            bottomSheetDialog.findViewById(R.id.postImage).setVisibility(View.VISIBLE);
+
+            Glide.with(this)
+                    .asBitmap()
+                    .load(imageUrl)
+                    .skipMemoryCache(true)
+                    .fitCenter()
+                    .optionalCenterCrop()
+                    .placeholder(R.drawable.half_dp_bg_light)
+                    .into((ImageView) bottomSheetDialog.findViewById(R.id.postImage));
+        }
+
+    }
+
+
+    private void openSelector() {
+
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        String[] mimeTypes = {"image/jpeg", "image/png"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        startActivityForResult(intent, 1001);
+
+    }
+
+
+    private void openImageSelector() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    8000);
+        } else {
+            openSelector();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 8000) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                openSelector();
+            else {
+                Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
 
 
     public void addPartialPayDialog(){
@@ -589,8 +802,33 @@ public class OrderDetailsActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            makePaymentViaGiftCard(giftCode, invoice, amount);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
                 dialog.hideDialog();
                 Log.e("onErrorResponse", error.toString());
+
+
+
 
                 //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
 
@@ -639,7 +877,7 @@ public class OrderDetailsActivity extends BaseActivity {
     @Override
     public void onResume(){
         super.onResume();
-        Balance.update(this);
+        Balance.update(this, false);
         checkCardBalance();
 
     }
@@ -650,7 +888,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void checkCardBalance(){
 
-        String url=UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName()+"/";
+        String url=UrlUtils.BASE_URL_AUTH_API+"user-info-pay/"+userDetails.getUserName()+"/";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
             @Override
@@ -673,6 +911,27 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            checkCardBalance();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
             }
         }) {
             @Override
@@ -747,6 +1006,28 @@ public class OrderDetailsActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            makePartialPayment(invoice, amount);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
+
                 dialog.hideDialog();
                 Log.e("onErrorResponse", error.toString());
 
@@ -808,11 +1089,20 @@ public class OrderDetailsActivity extends BaseActivity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
+
+                Log.d("json payload", payload.toString());
+                Log.d("json response", response.toString());
+
                 dialog.hideDialog();
 
                 try {
 
                     String purl = response.getString("payment_gateway_url");
+
+
+                    Log.d("json response", purl);
+
                     Intent intent = new Intent(OrderDetailsActivity.this, PayViaCard.class);
                     intent.putExtra("url", purl);
                     startActivityForResult(intent,10002);
@@ -829,6 +1119,27 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            addBalanceViaCard(invoice, amount);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
+
             }
         }) {
             @Override
@@ -842,9 +1153,6 @@ public class OrderDetailsActivity extends BaseActivity {
                 return headers;
             }
 
-
-
-
         };
 
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
@@ -852,9 +1160,6 @@ public class OrderDetailsActivity extends BaseActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
     }
-
-
-
 
 
     public void shouldAddBalance(){
@@ -874,6 +1179,80 @@ public class OrderDetailsActivity extends BaseActivity {
                 getOrderDetails();
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // some stuff that will happen if there's no result
+            }
+        }
+
+        if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri selectedImage = data.getData();
+            String imagePath = RealPathUtil.getRealPath(context, selectedImage);
+            Log.d("json image uri", imagePath);
+
+            try {
+
+                String destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
+
+                try {
+
+                    Uri resultUri = data.getData();
+                    InputStream imageStream = null;
+                    try {
+                        imageStream = getContentResolver().openInputStream(resultUri);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = BitmapFactory.decodeStream(imageStream);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (bitmap == null) {
+                        Toast.makeText(getApplicationContext(), R.string.something_wrong, Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+
+//                    if (selectedImage != null && bottomSheetDialog.isShowing()) {
+//                        Glide.with(this)
+//                                .asBitmap()
+//                                .load(selectedImage)
+//                                .skipMemoryCache(true)
+//                                .fitCenter()
+//                                .optionalCenterCrop()
+//                                .placeholder(R.drawable.half_dp_bg_light)
+//                                .apply(new RequestOptions().override(300, 300))
+//                                .into((ImageView) bottomSheetDialog.findViewById(R.id.postImage));
+//                    }
+                    dialog.showDialog();
+
+                    Logger.d("+_+_+_+_+_+");
+
+                    AuthApiHelper.uploadImage(this, bitmap, new ImageUploadView() {
+                        @Override
+                        public void onImageUploadSuccess(String img, String smImg) {
+                            dialog.hideDialog();
+                            imageUrl = img;
+                            setPostPic();
+                        }
+
+                        @Override
+                        public void onImageUploadFailed(String msg) {
+                            dialog.hideDialog();
+                            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+
+                        }
+                    });
+
+                } catch (Exception e) {
+
+                }
+
+            } catch (Exception e) {
+
+                Log.d("json image error", e.toString());
+                Toast.makeText(context, "Error occurred while uploading image", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -936,6 +1315,48 @@ public class OrderDetailsActivity extends BaseActivity {
                         indicator.setCurrentStep(6);
                     }
                 }catch(Exception e){}
+
+                boolean delivery_confirmed, delivery_confirmation_required;
+                try {
+                    delivery_confirmation_required = response.getBoolean("delivery_confirmation_required");
+                    delivery_confirmed = response.getBoolean("delivery_confirmed");
+
+                    if (!delivery_confirmed && delivery_confirmation_required){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailsActivity.this);
+                        builder.setTitle("Did you receive the product?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                HashMap<String, String> data = new HashMap<>();
+                                data.put("invoice_no", invoice_no);
+                                AuthApiHelper.updateProductStatus(data, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                    @Override
+                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                        if (response.code() == 200 || response.code() == 201){
+                                            dialog.hideDialog();
+                                            Toast.makeText(getApplicationContext(), "Order Updated", Toast.LENGTH_LONG).show();
+                                        }else {
+                                            dialog.hideDialog();
+                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailed(int status) {
+                                        dialog.hideDialog();
+                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }).setNegativeButton("No", null);
+
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
 
                 try {
@@ -1087,6 +1508,27 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getOrderDetails();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
                 dialog.hideDialog();
                 Toast.makeText(OrderDetailsActivity.this, "Error occured while grabing order details", Toast.LENGTH_SHORT).show();
 
@@ -1138,6 +1580,27 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getOrderHistory();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
             }
         }) {
             @Override

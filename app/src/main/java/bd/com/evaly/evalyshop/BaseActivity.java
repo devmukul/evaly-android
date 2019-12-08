@@ -12,10 +12,17 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+
+import com.orhanobut.logger.Logger;
+
 import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.NetworkErrorActivity;
 import bd.com.evaly.evalyshop.activity.WishListActivity;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
+import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.xmpp.XMPPService;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -99,7 +106,30 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onUserLeaveHint() {
+//        Logger.d("HOME PRESSED");
+//        if (AppController.getmService() !=  null && AppController.getmService().xmpp != null){
+//           if (AppController.getmService().xmpp.isConnected()){
+//               XMPPHandler xmppHandler = AppController.getmService().xmpp;
+//               xmppHandler.changePresence();
+//               XMPPHandler.disconnect();
+//
+//           }
+//        }
+//        super.onUserLeaveHint();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (AppController.getmService() !=  null && AppController.getmService().xmpp != null){
+            if (!AppController.getmService().xmpp.isConnected() && !CredentialManager.getUserName().equals("") && !CredentialManager.getPassword().equals("")){
+                XMPPHandler xmppHandler = AppController.getmService().xmpp;
+                xmppHandler.connect();
+            }
+        }
+    }
 
     public boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager

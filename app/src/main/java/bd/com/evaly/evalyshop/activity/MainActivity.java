@@ -1,16 +1,16 @@
 package bd.com.evaly.evalyshop.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -21,62 +21,46 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.FacebookSdk;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.fragment.BrandFragment;
 import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
+import bd.com.evaly.evalyshop.fragment.WishListFragment;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
+import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Token;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
-
-import static bd.com.evaly.evalyshop.activity.ViewProductActivity.setWindowFlag;
 
 public class MainActivity extends BaseActivity {
 
@@ -84,7 +68,7 @@ public class MainActivity extends BaseActivity {
     BottomNavigationView bottomNavigationView;
     DrawerLayout drawer;
     Toolbar toolbar;
-    NavigationView navigationView,navigationView2;
+    NavigationView navigationView, navigationView2;
     ImageView menuBtn, user;
     String TAG1 = "first", TAG2 = "second", TAG3 = "third";
     UserDetails userDetails;
@@ -92,21 +76,76 @@ public class MainActivity extends BaseActivity {
     TextView phoneNavHeader;
     DbHelperWishList dbHelperWishList;
     DbHelperCart dbHelperCart;
-    boolean isLaunchActivity = true;
+    public boolean isLaunchActivity = true;
     private View headerView;
 
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
-
-
-
+    ViewDialog dialog;
 //    private SessionManager sessionManager;
+
+    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+
+        @Override
+        public void onConnected() {
+            xmppHandler = AppController.getmService().xmpp;
+            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+            xmppHandler.login();
+        }
+
+        //Event Listeners
+        public void onLoggedIn() {
+
+            Logger.d("LOGIN =========");
+            Logger.d(xmppHandler.isConnected());
+            if (xmppHandler.isLoggedin()) {
+                VCard vCard = xmppHandler.mVcard;
+                if (CredentialManager.getUserData() != null) {
+                    if (vCard != null){
+                        if (vCard.getFirstName() == null) {
+                            Logger.d("========");
+                            xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                            XMPPHandler.disconnect();
+                        } else {
+                            XMPPHandler.disconnect();
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        public void onLoginFailed(String msg) {
+            Logger.d("======");
+            if (!msg.contains("already logged in")) {
+                xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()), CredentialManager.getUserData().getFirst_name());
+            } else {
+                XMPPHandler.disconnect();
+            }
+        }
+
+        public void onSignupSuccess() {
+            Logger.d("Signup success");
+
+            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+            xmppHandler.login();
+            XMPPHandler.disconnect();
+        }
+
+        public void onSignupFailed(String msg) {
+
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
 
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
@@ -115,49 +154,51 @@ public class MainActivity extends BaseActivity {
         headerView = navigationView.getHeaderView(0);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        userNameNavHeader=headerView.findViewById(R.id.userNameNavHeader);
+        userNameNavHeader = headerView.findViewById(R.id.userNameNavHeader);
         phoneNavHeader = headerView.findViewById(R.id.phone);
 //        homeFragment = new HomeFragment();
-        userDetails=new UserDetails(this);
+        userDetails = new UserDetails(this);
 
-        dbHelperWishList=new DbHelperWishList(this);
-        dbHelperCart=new DbHelperCart(this);
+        dialog = new ViewDialog(this);
+
+        dbHelperWishList = new DbHelperWishList(this);
+        dbHelperCart = new DbHelperCart(this);
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(R.id.nav_wishlist);
         BottomNavigationItemView itemView2 = bottomNavigationView.findViewById(R.id.nav_cart);
         View badge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView text = badge.findViewById(R.id.notification);
-        text.setText(dbHelperWishList.size()+"");
+        text.setText(dbHelperWishList.size() + "");
         itemView.addView(badge);
 
-        if(dbHelperWishList.size()==0){
+        if (dbHelperWishList.size() == 0) {
             badge.setVisibility(View.GONE);
         }
 
         View badge2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView text2 = badge2.findViewById(R.id.notification);
-        text2.setText(dbHelperCart.size()+"");
+        text2.setText(dbHelperCart.size() + "");
         itemView2.addView(badge2);
 
-        if(dbHelperCart.size()==0){
+        if (dbHelperCart.size() == 0) {
             badge2.setVisibility(View.GONE);
         }
 
         Handler handler = new Handler();
         int delay = 3000;
-        handler.postDelayed(new Runnable(){
-            public void run(){
-                if(dbHelperWishList.size()==0){
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                if (dbHelperWishList.size() == 0) {
                     badge.setVisibility(View.GONE);
-                }else{
+                } else {
                     badge.setVisibility(View.VISIBLE);
                 }
-                if(dbHelperCart.size()==0){
+                if (dbHelperCart.size() == 0) {
                     badge2.setVisibility(View.GONE);
-                }else{
+                } else {
                     badge2.setVisibility(View.VISIBLE);
                 }
-                text.setText(dbHelperWishList.size()+"");
-                text2.setText(dbHelperCart.size()+"");
+                text.setText(dbHelperWishList.size() + "");
+                text2.setText(dbHelperCart.size() + "");
                 handler.postDelayed(this, delay);
             }
         }, delay);
@@ -167,32 +208,62 @@ public class MainActivity extends BaseActivity {
         toggle.syncState();
 
 
-
-        if(!isConnected(MainActivity.this)){
+        if (!isConnected(MainActivity.this)) {
             buildDialog(MainActivity.this).show();
         }
 
+        if (!CredentialManager.getToken().equals("")) {
+            if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals("")) {
+                AppController.logout(MainActivity.this);
+            } else {
+                if (!CredentialManager.getToken().equals("")) {
+                    Logger.d("===========");
+                    if (AppController.getInstance().isNetworkConnected()) {
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                Logger.d("START_SERVICE");
+                                startXmppService();
+                            }
+                        });
+                    }
+                }
+            }
+        }
 
 
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
+        String email = CredentialManager.getUserName();
+        String strNew = email.replaceAll("[^A-Za-z0-9]", "");
+
+//        Logger.d(strNew);
+        try {
+            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Logger.d(task.isSuccessful());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
-
-        if(userDetails.getToken().equals("")){
+        if (userDetails.getToken().equals("")) {
             drawer.removeView(navigationView);
             navigationView2.setNavigationItemSelectedListener(menuItem -> {
-                switch(menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.nav_wishlist:
-                        startActivity(new Intent(MainActivity.this,WishListActivity.class));
+                        startActivity(new Intent(MainActivity.this, WishListActivity.class));
                         break;
                     case R.id.nav_contact:
-                        startActivity(new Intent(MainActivity.this,ContactActivity.class));
+                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
                         break;
 //                    case R.id.nav_about:
 //                        startActivity(new Intent(MainActivity.this,AboutActivity.class));
 //                        break;
                     case R.id.nav_sign_in:
-                        startActivity(new Intent(MainActivity.this,SignInActivity.class));
+                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         break;
                     case R.id.nav_home:
                         finish();
@@ -206,21 +277,21 @@ public class MainActivity extends BaseActivity {
             });
 
 
-        }else{
+        } else {
 
 
-            FirebaseMessaging.getInstance().subscribeToTopic("USER."+userDetails.getUserName());
+            FirebaseMessaging.getInstance().subscribeToTopic("USER." + userDetails.getUserName());
 
-            userNameNavHeader.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
+            userNameNavHeader.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
             phoneNavHeader.setText(userDetails.getUserName());
             drawer.removeView(navigationView2);
             navigationView.setNavigationItemSelectedListener(menuItem -> {
-                switch(menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.nav_wishlist:
-                        startActivity(new Intent(MainActivity.this,WishListActivity.class));
+                        startActivity(new Intent(MainActivity.this, WishListActivity.class));
                         break;
                     case R.id.nav_contact:
-                        startActivity(new Intent(MainActivity.this,ContactActivity.class));
+                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
                         break;
 //                    case R.id.nav_about:
 //                        startActivity(new Intent(MainActivity.this,AboutActivity.class));
@@ -231,13 +302,13 @@ public class MainActivity extends BaseActivity {
                         //this.overridePendingTransition(0, 0);
                         break;
                     case R.id.nav_account:
-                        startActivity(new Intent(MainActivity.this,UserDashboardActivity.class));
+                        startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
                         break;
                     case R.id.nav_orders:
-                        startActivity(new Intent(MainActivity.this,OrderListActivity.class));
+                        startActivity(new Intent(MainActivity.this, OrderListActivity.class));
                         break;
                     case R.id.nav_cart:
-                        startActivity(new Intent(MainActivity.this,CartActivity.class));
+                        startActivity(new Intent(MainActivity.this, CartActivity.class));
                         break;
                     case R.id.nav_invite_ref:
                         startActivity(new Intent(MainActivity.this, InviteEarn.class));
@@ -245,6 +316,14 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_voucher:
                         startActivity(new Intent(MainActivity.this, VoucherActivity.class));
                         break;
+                    case R.id.nav_messages:
+                        startActivity(new Intent(MainActivity.this, ChatListActivity.class));
+                        break;
+                    case R.id.nav_followed_shops:
+                        Intent inf = new Intent(MainActivity.this, EvalyStoreActivity.class);
+                        inf.putExtra("title", "Followed Shop");
+                        inf.putExtra("slug", "shop-subscriptions");
+                        startActivity(inf);
 
                 }
                 new Handler().postDelayed(() -> drawer.closeDrawer(GravityCompat.START), 150);
@@ -253,24 +332,55 @@ public class MainActivity extends BaseActivity {
         }
 
 
+        final FragmentManager fragmentManager = getSupportFragmentManager();
 
-        final FragmentManager  fragmentManager= getSupportFragmentManager();
+        Fragment fragmentWishtList = WishListFragment.newInstance();
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
 
 
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
             Intent intent;
             switch (menuItem.getItemId()) {
                 case R.id.nav_home:
-                    while (fragmentManager.getBackStackEntryCount() > 0) {
-                        fragmentManager.popBackStackImmediate();
+
+
+                    WishListFragment myFragment = (WishListFragment) getSupportFragmentManager().findFragmentByTag("wishlist");
+                    if (myFragment != null && myFragment.isVisible()) {
+                        ft.hide(fragmentWishtList);
+                        ft.show(homeFragment);
+                        ft.commit();
+                    } else {
+
+                        while (fragmentManager.getBackStackEntryCount() > 0) {
+                            fragmentManager.popBackStackImmediate();
+                        }
+
+                        showHomeFragment();
+
                     }
 
-                    showHomeFragment();
+
                     break;
                 case R.id.nav_wishlist:
-                    intent = new Intent(MainActivity.this, WishListActivity.class);
-                    startActivity(intent);
+//                    intent = new Intent(MainActivity.this, WishListActivity.class);
+//                    startActivity(intent);
+
+
+                    Fragment fragmentW = fragmentManager.findFragmentByTag("wishlist");
+                    if (fragmentW == null) {
+
+                        ft.add(R.id.fragment_container, fragmentWishtList, "wishlist");
+
+                        ft.addToBackStack("wishlist");
+                    }
+
+                    ft.hide(homeFragment);
+                    ft.show(fragmentWishtList);
+                    ft.commit();
+
                     break;
                 case R.id.nav_cart:
 
@@ -278,13 +388,12 @@ public class MainActivity extends BaseActivity {
                     startActivity(intent);
                     break;
                 case R.id.nav_dashboard:
-                    if(userDetails.getToken().equals("")){
+                    if (userDetails.getToken().equals("")) {
                         startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                    }else{
+                    } else {
                         startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
                     }
                     break;
-
 
 
             }
@@ -294,11 +403,13 @@ public class MainActivity extends BaseActivity {
 
         Intent data = getIntent();
 
-        if(data.hasExtra("type")){
+        if (data.hasExtra("type")) {
+
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             int type = data.getIntExtra("type", 1);
             Bundle bundle = new Bundle();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             if (type == 2) {
 
@@ -316,7 +427,7 @@ public class MainActivity extends BaseActivity {
                 ft.addToBackStack(null);
                 ft.commit();
 
-            }else if (type == 3){
+            } else if (type == 3) {
 
                 isLaunchActivity = false;
                 bundle.putInt("type", type);
@@ -330,7 +441,7 @@ public class MainActivity extends BaseActivity {
                 ft.replace(R.id.fragment_container, fragment3, data.getStringExtra("slug"));
                 ft.addToBackStack(null);
                 ft.commit();
-            } else if (type == 4){
+            } else if (type == 4) {
 
                 isLaunchActivity = false;
 
@@ -340,7 +451,7 @@ public class MainActivity extends BaseActivity {
                 bundle2.putString("slug", data.getStringExtra("category_slug"));
                 bundle2.putString("category", "root");
                 fragment3.setArguments(bundle2);
-                ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
+                ft.setCustomAnimations(R.animator.slide_in_left, R.animator.abc_popup_exit, 0, 0);
                 ft.replace(R.id.fragment_container, fragment3, data.getStringExtra("category_slug"));
                 ft.addToBackStack(null);
                 ft.commit();
@@ -352,7 +463,7 @@ public class MainActivity extends BaseActivity {
             showHomeFragment();
         }
 
-        if(data.hasExtra("fromBalance")) {
+        if (data.hasExtra("fromBalance")) {
             Intent ip = new Intent(this, UserDashboardActivity.class);
             Toast.makeText(this, "Payment Successful!", Toast.LENGTH_SHORT).show();
             startActivity(ip);
@@ -384,25 +495,23 @@ public class MainActivity extends BaseActivity {
         }, 2000);
 
 
-
     }
 
 
-
     public void showHomeFragment() {
-       try {
-           Fragment fragment3 = new HomeFragment();
-           FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-           // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-           ft.replace(R.id.fragment_container, fragment3, "Home");
-           ft.setReorderingAllowed(true);
-           ft.addToBackStack("home");
-           ft.commit();
-       }catch (Exception e){
+        try {
+            homeFragment = new HomeFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
+            ft.replace(R.id.fragment_container, homeFragment, "Home");
+            ft.setReorderingAllowed(true);
+            ft.addToBackStack("home");
+            ft.commit();
+        } catch (Exception e) {
 
-       }
+        }
 
-        Token.update(this);
+        Token.update(this, false);
 
 
     }
@@ -410,13 +519,32 @@ public class MainActivity extends BaseActivity {
     AlertDialog exitDialog;
     AlertDialog.Builder exitDialogBuilder;
 
-    public UserDetails getUserDetails(){
+    public UserDetails getUserDetails() {
 
         return userDetails;
 
     }
 
 
+    private void startXmppService() {
+        startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
+
+        //Start XMPP Service (if not running already)
+//        if (!XMPPService.isServiceRunning) {
+//            Intent intent = new Intent(this, XMPPService.class);
+//            mChatApp.UnbindService();
+//            mChatApp.BindService(intent);
+//        } else {
+//            xmppHandler = AppController.getmService().xmpp;
+//            if (!xmppHandler.isConnected()) {
+//                xmppHandler.connect();
+//            } else {
+//                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+//                xmppHandler.login();
+//            }
+//        }
+
+    }
 
 
     @Override
@@ -477,17 +605,16 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        // mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-
-        if(bottomNavigationView!=null){
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+        if (bottomNavigationView != null) {
             Menu menu = bottomNavigationView.getMenu();
             MenuItem item = menu.getItem(0);
             item.setChecked(true);
         }
 
 
-        if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()){
-            Token.update(this);
+        if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()) {
+            Token.update(this, false);
 
             ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
 
@@ -506,14 +633,11 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
-
     @Override
     protected void onPause() {
         super.onPause();
 
-        if ( exitDialog!=null && exitDialog.isShowing() )
-        {
+        if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
     }
@@ -521,15 +645,20 @@ public class MainActivity extends BaseActivity {
     // 2) :
     @Override
     protected void onDestroy() {
-        if ( exitDialog!=null && exitDialog.isShowing())
-        {
+        if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
-        if(dbHelperCart!=null){
+        if (dbHelperCart != null) {
             dbHelperCart.close();
         }
-        if(dbHelperWishList!=null){
+        if (dbHelperWishList != null) {
             dbHelperWishList.close();
+        }
+        if (xmppHandler != null) {
+            if (xmppHandler.isConnected()) {
+                xmppHandler.changePresence();
+                xmppHandler.disconnect();
+            }
         }
         super.onDestroy();
 
@@ -539,19 +668,18 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
     public boolean isConnected(Context context) {
-        ConnectivityManager cm=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork=cm.getActiveNetworkInfo();
-        if(activeNetwork!=null){
-            if(activeNetwork.getType()== ConnectivityManager.TYPE_WIFI){
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
                 return true;
-            }else if(activeNetwork.getType()== ConnectivityManager.TYPE_MOBILE){
+            } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
-        }else {
+        } else {
             return false;
         }
     }
@@ -559,29 +687,29 @@ public class MainActivity extends BaseActivity {
     public AlertDialog.Builder buildDialog(final Context c) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setTitle("No Internet Connection");
-        final String[] a={"Turn on Wi-Fi","Turn on Mobile Data"};
+        final String[] a = {"Turn on Wi-Fi", "Turn on Mobile Data"};
         final int[] select = new int[1];
         builder.setSingleChoiceItems(a, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(i==0)
-                    select[0]=1;
-                else if(i==1)
-                    select[0]=2;
+                if (i == 0)
+                    select[0] = 1;
+                else if (i == 1)
+                    select[0] = 2;
             }
         });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(select[0]==1){
-                    WifiManager wifiManager = (WifiManager)c.getSystemService(Context.WIFI_SERVICE);
+                if (select[0] == 1) {
+                    WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
                     wifiManager.setWifiEnabled(true);
                     Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
 
-                }else if(select[0]==2){
+                } else if (select[0] == 2) {
                     startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                }else{
-                    WifiManager wifiManager = (WifiManager)c.getSystemService(Context.WIFI_SERVICE);
+                } else {
+                    WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
                     wifiManager.setWifiEnabled(true);
                     Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
                 }

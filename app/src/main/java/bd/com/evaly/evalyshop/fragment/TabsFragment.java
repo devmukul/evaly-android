@@ -21,7 +21,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -33,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,8 +42,10 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.SearchCategory;
 import bd.com.evaly.evalyshop.adapter.HomeCategoryAdapter2;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.TabsItem;
-import bd.com.evaly.evalyshop.models.TransactionItem;
+import bd.com.evaly.evalyshop.models.category.CategoryItem;
+import bd.com.evaly.evalyshop.util.CategoryUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 
 public class TabsFragment extends Fragment {
@@ -68,91 +70,7 @@ public class TabsFragment extends Fragment {
     ProgressBar progressBar2;
     RequestQueue rq;
 
-    public static String[] titleCategory = {
-            "Bags & Luggage",
-            "Beauty & Body Care",
-            "Books",
-            "Burmese Products",
-            "Construction Materials",
-            "Decoration Materials",
-            "Dhaka Bank  MSME  Bazar",
-            "Electronics & Appliance",
-            "Electric & Parts",
-            "Event & Media",
-            "Food & Beverage",
-            "Food & Restaurants",
-            "Furniture",
-            "Glasses",
-            "Grocery",
-            "Handmade",
-            "Harvesting & Agriculture",
-            "Health Care & Pharmaceutical",
-            "Home & Living",
-            "Home Garden",
-            "Hotels Booking",
-            "Jewellery",
-            "Kids",
-            "Kitchen & Dining",
-            "Leather Goods",
-            "LP Gas",
-            "Machineries",
-            "Men",
-            "Paints",
-            "Pet & Poultry Supplies",
-            "Plastic Made Products",
-            "Property",
-            "Services",
-            "Shoes",
-            "Sports",
-            "Stationeries",
-            "Vehicles & Parts",
-            "Watch & Clock",
-            "Women"
-    } ;
-
-    public static int[] imageCategory = {
-            R.drawable.ic_bags_set,
-            R.drawable.ic_color_lotion,
-            R.drawable.ic_color_books,
-            R.drawable.burmes_item,
-            R.drawable.ic_color_construction,
-            R.drawable.ic_color_decoration,
-            R.drawable.dhaka_bank_logo,
-            R.drawable.ic_color_multiple_devices,
-            R.drawable.ic_color_electric,
-
-            R.drawable.ic_color_event,
-            R.drawable.ic_color_beverage,
-            R.drawable.ic_color_food_plate,
-            R.drawable.ic_color_sliding_door_closet,
-            R.drawable.ic_color_glasses_new,
-            R.drawable.ic_color_ingredients,
-            R.drawable.ic_color_potters_wheel,
-            R.drawable.ic_color_harvest,
-            R.drawable.ic_color_health_checkup_1,
-            R.drawable.ic_color_open_curtains,
-            R.drawable.ic_color_orchid,
-            R.drawable.ic_color_hotel_building,
-            R.drawable.ic_color_jewelry,
-            R.drawable.ic_color_kids,
-            R.drawable.ic_color_kitchen,
-            R.drawable.ic_color_jacket_bag,
-            R.drawable.ic_color_gas,
-            R.drawable.ic_color_sewing_machine,
-            R.drawable.men_fashion,
-            R.drawable.ic_color_paint_bucket,
-            R.drawable.ic_color_dog,
-            R.drawable.ic_color_bucket,
-            R.drawable.ic_color_building,
-            R.drawable.ic_color_maintenance,
-            R.drawable.ic_color_new_shoes2,
-            R.drawable.ic_color_sports,
-            R.drawable.ic_color_pot,
-            R.drawable.ic_color_vehicles,
-            R.drawable.ic_color_wathces,
-            R.drawable.female_fashion,
-
-    };
+    private ArrayList<CategoryItem> categoryItems;
 
 
     public ShimmerFrameLayout shimmer;
@@ -204,20 +122,53 @@ public class TabsFragment extends Fragment {
         progressBar2 = view.findViewById(R.id.progressBar2);
         recyclerView.setNestedScrollingEnabled(false);
 
+
+
         itemList = new ArrayList<>();
         adapter = new TabsAdapter(context, (MainActivity) getActivity(), itemList, type);
         // check if showing offline homepage vector categories
+
+
+        categoryItems = new ArrayList<>();
+
         if (slug.equals("root") && type == 1) {
-            titleCategory2 = new ArrayList<>();
-            imageCategory2 = new ArrayList<>();
-            for (int i = 0; i < titleCategory.length; i++) {
-                titleCategory2.add(titleCategory[i]);
-                imageCategory2.add(imageCategory[i]);
-                categoryMap.put(titleCategory[i], imageCategory[i]);
-            }
-            adapter2 = new HomeCategoryAdapter2(context, titleCategory2, imageCategory2);
+
+
+            CategoryUtils categoryUtils = new CategoryUtils(context);
+
+            adapter2 = new HomeCategoryAdapter2(context, categoryItems);
             recyclerView.setAdapter(adapter2);
+
+
             adapter2.notifyDataSetChanged();
+
+            Calendar calendar = Calendar.getInstance();
+
+            if (categoryUtils.getLastUpdated() == 0 || (categoryUtils.getLastUpdated() != 0 && calendar.getTimeInMillis() - categoryUtils.getLastUpdated() > 43200000)){
+                categoryUtils.updateFromApi(new DataFetchingListener<ArrayList<CategoryItem>>() {
+                    @Override
+                    public void onDataFetched(ArrayList<CategoryItem> response) {
+                        categoryItems.addAll(response);
+                        adapter2.notifyDataSetChanged();
+
+                       // skeletonScreen.hide();
+
+                    }
+
+                    @Override
+                    public void onFailed(int status) {
+
+                    }
+                });
+            } else {
+
+                categoryItems.addAll(categoryUtils.getCategoryArrayList(""));
+                adapter2.notifyDataSetChanged();
+
+                //skeletonScreen.hide();
+
+            }
+
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {

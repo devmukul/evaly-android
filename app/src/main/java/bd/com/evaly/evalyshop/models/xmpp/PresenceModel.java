@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.models.xmpp;
 
-import android.os.Parcel;
-
 import org.jivesoftware.smack.packet.Presence;
 
 import java.io.Serializable;
@@ -23,11 +21,6 @@ public class PresenceModel implements Serializable {
         this.userStatus = userStatus;
         this.time = time;
 //        Logger.d(user);
-    }
-
-    protected PresenceModel(Parcel in) {
-        status = in.readString();
-        userStatus = in.readInt();
     }
 
     public long getTime() {

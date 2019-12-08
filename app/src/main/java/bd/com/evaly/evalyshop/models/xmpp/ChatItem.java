@@ -17,8 +17,16 @@ public class ChatItem implements Parcelable {
     private String uid;
     private String messageType;
     private boolean isMine;
+    private String messageId;
+    private boolean isUnread;
+    private String large_image;
+    private boolean invitation;
+    private String receiver_name;
+    private boolean accepted;
 
-    public ChatItem(String chat, String name, String image, String nick_name, long time, String sender, String receiver, String messageType, boolean isMine) {
+
+
+    public ChatItem(String chat, String name, String image, String nick_name, long time, String sender, String receiver, String messageType, boolean isMine, String large_image) {
         this.chat = chat;
         this.name = name;
         this.image = image;
@@ -28,6 +36,59 @@ public class ChatItem implements Parcelable {
         this.receiver = receiver;
         this.isMine = isMine;
         this.messageType = messageType;
+        this.large_image = large_image;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
+    }
+
+    public String getReceiver_name() {
+        return receiver_name;
+    }
+
+    public void setReceiver_name(String receiver_name) {
+        this.receiver_name = receiver_name;
+    }
+
+    public boolean isInvitation() {
+        return invitation;
+    }
+
+    public void setInvitation(boolean invitation) {
+        this.invitation = invitation;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getLarge_image() {
+        return large_image;
+    }
+
+    public void setLarge_image(String large_image) {
+        this.large_image = large_image;
+    }
+
+    public boolean isUnread() {
+        return isUnread;
+    }
+
+    public void setUnread(boolean unread) {
+        isUnread = unread;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public String getMessageType() {
@@ -58,7 +119,7 @@ public class ChatItem implements Parcelable {
         this.isMine = isMine;
     }
 
-    public String getMsgId(){
+    public String getUid() {
         return uid;
     }
 
@@ -70,8 +131,12 @@ public class ChatItem implements Parcelable {
         return this.chat;
     }
 
+    public void setChat(String chat) {
+        this.chat = chat;
+    }
+
     public String getTime(){
-        return Utils.getTimeAgo(time);
+        return Utils.getTimeAgoSmall(time);
     }
 
     public String getSender(){

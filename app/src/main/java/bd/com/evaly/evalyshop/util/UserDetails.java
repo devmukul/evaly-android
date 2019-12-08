@@ -56,6 +56,18 @@ public class UserDetails {
     }
 
 
+    public String getRefreshToken() {
+        String token = pref.getString("refreshtoken","");
+        return token;
+
+    }
+
+    public void setRefreshToken(String token) {
+        editor.putString("refreshtoken", token);
+        editor.commit();
+    }
+
+
     public String getGroups() {
         return  pref.getString("groups","");
     }
@@ -112,6 +124,17 @@ public class UserDetails {
         editor.putBoolean("is_rated", name);
         editor.commit();
     }
+
+    public void setChatLoaded(boolean loaded) {
+        editor.putBoolean("first_chat_loaded", loaded);
+        editor.commit();
+    }
+
+
+    public boolean isChatLoaded() {
+        return  pref.getBoolean("first_chat_loaded", false);
+    }
+
 
 
 

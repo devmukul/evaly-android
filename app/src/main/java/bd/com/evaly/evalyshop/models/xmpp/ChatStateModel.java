@@ -5,11 +5,11 @@ import android.os.Parcelable;
 
 import org.jivesoftware.smackx.chatstates.ChatState;
 
-public class ChatStateModel implements Parcelable {
+import java.io.Serializable;
+
+public class ChatStateModel implements Serializable {
     String user;
     ChatState chatState;
-
-    public ChatStateModel(){}
 
     public ChatStateModel(String user, ChatState chatState) {
         this.user = user;
@@ -24,32 +24,5 @@ public class ChatStateModel implements Parcelable {
         return this.chatState;
     }
 
-    protected ChatStateModel(Parcel in) {
-        user = in.readString();
-        chatState = (ChatState) in.readValue(ChatState.class.getClassLoader());
-    }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(user);
-        dest.writeValue(chatState);
-    }
-
-    @SuppressWarnings("unused")
-    public static final Creator<ChatStateModel> CREATOR = new Creator<ChatStateModel>() {
-        @Override
-        public ChatStateModel createFromParcel(Parcel in) {
-            return new ChatStateModel(in);
-        }
-
-        @Override
-        public ChatStateModel[] newArray(int size) {
-            return new ChatStateModel[size];
-        }
-    };
 }

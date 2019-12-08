@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,6 +26,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,10 +37,13 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.adapter.TransactionHistoryAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.Notifications;
 import bd.com.evaly.evalyshop.models.TransactionItem;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
@@ -129,7 +134,7 @@ public class TransactionHistory extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        String url="https://api.evaly.com.bd/pay/wallet-history/"+userDetails.getUserName()+"?page="+page;
+        String url= UrlUtils.DOMAIN+"pay/wallet-history/"+userDetails.getUserName()+"?page="+page;
 
         Log.d("json url", url);
 
@@ -173,6 +178,26 @@ public class TransactionHistory extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(TransactionHistory.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getTransactionHistory(page);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
                 progressBar.setVisibility(View.GONE);
             }
         }) {
@@ -196,7 +221,7 @@ public class TransactionHistory extends AppCompatActivity {
 
 
     public void getBalance(){
-        String url= UrlUtils.BASE_URL+"user-info-pay/"+userDetails.getUserName()+"/";
+        String url= UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName()+"/";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
             @Override
@@ -215,6 +240,27 @@ public class TransactionHistory extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(TransactionHistory.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getBalance();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
             }
         }) {
             @Override

@@ -51,6 +51,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
@@ -68,6 +69,8 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPager;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
@@ -275,6 +278,13 @@ public class NewsfeedActivity extends AppCompatActivity {
         pager.addFragment(ceoFragment,"CEO");
 
 
+        if (!userDetails.getToken().equals("")){
+
+            NewsfeedFragment myFragment = NewsfeedFragment.newInstance("my");
+            pager.addFragment(myFragment,"MY POSTS");
+        }
+
+
         if (userDetails.getGroups().contains("EvalyEmployee")) {
             NewsfeedPendingFragment pendingFragment = NewsfeedPendingFragment.newInstance("pending");
             pager.addFragment(pendingFragment,"Pending");
@@ -425,6 +435,27 @@ public class NewsfeedActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getNotificationCount();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
             }
         }) {
             @Override
@@ -522,6 +553,27 @@ public class NewsfeedActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            createPost();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
                 Toast.makeText(context, "Couldn't create status", Toast.LENGTH_SHORT).show();
                 createBtn.setEnabled(true);
             }
@@ -737,6 +789,26 @@ public class NewsfeedActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+
+                        NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                            AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                @Override
+                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                    uploadProfilePicture(bitmap);
+                                }
+
+                                @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
 
                         dialog.dismiss();
                         Log.e("json error", error.toString());

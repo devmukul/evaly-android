@@ -82,12 +82,30 @@
         android:maxHeight="300dp"
         android:clickable="true"
         android:visibility="visible" />
-
-    <LinearLayout
-        android:id="@+id/action_btn_holder"
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/postImage"
+        android:layout_margin="5dp"
+        android:visibility="gone"
+        android:elevation="5dp"
+        app:cardBackgroundColor="@color/white"
+        >
+
+        <io.github.ponnamkarthik.richlinkpreview.RichLinkView
+            android:id="@+id/linkPreview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v7.widget.CardView>
+
+
+
+     <LinearLayout
+        android:id="@+id/action_btn_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cardLink"
         android:gravity="right"
         android:orientation="horizontal"
         android:paddingLeft="15dp"
@@ -101,52 +119,79 @@
             android:orientation="horizontal"
             android:paddingTop="5dp"
             android:paddingBottom="10dp">
-        <ImageView
-            android:id="@+id/like_icon"
-            android:layout_width="35dp"
-            android:layout_height="20dp"
-            android:layout_weight="0"
-            android:paddingLeft="10dp"
-            android:paddingRight="5dp"
-            app:srcCompat="@drawable/ic_favorite_black" />
 
-        <TextView
-            android:id="@+id/likeCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:text="Like"
-            android:textStyle="normal"/>
+            <ImageView
+                android:id="@+id/like_icon"
+                android:layout_width="35dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                android:paddingLeft="10dp"
+                android:paddingRight="5dp"
+                app:srcCompat="@drawable/ic_favorite_black" />
+
+            <TextView
+                android:id="@+id/likeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:text="Like"
+                android:textStyle="normal" />
 
         </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/commentHolder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="5dp"
-        android:paddingBottom="10dp">
-
-        <ImageView
-            android:id="@+id/comment_icon"
-            android:layout_width="35dp"
-            android:layout_height="20dp"
-            android:layout_weight="0"
-            android:paddingLeft="10dp"
-            android:paddingRight="5dp"
-            app:srcCompat="@drawable/ic_chat_small" />
-
-        <TextView
-            android:id="@+id/commentCount"
+        <LinearLayout
+            android:id="@+id/commentHolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="Comment"
-            android:textStyle="normal"/>
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp">
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/comment_icon"
+                android:layout_width="35dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                android:paddingLeft="10dp"
+                android:paddingRight="5dp"
+                app:srcCompat="@drawable/ic_chat_small" />
+
+            <TextView
+                android:id="@+id/commentCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="Comment"
+                android:textStyle="normal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llShareHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                android:paddingLeft="10dp"
+                android:paddingRight="5dp"
+                app:srcCompat="@drawable/ic_share" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="Share"
+                android:textStyle="normal" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

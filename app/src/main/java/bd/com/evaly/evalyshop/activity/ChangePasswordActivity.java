@@ -2,6 +2,8 @@ package bd.com.evaly.evalyshop.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,18 +24,28 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 
 public class ChangePasswordActivity extends BaseActivity {
 
@@ -44,6 +57,36 @@ public class ChangePasswordActivity extends BaseActivity {
 
     String userAgent;
     ViewDialog dialog;
+
+    private AppController mChatApp = AppController.getInstance();
+    private XMPPHandler xmppHandler;
+
+    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener(){
+
+        //Event Listeners
+        public void onConnected() {
+            xmppHandler = AppController.getmService().xmpp;
+            xmppHandler.setUserPassword(CredentialManager.getUserName(), oldPassword.getText().toString());
+            xmppHandler.login();
+
+            Logger.d("======   CONNECTED  -========");
+        }
+
+        public void onLoggedIn(){
+            xmppHandler.changePassword(newPassword.getText().toString());
+        }
+
+        public void onPasswordChanged(){
+            dialog.hideDialog();
+            Snackbar.make(newPassword, "Password change successfully, Please Login!", Snackbar.LENGTH_LONG).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    AppController.logout(ChangePasswordActivity.this);
+                }
+            }, 2000);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,8 +204,11 @@ public class ChangePasswordActivity extends BaseActivity {
 
                                 Toast.makeText(ChangePasswordActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
 
-                                if (response.getBoolean("success"))
-                                    finish();
+                                if (response.getBoolean("success")){
+                                    CredentialManager.savePassword(newPassword.getText().toString());
+                                    startXmppService();
+                                }
+
 
                             } catch (Exception e) {
 
@@ -171,6 +217,28 @@ public class ChangePasswordActivity extends BaseActivity {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+
+                            NetworkResponse response = error.networkResponse;
+                            if (response != null && response.data != null) {
+                                if (error.networkResponse.statusCode == 401) {
+
+                                    AuthApiHelper.refreshToken(ChangePasswordActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                        @Override
+                                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                            Toast.makeText(ChangePasswordActivity.this, "Please try again now", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onFailed(int status) {
+
+                                        }
+                                    });
+
+                                    return;
+
+                                }
+                            }
+
                             try {
 
                                 dialog.hideDialog();
@@ -188,14 +256,6 @@ public class ChangePasswordActivity extends BaseActivity {
 
                             Map<String, String> headers = new HashMap<>();
                             headers.put("Authorization", "Bearer " + userDetails.getToken());
-                            // headers.put("Host", "api-prod.evaly.com.bd");
-                            headers.put("Content-Type", "application/json");
-                            headers.put("Origin", "https://evaly.com.bd");
-                            headers.put("Referer", "https://evaly.com.bd/");
-                            headers.put("User-Agent", userAgent);
-                            // headers.put("Content-Length", data.length()+"");
-
-                            // Log.d("json", headers.toString());
 
                             return headers;
                         }
@@ -212,6 +272,29 @@ public class ChangePasswordActivity extends BaseActivity {
 
     }
 
+    private void startXmppService() {
+        if( !XMPPService.isServiceRunning ) {
+            Intent intent = new Intent(this, XMPPService.class);
+            mChatApp.UnbindService();
+            mChatApp.BindService(intent);
+            Logger.d("++++++++++");
+        } else {
+            Logger.d("---------");
+            xmppHandler = AppController.getmService().xmpp;
+            if(!xmppHandler.isConnected()){
+                xmppHandler.connect();
+            } else {
+                xmppHandler.changePassword(newPassword.getText().toString());
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

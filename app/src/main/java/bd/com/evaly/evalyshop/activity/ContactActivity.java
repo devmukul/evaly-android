@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -13,19 +16,80 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
+import com.orhanobut.logger.Logger;
 import com.thefinestartist.finestwebview.FinestWebView;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smackx.vcardtemp.packet.VCard;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.chat.ChatDetailsActivity;
+import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
+import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
+import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
+import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
+import retrofit2.Response;
 
 import static bd.com.evaly.evalyshop.activity.ViewProductActivity.setWindowFlag;
 
-public class ContactActivity extends BaseActivity
-{
+public class ContactActivity extends BaseActivity {
 
-    TextView call1,call2,call3;
+    TextView call1, call2, call3;
+
+    ViewDialog dialog;
+    private List<String> rosterList;
+
+    AppController mChatApp = AppController.getInstance();
+
+    XMPPHandler xmppHandler;
+    XMPPEventReceiver xmppEventReceiver;
+
+    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+        public void onConnected() {
+            xmppHandler = AppController.getmService().xmpp;
+        }
+
+        public void onLoggedIn() {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    xmppHandler = AppController.getmService().xmpp;
+                    rosterList = xmppHandler.rosterList;
+//                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
+                }
+            });
+        }
+        //On User Presence Changed
+
+    };
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,11 +100,15 @@ public class ContactActivity extends BaseActivity
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().setTitle("Contact us");
 
+        dialog = new ViewDialog(this);
+        rosterList = new ArrayList<>();
+
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         //make fully Android Transparent Status bar
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
 
+        xmppEventReceiver = mChatApp.getEventReceiver();
 
         ImageView mapImage = findViewById(R.id.mapImage);
 
@@ -53,15 +121,43 @@ public class ContactActivity extends BaseActivity
             startActivity(intent);
         });
 
+        if (!CredentialManager.getToken().equals("")){
+            if (AppController.getmService().xmpp != null && AppController.getmService().xmpp.isConnected()) {
+                xmppHandler = AppController.getmService().xmpp;
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+//
+                        rosterList = xmppHandler.rosterList;
+//                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
+                    }
+                });
+            } else {
+                startXmppService();
+            }
+        }
 
         LinearLayout emailBox = findViewById(R.id.emailBox);
         emailBox.setOnClickListener(v -> {
 
-            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                    "mailto","support@evaly.com.bd", null));
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
-            emailIntent.putExtra(Intent.EXTRA_TEXT, "");
-            startActivity(emailIntent);
+//            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+//                    "mailto","support@evaly.com.bd", null));
+//            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+//            emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+//            startActivity(emailIntent);
+
+            if (CredentialManager.getToken().equals("")) {
+                Toast.makeText(getApplicationContext(), "Please login to send message", Toast.LENGTH_LONG).show();
+            } else {
+
+                RosterTable roasterModel = new RosterTable();
+                roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
+                roasterModel.rosterName = "Evaly";
+                roasterModel.imageUrl = Constants.EVALY_LOGO;
+                startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class)
+                        .putExtra("roster", (Serializable) roasterModel));
+
+            }
         });
 
 
@@ -76,8 +172,6 @@ public class ContactActivity extends BaseActivity
             }
 
         });
-
-
 
 
         View.OnClickListener openMaps = new View.OnClickListener() {
@@ -104,10 +198,8 @@ public class ContactActivity extends BaseActivity
         };
 
 
-
         LinearLayout mapsBox = findViewById(R.id.mapsBox);
         mapsBox.setOnClickListener(openMaps);
-
 
 
         View mapsView = findViewById(R.id.mapOpener);
@@ -120,7 +212,62 @@ public class ContactActivity extends BaseActivity
 
     }
 
-//    @Override
+    private void addRosterByOther() {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("localuser", Constants.EVALY_NUMBER);
+        data.put("localserver", Constants.XMPP_HOST);
+        data.put("user", CredentialManager.getUserName());
+        data.put("server", Constants.XMPP_HOST);
+        data.put("nick", CredentialManager.getUserData().getFirst_name());
+        data.put("subs", "both");
+        data.put("group", "evaly");
+        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+            @Override
+            public void onDataFetched(Response<JsonPrimitive> response) {
+
+            }
+
+            @Override
+            public void onFailed(int status) {
+
+            }
+        });
+    }
+
+    private void startXmppService() {
+        if (!XMPPService.isServiceRunning) {
+            Intent intent = new Intent(this, XMPPService.class);
+            mChatApp.UnbindService();
+            mChatApp.BindService(intent);
+            Logger.d("++++++++++");
+        } else {
+            Logger.d("---------");
+            xmppHandler = AppController.getmService().xmpp;
+            if (!xmppHandler.isConnected()) {
+                xmppHandler.connect();
+            } else {
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (xmppHandler != null){
+                    rosterList = xmppHandler.rosterList;
+                }
+            }
+        });
+    }
+
+    //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
 //        switch (item.getItemId()) {
 //            case android.R.id.home:

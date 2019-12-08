@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/main_activity_root_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,14 +11,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="#f9f9f9"
         android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:elevation="2dp"
+            android:layout_height="60dp"
+            android:elevation="1dp"
             android:background="?attr/colorPrimary">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -26,23 +28,42 @@
                 <ImageView
                     android:id="@+id/ivBack"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
+                    android:layout_height="50dp"
                     android:background="?attr/actionBarItemBackground"
                     android:clickable="true"
                     android:focusable="true"
                     android:tint="#000"
-                    app:srcCompat="@drawable/ic_left_arrow_new" />
+                    app:srcCompat="@drawable/ic_left_arrow_new"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:layout_marginRight="10dp"/>
                 <RelativeLayout
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_marginLeft="10dp">
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/ivProfileImage"
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/user_image" />
+                        android:layout_height="match_parent">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/ivProfileImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/user_image" />
+
+                        <TextView
+                            android:id="@+id/tvShortName"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="IA"
+                            android:background="@drawable/circle_green"
+                            android:backgroundTint="@color/colorAccentBlue"
+                            android:textColor="@color/white"
+                            android:textSize="20dp"
+                            android:visibility="gone"
+                            android:gravity="center"/>
+                    </FrameLayout>
 
                     <LinearLayout
                         android:id="@+id/llOnlineStatus"
@@ -70,9 +91,10 @@
                         android:id="@+id/tvName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="18dp"
+                        android:textSize="17sp"
                         android:textColor="@color/light_black"
-                        android:text="Ilias Ahmed"/>
+                        android:text="Ilias Ahmed"
+                        android:textStyle="bold"/>
                     <TextView
                         android:id="@+id/tvOnlineStatus"
                         android:layout_width="wrap_content"
@@ -83,24 +105,47 @@
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
+        <ProgressBar
+            android:id="@+id/infinite_scroll_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            style="?attr/progressBarStyle"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:visibility="gone"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="80dp"
+            android:layout_marginBottom="70dp"
             android:gravity="bottom"
+            android:background="#f9f9f9"
             android:orientation="vertical">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rvChatDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="0"
                 android:layout_gravity="bottom"
-                app:stackFromEnd="true"/>
+                android:paddingBottom="15dp"
+                android:paddingTop="15dp"
+                android:clipToPadding="false"
+                app:stackFromEnd="true"
+                tools:listitem="@layout/sent_message_view"/>
+
+            <ProgressBar
+                android:id="@+id/imageUploadProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:visibility="gone"
+                android:layout_gravity="right"/>
 
             <LinearLayout
                 android:id="@+id/llTyping"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_margin="10dp"
                 android:visibility="gone"
                 android:gravity="center_vertical"
@@ -109,7 +154,7 @@
                     android:id="@+id/ivProfile"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_user"/>
+                    android:src="@drawable/user_image"/>
                 <TextView
                     android:id="@+id/tvTyping"
                     android:layout_width="match_parent"
@@ -123,13 +168,12 @@
         </LinearLayout>
 
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:layout_alignParentBottom="true"
-        android:background="#f8f8f8"
+        android:background="#f9f9f9"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -138,12 +182,26 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:gravity="top"
-            android:background="@drawable/comment_input_bg"
+            android:gravity="bottom"
+            android:background="@drawable/chat_input_bg"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp">
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:id="@+id/emoji_btn"
+                android:layout_width="50dp"
+                android:layout_height="43dp"
+                android:clickable="true"
+                android:layout_marginLeft="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="13dp"
+                android:layout_marginBottom="4dp"
+                android:paddingBottom="10dp"
+                android:tint="#666"
+                app:srcCompat="@drawable/ic_icons8_happy"/>
+
 
             <EditText
                 android:id="@+id/etCommentsBox"
@@ -152,25 +210,37 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:ems="10"
-                android:hint="Write your comment..."
+                android:maxHeight="100dp"
+                android:hint="Write your message here..."
                 android:inputType="textMultiLine|textPersonName"
-                android:paddingLeft="15dp"
-                android:paddingTop="15dp"
-                android:paddingRight="15dp"
-                android:paddingBottom="15dp"
-                android:textSize="14sp" />
+                android:paddingTop="14dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="14dp"
+                android:textColorHint="#666"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:visibility="gone"/>
 
 
             <ImageView
                 android:id="@+id/uploadImage"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="44dp"
                 android:layout_weight="0"
                 android:paddingRight="15dp"
-                android:paddingTop="10dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="4dp"
                 android:tint="#444"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_gallery" />
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_gallery"
+                android:layout_marginRight="2dp"
+                android:background="?attr/actionBarItemBackground"/>
 
 
         </LinearLayout>
@@ -178,10 +248,14 @@
         <ImageView
             android:id="@+id/ivSend"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="54dp"
             android:layout_weight="0"
             android:paddingRight="15dp"
-            android:tint="#444"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:background="?attr/actionBarItemBackground"
+            android:tint="#333"
             app:srcCompat="@drawable/ic_send_button" />
 
 

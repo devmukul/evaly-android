@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -11,9 +13,12 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +33,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,30 +48,48 @@ import com.bumptech.glide.request.RequestOptions;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.ReplyAdapter;
+import bd.com.evaly.evalyshop.adapter.ContactShareAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.newsfeed.FeedShareModel;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
+import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
+import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.viewmodel.RoomWIthRxViewModel;
+import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
+import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
-public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, NewsfeedAdapter.NewsFeedShareListener {
 
     private String type;
     private RecyclerView recyclerView;
@@ -123,6 +147,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private int maxCountComment;
     private int maxCountReply;
 
+    private BottomSheetDialog bottomSheetDialog;
+    private RoomWIthRxViewModel viewModel;
 
     public NewsfeedFragment() {
         // Required empty public constructor
@@ -191,6 +217,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         // Reply bottom sheet
 
         currentReplyPage = 1;
+
+        viewModel = ViewModelProviders.of(activity).get(RoomWIthRxViewModel.class);
 
         replyDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         replyDialog.setContentView(R.layout.alert_replies);
@@ -429,7 +457,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         LinearLayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
 
-        adapter = new NewsfeedAdapter(itemsList, context, this);
+        adapter = new NewsfeedAdapter(itemsList, context, this, this);
 
         recyclerView.setAdapter(adapter);
 
@@ -497,6 +525,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     .fitCenter()
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .placeholder(R.drawable.user_image)
                     .apply(new RequestOptions().override(200, 200))
                     .into(userPic);
 
@@ -532,7 +561,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
         if (commentDialog != null){
-
             currentCommentPage = 1;
             maxCountComment = -1;
             selectedPostID = id;
@@ -564,6 +592,22 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
+
+    public boolean isJSONValid(String test) {
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+            // edited, to include @Arthur's comment
+            // e.g. in case JSONArray is valid as well...
+            try {
+                new JSONArray(test);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void initCommentHeader(String authorName, String authorImage, boolean isAdmin, String postText, String date, String postImageUrl){
 
 
@@ -591,13 +635,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
 
-        ((TextView) commentDialog.findViewById(R.id.text)).setText(postText);
+        TextView tvMessage =  commentDialog.findViewById(R.id.text);
+        tvMessage.setText(postText);
         ImageView userPic = commentDialog.findViewById(R.id.picture);
         Glide.with(context)
                 .load(authorImage)
                 .fitCenter()
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.user_image)
                 .apply(new RequestOptions().override(200, 200))
                 .into(userPic);
 
@@ -620,6 +666,41 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 }
             });
 
+        }
+
+        RichLinkView linkPreview = commentDialog.findViewById(R.id.linkPreview);
+        CardView cardLink = commentDialog.findViewById(R.id.cardLink);
+        if (isJSONValid(postText)) {
+            try {
+                JSONObject object = new JSONObject(postText);
+                linkPreview.setLink(object.getString("url"), new ViewListener() {
+                    @Override
+                    public void onSuccess(boolean status) {
+                        Logger.d("Success");
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Logger.e(e.getMessage());
+                    }
+                });
+
+                String body = object.getString("body");
+                if (body == null || body.equalsIgnoreCase("")){
+                    tvMessage.setVisibility(View.GONE);
+                }else {
+                    tvMessage.setVisibility(View.VISIBLE);
+                    tvMessage.setText(Html.fromHtml(Utils.truncateText(body, 180, "... <b>Show more</b>")));
+                }
+                cardLink.setVisibility(View.VISIBLE);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            tvMessage.setVisibility(View.VISIBLE);
+            cardLink.setVisibility(View.GONE);
+            tvMessage.setText(Html.fromHtml(Utils.truncateText(postText, 180, "... <b>Show more</b>")));
         }
 
 
@@ -1055,6 +1136,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             url = UrlUtils.BASE_URL_NEWSFEED+"posts?page="+page;
         else if(type.equals("pending"))
             url = UrlUtils.BASE_URL_NEWSFEED+"posts?status=pending&page="+page;
+        else if (type.equals("my"))
+            url = UrlUtils.BASE_URL_NEWSFEED+"posts/my-posts/?page="+page;
         else
             url = UrlUtils.BASE_URL_NEWSFEED+"posts?type="+type+"&page="+page;
 
@@ -1126,6 +1209,26 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onErrorResponse(VolleyError error) {
                 Log.e("onErrorResponse", error.toString());
 
+                NetworkResponse response = error.networkResponse;
+
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getPosts(page);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
 
                 progressContainer.setVisibility(View.GONE);
                 bottomProgressBar.setVisibility(View.INVISIBLE);
@@ -1144,6 +1247,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
+
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -1185,13 +1289,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         JSONObject parameters = new JSONObject();
         JSONObject parametersPost = new JSONObject();
         try {
-
             parameters.put("body", commentInput.getText().toString());
-
             parametersPost.put("comment", parameters);
-
-
-
         } catch (Exception e) {
         }
 
@@ -1214,6 +1313,27 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            createComment();
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
                 Log.e("onErrorResponse", error.toString());
                 Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
                 commentInput.setEnabled(true);
@@ -1261,6 +1381,27 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            sendLike(slug, like);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
                 Log.e("onErrorResponse", error.toString());
                 Toast.makeText(context, "Couldn't like the status.", Toast.LENGTH_SHORT).show();
             }
@@ -1290,5 +1431,122 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyDialog.dismiss();
     }
 
+
+    @Override
+    public void onSharePost(Object object) {
+        NewsfeedItem model = (NewsfeedItem) object;
+        shareWithContacts(model);
+    }
+
+    private void shareWithContacts(NewsfeedItem model) {
+        bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
+        bottomSheetDialog.setContentView(R.layout.share_with_contact_view);
+
+        View bottomSheetInternal = bottomSheetDialog.findViewById(R.id.design_bottom_sheet);
+        bottomSheetInternal.setPadding(0, 0, 0, 0);
+
+        new KeyboardUtil(getActivity(), bottomSheetInternal);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+
+                    bottomSheet.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
+
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_HALF_EXPANDED)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        bottomSheetDialog.setCanceledOnTouchOutside(false);
+        RecyclerView rvContacts = bottomSheetDialog.findViewById(R.id.rvContacts);
+        ImageView ivBack = bottomSheetDialog.findViewById(R.id.back);
+        EditText etSearch = bottomSheetDialog.findViewById(R.id.etSearch);
+        TextView tvCount = bottomSheetDialog.findViewById(R.id.tvCount);
+        LinearLayout llSend = bottomSheetDialog.findViewById(R.id.llSend);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        rvContacts.setLayoutManager(layoutManager);
+//            List<RosterTable> list = AppController.database.taskDao().getAllRosterWithoutObserve();
+        viewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
+        viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
+            @Override
+            public void onChanged(@Nullable List<RosterTable> rosterTables) {
+                List<RosterTable> selectedRosterList = new ArrayList<>();
+                List<RosterTable> rosterList = rosterTables;
+                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(getActivity(), rosterList, new ContactShareAdapter.OnUserSelectedListener() {
+                    @Override
+                    public void onUserSelected(Object object, boolean status) {
+                        RosterTable table = (RosterTable) object;
+
+                        if (status && !selectedRosterList.contains(table)) {
+                            selectedRosterList.add(table);
+                        } else {
+                            if (selectedRosterList.contains(table)) {
+                                selectedRosterList.remove(table);
+                            }
+                        }
+
+                        tvCount.setText("(" + selectedRosterList.size() + ") ");
+                    }
+                });
+
+                llSend.setOnClickListener(view -> {
+                    FeedShareModel feedShareModel = new FeedShareModel(model.getSlug(),model.getBody(), model.getAttachment(), model.getCommentsCount()+"", model.getFavoriteCount()+"", model.getAuthorFullName());
+
+                    if (AppController.getmService().xmpp.isLoggedin()) {
+                        try {
+                            for (RosterTable rosterTable : selectedRosterList) {
+                                ChatItem chatItem = new ChatItem(new Gson().toJson(feedShareModel), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_FEED, true, "");
+                                AppController.getmService().xmpp.sendMessage(chatItem);
+                            }
+                            for (int i = 0; i<rosterList.size(); i++){
+                                rosterList.get(i).isSelected = false;
+                            }
+                            contactShareAdapter.notifyDataSetChanged();
+                            selectedRosterList.clear();
+                            tvCount.setText("(" + selectedRosterList.size() + ") ");
+                            Toast.makeText(getActivity(), "Sent!", Toast.LENGTH_LONG).show();
+                        } catch (SmackException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        AppController.getmService().xmpp.connect();
+                    }
+                });
+
+                rvContacts.setAdapter(contactShareAdapter);
+                etSearch.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        rvContacts.getRecycledViewPool().clear();
+                        contactShareAdapter.getFilter().filter(charSequence);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        rvContacts.getRecycledViewPool().clear();
+                        contactShareAdapter.getFilter().filter(charSequence);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+            }
+        });
+
+        ivBack.setOnClickListener(view -> bottomSheetDialog.dismiss());
+
+        bottomSheetDialog.show();
+    }
 
 }

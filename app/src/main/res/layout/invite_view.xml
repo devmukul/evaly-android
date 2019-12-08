@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp"
+    android:clipToPadding="false"
+    app:cardBackgroundColor="@color/white"
+    android:layout_marginBottom="-10dp">
+    <LinearLayout
+        android:id="@+id/container2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="10dp"
+        tools:context=".ui.chat.ChatListActivity">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/light_black"
+            android:layout_marginBottom="10dp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:text="Invite friends to start messaging"/>
+
+            <ImageView
+                android:id="@+id/ivClose"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                app:srcCompat="@drawable/close_vector"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/etContactName"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:hint="Name"
+                android:singleLine="true"
+                android:paddingLeft="16dp"
+                android:background="@drawable/input_brd_round"/>
+
+            <ImageView
+                android:id="@+id/ivAddNumber"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/input_brd_round"
+                android:padding="10dp"
+                app:srcCompat="@drawable/ic_search_contacts" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/etContactNumber"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:layout_margin="10dp"
+                android:maxLength="11"
+                android:inputType="phone"
+                android:hint="Contact Number"
+                android:paddingLeft="16dp"
+                android:background="@drawable/input_brd_round"/>
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:visibility="invisible"
+                android:background="@drawable/input_brd_round"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnInvite"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_gravity="left"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:background="@drawable/input_btn_bg"
+            android:text="Invite"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="10dp"
+            android:stateListAnimator="@null"/>
+    </LinearLayout>
+
+
+
+</android.support.v7.widget.CardView>

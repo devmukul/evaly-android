@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_coordinator"
@@ -9,12 +10,19 @@
 
     <include layout="@layout/fragment_app_bar_header"/>
 
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/stickyScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fafafa"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:background="#fafafa">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -150,7 +158,7 @@
                         android:background="@drawable/circle_bg"
                         android:clickable="false"
                         android:tint="#2ab5d2 "
-                        app:srcCompat="@drawable/ic_night" />
+                        app:srcCompat="@drawable/ic_flash" />
 
                     <TextView
                         android:id="@+id/textView3"
@@ -159,7 +167,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_weight="0"
                         android:clickable="false"
-                        android:text="Dark Night"
+                        android:text="Mega Flash Sale"
                         android:textAlignment="center" />
                 </LinearLayout>
 
@@ -326,5 +334,8 @@
 
 
     </android.support.v4.widget.NestedScrollView>
+
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.design.widget.CoordinatorLayout>

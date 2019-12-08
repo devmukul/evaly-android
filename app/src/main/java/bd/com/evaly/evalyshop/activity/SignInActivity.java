@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -38,10 +39,13 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.util.Balance;
+import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -156,6 +160,12 @@ public class SignInActivity extends BaseActivity {
                     Toast.makeText(SignInActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
                 } else {
                     alert.showDialog();
+//                    AsyncTask.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            AppController.database.clearAllTables();
+//                        }
+//                    });
                     signInUser();
                 }
             }
@@ -174,6 +184,7 @@ public class SignInActivity extends BaseActivity {
             payload.put("password", password.getText().toString());
             payload.put("username", phoneNumber.getText().toString());
 
+            Logger.d(password.getText().toString()+"    "+ phoneNumber.getText().toString());
 
             userNamePhone = phoneNumber.getText().toString();
             passwordValue = password.getText().toString();
@@ -183,7 +194,8 @@ public class SignInActivity extends BaseActivity {
         }
 
 
-        String url = UrlUtils.BASE_URL + "login/";
+        String url = UrlUtils.BASE_URL_AUTH_API + "login/";
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -193,43 +205,22 @@ public class SignInActivity extends BaseActivity {
                 Log.d("json login", response.toString());
 
                 try {
-                    JSONObject data = response.getJSONObject("data");
 
-                    token = data.getString("token");
+                    JSONObject data = response;
 
+                    token = data.getString("access");
 
-                    JSONObject ob = data.getJSONObject("user_info");
-
-                    if (ob.has("groups")){
-                        userDetails.setGroup(ob.getJSONArray("groups").toString());
-                    }
+                    CredentialManager.saveToken(token);
 
                     CredentialManager.saveUserName(userNamePhone);
                     CredentialManager.savePassword(passwordValue);
 
-                    UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
-
-                    Logger.d(new Gson().toJson(userModel));
-                    CredentialManager.saveUserData(userModel);
-
+                    userDetails.setUserName(phoneNumber.getText().toString());
                     userDetails.setToken(token);
-                    userDetails.setUserName(ob.getString("username"));
-                    userDetails.setFirstName(ob.getString("first_name"));
-                    userDetails.setLastName(ob.getString("last_name"));
-                    userDetails.setEmail(ob.getString("email"));
-                    userDetails.setPhone(ob.getString("contact"));
-                    userDetails.setUserID(ob.getInt("id"));
-                    userDetails.setJsonAddress(ob.getString("address"));
-                    userDetails.setProfilePicture(ob.getString("profile_pic_url"));
-                    userDetails.setProfilePictureSM(ob.getString("image_sm"));
+                    userDetails.setRefreshToken(data.getString("refresh"));
 
 
-
-                    Toast.makeText(SignInActivity.this, "Successfully signed in", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(SignInActivity.this, UserDashboardActivity.class);
-                    intent.putExtra("from", "signin");
-                    startActivity(intent);
-                    finish();
+                    Balance.update(SignInActivity.this, true);
 
 
                 } catch (Exception e) {
@@ -245,43 +236,39 @@ public class SignInActivity extends BaseActivity {
             public void onErrorResponse(VolleyError error) {
 
                 error.printStackTrace();
-                if (attempt < 2) {
 
-                    signInUser();
+                try {
 
-                    attempt++;
-
-                } else {
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
 
 
-                    try {
+                        JSONObject jsonObject = new JSONObject(new String(response.data));
 
+                        switch (response.statusCode) {
 
-                        alert.hideDialog();
-                        error.printStackTrace();
-
-                        String json = null;
-                        JSONObject jsonObject;
-
-                        NetworkResponse response = error.networkResponse;
-                        if (response != null && response.data != null) {
-                            switch (response.statusCode) {
-                                case 400:
-                                    json = new String(response.data);
-                                    jsonObject = new JSONObject(json);
-                                    if (jsonObject.getString("status") != null)
-                                        Toast.makeText(SignInActivity.this, jsonObject.getString("status"), Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 500:
-                                    Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
-                            }
-                            //Additional cases
+                            case 500:
+                                Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
+                                break;
+                            default:
+                                Toast.makeText(SignInActivity.this, jsonObject.getString("detail") , Toast.LENGTH_SHORT).show();
                         }
-
-                    } catch (Exception e) {
-                        Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
+                        //Additional cases
                     }
+
+                    alert.hideDialog();
+                    error.printStackTrace();
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Logger.d(e.getMessage());
+                    Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
                 }
+
+
+
             }
         }) {
 

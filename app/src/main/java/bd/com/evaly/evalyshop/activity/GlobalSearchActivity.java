@@ -337,15 +337,10 @@ public class GlobalSearchActivity extends BaseActivity {
                 fromFilter = false;
 
                 if (parent.getItemAtPosition(position).equals("Products")) {
-
-
-
                     searchSlug = "product";
                     filter.setVisibility(View.VISIBLE);
                     
                     getProducts(1);
-
-
 
                 } else if (parent.getItemAtPosition(position).equals("Shops")) {
                     filterURL = "";
@@ -704,6 +699,8 @@ public class GlobalSearchActivity extends BaseActivity {
 
 
 
+        progressBar.setVisibility(View.VISIBLE);
+
 
         Map<String,Object> paramsMap = new HashMap<String,Object>();
 
@@ -714,8 +711,13 @@ public class GlobalSearchActivity extends BaseActivity {
         paramsMap.put("highlightPostTag", "</ais-highlight-0000000000>");
         paramsMap.put("facets", "[\"price\",\"category_name\",\"brand_name\",\"color\"]");
         paramsMap.put("tagFilters", "");
-        paramsMap.put("facetFilters", filterJSON);
-        paramsMap.put("numericFilters", priceFilterJSON);
+
+
+        if (!filterJSON.equals("[]"))
+            paramsMap.put("facetFilters", filterJSON);
+
+        if (!priceFilterJSON.equals("[\"price>=10\"]"))
+            paramsMap.put("numericFilters", priceFilterJSON);
 
 
 
@@ -770,6 +772,10 @@ public class GlobalSearchActivity extends BaseActivity {
 
 
                     try {
+
+
+                        progressBar.setVisibility(View.INVISIBLE);
+
                         isLoading = false;
                         JSONArray jsonArray = response.getJSONArray("results");
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
@@ -785,6 +791,7 @@ public class GlobalSearchActivity extends BaseActivity {
                             tabsItem.setThumbnailSM(ob.getString("product_image").replace("\n", "").replace("\r", ""));
                             tabsItem.setSlug(ob.getString("slug"));
                             tabsItem.setPriceMax(ob.getInt("max_price"));
+                            tabsItem.setDiscountedPrice(ob.getInt("discounted_price"));
                             tabsItem.setPriceMin(ob.getInt("price"));
 
                             if (!slugStore.contains(ob.getString("slug"))) {

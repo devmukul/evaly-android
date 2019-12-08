@@ -13,7 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,17 +23,26 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.TransactionItem;
+import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
+import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
+import retrofit2.http.Url;
 
 public class EvalyStoreActivity extends AppCompatActivity {
 
@@ -49,6 +60,7 @@ public class EvalyStoreActivity extends AppCompatActivity {
     String slug = "evaly1919";
 
     LinearLayout not;
+    UserDetails userDetails;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,10 +70,13 @@ public class EvalyStoreActivity extends AppCompatActivity {
         getSupportActionBar().setElevation(4f);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         Intent intent = getIntent();
 
         title = intent.getStringExtra("title");
         slug = intent.getStringExtra("slug");
+
+        userDetails = new UserDetails(this);
 
 
 
@@ -114,14 +129,27 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        String url = UrlUtils.BASE_URL+"shop-groups/"+slug+"/";
+        String url;
+
+        url = UrlUtils.BASE_URL+"shop-groups/"+slug+"/";
+
+        if (slug.equals("shop-subscriptions"))
+            url = UrlUtils.BASE_URL+"shop-subscriptions";
+
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url ,(String) null,
                 response -> {
                     try {
 
                         isLoading = false;
-                        JSONArray jsonArray = response.getJSONArray("shops");
+                        JSONArray jsonArray;
+
+
+                        if (slug.equals("shop-subscriptions"))
+                            jsonArray = response.getJSONArray("data");
+                        else
+                            jsonArray = response.getJSONArray("shops");
+
                         boolean b=false;
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
@@ -148,16 +176,52 @@ public class EvalyStoreActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
+                } , new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (error.networkResponse.statusCode == 401){
+
+                    AuthApiHelper.refreshToken(EvalyStoreActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getEvalyShops(p);
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+
+                        }
+                    });
+
+                    return;
+
+                }}
+
 
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(EvalyStoreActivity.this, "All shops are loaded", Toast.LENGTH_SHORT).show();
 
                 error.printStackTrace();
             }
-        });
+        }){
+
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+
+                if (!userDetails.getToken().equals(""))
+                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+
+
+                return headers;
+            }
+
+
+        };
         RequestQueue rq = Volley.newRequestQueue(this);
         request.setShouldCache(false);
 

@@ -72,15 +72,12 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         @Override
         public void onClick(View v) {
 
-
             int i = Integer.parseInt(v.getTag().toString());
-
             Intent intent = new Intent(context, MainActivity.class);
             intent.putExtra("type", 3);
             intent.putExtra("shop_slug", availableShops.get(i).getShopSlug());
             intent.putExtra("shop_name", availableShops.get(i).getName());
             intent.putExtra("category", availableShops.get(i).getSlug());
-
             context.startActivity(intent);
 
         }
@@ -178,23 +175,46 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
                 }else{
 
-                    if(((int) Double.parseDouble(availableShops.get(i).getPrice())) < 1) {
-                        Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
-
 
                     Calendar calendar = Calendar.getInstance();
 
                     cartItem.setSlug(availableShops.get(i).getSlug());
                     cartItem.setProductId(availableShops.get(i).getProductId());
 
-                    try {
-                        cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getPrice()));
-                    } catch (Exception e){
-                        cartItem.setPrice(0);
+
+
+                    if (availableShops.get(i).getDiscountValue() == 0) {
+
+                        if (((int) Double.parseDouble(availableShops.get(i).getMaximumPrice())) < 1) {
+                            Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        try {
+                            cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getMaximumPrice()));
+                        } catch (Exception e){
+                            cartItem.setPrice(0);
+                        }
+
+
+
+                    } else {
+
+                        if (((int) Double.parseDouble(availableShops.get(i).getPrice())) < 1) {
+                            Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        try {
+                            cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getPrice()));
+                        } catch (Exception e){
+                            cartItem.setPrice(0);
+                        }
+
                     }
+
+
+
 
                     cartItem.setQuantity(1);
                     cartItem.setSelected(true);
@@ -227,18 +247,6 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                 }
             }
         });
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         // circle buttons clicks

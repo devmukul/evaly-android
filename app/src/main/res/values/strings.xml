@@ -50,6 +50,9 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="create_post">Create post</string>
 
     <string name="inbox">Inbox</string>
+    <string name="conversations">Conversations</string>
+    <string name="default_notification_channel_id">notification_ch_1</string>
+    <string name="submit">Submit</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="search_categories">
@@ -90,5 +93,4 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Fortuna</item>
         <item>Kidz</item>
     </string-array>
-
 </resources>

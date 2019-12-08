@@ -1,8 +1,24 @@
 package bd.com.evaly.evalyshop.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
+
 public class Constants {
-    public static final String XMPP_DOMAIN = "3.0.183.157";
-    public static final String XMPP_HOST = "3.0.183.157";
+    //DEV
+    public static final String XMPP_DOMAIN = "chat-dev.evaly.com.bd";
+    public static final String XMPP_HOST = "chat-dev.evaly.com.bd";
+    public static final String EVALY_NUMBER = "09638111667";
+    public static final String BUILD = "dev";
+
+    //PROD
+//    public static final String XMPP_DOMAIN = "chat.evaly.com.bd";
+//    public static final String XMPP_HOST = "chat.evaly.com.bd";
+//    public static final String EVALY_NUMBER = "09638111666";
+//    public static final String BUILD = "prod";
+
     public static final int XMPP_PORT = 5222;
     public static final String XMPP_RESOURCE = "xmppdemo";
     public static final boolean XMPP_DEBUG = true;
@@ -10,6 +26,7 @@ public class Constants {
     // Event specific constants
     public static final String EVT_SIGNUP_SUC = "xmpp_signup_success";
     public static final String EVT_PASSWORD_CHANGE_SUC = "xmpp_password_change_success";
+    public static final String EVT_PASSWORD_CHANGE_FAILED = "xmpp_password_change_failed";
     public static final String EVT_SIGNUP_ERR = "xmpp_signup_error";
     public static final String EVT_LOGGED_IN = "xmpp_logged_in";
     public static final String EVT_NEW_MSG = "xmpp_new_msg";
@@ -35,6 +52,7 @@ public class Constants {
     public static final String INTENT_KEY_NEWREQUEST = "newrequest";
     public static final String INTENT_KEY_SIGNUP_ERR = "signuperror";
     public static final String INTENT_KEY_UPDATE_USER_ERR = "updateusererror";
+    public static final String INTENT_KEY_CHANGE_PASS_FAILED = "updateusererror";
 
 
     //Presence States (Strings)
@@ -71,4 +89,20 @@ public class Constants {
     public static final String TYPE_AUDIO = "media/audio";
     public static final String TYPE_VIDEO = "media/video";
     public static final String TYPE_TEXT = "text";
+    public static final String TYPE_PRODUCT = "product";
+    public static final String TYPE_FEED = "feed";
+
+    public static final String EVALY_LOGO = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/media/2019-08-04_090235.843922android-icon-200x200.png";
+
+    public static List<OrderIssueModel> getDelivaryIssueList() {
+        List<OrderIssueModel> list = new ArrayList<>();
+        list.add(new OrderIssueModel("delivery", "Delivery Issue"));
+        list.add(new OrderIssueModel("product", "Product Issue"));
+        list.add(new OrderIssueModel("refund", "Refund Issue"));
+        list.add(new OrderIssueModel("payment", "Payment Issue"));
+        list.add(new OrderIssueModel("order cancel", "Request for order cancel"));
+        list.add(new OrderIssueModel("others", "Others"));
+
+        return list;
+    }
 }

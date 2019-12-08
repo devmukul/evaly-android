@@ -11,6 +11,8 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.orhanobut.logger.Logger;
+
 import org.jivesoftware.smackx.chatstates.ChatState;
 
 import java.io.UnsupportedEncodingException;
@@ -18,12 +20,15 @@ import java.net.URLEncoder;
 import java.text.BreakIterator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.TimeZone;
 
 import bd.com.evaly.evalyshop.R;
@@ -40,6 +45,30 @@ public class  Utils {
     public static boolean isValidNumber(String text){
 
         return text.matches("^(01)[3-9][0-9]{8}$");
+    }
+
+    public static String getConvertedTime(String time) {
+        String dateTime = "";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+6"));
+        Date date = new Date();
+        try {
+            date = dateFormat.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            Logger.d(e.getMessage());
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR, 6);
+
+        dateFormat = new SimpleDateFormat("dd MMM, yyyy hh:mm aaa");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+6"));
+        dateTime = dateFormat.format(calendar.getTime());
+
+
+        return dateTime;
     }
 
     public static String isStrongPassword(String password){
@@ -477,6 +506,45 @@ public class  Utils {
     }
 
 
+
+    public static String getTimeAgoSmall(long time) {
+
+        Date curDate = currentDate();
+        long now = curDate.getTime();
+
+        if (time > now || time <= 0) {
+            return "a moment ago";
+        }
+
+        int timeDIM = getTimeDistanceInMinutes(time);
+
+        String timeAgo = null;
+
+        if (timeDIM == 0) {
+            timeAgo = "Just now";
+        } else if (timeDIM == 1) {
+            return "1 mins ago";
+        } else if (timeDIM >= 2 && timeDIM <= 44) {
+            timeAgo = timeDIM + " mins ago";
+        } else if (timeDIM >= 45 && timeDIM <= 89) {
+            timeAgo = "1 hour ago";
+        } else if (timeDIM >= 90 && timeDIM <= 1439) {
+            timeAgo = (Math.round(timeDIM / 60)) + " hours ago";
+        } else if (timeDIM >= 1440) {
+
+            Date tdate = new Date(time);
+
+            SimpleDateFormat jdf = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
+            jdf.setTimeZone(TimeZone.getTimeZone("GMT-6"));
+
+            timeAgo = jdf.format(tdate);
+
+        }
+
+        return timeAgo;
+    }
+
+
     public static String getHumanTime(long timestamp) {
 
 
@@ -640,6 +708,21 @@ public class  Utils {
 
 
 
+    public static int getRandomColor(Context context){
+        int num = new Random().nextInt(10);
+        List<Integer> colors = new ArrayList<>();
+        colors.add(R.color.color1);
+        colors.add(R.color.color2);
+        colors.add(R.color.color3);
+        colors.add(R.color.color4);
+        colors.add(R.color.color5);
+        colors.add(R.color.color6);
+        colors.add(R.color.color7);
+        colors.add(R.color.color8);
+        colors.add(R.color.color9);
+        colors.add(R.color.color10);
+        return colors.get(num);
+    }
 
 
 }
