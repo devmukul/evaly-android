@@ -18,9 +18,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
@@ -28,6 +25,7 @@ import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,13 +34,11 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.TabsItem;
-import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
-import retrofit2.http.Url;
 
 public class EvalyStoreActivity extends AppCompatActivity {
 
@@ -162,12 +158,10 @@ public class EvalyStoreActivity extends AppCompatActivity {
                                 adapter.notifyItemInserted(itemList.size());
                         }
 
-
                         if (jsonArray.length() == 0)
                             not.setVisibility(View.VISIBLE);
                         else
                             not.setVisibility(View.GONE);
-
 
                        // dialog.hideDialog();
 
@@ -176,37 +170,35 @@ public class EvalyStoreActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                } , new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+                } , error -> {
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
 
-                    AuthApiHelper.refreshToken(EvalyStoreActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getEvalyShops(p);
-                        }
+                        if (error.networkResponse.statusCode == 401){
 
-                        @Override
-                        public void onFailed(int status) {
+                        AuthApiHelper.refreshToken(EvalyStoreActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                getEvalyShops(p);
+                            }
 
-                        }
-                    });
+                            @Override
+                            public void onFailed(int status) {
 
-                    return;
+                            }
+                        });
 
-                }}
+                        return;
+
+                    }}
 
 
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(EvalyStoreActivity.this, "All shops are loaded", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(EvalyStoreActivity.this, "All shops are loaded", Toast.LENGTH_SHORT).show();
 
-                error.printStackTrace();
-            }
-        }){
+                    error.printStackTrace();
+                }){
 
 
             @Override

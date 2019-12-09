@@ -345,7 +345,7 @@
                             android:text="Pay via Gift Card"
                             android:textAlignment="center"
                             android:textColor="#333"
-                            android:visibility="gone" />
+                            android:visibility="visible" />
 
                     </LinearLayout>
 
