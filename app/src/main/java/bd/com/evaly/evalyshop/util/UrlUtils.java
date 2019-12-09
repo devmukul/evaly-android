@@ -4,13 +4,13 @@ import bd.com.evaly.evalyshop.BuildConfig;
 
 public class UrlUtils {
 
-    /* Dev mode */
+    /* Force Production Test */
 
-//    public static final String DOMAIN = "https://api-dev.evaly.com.bd/";
-//    public static final String PRODUCT_BASE_URL = "https://beta.evaly.com.bd/products/";
+//    public static final String DOMAIN = "https://api.evaly.com.bd/";
+//    public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
 
 
-    /* Production */
+    /* Prod, Dev Auto Switch */
     public static final String DOMAIN = BuildConfig.BASE_URL;
     public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
 

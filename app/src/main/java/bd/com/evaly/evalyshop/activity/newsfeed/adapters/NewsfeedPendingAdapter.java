@@ -7,23 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -34,8 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ImagePreview;
@@ -83,17 +71,13 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
 
         myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
 
-        myViewHolder.statusView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        myViewHolder.statusView.setOnClickListener(view -> {
 
-                if (myViewHolder.statusView.getText().toString().contains("Show more"))
-                    myViewHolder.statusView.setText(itemsList.get(i).getBody());
-                else
-                    myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
+            if (myViewHolder.statusView.getText().toString().contains("Show more"))
+                myViewHolder.statusView.setText(itemsList.get(i).getBody());
+            else
+                myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
 
-
-            }
         });
 
         if (isJSONValid(itemsList.get(i).getBody())) {
@@ -167,41 +151,18 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
                     .apply(new RequestOptions().override(900, 900))
                     .into(myViewHolder.postImage);
 
-            myViewHolder.postImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            myViewHolder.postImage.setOnClickListener(view -> {
 
-                    Intent intent = new Intent(context, ImagePreview.class);
-                    intent.putExtra("image", itemsList.get(i).getAttachment());
-                    context.startActivity(intent);
-                }
+                Intent intent = new Intent(context, ImagePreview.class);
+                intent.putExtra("image", itemsList.get(i).getAttachment());
+                context.startActivity(intent);
             });
         }
 
 
-        myViewHolder.approveHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fragment.action(itemsList.get(i).getSlug(), "approve", i);
-            }
-        });
-
-
-        myViewHolder.deleteHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fragment.action(itemsList.get(i).getSlug(), "delete", i);
-
-            }
-        });
-
-
-        myViewHolder.rejectHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fragment.action(itemsList.get(i).getSlug(), "reject", i);
-            }
-        });
+        myViewHolder.approveHolder.setOnClickListener(view -> fragment.action(itemsList.get(i).getSlug(), "approve", i));
+        myViewHolder.deleteHolder.setOnClickListener(view -> fragment.action(itemsList.get(i).getSlug(), "delete", i));
+        myViewHolder.rejectHolder.setOnClickListener(view -> fragment.action(itemsList.get(i).getSlug(), "reject", i));
 
     }
 

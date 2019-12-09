@@ -28,8 +28,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -123,13 +121,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         tabLayout.setSmoothScrollingEnabled(true);
         voucher=view.findViewById(R.id.voucher);
         homeSearch=view.findViewById(R.id.home_search);
-        homeSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, GlobalSearchActivity.class);
-                intent.putExtra("type", 1);
-                startActivity(intent);
-            }
+
+        homeSearch.setOnClickListener(view1 -> {
+            Intent intent = new Intent(context, GlobalSearchActivity.class);
+            intent.putExtra("type", 1);
+            startActivity(intent);
         });
 
         final ViewPager viewPager = view.findViewById(R.id.pager);
@@ -150,47 +146,27 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         evalyStore=view.findViewById(R.id.evaly_store);
-        evalyStore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        evalyStore.setOnClickListener(v -> {
 
-                Intent ni = new Intent(context, GiftCardActivity.class);
+            Intent ni = new Intent(context, GiftCardActivity.class);
+            startActivity(ni);
 
-                startActivity(ni);
-
-
-            }
         });
 
 
-        voucher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        voucher.setOnClickListener(v -> {
 
-                Intent ni = new Intent(context, EvalyStoreActivity.class);
-                ni.putExtra("title", "Mega Flash Sale");
-                ni.putExtra("slug", "mega-flash-sale");
-                startActivity(ni);
+            Intent ni = new Intent(context, EvalyStoreActivity.class);
+            ni.putExtra("title", "Pre-Anniversary Sale");
+            ni.putExtra("slug", "anniversary-pre-sale-stores");
+            startActivity(ni);
 
-            }
         });
 
 
         LinearLayout wholesale = view.findViewById(R.id.evaly_wholesale);
 
-        wholesale.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-
-
-                startActivity(new Intent(context, NewsfeedActivity.class));
-
-
-            }
-        });
-
+        wholesale.setOnClickListener(v -> startActivity(new Intent(context, NewsfeedActivity.class)));
 
         userDetails = new UserDetails(context);
 
@@ -198,15 +174,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         LinearLayout orders = view.findViewById(R.id.orders);
 
-        orders.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        orders.setOnClickListener(v -> {
 
-                if(userDetails.getToken().equals("")){
-                    startActivity(new Intent(context, SignInActivity.class));
-                }else{
-                    startActivity(new Intent(context, OrderListActivity.class));
-                }
+            if(userDetails.getToken().equals("")){
+                startActivity(new Intent(context, SignInActivity.class));
+            }else{
+                startActivity(new Intent(context, OrderListActivity.class));
             }
         });
 
@@ -314,48 +287,41 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         } catch (Exception e) {
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
-                try {
-                    int count = response.getInt("unread_notification_count");
-                    if (count>0)
-                        view.findViewById(R.id.newsfeedIndicator).setVisibility(View.VISIBLE);
-                    else
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
+            Log.d("onResponse", response.toString());
+            try {
+                int count = response.getInt("unread_notification_count");
+                if (count>0)
+                    view.findViewById(R.id.newsfeedIndicator).setVisibility(View.VISIBLE);
+                else
 
-                        view.findViewById(R.id.newsfeedIndicator).setVisibility(View.GONE);
+                    view.findViewById(R.id.newsfeedIndicator).setVisibility(View.GONE);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        getNotificationCount();
+                    }
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getNotificationCount();
-                        }
+                    @Override
+                    public void onFailed(int status) {
 
-                        @Override
-                        public void onFailed(int status) {
+                    }
+                });
 
-                        }
-                    });
+                return;
 
-                    return;
+            }}
 
-                }}
-
-            }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -377,35 +343,28 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             String url = "https://nsuer.club/evaly/referral/submit-referral.php";
 
-            StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.d("json", response);
+            StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
+                Log.d("json", response);
 
-                    try{
-                        JSONObject jsonObject = new JSONObject(response);
-                        String message = jsonObject.getString("message");
-                        if (!message.equals("")) {
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                try{
+                    JSONObject jsonObject = new JSONObject(response);
+                    String message = jsonObject.getString("message");
+                    if (!message.equals("")) {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
-                            userDetails.setRef("");
+                        userDetails.setRef("");
 
-                        }
-
-                    } catch (Exception e){
-
-                        Toast.makeText(context, "Couldn't verify invitation code.", Toast.LENGTH_LONG).show();
                     }
+
+                } catch (Exception e){
+
+                    Toast.makeText(context, "Couldn't verify invitation code.", Toast.LENGTH_LONG).show();
                 }
+            }, error -> {
+                Log.e("onErrorResponse", error.toString());
 
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("onErrorResponse", error.toString());
+                Toast.makeText(context, "Server error occurred, couldn't verify invitation code.", Toast.LENGTH_LONG).show();
 
-                    Toast.makeText(context, "Server error occurred, couldn't verify invitation code.", Toast.LENGTH_LONG).show();
-
-                }
             }) {
 
                 @Override

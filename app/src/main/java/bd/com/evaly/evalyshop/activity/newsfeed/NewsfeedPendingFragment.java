@@ -402,90 +402,84 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             bottomProgressBar.setVisibility(View.VISIBLE);
 
         Log.d("json url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("json response", response.toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+            Log.d("json response", response.toString());
 
-                loading = true;
-                progressContainer.setVisibility(View.GONE);
-                bottomProgressBar.setVisibility(View.INVISIBLE);
+            loading = true;
+            progressContainer.setVisibility(View.GONE);
+            bottomProgressBar.setVisibility(View.INVISIBLE);
 
-                try {
-                    JSONArray jsonArray = response.getJSONArray("posts");
-                    if(jsonArray.length()==0 && page == 1){
-                        not.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
-                    } else{
-                        not.setVisibility(View.GONE);
-                        for(int i=0;i<jsonArray.length();i++){
-                            JSONObject ob = jsonArray.getJSONObject(i);
+            try {
+                JSONArray jsonArray = response.getJSONArray("posts");
+                if(jsonArray.length()==0 && page == 1){
+                    not.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                } else{
+                    not.setVisibility(View.GONE);
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject ob = jsonArray.getJSONObject(i);
 
-                            NewsfeedItem item = new NewsfeedItem();
+                        NewsfeedItem item = new NewsfeedItem();
 
-                            item.setAuthorUsername(ob.getString("username"));
-                            item.setAuthorFullName(ob.getString("author_full_name"));
-                            item.setAuthorImage(ob.getString("author_compressed_image"));
-                            item.setIsAdmin(ob.getInt("author_is_admin") != 0);
-                            item.setBody(ob.getString("body"));
+                        item.setAuthorUsername(ob.getString("username"));
+                        item.setAuthorFullName(ob.getString("author_full_name"));
+                        item.setAuthorImage(ob.getString("author_compressed_image"));
+                        item.setIsAdmin(ob.getInt("author_is_admin") != 0);
+                        item.setBody(ob.getString("body"));
 
 
-                            try {
-                                item.setAttachment(ob.getString("attachment"));
-                                item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
-                            } catch (Exception e){
-                                item.setAttachment(null);
-                                item.setAttachmentCompressed(null);
-                            }
-
-                            item.setCreatedAt(ob.getString("created_at"));
-                            item.setUpdatedAt(ob.getString("created_at"));
-                            item.setFavorited(ob.getInt("favorited") != 0);
-                            item.setFavoriteCount(ob.getInt("favorites_count"));
-                            item.setCommentsCount(ob.getInt("comments_count"));
-                            item.setSlug(ob.getString("slug"));
-                            item.setType(ob.getString("type"));
-
-                            itemsList.add(item);
-                            adapter.notifyItemInserted(itemsList.size());
-
+                        try {
+                            item.setAttachment(ob.getString("attachment"));
+                            item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
+                        } catch (Exception e){
+                            item.setAttachment(null);
+                            item.setAttachmentCompressed(null);
                         }
+
+                        item.setCreatedAt(ob.getString("created_at"));
+                        item.setUpdatedAt(ob.getString("created_at"));
+                        item.setFavorited(ob.getInt("favorited") != 0);
+                        item.setFavoriteCount(ob.getInt("favorites_count"));
+                        item.setCommentsCount(ob.getInt("comments_count"));
+                        item.setSlug(ob.getString("slug"));
+                        item.setType(ob.getString("type"));
+
+                        itemsList.add(item);
+                        adapter.notifyItemInserted(itemsList.size());
+
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getPosts(page);
-                        }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-                        @Override
-                        public void onFailed(int status) {
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                        }
-                    });
+                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        getPosts(page);
+                    }
 
-                    return;
+                    @Override
+                    public void onFailed(int status) {
 
-                }}
+                    }
+                });
 
-                progressContainer.setVisibility(View.GONE);
-                bottomProgressBar.setVisibility(View.INVISIBLE);
+                return;
 
-            }
+            }}
+
+            progressContainer.setVisibility(View.GONE);
+            bottomProgressBar.setVisibility(View.INVISIBLE);
+
         }) {
 
 

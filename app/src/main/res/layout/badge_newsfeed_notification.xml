@@ -41,5 +41,6 @@
         android:text="@null"
         android:textColor="#ffffffff"
         android:textSize="10sp"
+        android:maxLines="1"
         android:visibility="visible" />
 </RelativeLayout>

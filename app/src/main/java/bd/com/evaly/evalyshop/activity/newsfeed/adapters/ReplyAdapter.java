@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.Author;
@@ -101,23 +103,17 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
         myViewHolder.view.setLongClickable(true);
 
         myViewHolder.view.setOnLongClickListener(
-                new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
-                            return false;
-
-                        new AlertDialog.Builder(context)
-                                .setMessage("Are you sure you want to delete?")
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        fragment.deletePost(RepliesItem.getId()+"", "reply");
-                                    }})
-                                .setNegativeButton("NO", null).show();
-
+                view -> {
+                    if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
                         return false;
-                    }
+
+                    new AlertDialog.Builder(context)
+                            .setMessage("Are you sure you want to delete?")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(RepliesItem.getId()+"", "reply"))
+                            .setNegativeButton("NO", null).show();
+
+                    return false;
                 }
         );
 

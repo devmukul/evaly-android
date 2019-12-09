@@ -1,16 +1,11 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,9 +15,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
@@ -33,11 +25,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.NotificationActivity;
-import bd.com.evaly.evalyshop.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.adapter.NotificationNewsfeedAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.Notifications;
@@ -146,80 +135,73 @@ public class NewsfeedNotification extends AppCompatActivity {
         if (page>1)
             progressBar.setVisibility(View.VISIBLE);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
 
-                loading = true;
+            loading = true;
 
-                page++;
+            page++;
 
+            progressContainer.setVisibility(View.GONE);
+            progressBar.setVisibility(View.INVISIBLE);
 
-                progressContainer.setVisibility(View.GONE);
-                progressBar.setVisibility(View.INVISIBLE);
+            Log.d("notifications_response", response.toString());
+            try {
+                JSONArray jsonArray = response.getJSONArray("results");
+                if(jsonArray.length()==0){
+                    not.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                }else{
+                    not.setVisibility(View.GONE);
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject ob = jsonArray.getJSONObject(i);
 
-                Log.d("notifications_response", response.toString());
-                try {
-                    JSONArray jsonArray = response.getJSONArray("results");
-                    if(jsonArray.length()==0){
-                        not.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
-                    }else{
-                        not.setVisibility(View.GONE);
-                        for(int i=0;i<jsonArray.length();i++){
-                            JSONObject ob = jsonArray.getJSONObject(i);
+                        Notifications item = new Notifications();
+                        item.setId(ob.getString("id"));
+                        item.setImageURL(ob.getString("thumb_url"));
+                        item.setMessage(ob.getString("message"));
+                        item.setTime(ob.getString("created_at"));
+                        item.setContent_type(ob.getString("content_type"));
+                        item.setContent_url(ob.getString("content_url"));
+                        item.setRead(ob.getBoolean("read"));
+                        item.setMeta_data(ob.getString("meta_data"));
 
-                            Notifications item = new Notifications();
-                            item.setId(ob.getString("id"));
-                            item.setImageURL(ob.getString("thumb_url"));
-                            item.setMessage(ob.getString("message"));
-                            item.setTime(ob.getString("created_at"));
-                            item.setContent_type(ob.getString("content_type"));
-                            item.setContent_url(ob.getString("content_url"));
-                            item.setRead(ob.getBoolean("read"));
-                            item.setMeta_data(ob.getString("meta_data"));
+                        notifications.add(item);
 
-                            notifications.add(item);
-
-                            adapter.notifyItemInserted(notifications.size());
-                        }
+                        adapter.notifyItemInserted(notifications.size());
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-
-                markAsRead();
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+            markAsRead();
 
-                    AuthApiHelper.refreshToken(NewsfeedNotification.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getNotifications();
-                        }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-                        @Override
-                        public void onFailed(int status) {
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                        }
-                    });
+                AuthApiHelper.refreshToken(NewsfeedNotification.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        getNotifications();
+                    }
 
-                    return;
+                    @Override
+                    public void onFailed(int status) {
 
-                }}
+                    }
+                });
 
-                progressContainer.setVisibility(View.GONE);
+                return;
 
-                progressBar.setVisibility(View.GONE);
-            }
+            }}
+
+            progressContainer.setVisibility(View.GONE);
+
+            progressBar.setVisibility(View.GONE);
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -249,39 +231,29 @@ public class NewsfeedNotification extends AppCompatActivity {
         } catch (Exception e) {
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> Log.d("onResponse", response.toString()), error -> {
+            Log.e("onErrorResponse", error.toString());
 
-            }
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
+                AuthApiHelper.refreshToken(NewsfeedNotification.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        markAsRead();
+                    }
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    @Override
+                    public void onFailed(int status) {
 
-                    AuthApiHelper.refreshToken(NewsfeedNotification.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            markAsRead();
-                        }
+                    }
+                });
 
-                        @Override
-                        public void onFailed(int status) {
+                return;
 
-                        }
-                    });
+            }}
 
-                    return;
-
-                }}
-
-            }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {

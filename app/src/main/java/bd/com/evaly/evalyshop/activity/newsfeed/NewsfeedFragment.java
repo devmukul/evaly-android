@@ -656,14 +656,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     .apply(new RequestOptions().override(900, 900))
                     .into(postPic);
 
-            postPic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            postPic.setOnClickListener(view -> {
 
-                    Intent intent = new Intent(context, ImagePreview.class);
-                    intent.putExtra("image", postImageUrl);
-                    context.startActivity(intent);
-                }
+                Intent intent = new Intent(context, ImagePreview.class);
+                intent.putExtra("image", postImageUrl);
+                context.startActivity(intent);
             });
 
         }
@@ -690,7 +687,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     tvMessage.setVisibility(View.GONE);
                 }else {
                     tvMessage.setVisibility(View.VISIBLE);
-                    tvMessage.setText(Html.fromHtml(Utils.truncateText(body, 180, "... <b>Show more</b>")));
+                    tvMessage.setText(Html.fromHtml(body));
                 }
                 cardLink.setVisibility(View.VISIBLE);
 
@@ -700,7 +697,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         } else {
             tvMessage.setVisibility(View.VISIBLE);
             cardLink.setVisibility(View.GONE);
-            tvMessage.setText(Html.fromHtml(Utils.truncateText(postText, 180, "... <b>Show more</b>")));
+            tvMessage.setText(Html.fromHtml(postText));
         }
 
 
@@ -734,57 +731,51 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         Log.d("json url", url);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("json response", response.toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+            Log.d("json response", response.toString());
 
-                scrollView.fling(0);
+            scrollView.fling(0);
 
-                isReplyLoading = false;
+            isReplyLoading = false;
 
-                ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
-                replyProgressContainer.setVisibility(View.GONE);
+            ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
+            replyProgressContainer.setVisibility(View.GONE);
 
-                try {
+            try {
 
-                    JSONArray jsonArray = response.getJSONArray("data").getJSONObject(0).getJSONArray("replies");
+                JSONArray jsonArray = response.getJSONArray("data").getJSONObject(0).getJSONArray("replies");
 
-                    if (jsonArray.length() > 0)
-                        replyNot.setVisibility(View.GONE);
-                    else {
-                        replyNot.setVisibility(View.VISIBLE);
-                        currentReplyPage++;
-                    }
-
-                    for (int i=0; i < jsonArray.length(); i++) {
-
-                        Gson gson = new Gson();
-                        RepliesItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), RepliesItem.class);
-
-                        if (!item.getBody().trim().equals("")) {
-                            replyItems.add(item);
-                            replyAdapter.notifyItemInserted(replyItems.size());
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (jsonArray.length() > 0)
+                    replyNot.setVisibility(View.GONE);
+                else {
+                    replyNot.setVisibility(View.VISIBLE);
+                    currentReplyPage++;
                 }
 
+                for (int i=0; i < jsonArray.length(); i++) {
 
+                    Gson gson = new Gson();
+                    RepliesItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), RepliesItem.class);
+
+                    if (!item.getBody().trim().equals("")) {
+                        replyItems.add(item);
+                        replyAdapter.notifyItemInserted(replyItems.size());
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-
-                replyProgressContainer.setVisibility(View.GONE);
-                ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
-                // Toast.makeText(context, "Couldn't load replies.", Toast.LENGTH_SHORT).show();
 
 
-            }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+
+            replyProgressContainer.setVisibility(View.GONE);
+            ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
+            // Toast.makeText(context, "Couldn't load replies.", Toast.LENGTH_SHORT).show();
+
+
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -827,29 +818,23 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
         Log.d("json body", parametersPost.toString());
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("json response", response.toString());
-                try {
-                    if (response.has("data")) {
-                        reloadRecyclerReply();
-                        replyInput.setText("");
-                        replyInput.setEnabled(true);
-                        submitReply.setEnabled(true);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost, response -> {
+            Log.d("json response", response.toString());
+            try {
+                if (response.has("data")) {
+                    reloadRecyclerReply();
+                    replyInput.setText("");
+                    replyInput.setEnabled(true);
+                    submitReply.setEnabled(true);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-                Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
-                commentInput.setEnabled(true);
-                submitComment.setEnabled(true);
-            }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+            Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
+            commentInput.setEnabled(true);
+            submitComment.setEnabled(true);
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -885,43 +870,37 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         else
             url = UrlUtils.BASE_URL_NEWSFEED+"comments/"+id;
 
-        StringRequest request = new StringRequest(Request.Method.DELETE, url,new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
+        StringRequest request = new StringRequest(Request.Method.DELETE, url, response -> {
 
-                if (type.equals("post")) {
+            if (type.equals("post")) {
 
-                    itemsList.clear();
-                    adapter.notifyDataSetChanged();
-                    currentPage = 1;
-                    getPosts(currentPage);
+                itemsList.clear();
+                adapter.notifyDataSetChanged();
+                currentPage = 1;
+                getPosts(currentPage);
 
-                } else if (type.equals("comment")){
+            } else if (type.equals("comment")){
 
-                    commentItems.clear();
-                    commentAdapter.notifyDataSetChanged();
+                commentItems.clear();
+                commentAdapter.notifyDataSetChanged();
 
-                    currentCommentPage = 1;
+                currentCommentPage = 1;
 
-                    loadComments(selectedPostID, false);
-                } else {
+                loadComments(selectedPostID, false);
+            } else {
 
-                    replyItems.clear();
-                    replyAdapter.notifyDataSetChanged();
+                replyItems.clear();
+                replyAdapter.notifyDataSetChanged();
 
-                    currentReplyPage = 1;
+                currentReplyPage = 1;
 
-                    loadReplies(selectedCommentID);
-                }
-
+                loadReplies(selectedCommentID);
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-                Toast.makeText(context, "Couldn't delete post", Toast.LENGTH_SHORT).show();
 
-            }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+            Toast.makeText(context, "Couldn't delete post", Toast.LENGTH_SHORT).show();
+
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -975,64 +954,58 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         Log.d("json url", url);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
 
-                scrollView.fling(0);
+            scrollView.fling(0);
 
-                isCommentLoading = false;
+            isCommentLoading = false;
 
-                Log.d("json response", response.toString());
-                commentProgressContainer.setVisibility(View.GONE);
-                ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
+            Log.d("json response", response.toString());
+            commentProgressContainer.setVisibility(View.GONE);
+            ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
 
 
-                try {
+            try {
 
-                    maxCountComment = response.getInt("count");
+                maxCountComment = response.getInt("count");
 
-                    JSONArray jsonArray = response.getJSONArray("data");
+                JSONArray jsonArray = response.getJSONArray("data");
 
-                    if (jsonArray.length() > 0)
-                        commentNot.setVisibility(View.GONE);
-                    else {
-                        commentNot.setVisibility(View.VISIBLE);
-                        currentCommentPage++;
-                    }
-
-                    for (int i=0; i < jsonArray.length(); i++) {
-
-                        Gson gson = new Gson();
-                        CommentItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CommentItem.class);
-
-                        if (!item.getBody().trim().equals("")) {
-                            commentItems.add(item);
-                            commentAdapter.notifyItemInserted(commentItems.size());
-
-                            //commentAdapter.notifyDataSetChanged();
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (jsonArray.length() > 0)
+                    commentNot.setVisibility(View.GONE);
+                else {
+                    commentNot.setVisibility(View.VISIBLE);
+                    currentCommentPage++;
                 }
 
+                for (int i=0; i < jsonArray.length(); i++) {
 
+                    Gson gson = new Gson();
+                    CommentItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CommentItem.class);
+
+                    if (!item.getBody().trim().equals("")) {
+                        commentItems.add(item);
+                        commentAdapter.notifyItemInserted(commentItems.size());
+
+                        //commentAdapter.notifyDataSetChanged();
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
 
 
-                ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-                commentProgressContainer.setVisibility(View.GONE);
 
-                //Toast.makeText(context, "Couldn't load comments.", Toast.LENGTH_SHORT).show();
+            ((ProgressBar) commentDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
 
-            }
+            commentProgressContainer.setVisibility(View.GONE);
+
+            //Toast.makeText(context, "Couldn't load comments.", Toast.LENGTH_SHORT).show();
+
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -1073,38 +1046,29 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .color(R.color.ddd)
                 .show();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
 
-                skeletonCommentHeader.hide();
+            skeletonCommentHeader.hide();
 
-                try {
+            try {
 
-                    JSONObject ob = response.getJSONObject("data");
-                    JSONObject author = ob.getJSONObject("author");
-                    String authorName = author.getString("full_name");
-                    String authorImage = author.getString("compressed_image");
-                    boolean isAdmin = author.getBoolean("is_admin");
-                    String postText = ob.getString("body");
-                    String date = ob.getString("created_at");
-                    String postImageUrl = ob.getString("attachment");
+                JSONObject ob = response.getJSONObject("data");
+                JSONObject author = ob.getJSONObject("author");
+                String authorName = author.getString("full_name");
+                String authorImage = author.getString("compressed_image");
+                boolean isAdmin = author.getBoolean("is_admin");
+                String postText = ob.getString("body");
+                String date = ob.getString("created_at");
+                String postImageUrl = ob.getString("attachment");
 
-                    initCommentHeader(authorName, authorImage, isAdmin, postText, date, postImageUrl);
+                initCommentHeader(authorName, authorImage, isAdmin, postText, date, postImageUrl);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
 
-            }
-        }) {
+
+        }, error -> Log.e("onErrorResponse", error.toString())) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -1148,92 +1112,86 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             bottomProgressBar.setVisibility(View.VISIBLE);
 
         Log.d("json url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("json response", response.toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+            Log.d("json response", response.toString());
 
-                loading = true;
-                progressContainer.setVisibility(View.GONE);
-                bottomProgressBar.setVisibility(View.INVISIBLE);
+            loading = true;
+            progressContainer.setVisibility(View.GONE);
+            bottomProgressBar.setVisibility(View.INVISIBLE);
 
-                try {
-                    JSONArray jsonArray = response.getJSONArray("posts");
-                    if(jsonArray.length()==0 && page == 1){
-                        not.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
-                    } else{
-                        not.setVisibility(View.GONE);
-                        for(int i=0;i<jsonArray.length();i++){
-                            JSONObject ob = jsonArray.getJSONObject(i);
+            try {
+                JSONArray jsonArray = response.getJSONArray("posts");
+                if(jsonArray.length()==0 && page == 1){
+                    not.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                } else{
+                    not.setVisibility(View.GONE);
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject ob = jsonArray.getJSONObject(i);
 
-                            NewsfeedItem item = new NewsfeedItem();
+                        NewsfeedItem item = new NewsfeedItem();
 
-                            item.setAuthorUsername(ob.getString("username"));
-                            item.setAuthorFullName(ob.getString("author_full_name"));
-                            item.setAuthorImage(ob.getString("author_compressed_image"));
-                            item.setIsAdmin(ob.getInt("author_is_admin") != 0);
-                            item.setBody(ob.getString("body"));
+                        item.setAuthorUsername(ob.getString("username"));
+                        item.setAuthorFullName(ob.getString("author_full_name"));
+                        item.setAuthorImage(ob.getString("author_compressed_image"));
+                        item.setIsAdmin(ob.getInt("author_is_admin") != 0);
+                        item.setBody(ob.getString("body"));
 
 
-                            try {
-                                item.setAttachment(ob.getString("attachment"));
-                                item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
+                        try {
+                            item.setAttachment(ob.getString("attachment"));
+                            item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
 
-                            } catch (Exception e){
-                                item.setAttachment("null");
-                                item.setAttachmentCompressed("null");
-                            }
-
-                            item.setCreatedAt(ob.getString("created_at"));
-                            item.setUpdatedAt(ob.getString("created_at"));
-                            item.setFavorited(ob.getInt("favorited") != 0);
-                            item.setFavoriteCount(ob.getInt("favorites_count"));
-                            item.setCommentsCount(ob.getInt("comments_count"));
-                            item.setSlug(ob.getString("slug"));
-                            item.setType(ob.getString("type"));
-
-                            itemsList.add(item);
-                            adapter.notifyItemInserted(itemsList.size());
-
+                        } catch (Exception e){
+                            item.setAttachment("null");
+                            item.setAttachmentCompressed("null");
                         }
+
+                        item.setCreatedAt(ob.getString("created_at"));
+                        item.setUpdatedAt(ob.getString("created_at"));
+                        item.setFavorited(ob.getInt("favorited") != 0);
+                        item.setFavoriteCount(ob.getInt("favorites_count"));
+                        item.setCommentsCount(ob.getInt("comments_count"));
+                        item.setSlug(ob.getString("slug"));
+                        item.setType(ob.getString("type"));
+
+                        itemsList.add(item);
+                        adapter.notifyItemInserted(itemsList.size());
+
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
 
-                NetworkResponse response = error.networkResponse;
 
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getPosts(page);
-                        }
+            NetworkResponse response = error.networkResponse;
 
-                        @Override
-                        public void onFailed(int status) {
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                        }
-                    });
+                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        getPosts(page);
+                    }
 
-                    return;
+                    @Override
+                    public void onFailed(int status) {
 
-                }}
+                    }
+                });
 
-                progressContainer.setVisibility(View.GONE);
-                bottomProgressBar.setVisibility(View.INVISIBLE);
+                return;
 
-            }
+            }}
+
+            progressContainer.setVisibility(View.GONE);
+            bottomProgressBar.setVisibility(View.INVISIBLE);
+
         }) {
 
 
@@ -1295,50 +1253,44 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
         Log.d("json body", parametersPost.toString());
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("json response", response.toString());
-                try {
-                    if (response.has("data")) {
-                        reloadRecyclerComment();
-                        commentInput.setText("");
-                        commentInput.setEnabled(true);
-                        submitComment.setEnabled(true);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost, response -> {
+            Log.d("json response", response.toString());
+            try {
+                if (response.has("data")) {
+                    reloadRecyclerComment();
+                    commentInput.setText("");
+                    commentInput.setEnabled(true);
+                    submitComment.setEnabled(true);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        }, error -> {
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            createComment();
-                        }
+                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        createComment();
+                    }
 
-                        @Override
-                        public void onFailed(int status) {
+                    @Override
+                    public void onFailed(int status) {
 
-                        }
-                    });
+                    }
+                });
 
-                    return;
+                return;
 
-                }}
+            }}
 
-                Log.e("onErrorResponse", error.toString());
-                Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
-                commentInput.setEnabled(true);
-                submitComment.setEnabled(true);
-            }
+            Log.e("onErrorResponse", error.toString());
+            Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
+            commentInput.setEnabled(true);
+            submitComment.setEnabled(true);
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -1367,44 +1319,38 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         Log.d("json url", url);
 
-        JsonObjectRequest request = new JsonObjectRequest((like ? Request.Method.DELETE : Request.Method.POST), url, parametersPost,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("json response", response.toString());
-                try {
-                    if (response.has("data")) {
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        JsonObjectRequest request = new JsonObjectRequest((like ? Request.Method.DELETE : Request.Method.POST), url, parametersPost, response -> {
+            Log.d("json response", response.toString());
+            try {
+                if (response.has("data")) {
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        }, error -> {
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            sendLike(slug, like);
-                        }
+                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        sendLike(slug, like);
+                    }
 
-                        @Override
-                        public void onFailed(int status) {
+                    @Override
+                    public void onFailed(int status) {
 
-                        }
-                    });
+                    }
+                });
 
-                    return;
+                return;
 
-                }}
+            }}
 
-                Log.e("onErrorResponse", error.toString());
-                Toast.makeText(context, "Couldn't like the status.", Toast.LENGTH_SHORT).show();
-            }
+            Log.e("onErrorResponse", error.toString());
+            Toast.makeText(context, "Couldn't like the status.", Toast.LENGTH_SHORT).show();
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -1481,21 +1427,18 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onChanged(@Nullable List<RosterTable> rosterTables) {
                 List<RosterTable> selectedRosterList = new ArrayList<>();
                 List<RosterTable> rosterList = rosterTables;
-                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(getActivity(), rosterList, new ContactShareAdapter.OnUserSelectedListener() {
-                    @Override
-                    public void onUserSelected(Object object, boolean status) {
-                        RosterTable table = (RosterTable) object;
+                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(getActivity(), rosterList, (object, status) -> {
+                    RosterTable table = (RosterTable) object;
 
-                        if (status && !selectedRosterList.contains(table)) {
-                            selectedRosterList.add(table);
-                        } else {
-                            if (selectedRosterList.contains(table)) {
-                                selectedRosterList.remove(table);
-                            }
+                    if (status && !selectedRosterList.contains(table)) {
+                        selectedRosterList.add(table);
+                    } else {
+                        if (selectedRosterList.contains(table)) {
+                            selectedRosterList.remove(table);
                         }
-
-                        tvCount.setText("(" + selectedRosterList.size() + ") ");
                     }
+
+                    tvCount.setText("(" + selectedRosterList.size() + ") ");
                 });
 
                 llSend.setOnClickListener(view -> {

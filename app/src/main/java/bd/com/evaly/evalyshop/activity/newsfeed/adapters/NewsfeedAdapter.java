@@ -2,14 +2,12 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,12 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.ImagePreview;
-import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedFragment;
@@ -118,17 +112,17 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                     myViewHolder.statusView.setVisibility(View.VISIBLE);
                     myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(body, 180, "... <b>Show more</b>")));
                 }
+
+
+
                 myViewHolder.cardLink.setVisibility(View.VISIBLE);
-                myViewHolder.cardLink.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Logger.json(object.toString());
-                        try {
-                            context.startActivity(new Intent(new Intent(context, ViewProductActivity.class))
-                                    .putExtra("product_slug", object.getString("url").replace(UrlUtils.PRODUCT_BASE_URL, "")));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                myViewHolder.cardLink.setOnClickListener(view -> {
+                    Logger.json(object.toString());
+                    try {
+                        context.startActivity(new Intent(new Intent(context, ViewProductActivity.class))
+                                .putExtra("product_slug", object.getString("url").replace(UrlUtils.PRODUCT_BASE_URL, "")));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 });
             } catch (JSONException e) {
@@ -138,14 +132,11 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             myViewHolder.statusView.setVisibility(View.VISIBLE);
             myViewHolder.cardLink.setVisibility(View.GONE);
             myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
+
         }
 
-        myViewHolder.llShareHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onSharePost(itemsList.get(i));
-            }
-        });
+
+        myViewHolder.llShareHolder.setOnClickListener(view -> listener.onSharePost(itemsList.get(i)));
 
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
@@ -190,104 +181,77 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             favorite.setImageResource(R.drawable.ic_favorite);
         }
 
-        myViewHolder.likeHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myViewHolder.likeHolder.setOnClickListener(v -> {
 
-                if (fragment.getUserDetails().getToken().equals("")) {
-                    Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            if (fragment.getUserDetails().getToken().equals("")) {
+                Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                if (favorite.getTag().equals("yes")) {
+            if (favorite.getTag().equals("yes")) {
 
-                    fragment.sendLike(itemsList.get(i).getSlug(), true);
-                    favorite.setImageResource(R.drawable.ic_favorite);
-                    favorite.setTag("no");
-                    itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount() - 1);
-                    likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
+                fragment.sendLike(itemsList.get(i).getSlug(), true);
+                favorite.setImageResource(R.drawable.ic_favorite);
+                favorite.setTag("no");
+                itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount() - 1);
+                likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
 
-                } else {
+            } else {
 
-                    fragment.sendLike(itemsList.get(i).getSlug(), false);
-                    favorite.setImageResource(R.drawable.ic_favorite_color);
-                    favorite.setTag("yes");
-                    itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount() + 1);
-                    likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
+                fragment.sendLike(itemsList.get(i).getSlug(), false);
+                favorite.setImageResource(R.drawable.ic_favorite_color);
+                favorite.setTag("yes");
+                itemsList.get(i).setFavoriteCount(itemsList.get(i).getFavoriteCount() + 1);
+                likeCount.setText(wordBeautify(itemsList.get(i).getFavoriteCount(), true));
 
-                }
             }
         });
 
 
-        View.OnClickListener commentOpener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fragment.openCommentBottomSheet(itemsList.get(i).getSlug(), itemsList.get(i).getAuthorFullName(), itemsList.get(i).getAuthorImage(), itemsList.get(i).getIsAdmin(), itemsList.get(i).getBody(), itemsList.get(i).getCreatedAt(), itemsList.get(i).getAttachment());
-            }
-        };
+        View.OnClickListener commentOpener = view -> fragment.openCommentBottomSheet(itemsList.get(i).getSlug(), itemsList.get(i).getAuthorFullName(), itemsList.get(i).getAuthorImage(), itemsList.get(i).getIsAdmin(), itemsList.get(i).getBody(), itemsList.get(i).getCreatedAt(), itemsList.get(i).getAttachment());
 
         myViewHolder.commentHolder.setOnClickListener(commentOpener);
         myViewHolder.statusView.setOnClickListener(commentOpener);
         myViewHolder.postImage.setOnClickListener(commentOpener);
 
-        myViewHolder.menuIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        myViewHolder.menuIcon.setOnClickListener(view -> {
 
+            PopupMenu popup = new PopupMenu(context, myViewHolder.menuIcon);
 
-                PopupMenu popup = new PopupMenu(context, myViewHolder.menuIcon);
+            if (fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
+                popup.getMenuInflater().inflate(R.menu.newsfeed_menu_super, popup.getMenu());
+            else
+                popup.getMenuInflater().inflate(R.menu.newsfeed_menu_user, popup.getMenu());
 
-                if (fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
-                    popup.getMenuInflater().inflate(R.menu.newsfeed_menu_super, popup.getMenu());
-                else
-                    popup.getMenuInflater().inflate(R.menu.newsfeed_menu_user, popup.getMenu());
-
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-
-
-                        switch (item.getItemId()) {
-                            case R.id.action_share:
-                                Intent in = new Intent(Intent.ACTION_SEND);
-                                in.setType("text/plain");
-                                in.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
-                                in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/" + itemsList.get(i).getSlug());
-                                context.startActivity(Intent.createChooser(in, "Share Post"));
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.action_share:
+                            Intent in = new Intent(Intent.ACTION_SEND);
+                            in.setType("text/plain");
+                            in.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
+                            in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/" + itemsList.get(i).getSlug());
+                            context.startActivity(Intent.createChooser(in, "Share Post"));
+                            break;
+                        case R.id.action_delete:
+                            if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
                                 break;
-                            case R.id.action_delete:
-
-                                if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
-                                    break;
-
-                                new AlertDialog.Builder(context)
-                                        .setMessage("Are you sure you want to delete?")
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-                                            public void onClick(DialogInterface dialog, int whichButton) {
-
-                                                fragment.deletePost(itemsList.get(i).getSlug(), "post");
-
-                                            }
-                                        })
-                                        .setNegativeButton("NO", null).show();
-                                break;
-
-                            case R.id.action_edit:
-
-                                NewsfeedActivity activity = (NewsfeedActivity) context;
-                                activity.openEditBottomSheet(itemsList.get(i));
-
-
-                        }
-
-                        return true;
+                            new AlertDialog.Builder(context)
+                                    .setMessage("Are you sure you want to delete?")
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(itemsList.get(i).getSlug(), "post"))
+                                    .setNegativeButton("NO", null).show();
+                            break;
+                        case R.id.action_edit:
+                            NewsfeedActivity activity = (NewsfeedActivity) context;
+                            activity.openEditBottomSheet(itemsList.get(i));
                     }
-                });
 
-                popup.show();
-            }
+                    return true;
+                }
+            });
+
+            popup.show();
         });
 
 
