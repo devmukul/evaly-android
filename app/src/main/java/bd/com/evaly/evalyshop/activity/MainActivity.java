@@ -60,6 +60,7 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 
 public class MainActivity extends BaseActivity {
@@ -107,10 +108,9 @@ public class MainActivity extends BaseActivity {
                         if (vCard.getFirstName() == null) {
                             Logger.d("========");
                             xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                            XMPPHandler.disconnect();
-                        } else {
-                            XMPPHandler.disconnect();
+
                         }
+                        disconnectXmpp();
                     }
 
                 }
@@ -126,7 +126,7 @@ public class MainActivity extends BaseActivity {
                 }
             } else {
                 CredentialManager.saveUserRegistered(true);
-                XMPPHandler.disconnect();
+                disconnectXmpp();
             }
         }
 
@@ -135,7 +135,7 @@ public class MainActivity extends BaseActivity {
 
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
             xmppHandler.login();
-            XMPPHandler.disconnect();
+            disconnectXmpp();
         }
 
         public void onSignupFailed(String msg) {
@@ -550,6 +550,10 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    private void disconnectXmpp(){
+        XMPPHandler.disconnect();
+        stopService(new Intent(MainActivity.this, XMPPService.class));
+    }
 
     @Override
     public void onBackPressed() {
@@ -658,12 +662,7 @@ public class MainActivity extends BaseActivity {
         if (dbHelperWishList != null) {
             dbHelperWishList.close();
         }
-        if (xmppHandler != null) {
-            if (xmppHandler.isConnected()) {
-                xmppHandler.changePresence();
-                xmppHandler.disconnect();
-            }
-        }
+        disconnectXmpp();
         super.onDestroy();
 
         // Glide.with(getApplicationContext()).pauseRequests();

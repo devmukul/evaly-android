@@ -40,6 +40,7 @@ import java.util.Set;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
 import bd.com.evaly.evalyshop.activity.chat.invite.InviteActivity;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
@@ -431,8 +432,16 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
     @Override
     public void onBackPressed() {
+        if (xmppHandler!= null){
+            disconnectXmpp();
+        }
         finish();
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+    }
+
+    private void disconnectXmpp(){
+        xmppHandler.disconnect();
+        stopService(new Intent(ChatListActivity.this, XMPPService.class));
     }
 
     @Override
