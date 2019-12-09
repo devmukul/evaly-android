@@ -43,7 +43,25 @@
         android:layout_height="match_parent"
         android:layout_weight="1" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/half_dp_bg"/>
 
 
+    <TextView
+        android:id="@+id/balance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:ems="10"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="Gift Card Balance: 5000"
+        android:textAlignment="center"
+        android:textColor="#333"
+        android:textSize="18sp"
+        android:visibility="visible" />
 
 </LinearLayout>

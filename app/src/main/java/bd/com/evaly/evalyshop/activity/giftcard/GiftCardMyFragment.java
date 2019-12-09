@@ -10,8 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +31,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -47,19 +44,13 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.EditProfileActivity;
-import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListPurchasedAdapter;
-import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
-import bd.com.evaly.evalyshop.activity.orderDetails.PayViaCard;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
-import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
@@ -291,8 +282,6 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
                             adapter.notifyItemInserted(itemList.size());
 
                             try {
-
-
 
                                 Log.d("json", "added");
 

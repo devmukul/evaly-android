@@ -9,7 +9,7 @@ public class GiftCardListPurchasedItem{
 	private String createdAt;
 
 	@SerializedName("total")
-	private int total;
+	private double total;
 
 	@SerializedName("quantity")
 	private int quantity;
@@ -37,11 +37,11 @@ public class GiftCardListPurchasedItem{
 
 
 	@SerializedName("available_balance")
-	private int availableBalance;
+	private double availableBalance;
 
 
 	@SerializedName("gift_card_price")
-	private int giftCardPrice;
+	private double giftCardPrice;
 
 
 	public String getGiftCardStatus() {
@@ -64,7 +64,7 @@ public class GiftCardListPurchasedItem{
 		this.total = total;
 	}
 
-	public int getTotal(){
+	public double getTotal(){
 		return total;
 	}
 
@@ -128,7 +128,7 @@ public class GiftCardListPurchasedItem{
 		this.availableBalance = availableBalance;
 	}
 
-	public int getAvailableBalance(){
+	public double getAvailableBalance(){
 		return availableBalance;
 	}
 
@@ -136,7 +136,7 @@ public class GiftCardListPurchasedItem{
 		this.giftCardPrice = giftCardPrice;
 	}
 
-	public int getGiftCardPrice(){
+	public double getGiftCardPrice(){
 		return giftCardPrice;
 	}
 
