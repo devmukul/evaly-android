@@ -51,7 +51,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.badoualy.stepperindicator.StepperIndicator;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
@@ -116,6 +115,8 @@ public class OrderDetailsActivity extends BaseActivity {
     RelativeLayout shopInfo;
 
     String userAgent;
+
+    TextView payViaGiftCard;
 
 
     BottomSheetBehavior sheetBehavior;
@@ -236,35 +237,26 @@ public class OrderDetailsActivity extends BaseActivity {
         });
 
 
-        mViewBg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                mViewBg.setVisibility(View.GONE);
+        mViewBg.setOnClickListener(v -> {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            mViewBg.setVisibility(View.GONE);
 
-            }
         });
 
 
-        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-               if (scrollY == 0)
-                   getSupportActionBar().setElevation(0);
-               else
-                   getSupportActionBar().setElevation(4f);
-            }
+        scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+           if (scrollY == 0)
+               getSupportActionBar().setElevation(0);
+           else
+               getSupportActionBar().setElevation(4f);
         });
 
-        shopInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(OrderDetailsActivity.this, MainActivity.class);
-                intent.putExtra("type", 3);
-                intent.putExtra("shop_slug", shopSlug);
-                intent.putExtra("category", "root");
-                startActivity(intent);
-            }
+        shopInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(OrderDetailsActivity.this, MainActivity.class);
+            intent.putExtra("type", 3);
+            intent.putExtra("shop_slug", shopSlug);
+            intent.putExtra("category", "root");
+            startActivity(intent);
         });
 
         Bundle extras=getIntent().getExtras();
@@ -293,47 +285,28 @@ public class OrderDetailsActivity extends BaseActivity {
 
         payParially = findViewById(R.id.payPartially);
 
-        makePayment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        makePayment.setOnClickListener(v -> {
 
 
-                double amountToPay = total_amount - paid_amount;
+            double amountToPay = total_amount - paid_amount;
 
-                double userBalance = Double.parseDouble(userDetails.getBalance());
+            double userBalance = Double.parseDouble(userDetails.getBalance());
 
 
-                amountToPayView.setText((int)amountToPay + "");
-                full_or_partial.setVisibility(View.GONE);
-                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
+            amountToPayView.setText((int)amountToPay + "");
+            full_or_partial.setVisibility(View.GONE);
+            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         });
 
 
-        payParially.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                addPartialPayDialog();
-
-
-            }
-        });
+        payParially.setOnClickListener(v -> addPartialPayDialog());
 
 
 
 
-        TextView payViaGiftCard = findViewById(R.id.payViaGiftCard);
+        payViaGiftCard = findViewById(R.id.payViaGiftCard);
 
-        payViaGiftCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialogGiftCardPayment();
-
-
-            }
-        });
+        payViaGiftCard.setOnClickListener(v -> dialogGiftCardPayment());
 
 
         evalyPay.setOnClickListener(v -> {
@@ -361,61 +334,55 @@ public class OrderDetailsActivity extends BaseActivity {
         });
 
 
-        bkash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        bkash.setOnClickListener(v -> {
 
 
-                double amountToPay = total_amount - paid_amount;
+            double amountToPay = total_amount - paid_amount;
 
-                if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
-                    Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (amountToPayView.getText().toString().equals("0")){
-                    Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                Intent intent = new Intent(OrderDetailsActivity.this, PayViaBkashActivity.class);
-                intent.putExtra("amount", amountToPayView.getText().toString());
-                intent.putExtra("invoice_no", invoice_no);
-                intent.putExtra("context", "order_payment");
-                startActivityForResult(intent,10002);
-
-                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-
+            if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
+                Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (amountToPayView.getText().toString().equals("0")){
+                Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+
+            Intent intent = new Intent(OrderDetailsActivity.this, PayViaBkashActivity.class);
+            intent.putExtra("amount", amountToPayView.getText().toString());
+            intent.putExtra("invoice_no", invoice_no);
+            intent.putExtra("context", "order_payment");
+            startActivityForResult(intent,10002);
+
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+
         });
 
 
 
 
-        cards.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        cards.setOnClickListener(v -> {
 
 
-                double amountToPay = total_amount - paid_amount;
+            double amountToPay = total_amount - paid_amount;
 
-                if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
-                    Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (amountToPayView.getText().toString().equals("0")){
-                    Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                double amToPay = Double.parseDouble(amountToPayView.getText().toString());
-
-                addBalanceViaCard(invoice_no, String.valueOf((int) amToPay));
-
-                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-
+            if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
+                Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (amountToPayView.getText().toString().equals("0")){
+                Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+
+            double amToPay = Double.parseDouble(amountToPayView.getText().toString());
+
+            addBalanceViaCard(invoice_no, String.valueOf((int) amToPay));
+
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+
         });
 
 
@@ -467,27 +434,19 @@ public class OrderDetailsActivity extends BaseActivity {
             }
         });
 
-        addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openImageSelector();
-            }
-        });
+        addPhoto.setOnClickListener(view -> openImageSelector());
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (etDescription.getText().toString().trim().isEmpty()){
-                    etDescription.setError("Required");
-                    return;
-                }
-                model.setDescription(etDescription.getText().toString());
-
-                model.setAttachment(imageUrl);
-                dialog.showDialog();
-                submitIssue(model, bottomSheetDialog);
-                imageUrl = "";
+        btnSubmit.setOnClickListener(view -> {
+            if (etDescription.getText().toString().trim().isEmpty()){
+                etDescription.setError("Required");
+                return;
             }
+            model.setDescription(etDescription.getText().toString());
+
+            model.setAttachment(imageUrl);
+            dialog.showDialog();
+            submitIssue(model, bottomSheetDialog);
+            imageUrl = "";
         });
 
 
@@ -522,12 +481,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
         bottomSheetDialog.show();
 
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomSheetDialog.dismiss();
-            }
-        });
+        ivClose.setOnClickListener(view -> bottomSheetDialog.dismiss());
     }
 
     private void submitIssue(OrderIssueModel model, BottomSheetDialog bottomSheetDialog) {
@@ -632,48 +586,45 @@ public class OrderDetailsActivity extends BaseActivity {
         alertDialog.show();
 
 
-        d_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        d_submit.setOnClickListener(v -> {
 
-                if (amount.getText().toString().equals("")){
-                    Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            if (amount.getText().toString().equals("")){
+                Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                double partial_amount = Double.parseDouble(amount.getText().toString());
+            double partial_amount = Double.parseDouble(amount.getText().toString());
 
-                if (partial_amount > total_amount){
-                    Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
-                    return;
-                }
+            if (partial_amount > total_amount){
+                Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
+                return;
+            }
 
 
-                double userBalance = Double.parseDouble(userDetails.getBalance());
+            double userBalance = Double.parseDouble(userDetails.getBalance());
 
-                if (partial_amount <= userBalance){
-                    makePartialPayment(invoice_no, String.valueOf((int) partial_amount));
-                    Logger.d(partial_amount);
-                } else {
+            if (partial_amount <= userBalance){
+                makePartialPayment(invoice_no, String.valueOf((int) partial_amount));
+                Logger.d(partial_amount);
+            } else {
 
-                    alertDialog.dismiss();
+                alertDialog.dismiss();
 
-                    //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
-                    double amountToPay = partial_amount - userBalance;
+                //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
+                double amountToPay = partial_amount - userBalance;
 
-                    amountToPayView.setText(amountToPay+"");
-                    full_or_partial.setText("Partial Pay");
+                amountToPayView.setText(amountToPay+"");
+                full_or_partial.setText("Partial Pay");
 
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    }, 500);
-
-                }
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                }, 500);
 
             }
+
         });
     }
 
@@ -740,10 +691,6 @@ public class OrderDetailsActivity extends BaseActivity {
         });
     }
 
-
-
-
-
     public void makePaymentViaGiftCard(String giftCode, String invoice, String amount){
 
         String url= UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-code/";
@@ -762,42 +709,41 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
+
+            Log.d("json payment res", response.toString());
+
+            if(!response.has("success")){
+
+                try {
+                    dialog.hideDialog();
+                    Toast.makeText(OrderDetailsActivity.this, response.getString("message"), Toast.LENGTH_LONG).show();
+
+                } catch (Exception e){
+                }
+
+            } else {
 
 
-                Log.d("json payment res", response.toString());
-
-                if(!response.has("success")){
-
-                    try {
-
-                        dialog.hideDialog();
-
-                        Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
-
-                    } catch (Exception e){
-                    }
-
-                } else {
-
+                try {
                     // it means all payment done
-                    Toast.makeText(OrderDetailsActivity.this,"Payment successful!", Toast.LENGTH_LONG).show();
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            dialog.hideDialog();
-                            finish();
-                            startActivity(getIntent());
-
-                        }
-                    }, 1500);
+                    Toast.makeText(OrderDetailsActivity.this, response.getString("message"), Toast.LENGTH_LONG).show();
+                } catch (Exception e){
 
                 }
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        dialog.hideDialog();
+                        finish();
+                        startActivity(getIntent());
+
+                    }
+                }, 1500);
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -826,9 +772,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 dialog.hideDialog();
                 Log.e("onErrorResponse", error.toString());
-
-
-
 
                 //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
 
@@ -867,13 +810,6 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
 
-
-
-
-
-
-
-
     @Override
     public void onResume(){
         super.onResume();
@@ -882,57 +818,47 @@ public class OrderDetailsActivity extends BaseActivity {
 
     }
 
-
-
-
-
     public void checkCardBalance(){
 
         String url=UrlUtils.BASE_URL_AUTH_API+"user-info-pay/"+userDetails.getUserName()+"/";
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
-                try {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+            Log.d("onResponse", response.toString());
+            try {
 
-                    TextView payViaGiftCard = findViewById(R.id.payViaGiftCard);
-                    response = response.getJSONObject("data");
-                    if (response.getDouble("gift_card_balance") < 1)
-                        payViaGiftCard.setVisibility(View.GONE);
-                    else
-                        payViaGiftCard.setVisibility(View.VISIBLE);
+                TextView payViaGiftCard = findViewById(R.id.payViaGiftCard);
+                response = response.getJSONObject("data");
+                if (response.getDouble("gift_card_balance") < 1)
+                    payViaGiftCard.setVisibility(View.GONE);
+                else
+                    payViaGiftCard.setVisibility(View.VISIBLE);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            checkCardBalance();
-                        }
+                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        checkCardBalance();
+                    }
 
-                        @Override
-                        public void onFailed(int status) {
+                    @Override
+                    public void onFailed(int status) {
 
-                        }
-                    });
+                    }
+                });
 
-                    return;
+                return;
 
-                }}
+            }}
 
-            }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -967,74 +893,65 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
 
 
-                Log.d("json payment res", response.toString());
+            Log.d("json payment res", response.toString());
 
-                if(!response.has("success")){
+            if(!response.has("success")){
 
-                    try {
+                try {
+
+                    dialog.hideDialog();
+                    shouldAddBalance();
+
+                } catch (Exception e){
+                }
+
+            } else {
+
+                // it means all payment done
+                Toast.makeText(OrderDetailsActivity.this,"Partial payment successful!", Toast.LENGTH_LONG).show();
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
                         dialog.hideDialog();
-                        shouldAddBalance();
+                        finish();
+                        startActivity(getIntent());
 
-                    } catch (Exception e){
+                    }
+                }, 1500);
+
+            }
+        }, error -> {
+
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
+
+                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        makePartialPayment(invoice, amount);
                     }
 
-                } else {
+                    @Override
+                    public void onFailed(int status) {
 
-                    // it means all payment done
-                    Toast.makeText(OrderDetailsActivity.this,"Partial payment successful!", Toast.LENGTH_LONG).show();
+                    }
+                });
+                return;
 
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
+            }}
+            dialog.hideDialog();
+            Log.e("onErrorResponse", error.toString());
 
-                            dialog.hideDialog();
-                            finish();
-                            startActivity(getIntent());
+            //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
+            shouldAddBalance();
 
-                        }
-                    }, 1500);
-
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
-
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            makePartialPayment(invoice, amount);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }}
-
-
-                dialog.hideDialog();
-                Log.e("onErrorResponse", error.toString());
-
-                //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
-                shouldAddBalance();
-
-            }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -1061,17 +978,13 @@ public class OrderDetailsActivity extends BaseActivity {
     public void addBalanceViaCard(String invoice, String amount) {
 
         String url = UrlUtils.DOMAIN+"pay/pg";
-
         Log.d("json order url", url);
-
         JSONObject payload = new JSONObject();
-
 
         if (balance.equals("")){
             Toast.makeText(this, "Enter amount", Toast.LENGTH_SHORT).show();
             return;
         }
-
 
         try {
             payload.put("amount", amount);
@@ -1082,65 +995,51 @@ public class OrderDetailsActivity extends BaseActivity {
 
         }
 
-
-
         dialog.showDialog();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
 
 
-                Log.d("json payload", payload.toString());
-                Log.d("json response", response.toString());
+            Log.d("json payload", payload.toString());
+            Log.d("json response", response.toString());
 
-                dialog.hideDialog();
+            dialog.hideDialog();
 
-                try {
+            try {
 
-                    String purl = response.getString("payment_gateway_url");
-
-
-                    Log.d("json response", purl);
-
-                    Intent intent = new Intent(OrderDetailsActivity.this, PayViaCard.class);
-                    intent.putExtra("url", purl);
-                    startActivityForResult(intent,10002);
+                String purl = response.getString("payment_gateway_url");
 
 
-                }catch (Exception e){
+                Log.d("json response", purl);
+
+                Intent intent = new Intent(OrderDetailsActivity.this, PayViaCard.class);
+                intent.putExtra("url", purl);
+                startActivityForResult(intent,10002);
 
 
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
-
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            addBalanceViaCard(invoice, amount);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }}
+            }catch (Exception e){
 
 
             }
+
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
+
+                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        addBalanceViaCard(invoice, amount);
+                    }
+                    @Override
+                    public void onFailed(int status) {
+                    }
+                });
+                return;
+            }}
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -1380,6 +1279,7 @@ public class OrderDetailsActivity extends BaseActivity {
                         indicator.setVisibility(View.GONE);
                         makePayment.setVisibility(View.GONE);
                         payParially.setVisibility(View.GONE);
+                        payViaGiftCard.setVisibility(View.GONE);
                     }
                 }catch(Exception e){}
 
@@ -1387,6 +1287,7 @@ public class OrderDetailsActivity extends BaseActivity {
                     if(response.getString("order_status").toLowerCase().equals("delivered")){
                         makePayment.setVisibility(View.GONE);
                         payParially.setVisibility(View.GONE);
+                        payViaGiftCard.setVisibility(View.GONE);
                     }
                 }catch(Exception e) {}
 
@@ -1454,6 +1355,7 @@ public class OrderDetailsActivity extends BaseActivity {
                         {
                             makePayment.setVisibility(View.GONE);
                             payParially.setVisibility(View.GONE);
+                            payViaGiftCard.setVisibility(View.GONE);
                         }
 
                         //Log.d("product_image",ob.getJSONObject("shop_product_item").getJSONObject("product_item").getJSONObject("product").getString("thumbnail"));
