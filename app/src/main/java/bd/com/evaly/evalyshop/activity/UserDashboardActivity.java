@@ -121,7 +121,7 @@ public class UserDashboardActivity extends BaseActivity {
             if (!msg.contains("already logged in")) {
                 if (CredentialManager.getPassword() != null && !CredentialManager.getPassword().equals("")) {
 //                    alert.showDialog();
-                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()), CredentialManager.getUserData().getFirst_name());
+                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
                 }
             }
 //            xmppHandler.disconnect();

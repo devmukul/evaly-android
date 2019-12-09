@@ -703,6 +703,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
             ChatItem chatItem = new ChatItem(etCommentsBox.getText().toString().trim(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), mVCard.getNickName(), System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_TEXT, true, "");
             chatItem.setUid(CredentialManager.getUserName() + System.currentTimeMillis());
+            chatItem.setReceiver_name(rosterTable.name);
 //            chatItemList.add(chatItem);
             Logger.d(new Gson().toJson(chatItem));
 //            adapter.notifyDataSetChanged();

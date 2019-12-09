@@ -43,6 +43,10 @@ public class CredentialManager {
         MyPreference.with(AppController.mContext).addObject(ConstantUtils.USER_MODEL, userModel).save();
     }
 
+    public static void saveUserRegistered(boolean registered){
+        MyPreference.with(AppController.mContext).addBoolean(ConstantUtils.REGISTERED, registered).save();
+    }
+
     public static UserModel getUserData(){
         return MyPreference.with(AppController.getmContext()).getObject(ConstantUtils.USER_MODEL, UserModel.class);
     }
@@ -61,5 +65,9 @@ public class CredentialManager {
 
     public static String getTodaysDate(){
         return MyPreference.with(AppController.mContext).getString(ConstantUtils.DATE, "");
+    }
+
+    public static boolean isUserRegistered() {
+        return MyPreference.with(AppController.mContext).getBoolean(ConstantUtils.REGISTERED, false);
     }
 }

@@ -99,6 +99,7 @@ public class MainActivity extends BaseActivity {
 
             Logger.d("LOGIN =========");
             Logger.d(xmppHandler.isConnected());
+            CredentialManager.saveUserRegistered(true);
             if (xmppHandler.isLoggedin()) {
                 VCard vCard = xmppHandler.mVcard;
                 if (CredentialManager.getUserData() != null) {
@@ -121,9 +122,10 @@ public class MainActivity extends BaseActivity {
             Logger.d(msg);
             if (!msg.contains("already logged in")) {
                 if (xmppHandler.isConnected()){
-                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()), CredentialManager.getUserData().getFirst_name());
+                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
                 }
             } else {
+                CredentialManager.saveUserRegistered(true);
                 XMPPHandler.disconnect();
             }
         }
@@ -218,7 +220,7 @@ public class MainActivity extends BaseActivity {
             if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals("")) {
                 AppController.logout(MainActivity.this);
             } else {
-                if (!CredentialManager.getToken().equals("")) {
+                if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered()) {
                     Logger.d("===========");
                     if (AppController.getInstance().isNetworkConnected()) {
                         AsyncTask.execute(new Runnable() {

@@ -18,4 +18,5 @@ public class ConstantUtils {
     public static final String DEFAULT_SHOP_IMAGE = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/media/images/95d1f6543205-Ecommerce_Banner.png";
     public static final String PASSWORD = "password";
     public static final String REFRESH_TOKEN = "refresh_token";
+    public static final String REGISTERED = "registered";
 }
