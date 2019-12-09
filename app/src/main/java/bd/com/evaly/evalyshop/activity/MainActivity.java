@@ -60,6 +60,7 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 
 public class MainActivity extends BaseActivity {
@@ -99,6 +100,7 @@ public class MainActivity extends BaseActivity {
 
             Logger.d("LOGIN =========");
             Logger.d(xmppHandler.isConnected());
+            CredentialManager.saveUserRegistered(true);
             if (xmppHandler.isLoggedin()) {
                 VCard vCard = xmppHandler.mVcard;
                 if (CredentialManager.getUserData() != null) {
@@ -106,10 +108,9 @@ public class MainActivity extends BaseActivity {
                         if (vCard.getFirstName() == null) {
                             Logger.d("========");
                             xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                            XMPPHandler.disconnect();
-                        } else {
-                            XMPPHandler.disconnect();
+
                         }
+                        disconnectXmpp();
                     }
 
                 }
@@ -121,10 +122,11 @@ public class MainActivity extends BaseActivity {
             Logger.d(msg);
             if (!msg.contains("already logged in")) {
                 if (xmppHandler.isConnected()){
-                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()), CredentialManager.getUserData().getFirst_name());
+                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
                 }
             } else {
-                XMPPHandler.disconnect();
+                CredentialManager.saveUserRegistered(true);
+                disconnectXmpp();
             }
         }
 
@@ -133,7 +135,7 @@ public class MainActivity extends BaseActivity {
 
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
             xmppHandler.login();
-            XMPPHandler.disconnect();
+            disconnectXmpp();
         }
 
         public void onSignupFailed(String msg) {
@@ -218,7 +220,7 @@ public class MainActivity extends BaseActivity {
             if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals("")) {
                 AppController.logout(MainActivity.this);
             } else {
-                if (!CredentialManager.getToken().equals("")) {
+                if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered()) {
                     Logger.d("===========");
                     if (AppController.getInstance().isNetworkConnected()) {
                         AsyncTask.execute(new Runnable() {
@@ -548,6 +550,10 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    private void disconnectXmpp(){
+        XMPPHandler.disconnect();
+        stopService(new Intent(MainActivity.this, XMPPService.class));
+    }
 
     @Override
     public void onBackPressed() {
@@ -656,12 +662,7 @@ public class MainActivity extends BaseActivity {
         if (dbHelperWishList != null) {
             dbHelperWishList.close();
         }
-        if (xmppHandler != null) {
-            if (xmppHandler.isConnected()) {
-                xmppHandler.changePresence();
-                xmppHandler.disconnect();
-            }
-        }
+        disconnectXmpp();
         super.onDestroy();
 
         // Glide.with(getApplicationContext()).pauseRequests();

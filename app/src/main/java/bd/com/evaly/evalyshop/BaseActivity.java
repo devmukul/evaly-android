@@ -123,12 +123,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (AppController.getmService() !=  null && AppController.getmService().xmpp != null){
-            if (!AppController.getmService().xmpp.isConnected() && !CredentialManager.getUserName().equals("") && !CredentialManager.getPassword().equals("")){
-                XMPPHandler xmppHandler = AppController.getmService().xmpp;
-                xmppHandler.connect();
-            }
-        }
     }
 
     public boolean isNetworkAvailable(Context context) {

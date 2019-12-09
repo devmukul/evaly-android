@@ -121,7 +121,7 @@ public class UserDashboardActivity extends BaseActivity {
             if (!msg.contains("already logged in")) {
                 if (CredentialManager.getPassword() != null && !CredentialManager.getPassword().equals("")) {
 //                    alert.showDialog();
-                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()), CredentialManager.getUserData().getFirst_name());
+                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
                 }
             }
 //            xmppHandler.disconnect();
@@ -198,10 +198,11 @@ public class UserDashboardActivity extends BaseActivity {
             from = extras.getString("from");
         }
 
-        if (!CredentialManager.getToken().equals("")) {
+        if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered()) {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
+                    Logger.e("==========");
                     startXmppService();
                 }
             });
@@ -370,8 +371,14 @@ public class UserDashboardActivity extends BaseActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         } else {
+            disconnectXmpp();
             super.onBackPressed();
         }
+    }
+
+    private void disconnectXmpp(){
+        XMPPHandler.disconnect();
+        stopService(new Intent(UserDashboardActivity.this, XMPPService.class));
     }
 
     @SuppressLint("RestrictedApi")

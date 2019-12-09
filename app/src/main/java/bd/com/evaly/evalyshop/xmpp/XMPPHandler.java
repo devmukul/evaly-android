@@ -218,9 +218,8 @@ public class XMPPHandler {
 
 
                     reconnectionManager = ReconnectionManager.getInstanceFor(connection);
-                    reconnectionManager.enableAutomaticReconnection();
-                    reconnectionManager.setReconnectionPolicy(ReconnectionManager.ReconnectionPolicy.FIXED_DELAY);
-                    reconnectionManager.setFixedDelay(5);
+                    reconnectionManager.disableAutomaticReconnection();
+                    reconnectionManager.setDefaultFixedDelay(5);
                     reconnectionManager.addReconnectionListener(new ReconnectionListener() {
                         @Override
                         public void reconnectingIn(int seconds) {
@@ -886,7 +885,7 @@ public class XMPPHandler {
     }
 
     //Signup to server
-    public void Signup(SignupModel signupModel, String name) {
+    public void Signup(SignupModel signupModel) {
         StanzaError.Condition condition = null;
         boolean errors = false;
         String errorMessage = "";
