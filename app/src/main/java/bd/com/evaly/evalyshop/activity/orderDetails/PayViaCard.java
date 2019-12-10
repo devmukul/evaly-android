@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -18,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class PayViaCard extends AppCompatActivity {

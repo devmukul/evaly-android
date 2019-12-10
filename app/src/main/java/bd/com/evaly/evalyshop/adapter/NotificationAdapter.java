@@ -7,8 +7,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +23,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.activity.OrderListActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.models.Notifications;
@@ -67,7 +65,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 .apply(new RequestOptions().override(200, 200))
                 .listener(new RequestListener<Drawable>() {
                               @Override
-                              public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                              public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                   return false;
                               }
                               @Override

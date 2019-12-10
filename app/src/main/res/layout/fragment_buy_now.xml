@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
 
     android:id="@+id/cardView"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -225,7 +225,7 @@
                     android:textSize="16sp"
                     android:visibility="visible" />
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewVariation"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -235,7 +235,7 @@
                     android:paddingTop="15dp"
                     android:paddingBottom="20dp">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
                 <View
                     android:id="@+id/dividerViewVariation"
@@ -302,4 +302,4 @@
 
     </bd.com.evaly.evalyshop.views.StickyScrollView>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

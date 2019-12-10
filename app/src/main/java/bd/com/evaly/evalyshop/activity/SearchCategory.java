@@ -1,18 +1,16 @@
 package bd.com.evaly.evalyshop.activity;
 
-import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.StyleSpan;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,13 +21,11 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -37,7 +33,6 @@ import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.CategorySearchAdapter;
-import bd.com.evaly.evalyshop.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 
 public class SearchCategory extends AppCompatActivity {

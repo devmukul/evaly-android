@@ -43,7 +43,7 @@
         android:layout_margin="5dp"
         android:text="Replies"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvReply"
         android:padding="5dp"
         android:layout_width="match_parent"

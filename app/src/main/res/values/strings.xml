@@ -14,7 +14,7 @@
     <string name="title_activity_browse_product">Browse Product Activity</string>
     <string name="title_activity_view_product">ViewProductActivity</string>
 
-    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
 
     <string name="rating_and_reviews">Rating &amp; Reviews</string>
 

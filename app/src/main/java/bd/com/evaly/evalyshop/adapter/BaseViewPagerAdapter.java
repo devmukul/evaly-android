@@ -1,23 +1,14 @@
 package bd.com.evaly.evalyshop.adapter;
 
 
-import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import bd.com.evaly.evalyshop.fragment.TabsFragment;
-import bd.com.evaly.evalyshop.views.WrapContentHeightViewPager;
 
 public class BaseViewPagerAdapter extends FragmentStatePagerAdapter {
 

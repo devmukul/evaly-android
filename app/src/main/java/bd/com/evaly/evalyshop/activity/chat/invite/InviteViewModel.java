@@ -1,8 +1,8 @@
 package bd.com.evaly.evalyshop.activity.chat.invite;
 
 import android.app.Activity;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

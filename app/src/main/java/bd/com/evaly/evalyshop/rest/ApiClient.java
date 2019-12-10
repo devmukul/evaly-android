@@ -1,6 +1,6 @@
 package bd.com.evaly.evalyshop.rest;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;

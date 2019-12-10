@@ -1,21 +1,21 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import androidx.fragment.app.Fragment;
+import androidx.core.widget.NestedScrollView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -36,9 +36,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -63,11 +60,9 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.ImagePreview;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedAdapter;
-import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.ReplyAdapter;
 import bd.com.evaly.evalyshop.adapter.ContactShareAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -223,7 +218,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         replyDialog.setContentView(R.layout.alert_replies);
 
-        View bottomSheetInternalReply = replyDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        View bottomSheetInternalReply = replyDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         bottomSheetInternalReply.setPadding(0, 0, 0, 0);
         bottomSheetBehaviorReply = BottomSheetBehavior.from(bottomSheetInternalReply);
         bottomSheetBehaviorReply.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -332,7 +327,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         commentDialog.setContentView(R.layout.alert_comments);
 
-        View bottomSheetInternalComment = commentDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        View bottomSheetInternalComment = commentDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         bottomSheetInternalComment.setPadding(0, 0, 0, 0);
         bottomSheetBehaviorComment = BottomSheetBehavior.from(bottomSheetInternalComment);
         bottomSheetBehaviorComment.setState(BottomSheetBehavior.STATE_EXPANDED);
