@@ -174,9 +174,6 @@ public class SignInActivity extends BaseActivity {
 
     public void signInUser() {
 
-
-        // String url="https://api-dev.evaly.com.bd/api/api-token-auth/"; // dev mode, don't use it
-
         JSONObject payload = new JSONObject();
 
         try {
