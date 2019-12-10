@@ -226,12 +226,9 @@ public class MainActivity extends BaseActivity {
                 if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered()) {
                     Logger.d("===========");
                     if (AppController.getInstance().isNetworkConnected()) {
-                        AsyncTask.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                Logger.d("START_SERVICE");
-                                startXmppService();
-                            }
+                        AsyncTask.execute(() -> {
+                            Logger.d("START_SERVICE");
+                            startXmppService();
                         });
                     }
                 }
@@ -245,12 +242,7 @@ public class MainActivity extends BaseActivity {
 
 //        Logger.d(strNew);
         try {
-            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Logger.d(task.isSuccessful());
-                }
-            });
+            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -478,27 +470,20 @@ public class MainActivity extends BaseActivity {
 
         exitDialogBuilder = new AlertDialog.Builder(this)
                 .setMessage("Are you sure you want to close the app?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        exitDialog.dismiss();
-                        finish();
-                    }
-
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    exitDialog.dismiss();
+                    finish();
                 })
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
 
 
         final Handler handler2 = new Handler();
-        handler2.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        handler2.postDelayed(() -> {
 
-                FacebookSdk.setAutoLogAppEventsEnabled(false);
-                FacebookSdk.clearLoggingBehaviors();
-                FacebookSdk.fullyInitialize();
-            }
+            FacebookSdk.setAutoLogAppEventsEnabled(false);
+            FacebookSdk.clearLoggingBehaviors();
+            FacebookSdk.fullyInitialize();
         }, 2000);
 
 
@@ -536,21 +521,6 @@ public class MainActivity extends BaseActivity {
     private void startXmppService() {
         startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
 
-        //Start XMPP Service (if not running already)
-//        if (!XMPPService.isServiceRunning) {
-//            Intent intent = new Intent(this, XMPPService.class);
-//            mChatApp.UnbindService();
-//            mChatApp.BindService(intent);
-//        } else {
-//            xmppHandler = AppController.getmService().xmpp;
-//            if (!xmppHandler.isConnected()) {
-//                xmppHandler.connect();
-//            } else {
-//                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-//                xmppHandler.login();
-//            }
-//        }
-
     }
 
     private void disconnectXmpp(){
@@ -586,30 +556,7 @@ public class MainActivity extends BaseActivity {
                 finish();
             }
         }
-//        else{
-//
-//            showHomeFragment();
-//
-//
-////            finish();
-////            this.startActivity(getIntent());
-////            this.overridePendingTransition(0, 0);
-//
-//
-////            Fragment fragment3 = new HomeFragment();
-////            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-////            //ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-////
-////            FragmentManager fm = getSupportFragmentManager();
-////            for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-////                fm.popBackStack();
-////            }
-////
-////            ft.replace(R.id.fragment_container, fragment3,"Home");
-////            ft.addToBackStack(null);
-////            ft.commit();
-//        }
-//
+
     }
 
     @Override
@@ -622,7 +569,6 @@ public class MainActivity extends BaseActivity {
             MenuItem item = menu.getItem(0);
             item.setChecked(true);
         }
-
 
         if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()) {
             Token.update(this, false);
@@ -668,9 +614,6 @@ public class MainActivity extends BaseActivity {
         disconnectXmpp();
         super.onDestroy();
 
-        // Glide.with(getApplicationContext()).pauseRequests();
-
-
     }
 
 
@@ -695,38 +638,27 @@ public class MainActivity extends BaseActivity {
         builder.setTitle("No Internet Connection");
         final String[] a = {"Turn on Wi-Fi", "Turn on Mobile Data"};
         final int[] select = new int[1];
-        builder.setSingleChoiceItems(a, 0, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (i == 0)
-                    select[0] = 1;
-                else if (i == 1)
-                    select[0] = 2;
-            }
+        builder.setSingleChoiceItems(a, 0, (dialogInterface, i) -> {
+            if (i == 0)
+                select[0] = 1;
+            else if (i == 1)
+                select[0] = 2;
         });
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (select[0] == 1) {
-                    WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
-                    wifiManager.setWifiEnabled(true);
-                    Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            if (select[0] == 1) {
+                WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
+                wifiManager.setWifiEnabled(true);
+                Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
 
-                } else if (select[0] == 2) {
-                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                } else {
-                    WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
-                    wifiManager.setWifiEnabled(true);
-                    Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
-                }
+            } else if (select[0] == 2) {
+                startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+            } else {
+                WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
+                wifiManager.setWifiEnabled(true);
+                Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         return builder;
     }
 }
