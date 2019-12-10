@@ -654,7 +654,11 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
 //                showLoading();
 //                imageUploadProgress.setVisibility(View.VISIBLE);
-                ChatItem chat = new ChatItem("", rosterTable.name, mVCard.getField("URL"), rosterTable.nick_name, System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_IMAGE, true, "");
+                String image = mVCard.getField("URL");
+                if (image == null){
+                    image = "";
+                }
+                ChatItem chat = new ChatItem("", rosterTable.name, image, rosterTable.nick_name, System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_IMAGE, true, "");
                 chatItemList.add(chat);
                 adapter.notifyItemInserted(chatItemList.size() - 1);
                 rvChatDetails.scrollToPosition(chatItemList.size() - 1);

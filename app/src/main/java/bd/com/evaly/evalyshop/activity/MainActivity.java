@@ -121,6 +121,9 @@ public class MainActivity extends BaseActivity {
         public void onLoginFailed(String msg) {
             Logger.d(msg);
             if (!msg.contains("already logged in")) {
+                if (xmppHandler == null){
+                    xmppHandler = AppController.getmService().xmpp;
+                }
                 if (xmppHandler.isConnected()){
                     xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
                 }

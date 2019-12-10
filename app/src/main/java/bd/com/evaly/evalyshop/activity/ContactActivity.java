@@ -122,14 +122,12 @@ public class ContactActivity extends BaseActivity {
         });
 
         if (!CredentialManager.getToken().equals("")){
-            if (AppController.getmService().xmpp != null && AppController.getmService().xmpp.isConnected()) {
+            if (AppController.getmService() != null && AppController.getmService().xmpp != null && AppController.getmService().xmpp.isConnected()) {
                 xmppHandler = AppController.getmService().xmpp;
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-//
                         rosterList = xmppHandler.rosterList;
-//                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
                     }
                 });
             } else {
