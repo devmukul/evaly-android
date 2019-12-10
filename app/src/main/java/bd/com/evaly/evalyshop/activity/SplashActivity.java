@@ -50,12 +50,17 @@ public class SplashActivity extends AppCompatActivity {
                     }catch (Exception e){
                         e.printStackTrace();
                     }
+                }else {
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    finish();
                 }
             }
 
             @Override
             public void onFailed(int status) {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                finish();
             }
         });
     }

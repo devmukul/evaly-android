@@ -8,8 +8,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 111
-        versionName "1.129"
+        versionCode 113
+        versionName "1.131"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -28,10 +28,10 @@ android {
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
-            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
-            buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
-            buildConfigField "String", 'BUILD', "\"dev\""
+            buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
+            buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
+            buildConfigField "String", 'EVALY_NUMBER', "\"09638111666\""
+            buildConfigField "String", 'BUILD', "\"prod\""
         }
 
         lintOptions {

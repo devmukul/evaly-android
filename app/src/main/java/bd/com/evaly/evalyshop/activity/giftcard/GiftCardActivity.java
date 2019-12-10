@@ -68,10 +68,10 @@ public class GiftCardActivity extends AppCompatActivity {
         if (!userDetails.getToken().equals("")) {
 
             pager.addFragment(new GiftCardMyFragment(), "MY GIFTS");
-            pager.addFragment(new GiftCardListFragment(),"STORE");
+            pager.addFragment(new GiftCardPurchasedFragment(), "PURCHASED");
         }
 
-        pager.addFragment(new GiftCardPurchasedFragment(), "PURCHASED");
+        pager.addFragment(new GiftCardListFragment(),"STORE");
 
 
         tabLayout.setupWithViewPager(viewPager);

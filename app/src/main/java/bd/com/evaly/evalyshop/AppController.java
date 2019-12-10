@@ -180,7 +180,7 @@ public class AppController extends Application implements Application.ActivityLi
 
     @Override
     public void onActivityPaused(Activity activity) {
-        Logger.d("PAUSED");
+//        Logger.d("PAUSED");
         try {
             if (mEventReceiver != null) unregisterReceiver(mEventReceiver);
         }catch (Exception e){
