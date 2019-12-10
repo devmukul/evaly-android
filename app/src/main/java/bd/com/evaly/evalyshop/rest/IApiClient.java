@@ -72,4 +72,7 @@ public interface IApiClient {
 
     @GET(UrlUtils.SUBMIT_ISSUE + "{invoice}/" + "order-issues/")
     Call<JsonObject> getIssueList(@Header("Authorization") String header, @Path("invoice") String invoice);
+
+    @GET(UrlUtils.GET_BANNERS)
+    Call<JsonObject> getBanners(@Header("Authorization") String token);
 }

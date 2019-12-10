@@ -293,9 +293,27 @@ public class AuthApiHelper {
     }
 
     public static void getIssueList(String invoice, DataFetchingListener<Response<JsonObject>> listener) {
-        Logger.d("{}{}{}{}{}{}{}       " + invoice);
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call = iApiClient.getIssueList(CredentialManager.getToken(), invoice);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Logger.d(response.body());
+                listener.onDataFetched(response);
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
+    }
+
+    public static void getBanners(DataFetchingListener<Response<JsonObject>> listener) {
+        IApiClient iApiClient = getiApiClient();
+        Call<JsonObject> call = iApiClient.getBanners(CredentialManager.getToken());
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

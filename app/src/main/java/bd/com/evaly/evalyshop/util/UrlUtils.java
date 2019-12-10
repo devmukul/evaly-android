@@ -60,4 +60,5 @@ public class UrlUtils {
     public static final String NEWS_FEED = DOMAIN + "newsfeed/posts";
 
     public static final String SUBMIT_ISSUE = BASE_URL+"orders/";
+    public static final String GET_BANNERS = BASE_URL+"banners/";
 }

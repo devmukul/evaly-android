@@ -32,7 +32,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,6 +66,7 @@ import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.SliderViewPager;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -458,52 +461,23 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void getSliderImage(){
 
-
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, "https://api.evaly.com.bd/core/banners/", (String) null,
-                responses -> {
-                    JSONArray response;
-                    try {
-                        response = responses.getJSONArray("results");
-
-                    } catch (Exception e){
-                        response = new JSONArray();
-                    }
-
-
-                    if(response.length() < 1){
-                        RelativeLayout sliderHolder = view.findViewById(R.id.sliderHolder);
-                        sliderHolder.setVisibility(View.GONE);
-                    }
-
-                    for(int i=0;i<response.length();i++){
-                        try {
-
-                            JSONObject ob = response.getJSONObject(i);
-                            BannerItem bannerItem = new BannerItem();
-                            bannerItem.setImage(ob.getString("image"));
-                            bannerItem.setName(ob.getString("name"));
-                            bannerItem.setSlug(ob.getString("slug"));
-                            bannerItem.setStatus(ob.getString("status"));
-                            bannerItem.setType(ob.getString("type"));
-                            bannerItem.setUrl(ob.getString("url"));
-
-                            sliderImages.add(bannerItem);
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+        AuthApiHelper.getBanners(new DataFetchingListener<Response<JsonObject>>() {
+            @Override
+            public void onDataFetched(Response<JsonObject> response) {
+                if (response.code() == 200 || response.code() == 201){
+                    sliderImages = new Gson().fromJson(response.body().get("results"), new TypeToken<List<BannerItem>>(){}.getType());
                     sliderPager.setAdapter(new SliderAdapter(context, activity, sliderImages));
                     sliderIndicator.setupWithViewPager(sliderPager, true);
-                },
-                error -> Log.d("Error.Response", error.toString())
-        );
+                }else {
+                    Toast.makeText(getContext(), getContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
+            }
 
-        getRequest.setShouldCache(true);
-        getRequest.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(getRequest);
+            @Override
+            public void onFailed(int status) {
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 }
