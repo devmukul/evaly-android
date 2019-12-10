@@ -53,6 +53,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="conversations">Conversations</string>
     <string name="default_notification_channel_id">notification_ch_1</string>
     <string name="submit">Submit</string>
+    <string name="mark_as_read">Mark as Read</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="search_categories">

@@ -4,9 +4,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -118,7 +121,7 @@ public class NotificationActivity extends BaseActivity {
                     e.printStackTrace();
                 }
 
-                markAsRead();
+//                markAsRead();
 
             }
         }, new Response.ErrorListener() {
@@ -179,7 +182,7 @@ public class NotificationActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("onResponse", response.toString());
-
+                Toast.makeText(getApplicationContext(), "Marked as read!", Toast.LENGTH_LONG).show();
             }
 
         }, new Response.ErrorListener() {
@@ -218,10 +221,19 @@ public class NotificationActivity extends BaseActivity {
         };
         RequestQueue queue = Volley.newRequestQueue(NotificationActivity.this);
         queue.add(request);
-
-
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.notification_menu, menu);
+        return true;
+    }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_mark_as_read){
+            markAsRead();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
