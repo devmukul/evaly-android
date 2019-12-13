@@ -197,7 +197,7 @@ public class ProductGrid {
                         scrollView.fling(0);
 
                     try {
-                        Log.d("shop_products", response.toString());
+                        // Log.d("shop_products", response.toString());
 
                         JSONObject data = response.getJSONObject("data");
 
@@ -307,7 +307,7 @@ public class ProductGrid {
                         scrollView.fling(0);
 
                     try {
-                        Log.d("shop_products", response.toString());
+                       // Log.d("shop_products", response.toString());
                         if (response.getInt("count") == 0) {
                             progressBar.setVisibility(View.GONE);
                             Toast.makeText(context, "Sorry no product available in this shop", Toast.LENGTH_SHORT).show();

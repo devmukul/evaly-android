@@ -263,7 +263,8 @@ public class ShopFragment extends Fragment implements ProductListener {
 
         title = getArguments().getString("shop_name");
 
-        campaign_slug = getArguments().getString("campaign_slug");
+        if (getArguments().getString("campaign_slug") != null)
+            campaign_slug = getArguments().getString("campaign_slug");
 
         name.setText(title);
 
@@ -753,7 +754,13 @@ public class ShopFragment extends Fragment implements ProductListener {
 
     public void getSubCategories(int currentPage) {
 
-        String url = UrlUtils.BASE_URL + "public/shops/categories/" + slug + "/?page=" + currentPage;
+        String url;
+
+        if (campaign_slug.equals(""))
+            url = UrlUtils.BASE_URL + "public/shops/categories/" + slug + "/?page=" + currentPage;
+        else
+            url = UrlUtils.CAMPAIGNS+"/" + campaign_slug + "/shops/"+slug+"/categories?page=" + currentPage;
+
 
         Log.d("json", url);
 
