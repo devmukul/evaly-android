@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.campaign;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.CampaignShopActivity;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 
 public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHolder>{
 
     private List<CampaignItem> itemList;
     private Context context;
+    private CampaignListener listener;
 
 
 
-    public CampaignAdapter(Context context, List<CampaignItem> items){
+    public CampaignAdapter(Context context, List<CampaignItem> items, CampaignListener listener){
         this.context = context;
         this.itemList = items;
+        this.listener = listener;
     }
 
     @NonNull
@@ -40,14 +40,7 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
 
         holder.tvTitle.setText(itemList.get(position).getName());
 
-        holder.itemView.setOnClickListener(view -> {
-
-            Intent ni = new Intent(context, CampaignShopActivity.class);
-            ni.putExtra("title", itemList.get(position).getName());
-            ni.putExtra("slug", itemList.get(position).getSlug());
-            context.startActivity(ni);
-
-        });
+        holder.itemView.setOnClickListener(view -> listener.onItemClick(itemList.get(position)));
 
     }
 
