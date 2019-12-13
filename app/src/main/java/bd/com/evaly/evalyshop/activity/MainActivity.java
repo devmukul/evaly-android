@@ -10,18 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,11 +19,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.FacebookSdk;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.orhanobut.logger.Logger;
 
@@ -434,7 +435,7 @@ public class MainActivity extends BaseActivity {
                 ft.addToBackStack(null);
                 ft.commit();
 
-            } else if (type == 3) {
+            } else if (type == 3 || type == 6) {
 
                 isLaunchActivity = false;
                 bundle.putInt("type", type);
@@ -442,7 +443,7 @@ public class MainActivity extends BaseActivity {
                 bundle.putString("shop_name", data.getStringExtra("shop_name"));
                 bundle.putString("category", data.getStringExtra("category"));
                 bundle.putString("groups", data.getStringExtra("groups"));
-
+                bundle.putString("campaign_slug", data.getStringExtra("campaign_slug"));
                 Fragment fragment3 = new ShopFragment();
                 fragment3.setArguments(bundle);
                 ft.replace(R.id.fragment_container, fragment3, data.getStringExtra("slug"));

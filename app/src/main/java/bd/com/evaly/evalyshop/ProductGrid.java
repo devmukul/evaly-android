@@ -1,19 +1,18 @@
 package bd.com.evaly.evalyshop;
 
 import android.content.Context;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -25,10 +24,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.models.ProductListItem;
-import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 
 
@@ -38,6 +37,7 @@ public class ProductGrid {
     StaggeredGridLayoutManager mLayoutManager;
     String categorySlug;
     String shopSlug = "";
+    String campaignSlug = "";
     public HomeFragment main;
     public Context context;
     ArrayList<ProductListItem> products;
@@ -50,6 +50,7 @@ public class ProductGrid {
     private NestedScrollView scrollView;
     private boolean isLoading = false;
     private ProductListener listener;
+    private int cashbackRate = 0;
 
 
 
@@ -61,51 +62,10 @@ public class ProductGrid {
     }
 
 
-    public ProductGrid(Context contextz, RecyclerView recyclerView, ProgressBar progressBar) {
-        this.context = contextz;
-        this.recyclerView = recyclerView;
-        this.progressBar = progressBar;
-
-
-        rq = Volley.newRequestQueue(context);
-
-    }
-
-
     public void setScrollView(NestedScrollView scrollView){
         this.scrollView = scrollView;
     }
 
-
-    public ProductGrid(Context contextz, RecyclerView recyclerView, String categorySlug, ProgressBar progressBar, ProductListener productListener) {
-        this.context = contextz;
-        this.recyclerView = recyclerView;
-        this.categorySlug = categorySlug;
-        this.progressBar = progressBar;
-        this.listener = productListener;
-
-
-        rq = Volley.newRequestQueue(context);
-
-        products = new ArrayList<>();
-        map = new HashMap<>();
-        mp = new HashMap<>();
-        // recyclerView.setHasFixedSize(true);
-        // recyclerView.getItemAnimator().setChangeDuration(0);
-        mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(null);
-        recyclerView.setNestedScrollingEnabled(false);
-        adapterViewAndroid = new ProductGridAdapter(context, products);
-        products.clear();
-        adapterViewAndroid.notifyDataSetChanged();
-        adapterViewAndroid.setHasStableIds(true);
-        progressBar.setVisibility(View.VISIBLE);
-        getCategoryProducts(categorySlug, 1);
-        recyclerView.setAdapter(adapterViewAndroid);
-
-
-    }
 
     public ProductGrid(Context contextz, RecyclerView recyclerView, String categorySlug, ProgressBar progressBar) {
         this.context = contextz;
@@ -137,11 +97,12 @@ public class ProductGrid {
     }
 
     // product grid constructer for shop and brand only
-    public ProductGrid(Context contextz, RecyclerView recyclerView, String shopSlug, String categorySlug, int type2, ProgressBar progressBar) {
+    public ProductGrid(Context contextz, RecyclerView recyclerView, String shopSlug, String categorySlug, String campaignSlug, int type2, ProgressBar progressBar) {
 
         this.context = contextz;
         this.recyclerView = recyclerView;
         this.categorySlug = categorySlug;
+        this.campaignSlug = campaignSlug;
         this.shopSlug = shopSlug;
         this.progressBar = progressBar;
 
@@ -155,20 +116,15 @@ public class ProductGrid {
         recyclerView.setLayoutManager(mLayoutManager);
 
         recyclerView.setAdapter(null);
-
-
         recyclerView.setNestedScrollingEnabled(false);
 
         adapterViewAndroid = new ProductGridAdapter(context, products);
-
-
-
         adapterViewAndroid.setHasStableIds(true);
         products.clear();
         adapterViewAndroid.notifyDataSetChanged();
 
         if (type2 == 1) {
-            getShopProducts(shopSlug, categorySlug, 1);
+            getShopProducts(1);
             adapterViewAndroid.setShopSlug(shopSlug);
         }
         else
@@ -189,7 +145,7 @@ public class ProductGrid {
     public void loadNextShopProducts() {
 
         if (!isLoading)
-            getShopProducts(shopSlug, categorySlug, ++current);
+            getShopProducts(++current);
 
     }
 
@@ -201,7 +157,7 @@ public class ProductGrid {
     }
 
 
-    public void getShopProducts(String slug, String categorySlug, int currentPage) {
+    public void getShopProducts(int currentPage) {
 
 
         isLoading = true;
@@ -211,10 +167,26 @@ public class ProductGrid {
         current = currentPage;
         String url;
 
-        if (categorySlug.equals(""))
-            url = UrlUtils.SHOP_ITEMS + slug + "/?page=" + currentPage;
-        else
-            url = UrlUtils.SHOP_ITEMS + slug + "/?page=" + currentPage + "&category_slug=" + categorySlug;
+        if (!campaignSlug.equals("")){
+
+            if (categorySlug.equals(""))
+                url = UrlUtils.CAMPAIGNS+"/" + campaignSlug + "/shops/"+shopSlug+"/items?page=" + currentPage;
+            else
+                url = UrlUtils.CAMPAIGNS+"/" + campaignSlug + "/shops/"+shopSlug+"/items?page=" + currentPage + "&category_slug=" + categorySlug;
+
+        } else {
+
+
+            if (categorySlug.equals(""))
+                url = UrlUtils.SHOP_ITEMS + shopSlug + "/?page=" + currentPage;
+            else
+                url = UrlUtils.SHOP_ITEMS + shopSlug + "/?page=" + currentPage + "&category_slug=" + categorySlug;
+
+        }
+
+
+
+
 
         Log.d("json", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
@@ -224,13 +196,21 @@ public class ProductGrid {
                     if (scrollView != null)
                         scrollView.fling(0);
 
-
                     try {
                         Log.d("shop_products", response.toString());
 
                         JSONObject data = response.getJSONObject("data");
 
                         JSONArray jsonArray = data.getJSONArray("items");
+
+
+                        if (data.has("meta")){
+
+                            cashbackRate = data.getJSONObject("meta").getInt("cashback_rate");
+                            adapterViewAndroid.setCashback_rate(cashbackRate);
+
+                        }
+
 
                         for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -286,15 +266,12 @@ public class ProductGrid {
                         e.printStackTrace();
                         progressBar.setVisibility(View.GONE);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressBar.setVisibility(View.GONE);
+                }, error -> {
+                    progressBar.setVisibility(View.GONE);
 
-                if (listener != null)
-                    listener.onSuccess(0);
-            }
-        });
+                    if (listener != null)
+                        listener.onSuccess(0);
+                });
 
 
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
@@ -386,15 +363,12 @@ public class ProductGrid {
                         e.printStackTrace();
                         progressBar.setVisibility(View.GONE);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressBar.setVisibility(View.GONE);
+                }, error -> {
+                    progressBar.setVisibility(View.GONE);
 
-                if (listener != null)
-                    listener.onSuccess(0);
-            }
-        });
+                    if (listener != null)
+                        listener.onSuccess(0);
+                });
 
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -493,15 +467,12 @@ public class ProductGrid {
                         e.printStackTrace();
                         progressBar.setVisibility(View.GONE);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressBar.setVisibility(View.GONE);
+                }, error -> {
+                    progressBar.setVisibility(View.GONE);
 
-                if (listener != null)
-                    listener.onSuccess(0);
-            }
-        });
+                    if (listener != null)
+                        listener.onSuccess(0);
+                });
 
 
         request.setRetryPolicy(new DefaultRetryPolicy(50000,

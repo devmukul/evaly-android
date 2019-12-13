@@ -89,7 +89,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                     ft.addToBackStack(itemlist.get(position).getSlug());
                     ft.commit();
 
-                } else if (type == 3) {
+                } else if (type == 3 || type == 6) {
 
                     Fragment fragment3 = new ShopFragment();
                     Bundle bundle = new Bundle();
@@ -98,6 +98,8 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                     bundle.putString("logo_image", itemlist.get(position).getImage());
                     bundle.putString("shop_slug", itemlist.get(position).getSlug());
                     bundle.putString("category", itemlist.get(position).getCategory());
+                    bundle.putString("campaign", itemlist.get(position).getCampaignSlug());
+
                     fragment3.setArguments(bundle);
                     ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
                     ft.replace(R.id.fragment_container, fragment3, itemlist.get(position).getSlug());
@@ -119,11 +121,12 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
                     context.startActivity(intent);
 
-                } else if (type == 3) {
+                } else if (type == 3 || type == 6) {
                     Intent intent = new Intent(context, MainActivity.class);
                     intent.putExtra("type", 3);
                     intent.putExtra("shop_slug", itemlist.get(position).getSlug());
                     intent.putExtra("category", itemlist.get(position).getCategory());
+                    intent.putExtra("campaign_slug", itemlist.get(position).getCampaignSlug());
                     context.startActivity(intent);
 
                 }

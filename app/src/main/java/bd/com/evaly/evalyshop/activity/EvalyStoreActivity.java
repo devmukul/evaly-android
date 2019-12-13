@@ -118,10 +118,12 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
                 for (int i=0; i<list.size(); i++){
                     TabsItem tabsItem = new TabsItem();
+                    tabsItem.setType(6);
                     tabsItem.setTitle(list.get(i).getShopName());
                     tabsItem.setImage(list.get(i).getShopImage());
                     tabsItem.setSlug(list.get(i).getSlug());
                     tabsItem.setCategory("root");
+                    tabsItem.setCampaignSlug(slug);
                     itemList.add(tabsItem);
                     adapter.notifyItemInserted(itemList.size());
                 }
@@ -136,6 +138,12 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
 
     }
+
+
+
+
+
+
 
     public void getEvalyShop(int p){
 

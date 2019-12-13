@@ -3,13 +3,14 @@ package bd.com.evaly.evalyshop.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -30,6 +31,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
     private ArrayList<ProductListItem> productsList;
     private DbHelperWishList db;
     private String shopSlug = "";
+    private int cashback_rate  = 0;
 
     private ProductListener productListener;
 
@@ -54,6 +56,13 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
     }
 
 
+    public int getCashback_rate() {
+        return cashback_rate;
+    }
+
+    public void setCashback_rate(int cashback_rate) {
+        this.cashback_rate = cashback_rate;
+    }
 
     View.OnClickListener itemViewListener = new View.OnClickListener() {
         @Override
@@ -100,15 +109,14 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
         }
 
 
-                Glide.with(mContext)
-                        .asBitmap()
-                        .skipMemoryCache(true)
-                        .apply(new RequestOptions().override(260, 260))
-                        .load(productsList.get(position).getThumbnailSM())
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .placeholder(R.drawable.ic_placeholder_small)
-                        .into(holder.imageViewAndroid);
-
+        Glide.with(mContext)
+                .asBitmap()
+                .skipMemoryCache(true)
+                .apply(new RequestOptions().override(260, 260))
+                .load(productsList.get(position).getThumbnailSM())
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.ic_placeholder_small)
+                .into(holder.imageViewAndroid);
 
 
         if((productsList.get(position).getPriceMin()==0) || (productsList.get(position).getPriceMax()==0)){
@@ -128,10 +136,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             } else {
                 holder.priceDiscount.setVisibility(View.GONE);
                 holder.price.setText("৳ " +productsList.get(position).getPriceMin());
-
             }
-
-
         } else {
             holder.price.setText("৳ " + productsList.get(position).getPriceMin());
         }
@@ -142,6 +147,13 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(itemViewListener);
 
+        if (cashback_rate==0)
+            holder.tvCashback.setVisibility(View.GONE);
+        else {
+            holder.tvCashback.setVisibility(View.VISIBLE);
+            holder.tvCashback.bringToFront();
+            holder.tvCashback.setText(cashback_rate+"% Cashback");
+        }
 
 
         if (!shopSlug.equals("") && productListener != null) {
@@ -205,7 +217,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textViewAndroid,price,priceDiscount, sku, buyNow;
+        TextView textViewAndroid,price,priceDiscount, sku, buyNow, tvCashback;
         ImageView imageViewAndroid,favorite;
         View itemView;
 
@@ -216,6 +228,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             imageViewAndroid=itemView.findViewById(R.id.image);
             priceDiscount = itemView.findViewById(R.id.priceDiscount);
             buyNow = itemView.findViewById(R.id.buy_now);
+            tvCashback = itemView.findViewById(R.id.tvCashback);
 
             // favorite=itemView.findViewById(R.id.favorite);
             //sku=itemView.findViewById(R.id.sku);

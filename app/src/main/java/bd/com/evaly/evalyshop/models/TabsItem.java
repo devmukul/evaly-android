@@ -9,6 +9,9 @@ public class TabsItem {
 
     private String category;
 
+    private String campaignSlug = "";
+
+
     //    private String categoryTitle;
     //    private String brandTitle;
     //    private String shopTitle;
@@ -21,6 +24,9 @@ public class TabsItem {
     //    private String brandSlug;
     //    private String shopSlug;
 
+    public TabsItem(){
+
+    }
 
     public String getTitle() {
         return title;
@@ -30,9 +36,7 @@ public class TabsItem {
         this.title = title;
     }
 
-    public TabsItem(){
 
-    }
 
     public int getType() {
         return type;
@@ -64,5 +68,14 @@ public class TabsItem {
 
     public void setCategory(String previousCategory) {
         this.category = previousCategory;
+    }
+
+
+    public String getCampaignSlug() {
+        return campaignSlug;
+    }
+
+    public void setCampaignSlug(String campaignSlug) {
+        this.campaignSlug = campaignSlug;
     }
 }
