@@ -17,6 +17,8 @@
         android:paddingRight="4dp">
 
         <LinearLayout
+
+            android:id="@+id/layoutImageHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/white_to_grey_gradient">
