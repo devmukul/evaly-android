@@ -34,9 +34,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AuthApiHelper {
+public class AuthApiHelper extends ApiHelper{
 
-    public static Call<JsonObject> call;
 
     public static void checkUpdate(DataFetchingListener<Response<JsonObject>> listener) {
 
@@ -434,7 +433,5 @@ public class AuthApiHelper {
         });
     }
 
-    private static IApiClient getiApiClient() {
-        return ApiClient.getClient().create(IApiClient.class);
-    }
+
 }

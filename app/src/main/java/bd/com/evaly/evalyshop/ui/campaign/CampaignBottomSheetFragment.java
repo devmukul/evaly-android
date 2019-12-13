@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -17,14 +18,20 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCampaignBinding;
+import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 
 public class CampaignBottomSheetFragment extends BottomSheetDialogFragment implements CampaignBottomSheetNavigator{
 
-    BottomSheetCampaignBinding binding;
-    CampaignBottomSheetViewModel viewModel;
-    View mRootView;
+    private BottomSheetCampaignBinding binding;
+    private CampaignBottomSheetViewModel viewModel;
+    private View mRootView;
+    private List<CampaignItem> items = new ArrayList<>();
+    private CampaignAdapter adapter;
 
     public static CampaignBottomSheetFragment newInstance() {
         final CampaignBottomSheetFragment fragment = new CampaignBottomSheetFragment();
@@ -59,10 +66,20 @@ public class CampaignBottomSheetFragment extends BottomSheetDialogFragment imple
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
+        viewModel.loadCampaigns();
+        initRecycler();
+    }
 
 
+   private void initRecycler(){
+
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+//        binding.recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new CampaignAdapter(getContext(), items);
+        binding.recyclerView.setAdapter(adapter);
 
     }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -97,5 +114,29 @@ public class CampaignBottomSheetFragment extends BottomSheetDialogFragment imple
     }
 
 
+    @Override
+    public void onListLoaded(List<CampaignItem> list) {
 
+        binding.progressBar.setVisibility(View.GONE);
+
+        if (list.size()==0) {
+            binding.recyclerView.setVisibility(View.GONE);
+            binding.layoutNot.setVisibility(View.VISIBLE);
+        } else {
+            binding.recyclerView.setVisibility(View.VISIBLE);
+            binding.layoutNot.setVisibility(View.GONE);
+        }
+
+        items.addAll(list);
+        adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onListFailed(String errorBody, int errorCode) {
+
+        Toast.makeText(getContext(), "Error occured", Toast.LENGTH_SHORT).show();
+        binding.progressBar.setVisibility(View.INVISIBLE);
+
+    }
 }

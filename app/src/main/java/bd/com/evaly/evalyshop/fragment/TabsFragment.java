@@ -290,7 +290,7 @@ public class TabsFragment extends Fragment {
 
     public void getSubCategories(){
 
-        ProductApiHelper.getSubCategories(slug, new ResponseListener<retrofit2.Response<JSONArray>>() {
+        ProductApiHelper.getSubCategories(slug, new ResponseListener<retrofit2.Response<JSONArray>, String>() {
 
             @Override
             public void onDataFetched(retrofit2.Response<JSONArray> res, int statusCode) {
@@ -316,7 +316,7 @@ public class TabsFragment extends Fragment {
                 }
             }
             @Override
-            public void onFailed(int errorCode) {
+            public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);
             }
         });
@@ -325,7 +325,7 @@ public class TabsFragment extends Fragment {
     }
 
     public void getBrandsOfCategory(int counter){
-        ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListener<retrofit2.Response<JsonObject>>() {
+        ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListener<retrofit2.Response<JsonObject>, String>() {
             @Override
             public void onDataFetched(retrofit2.Response<JsonObject> res, int statusCode) {
 
@@ -354,7 +354,7 @@ public class TabsFragment extends Fragment {
 
             }
             @Override
-            public void onFailed(int errorCode) {
+            public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);
             }
         });

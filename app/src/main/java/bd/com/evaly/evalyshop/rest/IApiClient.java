@@ -9,7 +9,9 @@ import org.json.JSONArray;
 import java.util.HashMap;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
+import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -79,6 +81,7 @@ public interface IApiClient {
     Call<JsonObject> getBanners(@Header("Authorization") String token);
 
 
+
     // product APIs
 
     @GET(UrlUtils.CATEGORIES)
@@ -92,6 +95,12 @@ public interface IApiClient {
 
     @GET(UrlUtils.CATEGORIES_BRANDS)
     Call<JsonObject> getBrandsCategories(@Query("category") String category, @Query("page") int page, @Query("limit") int limit);
+
+
+    // campaign APIs
+
+    @GET(UrlUtils.CAMPAIGNS)
+    Call<CommonSuccessResponse<List<CampaignItem>>> getCampaigns();
 
 
 }

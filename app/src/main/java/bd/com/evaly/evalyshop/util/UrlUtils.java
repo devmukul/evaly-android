@@ -50,4 +50,11 @@ public class UrlUtils {
     public static final String CATEGORIES_BRANDS = BASE_URL+"public/brands/";
 
 
+    // campaigns
+
+    public static final String CAMPAIGNS = BASE_URL+"campaigns/public";
+
+
+
+
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="viewModel"
@@ -45,71 +46,62 @@
                 android:textStyle="bold"/>
 
 
-             <LinearLayout
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginBottom="50dp"
+                android:layout_marginTop="30dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="0"
                 android:orientation="horizontal"
-                android:paddingTop="15dp"
+                tools:listitem="@layout/item_campaign"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="7"
+                app:spanCount="4"
+                android:nestedScrollingEnabled="true"
                 android:paddingBottom="25dp"
-                 android:paddingLeft="5dp">
+                android:paddingTop="15dp"
+                android:paddingLeft="5dp"
+                android:clipToPadding="false"
+                android:visibility="gone"/>
 
-                <LinearLayout
+
+
+
+            <LinearLayout
+                android:id="@+id/layoutNot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_star_flying"
+                    android:tint="#666"/>
+
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp">
-
-                    <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/circle_bg"
-                        app:srcCompat="@drawable/ic_night" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:singleLine="true"
-                        android:text="Dark Night"
-                        android:textAlignment="center"
-                        android:textColor="#333"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp">
-
-                    <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/circle_bg"
-                        app:srcCompat="@drawable/ic_gift_card_line" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:singleLine="true"
-                        android:text="Gift Cards"
-                        android:textAlignment="center"
-                        android:textColor="#333"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:text="No campaign is available right now."
+                    android:textColor="#555"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="25dp"
+                    android:textSize="15sp"/>
 
 
             </LinearLayout>
+
+
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

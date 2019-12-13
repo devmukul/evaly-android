@@ -1,28 +1,18 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
-import android.util.Log;
-
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 
 import bd.com.evaly.evalyshop.listener.ResponseListener;
-import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductApiHelper {
+public class ProductApiHelper extends ApiHelper{
 
-
-    public static Call<JsonObject> call;
-
-    private static IApiClient getiApiClient() {
-        return ApiClient.getClient().create(IApiClient.class);
-    }
-
-    public static void getSubCategories(String slug, ResponseListener<Response<JSONArray>> listener) {
+    public static void getSubCategories(String slug, ResponseListener<Response<JSONArray>, String> listener) {
         IApiClient iApiClient = getiApiClient();
         Call<JSONArray> call;
 
@@ -39,13 +29,13 @@ public class ProductApiHelper {
 
             @Override
             public void onFailure(Call<JSONArray> call, Throwable t) {
-                listener.onFailed(0);
+                listener.onFailed(t.getMessage(),0);
             }
         });
     }
 
 
-    public static void getBrandsOfCategories(String category, int page, int limit, ResponseListener<Response<JsonObject>> listener) {
+    public static void getBrandsOfCategories(String category, int page, int limit, ResponseListener<Response<JsonObject>, String> listener) {
 
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call;
@@ -55,19 +45,15 @@ public class ProductApiHelper {
         else
             call = iApiClient.getBrandsCategories(category,page,limit);
 
-
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
-                Log.d("jsonz", response.body().toString());
-
                 listener.onDataFetched(response, response.code());
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                listener.onFailed(0);
+                listener.onFailed(t.getMessage(),0);
             }
         });
     }
