@@ -4,16 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.core.widget.NestedScrollView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +11,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -31,6 +29,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -46,7 +47,6 @@ import java.util.TimerTask;
 
 import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.EvalyStoreActivity;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.activity.MainActivity;
@@ -59,6 +59,7 @@ import bd.com.evaly.evalyshop.adapter.SliderAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.models.BannerItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetFragment;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -156,10 +157,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         voucher.setOnClickListener(v -> {
 
-            Intent ni = new Intent(context, EvalyStoreActivity.class);
-            ni.putExtra("title", "Pre-Anniversary Sale");
-            ni.putExtra("slug", "anniversary-pre-sale-stores");
-            startActivity(ni);
+
+            CampaignBottomSheetFragment campaignBottomSheetFragment = CampaignBottomSheetFragment.newInstance();
+            campaignBottomSheetFragment.show(getFragmentManager(), "Campaign BottomSheet");
+
+//            Intent ni = new Intent(context, EvalyStoreActivity.class);
+//            ni.putExtra("title", "Pre-Anniversary Sale");
+//            ni.putExtra("slug", "anniversary-pre-sale-stores");
+//            startActivity(ni);
 
         });
 

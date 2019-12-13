@@ -167,7 +167,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_weight="0"
                         android:clickable="false"
-                        android:text="Pre-Anniversary"
+                        android:text="Campaigns"
                         android:textAlignment="center" />
                 </LinearLayout>
 
