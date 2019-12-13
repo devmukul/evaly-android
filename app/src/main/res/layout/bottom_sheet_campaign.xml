@@ -6,77 +6,111 @@
             name="viewModel"
             type="bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetViewModel" />
     </data>
-<LinearLayout
-    android:id="@+id/bottom_sheet"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#fff"
-    android:clickable="true"
-    android:orientation="vertical"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="56dp">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp">
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="5dp"
+        app:cardPreventCornerOverlap="true">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/circle_bg"
-                app:srcCompat="@drawable/ic_night" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:singleLine="true"
-                android:text="Dark Night"
-                android:textAlignment="center"
-                android:textColor="#333"
-                android:textSize="16sp" />
-
-        </LinearLayout>
+            android:id="@+id/bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:clickable="true"
+            android:orientation="vertical"
+            app:behavior_hideable="true"
+            app:behavior_peekHeight="56dp">
 
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/circle_bg"
-                app:srcCompat="@drawable/ic_gift_card_line" />
+            <View
+                android:layout_width="80dp"
+                android:layout_height="4dp"
+                android:background="@drawable/bottomsheet_top_brd"
+                android:layout_gravity="center"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="5dp"/>
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Campaigns"
+                android:textSize="16sp"
+                android:textColor="#333"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"/>
+
+
+             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:singleLine="true"
-                android:text="Gift Cards"
-                android:textAlignment="center"
-                android:textColor="#333"
-                android:textSize="16sp" />
+                android:orientation="horizontal"
+                android:paddingTop="15dp"
+                android:paddingBottom="25dp"
+                 android:paddingLeft="5dp">
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp">
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/circle_bg"
+                        app:srcCompat="@drawable/ic_night" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:singleLine="true"
+                        android:text="Dark Night"
+                        android:textAlignment="center"
+                        android:textColor="#333"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp">
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/circle_bg"
+                        app:srcCompat="@drawable/ic_gift_card_line" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:singleLine="true"
+                        android:text="Gift Cards"
+                        android:textAlignment="center"
+                        android:textColor="#333"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
         </LinearLayout>
-
-
-    </LinearLayout>
-</LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </layout>
