@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.campaign;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.EvalyStoreActivity;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 
 public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHolder>{
@@ -38,6 +40,15 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
 
         holder.tvTitle.setText(itemList.get(position).getName());
 
+        holder.itemView.setOnClickListener(view -> {
+
+            Intent ni = new Intent(context, EvalyStoreActivity.class);
+            ni.putExtra("title", itemList.get(position).getName());
+            ni.putExtra("slug", itemList.get(position).getSlug());
+            context.startActivity(ni);
+
+        });
+
     }
 
     @Override
@@ -49,10 +60,12 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
         ImageView imageView;
-
+        View itemView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            this.itemView = itemView;
 
             tvTitle = itemView.findViewById(R.id.tvTitle);
             imageView = itemView.findViewById(R.id.image);

@@ -13,10 +13,22 @@ public class CommonSuccessResponse<T> {
     @Expose
     private String message;
 
+    @SerializedName("count")
+    @Expose
+    private int count;
+
     @SerializedName("data")
     @Expose
     private T data;
 
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public T getData() {
         return data;

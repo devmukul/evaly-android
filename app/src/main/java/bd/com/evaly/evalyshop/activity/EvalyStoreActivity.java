@@ -2,16 +2,17 @@ package bd.com.evaly.evalyshop.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -28,13 +29,18 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -63,7 +69,7 @@ public class EvalyStoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evaly_shop);
 
-        getSupportActionBar().setElevation(4f);
+        getSupportActionBar().setElevation(0f);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -96,30 +102,42 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-//        if (nestedSV != null) {
-//            nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-//                @Override
-//                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                    String TAG = "nested_sync";
-//                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                        Log.i(TAG, "BOTTOM SCROLL");
-//                        try {
-//
-//                            if(!isLoading)
-//                                loadNextShops();
-//
-//                        } catch (Exception e) {
-//                            Log.e("load more product", e.toString());
-//                        }
-//                    }
-//                }
-//            });
-//        }
+
+    }
+
+
+
+    public void getEvalyShops(int page){
+
+
+        CampaignApiHelper.getCampaignShops(slug, new ResponseListener<CommonSuccessResponse<List<CampaignShopItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonSuccessResponse<List<CampaignShopItem>> response, int statusCode) {
+
+                List<CampaignShopItem> list = response.getData();
+
+                for (int i=0; i<list.size(); i++){
+                    TabsItem tabsItem = new TabsItem();
+                    tabsItem.setTitle(list.get(i).getShopName());
+                    tabsItem.setImage(list.get(i).getShopImage());
+                    tabsItem.setSlug(list.get(i).getSlug());
+                    tabsItem.setCategory("root");
+                    itemList.add(tabsItem);
+                    adapter.notifyItemInserted(itemList.size());
+                }
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+        });
 
 
     }
 
-    public void getEvalyShops(int p){
+    public void getEvalyShop(int p){
 
         isLoading = true;
 

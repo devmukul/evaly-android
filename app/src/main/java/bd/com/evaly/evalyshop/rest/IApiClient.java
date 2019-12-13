@@ -12,6 +12,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
+import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -101,6 +102,12 @@ public interface IApiClient {
 
     @GET(UrlUtils.CAMPAIGNS)
     Call<CommonSuccessResponse<List<CampaignItem>>> getCampaigns();
+
+
+
+    @GET(UrlUtils.CAMPAIGNS+"/{group}/shops")
+    Call<CommonSuccessResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group);
+
 
 
 }

@@ -7,15 +7,16 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -55,15 +56,11 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         public void onClick(View view) {
             int position = (int) view.getTag(); // get item for position
 
-
             if(context instanceof MainActivity) {
-
 
                 FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
 
                 if (type == 1) {
-
-
 
                     Fragment fragment3 = new BrowseProductFragment();
                     Bundle bundle = new Bundle();
@@ -77,11 +74,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                     ft.addToBackStack(null);
                     ft.commit();
 
-
-
-
                 } else if (type == 2) {
-
 
                     Fragment fragment3 = new BrandFragment();
                     Bundle bundle = new Bundle();
@@ -124,9 +117,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                     intent.putExtra("category", itemlist.get(position).getCategory());
                     intent.putExtra("image_url", itemlist.get(position).getImage());
 
-
                     context.startActivity(intent);
-
 
                 } else if (type == 3) {
                     Intent intent = new Intent(context, MainActivity.class);
@@ -137,9 +128,8 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
                 }
 
-
             }
-            }
+        }
     };
 
 
@@ -162,18 +152,6 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         holder.view.setOnClickListener(productListener);
         holder.view.setTag(position);
 
-//        holder.iv.post(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//
-//
-//
-//            }
-//        });
-
-
-
         Glide.with(context)
                 .load(itemlist.get(position).getImage())
                 .apply(new RequestOptions().override(240, 240))
@@ -194,7 +172,6 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                 )
                 .into(holder.iv);
 
-
     }
 
 
@@ -203,7 +180,6 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         TextView tv;
         ImageView iv;
         View view;
-
 
         public MyViewHolder(final View itemView) {
             super(itemView);
@@ -214,15 +190,10 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         }
     }
 
-
     public void setFilter(ArrayList<TabsItem> ar){
         itemlist=new ArrayList<>();
         itemlist.addAll(ar);
         notifyDataSetChanged();
     }
-
-
-
-
 
 }

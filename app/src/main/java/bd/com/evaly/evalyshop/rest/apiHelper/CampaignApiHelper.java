@@ -5,6 +5,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
+import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 
 public class CampaignApiHelper extends ApiHelper{
 
@@ -14,6 +15,11 @@ public class CampaignApiHelper extends ApiHelper{
         getiApiClient().getCampaigns().enqueue(getResponseCallBack(listener));
     }
 
+
+    public static void getCampaignShops(String group, ResponseListener<CommonSuccessResponse<List<CampaignShopItem>>, String> listener) {
+
+        getiApiClient().getCampaignShops(group).enqueue(getResponseCallBack(listener));
+    }
 
 
 }
