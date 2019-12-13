@@ -412,7 +412,10 @@ public class NewsfeedActivity extends AppCompatActivity {
             ui_hot.setVisibility(View.INVISIBLE);
         else {
             ui_hot.setVisibility(View.VISIBLE);
-            ui_hot.setText(Integer.toString(new_hot_number));
+            if (new_hot_number > 99)
+                ui_hot.setText("99");
+            else
+                ui_hot.setText(Integer.toString(new_hot_number));
         }
 
     }
