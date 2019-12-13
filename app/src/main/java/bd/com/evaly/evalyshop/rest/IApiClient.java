@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import org.json.JSONArray;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,4 +77,21 @@ public interface IApiClient {
 
     @GET(UrlUtils.GET_BANNERS)
     Call<JsonObject> getBanners(@Header("Authorization") String token);
+
+
+    // product APIs
+
+    @GET(UrlUtils.CATEGORIES)
+    Call<JSONArray> getCategories(@Query("parent") String parent);
+
+    @GET(UrlUtils.CATEGORIES)
+    Call<JSONArray> getCategories();
+
+    @GET(UrlUtils.CATEGORIES_BRANDS)
+    Call<JsonObject> getBrandsCategories(@Query("page") int page, @Query("limit") int limit);
+
+    @GET(UrlUtils.CATEGORIES_BRANDS)
+    Call<JsonObject> getBrandsCategories(@Query("category") String category, @Query("page") int page, @Query("limit") int limit);
+
+
 }
