@@ -16,7 +16,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:background="@drawable/circle_bg"
-        app:srcCompat="@drawable/ic_star_flying" />
+        app:srcCompat="@drawable/ic_discount_tag" />
 
     <TextView
         android:id="@+id/tvTitle"
