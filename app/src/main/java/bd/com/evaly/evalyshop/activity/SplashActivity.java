@@ -13,7 +13,7 @@ import com.orhanobut.logger.Logger;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import retrofit2.Response;

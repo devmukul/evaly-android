@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.models.apiHelper;
+package bd.com.evaly.evalyshop.rest.apiHelper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,8 +8,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
-
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,8 +21,6 @@ import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
-import bd.com.evaly.evalyshop.models.SetPasswordModel;
-import bd.com.evaly.evalyshop.models.User;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
