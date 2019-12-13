@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,12 +39,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.fragment.BrandFragment;
@@ -51,8 +54,11 @@ import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.fragment.WishListFragment;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
+import bd.com.evaly.evalyshop.preference.MyPreference;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Token;
@@ -63,6 +69,7 @@ import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
+import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
 
@@ -155,6 +162,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
 
+
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
@@ -168,6 +176,12 @@ public class MainActivity extends BaseActivity {
         userDetails = new UserDetails(this);
 
         dialog = new ViewDialog(this);
+
+
+        // check for update
+
+        checkUpdate();
+
 
         dbHelperWishList = new DbHelperWishList(this);
         dbHelperCart = new DbHelperCart(this);
@@ -730,5 +744,71 @@ public class MainActivity extends BaseActivity {
             }
         });
         return builder;
+    }
+
+
+
+    private void checkUpdate(){
+
+
+        int versionCode = BuildConfig.VERSION_CODE;
+
+        AuthApiHelper.checkUpdate(new DataFetchingListener<Response<JsonObject>>() {
+            @Override
+            public void onDataFetched(Response<JsonObject> response) {
+                if (response.code() == 200 || response.code() == 201){
+                    try {
+                        String version = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("version").getAsString();
+                        boolean isForce = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("force").getAsBoolean();
+                        int v = Integer.parseInt(version);
+
+                        if (versionCode < v && isForce){
+                            userDetails.clearAll();
+                            MyPreference.with(MainActivity.this).clearAll();
+                            update(false);
+                        } else if (versionCode < v){
+
+                            update(true);
+
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailed(int status) {
+
+
+            }
+        });
+
+
+    }
+
+
+    private void update(boolean isCancelable) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("New update available!");
+        builder.setMessage("Please update your app");
+        builder.setCancelable(isCancelable);
+        builder.setPositiveButton("Update", (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            finish();
+            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+            }
+        });
+
+        if (isCancelable)
+            builder.setNegativeButton("No", ((dialogInterface, i) -> dialogInterface.dismiss()));
+
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 }
