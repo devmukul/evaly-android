@@ -3,7 +3,6 @@ package bd.com.evaly.evalyshop.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
@@ -23,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
@@ -91,7 +91,7 @@ public class ChangePasswordActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
-        getSupportActionBar().setElevation(4f);
+        getSupportActionBar().setElevation(0f);
         getSupportActionBar().setTitle("Change Password");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         try {

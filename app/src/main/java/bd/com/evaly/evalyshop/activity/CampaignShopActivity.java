@@ -107,9 +107,7 @@ public class CampaignShopActivity extends AppCompatActivity {
 
 
                 try {
-
                     JsonObject meta = response.getMeta();
-
                     Glide.with(CampaignShopActivity.this)
                             .load(meta.get("campaign_banner").getAsString())
                             .into(cover);
