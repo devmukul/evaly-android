@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.models;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -21,6 +22,18 @@ public class CommonSuccessResponse<T> {
     @Expose
     private T data;
 
+
+    @SerializedName("meta")
+    @Expose
+    private JsonObject meta;
+
+    public JsonObject getMeta() {
+        return meta;
+    }
+
+    public void setMeta(JsonObject meta) {
+        this.meta = meta;
+    }
 
     public int getCount() {
         return count;

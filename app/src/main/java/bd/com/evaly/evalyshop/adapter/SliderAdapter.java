@@ -21,7 +21,7 @@ import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.util.List;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.EvalyStoreActivity;
+import bd.com.evaly.evalyshop.activity.CampaignShopActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.models.BannerItem;
@@ -107,7 +107,7 @@ public class SliderAdapter extends PagerAdapter {
 
                 if (itemList.get(position).getUrl().contains("shops-grand-brand-days")){
 
-                    Intent ni = new Intent(context, EvalyStoreActivity.class);
+                    Intent ni = new Intent(context, CampaignShopActivity.class);
                     ni.putExtra("title", "Grand Brand Days");
                     ni.putExtra("slug", "grandbranddays");
                     context.startActivity(ni);

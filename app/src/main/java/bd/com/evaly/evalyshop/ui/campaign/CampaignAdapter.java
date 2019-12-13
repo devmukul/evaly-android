@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.EvalyStoreActivity;
+import bd.com.evaly.evalyshop.activity.CampaignShopActivity;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 
 public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHolder>{
@@ -42,7 +42,7 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
 
         holder.itemView.setOnClickListener(view -> {
 
-            Intent ni = new Intent(context, EvalyStoreActivity.class);
+            Intent ni = new Intent(context, CampaignShopActivity.class);
             ni.putExtra("title", itemList.get(position).getName());
             ni.putExtra("slug", itemList.get(position).getSlug());
             context.startActivity(ni);

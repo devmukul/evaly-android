@@ -161,7 +161,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             CampaignBottomSheetFragment campaignBottomSheetFragment = CampaignBottomSheetFragment.newInstance();
             campaignBottomSheetFragment.show(getFragmentManager(), "Campaign BottomSheet");
 
-//            Intent ni = new Intent(context, EvalyStoreActivity.class);
+//            Intent ni = new Intent(context, CampaignShopActivity.class);
 //            ni.putExtra("title", "Pre-Anniversary Sale");
 //            ni.putExtra("slug", "anniversary-pre-sale-stores");
 //            startActivity(ni);

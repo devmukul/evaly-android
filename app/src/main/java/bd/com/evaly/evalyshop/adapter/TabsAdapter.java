@@ -124,6 +124,8 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                 } else if (type == 3 || type == 6) {
                     Intent intent = new Intent(context, MainActivity.class);
                     intent.putExtra("type", 3);
+                    intent.putExtra("shop_name", itemlist.get(position).getTitle());
+                    intent.putExtra("logo_image", itemlist.get(position).getImage());
                     intent.putExtra("shop_slug", itemlist.get(position).getSlug());
                     intent.putExtra("category", itemlist.get(position).getCategory());
                     intent.putExtra("campaign_slug", itemlist.get(position).getCampaignSlug());

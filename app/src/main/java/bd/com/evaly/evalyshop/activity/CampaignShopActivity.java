@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -46,7 +48,7 @@ import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 
-public class EvalyStoreActivity extends AppCompatActivity {
+public class CampaignShopActivity extends AppCompatActivity {
 
     TabsAdapter adapter;
     ArrayList<TabsItem> itemList;
@@ -63,6 +65,7 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
     LinearLayout not;
     UserDetails userDetails;
+    ImageView cover;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,16 +89,17 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
         nestedSV = findViewById(R.id.sticky);
         progressBar = findViewById(R.id.progressBar);
+        cover = findViewById(R.id.cover);
         not = findViewById(R.id.not);
         itemList=new ArrayList<>();
 
-        adapter = new TabsAdapter(EvalyStoreActivity.this, this, itemList, 3);
+        adapter = new TabsAdapter(CampaignShopActivity.this, this, itemList, 3);
         nestedSV = findViewById(R.id.sticky);
         recyclerView=findViewById(R.id.recycle);
         StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
-        dialog=new ViewDialog(EvalyStoreActivity.this);
+        dialog=new ViewDialog(CampaignShopActivity.this);
        // dialog.showDialog();
         getEvalyShops(page);
 
@@ -114,6 +118,22 @@ public class EvalyStoreActivity extends AppCompatActivity {
             @Override
             public void onDataFetched(CommonSuccessResponse<List<CampaignShopItem>> response, int statusCode) {
 
+                progressBar.setVisibility(View.GONE);
+
+                try {
+
+                    JsonObject meta = response.getMeta();
+
+                    Glide.with(CampaignShopActivity.this)
+                            .load(meta.get("campaign_banner").getAsString())
+                            .into(cover);
+
+
+                } catch (Exception e){
+
+                }
+
+
                 List<CampaignShopItem> list = response.getData();
 
                 for (int i=0; i<list.size(); i++){
@@ -128,12 +148,23 @@ public class EvalyStoreActivity extends AppCompatActivity {
                     adapter.notifyItemInserted(itemList.size());
                 }
 
+
+                if (list.size() == 0){
+
+                    not.setVisibility(View.VISIBLE);
+
+                }
+
+
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
+                progressBar.setVisibility(View.GONE);
+
             }
+
         });
 
 
@@ -203,7 +234,7 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
                         if (error.networkResponse.statusCode == 401){
 
-                        AuthApiHelper.refreshToken(EvalyStoreActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        AuthApiHelper.refreshToken(CampaignShopActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                             @Override
                             public void onDataFetched(retrofit2.Response<JsonObject> response) {
                                 getEvalyShops(p);
@@ -221,7 +252,7 @@ public class EvalyStoreActivity extends AppCompatActivity {
 
 
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(EvalyStoreActivity.this, "All shops are loaded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CampaignShopActivity.this, "All shops are loaded", Toast.LENGTH_SHORT).show();
 
                     error.printStackTrace();
                 }){

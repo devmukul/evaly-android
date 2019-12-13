@@ -172,7 +172,7 @@
             android:name=".activity.AboutActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activity.EvalyStoreActivity"
+            android:name=".activity.CampaignShopActivity"
             android:label="Evaly Store"
             android:theme="@style/AppTheme" />
 

@@ -328,7 +328,7 @@ public class MainActivity extends BaseActivity {
                         startActivity(new Intent(MainActivity.this, ChatListActivity.class));
                         break;
                     case R.id.nav_followed_shops:
-                        Intent inf = new Intent(MainActivity.this, EvalyStoreActivity.class);
+                        Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
                         inf.putExtra("title", "Followed Shop");
                         inf.putExtra("slug", "shop-subscriptions");
                         startActivity(inf);
@@ -441,6 +441,7 @@ public class MainActivity extends BaseActivity {
                 bundle.putInt("type", type);
                 bundle.putString("shop_slug", data.getStringExtra("shop_slug"));
                 bundle.putString("shop_name", data.getStringExtra("shop_name"));
+                bundle.putString("logo_image", data.getStringExtra("logo_image"));
                 bundle.putString("category", data.getStringExtra("category"));
                 bundle.putString("groups", data.getStringExtra("groups"));
                 bundle.putString("campaign_slug", data.getStringExtra("campaign_slug"));
