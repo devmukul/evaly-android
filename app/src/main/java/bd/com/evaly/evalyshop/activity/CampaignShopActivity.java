@@ -137,6 +137,8 @@ public class CampaignShopActivity extends AppCompatActivity {
     public void getEvalyShops(int page){
 
 
+        progressBar.setVisibility(View.VISIBLE);
+
         CampaignApiHelper.getCampaignShops(slug, page, new ResponseListener<CommonSuccessResponse<List<CampaignShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonSuccessResponse<List<CampaignShopItem>> response, int statusCode) {
@@ -181,7 +183,7 @@ public class CampaignShopActivity extends AppCompatActivity {
                 }
 
 
-                if (list.size() == 0){
+                if (page == 1 && list.size() == 0){
 
                     not.setVisibility(View.VISIBLE);
 

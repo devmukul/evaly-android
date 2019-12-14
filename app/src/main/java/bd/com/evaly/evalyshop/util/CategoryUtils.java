@@ -4,44 +4,31 @@ package bd.com.evaly.evalyshop.util;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
-
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.models.category.CategoryItem;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.preference.MyPreference;
+import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 
 public class CategoryUtils {
 
     private Context context;
+    private CategoryDatabase categoryDatabase;
 
     public CategoryUtils(Context context) {
         this.context = context;
-    }
+        categoryDatabase = CategoryDatabase.getInstance(context);
 
-    public void saveCategoryJson(String json) {
-        MyPreference.with(context, "category_db").addString("category_json", json).save();
-
-    }
-
-    public String getCategoryJson() {
-        return MyPreference.with(context, "category_db").getString("category_json", "");
     }
 
     public long getLastUpdated(){
-        return MyPreference.with(context, "category_db").getLong("last_updated", 0);
+        return MyPreference.with(context, "category_db_new1").getLong("last_updated", 0);
     }
 
     public void setLastUpdated(){
@@ -50,77 +37,52 @@ public class CategoryUtils {
 
         Log.d("jsonz response time set", calendar.getTimeInMillis() + "");
 
-        MyPreference.with(context, "category_db").addLong("last_updated", calendar.getTimeInMillis()).save();
+        MyPreference.with(context, "category_db_new1").addLong("last_updated", calendar.getTimeInMillis()).save();
     }
 
-    public ArrayList<CategoryItem> getCategoryArrayList(String json) {
-
-        ArrayList<CategoryItem> list = new ArrayList<>();
-
-        JSONArray jsonArray;
-
-        try {
-
-            if (json.equals(""))
-                jsonArray = new JSONArray(getCategoryJson());
-            else
-            jsonArray = new JSONArray(json);
-
-        } catch (Exception e){
-            jsonArray = new JSONArray();
-        }
-
-        for (int i=0; i < jsonArray.length(); i++){
-
-            try {
-                Gson gson = new Gson();
-                CategoryItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CategoryItem.class);
-                item.setDrawable(getDrawableFromName(item.getName()));
-                list.add(item);
-
-            } catch (Exception e){
-            }
-
+    public List<CategoryEntity> getCategoryArrayList(List<CategoryEntity> list) {
+        
+        for (int i=0; i < list.size(); i++){
+            list.get(i).setDrawable(getDrawableFromName(list.get(i).getName()));
         }
 
         return list;
-
     }
 
+    public void getLocalCategoryList(DataFetchingListener<List<CategoryEntity>> listener) {
 
+        Executors.newSingleThreadExecutor().execute(() -> {
 
-    public void updateFromApi(DataFetchingListener<ArrayList<CategoryItem>> listener) {
-
-        String url = UrlUtils.DOMAIN + "core/public/categories/";
-
-
-        Log.d("jsonz url", url);
-
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                Log.d("jsonz response", response);
-
-                setLastUpdated();
-                saveCategoryJson(response);
-                listener.onDataFetched(getCategoryArrayList(response));
-            }
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-                try { listener.onFailed(error.networkResponse.statusCode); } catch (Exception e) { }
-            }
+            listener.onDataFetched(categoryDatabase.categoryDao().getAll());
+            
+            Log.d("jsonz", "called");
 
         });
 
-        RequestQueue queue = Volley.newRequestQueue(context);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+
+
+    }
+
+    public void updateFromApi(DataFetchingListener<List<CategoryEntity>> listener){
+
+        GeneralApiHelper.getRootCategories(new ResponseListener<List<CategoryEntity>, String>() {
+            @Override
+            public void onDataFetched(List<CategoryEntity> response, int statusCode) {
+
+                // Log.d("jsonz", response.toString());
+
+                setLastUpdated();
+                response.addAll(getCategoryArrayList(response));
+                Executors.newSingleThreadExecutor().execute(() -> categoryDatabase.categoryDao().insertAll(response));
+                listener.onDataFetched(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+        });
+
 
 
     }

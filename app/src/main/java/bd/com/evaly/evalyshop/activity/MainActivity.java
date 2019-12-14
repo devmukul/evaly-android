@@ -369,7 +369,7 @@ public class MainActivity extends BaseActivity {
                 case R.id.nav_home:
 
 
-                    WishListFragment myFragment = (WishListFragment) getSupportFragmentManager().findFragmentByTag("wishlist");
+                    WishListFragment myFragment = (WishListFragment) fragmentManager.findFragmentByTag("wishlist");
                     if (myFragment != null && myFragment.isVisible()) {
                         ft.hide(fragmentWishtList);
                         ft.show(homeFragment);
@@ -389,19 +389,22 @@ public class MainActivity extends BaseActivity {
                 case R.id.nav_wishlist:
 //                    intent = new Intent(MainActivity.this, WishListActivity.class);
 //                    startActivity(intent);
+                    try {
+                        Fragment fragmentW = fragmentManager.findFragmentByTag("wishlist");
+                        if (fragmentW == null) {
 
+                            ft.add(R.id.fragment_container, fragmentWishtList, "wishlist");
 
-                    Fragment fragmentW = fragmentManager.findFragmentByTag("wishlist");
-                    if (fragmentW == null) {
+                            ft.addToBackStack("wishlist");
+                        }
 
-                        ft.add(R.id.fragment_container, fragmentWishtList, "wishlist");
+                        ft.hide(homeFragment);
+                        ft.show(fragmentWishtList);
+                        ft.commit();
+                    } catch (Exception e){
 
-                        ft.addToBackStack("wishlist");
+                        startActivity(new Intent(this, WishListActivity.class));
                     }
-
-                    ft.hide(homeFragment);
-                    ft.show(fragmentWishtList);
-                    ft.commit();
 
                     break;
                 case R.id.nav_cart:

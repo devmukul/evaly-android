@@ -107,8 +107,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0"
             android:background="#fafafa"
-            android:paddingTop="50dp"
-            android:paddingBottom="20dp" />
+            android:paddingTop="35dp"
+            android:paddingBottom="35dp" />
 
 
     </LinearLayout>

@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import java.util.HashMap;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
@@ -103,10 +104,15 @@ public interface IApiClient {
     @GET(UrlUtils.CAMPAIGNS)
     Call<CommonSuccessResponse<List<CampaignItem>>> getCampaigns();
 
-
-
     @GET(UrlUtils.CAMPAIGNS+"/{group}/shops")
     Call<CommonSuccessResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page);
+
+
+
+    // Root Category
+
+    @GET(UrlUtils.DOMAIN + "core/public/categories/")
+    Call<List<CategoryEntity>> getRootCategories();
 
 
 

@@ -130,4 +130,10 @@ dependencies {
     testImplementation 'androidx.room:room-testing:2.0.0'
     implementation 'com.github.smart-fun:XmlToJson:1.4.5'
     implementation project(path: ':richlinkpreview')
+
+
+    // room
+    implementation "android.arch.persistence.room:runtime:$rootProject.roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$rootProject.roomVersion"
+    androidTestImplementation "android.arch.persistence.room:testing:$rootProject.roomVersion"
 }

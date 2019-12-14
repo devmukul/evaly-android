@@ -148,7 +148,7 @@ public class CampaignBottomSheetFragment extends BottomSheetDialogFragment imple
     @Override
     public void onListFailed(String errorBody, int errorCode) {
 
-        Toast.makeText(getContext(), "Error occured", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mRootView.getContext(), "Error occurred", Toast.LENGTH_SHORT).show();
         binding.progressBar.setVisibility(View.INVISIBLE);
 
     }

@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
@@ -44,10 +45,10 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.SearchCategory;
 import bd.com.evaly.evalyshop.adapter.HomeCategoryAdapter2;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
+import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.TabsItem;
-import bd.com.evaly.evalyshop.models.category.CategoryItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.CategoryUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -73,14 +74,9 @@ public class TabsFragment extends Fragment {
     ArrayList<Integer> imageCategory2;
     ProgressBar progressBar2;
     RequestQueue rq;
-
-    private ArrayList<CategoryItem> categoryItems;
-
-
+    private List<CategoryEntity> categoryItems;
     public ShimmerFrameLayout shimmer;
-
     public ShimmerFrameLayout shimmerParent;
-
 
 
     public TabsFragment(){
@@ -111,7 +107,6 @@ public class TabsFragment extends Fragment {
 
         }
 
-
         rq = Volley.newRequestQueue(context);
 
         return view;
@@ -125,8 +120,6 @@ public class TabsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycle);
         progressBar2 = view.findViewById(R.id.progressBar2);
         recyclerView.setNestedScrollingEnabled(false);
-
-
 
         itemList = new ArrayList<>();
         adapter = new TabsAdapter(context, (MainActivity) getActivity(), itemList, type);
@@ -143,20 +136,18 @@ public class TabsFragment extends Fragment {
             adapter2 = new HomeCategoryAdapter2(context, categoryItems);
             recyclerView.setAdapter(adapter2);
 
-
             adapter2.notifyDataSetChanged();
 
             Calendar calendar = Calendar.getInstance();
 
             if (categoryUtils.getLastUpdated() == 0 || (categoryUtils.getLastUpdated() != 0 && calendar.getTimeInMillis() - categoryUtils.getLastUpdated() > 43200000)){
-                categoryUtils.updateFromApi(new DataFetchingListener<ArrayList<CategoryItem>>() {
+                categoryUtils.updateFromApi(new DataFetchingListener<List<CategoryEntity>>() {
                     @Override
-                    public void onDataFetched(ArrayList<CategoryItem> response) {
+                    public void onDataFetched(List<CategoryEntity> response) {
                         categoryItems.addAll(response);
                         adapter2.notifyDataSetChanged();
 
                        // skeletonScreen.hide();
-
                     }
 
                     @Override
@@ -166,8 +157,18 @@ public class TabsFragment extends Fragment {
                 });
             } else {
 
-                categoryItems.addAll(categoryUtils.getCategoryArrayList(""));
-                adapter2.notifyDataSetChanged();
+                categoryUtils.getLocalCategoryList(new DataFetchingListener<List<CategoryEntity>>() {
+                    @Override
+                    public void onDataFetched(List<CategoryEntity> response) {
+                        categoryItems.addAll(response);
+                        adapter2.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailed(int status) {
+
+                    }
+                });
 
                 //skeletonScreen.hide();
 
@@ -175,13 +176,7 @@ public class TabsFragment extends Fragment {
 
 
             Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-
-                    stopShimmer();
-
-                }
-            }, 300);
+            handler.postDelayed(() -> stopShimmer(), 300);
 
             search.setHint("Search categories");
             showMore.setVisibility(View.GONE);
@@ -191,40 +186,34 @@ public class TabsFragment extends Fragment {
 
         }
 
-        showMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        showMore.setOnClickListener(v -> {
 
-                progressBar2.setVisibility(View.VISIBLE);
+            progressBar2.setVisibility(View.VISIBLE);
 
-                if (type == 2) {
-                    getBrandsOfCategory(++brandCounter);
-                } else if (type == 3) {
-                    getShopsOfCategory(++shopCounter);
-                }
+            if (type == 2) {
+                getBrandsOfCategory(++brandCounter);
+            } else if (type == 3) {
+                getShopsOfCategory(++shopCounter);
             }
         });
 
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        search.setOnClickListener(v -> {
 
 
-                if(type == 1){
+            if(type == 1){
 
-                    Intent intent = new Intent(context, SearchCategory.class);
-                    intent.putExtra("type", type);
-                    context.startActivity(intent);
+                Intent intent = new Intent(context, SearchCategory.class);
+                intent.putExtra("type", type);
+                context.startActivity(intent);
 
-                } else {
+            } else {
 
-                    Intent intent = new Intent(context, GlobalSearchActivity.class);
+                Intent intent = new Intent(context, GlobalSearchActivity.class);
 
-                    intent.putExtra("type", type);
-                    context.startActivity(intent);
-                }
-
+                intent.putExtra("type", type);
+                context.startActivity(intent);
             }
+
         });
 
 

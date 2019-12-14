@@ -3,12 +3,13 @@ package bd.com.evaly.evalyshop.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -141,23 +142,20 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
 
 
         myViewHolder.phone.setText(userDetails.getPhone());
-        myViewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myViewHolder.view.setOnClickListener(v -> {
 
-                try {
-                    Intent intent = new Intent(context, OrderDetailsActivity.class);
+            try {
+                Intent intent = new Intent(context, OrderDetailsActivity.class);
 
-                    intent.putExtra("orderID", myViewHolder.orderID.getText().toString());
-                    context.startActivity(intent);
-                } catch (Exception e){
+                intent.putExtra("orderID", myViewHolder.orderID.getText().toString());
+                context.startActivity(intent);
+            } catch (Exception e){
 
-                    Intent intent = new Intent(context, OrderDetailsActivity.class);
-                    intent.putExtra("orderID",myViewHolder.orderID.getText().toString());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                Intent intent = new Intent(context, OrderDetailsActivity.class);
+                intent.putExtra("orderID",myViewHolder.orderID.getText().toString());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
 
-                }
             }
         });
 
