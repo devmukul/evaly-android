@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -113,6 +114,22 @@ public class CampaignShopActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
 
+        nestedSV = findViewById(R.id.sticky);
+        if (nestedSV != null) {
+
+            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+
+                    if (slug.equals("shop-subscriptions"))
+                        getFollowedShops(++page);
+                    else
+                        getEvalyShops(++page);
+
+                }
+            });
+        }
+
     }
 
 
@@ -120,7 +137,7 @@ public class CampaignShopActivity extends AppCompatActivity {
     public void getEvalyShops(int page){
 
 
-        CampaignApiHelper.getCampaignShops(slug, new ResponseListener<CommonSuccessResponse<List<CampaignShopItem>>, String>() {
+        CampaignApiHelper.getCampaignShops(slug, page, new ResponseListener<CommonSuccessResponse<List<CampaignShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonSuccessResponse<List<CampaignShopItem>> response, int statusCode) {
 

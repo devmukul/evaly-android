@@ -106,7 +106,7 @@ public interface IApiClient {
 
 
     @GET(UrlUtils.CAMPAIGNS+"/{group}/shops")
-    Call<CommonSuccessResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group);
+    Call<CommonSuccessResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page);
 
 
 

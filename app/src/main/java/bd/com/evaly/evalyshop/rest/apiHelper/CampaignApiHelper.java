@@ -16,9 +16,9 @@ public class CampaignApiHelper extends ApiHelper{
     }
 
 
-    public static void getCampaignShops(String group, ResponseListener<CommonSuccessResponse<List<CampaignShopItem>>, String> listener) {
+    public static void getCampaignShops(String group, int page, ResponseListener<CommonSuccessResponse<List<CampaignShopItem>>, String> listener) {
 
-        getiApiClient().getCampaignShops(group).enqueue(getResponseCallBack(listener));
+        getiApiClient().getCampaignShops(group, page).enqueue(getResponseCallBack(listener));
     }
 
 
