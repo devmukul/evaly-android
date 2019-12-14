@@ -28,7 +28,7 @@ public class CategoryUtils {
     }
 
     public long getLastUpdated(){
-        return MyPreference.with(context, "category_db_new1").getLong("last_updated", 0);
+        return MyPreference.with(context, "category_db_new8").getLong("last_updated", 0);
     }
 
     public void setLastUpdated(){
@@ -37,7 +37,7 @@ public class CategoryUtils {
 
         Log.d("jsonz response time set", calendar.getTimeInMillis() + "");
 
-        MyPreference.with(context, "category_db_new1").addLong("last_updated", calendar.getTimeInMillis()).save();
+        MyPreference.with(context, "category_db_new8").addLong("last_updated", calendar.getTimeInMillis()).save();
     }
 
     public List<CategoryEntity> getCategoryArrayList(List<CategoryEntity> list) {
@@ -54,8 +54,6 @@ public class CategoryUtils {
         Executors.newSingleThreadExecutor().execute(() -> {
 
             listener.onDataFetched(categoryDatabase.categoryDao().getAll());
-            
-            Log.d("jsonz", "called");
 
         });
 
@@ -69,12 +67,22 @@ public class CategoryUtils {
             @Override
             public void onDataFetched(List<CategoryEntity> response, int statusCode) {
 
-                // Log.d("jsonz", response.toString());
+                for (int i=0; i < response.size(); i++){
+                    response.get(i).setDrawable(getDrawableFromName(response.get(i).getName()));
+                }
+
 
                 setLastUpdated();
-                response.addAll(getCategoryArrayList(response));
-                Executors.newSingleThreadExecutor().execute(() -> categoryDatabase.categoryDao().insertAll(response));
+
+                Executors.newSingleThreadExecutor().execute(() -> {
+
+                    categoryDatabase.categoryDao().deleteAll();
+                    categoryDatabase.categoryDao().insertAll(response);
+
+                });
+
                 listener.onDataFetched(response);
+
             }
 
             @Override
