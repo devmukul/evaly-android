@@ -144,8 +144,11 @@ public class TabsFragment extends Fragment {
                 categoryUtils.updateFromApi(new DataFetchingListener<List<CategoryEntity>>() {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
-                        categoryItems.addAll(response);
-                        adapter2.notifyDataSetChanged();
+
+                        getActivity().runOnUiThread(() -> {
+                            categoryItems.addAll(response);
+                            adapter2.notifyDataSetChanged();
+                        });
 
                        // skeletonScreen.hide();
                     }
@@ -160,8 +163,13 @@ public class TabsFragment extends Fragment {
                 categoryUtils.getLocalCategoryList(new DataFetchingListener<List<CategoryEntity>>() {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
-                        categoryItems.addAll(response);
-                        adapter2.notifyDataSetChanged();
+
+
+                        getActivity().runOnUiThread(() -> {
+                            categoryItems.addAll(response);
+                            adapter2.notifyDataSetChanged();
+                        });
+
                     }
 
                     @Override
