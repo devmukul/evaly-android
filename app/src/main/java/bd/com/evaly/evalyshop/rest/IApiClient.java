@@ -105,8 +105,7 @@ public interface IApiClient {
     Call<CommonSuccessResponse<List<CampaignItem>>> getCampaigns();
 
     @GET(UrlUtils.CAMPAIGNS+"/{group}/shops")
-    Call<CommonSuccessResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page);
-
+    Call<CommonSuccessResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);
 
 
     // Root Category

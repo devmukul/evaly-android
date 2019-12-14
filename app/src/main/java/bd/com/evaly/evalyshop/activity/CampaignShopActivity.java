@@ -122,9 +122,9 @@ public class CampaignShopActivity extends AppCompatActivity {
                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
 
                     if (slug.equals("shop-subscriptions"))
-                        getFollowedShops(++page);
+                        getFollowedShops(page);
                     else
-                        getEvalyShops(++page);
+                        getEvalyShops(page);
 
                 }
             });
@@ -134,16 +134,16 @@ public class CampaignShopActivity extends AppCompatActivity {
 
 
 
-    public void getEvalyShops(int page){
+    public void getEvalyShops(int p){
 
 
         progressBar.setVisibility(View.VISIBLE);
 
-        CampaignApiHelper.getCampaignShops(slug, page, new ResponseListener<CommonSuccessResponse<List<CampaignShopItem>>, String>() {
+        CampaignApiHelper.getCampaignShops(slug, p, new ResponseListener<CommonSuccessResponse<List<CampaignShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonSuccessResponse<List<CampaignShopItem>> response, int statusCode) {
 
-                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.INVISIBLE);
 
                 findViewById(R.id.title).setVisibility(View.VISIBLE);
 
@@ -181,6 +181,9 @@ public class CampaignShopActivity extends AppCompatActivity {
                     itemList.add(tabsItem);
                     adapter.notifyItemInserted(itemList.size());
                 }
+
+                if (list.size() > 0)
+                    page++;
 
 
                 if (page == 1 && list.size() == 0){
@@ -241,8 +244,10 @@ public class CampaignShopActivity extends AppCompatActivity {
 
                         if (jsonArray.length() == 0)
                             not.setVisibility(View.VISIBLE);
-                        else
+                        else {
                             not.setVisibility(View.GONE);
+                            page++;
+                        }
 
                         // dialog.hideDialog();
 
