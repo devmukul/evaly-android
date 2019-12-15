@@ -18,21 +18,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -45,7 +37,6 @@ import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import retrofit2.Response;
 
 public class SubTabsFragment extends Fragment {
@@ -218,162 +209,6 @@ public class SubTabsFragment extends Fragment {
 
 
 
-
-
-    public void getSubCategoriesz(){
-        String url;
-        if (slug.equals("root"))
-            url = UrlUtils.BASE_URL+"public/categories/";
-        else
-            url = UrlUtils.BASE_URL+"public/categories/?parent="+slug;
-        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, (String) null,
-                response -> {
-
-
-                    progressBar2.setVisibility(View.GONE);
-
-                    Log.d("sub_categories", response.toString());
-                    for(int i=0;i<response.length();i++){
-                        try {
-                            JSONObject ob = response.getJSONObject(i);
-                            TabsItem tabsItem = new TabsItem();
-                            tabsItem.setTitle(ob.getString("name"));
-                            tabsItem.setImage(ob.getString("image_url"));
-                            tabsItem.setSlug(ob.getString("slug"));
-                            tabsItem.setCategory(category);
-                            itemList.add(tabsItem);
-                            adapter.notifyItemInserted(itemList.size());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    stopShimmer();
-                }, error -> {
-                    error.printStackTrace();
-
-                    progressBar2.setVisibility(View.GONE);
-                });
-
-
-        getRequest.setShouldCache(false);
-        getRequest.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        // rq.getCache().clear();
-        rq.add(getRequest);
-    }
-
-    public void getBrandsOfCategoryz(int counter){
-
-
-        String url;
-        if (slug.equals("root"))
-            url = UrlUtils.BASE_URL+"public/brands/?limit=12&page="+counter;
-        else
-            url = UrlUtils.BASE_URL+"public/brands/?limit=12&category="+slug+"&page="+counter;
-
-
-        Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
-                response -> {
-
-
-                    progressBar2.setVisibility(View.GONE);
-
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("results");
-                        Log.d("category_brands",jsonArray.toString());
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject ob = jsonArray.getJSONObject(i);
-                            TabsItem tabsItem = new TabsItem();
-                            tabsItem.setTitle(ob.getString("name"));
-                            tabsItem.setImage(ob.getString("image_url"));
-                            tabsItem.setSlug(ob.getString("slug"));
-                            tabsItem.setCategory(category);
-                            itemList.add(tabsItem);
-                            adapter.notifyItemInserted(itemList.size());
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(context, "brand_error", Toast.LENGTH_SHORT).show();
-                    }
-
-                    stopShimmer();
-
-                }, error -> {
-                    error.printStackTrace();
-
-                    progressBar2.setVisibility(View.GONE);
-                });
-
-
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        if(counter>1) {
-
-            request.setShouldCache(false);
-            rq.getCache().clear();
-        }
-        rq.add(request);
-    }
-
-    public void getShopsOfCategoryz(int counter){
-        String url;
-        if (slug.equals("root"))
-            url = UrlUtils.BASE_URL+"custom/shops/?page="+counter+"&limit=13";
-        else
-            url = UrlUtils.BASE_URL+"public/category/shops/"+slug+"/?limit=12&page="+counter;
-        Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
-                response -> {
-                    progressBar2.setVisibility(View.GONE);
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("data");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject ob = jsonArray.getJSONObject(i);
-                            //if(ob.getInt("selling_items__count")>0){ }
-                            TabsItem tabsItem = new TabsItem();
-                            tabsItem.setTitle(ob.getString("shop_name"));
-                            tabsItem.setImage(ob.getString("shop_image"));
-                            tabsItem.setSlug(ob.getString("shop_slug"));
-                            tabsItem.setCategory(category);
-                            itemList.add(tabsItem);
-                            adapter.notifyItemInserted(itemList.size());
-
-                        }
-
-                        stopShimmer();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }, error -> {
-                    error.printStackTrace();
-
-                    progressBar2.setVisibility(View.GONE);
-                });
-
-
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        if(counter>1) {
-            rq.getCache().clear();
-            request.setShouldCache(false);
-        }
-        rq.add(request);
-    }
-
-
-
-
-
-
     public void loadJsonToView(String json, int type){
 
         try {
@@ -523,7 +358,6 @@ public class SubTabsFragment extends Fragment {
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
-
                     }
 
                     stopShimmer();

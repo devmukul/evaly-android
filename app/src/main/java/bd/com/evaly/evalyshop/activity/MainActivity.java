@@ -120,10 +120,8 @@ public class MainActivity extends BaseActivity {
                         }
                         disconnectXmpp();
                     }
-
                 }
             }
-
         }
 
         public void onLoginFailed(String msg) {
@@ -160,8 +158,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-
 
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);

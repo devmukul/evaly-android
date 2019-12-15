@@ -238,21 +238,21 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
 
 
-        TabsFragment categoryFragment = new TabsFragment();
+        HomeTabsFragment categoryFragment = new HomeTabsFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("type", 1);
         bundle.putString("slug", "root");
         bundle.putString("category", "root");
         categoryFragment.setArguments(bundle);
 
-        TabsFragment brandFragment = new TabsFragment();
+        HomeTabsFragment brandFragment = new HomeTabsFragment();
         Bundle bundle2 = new Bundle();
         bundle2.putInt("type", 2);
         bundle2.putString("slug", "root");
         bundle2.putString("category", "root");
         brandFragment.setArguments(bundle2);
 
-        TabsFragment shopFragment = new TabsFragment();
+        HomeTabsFragment shopFragment = new HomeTabsFragment();
         Bundle bundle3 = new Bundle();
         bundle3.putInt("type", 3);
         bundle3.putString("slug", "root");

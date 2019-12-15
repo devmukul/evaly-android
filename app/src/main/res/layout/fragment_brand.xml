@@ -213,9 +213,9 @@
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:background="#fafafa"
-                    android:paddingLeft="60dp"
+                    android:paddingLeft="70dp"
                     android:paddingTop="30dp"
-                    android:paddingRight="60dp" />
+                    android:paddingRight="70dp" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -223,7 +223,7 @@
                     android:background="#fafafa"
                     android:paddingTop="10dp"
                     android:paddingBottom="30dp"
-                    android:text="No products found of this brand,"
+                    android:text="No products found of this brand."
                     android:textAlignment="center"
                     android:textSize="16sp" />
             </LinearLayout>

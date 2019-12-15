@@ -11,6 +11,7 @@ import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
+import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
@@ -135,5 +136,11 @@ public interface IApiClient {
     @GET(UrlUtils.ORDERS)
     Call<CommonResultResponse<List<OrderListItem>>> getOrderList(@Header("Authorization") String token, @Query("page") int page, @Query("order_status") String orderStatus);
 
+
+    // brand
+
+
+    @GET(UrlUtils.BASE_URL+"public/brands/{brandSlug}/")
+    Call<CommonSuccessResponse<BrandDetails>> getBrandDetails(@Path("brandSlug") String brandSlug);
 
 }

@@ -43,7 +43,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.CategoryUtils;
 import retrofit2.Response;
 
-public class TabsFragment extends Fragment {
+public class HomeTabsFragment extends Fragment {
 
     RecyclerView recyclerView;
     TabsAdapter adapter;
@@ -69,7 +69,7 @@ public class TabsFragment extends Fragment {
     public ShimmerFrameLayout shimmerParent;
 
 
-    public TabsFragment(){
+    public HomeTabsFragment(){
         // Required empty public constructor
     }
 
