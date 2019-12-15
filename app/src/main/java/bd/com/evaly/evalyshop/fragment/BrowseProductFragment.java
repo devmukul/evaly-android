@@ -18,8 +18,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -27,9 +25,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
@@ -46,28 +42,23 @@ import retrofit2.Response;
 public class BrowseProductFragment extends Fragment {
 
 
-    MainActivity activity;
-    TabLayout tabLayout;
-    HomeTabPagerAdapter pager;
-    ViewPager viewPager;
-    TextView filter;
-    int type = 1;
-    String slug;
-    String category = "";
-    LinearLayout lin;
-    ShimmerFrameLayout shimmer;
+    private MainActivity activity;
+    private TabLayout tabLayout;
+    private HomeTabPagerAdapter pager;
+    private ViewPager viewPager;
+    private TextView filter;
+    private int type = 1;
+    private String slug;
+    private String category = "";
+    private LinearLayout lin;
+    private ShimmerFrameLayout shimmer;
     private boolean isShimmerShowed = false;
-    RequestQueue rq;
-    Map<String,String> map;
-    String filterURL="";
-    List<ProductItem> itemListProduct;
-    ProductGridAdapter adapterProduct;
-    RecyclerView recyclerView;
-    EditText minimum,maximum;
-    ProgressBar progressBar;
-
-    SkeletonScreen skeletonTabHeader;
-
+    private List<ProductItem> itemListProduct;
+    private ProductGridAdapter adapterProduct;
+    private RecyclerView recyclerView;
+    private EditText minimum,maximum;
+    private ProgressBar progressBar;
+    private SkeletonScreen skeletonTabHeader;
 
 
     public BrowseProductFragment() {
@@ -81,18 +72,12 @@ public class BrowseProductFragment extends Fragment {
 
         activity = (MainActivity) getActivity();
 
-
-
         Bundle bundle = new Bundle();
-
         type = getArguments().getInt("type");
         slug = getArguments().getString("slug");
         category = getArguments().getString("category");
 
-        Log.d("json", category);
-
         bundle.putString("category", category);
-
 
         filter = view.findViewById(R.id.filterBtn);
         recyclerView = view.findViewById(R.id.products);
@@ -100,10 +85,6 @@ public class BrowseProductFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         itemListProduct = new ArrayList<>();
         adapterProduct = new ProductGridAdapter(getContext(), itemListProduct);
-        rq = Volley.newRequestQueue(getContext());
-        map = new HashMap<>();
-
-
 
         return view;
 
@@ -141,16 +122,13 @@ public class BrowseProductFragment extends Fragment {
 
         pager =  new HomeTabPagerAdapter(getChildFragmentManager());
 
-
         NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
 
         final ProductGrid productGrid = new ProductGrid(getContext(), view.findViewById(R.id.products),slug, view.findViewById(R.id.progressBar));
         productGrid.setScrollView(nestedSV);
 
-
         shimmer = view.findViewById(R.id.shimmer);
         shimmer.startShimmer();
-
 
         viewPager.setOffscreenPageLimit(1);
 
@@ -177,7 +155,6 @@ public class BrowseProductFragment extends Fragment {
 
         getSubCategories();
 
-
         if (nestedSV != null) {
 
             nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -194,7 +171,6 @@ public class BrowseProductFragment extends Fragment {
         }
     }
 
-
     public void hideShimmer(){
 
         try {
@@ -206,10 +182,8 @@ public class BrowseProductFragment extends Fragment {
         isShimmerShowed = true;
     }
 
-
     @Override
     public void onDestroy() {
-
         super.onDestroy();
 
         try {
@@ -218,17 +192,12 @@ public class BrowseProductFragment extends Fragment {
     }
 
 
-
-
     public void getSubCategories(){
 
         ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<Response<JsonArray>, String>() {
 
             @Override
             public void onDataFetched(retrofit2.Response<JsonArray> res, int statusCode) {
-
-
-                Log.d("jsonz", "Response " + res.body().toString());
 
                 try {
                     skeletonTabHeader.hide();
@@ -266,11 +235,7 @@ public class BrowseProductFragment extends Fragment {
 
             }
         });
-
-
     }
-
-
 
     public void loadOtherTabs(){
 
@@ -284,9 +249,7 @@ public class BrowseProductFragment extends Fragment {
             fragment.setArguments(bundle);
             pager.addFragment(fragment, "Brands");
             pager.notifyDataSetChanged();
-
         }
-
 
         {
             SubTabsFragment fragment = new SubTabsFragment();
@@ -299,7 +262,5 @@ public class BrowseProductFragment extends Fragment {
             pager.addFragment(fragment, "Shops");
             pager.notifyDataSetChanged();
         }
-
-
     }
 }
