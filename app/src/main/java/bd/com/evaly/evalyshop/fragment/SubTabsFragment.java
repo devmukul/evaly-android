@@ -32,7 +32,6 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.SearchCategory;
-import bd.com.evaly.evalyshop.adapter.HomeCategoryAdapter2;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.TabsItem;
@@ -40,33 +39,26 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 
 public class SubTabsFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    TabsAdapter adapter;
-    Context context;
-    HomeCategoryAdapter2 adapter2;
-    ArrayList<TabsItem> itemList;
-    int type = 1;
-    String slug = "root";
-    String category;
-    EditText search;
-    Button showMore;
-    Fragment parentIntance;
+    private RecyclerView recyclerView;
+    private TabsAdapter adapter;
+    private Context context;
+    private ArrayList<TabsItem> itemList;
+    private int type = 1;
+    private String slug = "root";
+    private String category;
+    private EditText search;
+    private Button showMore;
     private View view;
-    boolean isEmpty = false;
-    int brandCounter=1,shopCounter=1;
-    ArrayList<String> titleCategory2;
-    ArrayList<Integer> imageCategory2;
-    ProgressBar progressBar2;
-    RequestQueue rq;
+    private int brandCounter=1,shopCounter=1;
+    private ProgressBar progressBar2;
+    private RequestQueue rq;
     public ShimmerFrameLayout shimmer;
-    public ShimmerFrameLayout shimmerParent;
 
     private String json = "[]";
 
     public SubTabsFragment(){
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -85,9 +77,7 @@ public class SubTabsFragment extends Fragment {
         try {
             shimmer.startShimmer();
         } catch (Exception e){
-
         }
-
 
         rq = Volley.newRequestQueue(context);
 
@@ -110,7 +100,6 @@ public class SubTabsFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-
         showMore.setOnClickListener(v -> {
 
             progressBar2.setVisibility(View.VISIBLE);
@@ -124,24 +113,16 @@ public class SubTabsFragment extends Fragment {
 
         search.setOnClickListener(v -> {
 
-
             if(type == 1){
-
                 Intent intent = new Intent(context, SearchCategory.class);
                 intent.putExtra("type", type);
                 context.startActivity(intent);
-
             } else {
-
                 Intent intent = new Intent(context, GlobalSearchActivity.class);
-
                 intent.putExtra("type", type);
                 context.startActivity(intent);
             }
-
         });
-
-
 
         if (json.equals(""))
             loadData();
@@ -180,12 +161,6 @@ public class SubTabsFragment extends Fragment {
                         adapter.notifyDataSetChanged();
                         handler.postDelayed(this, 1000);
                     }
-                } else {
-                    if (adapter2.getItemCount() < 1 || recyclerView.getHeight() < 100) {
-                        adapter2.notifyDataSetChanged();
-                        handler.postDelayed(this, 1000);
-                    }
-
                 }
             }
         }, 1000 );
@@ -195,9 +170,7 @@ public class SubTabsFragment extends Fragment {
 
     public void stopShimmer(){
 
-
         try {
-
             shimmer.stopShimmer();
         } catch (Exception e){
 
@@ -205,18 +178,12 @@ public class SubTabsFragment extends Fragment {
         shimmer.setVisibility(View.GONE);
     }
 
-
-
-
     public void loadJsonToView(String json, int type){
 
         try {
-
-
             JsonParser parser = new JsonParser();
             JsonElement tradeElement = parser.parse(json);
             JsonArray response = tradeElement.getAsJsonArray();
-
 
             for (int i = 0; i < response.size(); i++) {
                 try {
@@ -316,7 +283,6 @@ public class SubTabsFragment extends Fragment {
                     e.printStackTrace();
                     Toast.makeText(context, "brand_error", Toast.LENGTH_SHORT).show();
                 }
-
             }
             @Override
             public void onFailed(String body, int errorCode) {

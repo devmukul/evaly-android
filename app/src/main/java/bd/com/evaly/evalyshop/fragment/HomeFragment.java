@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
@@ -404,29 +403,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
 
-
-
-    private class SliderTimer extends TimerTask {
-        @Override
-        public void run() {
-
-            try {
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (sliderPager.getCurrentItem() < sliderImages.size() - 1) {
-                            sliderPager.setCurrentItem(sliderPager.getCurrentItem() + 1);
-                        } else {
-                            sliderPager.setCurrentItem(0);
-                        }
-                    }
-                });
-            } catch (Exception e){
-
-            }
-        }
-    }
 
     public void getSliderImage(){
 

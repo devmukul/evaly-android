@@ -25,9 +25,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
@@ -44,28 +42,23 @@ import bd.com.evaly.evalyshop.util.CategoryUtils;
 
 public class HomeTabsFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    TabsAdapter adapter;
-    Context context;
-    Map<String,Integer> categoryMap;
-    HomeCategoryAdapter2 adapter2;
-    ArrayList<TabsItem> itemList;
-    int type = 1;
-    String slug = "root";
-    String category;
-    EditText search;
-    Button showMore;
-
+    private RecyclerView recyclerView;
+    private TabsAdapter adapter;
+    private Context context;
+    private HomeCategoryAdapter2 adapter2;
+    private ArrayList<TabsItem> itemList;
+    private int type = 1;
+    private String slug = "root";
+    private String category;
+    private EditText search;
+    private Button showMore;
     private View view;
-    boolean isEmpty = false;
-    int brandCounter=1,shopCounter=1;
-    ArrayList<String> titleCategory2;
-    ArrayList<Integer> imageCategory2;
-    ProgressBar progressBar2;
-    RequestQueue rq;
+    private boolean isEmpty = false;
+    private int brandCounter=1,shopCounter=1;
+    private ProgressBar progressBar2;
+    private RequestQueue rq;
     private List<CategoryEntity> categoryItems;
     public ShimmerFrameLayout shimmer;
-    public ShimmerFrameLayout shimmerParent;
 
 
     public HomeTabsFragment(){
@@ -76,7 +69,6 @@ public class HomeTabsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_category, container, false);
         context = getContext();
-        categoryMap=new HashMap<>();
         shimmer = view.findViewById(R.id.shimmer);
 
         Bundle bundle = getArguments();
@@ -148,14 +140,11 @@ public class HomeTabsFragment extends Fragment {
                 categoryUtils.getLocalCategoryList(new DataFetchingListener<List<CategoryEntity>>() {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
-
-
                         getActivity().runOnUiThread(() -> {
                             categoryItems.addAll(response);
                             adapter2.notifyDataSetChanged();
                             stopShimmer();
                         });
-
                     }
 
                     @Override
@@ -163,9 +152,7 @@ public class HomeTabsFragment extends Fragment {
 
                     }
                 });
-
                 //skeletonScreen.hide();
-
             }
 
             search.setHint("Search categories");
@@ -245,10 +232,7 @@ public class HomeTabsFragment extends Fragment {
 
 
     public void stopShimmer(){
-
-
         try {
-
             shimmer.stopShimmer();
         } catch (Exception e){
 
