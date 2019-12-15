@@ -41,8 +41,10 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.OrderAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.Orders;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
@@ -155,7 +157,71 @@ public class OrderListFragment extends Fragment {
     }
 
 
-    public void getOrderData(int currentPagez){
+
+    public void getOrderData(int page){
+
+
+        OrderApiHelper.getOrderList(userDetails.getToken(), page, statusType, new ResponseListener<JSONObject, String>() {
+            @Override
+            public void onDataFetched(JSONObject response, int statusCode) {
+
+                try {
+                    JSONArray jsonArray = response.getJSONArray("results");
+
+                    if(jsonArray.length()==0){
+
+                        notOrdered.setVisibility(View.VISIBLE);
+                        Glide.with(context)
+                                .load(R.drawable.ic_emptycart_new)
+                                .apply(new RequestOptions().override(700, 700))
+                                .into((ImageView) view.findViewById(R.id.noImage));
+                        recyclerView.setVisibility(View.GONE);
+                        nestedSV.setBackgroundColor(Color.WHITE);
+
+                    }else{
+                        notOrdered.setVisibility(View.GONE);
+                        for(int i=0;i<jsonArray.length();i++){
+                            JSONObject ob = jsonArray.getJSONObject(i);
+                            orders.add(new Orders(
+                                    ob.getString("date"),
+                                    ob.getString("order_status"),
+                                    ob.getString("invoice_no"),
+                                    "mobile",
+                                    ob.getString("payment_method"),
+                                    ob.getString("payment_status")
+                            ));
+
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    hideProgressView();
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+                if (errorCode == 401) {
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getOrderData(page);
+                        }
+
+                        @Override
+                        public void onFailed(int status) { }
+                    });
+                }
+            }
+        });
+
+
+
+    }
+
+    public void getOrderDataa(int currentPagez){
 
 
         String url;

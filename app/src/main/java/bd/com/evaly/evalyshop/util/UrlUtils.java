@@ -43,9 +43,7 @@ public class UrlUtils {
     public static final String SUBMIT_ISSUE = BASE_URL+"orders/";
     public static final String GET_BANNERS = BASE_URL+"banners/";
 
-
     // product api endpoints
-
     public static final String CATEGORIES = BASE_URL+"public/categories/";
     public static final String CATEGORIES_BRANDS = BASE_URL+"public/brands/";
 
@@ -54,10 +52,12 @@ public class UrlUtils {
 
 
     // campaigns
-
     public static final String CAMPAIGNS = BASE_URL+"campaigns/public";
 
+    // Orders
+    public static final String ORDERS = BASE_URL+"custom/orders/";
 
 
-
+    // categories
+    public static final String ROOTCATEGORIES = BASE_URL+"core/public/categories/";
 }

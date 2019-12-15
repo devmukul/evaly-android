@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -114,13 +115,14 @@ public interface IApiClient {
 
     // Root Category
 
-    @GET(UrlUtils.DOMAIN + "core/public/categories/")
+    @GET(UrlUtils.ROOTCATEGORIES)
     Call<List<CategoryEntity>> getRootCategories();
 
 
 
     // Order APIs
-
+    @GET(UrlUtils.ORDERS)
+    Call<JSONObject> getOrderList(@Header("Authorization") String token, @Query("page") int page, @Query("order_status") String orderStatus);
 
 
 }

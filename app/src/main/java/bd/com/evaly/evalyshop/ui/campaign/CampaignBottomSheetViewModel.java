@@ -34,6 +34,11 @@ public class CampaignBottomSheetViewModel extends ViewModel {
                 navigator.onListFailed(errorBody, errorCode);
 
             }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                
+            }
         });
 
     }

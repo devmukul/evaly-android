@@ -40,11 +40,17 @@ public class ApiHelper {
                         @Override
                         public void onDataFetched(JsonObject response, int statusCode) {
 
+                            dataFetchingListener.onAuthError(false);
                         }
 
                         @Override
                         public void onFailed(String error, int errorCode) {
 
+                        }
+
+                        @Override
+                        public void onAuthError(boolean logout) {
+                            dataFetchingListener.onAuthError(true);
                         }
                     });
                 } else {
@@ -80,7 +86,7 @@ public class ApiHelper {
                     CredentialManager.saveRefreshToken(refresh);
                 }else if (response.code() == 401){
 
-                    //Logout
+                    listener.onAuthError(true);
                 }
             }
 
