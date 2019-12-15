@@ -6,6 +6,7 @@ import org.json.JSONArray;
 
 import java.util.List;
 
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
@@ -15,6 +16,36 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProductApiHelper extends ApiHelper{
+
+
+    public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, ResponseListener<JsonObject, String> listener){
+
+        if (categorySlug.equals(""))
+            categorySlug = null;
+
+
+        IApiClient iApiClient = getiApiClient();
+        Call<JsonObject> call;
+
+        if (!campaignSlug.equals(""))
+            call = iApiClient.getCampaignShopProducts(campaignSlug, shopSlug, page, limit, categorySlug);
+        else
+            call = iApiClient.getShopProducts(shopSlug, page, limit, categorySlug);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                listener.onDataFetched(response.body(), response.code());
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                listener.onFailed(t.getMessage(),0);
+            }
+        });
+
+
+    }
 
     public static void getCategoryBrandProducts(int page, String category, String brands, ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String> listener) {
 

@@ -128,22 +128,20 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
             if (productsList.get(position).getMinDiscountedPriceD() < productsList.get(position).getMinPriceD()){
 
-                holder.priceDiscount.setText("৳ " +productsList.get(position).getMinPriceD());
+                holder.priceDiscount.setText("৳ " +(int) productsList.get(position).getMinPriceD());
                 holder.priceDiscount.setVisibility(View.VISIBLE);
                 holder.priceDiscount.setPaintFlags(holder.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-                holder.price.setText("৳ " +productsList.get(position).getMinDiscountedPriceD());
+                holder.price.setText("৳ " +(int)productsList.get(position).getMinDiscountedPriceD());
 
             } else {
                 holder.priceDiscount.setVisibility(View.GONE);
-                holder.price.setText("৳ " +productsList.get(position).getMinPriceD());
+                holder.price.setText("৳ " +(int)productsList.get(position).getMinPriceD());
             }
         } else {
-            holder.price.setText("৳ " + productsList.get(position).getMinPriceD());
+            holder.price.setText("৳ " + (int)productsList.get(position).getMinPriceD());
         }
 
-
-        //holder.sku.setText(productsList.get(position).getSlug());
 
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(itemViewListener);
@@ -191,12 +189,6 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             priceDiscount = itemView.findViewById(R.id.priceDiscount);
             buyNow = itemView.findViewById(R.id.buy_now);
             tvCashback = itemView.findViewById(R.id.tvCashback);
-
-            // favorite=itemView.findViewById(R.id.favorite);
-            //sku=itemView.findViewById(R.id.sku);
-
-
-
             this.itemView = itemView;
         }
     }
