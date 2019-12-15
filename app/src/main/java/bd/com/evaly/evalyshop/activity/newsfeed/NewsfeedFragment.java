@@ -777,7 +777,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Map<String, String> headers = new HashMap<>();
 
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
 
                 headers.put("Content-Type", "application/json");
                 return headers;
@@ -835,7 +835,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Content-Type", "application/json");
                 return headers;
             }
@@ -901,7 +901,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Content-Type", "application/json");
                 return headers;
             }
@@ -1007,7 +1007,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Map<String, String> headers = new HashMap<>();
 
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
 
                 headers.put("Content-Type", "application/json");
 
@@ -1069,7 +1069,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Map<String, String> headers = new HashMap<>();
 
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Content-Type", "application/json");
 
                 return headers;
@@ -1195,7 +1195,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Map<String, String> headers = new HashMap<>();
 
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
 
                 return headers;
             }
@@ -1291,7 +1291,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Content-Type", "application/json");
                 return headers;
             }
@@ -1351,7 +1351,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Content-Type", "application/json");
                 return headers;
             }

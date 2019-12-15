@@ -10,7 +10,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.preference.MyPreference;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 
@@ -41,7 +41,7 @@ public class CategoryUtils {
 
     public void updateFromApi(DataFetchingListener<List<CategoryEntity>> listener){
 
-        GeneralApiHelper.getRootCategories(new ResponseListener<List<CategoryEntity>, String>() {
+        GeneralApiHelper.getRootCategories(new ResponseListenerAuth<List<CategoryEntity>, String>() {
             @Override
             public void onDataFetched(List<CategoryEntity> response, int statusCode) {
 
@@ -60,6 +60,11 @@ public class CategoryUtils {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
 
             }
         });

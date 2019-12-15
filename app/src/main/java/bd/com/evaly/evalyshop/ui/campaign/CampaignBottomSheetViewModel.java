@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
-import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
@@ -21,7 +21,7 @@ public class CampaignBottomSheetViewModel extends ViewModel {
 
     public void loadCampaigns(){
 
-        CampaignApiHelper.getCampaigns(new ResponseListener<CommonSuccessResponse<List<CampaignItem>>, String>() {
+        CampaignApiHelper.getCampaigns(new ResponseListenerAuth<CommonSuccessResponse<List<CampaignItem>>, String>() {
             @Override
             public void onDataFetched(CommonSuccessResponse<List<CampaignItem>> response, int statusCode) {
 
@@ -37,7 +37,7 @@ public class CampaignBottomSheetViewModel extends ViewModel {
 
             @Override
             public void onAuthError(boolean logout) {
-                
+
             }
         });
 

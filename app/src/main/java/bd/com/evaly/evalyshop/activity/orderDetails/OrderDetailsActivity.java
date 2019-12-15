@@ -74,6 +74,7 @@ import bd.com.evaly.evalyshop.activity.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
@@ -793,7 +794,7 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Content-Type", "application/json");
                 headers.put("Origin", "https://evaly.com.bd");
@@ -864,7 +865,7 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 return headers;
             }
         };
@@ -957,7 +958,7 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Content-Type", "application/json");
                 headers.put("Origin", "https://evaly.com.bd");
@@ -1045,7 +1046,7 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Origin", "https://evaly.com.bd");
                 headers.put("Referer", "https://evaly.com.bd/");
                 headers.put("User-Agent", userAgent);
@@ -1440,7 +1441,7 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 return headers;
             }
         };
@@ -1509,7 +1510,7 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
 
                 return headers;
             }

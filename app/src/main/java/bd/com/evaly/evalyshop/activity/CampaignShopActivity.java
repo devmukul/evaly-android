@@ -38,7 +38,8 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
@@ -139,7 +140,7 @@ public class CampaignShopActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        CampaignApiHelper.getCampaignShops(slug, p, new ResponseListener<CommonSuccessResponse<List<CampaignShopItem>>, String>() {
+        CampaignApiHelper.getCampaignShops(slug, p, new ResponseListenerAuth<CommonSuccessResponse<List<CampaignShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonSuccessResponse<List<CampaignShopItem>> response, int statusCode) {
 
@@ -199,6 +200,11 @@ public class CampaignShopActivity extends AppCompatActivity {
             public void onFailed(String errorBody, int errorCode) {
 
                 progressBar.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
 
             }
 
@@ -284,7 +290,7 @@ public class CampaignShopActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
                 return headers;
             }
         };

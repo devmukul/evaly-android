@@ -253,7 +253,7 @@ public class ChangePasswordActivity extends BaseActivity {
                         public Map<String, String> getHeaders() throws AuthFailureError {
 
                             Map<String, String> headers = new HashMap<>();
-                            headers.put("Authorization", "Bearer " + userDetails.getToken());
+                            headers.put("Authorization", CredentialManager.getToken());
 
                             return headers;
                         }

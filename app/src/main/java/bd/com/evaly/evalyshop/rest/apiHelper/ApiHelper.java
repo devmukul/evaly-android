@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
-import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.rest.ApiClient;
@@ -22,7 +22,7 @@ public class ApiHelper {
     }
 
 
-    protected static <T> Callback<CommonSuccessResponse<T>> getResponseCallBack(ResponseListener<CommonSuccessResponse<T>, String> dataFetchingListener) {
+    protected static <T> Callback<CommonSuccessResponse<T>> getResponseCallBack(ResponseListenerAuth<CommonSuccessResponse<T>, String> dataFetchingListener) {
 
         return new Callback<CommonSuccessResponse<T>>() {
             @Override
@@ -36,7 +36,7 @@ public class ApiHelper {
                     }
 
                 } else if (response.code() == 401) {
-                    tokenRefresh(new ResponseListener<JsonObject, String>() {
+                    tokenRefresh(new ResponseListenerAuth<JsonObject, String>() {
                         @Override
                         public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -71,7 +71,7 @@ public class ApiHelper {
 
 
 
-    protected static void tokenRefresh(ResponseListener<JsonObject, String> listener) {
+    protected static void tokenRefresh(ResponseListenerAuth<JsonObject, String> listener) {
         HashMap<String, String> data = new HashMap<>();
         data.put("access", CredentialManager.getToken());
         data.put("refresh", CredentialManager.getRefreshToken());

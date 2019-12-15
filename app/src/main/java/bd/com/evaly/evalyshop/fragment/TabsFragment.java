@@ -41,10 +41,11 @@ import bd.com.evaly.evalyshop.adapter.HomeCategoryAdapter2;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.CategoryUtils;
+import retrofit2.Response;
 
 public class TabsFragment extends Fragment {
 
@@ -266,7 +267,7 @@ public class TabsFragment extends Fragment {
 
     public void getSubCategories(){
 
-        ProductApiHelper.getSubCategories(slug, new ResponseListener<retrofit2.Response<JSONArray>, String>() {
+        ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<Response<JSONArray>, String>() {
 
             @Override
             public void onDataFetched(retrofit2.Response<JSONArray> res, int statusCode) {
@@ -295,13 +296,18 @@ public class TabsFragment extends Fragment {
             public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);
             }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
         });
 
 
     }
 
     public void getBrandsOfCategory(int counter){
-        ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListener<retrofit2.Response<JsonObject>, String>() {
+        ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListenerAuth<Response<JsonObject>, String>() {
             @Override
             public void onDataFetched(retrofit2.Response<JsonObject> res, int statusCode) {
 
@@ -333,13 +339,18 @@ public class TabsFragment extends Fragment {
             public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);
             }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
         });
 
     }
 
 
     public void getShopsOfCategory(int counter){
-        ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListener<retrofit2.Response<JsonObject>, String>() {
+        ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListenerAuth<Response<JsonObject>, String>() {
             @Override
             public void onDataFetched(retrofit2.Response<JsonObject> res, int statusCode) {
 
@@ -377,6 +388,11 @@ public class TabsFragment extends Fragment {
             @Override
             public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
             }
         });
 
