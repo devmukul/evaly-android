@@ -87,6 +87,10 @@ public interface IApiClient {
     Call<JsonObject> getBanners(@Header("Authorization") String token);
 
 
+    @GET(UrlUtils.BASE_URL_AUTH + "user-info-pay/{username}/")
+    Call<JsonObject> getUserInfoPay(@Header("Authorization") String token, @Path("username") String username);
+
+
 
     // product APIs
 

@@ -19,6 +19,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
@@ -431,6 +432,17 @@ public class AuthApiHelper extends ApiHelper{
                 }
             }
         });
+    }
+
+
+
+    // user info pay
+
+    public static void getUserInfoPay(String token, String username, ResponseListenerAuth<JsonObject, String> listener){
+
+        getiApiClient().getUserInfoPay(token, username).enqueue(getResponseCallBackDefault(listener));
+
+
     }
 
 
