@@ -119,6 +119,15 @@ public interface IApiClient {
     @GET(UrlUtils.CATEGORIES_SHOPS+"{category}/")
     Call<JsonObject> getShopsOfCategories(@Path("category") String category, @Query("page") int page, @Query("limit") int limit);
 
+
+    @GET(UrlUtils.BASE_URL+"public/shops/categories/{shopSlug}/")
+    Call<JsonObject> getCategoriesofShop(@Path("shopSlug") String shopSlug, @Query("page") int page);
+
+
+    @GET(UrlUtils.CAMPAIGNS+"/{campaignSlug}/shops/{shopSlug}/categories")
+    Call<JsonObject> getCategoriesOfCampaignShop(@Path("campaignSlug") String campaignSlug, @Path("shopSlug") String shopSlug, @Query("page") int page);
+
+
     // campaign APIs
 
     @GET(UrlUtils.CAMPAIGNS)

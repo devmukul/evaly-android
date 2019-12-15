@@ -48,6 +48,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
@@ -78,11 +79,13 @@ import bd.com.evaly.evalyshop.activity.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ProductListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -759,79 +762,60 @@ public class ShopFragment extends Fragment implements ProductListener {
 
     public void getSubCategories(int currentPage) {
 
-        String url;
 
-        if (campaign_slug.equals(""))
-            url = UrlUtils.BASE_URL + "public/shops/categories/" + slug + "/?page=" + currentPage;
-        else
-            url = UrlUtils.CAMPAIGNS+"/" + campaign_slug + "/shops/"+slug+"/categories?page=" + currentPage;
+        ProductApiHelper.getCategoriesOfShop(slug, campaign_slug, currentPage, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
 
+                try {
+                    JsonArray jsonArray = response.getAsJsonArray("data");
 
-        Log.d("json", url);
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
-                response -> {
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("data");
-                        Log.d("category_brands", jsonArray.toString());
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject ob = jsonArray.getJSONObject(i);
-                            TabsItem tabsItem = new TabsItem();
-                            tabsItem.setTitle(ob.getString("category_name"));
-                            tabsItem.setImage(ob.getString("category_image"));
-                            tabsItem.setSlug(ob.getString("category_slug"));
-                            tabsItem.setCategory(slug);
-                            itemList.add(tabsItem);
-                            adapter.notifyItemInserted(itemList.size());
-                        }
-
-                        if (itemList.size() < 4) {
-
-                            GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
-
-                            recyclerView.setLayoutManager(mLayoutManager);
-                        }
-
-                        if (itemList.size() < 1)
-                            ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
-
-                        try {
-
-                            shimmer.stopShimmer();
-                        } catch (Exception e) {
-
-                        }
-
-                        shimmer.setVisibility(View.GONE);
-                        loading = true;
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(context, "brand_error", Toast.LENGTH_SHORT).show();
-
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        JsonObject ob = jsonArray.get(i).getAsJsonObject();
+                        TabsItem tabsItem = new TabsItem();
+                        tabsItem.setTitle(ob.get("category_name").getAsString());
+                        tabsItem.setImage(ob.get("category_image").getAsString());
+                        tabsItem.setSlug(ob.get("category_slug").getAsString());
+                        tabsItem.setCategory(slug);
+                        itemList.add(tabsItem);
+                        adapter.notifyItemInserted(itemList.size());
                     }
-                }, error -> error.printStackTrace());
-        // RequestQueue rq = Volley.newRequestQueue(context);
-        request.setShouldCache(false);
 
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
+                    if (itemList.size() < 4) {
+                        GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
+                        recyclerView.setLayoutManager(mLayoutManager);
+                    }
+
+                    if (itemList.size() < 1)
+                        ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
+
+                    try {
+
+                        shimmer.stopShimmer();
+                    } catch (Exception e) {
+                    }
+
+                    shimmer.setVisibility(View.GONE);
+                    loading = true;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "Category load error", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
-            public int getCurrentRetryCount() {
-                return 50000;
+            public void onFailed(String errorBody, int errorCode) {
+
             }
 
             @Override
-            public void retry(VolleyError error) throws VolleyError {
-                getSubCategories(currentPage);
+            public void onAuthError(boolean logout) {
 
             }
         });
-        rq.add(request);
+
+
     }
 
     private void addRosterByOther() {
