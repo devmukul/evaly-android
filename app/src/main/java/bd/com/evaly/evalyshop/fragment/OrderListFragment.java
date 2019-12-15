@@ -4,29 +4,27 @@ package bd.com.evaly.evalyshop.fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -74,6 +72,19 @@ public class OrderListFragment extends Fragment {
 
     String statusType = "all";
 
+    public static OrderListFragment getInstance(String type){
+
+
+        OrderListFragment myFragment = new OrderListFragment();
+
+        Bundle args = new Bundle();
+        args.putString("type", type);
+        myFragment.setArguments(args);
+
+        return myFragment;
+
+    }
+
 
     public OrderListFragment() {
         // Required empty public constructor
@@ -93,6 +104,13 @@ public class OrderListFragment extends Fragment {
 
         context = getContext();
 
+        Bundle bundle = getArguments();
+
+        if (bundle != null) {
+            if (bundle.containsKey("type"))
+                statusType = bundle.getString("type");
+        }
+
         return view;
     }
 
@@ -101,14 +119,6 @@ public class OrderListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-
-
-        try {
-            userAgent = WebSettings.getDefaultUserAgent(context);
-        } catch (Exception e) {
-            userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-        }
 
         recyclerView=view.findViewById(R.id.recycle);
         notOrdered=view.findViewById(R.id.not_order);
@@ -131,24 +141,21 @@ public class OrderListFragment extends Fragment {
 
         if (nestedSV != null) {
 
-            nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    String TAG = "nested_sync";
+            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                String TAG = "nested_sync";
 //
-                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
 
-                        try {
+                    try {
 
-                            showProgressView();
-                            getOrderData(++currentPage);
+                        showProgressView();
+                        getOrderData(++currentPage);
 
-                        } catch (Exception e) {
-                            Log.e("load more product", e.toString());
-                        }
-
-
+                    } catch (Exception e) {
+                        Log.e("load more product", e.toString());
                     }
+
+
                 }
             });
         }
@@ -184,100 +191,94 @@ public class OrderListFragment extends Fragment {
             parameters.put("key", "value");
         } catch (Exception e) {
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("json", response.toString());
-                errorCounter=0;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
+            Log.d("json", response.toString());
+            errorCounter=0;
 
-                hideProgressView();
+            hideProgressView();
 
-                try {
-                    JSONArray jsonArray = response.getJSONArray("results");
-                    if(jsonArray.length()==0){
-                        notOrdered.setVisibility(View.VISIBLE);
-                        Glide.with(context)
-                                .load(R.drawable.ic_emptycart_new)
-                                .apply(new RequestOptions().override(700, 700))
-                                .into((ImageView) view.findViewById(R.id.noImage));
-                        recyclerView.setVisibility(View.GONE);
-                        nestedSV.setBackgroundColor(Color.WHITE);
-                    }else{
-                        notOrdered.setVisibility(View.GONE);
-                        for(int i=0;i<jsonArray.length();i++){
-                            JSONObject ob = jsonArray.getJSONObject(i);
-                            orders.add(new Orders(
-                                    ob.getString("date"),
-                                    ob.getString("order_status"),
-                                    ob.getString("invoice_no"),
-                                    "mobile",
-                                    ob.getString("payment_method"),
-                                    ob.getString("payment_status")
-                            ));
+            try {
+                JSONArray jsonArray = response.getJSONArray("results");
+                if(jsonArray.length()==0){
+                    notOrdered.setVisibility(View.VISIBLE);
+                    Glide.with(context)
+                            .load(R.drawable.ic_emptycart_new)
+                            .apply(new RequestOptions().override(700, 700))
+                            .into((ImageView) view.findViewById(R.id.noImage));
+                    recyclerView.setVisibility(View.GONE);
+                    nestedSV.setBackgroundColor(Color.WHITE);
+                }else{
+                    notOrdered.setVisibility(View.GONE);
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject ob = jsonArray.getJSONObject(i);
+                        orders.add(new Orders(
+                                ob.getString("date"),
+                                ob.getString("order_status"),
+                                ob.getString("invoice_no"),
+                                "mobile",
+                                ob.getString("payment_method"),
+                                ob.getString("payment_status")
+                        ));
 
-                            Log.d("order_response", "Inserted");
-
-                        }
-
-                        adapter.notifyDataSetChanged();
+                        Log.d("order_response", "Inserted");
 
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
 
-
-
-                    hideProgressView();
-                    //getOrderData(currentPage);
+                    adapter.notifyDataSetChanged();
 
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+
+
+
+                hideProgressView();
+                //getOrderData(currentPage);
+
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 //
 //                alert.hideDialog();
 //                hideProgressView();
 
-                //Toast.makeText(OrderListActivity.this, "Server error, trying to fetch data again.", Toast.LENGTH_LONG).show();
+            //Toast.makeText(OrderListActivity.this, "Server error, trying to fetch data again.", Toast.LENGTH_LONG).show();
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401) {
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401) {
 
-                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                getOrderData(currentPagez);
-                            }
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getOrderData(currentPagez);
+                        }
 
-                            @Override
-                            public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                            }
-                        });
+                        }
+                    });
 
-                    }
                 }
-
-                if(errorCounter==0 || orders.size() < 1){
-                    if(errorCounter==5){
-                        hideProgressView();
-                        Toast.makeText(context, "Something went wrong. Please try again later.", Toast.LENGTH_SHORT).show();
-
-                    }else{
-                        getOrderData(currentPage);
-                        errorCounter++;
-                    }
-                }else{
-                    progressBar.setVisibility(View.GONE);
-                    hideProgressView();
-                }
-
-                //getOrderData(currentPage);
-
             }
+
+            if(errorCounter==0 || orders.size() < 1){
+                if(errorCounter==5){
+                    hideProgressView();
+                    Toast.makeText(context, "Something went wrong. Please try again later.", Toast.LENGTH_SHORT).show();
+
+                }else{
+                    getOrderData(currentPage);
+                    errorCounter++;
+                }
+            }else{
+                progressBar.setVisibility(View.GONE);
+                hideProgressView();
+            }
+
+            //getOrderData(currentPage);
+
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
