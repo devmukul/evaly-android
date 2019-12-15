@@ -152,11 +152,11 @@ public class ApiHelper {
 
 
 
-    protected static <T> Callback<CommonResultResponse<T>> getResponseCallBackDefault(ResponseListenerAuth<CommonResultResponse<T>, String> dataFetchingListener) {
+    protected static <T> Callback<T> getResponseCallBackDefault(ResponseListenerAuth<T, String> dataFetchingListener) {
 
-        return new Callback<CommonResultResponse<T>>() {
+        return new Callback<T>() {
             @Override
-            public void onResponse(Call<CommonResultResponse<T>> call, Response<CommonResultResponse<T>> response) {
+            public void onResponse(Call<T> call, Response<T> response) {
 
                 if (response.code() == 200 || response.code() == 201) {
                     if (response.body() != null) {
@@ -193,7 +193,7 @@ public class ApiHelper {
             }
 
             @Override
-            public void onFailure(Call<CommonResultResponse<T>> call, Throwable t) {
+            public void onFailure(Call<T> call, Throwable t) {
                 dataFetchingListener.onFailed(t.getMessage(), 0);
             }
         };

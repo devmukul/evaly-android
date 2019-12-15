@@ -20,7 +20,6 @@ import java.util.List;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.listener.ProductListener;
-import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
@@ -161,7 +160,7 @@ public class ProductGrid {
         progressBar.setVisibility(View.VISIBLE);
         current = currentPage;
 
-        ProductApiHelper.getShopProducts(shopSlug, currentPage, 21, categorySlug, campaignSlug, new ResponseListener<JsonObject, String>() {
+        ProductApiHelper.getShopProducts(shopSlug, currentPage, 21, categorySlug, campaignSlug, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -239,6 +238,11 @@ public class ProductGrid {
 
                 if (listener != null)
                     listener.onSuccess(0);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
             }
         });
 

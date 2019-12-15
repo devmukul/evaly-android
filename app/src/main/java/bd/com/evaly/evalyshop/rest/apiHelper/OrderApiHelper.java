@@ -10,8 +10,6 @@ public class OrderApiHelper extends ApiHelper {
 
 
     public static void getOrderList(String token, int page, String orderStatus, ResponseListenerAuth<CommonResultResponse<List<OrderListItem>>, String> listener) {
-
-
         if (orderStatus.equals("all"))
             orderStatus = null;
 

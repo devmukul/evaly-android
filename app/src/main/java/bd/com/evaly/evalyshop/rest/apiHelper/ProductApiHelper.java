@@ -5,19 +5,16 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
-import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ProductApiHelper extends ApiHelper{
 
 
-    public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, ResponseListener<JsonObject, String> listener){
+    public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, ResponseListenerAuth<JsonObject, String> listener){
 
         if (categorySlug.equals(""))
             categorySlug = null;
@@ -31,17 +28,7 @@ public class ProductApiHelper extends ApiHelper{
         else
             call = iApiClient.getShopProducts(shopSlug, page, limit, categorySlug);
 
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                listener.onDataFetched(response.body(), response.code());
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                listener.onFailed(t.getMessage(),0);
-            }
-        });
+        call.enqueue(getResponseCallBackDefault(listener));
 
 
     }
@@ -55,7 +42,7 @@ public class ProductApiHelper extends ApiHelper{
     }
 
 
-    public static void getSubCategories(String slug, ResponseListenerAuth<Response<JsonArray>, String> listener) {
+    public static void getSubCategories(String slug, ResponseListenerAuth<JsonArray, String> listener) {
 
         IApiClient iApiClient = getiApiClient();
         Call<JsonArray> call;
@@ -65,21 +52,11 @@ public class ProductApiHelper extends ApiHelper{
         else
             call = iApiClient.getCategories(slug);
 
-        call.enqueue(new Callback<JsonArray>() {
-            @Override
-            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                listener.onDataFetched(response, response.code());
-            }
-
-            @Override
-            public void onFailure(Call<JsonArray> call, Throwable t) {
-                listener.onFailed(t.getMessage(),0);
-            }
-        });
+        call.enqueue(getResponseCallBackDefault(listener));
     }
 
 
-    public static void getBrandsOfCategories(String category, int page, int limit, ResponseListenerAuth<Response<JsonObject>, String> listener) {
+    public static void getBrandsOfCategories(String category, int page, int limit, ResponseListenerAuth<JsonObject, String> listener) {
 
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call;
@@ -89,20 +66,10 @@ public class ProductApiHelper extends ApiHelper{
         else
             call = iApiClient.getBrandsCategories(category,page,limit);
 
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                listener.onDataFetched(response, response.code());
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                listener.onFailed(t.getMessage(),0);
-            }
-        });
+        call.enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getShopsOfCategories(String category, int page, int limit, ResponseListenerAuth<Response<JsonObject>, String> listener) {
+    public static void getShopsOfCategories(String category, int page, int limit, ResponseListenerAuth<JsonObject, String> listener) {
 
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call;
@@ -112,17 +79,7 @@ public class ProductApiHelper extends ApiHelper{
         else
             call = iApiClient.getShopsOfCategories(category,page,limit);
 
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                listener.onDataFetched(response, response.code());
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                listener.onFailed(t.getMessage(),0);
-            }
-        });
+        call.enqueue(getResponseCallBackDefault(listener));
     }
 
 

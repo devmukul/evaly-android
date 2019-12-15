@@ -37,7 +37,6 @@ import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import retrofit2.Response;
 
 public class BrowseProductFragment extends Fragment {
 
@@ -194,16 +193,16 @@ public class BrowseProductFragment extends Fragment {
 
     public void getSubCategories(){
 
-        ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<Response<JsonArray>, String>() {
+        ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<JsonArray, String>() {
 
             @Override
-            public void onDataFetched(retrofit2.Response<JsonArray> res, int statusCode) {
+            public void onDataFetched(JsonArray res, int statusCode) {
 
                 try {
                     skeletonTabHeader.hide();
                 } catch (Exception e){}
 
-                int length = res.body().size();
+                int length = res.size();
 
                 if (length>0)
                 {
@@ -212,7 +211,7 @@ public class BrowseProductFragment extends Fragment {
                     bundle.putInt("type", 1);
                     bundle.putString("slug", slug);
                     bundle.putString("category", category);
-                    bundle.putString("json", res.body().toString());
+                    bundle.putString("json", res.toString());
 
                     fragment.setArguments(bundle);
 

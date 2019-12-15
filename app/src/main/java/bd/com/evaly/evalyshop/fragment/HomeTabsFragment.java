@@ -41,7 +41,6 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.CategoryUtils;
-import retrofit2.Response;
 
 public class HomeTabsFragment extends Fragment {
 
@@ -263,15 +262,14 @@ public class HomeTabsFragment extends Fragment {
 
     public void getSubCategories(){
 
-        ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<Response<JsonArray>, String>() {
+        ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<JsonArray, String>() {
 
             @Override
-            public void onDataFetched(retrofit2.Response<JsonArray> res, int statusCode) {
+            public void onDataFetched(JsonArray response, int statusCode) {
 
                 progressBar2.setVisibility(View.GONE);
 
                 try {
-                    JsonArray response = res.body();
 
                     for (int i = 0; i < response.size(); i++) {
                         JsonObject ob = response.get(i).getAsJsonObject();
@@ -302,14 +300,14 @@ public class HomeTabsFragment extends Fragment {
     }
 
     public void getBrandsOfCategory(int counter){
-        ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListenerAuth<Response<JsonObject>, String>() {
+        ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public void onDataFetched(retrofit2.Response<JsonObject> res, int statusCode) {
+            public void onDataFetched(JsonObject res, int statusCode) {
 
                 progressBar2.setVisibility(View.GONE);
                 try {
 
-                    JsonArray jsonArray = res.body().getAsJsonArray("results");
+                    JsonArray jsonArray = res.getAsJsonArray("results");
 
                     for (int i = 0; i < jsonArray.size(); i++) {
                         JsonObject ob = jsonArray.get(i).getAsJsonObject();
@@ -345,14 +343,14 @@ public class HomeTabsFragment extends Fragment {
 
 
     public void getShopsOfCategory(int counter){
-        ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListenerAuth<Response<JsonObject>, String>() {
+        ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public void onDataFetched(retrofit2.Response<JsonObject> res, int statusCode) {
+            public void onDataFetched(JsonObject res, int statusCode) {
 
                 progressBar2.setVisibility(View.GONE);
                 try {
 
-                    JsonArray jsonArray = res.body().getAsJsonArray("data");
+                    JsonArray jsonArray = res.getAsJsonArray("data");
 
                     for (int i = 0; i < jsonArray.size(); i++) {
                         JsonObject ob = jsonArray.get(i).getAsJsonObject();
