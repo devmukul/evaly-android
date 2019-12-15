@@ -21,8 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -83,8 +81,6 @@ public class TabsFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_category, container, false);
@@ -92,13 +88,11 @@ public class TabsFragment extends Fragment {
         categoryMap=new HashMap<>();
         shimmer = view.findViewById(R.id.shimmer);
 
-
         Bundle bundle = getArguments();
 
         category = bundle.getString("category");
         type = bundle.getInt("type");
         slug = bundle.getString("slug");
-
 
         try {
 
@@ -123,13 +117,12 @@ public class TabsFragment extends Fragment {
 
         itemList = new ArrayList<>();
         adapter = new TabsAdapter(context, (MainActivity) getActivity(), itemList, type);
-        // check if showing offline homepage vector categories
 
+        // check if showing offline homepage vector categories
 
         categoryItems = new ArrayList<>();
 
         if (slug.equals("root") && type == 1) {
-
 
             CategoryUtils categoryUtils = new CategoryUtils(context);
 
@@ -148,6 +141,7 @@ public class TabsFragment extends Fragment {
                         getActivity().runOnUiThread(() -> {
                             categoryItems.addAll(response);
                             adapter2.notifyDataSetChanged();
+                            stopShimmer();
                         });
 
                        // skeletonScreen.hide();
@@ -168,6 +162,7 @@ public class TabsFragment extends Fragment {
                         getActivity().runOnUiThread(() -> {
                             categoryItems.addAll(response);
                             adapter2.notifyDataSetChanged();
+                            stopShimmer();
                         });
 
                     }
@@ -182,10 +177,6 @@ public class TabsFragment extends Fragment {
 
             }
 
-
-            Handler handler = new Handler();
-            handler.postDelayed(() -> stopShimmer(), 300);
-
             search.setHint("Search categories");
             showMore.setVisibility(View.GONE);
             search.setVisibility(View.VISIBLE);
@@ -195,7 +186,6 @@ public class TabsFragment extends Fragment {
         }
 
         showMore.setOnClickListener(v -> {
-
             progressBar2.setVisibility(View.VISIBLE);
 
             if (type == 2) {
@@ -206,22 +196,15 @@ public class TabsFragment extends Fragment {
         });
 
         search.setOnClickListener(v -> {
-
-
             if(type == 1){
-
                 Intent intent = new Intent(context, SearchCategory.class);
                 intent.putExtra("type", type);
                 context.startActivity(intent);
-
             } else {
-
                 Intent intent = new Intent(context, GlobalSearchActivity.class);
-
                 intent.putExtra("type", type);
                 context.startActivity(intent);
             }
-
         });
 
 
@@ -247,6 +230,7 @@ public class TabsFragment extends Fragment {
                 showMore.setText("Show More");
             }
         }
+
         final Handler handler = new Handler();
         handler.postDelayed( new Runnable() {
             @Override
@@ -401,14 +385,11 @@ public class TabsFragment extends Fragment {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
+                }, error -> {
+                    error.printStackTrace();
 
-                progressBar2.setVisibility(View.GONE);
-            }
-        });
+                    progressBar2.setVisibility(View.GONE);
+                });
 
 
         request.setRetryPolicy(new DefaultRetryPolicy(50000,

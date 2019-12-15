@@ -2,6 +2,7 @@
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,7 +33,7 @@
             android:transitionGroup="false">
 
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/sliderHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,27 +41,44 @@
                 android:background="#fff"
                 android:minHeight="100dp">
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@drawable/banner_skeleton_bg"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintDimensionRatio="H,2.93478:1" />
+
                 <bd.com.evaly.evalyshop.views.SliderViewPager
                     android:id="@+id/sliderPager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginLeft="15dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="15dp" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/sliderIndicator"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
+                    android:layout_height="25dp"
                     android:layout_alignParentBottom="true"
+                    app:layout_constraintBottom_toBottomOf="@id/sliderPager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:tabBackground="@drawable/indicator_selector"
                     app:tabGravity="center"
-                    app:tabIndicatorHeight="0dp" />
+                    app:tabIndicatorHeight="0dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="40dp"/>
 
-
-            </RelativeLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <LinearLayout

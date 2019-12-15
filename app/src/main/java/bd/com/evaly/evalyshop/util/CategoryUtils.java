@@ -2,12 +2,10 @@ package bd.com.evaly.evalyshop.util;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
-
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
@@ -32,33 +30,13 @@ public class CategoryUtils {
     }
 
     public void setLastUpdated(){
-
         Calendar calendar = Calendar.getInstance();
-
-        Log.d("jsonz response time set", calendar.getTimeInMillis() + "");
-
         MyPreference.with(context, "category_db_new8").addLong("last_updated", calendar.getTimeInMillis()).save();
     }
 
-    public List<CategoryEntity> getCategoryArrayList(List<CategoryEntity> list) {
-        
-        for (int i=0; i < list.size(); i++){
-            list.get(i).setDrawable(getDrawableFromName(list.get(i).getName()));
-        }
-
-        return list;
-    }
 
     public void getLocalCategoryList(DataFetchingListener<List<CategoryEntity>> listener) {
-
-        Executors.newSingleThreadExecutor().execute(() -> {
-
-            listener.onDataFetched(categoryDatabase.categoryDao().getAll());
-
-        });
-
-
-
+        Executors.newSingleThreadExecutor().execute(() -> listener.onDataFetched(categoryDatabase.categoryDao().getAll()));
     }
 
     public void updateFromApi(DataFetchingListener<List<CategoryEntity>> listener){
@@ -67,22 +45,17 @@ public class CategoryUtils {
             @Override
             public void onDataFetched(List<CategoryEntity> response, int statusCode) {
 
-                for (int i=0; i < response.size(); i++){
+                for (int i=0; i < response.size(); i++)
                     response.get(i).setDrawable(getDrawableFromName(response.get(i).getName()));
-                }
-
 
                 setLastUpdated();
 
                 Executors.newSingleThreadExecutor().execute(() -> {
-
                     categoryDatabase.categoryDao().deleteAll();
                     categoryDatabase.categoryDao().insertAll(response);
-
                 });
 
                 listener.onDataFetched(response);
-
             }
 
             @Override
@@ -90,11 +63,7 @@ public class CategoryUtils {
 
             }
         });
-
-
-
     }
-
 
 
     private int getDrawableFromName(String name){
@@ -184,10 +153,8 @@ public class CategoryUtils {
         else
             drawable = 0;
 
-
         return drawable;
 
     }
-
 
 }
