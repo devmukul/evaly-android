@@ -1,5 +1,8 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
+import com.google.gson.JsonObject;
+
+import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
@@ -23,5 +26,19 @@ public class GeneralApiHelper extends ApiHelper{
     public static void getNotificationCount(String token, String notificationType, ResponseListenerAuth<NotificationCount, String> listener) {
         getiApiClient().getNotificationCount(token, notificationType).enqueue(getResponseCallBackDefault(listener));
     }
+
+    public static void subscribeToShop(String token, String shopSlug, boolean subscribe, ResponseListenerAuth<JsonObject, String> listener) {
+        if (subscribe) {
+
+            HashMap<String,String> body = new HashMap<>();
+            body.put("shop_slug", shopSlug);
+
+            getiApiClient().subscribeToShop(token, body).enqueue(getResponseCallBackDefault(listener));
+        }
+        else
+            getiApiClient().unsubscribeShop(token, shopSlug).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
 
 }

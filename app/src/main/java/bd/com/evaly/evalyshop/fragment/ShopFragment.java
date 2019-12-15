@@ -85,6 +85,7 @@ import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -782,6 +783,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                     }
 
                     if (itemList.size() < 4) {
+
                         GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
                         recyclerView.setLayoutManager(mLayoutManager);
                     }
@@ -886,64 +888,36 @@ public class ShopFragment extends Fragment implements ProductListener {
             return;
         }
 
-
-        String url = UrlUtils.BASE_URL + "shop-subscriptions";
-
-
-        int requestMethod = Request.Method.POST;
+        boolean subscribe = true;
 
         if (followText.getText().toString().contains("Unfollow")) {
-            requestMethod = Request.Method.DELETE;
+            subscribe = false;
             followText.setText("Follow (" + (--subCount) + ")");
-            url = UrlUtils.BASE_URL + "unsubscribe-shop/" + slug + "/";
         } else
             followText.setText("Unfollow (" + (++subCount) + ")");
 
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("shop_slug", slug);
-        } catch (Exception e) {
-        }
 
-
-        JsonObjectRequest request = new JsonObjectRequest(requestMethod, url, parameters, response -> {
-            //Log.d("onResponse", response.toString());
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401) {
-
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            subscribe();
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }
-            }
-
-        }) {
+        GeneralApiHelper.subscribeToShop(CredentialManager.getToken(), slug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-                return headers;
             }
-        };
-        RequestQueue queue = Volley.newRequestQueue(context);
-        queue.add(request);
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+                if (!logout)
+                    subscribe();
+
+            }
+        });
+
+
     }
 
 

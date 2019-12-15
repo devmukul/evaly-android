@@ -23,6 +23,7 @@ import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -157,5 +158,15 @@ public interface IApiClient {
 
     @GET(UrlUtils.DOMAIN+"{notificationSource}/notifications_count/")
     Call<NotificationCount> getNotificationCount(@Header("Authorization") String token, @Path("notificationSource") String notificationType);
+
+    // shop releated
+
+    @POST(UrlUtils.BASE_URL + "shop-subscriptions")
+    Call<JsonObject> subscribeToShop(@Header("Authorization") String token, @Body HashMap<String, String> shopSlug);
+
+
+    @DELETE(UrlUtils.BASE_URL + "unsubscribe-shop/{shop_slug}/")
+    Call<JsonObject> unsubscribeShop(@Header("Authorization") String token, @Path("shop_slug") String shopSlug);
+
 
 }
