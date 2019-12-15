@@ -717,46 +717,36 @@ public class ShopFragment extends Fragment implements ProductListener {
     }
 
     public void getProductRating(final String sku) {
-        String url = UrlUtils.BASE_URL + "reviews/summary/shops/" + sku + "/";
-        Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
-                response -> {
-                    Log.d("json varying", response.toString());
-                    try {
-                        response = response.getJSONObject("data");
-                        ratingJson = response.toString();
-                        double avg = response.getDouble("avg_rating");
-                        RatingBar ratingBar = view.findViewById(R.id.ratingBar);
-                        TextView ratingsCount = view.findViewById(R.id.ratings_count);
-                        int tratings = response.getInt("total_ratings");
-                        ratingsCount.setText("(" + tratings + ")");
-                        ratingBar.setRating((float) avg);
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }, error -> error.printStackTrace());
-        // RequestQueue rq = Volley.newRequestQueue(context);
-        request.setRetryPolicy(new RetryPolicy() {
+        GeneralApiHelper.getShopReviews(sku, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public int getCurrentTimeout() {
-                return 50000;
+            public void onDataFetched(JsonObject response, int statusCode) {
+                try {
+                    response = response.getAsJsonObject("data");
+                    ratingJson = response.toString();
+                    double avg = response.get("avg_rating").getAsDouble();
+                    RatingBar ratingBar = view.findViewById(R.id.ratingBar);
+                    TextView ratingsCount = view.findViewById(R.id.ratings_count);
+                    int tratings = response.get("total_ratings").getAsInt();
+                    ratingsCount.setText("(" + tratings + ")");
+                    ratingBar.setRating((float) avg);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
-            public int getCurrentRetryCount() {
-                return 50000;
+            public void onFailed(String errorBody, int errorCode) {
+
             }
 
             @Override
-            public void retry(VolleyError error) throws VolleyError {
+            public void onAuthError(boolean logout) {
 
             }
         });
 
-        request.setShouldCache(false);
-        rq.getCache().clear();
-        rq.add(request);
 
     }
 

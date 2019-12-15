@@ -168,5 +168,8 @@ public interface IApiClient {
     @DELETE(UrlUtils.BASE_URL + "unsubscribe-shop/{shop_slug}/")
     Call<JsonObject> unsubscribeShop(@Header("Authorization") String token, @Path("shop_slug") String shopSlug);
 
+    @GET(UrlUtils.BASE_URL+"reviews/summmary/shops/{sku}/")
+    Call<JsonObject> getShopReviews(@Path("sku") String sku);
+
 
 }

@@ -19,13 +19,16 @@ public class GeneralApiHelper extends ApiHelper{
         getiApiClient().getBrandDetails(brandSlug).enqueue(getResponseCallBackDefault(listener));
     }
 
+
     public static void getRootCategories(ResponseListenerAuth<List<CategoryEntity>, String> listener) {
         getiApiClient().getRootCategories().enqueue(getResponseCallBackDefault(listener));
     }
 
+
     public static void getNotificationCount(String token, String notificationType, ResponseListenerAuth<NotificationCount, String> listener) {
         getiApiClient().getNotificationCount(token, notificationType).enqueue(getResponseCallBackDefault(listener));
     }
+
 
     public static void subscribeToShop(String token, String shopSlug, boolean subscribe, ResponseListenerAuth<JsonObject, String> listener) {
         if (subscribe) {
@@ -37,6 +40,11 @@ public class GeneralApiHelper extends ApiHelper{
         }
         else
             getiApiClient().unsubscribeShop(token, shopSlug).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
+    public static void getShopReviews(String sku, ResponseListenerAuth<JsonObject, String> listener){
+        getiApiClient().getShopReviews(sku).enqueue(getResponseCallBackDefault(listener));
     }
 
 
