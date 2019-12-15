@@ -364,7 +364,7 @@ public class SubTabsFragment extends Fragment {
                 } catch (Exception e) {
 
                     Log.e("jsonz error", e.toString());
-                    Toast.makeText(context, "Shop error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "ShopDetails error", Toast.LENGTH_SHORT).show();
                 }
 
             }

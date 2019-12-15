@@ -373,7 +373,7 @@ public class HomeTabsFragment extends Fragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(context, "Shop error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "ShopDetails error", Toast.LENGTH_SHORT).show();
                 }
 
             }

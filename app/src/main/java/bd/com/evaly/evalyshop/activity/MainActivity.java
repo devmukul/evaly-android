@@ -339,7 +339,7 @@ public class MainActivity extends BaseActivity {
                         break;
                     case R.id.nav_followed_shops:
                         Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
-                        inf.putExtra("title", "Followed Shop");
+                        inf.putExtra("title", "Followed ShopDetails");
                         inf.putExtra("slug", "shop-subscriptions");
                         startActivity(inf);
 

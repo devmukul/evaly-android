@@ -144,6 +144,25 @@ public class ShopFragment extends Fragment implements ProductListener {
     @Override
     public void onSuccess(int count) {
 
+        if (count == 0){
+
+            ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
+            LinearLayout noItem = view.findViewById(R.id.noItem);
+            noItem.setVisibility(View.VISIBLE);
+
+            try {
+                Glide.with(context)
+                        .load(R.drawable.ic_emptycart)
+                        .apply(new RequestOptions().override(600, 600))
+                        .into(placeholder);
+            } catch (Exception e) {
+
+            }
+
+            progressBar.setVisibility(View.GONE);
+
+        }
+
     }
 
 
@@ -195,7 +214,7 @@ public class ShopFragment extends Fragment implements ProductListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        InitializeActionBar InitializeActionbar = new InitializeActionBar((LinearLayout) view.findViewById(R.id.header_logo), mainActivity, "shop");
+        InitializeActionBar InitializeActionbar = new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "shop");
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view12 -> {
             Intent intent = new Intent(context, GlobalSearchActivity.class);
@@ -343,6 +362,12 @@ public class ShopFragment extends Fragment implements ProductListener {
             reset.setVisibility(View.GONE);
         });
 
+
+
+        productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, "", campaign_slug, 1, progressBar);
+        productGrid.setScrollView(nestedSV);
+        productGrid.setListener(this);
+
     }
 
     private void startXmppService() {
@@ -472,9 +497,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                             followText.setText("Follow (" + subCount + ")");
 
                         if (response.getInt("count") > 0) {
-                            productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, "", campaign_slug, 1, view.findViewById(R.id.progressBar));
-                            productGrid.setScrollView(nestedSV);
-                            productGrid.setListener(this);
+
                             try {
                                 followBtn.setOnClickListener(v -> subscribe());
 
@@ -607,24 +630,6 @@ public class ShopFragment extends Fragment implements ProductListener {
                                 e.printStackTrace();
                             }
 
-                        } else {
-
-                            ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
-                            LinearLayout noItem = view.findViewById(R.id.noItem);
-                            noItem.setVisibility(View.VISIBLE);
-
-                            try {
-                                Glide.with(context)
-                                        .load(R.drawable.ic_emptycart)
-                                        .apply(new RequestOptions().override(600, 600))
-                                        .into(placeholder);
-                            } catch (Exception e) {
-
-                            }
-
-                            progressBar.setVisibility(View.GONE);
-
-                            // Toast.makeText(context, "No product is available", Toast.LENGTH_SHORT).show();
                         }
 
                         JSONArray jsonArray = data.getJSONArray("groups");
