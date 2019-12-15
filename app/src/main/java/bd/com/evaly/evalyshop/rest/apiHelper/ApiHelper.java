@@ -32,7 +32,7 @@ public class ApiHelper {
                         dataFetchingListener.onDataFetched(response.body(), response.code());
 
                     } else {
-                        dataFetchingListener.onFailed(response.body().getMessage(), response.code());
+                        dataFetchingListener.onFailed("error", response.code());
                     }
 
                 } else if (response.code() == 401) {
@@ -48,7 +48,10 @@ public class ApiHelper {
                         }
                     });
                 } else {
-                    dataFetchingListener.onFailed(response.body().getMessage(), response.code());
+                    if (response.body() != null)
+                        dataFetchingListener.onFailed(response.body().getMessage(), response.code());
+                    else
+                        dataFetchingListener.onFailed("error", response.code());
                 }
             }
 
