@@ -13,10 +13,8 @@ public class OrderApiHelper extends ApiHelper {
         if (orderStatus.equals("all"))
             orderStatus = null;
 
-        getiApiClient().getOrderList(token, page, orderStatus).enqueue(getResponseCallBackResult(listener));
+        getiApiClient().getOrderList(token, page, orderStatus).enqueue(getResponseCallBackDefault(listener));
 
     }
-
-
 
 }

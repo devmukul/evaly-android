@@ -225,7 +225,6 @@ public class BrowseProductFragment extends Fragment {
             @Override
             public void onFailed(String body, int errorCode) {
 
-
                 Log.d("jsonz", "Response " + body);
             }
 

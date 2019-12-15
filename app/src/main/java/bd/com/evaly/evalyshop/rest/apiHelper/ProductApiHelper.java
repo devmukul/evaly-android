@@ -19,7 +19,6 @@ public class ProductApiHelper extends ApiHelper{
         if (categorySlug.equals(""))
             categorySlug = null;
 
-
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call;
 
@@ -27,9 +26,7 @@ public class ProductApiHelper extends ApiHelper{
             call = iApiClient.getCampaignShopProducts(campaignSlug, shopSlug, page, limit, categorySlug);
         else
             call = iApiClient.getShopProducts(shopSlug, page, limit, categorySlug);
-
         call.enqueue(getResponseCallBackDefault(listener));
-
 
     }
 
@@ -38,7 +35,7 @@ public class ProductApiHelper extends ApiHelper{
         if (category.equals("root"))
             category = null;
 
-        getiApiClient().getCategoryBrandProducts(page, category, brands).enqueue(getResponseCallBackResult(listener));
+        getiApiClient().getCategoryBrandProducts(page, category, brands).enqueue(getResponseCallBackDefault(listener));
     }
 
 
@@ -68,6 +65,7 @@ public class ProductApiHelper extends ApiHelper{
 
         call.enqueue(getResponseCallBackDefault(listener));
     }
+
 
     public static void getShopsOfCategories(String category, int page, int limit, ResponseListenerAuth<JsonObject, String> listener) {
 
