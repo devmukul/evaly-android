@@ -92,8 +92,6 @@ public interface IApiClient {
     @GET(UrlUtils.CATEGORIES)
     Call<JSONArray> getCategories();
 
-    @GET(UrlUtils.CATEGORIES_BRANDS)
-    Call<JsonObject> getBrandsCategories(@Query("page") int page, @Query("limit") int limit);
 
     @GET(UrlUtils.CATEGORIES_BRANDS)
     Call<JsonObject> getBrandsCategories(@Query("category") String category, @Query("page") int page, @Query("limit") int limit);
@@ -118,6 +116,10 @@ public interface IApiClient {
 
     @GET(UrlUtils.DOMAIN + "core/public/categories/")
     Call<List<CategoryEntity>> getRootCategories();
+
+
+
+    // Order APIs
 
 
 

@@ -30,7 +30,6 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.JsonObject;
-import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,30 +49,20 @@ import bd.com.evaly.evalyshop.util.UserDetails;
 public class OrderListFragment extends Fragment {
 
 
-    UserDetails userDetails;
-    RecyclerView recyclerView;
-    ArrayList<Orders> orders;
-    OrderAdapter adapter;
-    LinearLayout notOrdered;
-    int currentPage = 1,errorCounter=0;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private UserDetails userDetails;
+    private RecyclerView recyclerView;
+    private ArrayList<Orders> orders;
+    private OrderAdapter adapter;
+    private LinearLayout notOrdered;
+    private int currentPage = 1,errorCounter=0;
     private boolean loading = true;
-
-    ProgressBar progressBar;
-    NestedScrollView nestedSV;
-
-    String userAgent;
-
-
-    View view;
-
-
-    Context context;
-
-    String statusType = "all";
+    private ProgressBar progressBar;
+    private NestedScrollView nestedSV;
+    private View view;
+    private Context context;
+    private String statusType = "all";
 
     public static OrderListFragment getInstance(String type){
-
 
         OrderListFragment myFragment = new OrderListFragment();
 
@@ -88,12 +77,6 @@ public class OrderListFragment extends Fragment {
 
     public OrderListFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void setArguments(@Nullable Bundle args) {
-        this.statusType = args.getString("type");
-        Logger.d(statusType);
     }
 
     @Override
@@ -142,21 +125,19 @@ public class OrderListFragment extends Fragment {
         if (nestedSV != null) {
 
             nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                String TAG = "nested_sync";
-//
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
 
-                    try {
+                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
 
-                        showProgressView();
-                        getOrderData(++currentPage);
+                            try {
 
-                    } catch (Exception e) {
-                        Log.e("load more product", e.toString());
-                    }
+                                showProgressView();
+                                getOrderData(++currentPage);
 
+                            } catch (Exception e) {
+                                Log.e("load more product", e.toString());
+                            }
 
-                }
+                 }
             });
         }
         
@@ -230,19 +211,12 @@ public class OrderListFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
 
-
-
                 hideProgressView();
                 //getOrderData(currentPage);
 
             }
         }, error -> {
             Log.e("onErrorResponse", error.toString());
-//
-//                alert.hideDialog();
-//                hideProgressView();
-
-            //Toast.makeText(OrderListActivity.this, "Server error, trying to fetch data again.", Toast.LENGTH_LONG).show();
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {

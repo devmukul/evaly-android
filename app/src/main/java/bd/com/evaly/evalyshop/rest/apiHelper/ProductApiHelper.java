@@ -41,7 +41,7 @@ public class ProductApiHelper extends ApiHelper{
         Call<JsonObject> call;
 
         if (category.equals("root"))
-            call = iApiClient.getBrandsCategories(page,limit);
+            call = iApiClient.getBrandsCategories(null,page,limit);
         else
             call = iApiClient.getBrandsCategories(category,page,limit);
 
