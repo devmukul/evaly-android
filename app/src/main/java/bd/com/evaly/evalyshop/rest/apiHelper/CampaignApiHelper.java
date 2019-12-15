@@ -12,13 +12,13 @@ public class CampaignApiHelper extends ApiHelper{
 
     public static void getCampaigns(ResponseListenerAuth<CommonSuccessResponse<List<CampaignItem>>, String> listener) {
 
-        getiApiClient().getCampaigns().enqueue(getResponseCallBack(listener));
+        getiApiClient().getCampaigns().enqueue(getResponseCallBackData(listener));
     }
 
 
     public static void getCampaignShops(String group, int page, ResponseListenerAuth<CommonSuccessResponse<List<CampaignShopItem>>, String> listener) {
 
-        getiApiClient().getCampaignShops(group, page, 21).enqueue(getResponseCallBack(listener));
+        getiApiClient().getCampaignShops(group, page, 21).enqueue(getResponseCallBackData(listener));
     }
 
 

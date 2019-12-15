@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
@@ -22,7 +23,7 @@ public class ApiHelper {
     }
 
 
-    protected static <T> Callback<CommonSuccessResponse<T>> getResponseCallBack(ResponseListenerAuth<CommonSuccessResponse<T>, String> dataFetchingListener) {
+    protected static <T> Callback<CommonSuccessResponse<T>> getResponseCallBackData(ResponseListenerAuth<CommonSuccessResponse<T>, String> dataFetchingListener) {
 
         return new Callback<CommonSuccessResponse<T>>() {
             @Override
@@ -66,7 +67,55 @@ public class ApiHelper {
                 dataFetchingListener.onFailed(t.getMessage(), 0);
             }
         };
+    }
 
+
+
+
+    protected static <T> Callback<CommonResultResponse<T>> getResponseCallBackResult(ResponseListenerAuth<CommonResultResponse<T>, String> dataFetchingListener) {
+
+        return new Callback<CommonResultResponse<T>>() {
+            @Override
+            public void onResponse(Call<CommonResultResponse<T>> call, Response<CommonResultResponse<T>> response) {
+                if (response.code() == 200 || response.code() == 201) {
+                    if (response.body() != null) {
+                        dataFetchingListener.onDataFetched(response.body(), response.code());
+
+                    } else {
+                        dataFetchingListener.onFailed("error", response.code());
+                    }
+
+                } else if (response.code() == 401) {
+                    tokenRefresh(new ResponseListenerAuth<JsonObject, String>() {
+                        @Override
+                        public void onDataFetched(JsonObject response, int statusCode) {
+
+                            dataFetchingListener.onAuthError(false);
+                        }
+
+                        @Override
+                        public void onFailed(String error, int errorCode) {
+
+                        }
+
+                        @Override
+                        public void onAuthError(boolean logout) {
+                            dataFetchingListener.onAuthError(true);
+                        }
+                    });
+                } else {
+                    if (response.body() != null)
+                        dataFetchingListener.onFailed("error", response.code());
+                    else
+                        dataFetchingListener.onFailed("error", response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommonResultResponse<T>> call, Throwable t) {
+                dataFetchingListener.onFailed(t.getMessage(), 0);
+            }
+        };
     }
 
 
@@ -84,6 +133,8 @@ public class ApiHelper {
                     String refresh = response.body().get("refresh").getAsString();
                     CredentialManager.saveToken(token);
                     CredentialManager.saveRefreshToken(refresh);
+
+
                 }else if (response.code() == 401){
 
                     listener.onAuthError(true);

@@ -21,19 +21,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.OrderAdapter;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
@@ -153,13 +150,11 @@ public class OrderListFragment extends Fragment {
             @Override
             public void onDataFetched(CommonResultResponse<List<OrderListItem>> response, int statusCode) {
 
-
                 hideProgressView();
 
+
                 if (response != null) {
-
                     if (response.getCount() == 0 && page == 1) {
-
                         notOrdered.setVisibility(View.VISIBLE);
                         Glide.with(context)
                                 .load(R.drawable.ic_emptycart_new)
@@ -167,8 +162,6 @@ public class OrderListFragment extends Fragment {
                                 .into((ImageView) view.findViewById(R.id.noImage));
                         recyclerView.setVisibility(View.GONE);
                         nestedSV.setBackgroundColor(Color.WHITE);
-
-
                     } else {
                         notOrdered.setVisibility(View.GONE);
                         orders.addAll(response.getData());
@@ -176,28 +169,20 @@ public class OrderListFragment extends Fragment {
                         adapter.notifyDataSetChanged();
                     }
                 }
-
-
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
-                if (errorCode == 401) {
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getOrderData(page);
-                        }
+                hideProgressView();
 
-                        @Override
-                        public void onFailed(int status) { }
-                    });
-                }
             }
 
             @Override
             public void onAuthError(boolean logout) {
+
+                if (!logout)
+                    getOrderData(page);
 
             }
         });
