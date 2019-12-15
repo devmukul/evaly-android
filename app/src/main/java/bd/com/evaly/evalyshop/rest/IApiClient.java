@@ -14,6 +14,7 @@ import bd.com.evaly.evalyshop.models.CreatePostModel;
 import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
+import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
@@ -139,8 +140,13 @@ public interface IApiClient {
 
     // brand
 
-
     @GET(UrlUtils.BASE_URL+"public/brands/{brandSlug}/")
     Call<CommonSuccessResponse<BrandDetails>> getBrandDetails(@Path("brandSlug") String brandSlug);
+
+
+    // Notification
+
+    @GET(UrlUtils.DOMAIN+"{notificationSource}/notifications_count/")
+    Call<NotificationCount> getNotificationCount(@Header("Authorization") String token, @Path("notificationSource") String notificationType);
 
 }

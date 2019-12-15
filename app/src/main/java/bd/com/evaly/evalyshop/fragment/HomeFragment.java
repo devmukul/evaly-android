@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -22,15 +21,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -57,11 +52,13 @@ import bd.com.evaly.evalyshop.activity.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.adapter.SliderAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.BannerItem;
+import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetFragment;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.SliderViewPager;
@@ -202,15 +199,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         sliderImages = new ArrayList<>();
         getSliderImage();
 
-        //timer = new Timer();
-        // timer.scheduleAtFixedRate(new SliderTimer(), 6000, 6000);
-
-
-        AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
-        CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
-        CoordinatorLayout rootLayout = view.findViewById(R.id.root_coordinator);
-
-
         if (nestedSV != null) {
             nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
                 @Override
@@ -275,42 +263,32 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         }, 300);
 
-
-
     }
 
 
 
     public void getNotificationCount(){
 
-        if (userDetails.getToken().equals(""))
+
+        if (CredentialManager.getToken().equals(""))
             return;
 
-        String url = UrlUtils.BASE_URL_NEWSFEED+"notifications_count/";
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
-            Log.d("onResponse", response.toString());
-            try {
-                int count = response.getInt("unread_notification_count");
-                if (count>0)
+        GeneralApiHelper.getNotificationCount(CredentialManager.getToken(), "newsfeed", new ResponseListenerAuth<NotificationCount, String>() {
+            @Override
+            public void onDataFetched(NotificationCount response, int statusCode) {
+                if (response.getCount()>0)
                     view.findViewById(R.id.newsfeedIndicator).setVisibility(View.VISIBLE);
                 else
-
                     view.findViewById(R.id.newsfeedIndicator).setVisibility(View.GONE);
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
 
                 AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                     @Override
@@ -324,19 +302,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     }
                 });
 
-                return;
-
-            }}
-
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                return headers;
             }
-        };
-        rq.add(request);
+        });
 
 
     }
