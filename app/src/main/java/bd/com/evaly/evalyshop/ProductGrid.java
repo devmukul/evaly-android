@@ -21,13 +21,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.listener.ProductListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.ProductListItem;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 
 
@@ -40,9 +43,7 @@ public class ProductGrid {
     String campaignSlug = "";
     public HomeFragment main;
     public Context context;
-    ArrayList<ProductListItem> products;
-    Map<String, String> mp;
-    Map<String, ProductListItem> map;
+    List<ProductItem> products;
     int current = 1, type = 0, maxPrice = 0, minPrice = 0;
     private ProductGridAdapter adapterViewAndroid;
     private ProgressBar progressBar;
@@ -77,10 +78,6 @@ public class ProductGrid {
         rq = Volley.newRequestQueue(context);
 
         products = new ArrayList<>();
-        map = new HashMap<>();
-        mp = new HashMap<>();
-        // recyclerView.setHasFixedSize(true);
-        // recyclerView.getItemAnimator().setChangeDuration(0);
         mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(null);
@@ -243,7 +240,7 @@ public class ProductGrid {
                             }
 
 
-                            products.add(item);
+                           // products.add(item);
 
                             adapterViewAndroid.notifyItemInserted(products.size());
 
@@ -285,7 +282,14 @@ public class ProductGrid {
     }
 
 
-    public void getBrandProducts(String slug, String categorySlug, int currentPage) {
+    public void getBrandProducts(String brandSlug, String categorySlug, int currentPage){
+
+        getCategoryBrandsProducts(currentPage, categorySlug, brandSlug);
+
+    }
+
+
+    public void getBrandProductsz(String slug, String categorySlug, int currentPage) {
         current = currentPage;
         String url;
 
@@ -338,7 +342,7 @@ public class ProductGrid {
                             item.setName(response2.getString("name"));
                             item.setPriceMax(priceMax);
                             item.setPriceMin(priceMin);
-                            products.add(item);
+                             // products.add(item);
 
                             adapterViewAndroid.notifyItemInserted(products.size());
 
@@ -381,7 +385,72 @@ public class ProductGrid {
         rq.add(request);
     }
 
-    public void getCategoryProducts(String slug, int currentPage) {
+
+    public void getCategoryBrandsProducts(int currentPage, String category, String brand){
+
+        current = currentPage;
+        progressBar.setVisibility(View.VISIBLE);
+        isLoading = true;
+
+        if (products.size() > 0 && type != 0) {
+            products.clear();
+        }
+
+        ProductApiHelper.getCategoryBrandProducts(currentPage, category, brand, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
+
+
+                Log.d("jsonz", "API responed"+response.getData().toString());
+
+                if (scrollView != null)
+                    scrollView.fling(0);
+
+                products.addAll(response.getData());
+
+                adapterViewAndroid.notifyItemRangeInserted(products.size()-response.getData().size(), response.getData().size());
+
+                isLoading = false;
+
+                if (listener != null)
+                    listener.onSuccess(products.size());
+
+                if (products.size() < 10)
+                    progressBar.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+
+
+                Log.d("jsonz", errorBody);
+
+                progressBar.setVisibility(View.GONE);
+
+                if (listener != null)
+                    listener.onSuccess(0);
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+
+    }
+
+
+    public void getCategoryProducts(String categorySlug, int currentPage){
+
+        getCategoryBrandsProducts(currentPage, categorySlug, null);
+
+    }
+
+    public void getCategoryProductsz(String slug, int currentPage) {
         current = currentPage;
         progressBar.setVisibility(View.VISIBLE);
 
@@ -443,7 +512,7 @@ public class ProductGrid {
 
                             item.setPriceMax(priceMax);
                             item.setPriceMin(priceMin);
-                            products.add(item);
+                            // products.add(item);
 
                             adapterViewAndroid.notifyItemInserted(products.size());
 

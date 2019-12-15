@@ -11,7 +11,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
     AutoCompleteTextView searchText;
     ProductGrid productGrid;
     ArrayList<TabsItem> itemList;
-    ArrayList<ProductListItem> itemListProduct,itemListProductWithCategory;
+    ArrayList<ProductItem> itemListProduct,itemListProductWithCategory;
     TabsAdapter adapter;
     ProductGridAdapter adapterProduct,adapterProductCategory;
     RecyclerView recyclerView;
@@ -444,7 +444,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
                             if(ob.getJSONObject("category").getString("slug").equals(categoryMapping.get(selectedCategory))){
-                                ProductListItem tabsItem = new ProductListItem();
+                                ProductItem tabsItem = new ProductItem();
                                 tabsItem.setName(ob.getString("name"));
                                 tabsItem.setThumbnailSM(ob.getString("thumbnail"));
                                 try {
@@ -603,7 +603,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
                             if(searchSlug.equals("product")) {
-                                ProductListItem tabsItem = new ProductListItem();
+                                ProductItem tabsItem = new ProductItem();
                                 tabsItem.setName(ob.getString("name"));
                                 if (searchSlug.equals("product") || searchSlug.equals("brands")) {
                                     tabsItem.setThumbnailSM(ob.getString("thumbnail"));
@@ -622,7 +622,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
                                 itemListProduct.add(tabsItem);
                                 adapterProduct.notifyItemInserted(itemListProduct.size());
                                 if(i==jsonArray.length()-1){
-                                    Map<ProductListItem,Integer> frequencyMap=new HashMap<>();
+                                    Map<ProductItem,Integer> frequencyMap=new HashMap<>();
                                     for(int k=0;k<itemListProduct.size();k++){
                                         if(frequencyMap.containsKey(itemListProduct.get(k))){
                                             frequencyMap.put(itemListProduct.get(k),frequencyMap.get(itemListProduct.get(k))+1);
@@ -631,12 +631,12 @@ public class GlobalSearchActivityOld extends BaseActivity {
                                         }
                                     }
                                     int max=0;
-                                    for (Map.Entry<ProductListItem, Integer> entry : frequencyMap.entrySet()) {
+                                    for (Map.Entry<ProductItem, Integer> entry : frequencyMap.entrySet()) {
                                         if(entry.getValue()>max){
                                             max=entry.getValue();
                                         }
                                     }
-                                    for (Map.Entry<ProductListItem, Integer> entry : frequencyMap.entrySet()) {
+                                    for (Map.Entry<ProductItem, Integer> entry : frequencyMap.entrySet()) {
                                         if (entry.getValue().equals(max)) {
                                             highestSlug=entry.getKey().getCategorySlug();
                                             break;
@@ -795,7 +795,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
                         Log.d("json_array_length",jsonArray.length()+"");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
-                            ProductListItem tabsItem = new ProductListItem();
+                            ProductItem tabsItem = new ProductItem();
                             tabsItem.setName(ob.getString("name"));
                             tabsItem.setThumbnailSM(ob.getString("thumbnail"));
                             try {
@@ -855,7 +855,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
                                 categoryMapping.put(ob.getJSONObject("category").getString("name"),ob.getJSONObject("category").getString("slug"));
                             }
                             if(i==jsonArray.length()-1){
-                                Map<ProductListItem,Integer> frequencyMap=new HashMap<>();
+                                Map<ProductItem,Integer> frequencyMap=new HashMap<>();
                                 for(int k=0;k<itemListProduct.size();k++){
                                     if(frequencyMap.containsKey(itemListProduct.get(k))){
                                         frequencyMap.put(itemListProduct.get(k),frequencyMap.get(itemListProduct.get(k))+1);
@@ -865,12 +865,12 @@ public class GlobalSearchActivityOld extends BaseActivity {
                                 }
                                 int max=0;
                                 String highestSlug="";
-                                for (Map.Entry<ProductListItem, Integer> entry : frequencyMap.entrySet()) {
+                                for (Map.Entry<ProductItem, Integer> entry : frequencyMap.entrySet()) {
                                     if(entry.getValue()>max){
                                         max=entry.getValue();
                                     }
                                 }
-                                for (Map.Entry<ProductListItem, Integer> entry : frequencyMap.entrySet()) {
+                                for (Map.Entry<ProductItem, Integer> entry : frequencyMap.entrySet()) {
                                     if (entry.getValue().equals(max)) {
                                         highestSlug=entry.getKey().getCategorySlug();
                                         break;
@@ -968,7 +968,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
                         Log.d("search_result",response.toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
-                            ProductListItem tabsItem = new ProductListItem();
+                            ProductItem tabsItem = new ProductItem();
                             tabsItem.setName(ob.getString("name"));
                             tabsItem.setThumbnailSM(ob.getString("thumbnail"));
                             try {

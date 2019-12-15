@@ -77,12 +77,13 @@ public class ApiHelper {
         return new Callback<CommonResultResponse<T>>() {
             @Override
             public void onResponse(Call<CommonResultResponse<T>> call, Response<CommonResultResponse<T>> response) {
+
                 if (response.code() == 200 || response.code() == 201) {
                     if (response.body() != null) {
                         dataFetchingListener.onDataFetched(response.body(), response.code());
 
                     } else {
-                        dataFetchingListener.onFailed("error", response.code());
+                        dataFetchingListener.onFailed(response.toString(), response.code());
                     }
 
                 } else if (response.code() == 401) {
@@ -105,7 +106,7 @@ public class ApiHelper {
                     });
                 } else {
                     if (response.body() != null)
-                        dataFetchingListener.onFailed("error", response.code());
+                        dataFetchingListener.onFailed(response.toString(), response.code());
                     else
                         dataFetchingListener.onFailed("error", response.code());
                 }

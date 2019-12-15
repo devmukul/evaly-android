@@ -22,8 +22,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.ethanhua.skeleton.Skeleton;
@@ -35,6 +33,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.ProductGrid;
@@ -44,7 +43,7 @@ import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
-import bd.com.evaly.evalyshop.models.ProductListItem;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 
 public class BrowseProductFragment extends Fragment {
@@ -64,7 +63,7 @@ public class BrowseProductFragment extends Fragment {
     RequestQueue rq;
     Map<String,String> map;
     String filterURL="";
-    ArrayList<ProductListItem> itemListProduct;
+    List<ProductItem> itemListProduct;
     ProductGridAdapter adapterProduct;
     RecyclerView recyclerView;
     EditText minimum,maximum;
@@ -278,13 +277,7 @@ public class BrowseProductFragment extends Fragment {
                     loadOtherTabs();
 
 
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-
-            }
-        });
+                }, error -> error.printStackTrace());
 
 
         getRequest.setShouldCache(false);

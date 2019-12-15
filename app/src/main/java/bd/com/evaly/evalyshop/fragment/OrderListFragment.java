@@ -25,6 +25,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.OrderAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -183,6 +184,8 @@ public class OrderListFragment extends Fragment {
 
                 if (!logout)
                     getOrderData(page);
+                else
+                    AppController.logout(getActivity());
 
             }
         });

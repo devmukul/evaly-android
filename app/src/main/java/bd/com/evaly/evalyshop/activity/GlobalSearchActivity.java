@@ -4,14 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.core.widget.NestedScrollView;
-import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -33,6 +26,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.widget.NestedScrollView;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -50,6 +51,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
@@ -59,9 +61,9 @@ import bd.com.evaly.evalyshop.adapter.AutoCompleteAdapter;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.adapter.SearchFilterAdapter;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
-import bd.com.evaly.evalyshop.models.TabsItem;
-import bd.com.evaly.evalyshop.models.ProductListItem;
 import bd.com.evaly.evalyshop.models.SearchFilterItem;
+import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
@@ -73,7 +75,7 @@ public class GlobalSearchActivity extends BaseActivity {
     AutoCompleteTextView searchText;
     ProductGrid productGrid;
     ArrayList<TabsItem> itemList;
-    ArrayList<ProductListItem> itemListProduct,itemListProductWithCategory;
+    List<ProductItem> itemListProduct,itemListProductWithCategory;
     TabsAdapter adapter;
     ProductGridAdapter adapterProduct,adapterProductCategory;
     RecyclerView recyclerView, filterRecyclerView;
@@ -784,13 +786,16 @@ public class GlobalSearchActivity extends BaseActivity {
                         for (int i = 0; i < productList.length(); i++) {
 
                             JSONObject ob = productList.getJSONObject(i);
-                            ProductListItem tabsItem = new ProductListItem();
+                            ProductItem tabsItem = new ProductItem();
                             tabsItem.setName(ob.getString("name"));
-                            tabsItem.setThumbnailSM(ob.getString("product_image").replace("\n", "").replace("\r", ""));
+
+                            List<String> images =  new ArrayList<>();
+                            images.add(ob.getString("product_image").replace("\n", "").replace("\r", ""));
+                            tabsItem.setImageUrls(images);
                             tabsItem.setSlug(ob.getString("slug"));
-                            tabsItem.setPriceMax(ob.getInt("max_price"));
-                            tabsItem.setDiscountedPrice(ob.getInt("discounted_price"));
-                            tabsItem.setPriceMin(ob.getInt("price"));
+                            tabsItem.setMaxPrice(String.valueOf(ob.getInt("max_price")));
+                            tabsItem.setMinDiscountedPrice(String.valueOf(ob.getInt("discounted_price")));
+                            tabsItem.setMinPrice(String.valueOf(ob.getInt("price")));
 
                             if (!slugStore.contains(ob.getString("slug"))) {
                                 itemListProduct.add(tabsItem);

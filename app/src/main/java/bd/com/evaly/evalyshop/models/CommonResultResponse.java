@@ -16,6 +16,9 @@ public class CommonResultResponse<T> {
     @Expose
     private String next;
 
+    @SerializedName("previous")
+    @Expose
+    private String previous;
 
     @SerializedName("results")
     @Expose
@@ -55,6 +58,14 @@ public class CommonResultResponse<T> {
 
     public void setNext(String next) {
         this.next = next;
+    }
+
+    public String getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(String previous) {
+        this.previous = previous;
     }
 }
 

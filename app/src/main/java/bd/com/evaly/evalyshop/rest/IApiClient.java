@@ -17,6 +17,7 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
@@ -88,6 +89,12 @@ public interface IApiClient {
 
     // product APIs
 
+    @GET(UrlUtils.PUBLIC_PRODUCTS)
+    Call<CommonResultResponse<List<ProductItem>>> getCategoryBrandProducts(@Query("page") int page, @Query("category") String category, @Query("brand") String brand);
+
+
+    // Categories API
+
     @GET(UrlUtils.CATEGORIES)
     Call<JSONArray> getCategories(@Query("parent") String parent);
 
@@ -118,8 +125,6 @@ public interface IApiClient {
 
     @GET(UrlUtils.ROOTCATEGORIES)
     Call<List<CategoryEntity>> getRootCategories();
-
-
 
     // Order APIs
     @GET(UrlUtils.ORDERS)

@@ -4,13 +4,26 @@ import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 
+import java.util.List;
+
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProductApiHelper extends ApiHelper{
+
+    public static void getCategoryBrandProducts(int page, String category, String brands, ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String> listener) {
+
+        if (category.equals("root"))
+            category = null;
+
+        getiApiClient().getCategoryBrandProducts(page, category, brands).enqueue(getResponseCallBackResult(listener));
+    }
+
 
     public static void getSubCategories(String slug, ResponseListenerAuth<Response<JSONArray>, String> listener) {
         IApiClient iApiClient = getiApiClient();
