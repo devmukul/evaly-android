@@ -59,5 +59,5 @@ public class UrlUtils {
 
 
     // categories
-    public static final String ROOTCATEGORIES = BASE_URL+"core/public/categories/";
+    public static final String ROOTCATEGORIES = BASE_URL+"public/categories/";
 }

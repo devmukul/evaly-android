@@ -4,8 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import org.json.JSONArray;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,7 +47,7 @@ public interface IApiClient {
     Call<JsonPrimitive> addRoster(@Body HashMap<String, String> data);
 
     @GET(UrlUtils.INVITATION_LIST + "{phone}/")
-    Call<JsonArray> getInvitationList(@Header("Authorization") String token,@Path("phone") String phone);
+    Call<JsonArray> getInvitationList(@Header("Authorization") String token, @Path("phone") String phone);
 
     @GET(UrlUtils.ROSTER_LIST + "{phone}/")
     Call<List<RosterItemModel>> getRosterList(@Header("Authorization") String token, @Path("phone") String phone, @Query("page") int page, @Query("limit") int limit);
@@ -103,10 +101,10 @@ public interface IApiClient {
     // Categories API
 
     @GET(UrlUtils.CATEGORIES)
-    Call<JSONArray> getCategories(@Query("parent") String parent);
+    Call<JsonArray> getCategories(@Query("parent") String parent);
 
     @GET(UrlUtils.CATEGORIES)
-    Call<JSONArray> getCategories();
+    Call<JsonArray> getCategories();
 
 
     @GET(UrlUtils.CATEGORIES_BRANDS)
@@ -116,8 +114,8 @@ public interface IApiClient {
     @GET(UrlUtils.CATEGORIES_SHOPS_ROOT)
     Call<JsonObject> getShopsOfCategories(@Query("page") int page, @Query("limit") int limit);
 
-    @GET(UrlUtils.CATEGORIES_SHOPS)
-    Call<JsonObject> getShopsOfCategories(@Query("category") String category, @Query("page") int page, @Query("limit") int limit);
+    @GET(UrlUtils.CATEGORIES_SHOPS+"{category}/")
+    Call<JsonObject> getShopsOfCategories(@Path("category") String category, @Query("page") int page, @Query("limit") int limit);
 
     // campaign APIs
 

@@ -23,10 +23,6 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -267,28 +263,27 @@ public class TabsFragment extends Fragment {
 
     public void getSubCategories(){
 
-        ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<Response<JSONArray>, String>() {
+        ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<Response<JsonArray>, String>() {
 
             @Override
-            public void onDataFetched(retrofit2.Response<JSONArray> res, int statusCode) {
+            public void onDataFetched(retrofit2.Response<JsonArray> res, int statusCode) {
 
                 progressBar2.setVisibility(View.GONE);
 
                 try {
+                    JsonArray response = res.body();
 
-                    JSONArray response = res.body();
-
-                    for (int i = 0; i < response.length(); i++) {
-                        JSONObject ob = response.getJSONObject(i);
+                    for (int i = 0; i < response.size(); i++) {
+                        JsonObject ob = response.get(i).getAsJsonObject();
                         TabsItem tabsItem = new TabsItem();
-                        tabsItem.setTitle(ob.getString("name"));
-                        tabsItem.setImage(ob.getString("image_url"));
-                        tabsItem.setSlug(ob.getString("slug"));
+                        tabsItem.setTitle(ob.get("name").getAsString());
+                        tabsItem.setImage(ob.get("image_url").getAsString());
+                        tabsItem.setSlug(ob.get("slug").getAsString());
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
                     }
-                }  catch (JSONException e) {
+                }  catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -364,7 +359,6 @@ public class TabsFragment extends Fragment {
                         TabsItem tabsItem = new TabsItem();
                         tabsItem.setTitle(ob.get("shop_name").getAsString());
                         tabsItem.setImage(ob.get("shop_image").getAsString());
-                        tabsItem.setSlug(ob.get("slug").getAsString());
 
                         if (slug.equals("root"))
                             tabsItem.setSlug(ob.get("slug").getAsString());
@@ -381,7 +375,7 @@ public class TabsFragment extends Fragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(context, "brand_error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Shop error", Toast.LENGTH_SHORT).show();
                 }
 
             }

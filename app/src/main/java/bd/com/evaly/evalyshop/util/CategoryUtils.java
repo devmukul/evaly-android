@@ -45,17 +45,21 @@ public class CategoryUtils {
             @Override
             public void onDataFetched(List<CategoryEntity> response, int statusCode) {
 
-                for (int i=0; i < response.size(); i++)
-                    response.get(i).setDrawable(getDrawableFromName(response.get(i).getName()));
+                if (response != null) {
+                    for (int i = 0; i < response.size(); i++)
+                        response.get(i).setDrawable(getDrawableFromName(response.get(i).getName()));
 
-                setLastUpdated();
+                    setLastUpdated();
 
-                Executors.newSingleThreadExecutor().execute(() -> {
-                    categoryDatabase.categoryDao().deleteAll();
-                    categoryDatabase.categoryDao().insertAll(response);
-                });
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        categoryDatabase.categoryDao().deleteAll();
+                        categoryDatabase.categoryDao().insertAll(response);
+                    });
 
-                listener.onDataFetched(response);
+                    listener.onDataFetched(response);
+                } else {
+                    listener.onFailed(0);
+                }
             }
 
             @Override

@@ -13,23 +13,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.JsonArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,8 +38,10 @@ import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.util.UrlUtils;
+import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import retrofit2.Response;
 
 public class BrowseProductFragment extends Fragment {
 
@@ -150,8 +147,6 @@ public class BrowseProductFragment extends Fragment {
         final ProductGrid productGrid = new ProductGrid(getContext(), view.findViewById(R.id.products),slug, view.findViewById(R.id.progressBar));
         productGrid.setScrollView(nestedSV);
 
-        TextView filterBtn = view.findViewById(R.id.filterBtn);
-        //filterBtn.setOnClickListener(view -> drawer.openDrawer(Gravity.RIGHT));
 
         shimmer = view.findViewById(R.id.shimmer);
         shimmer.startShimmer();
@@ -173,40 +168,26 @@ public class BrowseProductFragment extends Fragment {
 
                     @Override
                     public void onTabUnselected(TabLayout.Tab tab) {
-
                     }
 
                     @Override
                     public void onTabReselected(TabLayout.Tab tab) {
-
                     }
         });
 
         getSubCategories();
 
 
-
-
-        AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
-        CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
-        CoordinatorLayout rootLayout = view.findViewById(R.id.root_coordinator);
-
-
         if (nestedSV != null) {
 
-            nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    String TAG = "nested_sync";
-
-                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                        try {
-                            progressBar.setVisibility(View.VISIBLE);
-                            productGrid.loadNextPage();
-                        } catch (Exception e)
-                        {
-                            Log.e("load more product", e.toString());
-                        }
+            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                    try {
+                        progressBar.setVisibility(View.VISIBLE);
+                        productGrid.loadNextPage();
+                    } catch (Exception e)
+                    {
+                        Log.e("load more product", e.toString());
                     }
                 }
             });
@@ -217,16 +198,12 @@ public class BrowseProductFragment extends Fragment {
     public void hideShimmer(){
 
         try {
-
-
             shimmer.stopShimmer();
         } catch (Exception e){
             Log.e("ozii shimmer", e.toString());
-
         }
         shimmer.setVisibility(View.GONE);
         isShimmerShowed = true;
-
     }
 
 
@@ -236,57 +213,61 @@ public class BrowseProductFragment extends Fragment {
         super.onDestroy();
 
         try {
-
             skeletonTabHeader.hide();
-
         } catch (Exception e){}
-
     }
 
+
+
+
     public void getSubCategories(){
-        String url = UrlUtils.BASE_URL+"public/categories/?parent="+slug;
-        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, (String) null,
-                response -> {
 
-                    try {
+        ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<Response<JsonArray>, String>() {
 
-                        skeletonTabHeader.hide();
-
-                    }catch (Exception e){}
-
-                    int length = response.length();
-
-                    if (length>0)
-                    {
-                        SubTabsFragment fragment = new SubTabsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("type", 1);
-                        bundle.putString("slug", slug);
-                        bundle.putString("category", category);
-                        bundle.putString("json", response.toString());
-
-                        fragment.setArguments(bundle);
-
-                        pager.addFragment(fragment,"Sub Categories");
-                        pager.notifyDataSetChanged();
-
-                    }
-
-                    
-                    hideShimmer();
-                    loadOtherTabs();
+            @Override
+            public void onDataFetched(retrofit2.Response<JsonArray> res, int statusCode) {
 
 
-                }, error -> error.printStackTrace());
+                Log.d("jsonz", "Response " + res.body().toString());
+
+                try {
+                    skeletonTabHeader.hide();
+                } catch (Exception e){}
+
+                int length = res.body().size();
+
+                if (length>0)
+                {
+                    SubTabsFragment fragment = new SubTabsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 1);
+                    bundle.putString("slug", slug);
+                    bundle.putString("category", category);
+                    bundle.putString("json", res.body().toString());
+
+                    fragment.setArguments(bundle);
+
+                    pager.addFragment(fragment,"Sub Categories");
+                    pager.notifyDataSetChanged();
+                }
+
+                hideShimmer();
+                loadOtherTabs();
+            }
+            @Override
+            public void onFailed(String body, int errorCode) {
 
 
-        getRequest.setShouldCache(false);
-        getRequest.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                Log.d("jsonz", "Response " + body);
+            }
 
-        // rq.getCache().clear();
-        rq.add(getRequest);
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+
     }
 
 

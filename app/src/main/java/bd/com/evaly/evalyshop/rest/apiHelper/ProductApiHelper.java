@@ -1,8 +1,7 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import org.json.JSONArray;
 
 import java.util.List;
 
@@ -56,23 +55,24 @@ public class ProductApiHelper extends ApiHelper{
     }
 
 
-    public static void getSubCategories(String slug, ResponseListenerAuth<Response<JSONArray>, String> listener) {
+    public static void getSubCategories(String slug, ResponseListenerAuth<Response<JsonArray>, String> listener) {
+
         IApiClient iApiClient = getiApiClient();
-        Call<JSONArray> call;
+        Call<JsonArray> call;
 
         if (slug.equals("root"))
             call = iApiClient.getCategories();
         else
             call = iApiClient.getCategories(slug);
 
-        call.enqueue(new Callback<JSONArray>() {
+        call.enqueue(new Callback<JsonArray>() {
             @Override
-            public void onResponse(Call<JSONArray> call, Response<JSONArray> response) {
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 listener.onDataFetched(response, response.code());
             }
 
             @Override
-            public void onFailure(Call<JSONArray> call, Throwable t) {
+            public void onFailure(Call<JsonArray> call, Throwable t) {
                 listener.onFailed(t.getMessage(),0);
             }
         });
