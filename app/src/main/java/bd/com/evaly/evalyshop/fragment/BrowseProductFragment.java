@@ -2,18 +2,6 @@ package bd.com.evaly.evalyshop.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.core.widget.NestedScrollView;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,19 +11,27 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,7 +122,6 @@ public class BrowseProductFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.tab_layout_sub);
 
-
         try {
 
             skeletonTabHeader = Skeleton.bind(tabLayout)
@@ -138,21 +133,11 @@ public class BrowseProductFragment extends Fragment {
 
         }
 
-
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
-        homeSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
-
-
-                intent.putExtra("type", 1);
-
-                startActivity(intent);
-
-
-            }
+        homeSearch.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
+            intent.putExtra("type", 1);
+            startActivity(intent);
         });
 
 
@@ -249,24 +234,20 @@ public class BrowseProductFragment extends Fragment {
     @Override
     public void onDestroy() {
 
+        super.onDestroy();
 
         try {
 
             skeletonTabHeader.hide();
 
-        }catch (Exception e){}
+        } catch (Exception e){}
 
-        super.onDestroy();
     }
 
     public void getSubCategories(){
         String url = UrlUtils.BASE_URL+"public/categories/?parent="+slug;
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, (String) null,
                 response -> {
-
-//                    getBrandsOfCategory(1);
-//                    getShopsOfCategory(1);
-
 
                     try {
 
@@ -347,113 +328,4 @@ public class BrowseProductFragment extends Fragment {
 
 
     }
-
-    public void getBrandsOfCategory(int counter){
-
-        String url = UrlUtils.BASE_URL+"public/brands/?limit=12&category="+slug+"&page="+counter;
-
-        Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
-                response -> {
-
-
-
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("results");
-
-                        int length = jsonArray.length();
-
-                        if (length>0)
-                        {
-                            SubTabsFragment fragment = new SubTabsFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putInt("type", 2);
-                            bundle.putString("slug", slug);
-                            bundle.putString("category", category);
-                            bundle.putString("json", jsonArray.toString());
-                            fragment.setArguments(bundle);
-                            pager.addFragment(fragment,"Brands");
-                            pager.notifyDataSetChanged();
-                            hideShimmer();
-                        }
-
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-
-            }
-        });
-
-
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        if(counter>1) {
-
-            request.setShouldCache(false);
-            rq.getCache().clear();
-        }
-        rq.add(request);
-    }
-
-    public void getShopsOfCategory(int counter){
-        String url = UrlUtils.BASE_URL+"public/category/shops/"+slug+"/?limit=12&page="+counter;
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
-                response -> {
-
-
-
-                    hideShimmer();
-
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("data");
-
-                        int length = response.length();
-
-                        if (length>0)
-                        {
-                            SubTabsFragment fragment = new SubTabsFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putInt("type", 3);
-                            bundle.putString("slug", slug);
-                            bundle.putString("category", category);
-                            bundle.putString("json", jsonArray.toString());
-                            fragment.setArguments(bundle);
-                            pager.addFragment(fragment,"Shops");
-                            pager.notifyDataSetChanged();
-                        }
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-
-            }
-        });
-
-
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        if(counter>1) {
-            rq.getCache().clear();
-            request.setShouldCache(false);
-        }
-        rq.add(request);
-    }
-
-
 }
