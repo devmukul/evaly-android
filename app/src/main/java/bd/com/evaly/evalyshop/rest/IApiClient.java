@@ -99,6 +99,12 @@ public interface IApiClient {
     Call<JsonObject> getBrandsCategories(@Query("category") String category, @Query("page") int page, @Query("limit") int limit);
 
 
+    @GET(UrlUtils.CATEGORIES_SHOPS_ROOT)
+    Call<JsonObject> getShopsOfCategories(@Query("page") int page, @Query("limit") int limit);
+
+    @GET(UrlUtils.CATEGORIES_SHOPS)
+    Call<JsonObject> getShopsOfCategories(@Query("category") String category, @Query("page") int page, @Query("limit") int limit);
+
     // campaign APIs
 
     @GET(UrlUtils.CAMPAIGNS)

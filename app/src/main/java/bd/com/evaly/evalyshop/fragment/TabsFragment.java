@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.JsonArray;
@@ -49,7 +45,6 @@ import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.CategoryUtils;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 
 public class TabsFragment extends Fragment {
 
@@ -343,63 +338,48 @@ public class TabsFragment extends Fragment {
     }
 
 
-
-
-
-
-
     public void getShopsOfCategory(int counter){
-        String url;
-        if (slug.equals("root"))
-            url = UrlUtils.BASE_URL+"custom/shops/?page="+counter+"&limit=13";
-        else
-            url = UrlUtils.BASE_URL+"public/category/shops/"+slug+"/?limit=12&page="+counter;
-        Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
-                response -> {
-                    progressBar2.setVisibility(View.GONE);
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("data");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject ob = jsonArray.getJSONObject(i);
-                            //if(ob.getInt("selling_items__count")>0){ }
-                            TabsItem tabsItem = new TabsItem();
-                            tabsItem.setTitle(ob.getString("shop_name"));
-                            tabsItem.setImage(ob.getString("shop_image"));
+        ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListener<retrofit2.Response<JsonObject>, String>() {
+            @Override
+            public void onDataFetched(retrofit2.Response<JsonObject> res, int statusCode) {
 
-                            if (slug.equals("root"))
-                                tabsItem.setSlug(ob.getString("slug"));
-                            else
-                                tabsItem.setSlug(ob.getString("shop_slug"));
+                progressBar2.setVisibility(View.GONE);
+                try {
 
+                    JsonArray jsonArray = res.body().getAsJsonArray("data");
 
-                            tabsItem.setCategory(category);
-                            itemList.add(tabsItem);
-                            adapter.notifyItemInserted(itemList.size());
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        JsonObject ob = jsonArray.get(i).getAsJsonObject();
+                        TabsItem tabsItem = new TabsItem();
+                        tabsItem.setTitle(ob.get("shop_name").getAsString());
+                        tabsItem.setImage(ob.get("shop_image").getAsString());
+                        tabsItem.setSlug(ob.get("slug").getAsString());
 
-                        }
+                        if (slug.equals("root"))
+                            tabsItem.setSlug(ob.get("slug").getAsString());
+                        else
+                            tabsItem.setSlug(ob.get("shop_slug").getAsString());
 
+                        tabsItem.setCategory(category);
+                        itemList.add(tabsItem);
+                        adapter.notifyItemInserted(itemList.size());
 
-                        stopShimmer();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }, error -> {
-                    error.printStackTrace();
 
-                    progressBar2.setVisibility(View.GONE);
-                });
+                    stopShimmer();
 
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "brand_error", Toast.LENGTH_SHORT).show();
+                }
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            }
+            @Override
+            public void onFailed(String body, int errorCode) {
+                progressBar2.setVisibility(View.GONE);
+            }
+        });
 
-
-        request.setShouldCache(false);
-
-        rq.add(request);
     }
 
 }

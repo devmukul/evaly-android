@@ -58,6 +58,29 @@ public class ProductApiHelper extends ApiHelper{
         });
     }
 
+    public static void getShopsOfCategories(String category, int page, int limit, ResponseListener<Response<JsonObject>, String> listener) {
+
+        IApiClient iApiClient = getiApiClient();
+        Call<JsonObject> call;
+
+        if (category.equals("root"))
+            call = iApiClient.getShopsOfCategories(page,limit);
+        else
+            call = iApiClient.getShopsOfCategories(category,page,limit);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                listener.onDataFetched(response, response.code());
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                listener.onFailed(t.getMessage(),0);
+            }
+        });
+    }
+
 
 
 }
