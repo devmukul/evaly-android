@@ -75,8 +75,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private LinearLayout voucher;
     private ShimmerFrameLayout shimmer;
     private boolean isShimmerShowed = false;
-    private Timer timer;
-    private RequestQueue rq;
     private View view;
     private String defaultCategory = "root";
     private UserDetails userDetails;
@@ -100,9 +98,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         view = inflater.inflate(R.layout.fragment_home, container, false);
         activity = (MainActivity) getActivity();
         context = getContext();
-        rq = Volley.newRequestQueue(context);
 
-        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        swipeLayout = view.findViewById(R.id.swipe_refresh);
         swipeLayout.setOnRefreshListener(this);
 
         return view;
@@ -153,16 +150,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         voucher.setOnClickListener(v -> {
-
-
             CampaignBottomSheetFragment campaignBottomSheetFragment = CampaignBottomSheetFragment.newInstance();
             campaignBottomSheetFragment.show(getFragmentManager(), "Campaign BottomSheet");
-
-//            Intent ni = new Intent(context, CampaignShopActivity.class);
-//            ni.putExtra("title", "Pre-Anniversary Sale");
-//            ni.putExtra("slug", "anniversary-pre-sale-stores");
-//            startActivity(ni);
-
         });
 
 

@@ -17,8 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -56,7 +54,6 @@ public class HomeTabsFragment extends Fragment {
     private boolean isEmpty = false;
     private int brandCounter=1,shopCounter=1;
     private ProgressBar progressBar2;
-    private RequestQueue rq;
     private List<CategoryEntity> categoryItems;
     public ShimmerFrameLayout shimmer;
 
@@ -84,7 +81,6 @@ public class HomeTabsFragment extends Fragment {
 
         }
 
-        rq = Volley.newRequestQueue(context);
 
         return view;
     }

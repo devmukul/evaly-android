@@ -18,8 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -51,7 +49,6 @@ public class SubTabsFragment extends Fragment {
     private View view;
     private int brandCounter=1,shopCounter=1;
     private ProgressBar progressBar2;
-    private RequestQueue rq;
     public ShimmerFrameLayout shimmer;
 
     private String json = "[]";
@@ -79,7 +76,6 @@ public class SubTabsFragment extends Fragment {
         } catch (Exception e){
         }
 
-        rq = Volley.newRequestQueue(context);
 
         return view;
     }

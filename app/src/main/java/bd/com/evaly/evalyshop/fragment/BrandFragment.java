@@ -21,8 +21,6 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -62,7 +60,6 @@ public class BrandFragment extends Fragment {
     }
 
 
-    RequestQueue rq;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_brand, container, false);
@@ -70,7 +67,6 @@ public class BrandFragment extends Fragment {
         context = getContext();
         mainActivity = (MainActivity) getActivity();
 
-        rq = Volley.newRequestQueue(context);
 
         return view;
     }
