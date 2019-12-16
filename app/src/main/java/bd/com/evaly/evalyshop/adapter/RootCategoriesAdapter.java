@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +23,12 @@ import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 
-public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapter2.MyViewHolder>{
+public class RootCategoriesAdapter extends RecyclerView.Adapter<RootCategoriesAdapter.MyViewHolder>{
 
     Context context;
     List<CategoryEntity> itemList;
 
-    public HomeCategoryAdapter2(Context ctx, List<CategoryEntity> list){
+    public RootCategoriesAdapter(Context ctx, List<CategoryEntity> list){
         context=ctx;
         itemList = list;
     }
@@ -136,9 +135,5 @@ public class HomeCategoryAdapter2 extends RecyclerView.Adapter<HomeCategoryAdapt
     }
 
 
-    public static String getTypeOfDrawable(int drawableId,Context context) {
-        Drawable resImg = context.getResources().getDrawable(drawableId);
-        return resImg.getClass().toString().replace("class android.graphics.drawable.","");
-    }
 
 }

@@ -29,7 +29,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.SearchCategory;
-import bd.com.evaly.evalyshop.adapter.HomeCategoryAdapter2;
+import bd.com.evaly.evalyshop.adapter.RootCategoriesAdapter;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -43,7 +43,7 @@ public class HomeTabsFragment extends Fragment {
     private RecyclerView recyclerView;
     private TabsAdapter adapter;
     private Context context;
-    private HomeCategoryAdapter2 adapter2;
+    private RootCategoriesAdapter adapter2;
     private ArrayList<TabsItem> itemList;
     private int type = 1;
     private String slug = "root";
@@ -105,7 +105,7 @@ public class HomeTabsFragment extends Fragment {
 
             CategoryUtils categoryUtils = new CategoryUtils(context);
 
-            adapter2 = new HomeCategoryAdapter2(context, categoryItems);
+            adapter2 = new RootCategoriesAdapter(context, categoryItems);
             recyclerView.setAdapter(adapter2);
 
             adapter2.notifyDataSetChanged();

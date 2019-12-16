@@ -174,8 +174,8 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textViewAndroid,price,priceDiscount, sku, buyNow, tvCashback;
-        ImageView imageViewAndroid,favorite;
+        TextView textViewAndroid,price,priceDiscount,buyNow,tvCashback;
+        ImageView imageViewAndroid;
         View itemView;
 
         public MyViewHolder(final View itemView) {
@@ -188,11 +188,6 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             tvCashback = itemView.findViewById(R.id.tvCashback);
             this.itemView = itemView;
         }
-    }
-
-    public void addItem(ProductItem pr){
-        productsList.add(pr);
-        notifyDataSetChanged();
     }
 
     public void setFilter(ArrayList<ProductItem> ar){
