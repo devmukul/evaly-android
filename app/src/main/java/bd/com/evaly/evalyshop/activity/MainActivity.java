@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -63,7 +62,6 @@ import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
-import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
@@ -73,26 +71,20 @@ import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
 
-    HomeFragment homeFragment;
-    BottomNavigationView bottomNavigationView;
-    DrawerLayout drawer;
-    Toolbar toolbar;
-    NavigationView navigationView, navigationView2;
-    ImageView menuBtn, user;
-    String TAG1 = "first", TAG2 = "second", TAG3 = "third";
-    UserDetails userDetails;
-    TextView userNameNavHeader;
-    TextView phoneNavHeader;
-    DbHelperWishList dbHelperWishList;
-    DbHelperCart dbHelperCart;
+    private HomeFragment homeFragment;
+    private BottomNavigationView bottomNavigationView;
+    private DrawerLayout drawer;
+    private Toolbar toolbar;
+    private NavigationView navigationView, navigationView2;
+    private UserDetails userDetails;
+    private TextView userNameNavHeader;
+    private TextView phoneNavHeader;
+    private DbHelperWishList dbHelperWishList;
+    private DbHelperCart dbHelperCart;
     public boolean isLaunchActivity = true;
     private View headerView;
-
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
-    ViewDialog dialog;
-//    private SessionManager sessionManager;
-
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
 
@@ -164,20 +156,14 @@ public class MainActivity extends BaseActivity {
         navigationView = findViewById(R.id.nav_view);
         navigationView2 = findViewById(R.id.nav_view2);
         headerView = navigationView.getHeaderView(0);
-
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         userNameNavHeader = headerView.findViewById(R.id.userNameNavHeader);
         phoneNavHeader = headerView.findViewById(R.id.phone);
-//        homeFragment = new HomeFragment();
         userDetails = new UserDetails(this);
-
-        dialog = new ViewDialog(this);
-
 
         // check for update
 
         checkUpdate();
-
 
         dbHelperWishList = new DbHelperWishList(this);
         dbHelperCart = new DbHelperCart(this);
@@ -277,9 +263,6 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_contact:
                         startActivity(new Intent(MainActivity.this, ContactActivity.class));
                         break;
-//                    case R.id.nav_about:
-//                        startActivity(new Intent(MainActivity.this,AboutActivity.class));
-//                        break;
                     case R.id.nav_sign_in:
                         startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         break;
@@ -311,13 +294,9 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_contact:
                         startActivity(new Intent(MainActivity.this, ContactActivity.class));
                         break;
-//                    case R.id.nav_about:
-//                        startActivity(new Intent(MainActivity.this,AboutActivity.class));
-//                        break;
                     case R.id.nav_home:
                         finish();
                         startActivity(getIntent());
-                        //this.overridePendingTransition(0, 0);
                         break;
                     case R.id.nav_account:
                         startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
@@ -351,12 +330,9 @@ public class MainActivity extends BaseActivity {
 
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
-
         Fragment fragmentWishtList = WishListFragment.newInstance();
 
-
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
-
 
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -375,16 +351,11 @@ public class MainActivity extends BaseActivity {
                         while (fragmentManager.getBackStackEntryCount() > 0) {
                             fragmentManager.popBackStackImmediate();
                         }
-
                         showHomeFragment();
-
                     }
-
 
                     break;
                 case R.id.nav_wishlist:
-//                    intent = new Intent(MainActivity.this, WishListActivity.class);
-//                    startActivity(intent);
                     try {
                         Fragment fragmentW = fragmentManager.findFragmentByTag("wishlist");
                         if (fragmentW == null) {
@@ -425,8 +396,6 @@ public class MainActivity extends BaseActivity {
         Intent data = getIntent();
 
         if (data.hasExtra("type")) {
-
-
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             int type = data.getIntExtra("type", 1);
@@ -493,27 +462,19 @@ public class MainActivity extends BaseActivity {
 
         exitDialogBuilder = new AlertDialog.Builder(this)
                 .setMessage("Are you sure you want to close the app?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        exitDialog.dismiss();
-                        finish();
-                    }
-
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    exitDialog.dismiss();
+                    finish();
                 })
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
 
 
         final Handler handler2 = new Handler();
-        handler2.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                FacebookSdk.setAutoLogAppEventsEnabled(false);
-                FacebookSdk.clearLoggingBehaviors();
-                FacebookSdk.fullyInitialize();
-            }
+        handler2.postDelayed(() -> {
+            FacebookSdk.setAutoLogAppEventsEnabled(false);
+            FacebookSdk.clearLoggingBehaviors();
+            FacebookSdk.fullyInitialize();
         }, 2000);
 
 
@@ -550,22 +511,6 @@ public class MainActivity extends BaseActivity {
 
     private void startXmppService() {
         startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
-
-        //Start XMPP Service (if not running already)
-//        if (!XMPPService.isServiceRunning) {
-//            Intent intent = new Intent(this, XMPPService.class);
-//            mChatApp.UnbindService();
-//            mChatApp.BindService(intent);
-//        } else {
-//            xmppHandler = AppController.getmService().xmpp;
-//            if (!xmppHandler.isConnected()) {
-//                xmppHandler.connect();
-//            } else {
-//                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-//                xmppHandler.login();
-//            }
-//        }
-
     }
 
     private void disconnectXmpp(){
@@ -601,30 +546,6 @@ public class MainActivity extends BaseActivity {
                 finish();
             }
         }
-//        else{
-//
-//            showHomeFragment();
-//
-//
-////            finish();
-////            this.startActivity(getIntent());
-////            this.overridePendingTransition(0, 0);
-//
-//
-////            Fragment fragment3 = new HomeFragment();
-////            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-////            //ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-////
-////            FragmentManager fm = getSupportFragmentManager();
-////            for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-////                fm.popBackStack();
-////            }
-////
-////            ft.replace(R.id.fragment_container, fragment3,"Home");
-////            ft.addToBackStack(null);
-////            ft.commit();
-//        }
-//
     }
 
     @Override
@@ -683,9 +604,6 @@ public class MainActivity extends BaseActivity {
         disconnectXmpp();
         super.onDestroy();
 
-        // Glide.with(getApplicationContext()).pauseRequests();
-
-
     }
 
 
@@ -710,38 +628,27 @@ public class MainActivity extends BaseActivity {
         builder.setTitle("No Internet Connection");
         final String[] a = {"Turn on Wi-Fi", "Turn on Mobile Data"};
         final int[] select = new int[1];
-        builder.setSingleChoiceItems(a, 0, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (i == 0)
-                    select[0] = 1;
-                else if (i == 1)
-                    select[0] = 2;
-            }
+        builder.setSingleChoiceItems(a, 0, (dialogInterface, i) -> {
+            if (i == 0)
+                select[0] = 1;
+            else if (i == 1)
+                select[0] = 2;
         });
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (select[0] == 1) {
-                    WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
-                    wifiManager.setWifiEnabled(true);
-                    Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            if (select[0] == 1) {
+                WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
+                wifiManager.setWifiEnabled(true);
+                Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
 
-                } else if (select[0] == 2) {
-                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                } else {
-                    WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
-                    wifiManager.setWifiEnabled(true);
-                    Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
-                }
+            } else if (select[0] == 2) {
+                startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+            } else {
+                WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
+                wifiManager.setWifiEnabled(true);
+                Toast.makeText(MainActivity.this, "Turning on WiFi...", Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         return builder;
     }
 
