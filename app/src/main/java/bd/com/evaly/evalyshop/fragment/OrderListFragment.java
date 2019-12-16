@@ -157,7 +157,7 @@ public class OrderListFragment extends Fragment {
                 if (response != null) {
                     if (response.getCount() == 0 && page == 1) {
                         notOrdered.setVisibility(View.VISIBLE);
-                        Glide.with(context)
+                        Glide.with(getActivity().getApplicationContext())
                                 .load(R.drawable.ic_emptycart_new)
                                 .apply(new RequestOptions().override(700, 700))
                                 .into((ImageView) view.findViewById(R.id.noImage));

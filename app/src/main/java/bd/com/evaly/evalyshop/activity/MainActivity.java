@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity {
 
     private HomeFragment homeFragment;
     private BottomNavigationView bottomNavigationView;
-    private DrawerLayout drawer;
+    public DrawerLayout drawer;
     private Toolbar toolbar;
     private NavigationView navigationView, navigationView2;
     private UserDetails userDetails;

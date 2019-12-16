@@ -25,12 +25,10 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 
 public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.MyViewHolder> {
     private Context mContext;
     private List<ProductItem> productsList;
-    private DbHelperWishList db;
     private String shopSlug = "";
     private int cashback_rate  = 0;
 
@@ -51,8 +49,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_product_grid_item, null);
-        db=new DbHelperWishList(mContext);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_product_grid_item, parent, false);
         return new MyViewHolder(view);
     }
 
