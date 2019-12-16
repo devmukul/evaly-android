@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,25 +18,15 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Timer;
 
 import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
@@ -148,7 +137,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         });
 
-
         voucher.setOnClickListener(v -> {
             CampaignBottomSheetFragment campaignBottomSheetFragment = CampaignBottomSheetFragment.newInstance();
             campaignBottomSheetFragment.show(getFragmentManager(), "Campaign BottomSheet");
@@ -156,7 +144,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         LinearLayout wholesale = view.findViewById(R.id.evaly_wholesale);
-
         wholesale.setOnClickListener(v -> startActivity(new Intent(context, NewsfeedActivity.class)));
 
         userDetails = new UserDetails(context);
@@ -188,21 +175,17 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         getSliderImage();
 
         if (nestedSV != null) {
-            nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    String TAG = "nested_sync";
-                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                        Log.i(TAG, "BOTTOM SCROLL");
-                        try {
-                            ((ProgressBar) view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-                            productGrid.loadNextPage();
+            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                    try {
+                        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+                        productGrid.loadNextPage();
 
-                        } catch (Exception e)
-                        {
-                            Log.e("load more product", e.toString());
-                        }
-                    } }
+                    } catch (Exception e)
+                    {
+                        Log.e("load more product", e.toString());
+                    }
+                }
             });
         }
 
@@ -212,7 +195,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }catch (Exception e){
             Log.e("exception", e.toString());
         }
-
 
         HomeTabsFragment categoryFragment = new HomeTabsFragment();
         Bundle bundle = new Bundle();
@@ -242,13 +224,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-
-                shimmer.stopShimmer();
-                shimmer.setVisibility(View.GONE);
-
-            }
+        handler.postDelayed(() -> {
+            shimmer.stopShimmer();
+            shimmer.setVisibility(View.GONE);
         }, 300);
 
     }
@@ -301,97 +279,48 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         if (!userDetails.getRef().equals("")){
 
-            String url = "https://nsuer.club/evaly/referral/submit-referral.php";
+            HashMap<String, String> params = new HashMap<>();
 
-            StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
-                Log.d("json", response);
+            params.put("token", userDetails.getToken().trim());
+            params.put("referred_by", userDetails.getRef().trim());
+            params.put("device_id", Utils.getDeviceID(context).trim());
 
-                try{
-                    JSONObject jsonObject = new JSONObject(response);
-                    String message = jsonObject.getString("message");
+            GeneralApiHelper.checkReferral(params, new ResponseListenerAuth<JsonObject, String>() {
+                @Override
+                public void onDataFetched(JsonObject response, int statusCode) {
+
+                    String message = response.get("message").getAsString();
+
                     if (!message.equals("")) {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-
                         userDetails.setRef("");
-
                     }
 
-                } catch (Exception e){
-
-                    Toast.makeText(context, "Couldn't verify invitation code.", Toast.LENGTH_LONG).show();
-                }
-            }, error -> {
-                Log.e("onErrorResponse", error.toString());
-
-                Toast.makeText(context, "Server error occurred, couldn't verify invitation code.", Toast.LENGTH_LONG).show();
-
-            }) {
-
-                @Override
-                public Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<>();
-
-                    params.put("token", userDetails.getToken().trim());
-                    params.put("referred_by", userDetails.getRef().trim());
-                    params.put("device_id", Utils.getDeviceID(context).trim());
-
-                    Log.d("json params", params.toString());
-
-                    return params;
                 }
 
                 @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<>();
-                    return headers;
+                public void onFailed(String errorBody, int errorCode) {
+
+                    Toast.makeText(context, "Server error occurred, couldn't verify invitation code.", Toast.LENGTH_LONG).show();
+
                 }
-            };
-            request.setShouldCache(false);
-            request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            rq.add(request);
 
+                @Override
+                public void onAuthError(boolean logout) {
 
+                }
+            });
 
         }
 
     }
-
 
 
     @Override
     public void onResume() {
-
         getNotificationCount();
         super.onResume();
-
-
     }
-
-    @Override
-    public void onPause() {
-
-        super.onPause();
-    }
-
-
-
-
-    public void hideShimmer(){
-
-        try {
-
-            shimmer.stopShimmer();
-        } catch (Exception e){
-
-        }
-        shimmer.setVisibility(View.GONE);
-        isShimmerShowed = true;
-
-    }
-
-
 
     public void getSliderImage(){
 

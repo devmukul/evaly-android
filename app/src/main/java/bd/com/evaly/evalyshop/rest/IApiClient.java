@@ -175,5 +175,10 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL+"reviews/summmary/shops/{sku}/")
     Call<JsonObject> getShopReviews(@Path("sku") String sku);
 
+    // referral
+
+    @POST("https://nsuer.club/evaly/referral/submit-referral.php")
+    Call<JsonObject> checkReferral(@Body HashMap<String, String> body);
+
 
 }

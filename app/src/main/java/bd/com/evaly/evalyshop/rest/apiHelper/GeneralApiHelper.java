@@ -49,4 +49,9 @@ public class GeneralApiHelper extends ApiHelper{
 
 
 
+    public static void checkReferral(HashMap<String,String> body, ResponseListenerAuth<JsonObject, String> listener){
+        getiApiClient().checkReferral(body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
 }
