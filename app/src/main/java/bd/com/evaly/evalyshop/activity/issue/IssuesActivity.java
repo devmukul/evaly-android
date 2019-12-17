@@ -1,13 +1,7 @@
 package bd.com.evaly.evalyshop.activity.issue;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -29,9 +29,9 @@ import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.issue.IssuesModel;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -80,14 +80,21 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
             @Override
             public void onDataFetched(Response<JsonObject> response) {
                 dialog.hideDialog();
-                List<IssuesModel> models = new Gson().fromJson(response.body().get("results"), new TypeToken<List<IssuesModel>>(){}.getType());
-                list.addAll(models);
-                adapter.notifyDataSetChanged();
+                if (response.body()!=null) {
 
-                if (list.size() == 0){
+                    List<IssuesModel> models = new Gson().fromJson(response.body().get("results"), new TypeToken<List<IssuesModel>>() {
+                    }.getType());
+                    list.addAll(models);
+                    adapter.notifyDataSetChanged();
+
+                    if (list.size() == 0) {
+                        noIssue.setVisibility(View.VISIBLE);
+                    } else {
+                        noIssue.setVisibility(View.GONE);
+                    }
+                } else {
+
                     noIssue.setVisibility(View.VISIBLE);
-                }else {
-                    noIssue.setVisibility(View.GONE);
                 }
             }
 
