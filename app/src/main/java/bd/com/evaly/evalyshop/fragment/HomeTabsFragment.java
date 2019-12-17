@@ -117,11 +117,13 @@ public class HomeTabsFragment extends Fragment {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
 
-                        getActivity().runOnUiThread(() -> {
-                            categoryItems.addAll(response);
-                            adapter2.notifyDataSetChanged();
-                            stopShimmer();
-                        });
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                categoryItems.addAll(response);
+                                adapter2.notifyDataSetChanged();
+                                stopShimmer();
+                            });
+                        }
 
                        // skeletonScreen.hide();
                     }
@@ -136,11 +138,13 @@ public class HomeTabsFragment extends Fragment {
                 categoryUtils.getLocalCategoryList(new DataFetchingListener<List<CategoryEntity>>() {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
-                        getActivity().runOnUiThread(() -> {
-                            categoryItems.addAll(response);
-                            adapter2.notifyDataSetChanged();
-                            stopShimmer();
-                        });
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                categoryItems.addAll(response);
+                                adapter2.notifyDataSetChanged();
+                                stopShimmer();
+                            });
+                        }
                     }
 
                     @Override
