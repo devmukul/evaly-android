@@ -822,7 +822,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void checkCardBalance(){
 
-        String url=UrlUtils.BASE_URL_AUTH_API+"user-info-pay/"+userDetails.getUserName()+"/";
+        String url=UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName()+"/";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
             Log.d("onResponse", response.toString());
@@ -863,7 +863,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", CredentialManager.getToken());
                 return headers;
