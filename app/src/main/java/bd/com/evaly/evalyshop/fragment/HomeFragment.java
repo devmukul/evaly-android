@@ -332,13 +332,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     sliderPager.setAdapter(new SliderAdapter(context, activity, sliderImages));
                     sliderIndicator.setupWithViewPager(sliderPager, true);
                 }else {
-                    Toast.makeText(getContext(), getContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                    // Toast.makeText(getContext(), getContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailed(int status) {
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                // Toast.makeText(getContext(), getContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
             }
         });
 
