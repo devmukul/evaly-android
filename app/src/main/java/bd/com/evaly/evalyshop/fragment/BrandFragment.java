@@ -25,7 +25,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import java.util.regex.Matcher;
@@ -154,11 +153,6 @@ public class BrandFragment extends Fragment {
                 if(count==0){
                     LinearLayout noItem = view.findViewById(R.id.noItem);
                     noItem.setVisibility(View.VISIBLE);
-
-                    Glide.with(getContext())
-                            .load(R.drawable.ic_emptycart)
-                            .apply(new RequestOptions().override(600, 600))
-                            .into(placeHolder);
                     progressBar.setVisibility(View.GONE);
                     // Toast.makeText(context, "No product is available", Toast.LENGTH_SHORT).show();
                 }
