@@ -96,8 +96,6 @@ import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 
 public class ShopFragment extends Fragment implements ProductListener {
 
@@ -475,19 +473,19 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
                                                     } else {
-                                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(getContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                                                     }
                                                 }
 
                                                 @Override
                                                 public void onFailed(int status) {
                                                     dialog.hideDialog();
-                                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                                                 }
                                             });
                                         }
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
                                     }
                                 } else {
                                     startXmppService();

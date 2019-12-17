@@ -31,7 +31,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.facebook.FacebookSdk;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
@@ -468,15 +467,6 @@ public class MainActivity extends BaseActivity {
                 })
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
-
-
-        final Handler handler2 = new Handler();
-        handler2.postDelayed(() -> {
-            FacebookSdk.setAutoLogAppEventsEnabled(false);
-            FacebookSdk.clearLoggingBehaviors();
-            FacebookSdk.fullyInitialize();
-        }, 2000);
-
 
     }
 
