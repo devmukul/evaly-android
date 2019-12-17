@@ -9,8 +9,6 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -39,13 +37,10 @@ public class ProductGrid {
     private int current = 1, type = 0, maxPrice = 0, minPrice = 0;
     private ProductGridAdapter adapterViewAndroid;
     private ProgressBar progressBar;
-    private RequestQueue rq;
     private NestedScrollView scrollView;
     private boolean isLoading = false;
     private ProductListener listener;
     private int cashbackRate = 0;
-
-
 
 
     public void setListener(ProductListener listener) {
@@ -65,9 +60,6 @@ public class ProductGrid {
         this.recyclerView = recyclerView;
         this.categorySlug = categorySlug;
         this.progressBar = progressBar;
-
-
-        rq = Volley.newRequestQueue(context);
 
         products = new ArrayList<>();
         mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -98,8 +90,6 @@ public class ProductGrid {
         this.shopSlug = shopSlug;
         this.progressBar = progressBar;
 
-
-        rq = Volley.newRequestQueue(context);
 
         products = new ArrayList<>();
 

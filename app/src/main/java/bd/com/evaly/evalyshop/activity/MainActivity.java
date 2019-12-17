@@ -59,7 +59,6 @@ import bd.com.evaly.evalyshop.preference.MyPreference;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
@@ -484,8 +483,6 @@ public class MainActivity extends BaseActivity {
 
         }
 
-        Token.update(this, false);
-
 
     }
 
@@ -551,7 +548,6 @@ public class MainActivity extends BaseActivity {
 
 
         if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()) {
-            Token.update(this, false);
 
             ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
 
