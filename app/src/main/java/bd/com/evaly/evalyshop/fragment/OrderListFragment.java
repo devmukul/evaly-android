@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -18,9 +17,6 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,10 +153,6 @@ public class OrderListFragment extends Fragment {
                 if (response != null) {
                     if (response.getCount() == 0 && page == 1) {
                         notOrdered.setVisibility(View.VISIBLE);
-                        Glide.with(getActivity().getApplicationContext())
-                                .load(R.drawable.ic_emptycart_new)
-                                .apply(new RequestOptions().override(700, 700))
-                                .into((ImageView) view.findViewById(R.id.noImage));
                         recyclerView.setVisibility(View.GONE);
                         nestedSV.setBackgroundColor(Color.WHITE);
                     } else {
