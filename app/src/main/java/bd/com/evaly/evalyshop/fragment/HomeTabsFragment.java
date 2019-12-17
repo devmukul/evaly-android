@@ -259,7 +259,7 @@ public class HomeTabsFragment extends Fragment {
                         JsonObject ob = response.get(i).getAsJsonObject();
                         TabsItem tabsItem = new TabsItem();
                         tabsItem.setTitle(ob.get("name").getAsString());
-                        tabsItem.setImage(ob.get("image_url").getAsString());
+                        tabsItem.setImage(ob.get("image_url").isJsonNull()? null : ob.get("image_url").getAsString());
                         tabsItem.setSlug(ob.get("slug").getAsString());
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
@@ -297,7 +297,7 @@ public class HomeTabsFragment extends Fragment {
                         JsonObject ob = jsonArray.get(i).getAsJsonObject();
                         TabsItem tabsItem = new TabsItem();
                         tabsItem.setTitle(ob.get("name").getAsString());
-                        tabsItem.setImage(ob.get("image_url").getAsString());
+                        tabsItem.setImage(ob.get("image_url").isJsonNull()? null : ob.get("image_url").getAsString());
                         tabsItem.setSlug(ob.get("slug").getAsString());
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
@@ -340,7 +340,7 @@ public class HomeTabsFragment extends Fragment {
                         JsonObject ob = jsonArray.get(i).getAsJsonObject();
                         TabsItem tabsItem = new TabsItem();
                         tabsItem.setTitle(ob.get("shop_name").getAsString());
-                        tabsItem.setImage(ob.get("shop_image").getAsString());
+                        tabsItem.setImage(ob.get("shop_image").isJsonNull()? null : ob.get("shop_image").getAsString());
 
                         if (slug.equals("root"))
                             tabsItem.setSlug(ob.get("slug").getAsString());

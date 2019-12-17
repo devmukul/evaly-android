@@ -177,7 +177,6 @@ public class ProductGrid {
                             priceMin = (int) Double.parseDouble(response2.get("item_price").getAsString());
                             priceMax = (int) Double.parseDouble(response2.get("item_price").getAsString());
 
-
                         } catch (Exception e) {
 
                             Log.d("json exc", e.toString());
@@ -193,14 +192,9 @@ public class ProductGrid {
                         item.setMaxPrice(String.valueOf(priceMax));
                         item.setMinPrice(String.valueOf(priceMin));
 
-                        if (response2.has("discounted_price")) {
+                        if (response2.has("discounted_price"))
+                            item.setMinDiscountedPrice(response2.get("discounted_price").isJsonNull()? "0" : response2.get("discounted_price").getAsString());
 
-                            String d_price = response2.get("discounted_price").getAsString();
-                            if (d_price.equals("null"))
-                                item.setMinDiscountedPrice("0");
-                            else
-                                item.setMinDiscountedPrice(d_price);
-                        }
                         products.add(item);
                         adapterViewAndroid.notifyItemInserted(products.size());
                     }
@@ -222,7 +216,6 @@ public class ProductGrid {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
 
                 progressBar.setVisibility(View.GONE);
 
