@@ -360,30 +360,33 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
 
         ShopItem firstItem = itemsList.get(position);
-        productName.setText(firstItem.getShopItemName());
-        shopName.setText("Seller: " + firstItem.getShopName());
-        productPrice.setText("৳ "+firstItem.getShopItemPrice() + " x 1");
-        productQuantity.setText("1");
-        productTotalPrice.setText("৳ "+firstItem.getShopItemPrice());
-
-        shop_item_id = firstItem.getShopItemId();
 
         try {
 
-            productPriceInt = Integer.parseInt(firstItem.getShopItemPrice());
+            productPriceInt = (int) Math.ceil(Double.parseDouble(firstItem.getShopItemPrice()));
 
         } catch (Exception e){ }
 
 
         if (!firstItem.getShopItemDiscountedPrice().equals("0")) {
 
-            productPrice.setText("৳ " + firstItem.getShopItemDiscountedPrice() + " x 1");
-            productTotalPrice.setText("৳ " + firstItem.getShopItemDiscountedPrice());
+            int disPrice = (int) Math.ceil(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
 
-            try {
-                productPriceInt = Integer.parseInt(firstItem.getShopItemDiscountedPrice());
-            } catch (Exception e){ }
+            productPrice.setText("৳ " + disPrice + " x 1");
+            productTotalPrice.setText("৳ " + disPrice);
+
+            productPriceInt = disPrice;
         }
+
+        productName.setText(firstItem.getShopItemName());
+        shopName.setText("Seller: " + firstItem.getShopName());
+        productPrice.setText("৳ "+productPriceInt + " x 1");
+        productQuantity.setText("1");
+        productTotalPrice.setText("৳ "+productPriceInt);
+
+        shop_item_id = firstItem.getShopItemId();
+
+
 
         Glide.with(context)
                 .load(firstItem.getShopItemImage())
