@@ -49,8 +49,8 @@ public class OrderDetailsProductAdapter extends RecyclerView.Adapter<OrderDetail
             myViewHolder.variation.setText(orderDetailsProducts.get(i).getVariation());
         }
 
-        myViewHolder.amount.setText(String.format("%.2f", Math.ceil(Double.parseDouble(orderDetailsProducts.get(i).getAmount()))));
-        myViewHolder.productQuantity.setText(orderDetailsProducts.get(i).getProductRate()+" x "+orderDetailsProducts.get(i).getProductQuantity());
+        myViewHolder.amount.setText(Math.round(Double.parseDouble(orderDetailsProducts.get(i).getAmount()))+"");
+        myViewHolder.productQuantity.setText(Math.round(Double.parseDouble(orderDetailsProducts.get(i).getProductRate()))+" x "+orderDetailsProducts.get(i).getProductQuantity());
         Glide.with(context).
                 load(orderDetailsProducts.get(i).getImageUrl())
                 .apply(new RequestOptions().override(300, 300))

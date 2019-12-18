@@ -88,7 +88,7 @@ public class ProductItem {
 
 	public double getMaxPriceD(){
 		try {
-			return Math.ceil(Double.parseDouble(maxPrice));
+			return Math.round(Double.parseDouble(maxPrice));
 		}catch (Exception e){
 			return 0.0;
 		}
@@ -96,7 +96,7 @@ public class ProductItem {
 
 	public double getMinPriceD(){
 		try {
-			return Math.ceil(Double.parseDouble(minPrice));
+			return Math.round(Double.parseDouble(minPrice));
 		}catch (Exception e){
 			return 0.0;
 		}
@@ -104,7 +104,7 @@ public class ProductItem {
 
 	public double getMinDiscountedPriceD(){
 		try {
-			return Math.ceil(Double.parseDouble(minDiscountedPrice));
+			return Math.round(Double.parseDouble(minDiscountedPrice));
 		}catch (Exception e){
 			return 0.0;
 		}

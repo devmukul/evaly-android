@@ -101,8 +101,8 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
         try {
 
-            String actualPrice = Integer.toString((int) Math.ceil(Double.parseDouble(availableShops.get(i).getMaximumPrice())));
-            String discountPrice = Integer.toString((int) Math.ceil(Double.parseDouble(availableShops.get(i).getPrice())));
+            String actualPrice = Integer.toString((int) Math.round(Double.parseDouble(availableShops.get(i).getMaximumPrice())));
+            String discountPrice = Integer.toString((int) Math.round(Double.parseDouble(availableShops.get(i).getPrice())));
 
 
             if (availableShops.get(i).getDiscountValue() == 0) {
@@ -183,7 +183,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                     }
 
                     try {
-                        cartItem.setPrice((int) Math.ceil(Double.parseDouble(availableShops.get(i).getMaximumPrice())));
+                        cartItem.setPrice((int) Math.round(Double.parseDouble(availableShops.get(i).getMaximumPrice())));
                     } catch (Exception e){
                         cartItem.setPrice(0);
                     }

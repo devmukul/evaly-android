@@ -261,7 +261,7 @@ public class  Utils {
                 t = String.valueOf(8 * Integer.parseInt(e.substring(e.length() - 4)) - 2019);
             }
             }catch(Exception e){
-                t = String.valueOf(Math.floor(9e4 * Math.random()) + 1e4);
+                t = String.valueOf(Math.round(9e4 * Math.random()) + 1e4);
             }
             String encoded = t;
 

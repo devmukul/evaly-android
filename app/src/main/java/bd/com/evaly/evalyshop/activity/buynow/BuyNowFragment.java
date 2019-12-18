@@ -363,14 +363,14 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         try {
 
-            productPriceInt = (int) Math.ceil(Double.parseDouble(firstItem.getShopItemPrice()));
+            productPriceInt = (int) Math.round(Double.parseDouble(firstItem.getShopItemPrice()));
 
         } catch (Exception e){ }
 
 
         if (!firstItem.getShopItemDiscountedPrice().equals("0")) {
 
-            int disPrice = (int) Math.ceil(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
+            int disPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
 
             productPrice.setText("৳ " + disPrice + " x 1");
             productTotalPrice.setText("৳ " + disPrice);
@@ -420,7 +420,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
             String sellerJson = new Gson().toJson(firstItem);
 
-            if(db.insertData(shop_item_slug,firstItem.getShopItemName(),firstItem.getShopItemImage(), (int) Math.ceil(Double.parseDouble(price)), calendar.getTimeInMillis(), sellerJson, 1, firstItem.getShopSlug(), String.valueOf(firstItem.getShopItemId()))){
+            if(db.insertData(shop_item_slug,firstItem.getShopItemName(),firstItem.getShopItemImage(), (int) Math.round(Double.parseDouble(price)), calendar.getTimeInMillis(), sellerJson, 1, firstItem.getShopSlug(), String.valueOf(firstItem.getShopItemId()))){
 
                 Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
                 BuyNowFragment.this.dismiss();

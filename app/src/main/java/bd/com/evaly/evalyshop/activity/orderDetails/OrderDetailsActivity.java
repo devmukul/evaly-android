@@ -3,7 +3,6 @@ package bd.com.evaly.evalyshop.activity.orderDetails;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -44,7 +43,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.badoualy.stepperindicator.StepperIndicator;
@@ -1288,15 +1286,16 @@ public class OrderDetailsActivity extends BaseActivity {
             }catch(Exception e){}
 
             try{
-                totalPriceTextView.setText("৳ " + String.format("%.2f", Double.parseDouble(response.getString("total"))));
+                totalPriceTextView.setText("৳ " + Math.round(Double.parseDouble(response.getString("total"))));
             }catch(Exception e){}
 
             try{
-                paidAmountTextView.setText("৳ " + String.format("%.2f", Double.parseDouble(response.getString("paid_amount"))));
+                paidAmountTextView.setText("৳ " + Math.round(Double.parseDouble(response.getString("paid_amount"))));
             }catch(Exception e){}
 
             try{
-                duePriceTextView.setText("৳ " + String.format("%.2f",(Double.parseDouble(response.getString("total"))-Double.parseDouble(response.getString("paid_amount")))));
+                duePriceTextView.setText("৳ " + (Math.round(Double.parseDouble(response.getString("total"))) - Math.round(Double.parseDouble(response.getString("paid_amount"))))+"");
+
             }catch(Exception e){}
 
 
@@ -1329,8 +1328,8 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
             try {
-                total_amount = Double.parseDouble(response.getString("total"));
-                paid_amount = Double.parseDouble(response.getString("paid_amount"));
+                total_amount = Math.round(Double.parseDouble(response.getString("total")));
+                paid_amount = Math.round(Double.parseDouble(response.getString("paid_amount")));
                 due_amount = total_amount - paid_amount;
 
                 if (due_amount < 1) {
@@ -1383,7 +1382,7 @@ public class OrderDetailsActivity extends BaseActivity {
                                             ob.getString("product_slug"),
                                             ob.getString("order_time_price"),
                                             ob.getString("quantity"),
-                                            (Math.ceil(Double.parseDouble(ob.getString("order_time_price")))*Double.parseDouble(ob.getString("quantity")))+"",
+                                            (Math.round(Double.parseDouble(ob.getString("order_time_price")))*Double.parseDouble(ob.getString("quantity")))+"",
                                             productVariation));
                             orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
                         }catch(Exception e){
@@ -1463,32 +1462,29 @@ public class OrderDetailsActivity extends BaseActivity {
                 adapter.notifyDataSetChanged();
 
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getOrderHistory();
-                        }
+                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        getOrderHistory();
+                    }
 
-                        @Override
-                        public void onFailed(int status) {
+                    @Override
+                    public void onFailed(int status) {
 
-                        }
-                    });
+                    }
+                });
 
-                    return;
+                return;
 
-                }}
+            }}
 
-            }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {

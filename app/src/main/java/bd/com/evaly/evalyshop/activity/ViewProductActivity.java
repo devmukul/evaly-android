@@ -831,8 +831,8 @@ public class ViewProductActivity extends BaseActivity {
                                 int variantID = product_variants.getJSONObject(i).getInt("variant_id");
                                 name = product_variants.getJSONObject(i).getString("product_name");
                                 category = product_variants.getJSONObject(i).getString("category_slug");
-                                int minPrice = (int) Math.ceil(product_variants.getJSONObject(i).getDouble("min_price"));
-                                int maxPrice = (int) Math.ceil(product_variants.getJSONObject(i).getDouble("max_price"));
+                                int minPrice = (int) Math.round(product_variants.getJSONObject(i).getDouble("min_price"));
+                                int maxPrice = (int) Math.round(product_variants.getJSONObject(i).getDouble("max_price"));
                                 String description = product_variants.getJSONObject(i).getString("product_description");
                                 String brandName = product_variants.getJSONObject(i).getString("brand_name");
                                 ArrayList<String> productImages = new ArrayList<>();
@@ -923,7 +923,7 @@ public class ViewProductActivity extends BaseActivity {
 
                         int price = 0;
                         try {
-                            price = (int) Math.ceil(firstVariant.getDouble("min_price"));
+                            price = (int) Math.round(firstVariant.getDouble("min_price"));
                         } catch (Exception e) {
 
                         }
@@ -1179,15 +1179,15 @@ public class ViewProductActivity extends BaseActivity {
                                     item.setShopSlug(ob.getString("shop_slug"));
 
                                     if (ob.getString("discounted_price").equals("null"))
-                                        item.setPrice(String.valueOf((int)Math.ceil(ob.getDouble("price"))));
+                                        item.setPrice(String.valueOf((int)Math.round(ob.getDouble("price"))));
                                     else
-                                        item.setPrice(String.valueOf((int)Math.ceil(ob.getDouble("discounted_price"))));
+                                        item.setPrice(String.valueOf((int)Math.round(ob.getDouble("discounted_price"))));
 
                                     item.setSlug(slug);
                                     item.setProductId(ob.getString("shop_item_id"));
 
                                     if (!ob.getString("discount_value").equals("null"))
-                                        item.setDiscountValue(Math.ceil(ob.getDouble("discount_value")));
+                                        item.setDiscountValue(Math.round(ob.getDouble("discount_value")));
                                     else
                                         item.setDiscountValue(0.0);
 
@@ -1195,7 +1195,7 @@ public class ViewProductActivity extends BaseActivity {
                                     item.setAddress(ob.getString("shop_address"));
                                     item.setShopJson(ob.toString());
                                     item.setStock(true);
-                                    item.setMaximumPrice(String.valueOf((int)Math.ceil(ob.getDouble("price"))));
+                                    item.setMaximumPrice(String.valueOf((int)Math.round(ob.getDouble("price"))));
                                     availableShops.add(item);
                                     adapterm.notifyItemInserted(availableShops.size());
                                 }
