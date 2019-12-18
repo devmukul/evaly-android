@@ -292,7 +292,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:text="Shop-934, Level 9, Multiplan Center, New Elephant Road, Dhaka 1205"
+                                        android:text="Shop-934"
                                         android:textColor="#555"
                                         android:textSize="16sp" />
                                 </LinearLayout>
@@ -492,9 +492,9 @@
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:background="#fafafa"
-                    android:paddingLeft="60dp"
-                    android:paddingTop="30dp"
-                    android:paddingRight="60dp" />
+                    android:paddingLeft="90dp"
+                    android:paddingTop="20dp"
+                    android:paddingRight="90dp" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -502,7 +502,7 @@
                     android:background="#fafafa"
                     android:paddingTop="10dp"
                     android:paddingBottom="30dp"
-                    android:text="No products found in this shop."
+                    android:text="@string/no_products_found_in_this_shop"
                     android:textAlignment="center"
                     android:textSize="16sp" />
             </LinearLayout>
