@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -279,7 +278,7 @@ public class SubTabsFragment extends Fragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(context, "brand_error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Brand loading error", Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
@@ -327,7 +326,6 @@ public class SubTabsFragment extends Fragment {
 
                 } catch (Exception e) {
 
-                    Log.e("jsonz error", e.toString());
                     Toast.makeText(context, "ShopDetails error", Toast.LENGTH_SHORT).show();
                 }
 

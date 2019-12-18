@@ -313,14 +313,13 @@ public class AuthApiHelper extends ApiHelper{
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Logger.d(response.body());
+
                 listener.onDataFetched(response);
 
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Logger.d(t.getMessage());
                 listener.onFailed(0);
             }
         });

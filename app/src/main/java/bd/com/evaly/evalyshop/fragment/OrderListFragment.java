@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -177,8 +178,10 @@ public class OrderListFragment extends Fragment {
                 if (!logout)
                     getOrderData(page);
                 else
-                    if (getActivity() != null)
+                    if (getActivity() != null) {
+                        Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
                         AppController.logout(getActivity());
+                    }
 
             }
         });

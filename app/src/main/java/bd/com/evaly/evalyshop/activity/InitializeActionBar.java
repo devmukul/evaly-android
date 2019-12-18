@@ -8,7 +8,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -79,7 +81,13 @@ public class InitializeActionBar {
             @Override
             public void onAuthError(boolean logout) {
 
-                getNotificationCount();
+                if (!logout)
+                    getNotificationCount();
+                else
+                    if (context != null) {
+                        Toast.makeText(context, "Token expired, please login again", Toast.LENGTH_LONG).show();
+                        AppController.logout(context);
+                    }
 
             }
         });

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
@@ -258,6 +259,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 if (!logout)
                     getNotificationCount();
+                else
+                    if (getActivity() != null) {
+
+                        Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
+                        AppController.logout(getActivity());
+                    }
 
             }
         });
