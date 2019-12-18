@@ -660,36 +660,33 @@ public class OrderDetailsActivity extends BaseActivity {
         alertDialog.show();
 
 
-        d_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        d_submit.setOnClickListener(v -> {
 
 
 
-                if (amount.getText().toString().equals("")){
-                    Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (code.getText().toString().equals("")){
-                    Toast.makeText(context, "Please enter gift card coupon code.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                double partial_amount = Double.parseDouble(amount.getText().toString());
-
-                if (partial_amount > total_amount){
-                    Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-
-                double userBalance = Double.parseDouble(userDetails.getBalance());
-
-
-                makePaymentViaGiftCard(code.getText().toString(), invoice_no, String.valueOf((int) partial_amount));
-
-
-
+            if (amount.getText().toString().equals("")){
+                Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (code.getText().toString().equals("")){
+                Toast.makeText(context, "Please enter gift card coupon code.", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            double partial_amount = Double.parseDouble(amount.getText().toString());
+
+            if (partial_amount > total_amount){
+                Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
+            double userBalance = Double.parseDouble(userDetails.getBalance());
+
+
+            makePaymentViaGiftCard(code.getText().toString(), invoice_no, String.valueOf((int) partial_amount));
+
+
+
         });
     }
 
@@ -735,71 +732,60 @@ public class OrderDetailsActivity extends BaseActivity {
                 }
 
                 final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+                handler.postDelayed(() -> {
 
-                        dialog.hideDialog();
-                        finish();
-                        startActivity(getIntent());
+                    dialog.hideDialog();
+                    finish();
+                    startActivity(getIntent());
 
-                    }
                 }, 1500);
 
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        }, error -> {
 
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            makePaymentViaGiftCard(giftCode, invoice, amount);
-                        }
+                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        makePaymentViaGiftCard(giftCode, invoice, amount);
+                    }
 
-                        @Override
-                        public void onFailed(int status) {
+                    @Override
+                    public void onFailed(int status) {
 
-                        }
-                    });
+                    }
+                });
 
-                    return;
+                return;
 
-                }}
+            }}
 
-                dialog.hideDialog();
-                Log.e("onErrorResponse", error.toString());
+            dialog.hideDialog();
+            Log.e("onErrorResponse", error.toString());
 
-                //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
 
-                Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
+            Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
 
-                try {
-                    String responseBody = new String(error.networkResponse.data, "utf-8");
-                    JSONObject data = new JSONObject(responseBody);
-                    Toast.makeText(OrderDetailsActivity.this, data.getString("message"), Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                }
-
-
-
-
+            try {
+                String responseBody = new String(error.networkResponse.data, "utf-8");
+                JSONObject data = new JSONObject(responseBody);
+                Toast.makeText(OrderDetailsActivity.this, data.getString("message"), Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
             }
+
+
+
+
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", CredentialManager.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
                 return headers;
             }
 
@@ -1397,7 +1383,7 @@ public class OrderDetailsActivity extends BaseActivity {
                                             ob.getString("product_slug"),
                                             ob.getString("order_time_price"),
                                             ob.getString("quantity"),
-                                            (Double.parseDouble(ob.getString("order_time_price"))*Double.parseDouble(ob.getString("quantity")))+"",
+                                            (Math.ceil(Double.parseDouble(ob.getString("order_time_price")))*Double.parseDouble(ob.getString("quantity")))+"",
                                             productVariation));
                             orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
                         }catch(Exception e){

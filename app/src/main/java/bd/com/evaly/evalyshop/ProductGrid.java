@@ -174,8 +174,8 @@ public class ProductGrid {
 
                         int priceMin = 0, priceMax = 0;
                         try {
-                            priceMin = (int) Double.parseDouble(response2.get("item_price").getAsString());
-                            priceMax = (int) Double.parseDouble(response2.get("item_price").getAsString());
+                            priceMin = (int) Math.ceil(Double.parseDouble(response2.get("item_price").getAsString()));
+                            priceMax = (int) Math.ceil(Double.parseDouble(response2.get("item_price").getAsString()));
 
                         } catch (Exception e) {
 

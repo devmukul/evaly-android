@@ -1,9 +1,6 @@
 package bd.com.evaly.evalyshop.activity;
 
 import android.app.Activity;
-
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,18 +8,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.tabs.TabLayout;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -44,14 +29,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
@@ -67,6 +64,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
@@ -78,31 +76,28 @@ import bd.com.evaly.evalyshop.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.adapter.ViewProductSliderAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.AvailableShop;
+import bd.com.evaly.evalyshop.models.CartItem;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
 import bd.com.evaly.evalyshop.models.ProductShareModel;
 import bd.com.evaly.evalyshop.models.ProductVariants;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.Products;
+import bd.com.evaly.evalyshop.models.WishList;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.reviewratings.RatingReviews;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.models.WishList;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
-import bd.com.evaly.evalyshop.models.AvailableShop;
-import bd.com.evaly.evalyshop.models.CartItem;
-import bd.com.evaly.evalyshop.models.Products;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
+import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 import bd.com.evaly.evalyshop.viewmodel.RoomWIthRxViewModel;
 import bd.com.evaly.evalyshop.views.SliderViewPager;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
-
-
-import java.util.TreeMap;
 
 
 public class ViewProductActivity extends BaseActivity {
@@ -330,22 +325,10 @@ public class ViewProductActivity extends BaseActivity {
             collapsingToolbarLayout.setVisibility(View.INVISIBLE);
 
             getProductData(slug);
-            //getProductImages(slug);
-
-            //getAvailableShops(slug, null);
-            //getCategoryProducts();
         }
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        back.setOnClickListener(v -> onBackPressed());
 
-
-        // show related products
-        //ProductGrid productGrid = new ProductGrid(context, (RecyclerView) findViewById(R.id.products));
 
         hideProductHolder();
 
@@ -353,73 +336,57 @@ public class ViewProductActivity extends BaseActivity {
 
 
         LinearLayout cartPage = findViewById(R.id.cart);
-        cartPage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        cartPage.setOnClickListener(v -> {
 
-                Intent intent = new Intent(context, CartActivity.class);
-                context.startActivity(intent);
-
-            }
-
+            Intent intent = new Intent(context, CartActivity.class);
+            context.startActivity(intent);
 
         });
 
         final ImageView addToWishList = findViewById(R.id.addToWishlist);
-        addToWishList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                int price = 0;
-                try {
-                    price = Integer.parseInt(wishListItem.getPrice());
-                } catch (Exception e) {
-
-                }
-
-                if (isAddedToWishList) {
-
-                    addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
-                    dbWish.deleteDataBySlug(wishListItem.getProductSlug());
-                    Toast.makeText(context, "Removed from wish list", Toast.LENGTH_SHORT).show();
-                    isAddedToWishList = false;
-
-                } else {
-
-                    if (dbWish.insertData(wishListItem.getProductSlug(), wishListItem.getName(), wishListItem.getImage(), price, calendar.getTimeInMillis())) {
-                        Toast.makeText(context, "Added to wish list", Toast.LENGTH_SHORT).show();
-                        addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
-                    }
-
-                    isAddedToWishList = true;
-
-                }
+        addToWishList.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int price = 0;
+            try {
+                price = Integer.parseInt(wishListItem.getPrice());
+            } catch (Exception e) {
 
             }
 
+
+            if (isAddedToWishList) {
+
+                addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
+                dbWish.deleteDataBySlug(wishListItem.getProductSlug());
+                Toast.makeText(context, "Removed from wish list", Toast.LENGTH_SHORT).show();
+                isAddedToWishList = false;
+
+            } else {
+
+                if (dbWish.insertData(wishListItem.getProductSlug(), wishListItem.getName(), wishListItem.getImage(), price, calendar.getTimeInMillis())) {
+                    Toast.makeText(context, "Added to wish list", Toast.LENGTH_SHORT).show();
+                    addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
+                }
+
+                isAddedToWishList = true;
+
+            }
 
         });
 
         TextView addToCart = findViewById(R.id.addToCart);
-        addToCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        addToCart.setOnClickListener(v -> {
 
-                NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.sticky_scroll);
-                scrollView.postDelayed(new Runnable() {
-                    public void run() {
+            NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.sticky_scroll);
+            scrollView.postDelayed(() -> {
 
 
-                        appBarLayout.setExpanded(false, true);
+                appBarLayout.setExpanded(false, true);
 
-                        TextView availableShopTitle = findViewById(R.id.avlshop);
-                        int scrollTo = ((View) availableShopTitle.getParent()).getTop() + availableShopTitle.getTop();
-                        scrollView.smoothScrollTo(0, scrollTo - 30);
-                    }
-                }, 100);
-
-            }
-
+                TextView availableShopTitle = findViewById(R.id.avlshop);
+                int scrollTo = ((View) availableShopTitle.getParent()).getTop() + availableShopTitle.getTop();
+                scrollView.smoothScrollTo(0, scrollTo - 30);
+            }, 100);
 
         });
     }
@@ -567,72 +534,69 @@ public class ViewProductActivity extends BaseActivity {
         rvContacts.setLayoutManager(layoutManager);
         runOnUiThread(() -> {
             viewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
-            viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
-                @Override
-                public void onChanged(@Nullable List<RosterTable> rosterTables) {
-                    List<RosterTable> selectedRosterList = new ArrayList<>();
-                    List<RosterTable> rosterList = rosterTables;
-                    ContactShareAdapter contactShareAdapter = new ContactShareAdapter(ViewProductActivity.this, rosterList, new ContactShareAdapter.OnUserSelectedListener() {
-                        @Override
-                        public void onUserSelected(Object object, boolean status) {
-                            RosterTable table = (RosterTable) object;
+            viewModel.rosterList.observe(this, rosterTables -> {
+                List<RosterTable> selectedRosterList = new ArrayList<>();
+                List<RosterTable> rosterList = rosterTables;
+                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(ViewProductActivity.this, rosterList, new ContactShareAdapter.OnUserSelectedListener() {
+                    @Override
+                    public void onUserSelected(Object object, boolean status) {
+                        RosterTable table = (RosterTable) object;
 
-                            if (status && !selectedRosterList.contains(table)) {
-                                selectedRosterList.add(table);
-                            } else {
-                                if (selectedRosterList.contains(table)) {
-                                    selectedRosterList.remove(table);
-                                }
-                            }
-
-                            tvCount.setText("(" + selectedRosterList.size() + ") ");
-                        }
-                    });
-
-                    llSend.setOnClickListener(view -> {
-                        ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
-
-                        if (AppController.getmService().xmpp.isLoggedin()) {
-                            try {
-                                for (RosterTable rosterTable : selectedRosterList) {
-                                    ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
-                                    AppController.getmService().xmpp.sendMessage(chatItem);
-                                }
-                                for (int i = 0; i<rosterList.size(); i++){
-                                    rosterList.get(i).isSelected = false;
-                                }
-                                contactShareAdapter.notifyDataSetChanged();
-                                selectedRosterList.clear();
-                                tvCount.setText("(" + selectedRosterList.size() + ") ");
-                                Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
-                            } catch (SmackException e) {
-                                e.printStackTrace();
-                            }
+                        if (status && !selectedRosterList.contains(table)) {
+                            selectedRosterList.add(table);
                         } else {
-                            AppController.getmService().xmpp.connect();
-                        }
-                    });
-
-                    rvContacts.setAdapter(contactShareAdapter);
-                    etSearch.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                            rvContacts.getRecycledViewPool().clear();
-                            contactShareAdapter.getFilter().filter(charSequence);
+                            if (selectedRosterList.contains(table)) {
+                                selectedRosterList.remove(table);
+                            }
                         }
 
-                        @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                            rvContacts.getRecycledViewPool().clear();
-                            contactShareAdapter.getFilter().filter(charSequence);
-                        }
+                        tvCount.setText("(" + selectedRosterList.size() + ") ");
+                    }
+                });
 
-                        @Override
-                        public void afterTextChanged(Editable editable) {
+                llSend.setOnClickListener(view -> {
+                    ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
 
+                    if (AppController.getmService().xmpp.isLoggedin()) {
+                        try {
+                            for (RosterTable rosterTable : selectedRosterList) {
+                                ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
+                                AppController.getmService().xmpp.sendMessage(chatItem);
+                            }
+                            for (int i = 0; i<rosterList.size(); i++){
+                                rosterList.get(i).isSelected = false;
+                            }
+                            contactShareAdapter.notifyDataSetChanged();
+                            selectedRosterList.clear();
+                            tvCount.setText("(" + selectedRosterList.size() + ") ");
+                            Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
+                        } catch (SmackException e) {
+                            e.printStackTrace();
                         }
-                    });
-                }
+                    } else {
+                        AppController.getmService().xmpp.connect();
+                    }
+                });
+
+                rvContacts.setAdapter(contactShareAdapter);
+                etSearch.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        rvContacts.getRecycledViewPool().clear();
+                        contactShareAdapter.getFilter().filter(charSequence);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        rvContacts.getRecycledViewPool().clear();
+                        contactShareAdapter.getFilter().filter(charSequence);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
             });
 
         });
@@ -791,34 +755,22 @@ public class ViewProductActivity extends BaseActivity {
                         ratingReviews.createRatingBars(total_ratings, BarLabels.STYPE1, colors, raters);
 
 
-                        viewAllReviews.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+                        viewAllReviews.setOnClickListener(v -> {
 
-                                Intent intent = new Intent(context, ReviewsActivity.class);
-
-                                intent.putExtra("ratingJson", ratingJson);
-
-                                intent.putExtra("type", "product");
-
-                                intent.putExtra("item_value", sku);
-
-                                startActivity(intent);
+                            Intent intent = new Intent(context, ReviewsActivity.class);
+                            intent.putExtra("ratingJson", ratingJson);
+                            intent.putExtra("type", "product");
+                            intent.putExtra("item_value", sku);
+                            startActivity(intent);
 
 
-                            }
                         });
 
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+                }, error -> error.printStackTrace());
         // RequestQueue rq = Volley.newRequestQueue(context);
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -879,8 +831,8 @@ public class ViewProductActivity extends BaseActivity {
                                 int variantID = product_variants.getJSONObject(i).getInt("variant_id");
                                 name = product_variants.getJSONObject(i).getString("product_name");
                                 category = product_variants.getJSONObject(i).getString("category_slug");
-                                int minPrice = product_variants.getJSONObject(i).getInt("min_price");
-                                int maxPrice = product_variants.getJSONObject(i).getInt("max_price");
+                                int minPrice = (int) Math.ceil(product_variants.getJSONObject(i).getDouble("min_price"));
+                                int maxPrice = (int) Math.ceil(product_variants.getJSONObject(i).getDouble("max_price"));
                                 String description = product_variants.getJSONObject(i).getString("product_description");
                                 String brandName = product_variants.getJSONObject(i).getString("brand_name");
                                 ArrayList<String> productImages = new ArrayList<>();
@@ -917,6 +869,7 @@ public class ViewProductActivity extends BaseActivity {
                         }
 
                         JSONObject firstVariant = product_variants.getJSONObject(0);
+
                         productName.setText(Html.fromHtml(firstVariant.getString("product_name")));
                         if (firstVariant.getString("product_description").equals("")) {
                             descriptionView.setVisibility(View.GONE);
@@ -970,7 +923,7 @@ public class ViewProductActivity extends BaseActivity {
 
                         int price = 0;
                         try {
-                            price = (int) Double.parseDouble(firstVariant.getString("min_price"));
+                            price = (int) Math.ceil(firstVariant.getDouble("min_price"));
                         } catch (Exception e) {
 
                         }
@@ -1044,19 +997,12 @@ public class ViewProductActivity extends BaseActivity {
                             nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
                                 @Override
                                 public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                                    String TAG = "nested_sync";
-
                                     if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                                        Log.i(TAG, "BOTTOM SCROLL");
-
-
                                         try {
 
                                             ((ProgressBar) findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-
                                             productGrid.loadNextPage();
                                         } catch (Exception e) {
-
 
                                         }
                                     }
@@ -1066,12 +1012,7 @@ public class ViewProductActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+                }, error -> error.printStackTrace());
         // RequestQueue rq = Volley.newRequestQueue(context);
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -1120,56 +1061,51 @@ public class ViewProductActivity extends BaseActivity {
             //button.setBackgroundColor(Color.parseColor("#eeeeee"));
             button.setStateListAnimator(null);
             button.setFocusableInTouchMode(true);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            button.setOnClickListener(v -> {
 
-                    try {
+                try {
 
-                        ProductVariants productVariants = productVariantsMap.get(button.getId());
-                        sliderImages.clear();
+                    ProductVariants productVariants = productVariantsMap.get(button.getId());
+                    sliderImages.clear();
+                    sliderAdapter.notifyDataSetChanged();
+                    sliderPager.setAdapter(null);
+
+                    for (int j = 0; j < productVariants.getImages().size(); j++) {
+                        sliderImages.add(productVariants.getImages().get(j));
                         sliderAdapter.notifyDataSetChanged();
-                        sliderPager.setAdapter(null);
-
-                        for (int j = 0; j < productVariants.getImages().size(); j++) {
-                            sliderImages.add(productVariants.getImages().get(j));
-                            sliderAdapter.notifyDataSetChanged();
-                        }
-
-                        sliderPager.setAdapter(sliderAdapter);
-
-                        sliderAdapter.notifyDataSetChanged();
-
-                        for (int k = 0; k < buttonIDs.size(); k++) {
-                            try {
-                                Button btn = findViewById(buttonIDs.get(k));
-                                if (btn.getTag().equals(button.getTag())) {
-                                    GradientDrawable drawable = (GradientDrawable) btn.getBackground();
-                                    drawable.setColor(Color.parseColor("#eeeeee"));
-                                }
-                            } catch (Exception e) {
-
-                            }
-                        }
-                        GradientDrawable drawable = (GradientDrawable) button.getBackground();
-                        drawable.setColor(Color.parseColor("#d1ecf2"));
-                        getAvailableShops(productVariants.getVariantID());
-
-                    } catch (Exception e) {
-
-                        Crashlytics.logException(e);
-
-                        Toast.makeText(context, "Couldn't select the variant", Toast.LENGTH_SHORT).show();
-
                     }
+
+                    sliderPager.setAdapter(sliderAdapter);
+
+                    sliderAdapter.notifyDataSetChanged();
+
+                    for (int k = 0; k < buttonIDs.size(); k++) {
+                        try {
+                            Button btn = findViewById(buttonIDs.get(k));
+                            if (btn.getTag().equals(button.getTag())) {
+                                GradientDrawable drawable1 = (GradientDrawable) btn.getBackground();
+                                drawable1.setColor(Color.parseColor("#eeeeee"));
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    GradientDrawable drawable1 = (GradientDrawable) button.getBackground();
+                    drawable1.setColor(Color.parseColor("#d1ecf2"));
+                    getAvailableShops(productVariants.getVariantID());
+
+                } catch (Exception e) {
+
+                    Crashlytics.logException(e);
+
+                    Toast.makeText(context, "Couldn't select the variant", Toast.LENGTH_SHORT).show();
 
                 }
+
             });
-            button.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        v.performClick();
-                    }
+            button.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    v.performClick();
                 }
             });
             if (!callFirst) {
@@ -1243,15 +1179,15 @@ public class ViewProductActivity extends BaseActivity {
                                     item.setShopSlug(ob.getString("shop_slug"));
 
                                     if (ob.getString("discounted_price").equals("null"))
-                                        item.setPrice(ob.getString("price"));
+                                        item.setPrice(String.valueOf((int)Math.ceil(ob.getDouble("price"))));
                                     else
-                                        item.setPrice(ob.getString("discounted_price"));
+                                        item.setPrice(String.valueOf((int)Math.ceil(ob.getDouble("discounted_price"))));
 
                                     item.setSlug(slug);
                                     item.setProductId(ob.getString("shop_item_id"));
 
                                     if (!ob.getString("discount_value").equals("null"))
-                                        item.setDiscountValue(ob.getDouble("discount_value"));
+                                        item.setDiscountValue(Math.ceil(ob.getDouble("discount_value")));
                                     else
                                         item.setDiscountValue(0.0);
 
@@ -1259,14 +1195,11 @@ public class ViewProductActivity extends BaseActivity {
                                     item.setAddress(ob.getString("shop_address"));
                                     item.setShopJson(ob.toString());
                                     item.setStock(true);
-                                    item.setMaximumPrice(ob.getString("price"));
+                                    item.setMaximumPrice(String.valueOf((int)Math.ceil(ob.getDouble("price"))));
                                     availableShops.add(item);
                                     adapterm.notifyItemInserted(availableShops.size());
                                 }
-//                                if(ii==jsonArray.length()-1){
-//                                    Toast.makeText(this, ""+availableShops.size(), Toast.LENGTH_SHORT).show();
-//                                    adapterm.notifyDataSetChanged();
-//                                }
+
                             } catch (Exception e) {
 
                                 Log.e("json expection", e.toString());
@@ -1275,7 +1208,7 @@ public class ViewProductActivity extends BaseActivity {
 
                             }
                         }
-                        //adapterm.notifyDataSetChanged();
+
                         if (availableShops.size() < 1) {
                             LinearLayout empty = findViewById(R.id.empty);
                             empty.setVisibility(View.VISIBLE);
@@ -1283,16 +1216,12 @@ public class ViewProductActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+                }, error -> error.printStackTrace());
+
+
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
 
         request.setShouldCache(false);
         request.setTag(this);

@@ -19,8 +19,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
@@ -132,68 +130,62 @@ public class TransactionHistory extends AppCompatActivity {
 
         Log.d("json url", url);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
 
 
-                progressBar.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
 
-                Log.d("notifications_response", response.toString());
-                try {
-                    JSONArray jsonArray = response.getJSONArray("data");
-                    if(jsonArray.length()==0 && page == 1){
-                        not.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
+            Log.d("notifications_response", response.toString());
+            try {
+                JSONArray jsonArray = response.getJSONArray("data");
+                if(jsonArray.length()==0 && page == 1){
+                    not.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
 
-                    }else{
-                        not.setVisibility(View.GONE);
-                        for(int i=0;i<jsonArray.length();i++){
-                            JSONObject ob = jsonArray.getJSONObject(i);
+                }else{
+                    not.setVisibility(View.GONE);
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject ob = jsonArray.getJSONObject(i);
 
-                            itemList.add(
-                                    new TransactionItem(
-                                            ob.getInt("amount"),
-                                            ob.getString("date_time"),
-                                            ob.getString("event"))
-                            );
+                        itemList.add(
+                                new TransactionItem(
+                                        ob.getInt("amount"),
+                                        ob.getString("date_time"),
+                                        ob.getString("event"))
+                        );
 
-                            adapter.notifyItemInserted(itemList.size());
-                        }
+                        adapter.notifyItemInserted(itemList.size());
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(TransactionHistory.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getTransactionHistory(page);
-                        }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-                        @Override
-                        public void onFailed(int status) {
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                        }
-                    });
+                AuthApiHelper.refreshToken(TransactionHistory.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        getTransactionHistory(page);
+                    }
 
-                    return;
+                    @Override
+                    public void onFailed(int status) {
 
-                }}
+                    }
+                });
 
-                progressBar.setVisibility(View.GONE);
-            }
+                return;
+
+            }}
+
+            progressBar.setVisibility(View.GONE);
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -217,45 +209,39 @@ public class TransactionHistory extends AppCompatActivity {
     public void getBalance(){
         String url= UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName()+"/";
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+            Log.d("onResponse", response.toString());
 
-                try {
-                    response = response.getJSONObject("data");
-                    userDetails.setBalance(response.getString("balance"));
-                    balance.setText("৳ " + response.getString("balance"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            try {
+                response = response.getJSONObject("data");
+                userDetails.setBalance(response.getString("balance"));
+                balance.setText("৳ " + response.getString("balance"));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(TransactionHistory.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getBalance();
-                        }
+                AuthApiHelper.refreshToken(TransactionHistory.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        getBalance();
+                    }
 
-                        @Override
-                        public void onFailed(int status) {
+                    @Override
+                    public void onFailed(int status) {
 
-                        }
-                    });
+                    }
+                });
 
-                    return;
+                return;
 
-                }}
+            }}
 
-            }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
