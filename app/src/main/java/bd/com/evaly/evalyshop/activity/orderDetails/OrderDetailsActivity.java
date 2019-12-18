@@ -816,9 +816,65 @@ public class OrderDetailsActivity extends BaseActivity {
     public void onResume(){
         super.onResume();
         Balance.update(this, false);
+        checkCardBalance();
 
     }
 
+    public void checkCardBalance(){
+
+        String url=UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName()+"/";
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+            Log.d("onResponse", response.toString());
+            try {
+
+                TextView payViaGiftCard = findViewById(R.id.payViaGiftCard);
+                response = response.getJSONObject("data");
+                if (response.getDouble("gift_card_balance") < 1)
+                    payViaGiftCard.setVisibility(View.GONE);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
+
+                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        checkCardBalance();
+                    }
+
+                    @Override
+                    public void onFailed(int status) {
+
+                    }
+                });
+
+                return;
+
+            }}
+
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", CredentialManager.getToken());
+                return headers;
+            }
+        };
+        request.setShouldCache(false);
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueue queue= Volley.newRequestQueue(context);
+        queue.add(request);
+    }
 
 
     public void makePartialPayment(String invoice, String amount){
