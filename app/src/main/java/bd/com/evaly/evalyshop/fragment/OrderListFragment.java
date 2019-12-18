@@ -177,7 +177,8 @@ public class OrderListFragment extends Fragment {
                 if (!logout)
                     getOrderData(page);
                 else
-                    AppController.logout(getActivity());
+                    if (getActivity() != null)
+                        AppController.logout(getActivity());
 
             }
         });
