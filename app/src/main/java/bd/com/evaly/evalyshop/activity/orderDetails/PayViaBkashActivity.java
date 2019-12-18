@@ -3,8 +3,9 @@ package bd.com.evaly.evalyshop.activity.orderDetails;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,6 +17,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import java.util.List;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
@@ -35,6 +38,18 @@ public class PayViaBkashActivity extends BaseActivity {
 
     String amount="0.0", context = "order_payment", context_reference = "", paymentID = "";
 
+    public boolean isPackageExisted(String targetPackage){
+        List<ApplicationInfo> packages;
+        PackageManager pm;
+
+        pm = getPackageManager();
+        packages = pm.getInstalledApplications(0);
+        for (ApplicationInfo packageInfo : packages) {
+            if(packageInfo.packageName.equals(targetPackage))
+                return true;
+        }
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +59,14 @@ public class PayViaBkashActivity extends BaseActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_vector);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("bKash Payment");
+
+
+        if(getPackageManager().hasSystemFeature("android.software.webview") && isPackageExisted("com.google.android.webview")) {
+
+        }else {
+            Toast.makeText(this, "Please install webview from Google Play Store", Toast.LENGTH_LONG).show();
+            return;
+        }
 
 
         Intent intent = getIntent();
