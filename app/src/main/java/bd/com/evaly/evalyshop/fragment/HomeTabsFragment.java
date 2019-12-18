@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -33,6 +34,7 @@ import bd.com.evaly.evalyshop.adapter.RootCategoriesAdapter;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
@@ -57,10 +59,19 @@ public class HomeTabsFragment extends Fragment {
     private List<CategoryEntity> categoryItems;
     public ShimmerFrameLayout shimmer;
 
+    private OnDoneListener onDoneListener;
+
+
+    public void setOnDoneListener(OnDoneListener onDoneListener) {
+        this.onDoneListener = onDoneListener;
+    }
 
     public HomeTabsFragment(){
         // Required empty public constructor
     }
+
+
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -75,15 +86,15 @@ public class HomeTabsFragment extends Fragment {
         slug = bundle.getString("slug");
 
         try {
-
             shimmer.startShimmer();
         } catch (Exception e){
 
         }
 
-
         return view;
     }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -108,6 +119,8 @@ public class HomeTabsFragment extends Fragment {
             adapter2 = new RootCategoriesAdapter(context, categoryItems);
             recyclerView.setAdapter(adapter2);
 
+            recyclerView.setItemAnimator(new MyDefaultItemAnimator());
+
             adapter2.notifyDataSetChanged();
 
             Calendar calendar = Calendar.getInstance();
@@ -116,6 +129,7 @@ public class HomeTabsFragment extends Fragment {
                 categoryUtils.updateFromApi(new DataFetchingListener<List<CategoryEntity>>() {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
+
 
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
@@ -138,11 +152,15 @@ public class HomeTabsFragment extends Fragment {
                 categoryUtils.getLocalCategoryList(new DataFetchingListener<List<CategoryEntity>>() {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
+
+
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
                                 categoryItems.addAll(response);
                                 adapter2.notifyDataSetChanged();
                                 stopShimmer();
+
+
                             });
                         }
                     }
@@ -189,6 +207,22 @@ public class HomeTabsFragment extends Fragment {
         loadData();
     }
 
+
+
+    public class MyDefaultItemAnimator extends DefaultItemAnimator {
+
+        @Override public void onAddFinished(RecyclerView.ViewHolder item) {
+            super.onAddFinished(item);
+
+            if (onDoneListener != null)
+                onDoneListener.onDone();
+
+        }
+
+    }
+
+
+
     public void loadData(){
         if(!(slug.equals("root") && type == 1)) {
             if (type == 1){
@@ -220,6 +254,10 @@ public class HomeTabsFragment extends Fragment {
                     }
                 } else {
                     if (adapter2.getItemCount() < 1 || recyclerView.getHeight() < 100) {
+
+                        if (onDoneListener != null)
+                            onDoneListener.onDone();
+
                         adapter2.notifyDataSetChanged();
                         handler.postDelayed(this, 1000);
                     }
@@ -235,13 +273,9 @@ public class HomeTabsFragment extends Fragment {
         try {
             shimmer.stopShimmer();
         } catch (Exception e){
-
         }
         shimmer.setVisibility(View.GONE);
     }
-
-
-
 
 
     public void getSubCategories(){
@@ -250,6 +284,11 @@ public class HomeTabsFragment extends Fragment {
 
             @Override
             public void onDataFetched(JsonArray response, int statusCode) {
+
+
+                if (onDoneListener != null)
+                    onDoneListener.onDone();
+
 
                 progressBar2.setVisibility(View.GONE);
 
@@ -287,6 +326,10 @@ public class HomeTabsFragment extends Fragment {
         ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
+
+
+                if (onDoneListener != null)
+                    onDoneListener.onDone();
 
                 progressBar2.setVisibility(View.GONE);
                 try {
@@ -330,6 +373,11 @@ public class HomeTabsFragment extends Fragment {
         ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
+
+
+                if (onDoneListener != null)
+                    onDoneListener.onDone();
+
 
                 progressBar2.setVisibility(View.GONE);
                 try {

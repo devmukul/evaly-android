@@ -264,6 +264,7 @@
                 android:visibility="gone" />
 
             <TextView
+                android:id="@+id/tvProductTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
@@ -275,7 +276,8 @@
                 android:text="Recent Products"
                 android:textColor="#555"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="visible" />
 
 
             <androidx.recyclerview.widget.RecyclerView

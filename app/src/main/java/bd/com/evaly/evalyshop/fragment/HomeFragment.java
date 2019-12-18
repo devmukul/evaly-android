@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -76,7 +77,25 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onRefresh() {
 
         swipeLayout.setRefreshing(false);
-        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+
+
+        //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            getFragmentManager().beginTransaction().detach(this).commitNow();
+            getFragmentManager().beginTransaction().attach(this).commitNow();
+        } else {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
+
+        pager.notifyDataSetChanged();
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            shimmer.stopShimmer();
+            shimmer.setVisibility(View.GONE);
+        }, 300);
     }
 
     public HomeFragment() {
@@ -104,8 +123,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSmoothScrollingEnabled(true);
-        voucher=view.findViewById(R.id.voucher);
-        homeSearch=view.findViewById(R.id.home_search);
+        voucher = view.findViewById(R.id.voucher);
+        homeSearch = view.findViewById(R.id.home_search);
 
         homeSearch.setOnClickListener(view1 -> {
             Intent intent = new Intent(context, GlobalSearchActivity.class);
@@ -120,17 +139,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         try {
             shimmer.setVisibility(View.VISIBLE);
             shimmer.startShimmer();
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(pager);
+        tabLayout.setupWithViewPager(viewPager);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         viewPager.setOffscreenPageLimit(1);
 
 
-        evalyStore=view.findViewById(R.id.evaly_store);
+        evalyStore = view.findViewById(R.id.evaly_store);
         evalyStore.setOnClickListener(v -> {
 
             Intent ni = new Intent(context, GiftCardActivity.class);
@@ -155,9 +175,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         orders.setOnClickListener(v -> {
 
-            if(userDetails.getToken().equals("")){
+            if (userDetails.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
-            }else{
+            } else {
                 startActivity(new Intent(context, OrderListActivity.class));
             }
         });
@@ -169,8 +189,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         productGrid.setScrollView(nestedSV);
 
         // slider
-        sliderPager =  view.findViewById(R.id.sliderPager);
-        sliderIndicator=view.findViewById(R.id.sliderIndicator);
+        sliderPager = view.findViewById(R.id.sliderPager);
+        sliderIndicator = view.findViewById(R.id.sliderIndicator);
 
         sliderImages = new ArrayList<>();
         getSliderImage();
@@ -182,8 +202,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
                         productGrid.loadNextPage();
 
-                    } catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         Log.e("load more product", e.toString());
                     }
                 }
@@ -193,7 +212,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         try {
             checkReferral();
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("exception", e.toString());
         }
 
@@ -204,12 +223,29 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         bundle.putString("category", "root");
         categoryFragment.setArguments(bundle);
 
+
+        categoryFragment.setOnDoneListener(() -> {
+
+            shimmer.setVisibility(View.GONE);
+
+
+        });
+
+
         HomeTabsFragment brandFragment = new HomeTabsFragment();
         Bundle bundle2 = new Bundle();
         bundle2.putInt("type", 2);
         bundle2.putString("slug", "root");
         bundle2.putString("category", "root");
         brandFragment.setArguments(bundle2);
+
+        brandFragment.setOnDoneListener(() -> {
+
+            shimmer.setVisibility(View.GONE);
+
+
+        });
+
 
         HomeTabsFragment shopFragment = new HomeTabsFragment();
         Bundle bundle3 = new Bundle();
@@ -218,9 +254,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         bundle3.putString("category", "root");
         shopFragment.setArguments(bundle3);
 
-        pager.addFragment(categoryFragment,"Categories");
-        pager.addFragment(brandFragment,"Brands");
-        pager.addFragment(shopFragment,"Shops");
+        pager.addFragment(categoryFragment, "Categories");
+        pager.addFragment(brandFragment, "Brands");
+        pager.addFragment(shopFragment, "Shops");
         pager.notifyDataSetChanged();
 
 
@@ -228,14 +264,15 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         handler.postDelayed(() -> {
             shimmer.stopShimmer();
             shimmer.setVisibility(View.GONE);
-        }, 300);
+        }, 1500);
+
+
 
     }
 
 
 
     public void getNotificationCount(){
-
 
         if (CredentialManager.getToken().equals(""))
             return;
@@ -261,15 +298,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     getNotificationCount();
                 else
                     if (getActivity() != null) {
-
                         Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
                         AppController.logout(getActivity());
                     }
-
             }
         });
-
-
     }
 
 
@@ -293,14 +326,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                         userDetails.setRef("");
                     }
-
                 }
 
                 @Override
                 public void onFailed(String errorBody, int errorCode) {
-
                     Toast.makeText(context, "Server error occurred, couldn't verify invitation code.", Toast.LENGTH_LONG).show();
-
                 }
 
                 @Override
@@ -308,7 +338,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 }
             });
-
         }
 
     }
