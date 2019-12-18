@@ -823,13 +823,22 @@ public class XMPPHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        vCard.setNickName(userModel.getFirst_name());
-        vCard.setEmailHome(userModel.getEmail());
-        vCard.setFirstName(userModel.getFirst_name());
-        vCard.setLastName(userModel.getLast_name());
-        vCard.setPhoneHome("mobile", userModel.getContacts());
-        vCard.setAddressFieldHome("REGION", userModel.getAddresses());
-        vCard.setField("URL", userModel.getImage_sm());
+        if(userModel != null){
+            if (userModel.getFirst_name() != null){
+                vCard.setNickName(userModel.getFirst_name());
+                vCard.setFirstName(userModel.getFirst_name());
+            }else if (userModel.getEmail() != null){
+                vCard.setEmailHome(userModel.getEmail());
+            }else if (userModel.getLast_name() != null){
+                vCard.setLastName(userModel.getLast_name());
+            }else if (userModel.getContacts() != null){
+                vCard.setPhoneHome("mobile", userModel.getContacts());
+            }else if (userModel.getAddresses() != null){
+                vCard.setAddressFieldHome("REGION", userModel.getAddresses());
+            }else if (userModel.getImage_sm() != null){
+                vCard.setField("URL", userModel.getImage_sm());
+            }
+        }
 
         try {
             vCardManager.saveVCard(vCard);

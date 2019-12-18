@@ -116,7 +116,6 @@ public class AuthApiHelper {
                     String refresh = response.body().get("refresh").getAsString();
                     CredentialManager.saveToken(token);
                     CredentialManager.saveRefreshToken(refresh);
-
                     try {
                         userDetails.setToken(token);
                         userDetails.setRefreshToken(refresh);
