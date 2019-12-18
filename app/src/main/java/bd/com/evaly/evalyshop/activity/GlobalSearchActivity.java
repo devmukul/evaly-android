@@ -909,10 +909,12 @@ public class GlobalSearchActivity extends BaseActivity {
                                 nestedSV.setBackgroundColor(Color.parseColor("#ffffff"));
                                 noResult.setVisibility(View.VISIBLE);
 
-                                Glide.with(GlobalSearchActivity.this)
-                                        .load(R.drawable.ic_search_not_found)
-                                        .apply(new RequestOptions().override(800, 800))
-                                        .into((ImageView) findViewById(R.id.noImage));
+                                if (!GlobalSearchActivity.this.isFinishing() {
+                                    Glide.with(GlobalSearchActivity.this)
+                                            .load(R.drawable.ic_search_not_found)
+                                            .apply(new RequestOptions().override(800, 800))
+                                            .into((ImageView) findViewById(R.id.noImage));
+                                }
 
 
                             } else {
@@ -1151,5 +1153,11 @@ public class GlobalSearchActivity extends BaseActivity {
     @Override
     public void onPause(){
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Glide.with(getApplicationContext()).pauseRequests();
     }
 }
