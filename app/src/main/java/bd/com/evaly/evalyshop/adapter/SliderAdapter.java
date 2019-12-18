@@ -27,6 +27,7 @@ import bd.com.evaly.evalyshop.activity.CampaignShopActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.models.BannerItem;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class SliderAdapter extends PagerAdapter {
 
@@ -153,6 +154,9 @@ public class SliderAdapter extends PagerAdapter {
                         .gradientDivider(false)
                         .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit, R.anim.activity_close_enter, R.anim.activity_close_exit)
                         .show(itemList.get(position).getUrl());
+
+
+                Utils.CustomTab(itemList.get(position).getUrl(),  context);
             }
 
         });

@@ -32,10 +32,10 @@ android {
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
-            buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
+            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
+            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111666\""
-            buildConfigField "String", 'BUILD', "\"prod\""
+            buildConfigField "String", 'BUILD', "\"dev\""
         }
 
         lintOptions {
@@ -84,6 +84,8 @@ dependencies {
     implementation 'com.thefinestartist:finestwebview:1.2.7'
 
 //    implementation 'com.facebook.android:facebook-core:5.0.0'
+
+    implementation 'com.android.support:customtabs:28.0.0'
 
     implementation 'com.github.MikeOrtiz:TouchImageView:1.4.0'
     implementation 'com.orhanobut:logger:2.2.0'

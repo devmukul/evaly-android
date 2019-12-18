@@ -5,10 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
+
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.content.ContextCompat;
 
 import com.orhanobut.logger.Logger;
 
@@ -285,28 +288,28 @@ public class  Utils {
 
 
 
-//
-//    public static void CustomTab(String url, Context context)
-//    {
-//        Uri uri = Uri.parse(url);
-//
-//        CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
-//
-//        // set desired toolbar colors
-//
-//        intentBuilder.setShowTitle(true);
-//        intentBuilder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
-//        intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-//
-//        // add start and exit animations if you want(optional)
-//    /*intentBuilder.setStartAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-//    intentBuilder.setExitAnimations(this, android.R.anim.slide_in_left,
-//            android.R.anim.slide_out_right);*/
-//
-//        CustomTabsIntent customTabsIntent = intentBuilder.build();
-//
-//        customTabsIntent.launchUrl(context, uri);
-//    }
+
+    public static void CustomTab(String url, Context context)
+    {
+        Uri uri = Uri.parse(url);
+
+        CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+
+        // set desired toolbar colors
+
+        intentBuilder.setShowTitle(true);
+        intentBuilder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+
+        // add start and exit animations if you want(optional)
+    /*intentBuilder.setStartAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+    intentBuilder.setExitAnimations(this, android.R.anim.slide_in_left,
+            android.R.anim.slide_out_right);*/
+
+        CustomTabsIntent customTabsIntent = intentBuilder.build();
+
+        customTabsIntent.launchUrl(context, uri);
+    }
 
     public static String toFirstCharUpperAll(String string){
 

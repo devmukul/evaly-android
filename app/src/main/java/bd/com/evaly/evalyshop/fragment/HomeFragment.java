@@ -256,17 +256,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public void onAuthError(boolean logout) {
 
-                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        getNotificationCount();
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
+                if (!logout)
+                    getNotificationCount();
 
             }
         });
