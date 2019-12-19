@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +13,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -37,7 +38,7 @@ public class PayViaCard extends AppCompatActivity {
         setContentView(R.layout.activity_pay_via_card);
 
         getSupportActionBar().setElevation(4f);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_vector);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_vector);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Pay via card");
 

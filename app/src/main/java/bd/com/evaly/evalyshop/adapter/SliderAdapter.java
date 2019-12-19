@@ -18,7 +18,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.util.List;
 
@@ -145,15 +144,6 @@ public class SliderAdapter extends PagerAdapter {
                     }
 
             } else {
-
-                new FinestWebView.Builder(activity)
-                        .titleDefault("Evaly Advertisement")
-                        .webViewBuiltInZoomControls(false)
-                        .webViewDisplayZoomControls(false)
-                        .dividerHeight(0)
-                        .gradientDivider(false)
-                        .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit, R.anim.activity_close_enter, R.anim.activity_close_exit)
-                        .show(itemList.get(position).getUrl());
 
 
                 Utils.CustomTab(itemList.get(position).getUrl(),  context);

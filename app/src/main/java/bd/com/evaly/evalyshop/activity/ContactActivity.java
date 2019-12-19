@@ -5,9 +5,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -15,10 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
-import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,9 +29,10 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
@@ -167,14 +166,10 @@ public class ContactActivity extends BaseActivity {
                     startActivity(mapIntent);
                 } else {
 
-                    new FinestWebView.Builder(ContactActivity.this)
-                            .titleDefault("Google Maps")
-                            .webViewBuiltInZoomControls(false)
-                            .webViewDisplayZoomControls(false)
-                            .dividerHeight(0)
-                            .gradientDivider(false)
-                            .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit, R.anim.activity_close_enter, R.anim.activity_close_exit)
-                            .show("https://g.page/evaly-com-bd?share");
+
+                    Utils.CustomTab("https://g.page/evaly-com-bd?share", ContactActivity.this);
+
+
 
                 }
             }

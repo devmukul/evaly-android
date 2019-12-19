@@ -37,11 +37,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.JsonObject;
-import com.thefinestartist.finestwebview.FinestWebView;
-import com.thefinestartist.finestwebview.listeners.WebViewListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +50,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.adapter.MyVoucherAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -63,6 +59,7 @@ import bd.com.evaly.evalyshop.models.VoucherDetails;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
 import static android.app.Activity.RESULT_OK;
@@ -429,27 +426,11 @@ public class VoucherMyListFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 try {
                     String purl = response.getString("payment_gateway_url");
-                    final FinestWebView.Builder builder = new FinestWebView.Builder(getActivity());
-                    builder.titleDefault("Voucher Payment Via Card")
-                            .webViewBuiltInZoomControls(false)
-                            .toolbarScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS)
-                            .webViewDisplayZoomControls(false)
-                            .dividerHeight(0)
-                            .gradientDivider(false)
-                            .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit,
-                                    R.anim.activity_close_enter, R.anim.activity_close_exit)
-                            .setWebViewListener(new WebViewListener() {
-                                public void onPageFinished(String url) {
-                                    super.onPageStarted(url);
-                                    Log.d("json", url);
-                                    if (url.contains("https://dev.evaly.com.bd/")){
-                                        Toast.makeText(context, "Voucher payment completed successfully", Toast.LENGTH_LONG);
-                                        Intent intent = new Intent(context, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                    }
-                                }
-                            }).show(purl);
+
+
+                    Utils.CustomTab(purl, context);
+
+
                 }catch (Exception e){
 
                 }

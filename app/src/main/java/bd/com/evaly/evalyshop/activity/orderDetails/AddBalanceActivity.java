@@ -25,11 +25,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonObject;
-import com.thefinestartist.finestwebview.FinestWebView;
-import com.thefinestartist.finestwebview.listeners.WebViewListener;
 
 import org.json.JSONObject;
 
@@ -38,11 +35,11 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class AddBalanceActivity extends BaseActivity
@@ -281,46 +278,7 @@ public class AddBalanceActivity extends BaseActivity
                     String purl = response.getString("payment_gateway_url");
 
 
-                    final FinestWebView.Builder builder = new FinestWebView.Builder(AddBalanceActivity.this);
-
-                    builder.titleDefault("Recharge Evaly Account")
-                            .webViewBuiltInZoomControls(false)
-                            .toolbarScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS)
-                            .webViewDisplayZoomControls(false)
-                            .dividerHeight(0)
-                            .gradientDivider(false)
-                            .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit,
-                                    R.anim.activity_close_enter, R.anim.activity_close_exit)
-                            .setWebViewListener(new WebViewListener() {
-
-                                public void onPageFinished(String url) {
-                                    super.onPageStarted(url);
-
-                                    Log.d("json", url);
-
-
-                                    //https://dev.evaly.com.bd/
-                                    if (url.contains("https://dev.evaly.com.bd/")){
-
-                                        Toast.makeText(AddBalanceActivity.this, "Payment successful! Balance has added to Evaly Account.", Toast.LENGTH_LONG);
-
-                                        Intent intent = new Intent(AddBalanceActivity.this, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        intent.putExtra("fromBalance", true);
-                                        startActivity(intent);
-
-                                        //((FinestWebViewActivity)getApplicationContext()).finish();
-
-                                    }
-                                }
-                            }).show(purl);
-
-
-
-                    //Utils.CustomTab(url, AddBalanceActivity.this);
-
-
-
+                    Utils.CustomTab(url, AddBalanceActivity.this);
 
                 }catch (Exception e){
 

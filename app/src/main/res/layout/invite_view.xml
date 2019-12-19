@@ -37,14 +37,18 @@
             android:layout_marginBottom="10dp"
             android:textStyle="bold"
             android:gravity="center_vertical"
-            android:text="Invite friends to start messaging"/>
+            android:text="@string/invite_friends_to_start_messaging"/>
 
             <ImageView
                 android:id="@+id/ivClose"
-                android:layout_width="40dp"
+                android:layout_width="35dp"
                 android:layout_height="40dp"
                 android:layout_gravity="right"
-                app:srcCompat="@drawable/close_vector"/>
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="8dp"
+                app:srcCompat="@drawable/ic_close_vector"/>
 
         </LinearLayout>
 

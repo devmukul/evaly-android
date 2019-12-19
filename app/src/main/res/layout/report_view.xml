@@ -39,7 +39,9 @@
                 android:layout_height="34dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/close"/>
+                android:padding="10dp"
+                android:layout_marginBottom="2dp"
+                android:src="@drawable/ic_close_vector"/>
         </LinearLayout>
 
         <Spinner

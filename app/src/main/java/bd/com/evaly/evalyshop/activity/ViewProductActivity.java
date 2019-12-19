@@ -227,7 +227,7 @@ public class ViewProductActivity extends BaseActivity {
                                     Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                                     sharingIntent.setType("text/plain");
                                     sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareURL);
-                                    startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_via)));
+                                    startActivity(Intent.createChooser(sharingIntent, "Share Via"));
                                 } catch (Exception e) {
                                     Toast.makeText(context, "Can't share the product.", Toast.LENGTH_SHORT).show();
                                 }
