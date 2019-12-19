@@ -133,6 +133,9 @@ public class ShopFragment extends Fragment implements ProductListener {
     private List<String> rosterList;
 
 
+    LinearLayout noItem;
+
+
     @Override
     public void buyNow(String productSlug) {
 
@@ -149,7 +152,6 @@ public class ShopFragment extends Fragment implements ProductListener {
         if (count == 0){
 
             ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
-            LinearLayout noItem = view.findViewById(R.id.noItem);
             noItem.setVisibility(View.VISIBLE);
 
             try {
@@ -163,6 +165,8 @@ public class ShopFragment extends Fragment implements ProductListener {
 
             progressBar.setVisibility(View.GONE);
 
+        } else {
+            noItem.setVisibility(View.GONE);
         }
 
     }
@@ -223,6 +227,8 @@ public class ShopFragment extends Fragment implements ProductListener {
             intent.putExtra("type", 1);
             startActivity(intent);
         });
+
+        noItem = view.findViewById(R.id.noItem);
         dialog = new ViewDialog(getActivity());
         name = view.findViewById(R.id.name);
         tvOffer = view.findViewById(R.id.tvOffer);

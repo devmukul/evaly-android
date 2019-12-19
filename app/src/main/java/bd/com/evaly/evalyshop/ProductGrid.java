@@ -209,6 +209,10 @@ public class ProductGrid {
 
                 } catch (Exception e) {
                     e.printStackTrace();
+
+                    if (currentPage == 1 && listener != null)
+                        listener.onSuccess(0);
+
                     progressBar.setVisibility(View.GONE);
                 }
 
@@ -219,7 +223,7 @@ public class ProductGrid {
 
                 progressBar.setVisibility(View.GONE);
 
-                if (listener != null)
+                if (currentPage == 1 && listener != null)
                     listener.onSuccess(0);
             }
 
