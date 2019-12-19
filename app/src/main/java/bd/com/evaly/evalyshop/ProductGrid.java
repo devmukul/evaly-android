@@ -221,6 +221,9 @@ public class ProductGrid {
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
+
+                isLoading = false;
+
                 progressBar.setVisibility(View.GONE);
 
                 if (currentPage == 1 && listener != null)
@@ -279,6 +282,9 @@ public class ProductGrid {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+
+
+                isLoading = false;
 
                 progressBar.setVisibility(View.GONE);
 

@@ -368,15 +368,14 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         } catch (Exception e){ }
 
 
-        if (!firstItem.getShopItemDiscountedPrice().equals("0")) {
+        if (firstItem.getShopItemDiscountedPrice() != null)
 
-            int disPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
-
-            productPrice.setText("৳ " + disPrice + " x 1");
-            productTotalPrice.setText("৳ " + disPrice);
-
-            productPriceInt = disPrice;
-        }
+            if (!firstItem.getShopItemDiscountedPrice().equals("0")) {
+                int disPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
+                productPrice.setText("৳ " + disPrice + " x 1");
+                productTotalPrice.setText("৳ " + disPrice);
+                productPriceInt = disPrice;
+            }
 
         productName.setText(firstItem.getShopItemName());
         shopName.setText("Seller: " + firstItem.getShopName());
@@ -415,8 +414,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
             String price  = firstItem.getShopItemPrice();
 
-            if (!firstItem.getShopItemDiscountedPrice().equals("0"))
-                price = firstItem.getShopItemDiscountedPrice();
+            if (firstItem.getShopItemDiscountedPrice() != null)
+                if (!firstItem.getShopItemDiscountedPrice().equals("0"))
+                    price = firstItem.getShopItemDiscountedPrice();
 
             String sellerJson = new Gson().toJson(firstItem);
 
