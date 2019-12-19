@@ -317,7 +317,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         String url = UrlUtils.BASE_URL+"/public/shops/"+ shop_slug +"/items/" +shop_item_slug+ "/variants";
         Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
 
                     skeleton.hide();

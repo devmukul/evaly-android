@@ -335,7 +335,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
         String url = UrlUtils.DOMAIN+"cpn/gift-cards/custom/list?page="+currentPage;
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
 
@@ -438,7 +438,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         initializeBottomSheet();
 
         String url= UrlUtils.DOMAIN+"cpn/gift-cards/retrieve/"+slug;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         dialog.hideDialog();

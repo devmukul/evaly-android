@@ -411,7 +411,7 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
         Log.d("json url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
                     try {
                         Log.d("json response", response.toString());

@@ -328,7 +328,7 @@ public class VoucherListFragment extends Fragment {
 
     public void get150VoucherData(){
         String url="https://api-prod.evaly.com.bd/pay/voucher-variants/?voucher_slug=evaly-1919-150";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         dialog.hideDialog();
@@ -361,7 +361,7 @@ public class VoucherListFragment extends Fragment {
 
     public void get200VoucherData(){
         String url="https://api-prod.evaly.com.bd/pay/voucher-variants/?voucher_slug=evaly-1919-200";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         dialog.hideDialog();
@@ -418,7 +418,7 @@ public class VoucherListFragment extends Fragment {
 
     public void checkIfVoucherIsAvailable(){
         String url="https://api-prod.evaly.com.bd/pay/vouchers/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
 
@@ -520,7 +520,7 @@ public class VoucherListFragment extends Fragment {
     public void getVoucherDetails(String slug){
         dialog.showDialog();
         String url="https://api-prod.evaly.com.bd/pay/variants/details/"+slug+"/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         dialog.hideDialog();

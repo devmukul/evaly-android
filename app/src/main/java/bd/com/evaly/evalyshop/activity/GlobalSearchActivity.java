@@ -972,7 +972,7 @@ public class GlobalSearchActivity extends BaseActivity {
 
 
         Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
 
                     if (nestedSV!=null)
@@ -1041,7 +1041,7 @@ public class GlobalSearchActivity extends BaseActivity {
             url = UrlUtils.BASE_URL+"public/brands/?page="+p+"&limit=15&search="+query;
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
 
 

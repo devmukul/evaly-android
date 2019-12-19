@@ -707,7 +707,7 @@ public class ViewProductActivity extends BaseActivity {
 
         String url = "https://nsuer.club/evaly/reviews/?sku=" + sku + "&type=product&isRating=true";
         Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
                     Log.d("json varying", response.toString());
                     try {
@@ -786,7 +786,7 @@ public class ViewProductActivity extends BaseActivity {
     public void getProductData(String slug) {
         String url = UrlUtils.BASE_URL + "public/products/" + slug + "/";
         Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 responseMain -> {
                     productName.setVisibility(View.VISIBLE);
                     collapsingToolbarLayout.setVisibility(View.VISIBLE);
@@ -1140,7 +1140,7 @@ public class ViewProductActivity extends BaseActivity {
 
         Log.d("json_shop", shopURL);
         shopURL = UrlUtils.BASE_URL + "public/product/shops/" + variationID + "/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, shopURL, (String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, shopURL, new JSONObject(),
                 response -> {
 
                     Logger.json(String.valueOf(response));

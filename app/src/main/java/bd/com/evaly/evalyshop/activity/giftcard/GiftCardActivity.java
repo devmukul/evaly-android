@@ -113,7 +113,7 @@ public class GiftCardActivity extends AppCompatActivity {
             parameters.put("key", "value");
         } catch (Exception e) {
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
             Log.d("onResponse", response.toString());
 
             try {

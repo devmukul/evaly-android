@@ -808,7 +808,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
         String url=UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName()+"/";
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
             Log.d("onResponse", response.toString());
             try {
 
@@ -1167,7 +1167,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void getOrderDetails(){
         String url=UrlUtils.BASE_URL+"custom/orders/"+invoice_no+"/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
             dialog.hideDialog();
 
             // brand grand days only full payment through bKash
@@ -1436,7 +1436,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void getOrderHistory(){
         String url=UrlUtils.BASE_URL+"orders/histories/"+invoice_no+"/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 

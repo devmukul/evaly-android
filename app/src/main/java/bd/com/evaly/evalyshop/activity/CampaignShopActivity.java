@@ -225,7 +225,7 @@ public class CampaignShopActivity extends AppCompatActivity {
 
         String url = UrlUtils.BASE_URL+"shop-subscriptions";
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url ,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url , new JSONObject(),
                 response -> {
                     try {
                         isLoading = false;

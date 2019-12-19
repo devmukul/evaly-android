@@ -1,10 +1,6 @@
 package bd.com.evaly.evalyshop.activity;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -17,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -181,7 +182,7 @@ public class SearchCategory extends AppCompatActivity {
 
         String url= UrlUtils.BASE_URL+"/categories/tree/search?search_term="+query;
         Log.d("json search", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     isLoading = false;
 

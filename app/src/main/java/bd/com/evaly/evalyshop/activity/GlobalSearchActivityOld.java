@@ -437,7 +437,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
         String url="https://api-prod.evaly.com.bd/api/product"+"/?&search="+searchText.getText().toString()+"&page="+p;
         Log.d("abcdefg",url);
         progressBar.setVisibility(View.VISIBLE);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         JSONArray jsonArray = response.getJSONArray("results");
@@ -591,7 +591,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
         if (isLoading)
             return;
         isLoading = true;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         isLoading = false;
@@ -784,7 +784,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
         if (isLoading)
             return;
         isLoading = true;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         isLoading = false;
@@ -961,7 +961,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
         RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setAdapter(adapterProduct);
         recyclerView.setLayoutManager(mLayoutManager);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, filterURL,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, filterURL,new JSONObject(),
                 response -> {
                     try {
                         JSONArray jsonArray = response.getJSONArray("results");
@@ -1041,7 +1041,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
         if (isLoading)
             return;
         isLoading = true;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     isLoading = false;
                     try {
@@ -1096,7 +1096,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
     public void getFilterAttributes(String filterSlug){
         String url="https://api-prod.evaly.com.bd/api/attributes/?category__slug="+filterSlug;
         Log.d("filter_url",url);
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url,(String) null,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         if(response.length()==0){
@@ -1141,7 +1141,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
     public void getAttributeOptions(String header,String slug,String filterSlug){
         ((LinearLayout) linearLayout).removeAllViews();
         String url="https://api-prod.evaly.com.bd/api/options/?attribute__slug="+slug;
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url,(String) null,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         ArrayList<String> values=new ArrayList<>();
@@ -1255,7 +1255,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
             return;
         isLoading = true;
         String url = "https://api-prod.evaly.com.bd/api/brands/?shadow_category__slug=root&page="+p;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         isLoading = false;

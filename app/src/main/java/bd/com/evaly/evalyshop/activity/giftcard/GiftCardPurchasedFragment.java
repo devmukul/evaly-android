@@ -580,7 +580,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?show=purchased&page="+currentPage;
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
 

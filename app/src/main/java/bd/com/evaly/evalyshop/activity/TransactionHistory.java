@@ -130,7 +130,7 @@ public class TransactionHistory extends AppCompatActivity {
 
         Log.d("json url", url);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
 
 
             progressBar.setVisibility(View.INVISIBLE);
@@ -209,7 +209,7 @@ public class TransactionHistory extends AppCompatActivity {
     public void getBalance(){
         String url= UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName()+"/";
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
             Log.d("onResponse", response.toString());
 
             try {

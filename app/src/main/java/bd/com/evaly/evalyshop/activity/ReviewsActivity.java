@@ -339,7 +339,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
         String url="https://nsuer.club/evaly/reviews/?sku="+item_value+"&type="+type+"&isRating=true";
         Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
 
 
@@ -640,7 +640,7 @@ public class ReviewsActivity extends AppCompatActivity {
         String url= UrlUtils.BASE_URL+"review-eligibility/"+sku+"/";
         Log.d("json rating", url);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
 
 

@@ -291,31 +291,28 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id;
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
 
-                skeletonCommentHeader.hide();
+            skeletonCommentHeader.hide();
 
-                try {
+            try {
 
-                    JSONObject ob = response.getJSONObject("data");
+                JSONObject ob = response.getJSONObject("data");
 
-                    JSONObject author = ob.getJSONObject("author");
+                JSONObject author = ob.getJSONObject("author");
 
-                    String authorName = author.getString("full_name");
-                    String authorImage = author.getString("compressed_image");
-                    String postText = ob.getString("body");
-                    String date = ob.getString("created_at");
-                    String postImageUrl = ob.getString("attachment");
+                String authorName = author.getString("full_name");
+                String authorImage = author.getString("compressed_image");
+                String postText = ob.getString("body");
+                String date = ob.getString("created_at");
+                String postImageUrl = ob.getString("attachment");
 
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -379,7 +376,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             bottomProgressBar.setVisibility(View.VISIBLE);
 
         Log.d("json url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
             Log.d("json response", response.toString());
 
             loading = true;

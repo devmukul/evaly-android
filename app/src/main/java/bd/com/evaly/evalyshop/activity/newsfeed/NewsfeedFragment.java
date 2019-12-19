@@ -726,7 +726,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         Log.d("json url", url);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
             Log.d("json response", response.toString());
 
             scrollView.fling(0);
@@ -949,7 +949,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         Log.d("json url", url);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
 
             scrollView.fling(0);
 
@@ -1041,7 +1041,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .color(R.color.ddd)
                 .show();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
 
             skeletonCommentHeader.hide();
 
@@ -1107,7 +1107,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             bottomProgressBar.setVisibility(View.VISIBLE);
 
         Log.d("json url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
             Log.d("json response", response.toString());
 
             loading = true;
