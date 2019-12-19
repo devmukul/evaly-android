@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,6 +60,17 @@ public class BrandFragment extends Fragment {
     }
 
 
+    private void refreshFragment(){
+        if (getFragmentManager() != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                getFragmentManager().beginTransaction().detach(this).commitNow();
+                getFragmentManager().beginTransaction().attach(this).commitNow();
+            } else {
+                getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+            }
+    }
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_brand, container, false);
@@ -73,6 +85,23 @@ public class BrandFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        if (!Utils.isNetworkAvailable(context))
+            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
+                @Override
+                public void onRetry() {
+                    refreshFragment();
+                }
+                @Override
+                public void onBackPress() {
+                    if (getFragmentManager() != null) {
+                        HomeFragment homeFragment = new HomeFragment();
+                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).addToBackStack("Home").commit();
+                    }
+                }
+            });
+
 
         InitializeActionBar InitializeActionbar = new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "brand");
 

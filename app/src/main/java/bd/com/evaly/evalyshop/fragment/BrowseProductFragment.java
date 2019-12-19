@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +39,7 @@ import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class BrowseProductFragment extends Fragment {
 
@@ -58,6 +61,7 @@ public class BrowseProductFragment extends Fragment {
     private EditText minimum,maximum;
     private ProgressBar progressBar;
     private SkeletonScreen skeletonTabHeader;
+    private Context context;
 
 
     public BrowseProductFragment() {
@@ -70,6 +74,7 @@ public class BrowseProductFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_browse_product, container, false);
 
         activity = (MainActivity) getActivity();
+        context = getContext();
 
         Bundle bundle = new Bundle();
         type = getArguments().getInt("type");
@@ -89,10 +94,38 @@ public class BrowseProductFragment extends Fragment {
 
     }
 
+    private void refreshFragment(){
+        if (getFragmentManager() != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                getFragmentManager().beginTransaction().detach(this).commitNow();
+                getFragmentManager().beginTransaction().attach(this).commitNow();
+            } else {
+                getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+            }
+    }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        if (!Utils.isNetworkAvailable(context))
+            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
+                @Override
+                public void onRetry() {
+                    refreshFragment();
+                }
+                @Override
+                public void onBackPress() {
+                    if (getFragmentManager() != null) {
+                        HomeFragment homeFragment = new HomeFragment();
+                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).addToBackStack("Home").commit();
+                    }
+                }
+            });
+
 
         InitializeActionBar InitializeActionbar = new InitializeActionBar((LinearLayout) view.findViewById(R.id.header_logo), activity, "browse");
 

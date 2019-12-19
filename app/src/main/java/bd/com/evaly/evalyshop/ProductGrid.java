@@ -213,6 +213,8 @@ public class ProductGrid {
                     if (currentPage == 1 && listener != null)
                         listener.onSuccess(0);
 
+                    isLoading = false;
+
                     progressBar.setVisibility(View.GONE);
                 }
 

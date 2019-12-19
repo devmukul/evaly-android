@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -212,12 +213,43 @@ public class ShopFragment extends Fragment implements ProductListener {
             startXmppService();
         }
 
+
+
         return view;
     }
+
+
+    private void refreshFragment(){
+        if (getFragmentManager() != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                getFragmentManager().beginTransaction().detach(this).commitNow();
+                getFragmentManager().beginTransaction().attach(this).commitNow();
+            } else {
+                getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+            }
+    }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (!Utils.isNetworkAvailable(context))
+            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
+                @Override
+                public void onRetry() {
+                    refreshFragment();
+                }
+                @Override
+                public void onBackPress() {
+                    if (getFragmentManager() != null) {
+                        HomeFragment homeFragment = new HomeFragment();
+                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).addToBackStack("Home").commit();
+                    }
+                }
+            });
+
 
         InitializeActionBar InitializeActionbar = new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "shop");
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
@@ -375,6 +407,14 @@ public class ShopFragment extends Fragment implements ProductListener {
         productGrid.setScrollView(nestedSV);
         productGrid.setListener(this);
 
+
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     private void startXmppService() {
@@ -788,6 +828,8 @@ public class ShopFragment extends Fragment implements ProductListener {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+
+                loading = false;
 
             }
 

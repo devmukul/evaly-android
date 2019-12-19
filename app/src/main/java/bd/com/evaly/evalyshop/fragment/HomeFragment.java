@@ -73,29 +73,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private SwipeRefreshLayout swipeLayout;
 
 
+
+
     @Override
     public void onRefresh() {
 
         swipeLayout.setRefreshing(false);
 
+        refreshFragment();
 
-        //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            getFragmentManager().beginTransaction().detach(this).commitNow();
-            getFragmentManager().beginTransaction().attach(this).commitNow();
-        } else {
-            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-        }
-
-        pager.notifyDataSetChanged();
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            shimmer.stopShimmer();
-            shimmer.setVisibility(View.GONE);
-        }, 300);
     }
 
     public HomeFragment() {
@@ -115,10 +102,52 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
 
+    private void refreshFragment(){
+
+        //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+
+
+        if (getFragmentManager() != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                getFragmentManager().beginTransaction().detach(this).commitNow();
+                getFragmentManager().beginTransaction().attach(this).commitNow();
+            } else {
+                getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+            }
+
+            pager.notifyDataSetChanged();
+
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                shimmer.stopShimmer();
+                shimmer.setVisibility(View.GONE);
+            }, 300);
+        }
+
+    }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        if (!Utils.isNetworkAvailable(context))
+            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
+                @Override
+                public void onRetry() {
+                    refreshFragment();
+                }
+                @Override
+                public void onBackPress() {
+                    if (getFragmentManager() != null) {
+                        HomeFragment homeFragment = new HomeFragment();
+                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).addToBackStack("Home").commit();
+                    }
+                }
+            });
+
 
         tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
