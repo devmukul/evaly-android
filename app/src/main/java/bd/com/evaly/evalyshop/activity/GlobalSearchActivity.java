@@ -910,10 +910,14 @@ public class GlobalSearchActivity extends BaseActivity {
                                 noResult.setVisibility(View.VISIBLE);
 
                                 if (!GlobalSearchActivity.this.isFinishing()) {
-                                    Glide.with(GlobalSearchActivity.this)
-                                            .load(R.drawable.ic_search_not_found)
-                                            .apply(new RequestOptions().override(800, 800))
-                                            .into((ImageView) findViewById(R.id.noImage));
+                                    try {
+                                        Glide.with(GlobalSearchActivity.this)
+                                                .load(R.drawable.ic_search_not_found)
+                                                .apply(new RequestOptions().override(800, 800))
+                                                .into((ImageView) findViewById(R.id.noImage));
+                                    } catch (Exception e){
+
+                                    }
                                 }
 
 

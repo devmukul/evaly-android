@@ -617,35 +617,34 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                         e.printStackTrace();
                         catchError();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+                }, error -> {
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
+                        if (error.networkResponse.statusCode == 401 && getActivity()!= null){
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getGiftCardList();
-                        }
 
-                        @Override
-                        public void onFailed(int status) {
+                                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                    @Override
+                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                        getGiftCardList();
+                                    }
 
-                        }
-                    });
+                                    @Override
+                                    public void onFailed(int status) {
 
-                    return;
+                                    }
+                                });
 
-                }}
 
-                error.printStackTrace();
-                progressContainer.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-            }
-        }) {
+                        return;
+
+                    }}
+
+                    error.printStackTrace();
+                    progressContainer.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -703,55 +702,49 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         dialog.showDialog();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                dialog.hideDialog();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
+            dialog.hideDialog();
 
-                try {
+            try {
 
 
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-                    String purl = response.getString("payment_gateway_url");
-                    Intent intent = new Intent(context, PayViaCard.class);
-                    intent.putExtra("url", purl);
-                    startActivityForResult(intent,10002);
-
-
-                }catch (Exception e){
+                String purl = response.getString("payment_gateway_url");
+                Intent intent = new Intent(context, PayViaCard.class);
+                intent.putExtra("url", purl);
+                startActivityForResult(intent,10002);
 
 
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
-
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            addBalanceViaCard(invoice, amount);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }}
+            }catch (Exception e){
 
 
             }
+
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401 && getActivity() != null){
+
+                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        addBalanceViaCard(invoice, amount);
+                    }
+
+                    @Override
+                    public void onFailed(int status) {
+
+                    }
+                });
+
+                return;
+
+            }}
+
+
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
