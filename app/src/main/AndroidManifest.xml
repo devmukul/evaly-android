@@ -48,7 +48,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.newsfeed.NewsfeedActivity"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -107,10 +108,12 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="sensor"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".activity.ReviewsActivity" />
         <activity
             android:name=".activity.orderDetails.OrderDetailsActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.orderDetails.AddBalanceActivity"
             android:theme="@style/AppTheme" />
@@ -122,17 +125,20 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.OrderListActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.password.PasswordActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.UserDashboardActivity"
             android:label="@string/title_activity_user_profile"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.GlobalSearchActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.ForgotPasswordActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -143,11 +149,13 @@
         <activity
             android:name=".activity.ViewProductActivity"
             android:label="@string/title_activity_view_product"
-            android:theme="@style/AppThemeViewProduct" />
+            android:theme="@style/AppThemeViewProduct"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.MainActivity"
             android:largeHeap="true"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
