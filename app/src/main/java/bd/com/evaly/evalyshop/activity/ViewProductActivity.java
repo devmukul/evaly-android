@@ -385,7 +385,7 @@ public class ViewProductActivity extends BaseActivity {
 
                 TextView availableShopTitle = findViewById(R.id.avlshop);
                 int scrollTo = ((View) availableShopTitle.getParent()).getTop() + availableShopTitle.getTop();
-                scrollView.smoothScrollTo(0, scrollTo - 30);
+                scrollView.smoothScrollTo(0, scrollTo - productName.getHeight());
             }, 100);
 
         });
