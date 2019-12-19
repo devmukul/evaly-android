@@ -169,6 +169,12 @@ public class ShopFragment extends Fragment implements ProductListener {
             noItem.setVisibility(View.GONE);
         }
 
+
+        if (!CredentialManager.getToken().equals("")) {
+            startXmppService();
+        }
+
+
     }
 
 
@@ -209,9 +215,6 @@ public class ShopFragment extends Fragment implements ProductListener {
         mainActivity = (MainActivity) getActivity();
         rq = Volley.newRequestQueue(context);
 
-        if (!CredentialManager.getToken().equals("")) {
-            startXmppService();
-        }
 
 
 
@@ -469,7 +472,13 @@ public class ShopFragment extends Fragment implements ProductListener {
                         owner_number = jsonObject.getString("owner_name");
                         subCount = data.getInt("subscriber_count");
 
+
+
+
                         llInbox.setOnClickListener(v -> {
+
+
+
                             if (userDetails.getToken() == null || userDetails.getToken().equals("")) {
                                 startActivity(new Intent(getActivity(), SignInActivity.class));
                                 getActivity().finish();
@@ -693,6 +702,10 @@ public class ShopFragment extends Fragment implements ProductListener {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
+
+
+
                 }, error -> {
                     error.printStackTrace();
 

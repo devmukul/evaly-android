@@ -33,9 +33,9 @@ android {
         }
         debug {
             buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
-            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
+            buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111666\""
-            buildConfigField "String", 'BUILD', "\"dev\""
+            buildConfigField "String", 'BUILD', "\"prod\""
         }
 
         lintOptions {
