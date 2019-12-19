@@ -96,19 +96,18 @@ public class MainActivity extends BaseActivity {
         //Event Listeners
         public void onLoggedIn() {
 
-            Logger.d("LOGIN =========");
-            Logger.d(xmppHandler.isConnected());
-            CredentialManager.saveUserRegistered(true);
-            if (xmppHandler.isLoggedin()) {
-                VCard vCard = xmppHandler.mVcard;
-                if (CredentialManager.getUserData() != null) {
-                    if (vCard != null){
-                        if (vCard.getFirstName() == null) {
-                            Logger.d("========");
-                            xmppHandler.updateUserInfo(CredentialManager.getUserData());
-
+            if (xmppHandler != null) {
+                CredentialManager.saveUserRegistered(true);
+                if (xmppHandler.isLoggedin()) {
+                    VCard vCard = xmppHandler.mVcard;
+                    if (CredentialManager.getUserData() != null) {
+                        if (vCard != null) {
+                            if (vCard.getFirstName() == null || vCard.getLastName() == null) {
+                                Logger.d("========");
+                                xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                            }
+                            disconnectXmpp();
                         }
-                        disconnectXmpp();
                     }
                 }
             }

@@ -93,7 +93,11 @@ public class EditProfileActivity extends BaseActivity {
         public void onUpdateUserSuccess(){
             dialog.hideDialog();
             Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
-            onBackPressed();
+            try {
+                onBackPressed();
+            } catch (Exception e){
+                finish();
+            }
         }
 
         public void onUpdateUserFailed( String error ){
