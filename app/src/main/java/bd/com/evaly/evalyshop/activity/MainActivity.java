@@ -338,17 +338,23 @@ public class MainActivity extends BaseActivity {
                 case R.id.nav_home:
 
 
-                    WishListFragment myFragment = (WishListFragment) fragmentManager.findFragmentByTag("wishlist");
-                    if (myFragment != null && myFragment.isVisible()) {
-                        ft.hide(fragmentWishtList);
-                        ft.show(homeFragment);
-                        ft.commit();
-                    } else {
+                    try {
 
-                        while (fragmentManager.getBackStackEntryCount() > 0) {
-                            fragmentManager.popBackStackImmediate();
+
+                        WishListFragment myFragment = (WishListFragment) fragmentManager.findFragmentByTag("wishlist");
+                        if (myFragment != null && myFragment.isVisible()) {
+                            ft.hide(fragmentWishtList);
+                            ft.show(homeFragment);
+                            ft.commit();
+                        } else {
+
+                            while (fragmentManager.getBackStackEntryCount() > 0) {
+                                fragmentManager.popBackStackImmediate();
+                            }
+                            showHomeFragment();
                         }
-                        showHomeFragment();
+                    } catch (Exception e){
+
                     }
 
                     break;
