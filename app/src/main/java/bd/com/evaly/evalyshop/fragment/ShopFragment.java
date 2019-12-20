@@ -170,9 +170,7 @@ public class ShopFragment extends Fragment implements ProductListener {
         }
 
 
-        if (!CredentialManager.getToken().equals("")) {
-            startXmppService();
-        }
+
 
 
     }
@@ -215,6 +213,9 @@ public class ShopFragment extends Fragment implements ProductListener {
         mainActivity = (MainActivity) getActivity();
         rq = Volley.newRequestQueue(context);
 
+        if (!CredentialManager.getToken().equals("")) {
+            startXmppService();
+        }
 
 
 
@@ -423,17 +424,19 @@ public class ShopFragment extends Fragment implements ProductListener {
     private void startXmppService() {
 
         //Start XMPP Service (if not running already)
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(getActivity(), XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-        } else {
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
+        if (getContext() != null && getActivity() != null) {
+            if (!XMPPService.isServiceRunning) {
+                Intent intent = new Intent(getActivity(), XMPPService.class);
+                mChatApp.UnbindService();
+                mChatApp.BindService(intent);
             } else {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
+                xmppHandler = AppController.getmService().xmpp;
+                if (!xmppHandler.isConnected()) {
+                    xmppHandler.connect();
+                } else {
+                    xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                    xmppHandler.login();
+                }
             }
         }
 
