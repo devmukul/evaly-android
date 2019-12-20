@@ -2,16 +2,8 @@ package bd.com.evaly.evalyshop.activity.buynow;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +17,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -39,6 +34,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -56,11 +54,12 @@ import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shopItem.ShopItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -221,57 +220,54 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         list = new ArrayList<>();
 
-        btnBottomSheet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnBottomSheet.setOnClickListener(view12 -> {
 
 
-                if(userDetails.getToken().equals("")) {
-                    startActivity(new Intent(context, SignInActivity.class));
-                    return;
-                }
-                if (!checkBox.isChecked()) {
-                    Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (customAddress.getText().toString().equals("")){
-                    Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (!Utils.isValidNumber(contact_number.getText().toString())){
-                    Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                PlaceOrderItem orderJson = new PlaceOrderItem();
-
-                orderJson.setContactNumber(contact_number.getText().toString());
-                orderJson.setCustomerAddress(customAddress.getText().toString());
-                orderJson.setPaymentMethod("evaly_pay");
-                orderJson.setOrderOrigin("app");
-
-                OrderItemsItem item = new OrderItemsItem();
-                item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
-                item.setShopItemId(shop_item_id);
-
-
-                list = new ArrayList<>();
-
-                list.add(item);
-
-                orderJson.setOrderItems(list);
-
-
-                String payload = new Gson().toJson(orderJson);
-
-                try {
-
-                    JSONObject jsonPayload = new JSONObject(payload);
-                    placeOrder(jsonPayload);
-
-                }catch (Exception e){}
-
+            if(userDetails.getToken().equals("")) {
+                startActivity(new Intent(context, SignInActivity.class));
+                return;
             }
+            if (!checkBox.isChecked()) {
+                Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (customAddress.getText().toString().equals("")){
+                Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!Utils.isValidNumber(contact_number.getText().toString())){
+                Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            PlaceOrderItem orderJson = new PlaceOrderItem();
+
+            orderJson.setContactNumber(contact_number.getText().toString());
+            orderJson.setCustomerAddress(customAddress.getText().toString());
+            orderJson.setPaymentMethod("evaly_pay");
+            orderJson.setOrderOrigin("app");
+
+            OrderItemsItem item = new OrderItemsItem();
+            item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
+            item.setShopItemId(shop_item_id);
+
+
+            list = new ArrayList<>();
+
+            list.add(item);
+
+            orderJson.setOrderItems(list);
+
+
+            String payload = new Gson().toJson(orderJson);
+
+            try {
+
+                JSONObject jsonPayload = new JSONObject(payload);
+                placeOrder(jsonPayload);
+
+            }catch (Exception e){}
+
         });
 
 
@@ -293,15 +289,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog bottomSheetDialog=(BottomSheetDialog)super.onCreateDialog(savedInstanceState);
-        bottomSheetDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
-                FrameLayout bottomSheet =  dialogz.findViewById(android.support.design.R.id.design_bottom_sheet);
-                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-                BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
-                BottomSheetBehavior.from(bottomSheet).setHideable(true);
-            }
+        bottomSheetDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
+            FrameLayout bottomSheet =  dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+            BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
+            BottomSheetBehavior.from(bottomSheet).setHideable(true);
         });
         return bottomSheetDialog;
     }
@@ -324,7 +317,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         String url = UrlUtils.BASE_URL+"/public/shops/"+ shop_slug +"/items/" +shop_item_slug+ "/variants";
         Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
 
                     skeleton.hide();
@@ -351,12 +344,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+                }, error -> error.printStackTrace());
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -372,30 +360,32 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
 
         ShopItem firstItem = itemsList.get(position);
-        productName.setText(firstItem.getShopItemName());
-        shopName.setText("Seller: " + firstItem.getShopName());
-        productPrice.setText("৳ "+firstItem.getShopItemPrice() + " x 1");
-        productQuantity.setText("1");
-        productTotalPrice.setText("৳ "+firstItem.getShopItemPrice());
-
-        shop_item_id = firstItem.getShopItemId();
 
         try {
 
-            productPriceInt = Integer.parseInt(firstItem.getShopItemPrice());
+            productPriceInt = (int) Math.round(Double.parseDouble(firstItem.getShopItemPrice()));
 
         } catch (Exception e){ }
 
 
-        if (!firstItem.getShopItemDiscountedPrice().equals("0")) {
+        if (firstItem.getShopItemDiscountedPrice() != null)
 
-            productPrice.setText("৳ " + firstItem.getShopItemDiscountedPrice() + " x 1");
-            productTotalPrice.setText("৳ " + firstItem.getShopItemDiscountedPrice());
+            if (!firstItem.getShopItemDiscountedPrice().equals("0")) {
+                int disPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
+                productPrice.setText("৳ " + disPrice + " x 1");
+                productTotalPrice.setText("৳ " + disPrice);
+                productPriceInt = disPrice;
+            }
 
-            try {
-                productPriceInt = Integer.parseInt(firstItem.getShopItemDiscountedPrice());
-            } catch (Exception e){ }
-        }
+        productName.setText(firstItem.getShopItemName());
+        shopName.setText("Seller: " + firstItem.getShopName());
+        productPrice.setText("৳ "+productPriceInt + " x 1");
+        productQuantity.setText("1");
+        productTotalPrice.setText("৳ "+productPriceInt);
+
+        shop_item_id = firstItem.getShopItemId();
+
+
 
         Glide.with(context)
                 .load(firstItem.getShopItemImage())
@@ -424,12 +414,13 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
             String price  = firstItem.getShopItemPrice();
 
-            if (!firstItem.getShopItemDiscountedPrice().equals("0"))
-                price = firstItem.getShopItemDiscountedPrice();
+            if (firstItem.getShopItemDiscountedPrice() != null)
+                if (!firstItem.getShopItemDiscountedPrice().equals("0"))
+                    price = firstItem.getShopItemDiscountedPrice();
 
             String sellerJson = new Gson().toJson(firstItem);
 
-            if(db.insertData(shop_item_slug,firstItem.getShopItemName(),firstItem.getShopItemImage(), Integer.parseInt(price), calendar.getTimeInMillis(), sellerJson, 1, firstItem.getShopSlug(), String.valueOf(firstItem.getShopItemId()))){
+            if(db.insertData(shop_item_slug,firstItem.getShopItemName(),firstItem.getShopItemImage(), (int) Math.round(Double.parseDouble(price)), calendar.getTimeInMillis(), sellerJson, 1, firstItem.getShopSlug(), String.valueOf(firstItem.getShopItemId()))){
 
                 Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
                 BuyNowFragment.this.dismiss();
@@ -446,93 +437,87 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         String url = UrlUtils.BASE_URL+"custom/order/create/";
         dialog.showDialog();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
 
-                // Logger.d(response);
+            // Logger.d(response);
 
-                bottomSheetDialog.hide();
-                dialog.hideDialog();
+            bottomSheetDialog.hide();
+            dialog.hideDialog();
 
 
-                String errorMsg = "Couldn't place order, might be a server error";
+            String errorMsg = "Couldn't place order, might be a server error";
 
-                Log.d("json order", response.toString());
+            Log.d("json order", response.toString());
 
-                try {
+            try {
 
-                    errorMsg = response.getString("message");
+                errorMsg = response.getString("message");
 
-                }catch (Exception e){
+            }catch (Exception e){
 
+            }
+
+            try {
+                if (response.getJSONArray("data").length() < 1) {
+                    Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
+                    BuyNowFragment.this.dismiss();
                 }
 
-                try {
-                    if (response.getJSONArray("data").length() < 1) {
-                        Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+            } catch (Exception e){}
+
+            try {
+
+                JSONArray data = response.getJSONArray("data");
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject item = data.getJSONObject(i);
+                    String invoice = item.getString("invoice_no");
+                    Intent intent = new Intent(context, OrderDetailsActivity.class);
+                    intent.putExtra("orderID", invoice);
+                    startActivity(intent);
+                }
+
+            } catch (Exception e) {
+
+                Log.e("json exception", e.toString());
+                Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+
+            }
+
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+
+
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    if (response.statusCode == 401){
+
+                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                placeOrder(payload);
+                            }
+
+                            @Override
+                            public void onFailed(int status) {
+
+                            }
+                        });
+
                         return;
-                    } else {
-                        Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
-                        BuyNowFragment.this.dismiss();
-                    }
 
-                } catch (Exception e){}
-
-                try {
-
-                    JSONArray data = response.getJSONArray("data");
-                    for (int i = 0; i < data.length(); i++) {
-                        JSONObject item = data.getJSONObject(i);
-                        String invoice = item.getString("invoice_no");
-                        Intent intent = new Intent(context, OrderDetailsActivity.class);
-                        intent.putExtra("orderID", invoice);
-                        startActivity(intent);
-                    }
-
-                } catch (Exception e) {
-
-                    Log.e("json exception", e.toString());
-                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
+                }}
 
 
-                    NetworkResponse response = error.networkResponse;
-                    if (response != null && response.data != null) {
-                        if (response.statusCode == 401){
-
-                            AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                                @Override
-                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                    placeOrder(payload);
-                                }
-
-                                @Override
-                                public void onFailed(int status) {
-
-                                }
-                            });
-
-                            return;
-
-                    }}
-
-
-                dialog.hideDialog();
-                Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
-            }
+            dialog.hideDialog();
+            Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 return headers;
             }
 

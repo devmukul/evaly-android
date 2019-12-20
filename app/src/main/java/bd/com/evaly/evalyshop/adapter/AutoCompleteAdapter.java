@@ -1,13 +1,12 @@
 package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,19 +29,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
-
-import bd.com.evaly.evalyshop.util.Utils;
 
 public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
     private ArrayList<String> data;
@@ -144,7 +136,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filtera
                         String url = server + query;
 
                         try {
-                            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
+                            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
 

@@ -8,15 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +20,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -38,7 +35,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -52,19 +50,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.activity.giftcard.adapter.GiftCardListPurchasedAdapter;
-import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaCard;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
-import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
@@ -347,7 +342,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 return headers;
             }
         };
@@ -425,7 +420,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 return headers;
             }
 
@@ -490,7 +485,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_gift_card_payment);
 
-        bottomSheetInternal = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         bottomSheetInternal.setPadding(0, 0, 0, 0);
 
         new KeyboardUtil(getActivity(), bottomSheetInternal);
@@ -585,7 +580,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?show=purchased&page="+currentPage;
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
 
@@ -622,41 +617,40 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                         e.printStackTrace();
                         catchError();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+                }, error -> {
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
+                        if (error.networkResponse.statusCode == 401 && getActivity()!= null){
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getGiftCardList();
-                        }
 
-                        @Override
-                        public void onFailed(int status) {
+                                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                    @Override
+                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                        getGiftCardList();
+                                    }
 
-                        }
-                    });
+                                    @Override
+                                    public void onFailed(int status) {
 
-                    return;
+                                    }
+                                });
 
-                }}
 
-                error.printStackTrace();
-                progressContainer.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-            }
-        }) {
+                        return;
+
+                    }}
+
+                    error.printStackTrace();
+                    progressContainer.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
 
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
 
                 headers.put("Content-Type", "application/json");
                 return headers;
@@ -708,60 +702,54 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         dialog.showDialog();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                dialog.hideDialog();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
+            dialog.hideDialog();
 
-                try {
+            try {
 
 
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-                    String purl = response.getString("payment_gateway_url");
-                    Intent intent = new Intent(context, PayViaCard.class);
-                    intent.putExtra("url", purl);
-                    startActivityForResult(intent,10002);
-
-
-                }catch (Exception e){
+                String purl = response.getString("payment_gateway_url");
+                Intent intent = new Intent(context, PayViaCard.class);
+                intent.putExtra("url", purl);
+                startActivityForResult(intent,10002);
 
 
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
-
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            addBalanceViaCard(invoice, amount);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }}
+            }catch (Exception e){
 
 
             }
+
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401 && getActivity() != null){
+
+                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        addBalanceViaCard(invoice, amount);
+                    }
+
+                    @Override
+                    public void onFailed(int status) {
+
+                    }
+                });
+
+                return;
+
+            }}
+
+
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 return headers;
             }
 

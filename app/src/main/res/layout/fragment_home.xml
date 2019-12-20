@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,15 +11,13 @@
 
     <include layout="@layout/fragment_app_bar_header"/>
 
-
-
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/stickyScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,7 +31,7 @@
             android:transitionGroup="false">
 
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/sliderHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,27 +39,44 @@
                 android:background="#fff"
                 android:minHeight="100dp">
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@drawable/banner_skeleton_bg"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintDimensionRatio="H,2.93478:1" />
+
                 <bd.com.evaly.evalyshop.views.SliderViewPager
                     android:id="@+id/sliderPager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginLeft="15dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="15dp" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/sliderIndicator"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
+                    android:layout_height="25dp"
                     android:layout_alignParentBottom="true"
+                    app:layout_constraintBottom_toBottomOf="@id/sliderPager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:tabBackground="@drawable/indicator_selector"
                     app:tabGravity="center"
-                    app:tabIndicatorHeight="0dp" />
+                    app:tabIndicatorHeight="0dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="40dp"/>
 
-
-            </RelativeLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <LinearLayout
@@ -158,7 +174,7 @@
                         android:background="@drawable/circle_bg"
                         android:clickable="false"
                         android:tint="#2ab5d2 "
-                        app:srcCompat="@drawable/ic_star_flying" />
+                        app:srcCompat="@drawable/ic_discount_tag" />
 
                     <TextView
                         android:id="@+id/textView3"
@@ -167,7 +183,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_weight="0"
                         android:clickable="false"
-                        android:text="Pre-Anniversary"
+                        android:text="Campaigns"
                         android:textAlignment="center" />
                 </LinearLayout>
 
@@ -209,7 +225,7 @@
                 android:layout_height="8dp"
                 android:background="@color/separator_light" />
 
-            <android.support.design.widget.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -218,24 +234,24 @@
                 app:tabTextAppearance="@style/home_tab_text"
                 app:tabTextColor="@color/c777">
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Categories" />
 
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:id="@+id/tabItem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Brands" />
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Shops" />
 
-            </android.support.design.widget.TabLayout>
+            </com.google.android.material.tabs.TabLayout>
 
 
             <bd.com.evaly.evalyshop.views.WrapContentHeightViewPager
@@ -243,58 +259,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-
             <include
                 layout="@layout/shimmer_tabs"
                 android:visibility="gone" />
 
-
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#fafafa"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingBottom="20dp">
-
-                <EditText
-                    android:id="@+id/searchBtnTabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/search_cat_input"
-                    android:clickable="true"
-                    android:drawableRight="@drawable/ic_search_small"
-                    android:ems="10"
-                    android:gravity="center_vertical"
-                    android:inputType="textPersonName"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:hint="Search categories"
-                    android:textColor="#666"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/showMoreBtnTabs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="39dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="0"
-                    android:background="@drawable/border_box_more"
-                    android:clickable="true"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:text="Show More"
-                    android:textAlignment="center"
-                    android:textColor="#fff"
-                    android:textSize="14sp" />
-            </LinearLayout>-->
-
             <TextView
+                android:id="@+id/tvProductTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
@@ -306,18 +276,18 @@
                 android:text="Recent Products"
                 android:textColor="#555"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="visible" />
 
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/products"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#fafafa"
                 android:nestedScrollingEnabled="false"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:scrollbars="vertical" />
+                android:paddingRight="5dp" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -333,9 +303,9 @@
         </LinearLayout>
 
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,27 +1,15 @@
 package bd.com.evaly.evalyshop.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,18 +19,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.facebook.FacebookSdk;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.fragment.BrandFragment;
@@ -50,41 +52,37 @@ import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 import bd.com.evaly.evalyshop.fragment.HomeFragment;
 import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.fragment.WishListFragment;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
+import bd.com.evaly.evalyshop.preference.MyPreference;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
-import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
+import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
 
-    HomeFragment homeFragment;
-    BottomNavigationView bottomNavigationView;
-    DrawerLayout drawer;
-    Toolbar toolbar;
-    NavigationView navigationView, navigationView2;
-    ImageView menuBtn, user;
-    String TAG1 = "first", TAG2 = "second", TAG3 = "third";
-    UserDetails userDetails;
-    TextView userNameNavHeader;
-    TextView phoneNavHeader;
-    DbHelperWishList dbHelperWishList;
-    DbHelperCart dbHelperCart;
+    private HomeFragment homeFragment;
+    private BottomNavigationView bottomNavigationView;
+    public DrawerLayout drawer;
+    private Toolbar toolbar;
+    private NavigationView navigationView, navigationView2;
+    private UserDetails userDetails;
+    private TextView userNameNavHeader;
+    private TextView phoneNavHeader;
+    private DbHelperWishList dbHelperWishList;
+    private DbHelperCart dbHelperCart;
     public boolean isLaunchActivity = true;
     private View headerView;
-
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
-    ViewDialog dialog;
-//    private SessionManager sessionManager;
-
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
 
@@ -97,19 +95,20 @@ public class MainActivity extends BaseActivity {
 
         //Event Listeners
         public void onLoggedIn() {
-            xmppHandler = AppController.getmService().xmpp;
-            CredentialManager.saveUserRegistered(true);
-            if (xmppHandler.isLoggedin()) {
-                VCard vCard = xmppHandler.mVcard;
-                if (CredentialManager.getUserData() != null) {
-                    if (vCard != null){
-                        if (vCard.getFirstName() == null) {
-                            Logger.d("========");
-                            xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                        }
-                        disconnectXmpp();
-                    }
 
+            if (xmppHandler != null) {
+                CredentialManager.saveUserRegistered(true);
+                if (xmppHandler.isLoggedin()) {
+                    VCard vCard = xmppHandler.mVcard;
+                    if (CredentialManager.getUserData() != null) {
+                        if (vCard != null) {
+                            if (vCard.getFirstName() == null || vCard.getLastName() == null) {
+                                Logger.d("========");
+                                xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                            }
+                            disconnectXmpp();
+                        }
+                    }
                 }
             }
         }
@@ -149,20 +148,19 @@ public class MainActivity extends BaseActivity {
 
         setContentView(R.layout.activity_main);
 
-
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
         navigationView2 = findViewById(R.id.nav_view2);
         headerView = navigationView.getHeaderView(0);
-
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         userNameNavHeader = headerView.findViewById(R.id.userNameNavHeader);
         phoneNavHeader = headerView.findViewById(R.id.phone);
-//        homeFragment = new HomeFragment();
         userDetails = new UserDetails(this);
 
-        dialog = new ViewDialog(this);
+        // check for update
+
+        checkUpdate();
 
         dbHelperWishList = new DbHelperWishList(this);
         dbHelperCart = new DbHelperCart(this);
@@ -222,9 +220,12 @@ public class MainActivity extends BaseActivity {
                 if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered()) {
                     Logger.d("===========");
                     if (AppController.getInstance().isNetworkConnected()) {
-                        AsyncTask.execute(() -> {
-                            Logger.d("START_SERVICE");
-                            startXmppService();
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                Logger.d("START_SERVICE");
+                                startXmppService();
+                            }
                         });
                     }
                 }
@@ -238,7 +239,12 @@ public class MainActivity extends BaseActivity {
 
 //        Logger.d(strNew);
         try {
-            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful()));
+            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Logger.d(task.isSuccessful());
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -254,9 +260,6 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_contact:
                         startActivity(new Intent(MainActivity.this, ContactActivity.class));
                         break;
-//                    case R.id.nav_about:
-//                        startActivity(new Intent(MainActivity.this,AboutActivity.class));
-//                        break;
                     case R.id.nav_sign_in:
                         startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         break;
@@ -288,13 +291,9 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_contact:
                         startActivity(new Intent(MainActivity.this, ContactActivity.class));
                         break;
-//                    case R.id.nav_about:
-//                        startActivity(new Intent(MainActivity.this,AboutActivity.class));
-//                        break;
                     case R.id.nav_home:
                         finish();
                         startActivity(getIntent());
-                        //this.overridePendingTransition(0, 0);
                         break;
                     case R.id.nav_account:
                         startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
@@ -315,8 +314,8 @@ public class MainActivity extends BaseActivity {
                         startActivity(new Intent(MainActivity.this, ChatListActivity.class));
                         break;
                     case R.id.nav_followed_shops:
-                        Intent inf = new Intent(MainActivity.this, EvalyStoreActivity.class);
-                        inf.putExtra("title", "Followed Shop");
+                        Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
+                        inf.putExtra("title", "Followed ShopDetails");
                         inf.putExtra("slug", "shop-subscriptions");
                         startActivity(inf);
 
@@ -328,12 +327,9 @@ public class MainActivity extends BaseActivity {
 
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
-
         Fragment fragmentWishtList = WishListFragment.newInstance();
 
-
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
-
 
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -342,39 +338,45 @@ public class MainActivity extends BaseActivity {
                 case R.id.nav_home:
 
 
-                    WishListFragment myFragment = (WishListFragment) getSupportFragmentManager().findFragmentByTag("wishlist");
-                    if (myFragment != null && myFragment.isVisible()) {
-                        ft.hide(fragmentWishtList);
-                        ft.show(homeFragment);
-                        ft.commit();
-                    } else {
+                    try {
 
-                        while (fragmentManager.getBackStackEntryCount() > 0) {
-                            fragmentManager.popBackStackImmediate();
+
+                        WishListFragment myFragment = (WishListFragment) fragmentManager.findFragmentByTag("wishlist");
+                        if (myFragment != null && myFragment.isVisible()) {
+                            ft.hide(fragmentWishtList);
+                            ft.show(homeFragment);
+                            ft.commit();
+                        } else {
+
+                            while (fragmentManager.getBackStackEntryCount() > 0) {
+                                fragmentManager.popBackStackImmediate();
+                            }
+                            showHomeFragment();
                         }
+                    } catch (Exception e){
 
                         showHomeFragment();
 
                     }
 
-
                     break;
                 case R.id.nav_wishlist:
-//                    intent = new Intent(MainActivity.this, WishListActivity.class);
-//                    startActivity(intent);
+                    try {
+                        Fragment fragmentW = fragmentManager.findFragmentByTag("wishlist");
+                        if (fragmentW == null) {
 
+                            ft.add(R.id.fragment_container, fragmentWishtList, "wishlist");
 
-                    Fragment fragmentW = fragmentManager.findFragmentByTag("wishlist");
-                    if (fragmentW == null) {
+                            ft.addToBackStack("wishlist");
+                        }
 
-                        ft.add(R.id.fragment_container, fragmentWishtList, "wishlist");
+                        ft.hide(homeFragment);
+                        ft.show(fragmentWishtList);
+                        ft.commit();
+                    } catch (Exception e){
 
-                        ft.addToBackStack("wishlist");
+                        startActivity(new Intent(this, WishListActivity.class));
                     }
-
-                    ft.hide(homeFragment);
-                    ft.show(fragmentWishtList);
-                    ft.commit();
 
                     break;
                 case R.id.nav_cart:
@@ -399,8 +401,6 @@ public class MainActivity extends BaseActivity {
         Intent data = getIntent();
 
         if (data.hasExtra("type")) {
-
-
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             int type = data.getIntExtra("type", 1);
@@ -422,15 +422,16 @@ public class MainActivity extends BaseActivity {
                 ft.addToBackStack(null);
                 ft.commit();
 
-            } else if (type == 3) {
+            } else if (type == 3 || type == 6) {
 
                 isLaunchActivity = false;
                 bundle.putInt("type", type);
                 bundle.putString("shop_slug", data.getStringExtra("shop_slug"));
                 bundle.putString("shop_name", data.getStringExtra("shop_name"));
+                bundle.putString("logo_image", data.getStringExtra("logo_image"));
                 bundle.putString("category", data.getStringExtra("category"));
                 bundle.putString("groups", data.getStringExtra("groups"));
-
+                bundle.putString("campaign_slug", data.getStringExtra("campaign_slug"));
                 Fragment fragment3 = new ShopFragment();
                 fragment3.setArguments(bundle);
                 ft.replace(R.id.fragment_container, fragment3, data.getStringExtra("slug"));
@@ -473,16 +474,6 @@ public class MainActivity extends BaseActivity {
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
 
-
-        final Handler handler2 = new Handler();
-        handler2.postDelayed(() -> {
-
-            FacebookSdk.setAutoLogAppEventsEnabled(false);
-            FacebookSdk.clearLoggingBehaviors();
-            FacebookSdk.fullyInitialize();
-        }, 2000);
-
-
     }
 
 
@@ -499,8 +490,6 @@ public class MainActivity extends BaseActivity {
 
         }
 
-        Token.update(this, false);
-
 
     }
 
@@ -516,7 +505,6 @@ public class MainActivity extends BaseActivity {
 
     private void startXmppService() {
         startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
-
     }
 
     private void disconnectXmpp(){
@@ -552,7 +540,6 @@ public class MainActivity extends BaseActivity {
                 finish();
             }
         }
-
     }
 
     @Override
@@ -566,8 +553,8 @@ public class MainActivity extends BaseActivity {
             item.setChecked(true);
         }
 
+
         if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()) {
-            Token.update(this, false);
 
             ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
 
@@ -656,5 +643,71 @@ public class MainActivity extends BaseActivity {
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         return builder;
+    }
+
+
+
+    private void checkUpdate(){
+
+
+        int versionCode = BuildConfig.VERSION_CODE;
+
+        AuthApiHelper.checkUpdate(new DataFetchingListener<Response<JsonObject>>() {
+            @Override
+            public void onDataFetched(Response<JsonObject> response) {
+                if (response.code() == 200 || response.code() == 201){
+                    try {
+                        String version = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("version").getAsString();
+                        boolean isForce = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("force").getAsBoolean();
+                        int v = Integer.parseInt(version);
+
+                        if (versionCode < v && isForce){
+                            userDetails.clearAll();
+                            MyPreference.with(MainActivity.this).clearAll();
+                            update(false);
+                        } else if (versionCode < v){
+
+                            update(true);
+
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailed(int status) {
+
+
+            }
+        });
+
+
+    }
+
+
+    private void update(boolean isCancelable) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("New update available!");
+        builder.setMessage("Please update your app");
+        builder.setCancelable(isCancelable);
+        builder.setPositiveButton("Update", (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            finish();
+            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+            }
+        });
+
+        if (isCancelable)
+            builder.setNegativeButton("No", ((dialogInterface, i) -> dialogInterface.dismiss()));
+
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 }

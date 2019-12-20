@@ -1,7 +1,8 @@
 package bd.com.evaly.evalyshop.models.shopItem;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class ShopItem{
 
@@ -33,7 +34,7 @@ public class ShopItem{
 	private String shopItemPrice;
 
 	@SerializedName("shop_item_discounted_price")
-	private String shopItemDiscountedPrice;
+	private String shopItemDiscountedPrice="0";
 
 
 

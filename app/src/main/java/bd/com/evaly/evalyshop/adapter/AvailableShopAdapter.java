@@ -10,10 +10,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -29,6 +28,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -101,8 +101,8 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
         try {
 
-            String actualPrice = Integer.toString((int) Double.parseDouble(availableShops.get(i).getMaximumPrice()));
-            String discountPrice = Integer.toString((int) Double.parseDouble(availableShops.get(i).getPrice()));
+            String actualPrice = Integer.toString((int) Math.round(Double.parseDouble(availableShops.get(i).getMaximumPrice())));
+            String discountPrice = Integer.toString((int) Math.round(Double.parseDouble(availableShops.get(i).getPrice())));
 
 
             if (availableShops.get(i).getDiscountValue() == 0) {
@@ -138,7 +138,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                 .apply(new RequestOptions().override(300, 200))
                 .listener(new RequestListener<Drawable>() {
                               @Override
-                              public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                              public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                   return false;
                               }
                               @Override
@@ -152,99 +152,86 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                 .into(myViewHolder.shopImage);
 
 
-        myViewHolder.chatBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Toast.makeText(context,"Chat system coming soon!", Toast.LENGTH_SHORT).show();
-            }
-        });
+        myViewHolder.chatBtn.setOnClickListener(v -> Toast.makeText(context,"Chat system coming soon!", Toast.LENGTH_SHORT).show());
 
 
         if(myViewHolder.buyBtn.getText().toString().equals("Out of Stock"))
             myViewHolder.buyBtn.setEnabled(false);
 
 
-        myViewHolder.buyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myViewHolder.buyBtn.setOnClickListener(v -> {
 
-                if(myViewHolder.buyBtn.getText().toString().equals("Out of Stock")){
-                    Toast.makeText(context, "Sorry the product is out of stock in this shop. Please select another shop.", Toast.LENGTH_LONG).show();
+            if(myViewHolder.buyBtn.getText().toString().equals("Out of Stock")){
+                Toast.makeText(context, "Sorry the product is out of stock in this shop. Please select another shop.", Toast.LENGTH_LONG).show();
 
 
-                }else{
+            }else{
 
 
-                    Calendar calendar = Calendar.getInstance();
+                Calendar calendar = Calendar.getInstance();
 
-                    cartItem.setSlug(availableShops.get(i).getSlug());
-                    cartItem.setProductId(availableShops.get(i).getProductId());
+                cartItem.setSlug(availableShops.get(i).getSlug());
+                cartItem.setProductId(availableShops.get(i).getProductId());
 
 
 
-                    if (availableShops.get(i).getDiscountValue() == 0) {
+                if (availableShops.get(i).getDiscountValue() == 0) {
 
-                        if (((int) Double.parseDouble(availableShops.get(i).getMaximumPrice())) < 1) {
-                            Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
-                            return;
-                        }
+                    if (((int) Double.parseDouble(availableShops.get(i).getMaximumPrice())) < 1) {
+                        Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
 
-                        try {
-                            cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getMaximumPrice()));
-                        } catch (Exception e){
-                            cartItem.setPrice(0);
-                        }
-
-
-
-                    } else {
-
-                        if (((int) Double.parseDouble(availableShops.get(i).getPrice())) < 1) {
-                            Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        try {
-                            cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getPrice()));
-                        } catch (Exception e){
-                            cartItem.setPrice(0);
-                        }
-
+                    try {
+                        cartItem.setPrice((int) Math.round(Double.parseDouble(availableShops.get(i).getMaximumPrice())));
+                    } catch (Exception e){
+                        cartItem.setPrice(0);
                     }
 
 
 
+                } else {
 
-                    cartItem.setQuantity(1);
-                    cartItem.setSelected(true);
-                    cartItem.setSellerJson(availableShops.get(i).getShopJson());
-                    cartItem.setShopSlug(availableShops.get(i).getShopSlug());
-
-                    if(db.insertData(cartItem.getSlug(),cartItem.getName(),cartItem.getImage(),cartItem.getPrice(), calendar.getTimeInMillis(), cartItem.getSellerJson(), 1, cartItem.getShopSlug(), cartItem.getProductId())){
-
-                        Snackbar snackBar = Snackbar.make(view,"Added to cart", 1500);
-                        snackBar.setAction("Go to Cart", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                try {
-
-                                    Intent intent = new Intent(context, CartActivity.class);
-
-                                    context.startActivity(intent);
-
-                                } catch (Exception e){}
-
-                                snackBar.dismiss();
-                            }
-                        });
-                        snackBar.show();
-
+                    if (((int) Double.parseDouble(availableShops.get(i).getPrice())) < 1) {
+                        Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
+                        return;
                     }
 
-                    ((ViewProductActivity) context).cartCount();
+                    try {
+                        cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getPrice()));
+                    } catch (Exception e){
+                        cartItem.setPrice(0);
+                    }
+
                 }
+
+
+
+
+                cartItem.setQuantity(1);
+                cartItem.setSelected(true);
+                cartItem.setSellerJson(availableShops.get(i).getShopJson());
+                cartItem.setShopSlug(availableShops.get(i).getShopSlug());
+
+                if(db.insertData(cartItem.getSlug(),cartItem.getName(),cartItem.getImage(),cartItem.getPrice(), calendar.getTimeInMillis(), cartItem.getSellerJson(), 1, cartItem.getShopSlug(), cartItem.getProductId())){
+
+                    Snackbar snackBar = Snackbar.make(view,"Added to cart", 1500);
+                    snackBar.setAction("Go to Cart", v1 -> {
+
+                        try {
+
+                            Intent intent = new Intent(context, CartActivity.class);
+                            context.startActivity(intent);
+
+                        } catch (Exception e){}
+
+                        snackBar.dismiss();
+                    });
+                    snackBar.show();
+
+                }
+
+                ((ViewProductActivity) context).cartCount();
             }
         });
 
@@ -257,79 +244,54 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         myViewHolder.shop.setOnClickListener(storeClick);
         myViewHolder.shopName.setOnClickListener(storeClick);
 
-        myViewHolder.call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myViewHolder.call.setOnClickListener(v -> {
 
-                    final String phone = availableShops.get(i).getPhone();
+                final String phone = availableShops.get(i).getPhone();
 
-                    final Snackbar snackBar = Snackbar.make(view, phone+"", Snackbar.LENGTH_LONG);
+                final Snackbar snackBar = Snackbar.make(view, phone+"", Snackbar.LENGTH_LONG);
 
-                    snackBar.setAction("Call", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                snackBar.setAction("Call", v12 -> {
 
-                            try {
+                    try {
 
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + phone));
 
-                                Intent intent = new Intent(Intent.ACTION_DIAL);
-                                intent.setData(Uri.parse("tel:" + phone));
+                        context.startActivity(intent);
 
-                                context.startActivity(intent);
+                    } catch (Exception e){}
 
-                            } catch (Exception e){}
-
-                            snackBar.dismiss();
-                        }
-                    });
-                    snackBar.show();
+                    snackBar.dismiss();
+                });
+                snackBar.show();
 
 
-            }
         });
 
-        myViewHolder.location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myViewHolder.location.setOnClickListener(v -> {
 
+                final String location;
 
+                if(availableShops.get(i).getAddress().equals("xxx"))
+                    location = "Dhaka, Bangladesh";
+                else
+                   location = availableShops.get(i).getAddress();
 
+                final Snackbar snackBar = Snackbar.make(view, location+"", Snackbar.LENGTH_LONG);
 
-                    final String location;
+                snackBar.setAction("Copy", v13 -> {
 
-                    if(availableShops.get(i).getAddress().equals("xxx"))
-                        location = "Dhaka, Bangladesh";
-                    else
-                       location = availableShops.get(i).getAddress();
+                    try {
+                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("address", location);
+                        clipboard.setPrimaryClip(clip);
+                    } catch (Exception e){}
 
+                    snackBar.dismiss();
+                });
+                snackBar.show();
 
-                    final Snackbar snackBar = Snackbar.make(view, location+"", Snackbar.LENGTH_LONG);
-
-                    snackBar.setAction("Copy", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            try {
-                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("address", location);
-                                clipboard.setPrimaryClip(clip);
-                            } catch (Exception e){}
-
-                            snackBar.dismiss();
-                        }
-                    });
-                    snackBar.show();
-
-
-
-
-
-
-            }
         });
-
-
-
 
     }
 

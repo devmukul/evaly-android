@@ -4,14 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -33,11 +26,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.widget.NestedScrollView;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -51,6 +51,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
@@ -60,10 +61,9 @@ import bd.com.evaly.evalyshop.adapter.AutoCompleteAdapter;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.adapter.SearchFilterAdapter;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
-import bd.com.evaly.evalyshop.models.TabsItem;
-import bd.com.evaly.evalyshop.models.TransactionItem;
-import bd.com.evaly.evalyshop.models.ProductListItem;
 import bd.com.evaly.evalyshop.models.SearchFilterItem;
+import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
@@ -75,7 +75,7 @@ public class GlobalSearchActivity extends BaseActivity {
     AutoCompleteTextView searchText;
     ProductGrid productGrid;
     ArrayList<TabsItem> itemList;
-    ArrayList<ProductListItem> itemListProduct,itemListProductWithCategory;
+    List<ProductItem> itemListProduct,itemListProductWithCategory;
     TabsAdapter adapter;
     ProductGridAdapter adapterProduct,adapterProductCategory;
     RecyclerView recyclerView, filterRecyclerView;
@@ -786,13 +786,16 @@ public class GlobalSearchActivity extends BaseActivity {
                         for (int i = 0; i < productList.length(); i++) {
 
                             JSONObject ob = productList.getJSONObject(i);
-                            ProductListItem tabsItem = new ProductListItem();
+                            ProductItem tabsItem = new ProductItem();
                             tabsItem.setName(ob.getString("name"));
-                            tabsItem.setThumbnailSM(ob.getString("product_image").replace("\n", "").replace("\r", ""));
+
+                            List<String> images =  new ArrayList<>();
+                            images.add(ob.getString("product_image").replace("\n", "").replace("\r", ""));
+                            tabsItem.setImageUrls(images);
                             tabsItem.setSlug(ob.getString("slug"));
-                            tabsItem.setPriceMax(ob.getInt("max_price"));
-                            tabsItem.setDiscountedPrice(ob.getInt("discounted_price"));
-                            tabsItem.setPriceMin(ob.getInt("price"));
+                            tabsItem.setMaxPrice(String.valueOf(ob.getInt("max_price")));
+                            tabsItem.setMinDiscountedPrice(String.valueOf(ob.getInt("discounted_price")));
+                            tabsItem.setMinPrice(String.valueOf(ob.getInt("price")));
 
                             if (!slugStore.contains(ob.getString("slug"))) {
                                 itemListProduct.add(tabsItem);
@@ -906,10 +909,16 @@ public class GlobalSearchActivity extends BaseActivity {
                                 nestedSV.setBackgroundColor(Color.parseColor("#ffffff"));
                                 noResult.setVisibility(View.VISIBLE);
 
-                                Glide.with(GlobalSearchActivity.this)
-                                        .load(R.drawable.ic_search_not_found)
-                                        .apply(new RequestOptions().override(800, 800))
-                                        .into((ImageView) findViewById(R.id.noImage));
+                                if (!GlobalSearchActivity.this.isFinishing()) {
+                                    try {
+                                        Glide.with(GlobalSearchActivity.this)
+                                                .load(R.drawable.ic_search_not_found)
+                                                .apply(new RequestOptions().override(800, 800))
+                                                .into((ImageView) findViewById(R.id.noImage));
+                                    } catch (Exception e){
+
+                                    }
+                                }
 
 
                             } else {
@@ -967,7 +976,7 @@ public class GlobalSearchActivity extends BaseActivity {
 
 
         Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
 
                     if (nestedSV!=null)
@@ -1036,7 +1045,7 @@ public class GlobalSearchActivity extends BaseActivity {
             url = UrlUtils.BASE_URL+"public/brands/?page="+p+"&limit=15&search="+query;
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
 
 
@@ -1148,5 +1157,11 @@ public class GlobalSearchActivity extends BaseActivity {
     @Override
     public void onPause(){
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Glide.with(getApplicationContext()).pauseRequests();
     }
 }

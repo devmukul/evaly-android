@@ -8,21 +8,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
-
-import com.orhanobut.logger.Logger;
 
 import bd.com.evaly.evalyshop.activity.CartActivity;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.activity.NetworkErrorActivity;
 import bd.com.evaly.evalyshop.activity.WishListActivity;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
-import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.xmpp.XMPPService;
 
 public class BaseActivity extends AppCompatActivity {
 

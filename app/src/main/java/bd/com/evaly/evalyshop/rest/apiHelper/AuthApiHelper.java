@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.models.apiHelper;
+package bd.com.evaly.evalyshop.rest.apiHelper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,8 +8,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
-
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -21,10 +19,9 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
-import bd.com.evaly.evalyshop.models.SetPasswordModel;
-import bd.com.evaly.evalyshop.models.User;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
@@ -38,9 +35,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AuthApiHelper {
+public class AuthApiHelper extends ApiHelper{
 
-    public static Call<JsonObject> call;
 
     public static void checkUpdate(DataFetchingListener<Response<JsonObject>> listener) {
 
@@ -316,14 +312,13 @@ public class AuthApiHelper {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Logger.d(response.body());
+
                 listener.onDataFetched(response);
 
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Logger.d(t.getMessage());
                 listener.onFailed(0);
             }
         });
@@ -437,7 +432,16 @@ public class AuthApiHelper {
         });
     }
 
-    private static IApiClient getiApiClient() {
-        return ApiClient.getClient().create(IApiClient.class);
+
+
+    // user info pay
+
+    public static void getUserInfoPay(String token, String username, ResponseListenerAuth<JsonObject, String> listener){
+
+        getiApiClient().getUserInfoPay(token, username).enqueue(getResponseCallBackDefault(listener));
+
+
     }
+
+
 }

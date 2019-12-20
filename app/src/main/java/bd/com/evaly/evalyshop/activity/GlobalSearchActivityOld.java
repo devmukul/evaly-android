@@ -11,7 +11,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
     AutoCompleteTextView searchText;
     ProductGrid productGrid;
     ArrayList<TabsItem> itemList;
-    ArrayList<ProductListItem> itemListProduct,itemListProductWithCategory;
+    ArrayList<ProductItem> itemListProduct,itemListProductWithCategory;
     TabsAdapter adapter;
     ProductGridAdapter adapterProduct,adapterProductCategory;
     RecyclerView recyclerView;
@@ -437,14 +437,14 @@ public class GlobalSearchActivityOld extends BaseActivity {
         String url="https://api-prod.evaly.com.bd/api/product"+"/?&search="+searchText.getText().toString()+"&page="+p;
         Log.d("abcdefg",url);
         progressBar.setVisibility(View.VISIBLE);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         JSONArray jsonArray = response.getJSONArray("results");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
                             if(ob.getJSONObject("category").getString("slug").equals(categoryMapping.get(selectedCategory))){
-                                ProductListItem tabsItem = new ProductListItem();
+                                ProductItem tabsItem = new ProductItem();
                                 tabsItem.setName(ob.getString("name"));
                                 tabsItem.setThumbnailSM(ob.getString("thumbnail"));
                                 try {
@@ -591,7 +591,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
         if (isLoading)
             return;
         isLoading = true;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         isLoading = false;
@@ -603,7 +603,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
                             if(searchSlug.equals("product")) {
-                                ProductListItem tabsItem = new ProductListItem();
+                                ProductItem tabsItem = new ProductItem();
                                 tabsItem.setName(ob.getString("name"));
                                 if (searchSlug.equals("product") || searchSlug.equals("brands")) {
                                     tabsItem.setThumbnailSM(ob.getString("thumbnail"));
@@ -622,7 +622,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
                                 itemListProduct.add(tabsItem);
                                 adapterProduct.notifyItemInserted(itemListProduct.size());
                                 if(i==jsonArray.length()-1){
-                                    Map<ProductListItem,Integer> frequencyMap=new HashMap<>();
+                                    Map<ProductItem,Integer> frequencyMap=new HashMap<>();
                                     for(int k=0;k<itemListProduct.size();k++){
                                         if(frequencyMap.containsKey(itemListProduct.get(k))){
                                             frequencyMap.put(itemListProduct.get(k),frequencyMap.get(itemListProduct.get(k))+1);
@@ -631,12 +631,12 @@ public class GlobalSearchActivityOld extends BaseActivity {
                                         }
                                     }
                                     int max=0;
-                                    for (Map.Entry<ProductListItem, Integer> entry : frequencyMap.entrySet()) {
+                                    for (Map.Entry<ProductItem, Integer> entry : frequencyMap.entrySet()) {
                                         if(entry.getValue()>max){
                                             max=entry.getValue();
                                         }
                                     }
-                                    for (Map.Entry<ProductListItem, Integer> entry : frequencyMap.entrySet()) {
+                                    for (Map.Entry<ProductItem, Integer> entry : frequencyMap.entrySet()) {
                                         if (entry.getValue().equals(max)) {
                                             highestSlug=entry.getKey().getCategorySlug();
                                             break;
@@ -784,7 +784,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
         if (isLoading)
             return;
         isLoading = true;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         isLoading = false;
@@ -795,7 +795,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
                         Log.d("json_array_length",jsonArray.length()+"");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
-                            ProductListItem tabsItem = new ProductListItem();
+                            ProductItem tabsItem = new ProductItem();
                             tabsItem.setName(ob.getString("name"));
                             tabsItem.setThumbnailSM(ob.getString("thumbnail"));
                             try {
@@ -855,7 +855,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
                                 categoryMapping.put(ob.getJSONObject("category").getString("name"),ob.getJSONObject("category").getString("slug"));
                             }
                             if(i==jsonArray.length()-1){
-                                Map<ProductListItem,Integer> frequencyMap=new HashMap<>();
+                                Map<ProductItem,Integer> frequencyMap=new HashMap<>();
                                 for(int k=0;k<itemListProduct.size();k++){
                                     if(frequencyMap.containsKey(itemListProduct.get(k))){
                                         frequencyMap.put(itemListProduct.get(k),frequencyMap.get(itemListProduct.get(k))+1);
@@ -865,12 +865,12 @@ public class GlobalSearchActivityOld extends BaseActivity {
                                 }
                                 int max=0;
                                 String highestSlug="";
-                                for (Map.Entry<ProductListItem, Integer> entry : frequencyMap.entrySet()) {
+                                for (Map.Entry<ProductItem, Integer> entry : frequencyMap.entrySet()) {
                                     if(entry.getValue()>max){
                                         max=entry.getValue();
                                     }
                                 }
-                                for (Map.Entry<ProductListItem, Integer> entry : frequencyMap.entrySet()) {
+                                for (Map.Entry<ProductItem, Integer> entry : frequencyMap.entrySet()) {
                                     if (entry.getValue().equals(max)) {
                                         highestSlug=entry.getKey().getCategorySlug();
                                         break;
@@ -961,14 +961,14 @@ public class GlobalSearchActivityOld extends BaseActivity {
         RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setAdapter(adapterProduct);
         recyclerView.setLayoutManager(mLayoutManager);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, filterURL,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, filterURL,new JSONObject(),
                 response -> {
                     try {
                         JSONArray jsonArray = response.getJSONArray("results");
                         Log.d("search_result",response.toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
-                            ProductListItem tabsItem = new ProductListItem();
+                            ProductItem tabsItem = new ProductItem();
                             tabsItem.setName(ob.getString("name"));
                             tabsItem.setThumbnailSM(ob.getString("thumbnail"));
                             try {
@@ -1041,7 +1041,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
         if (isLoading)
             return;
         isLoading = true;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     isLoading = false;
                     try {
@@ -1096,7 +1096,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
     public void getFilterAttributes(String filterSlug){
         String url="https://api-prod.evaly.com.bd/api/attributes/?category__slug="+filterSlug;
         Log.d("filter_url",url);
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url,(String) null,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         if(response.length()==0){
@@ -1141,7 +1141,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
     public void getAttributeOptions(String header,String slug,String filterSlug){
         ((LinearLayout) linearLayout).removeAllViews();
         String url="https://api-prod.evaly.com.bd/api/options/?attribute__slug="+slug;
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url,(String) null,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         ArrayList<String> values=new ArrayList<>();
@@ -1255,7 +1255,7 @@ public class GlobalSearchActivityOld extends BaseActivity {
             return;
         isLoading = true;
         String url = "https://api-prod.evaly.com.bd/api/brands/?shadow_category__slug=root&page="+p;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         isLoading = false;

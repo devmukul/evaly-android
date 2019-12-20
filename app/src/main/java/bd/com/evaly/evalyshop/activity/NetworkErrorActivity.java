@@ -2,12 +2,14 @@ package bd.com.evaly.evalyshop.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class NetworkErrorActivity extends AppCompatActivity {
 
@@ -26,12 +28,13 @@ public class NetworkErrorActivity extends AppCompatActivity {
 
         Button button = findViewById(R.id.button);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        button.setOnClickListener(v -> {
+            if (Utils.isNetworkAvailable(this)) {
                 Intent returnIntent = new Intent();
-                setResult(Activity.RESULT_OK,returnIntent);
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
+            } else {
+                Toast.makeText(this, "Turn on mobile data or Wi-Fi", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -44,7 +47,6 @@ public class NetworkErrorActivity extends AppCompatActivity {
 
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
-
 
         return;
 

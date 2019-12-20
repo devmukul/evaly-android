@@ -1,28 +1,20 @@
 package bd.com.evaly.evalyshop.activity.newsfeed;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -33,16 +25,9 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -52,21 +37,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.CartActivity;
-import bd.com.evaly.evalyshop.activity.ImagePreview;
-import bd.com.evaly.evalyshop.activity.newsfeed.adapters.CommentAdapter;
-import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedAdapter;
 import bd.com.evaly.evalyshop.activity.newsfeed.adapters.NewsfeedPendingAdapter;
-import bd.com.evaly.evalyshop.activity.newsfeed.adapters.ReplyAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
-import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
-import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
-import bd.com.evaly.evalyshop.util.ScreenUtils;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
-import bd.com.evaly.evalyshop.util.Utils;
 
 public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -285,7 +262,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Content-Type", "application/json");
                 return headers;
             }
@@ -314,31 +291,28 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id;
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
 
-                skeletonCommentHeader.hide();
+            skeletonCommentHeader.hide();
 
-                try {
+            try {
 
-                    JSONObject ob = response.getJSONObject("data");
+                JSONObject ob = response.getJSONObject("data");
 
-                    JSONObject author = ob.getJSONObject("author");
+                JSONObject author = ob.getJSONObject("author");
 
-                    String authorName = author.getString("full_name");
-                    String authorImage = author.getString("compressed_image");
-                    String postText = ob.getString("body");
-                    String date = ob.getString("created_at");
-                    String postImageUrl = ob.getString("attachment");
+                String authorName = author.getString("full_name");
+                String authorImage = author.getString("compressed_image");
+                String postText = ob.getString("body");
+                String date = ob.getString("created_at");
+                String postImageUrl = ob.getString("attachment");
 
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -372,7 +346,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
                 Map<String, String> headers = new HashMap<>();
 
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Content-Type", "application/json");
 
                 return headers;
@@ -402,7 +376,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             bottomProgressBar.setVisibility(View.VISIBLE);
 
         Log.d("json url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
             Log.d("json response", response.toString());
 
             loading = true;
@@ -488,27 +462,14 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
                 Map<String, String> headers = new HashMap<>();
 
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
 
                 return headers;
             }
         };
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
     }
 
