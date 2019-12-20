@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,8 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.ethanhua.skeleton.Skeleton;
-import com.ethanhua.skeleton.SkeletonScreen;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
@@ -45,7 +42,7 @@ public class BrowseProductFragment extends Fragment {
 
 
     private MainActivity activity;
-    private TabLayout tabLayout;
+    private TabLayout tabLayoutSub;
     private HomeTabPagerAdapter pager;
     private ViewPager viewPager;
     private TextView filter;
@@ -58,10 +55,10 @@ public class BrowseProductFragment extends Fragment {
     private List<ProductItem> itemListProduct;
     private ProductGridAdapter adapterProduct;
     private RecyclerView recyclerView;
-    private EditText minimum,maximum;
     private ProgressBar progressBar;
-    private SkeletonScreen skeletonTabHeader;
     private Context context;
+
+
 
 
     public BrowseProductFragment() {
@@ -127,20 +124,20 @@ public class BrowseProductFragment extends Fragment {
             });
 
 
-        InitializeActionBar InitializeActionbar = new InitializeActionBar((LinearLayout) view.findViewById(R.id.header_logo), activity, "browse");
+        new InitializeActionBar(view.findViewById(R.id.header_logo), activity, "browse");
 
-        tabLayout = view.findViewById(R.id.tab_layout_sub);
+        tabLayoutSub = view.findViewById(R.id.tab_layout_sub_cat);
 
-        try {
-
-            skeletonTabHeader = Skeleton.bind(tabLayout)
-                    .load(R.layout.skeleton_tablayout_header)
-                    .color(R.color.ddd)
-                    .show();
-
-        } catch (Exception e){
-
-        }
+//        try {
+//
+//            skeletonTabHeader = Skeleton.bind(tabLayoutSub)
+//                    .load(R.layout.skeleton_tablayout_header)
+//                    .color(R.color.ddd)
+//                    .show();
+//
+//        } catch (Exception e){
+//
+//        }
 
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view1 -> {
@@ -165,12 +162,12 @@ public class BrowseProductFragment extends Fragment {
         viewPager.setOffscreenPageLimit(1);
 
         viewPager.setAdapter(pager);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayoutSub.setupWithViewPager(viewPager);
 
-        tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        tabLayout.setSmoothScrollingEnabled(true);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayoutSub.setTabMode(TabLayout.MODE_FIXED);
+        tabLayoutSub.setSmoothScrollingEnabled(true);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutSub));
+        tabLayoutSub.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
                         viewPager.setCurrentItem(tab.getPosition());
@@ -218,22 +215,24 @@ public class BrowseProductFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        try {
-            skeletonTabHeader.hide();
-        } catch (Exception e){}
     }
 
 
     public void getSubCategories(){
+
+        shimmer.startShimmer();
+        shimmer.setVisibility(View.VISIBLE);
+        tabLayoutSub.setVisibility(View.GONE);
 
         ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<JsonArray, String>() {
 
             @Override
             public void onDataFetched(JsonArray res, int statusCode) {
 
-                try {
-                    skeletonTabHeader.hide();
-                } catch (Exception e){}
+
+                shimmer.stopShimmer();
+                shimmer.setVisibility(View.GONE);
+                tabLayoutSub.setVisibility(View.VISIBLE);
 
                 int length = res.size();
 
@@ -294,4 +293,7 @@ public class BrowseProductFragment extends Fragment {
             pager.notifyDataSetChanged();
         }
     }
+
+
+
 }
