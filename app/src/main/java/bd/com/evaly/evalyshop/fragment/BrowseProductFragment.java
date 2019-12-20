@@ -51,6 +51,7 @@ public class BrowseProductFragment extends Fragment {
     private String category = "";
     private LinearLayout lin;
     private ShimmerFrameLayout shimmer;
+    private ShimmerFrameLayout shimmerTabs;
     private boolean isShimmerShowed = false;
     private List<ProductItem> itemListProduct;
     private ProductGridAdapter adapterProduct;
@@ -159,6 +160,9 @@ public class BrowseProductFragment extends Fragment {
         shimmer = view.findViewById(R.id.shimmer);
         shimmer.startShimmer();
 
+        shimmerTabs = view.findViewById(R.id.shimmerTabs);
+        shimmerTabs.startShimmer();
+
         viewPager.setOffscreenPageLimit(1);
 
         viewPager.setAdapter(pager);
@@ -204,10 +208,12 @@ public class BrowseProductFragment extends Fragment {
 
         try {
             shimmer.stopShimmer();
+            shimmerTabs.stopShimmer();
         } catch (Exception e){
             Log.e("ozii shimmer", e.toString());
         }
         shimmer.setVisibility(View.GONE);
+        shimmerTabs.setVisibility(View.GONE);
         isShimmerShowed = true;
     }
 
@@ -229,11 +235,6 @@ public class BrowseProductFragment extends Fragment {
             @Override
             public void onDataFetched(JsonArray res, int statusCode) {
 
-
-                shimmer.stopShimmer();
-                shimmer.setVisibility(View.GONE);
-                tabLayoutSub.setVisibility(View.VISIBLE);
-
                 int length = res.size();
 
                 if (length>0)
@@ -252,6 +253,7 @@ public class BrowseProductFragment extends Fragment {
                 }
 
                 hideShimmer();
+                tabLayoutSub.setVisibility(View.VISIBLE);
                 loadOtherTabs();
             }
             @Override

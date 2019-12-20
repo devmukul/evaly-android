@@ -355,6 +355,8 @@ public class MainActivity extends BaseActivity {
                         }
                     } catch (Exception e){
 
+                        showHomeFragment();
+
                     }
 
                     break;

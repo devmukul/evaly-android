@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.facebook.shimmer.ShimmerFrameLayout
-    android:id="@+id/shimmer"
+    android:id="@+id/shimmerTabs"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#fafafa"
