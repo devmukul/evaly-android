@@ -98,13 +98,15 @@ public class UserDashboardActivity extends BaseActivity {
 //            Logger.d(xmppHandler.isConnected());
             VCard vCard = xmppHandler.mVcard;
 //            Logger.d(vCard.getFirstName());
-            if (vCard == null) {
-//                Logger.d("========");
-                xmppHandler.updateUserInfo(CredentialManager.getUserData());
-            }else if (vCard.getLastName() == null || vCard.getFirstName() == null){
-                Logger.d("========");
-                xmppHandler.updateUserInfo(CredentialManager.getUserData());
-            }
+
+            if (CredentialManager.getUserData() != null)
+                if (vCard == null) {
+    //                Logger.d("========");
+                    xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                }else if (vCard.getLastName() == null || vCard.getFirstName() == null){
+                    Logger.d("========");
+                    xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                }
 
         }
 
