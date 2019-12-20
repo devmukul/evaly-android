@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             shrinkResources false
             buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
             buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
