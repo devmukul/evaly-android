@@ -92,6 +92,7 @@ public class Constants {
     public static List<OrderIssueModel> getDelivaryIssueList() {
         List<OrderIssueModel> list = new ArrayList<>();
         list.add(new OrderIssueModel("delivery", "Delivery Issue"));
+        list.add(new OrderIssueModel("cashback", "Cashback Issue"));
         list.add(new OrderIssueModel("product", "Product Issue"));
         list.add(new OrderIssueModel("refund", "Refund Issue"));
         list.add(new OrderIssueModel("payment", "Payment Issue"));
