@@ -56,6 +56,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="mark_as_read">Mark as Read</string>
     <string name="no_products_found_in_this_shop">No products found in this shop.</string>
     <string name="invite_friends_to_start_messaging">Invite friends to start messaging</string>
+    <string name="report_details">Report Details</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="search_categories">

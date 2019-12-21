@@ -1,13 +1,14 @@
 package bd.com.evaly.evalyshop.activity.issue;
 
 import android.app.Activity;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
@@ -43,7 +44,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
         IssuesModel model = list.get(i);
         holder.tvBody.setText(model.getDescription());
         holder.tvDate.setText(Utils.getConvertedTime(model.getCreated_at()));
-        holder.commentCount.setText(model.getIssue_replies().size()+" Comments");
+
+        if (model.getIssue_replies() != null)
+            holder.commentCount.setText(model.getIssue_replies().size()+" Comments");
+
         if (model.getAttachment() != null){
             holder.ivIssueImage.setVisibility(View.VISIBLE);
             Glide.with(context)
@@ -73,12 +77,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onRecyclerViewItemClicked(list.get(getLayoutPosition()));
-                }
-            });
+            itemView.setOnClickListener(view -> listener.onRecyclerViewItemClicked(list.get(getLayoutPosition())));
         }
     }
 }
