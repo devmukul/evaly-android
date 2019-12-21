@@ -125,7 +125,7 @@ public class HomeTabsFragment extends Fragment {
 
             Calendar calendar = Calendar.getInstance();
 
-            if (categoryUtils.getLastUpdated() == 0 || (categoryUtils.getLastUpdated() != 0 && calendar.getTimeInMillis() - categoryUtils.getLastUpdated() > 43200000)){
+            if (categoryUtils.getLastUpdated() == 0 || (categoryUtils.getLastUpdated() != 0 && calendar.getTimeInMillis() - categoryUtils.getLastUpdated() > 20200000)){
                 categoryUtils.updateFromApi(new DataFetchingListener<List<CategoryEntity>>() {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {

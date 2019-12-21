@@ -145,7 +145,8 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
         IssueReplyAdapter adapter = new IssueReplyAdapter(this, repliedList);
         rvReply.setAdapter(adapter);
 
-        tvDate.setText(Utils.getConvertedTime(model.getCreated_at()));
+        tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss","",model.getCreated_at())));
+
         tvBody.setText(model.getDescription());
         if (model.getAttachment() != null){
             ivIssueImage.setVisibility(View.VISIBLE);
@@ -154,38 +155,35 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
                     .into(ivIssueImage);
         }
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (etDescription.getText().toString().trim().isEmpty()){
-                    etDescription.setError("Required");
-                    return;
-                }
+        btnSubmit.setOnClickListener(view -> {
+            if (etDescription.getText().toString().trim().isEmpty()){
+                etDescription.setError("Required");
+                return;
+            }
 
-                AuthApiHelper.replyIssue(etDescription.getText().toString(), model.getId()+"", new DataFetchingListener<Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(Response<JsonObject> response) {
-                        etDescription.setText("");
-                        if (response.code() == 200 || response.code() == 201){
-                            IssuesModel.ReplyModel replyModel = new Gson().fromJson(response.body(), IssuesModel.ReplyModel.class);
-                            repliedList.add(replyModel);
-                            adapter.notifyDataSetChanged();
-                        }else {
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
+            AuthApiHelper.replyIssue(etDescription.getText().toString(), model.getId()+"", new DataFetchingListener<Response<JsonObject>>() {
+                @Override
+                public void onDataFetched(Response<JsonObject> response) {
+                    etDescription.setText("");
+                    if (response.code() == 200 || response.code() == 201){
+                        IssuesModel.ReplyModel replyModel = new Gson().fromJson(response.body(), IssuesModel.ReplyModel.class);
+                        repliedList.add(replyModel);
+                        adapter.notifyDataSetChanged();
+                    }else {
                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                     }
-                });
+                }
+
+                @Override
+                public void onFailed(int status) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
+            });
 //                model.setDescription(etDescription.getText().toString());
 //
 //                model.setAttachment(imageUrl);
 //                dialog.showDialog();
 //                submitIssue(model, bottomSheetDialog);
-            }
         });
 
 
@@ -200,12 +198,7 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
             public void onStateChanged(@NonNull View view, int newState) {
                 if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     Logger.d("=---==========------");
-                    view.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    });
+                    view.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     bottomSheetDialog.dismiss();
                 }

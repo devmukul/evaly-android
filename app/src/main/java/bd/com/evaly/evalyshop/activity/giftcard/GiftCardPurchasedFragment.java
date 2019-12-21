@@ -621,7 +621,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
                     NetworkResponse response = error.networkResponse;
                     if (response != null && response.data != null) {
-                        if (error.networkResponse.statusCode == 401 && getActivity()!= null){
+                        if (error.networkResponse.statusCode == 401 && getContext()!= null){
 
 
                                 AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {

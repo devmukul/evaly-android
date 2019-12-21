@@ -1104,14 +1104,18 @@ public class GlobalSearchActivity extends BaseActivity {
 
     public void setNotFound(boolean notFound){
 
-        if(notFound) {
+        if(notFound && !GlobalSearchActivity.this.isFinishing()) {
             nestedSV.setBackgroundColor(Color.parseColor("#ffffff"));
             noResult.setVisibility(View.VISIBLE);
 
-            Glide.with(GlobalSearchActivity.this)
-                    .load(R.drawable.ic_search_not_found)
-                    .apply(new RequestOptions().override(800, 800))
-                    .into((ImageView) findViewById(R.id.noImage));
+            try {
+                Glide.with(GlobalSearchActivity.this)
+                        .load(R.drawable.ic_search_not_found)
+                        .apply(new RequestOptions().override(800, 800))
+                        .into((ImageView) findViewById(R.id.noImage));
+            } catch (Exception e){
+                Toast.makeText(getApplicationContext(),"Search result not found", Toast.LENGTH_SHORT).show();
+            }
 
 
         } else {

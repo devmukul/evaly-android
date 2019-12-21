@@ -1,19 +1,18 @@
 package bd.com.evaly.evalyshop.util;
 
-import bd.com.evaly.evalyshop.BuildConfig;
-
 public class UrlUtils {
 
 
     /* Force Production Test */
 
-//    public static final String DOMAIN = "https://api.evaly.com.bd/";
-//    public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
+    public static final String DOMAIN = "https://api.evaly.com.bd/";
+    public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
 
 
     /* Prod, Dev Auto Switch */
-    public static final String DOMAIN = BuildConfig.BASE_URL;
-    public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
+
+//    public static final String DOMAIN = BuildConfig.BASE_URL;
+//    public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
 
     public static final String DOMAIN5000 = DOMAIN+"auth/";
     public static final String BASE_URL = DOMAIN + "core/";
