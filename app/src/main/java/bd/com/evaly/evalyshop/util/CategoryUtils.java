@@ -26,12 +26,12 @@ public class CategoryUtils {
     }
 
     public long getLastUpdated(){
-        return MyPreference.with(context, "category_db_new9").getLong("last_updated", 0);
+        return MyPreference.with(context, "category_db_new10").getLong("last_updated", 0);
     }
 
     public void setLastUpdated(){
         Calendar calendar = Calendar.getInstance();
-        MyPreference.with(context, "category_db_new9").addLong("last_updated", calendar.getTimeInMillis()).save();
+        MyPreference.with(context, "category_db_new10").addLong("last_updated", calendar.getTimeInMillis()).save();
     }
 
 
