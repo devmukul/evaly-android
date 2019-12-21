@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -14,7 +16,14 @@ public class OrderApiHelper extends ApiHelper {
             orderStatus = null;
 
         getiApiClient().getOrderList(token, page, orderStatus).enqueue(getResponseCallBackDefault(listener));
-
     }
+
+
+    public static void placeOrder(String token, JsonObject body, ResponseListenerAuth<JsonObject, String> listener) {
+
+        getiApiClient().placeOrder(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
 
 }
