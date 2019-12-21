@@ -43,7 +43,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
     public void onBindViewHolder(@NonNull IssuesViewHolder holder, int i) {
         IssuesModel model = list.get(i);
         holder.tvBody.setText(model.getDescription());
-        holder.tvDate.setText(Utils.getConvertedTime(model.getCreated_at()));
+        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss","",model.getCreated_at())));
 
         if (model.getIssue_replies() != null)
             holder.commentCount.setText(model.getIssue_replies().size()+" Comments");

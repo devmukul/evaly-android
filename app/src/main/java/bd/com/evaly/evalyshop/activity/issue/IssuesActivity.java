@@ -145,7 +145,7 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
         IssueReplyAdapter adapter = new IssueReplyAdapter(this, repliedList);
         rvReply.setAdapter(adapter);
 
-        tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("","",model.getCreated_at())));
+        tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss","",model.getCreated_at())));
 
         tvBody.setText(model.getDescription());
         if (model.getAttachment() != null){

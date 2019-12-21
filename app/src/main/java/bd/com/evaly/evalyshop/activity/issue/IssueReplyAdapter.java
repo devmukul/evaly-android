@@ -1,12 +1,13 @@
 package bd.com.evaly.evalyshop.activity.issue;
 
 import android.app.Activity;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class IssueReplyAdapter extends RecyclerView.Adapter<IssueReplyAdapter.Is
         IssuesModel.ReplyModel model = list.get(i);
         holder.tvReply.setText(model.getBody());
         holder.tvName.setText(model.getReply_by().getFirst_name()+" "+model.getReply_by().getLast_name());
-        holder.tvDate.setText(Utils.getConvertedTime(model.getUpdated_at()));
+        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss","",model.getCreated_at())));
     }
 
     @Override
