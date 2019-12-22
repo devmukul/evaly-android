@@ -374,6 +374,9 @@ public class MainActivity extends BaseActivity {
                 super.onBackPressed();
         }
 
+        if (!isLaunchActivity)
+            finish();
+
     }
 
     @Override

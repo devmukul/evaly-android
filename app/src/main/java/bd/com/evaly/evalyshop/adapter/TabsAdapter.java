@@ -49,7 +49,8 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         itemlist = item;
         this.type=type;
         this.activity = activity;
-        navController = Navigation.findNavController(activity, R.id.nav_host_fragment);
+        if (activity instanceof MainActivity)
+            navController = Navigation.findNavController(activity, R.id.nav_host_fragment);
     }
 
     View.OnClickListener productListener = new View.OnClickListener() {
