@@ -31,6 +31,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
@@ -151,27 +152,14 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    private void setNavHost() {
-        navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.homeFragment);
-        assert navHost != null;
-        navController = navHost.getNavController();
-        navInflater = navController.getNavInflater();
-        navGraph = navInflater.inflate(R.navigation.home_nav_graph);
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-
-            if (destination.getId() == R.id.homeFragment) {
-
-            }
-
-        });
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
 
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
@@ -182,6 +170,7 @@ public class MainActivity extends BaseActivity {
         userNameNavHeader = headerView.findViewById(R.id.userNameNavHeader);
         phoneNavHeader = headerView.findViewById(R.id.phone);
         userDetails = new UserDetails(this);
+
 
         // check for update
 
@@ -506,7 +495,7 @@ public class MainActivity extends BaseActivity {
 
     public void showHomeFragment() {
 
-        navGraph.setStartDestination(R.id.homeFragment);
+        navController.navigate(R.id.homeFragment);
 
 
 
