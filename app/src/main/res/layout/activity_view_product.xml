@@ -546,8 +546,8 @@
                 android:layout_weight="0"
                 android:background="@drawable/white_ripple"
                 android:clickable="true"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 app:srcCompat="@drawable/ic_favorite_black"
                 android:layout_margin="4dp"/>
 
@@ -609,7 +609,7 @@
                 android:textStyle="bold"
                 android:layout_marginTop="6dp"
                 android:layout_marginBottom="6dp"
-                android:layout_marginRight="6dp"/>
+                android:layout_marginRight="12dp"/>
         </LinearLayout>
 
 
