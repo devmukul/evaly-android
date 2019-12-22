@@ -30,8 +30,6 @@ import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -87,6 +85,8 @@ public class MainActivity extends BaseActivity {
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
+
+
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
@@ -96,6 +96,14 @@ public class MainActivity extends BaseActivity {
         userNameNavHeader = headerView.findViewById(R.id.userNameNavHeader);
         phoneNavHeader = headerView.findViewById(R.id.phone);
         userDetails = new UserDetails(this);
+
+
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.homeFragment)
+                bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+            else if (destination.getId() == R.id.browseProductFragment)
+                unCheckAllMenuItems(bottomNavigationView.getMenu());
+        });
 
 
         // check for update
@@ -174,12 +182,7 @@ public class MainActivity extends BaseActivity {
         String strNew = email.replaceAll("[^A-Za-z0-9]", "");
 
         try {
-            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Logger.d(task.isSuccessful());
-                }
-            });
+            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -406,6 +409,19 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
+    private void unCheckAllMenuItems(@NonNull final Menu menu) {
+        int size = menu.size();
+        for (int i = 0; i < size; i++) {
+            final MenuItem item = menu.getItem(i);
+            if(item.hasSubMenu()) {
+                // Un check sub menu items
+                unCheckAllMenuItems(item.getSubMenu());
+            } else {
+                item.setChecked(false);
+            }
+        }
+    }
 
     @Override
     protected void onPause() {

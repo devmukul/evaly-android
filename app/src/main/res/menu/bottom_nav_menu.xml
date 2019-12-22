@@ -11,6 +11,7 @@
         android:title="Home"/>
 
     <item
+        android:enabled="true"
         android:id="@+id/nav_wishlist"
         android:icon="@drawable/ic_favorite"
         android:title="Wish List"/>
