@@ -36,7 +36,21 @@
                 android:layout_height="match_parent"
                 android:layout_above="@+id/bottomNavigationView"
                 android:layout_below="@+id/header_logo"
-                android:transitionGroup="true">
+                android:transitionGroup="true"
+                android:visibility="gone">
+
+
+                <fragment
+                    android:id="@+id/nav_host_fragment"
+                    android:name="androidx.navigation.fragment.NavHostFragment"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_above="@+id/bottomNavigationView"
+                    android:layout_below="@+id/header_logo"
+                    app:defaultNavHost="true"
+                    app:navGraph="@navigation/home_nav_graph" />
+
+
 
             </FrameLayout>
 

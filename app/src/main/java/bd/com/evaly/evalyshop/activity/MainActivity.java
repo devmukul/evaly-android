@@ -28,6 +28,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
+import androidx.navigation.NavInflater;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -82,6 +86,14 @@ public class MainActivity extends BaseActivity {
     private View headerView;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
+
+
+    private NavGraph navGraph;
+    private NavController navController;
+    private NavInflater navInflater;
+    private NavHostFragment navHost;
+
+
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
         @Override
@@ -139,6 +151,21 @@ public class MainActivity extends BaseActivity {
         }
     };
 
+    private void setNavHost() {
+        navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.homeFragment);
+        assert navHost != null;
+        navController = navHost.getNavController();
+        navInflater = navController.getNavInflater();
+        navGraph = navInflater.inflate(R.navigation.home_nav_graph);
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+
+            if (destination.getId() == R.id.homeFragment) {
+
+            }
+
+        });
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -478,18 +505,23 @@ public class MainActivity extends BaseActivity {
 
 
     public void showHomeFragment() {
-        try {
-            fragmentHome = HomeFragment.newInstance();
 
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-            ft.replace(R.id.fragment_container, fragmentHome, "fragmentHome");
-            ft.setReorderingAllowed(true);
-            ft.addToBackStack("fragmentHome");
-            ft.commit();
-        } catch (Exception e) {
+        navGraph.setStartDestination(R.id.homeFragment);
 
-        }
+
+
+//        try {
+//            fragmentHome = HomeFragment.newInstance();
+//
+//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//            // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
+//            ft.replace(R.id.fragment_container, fragmentHome, "fragmentHome");
+//            ft.setReorderingAllowed(true);
+//            ft.addToBackStack("fragmentHome");
+//            ft.commit();
+//        } catch (Exception e) {
+//
+//        }
     }
 
 
