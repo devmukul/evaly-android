@@ -99,10 +99,17 @@ public class MainActivity extends BaseActivity {
 
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+
             if (destination.getId() == R.id.homeFragment)
                 bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
             else if (destination.getId() == R.id.browseProductFragment)
                 unCheckAllMenuItems(bottomNavigationView.getMenu());
+            else if (destination.getId() == R.id.wishListFragment)
+                bottomNavigationView.getMenu().findItem(R.id.nav_wishlist).setChecked(true);
+            else if (destination.getId() == R.id.cartFragment){
+                    bottomNavigationView.getMenu().findItem(R.id.nav_cart).setChecked(true);
+
+            }
         });
 
 
@@ -366,6 +373,12 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
 
+
+        if (!isLaunchActivity) {
+            finish();
+            super.onBackPressed();
+        }
+
         if (navController.getCurrentDestination() != null) {
             if (navController.getCurrentDestination().getId() == R.id.homeFragment){
                 if (isLaunchActivity)
@@ -376,8 +389,6 @@ public class MainActivity extends BaseActivity {
                 super.onBackPressed();
         }
 
-        if (!isLaunchActivity)
-            finish();
 
     }
 
