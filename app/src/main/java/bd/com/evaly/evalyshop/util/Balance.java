@@ -42,7 +42,9 @@ public class Balance {
                     userDetails.setLastName(ob.get("last_name").getAsString());
                     userDetails.setEmail(ob.get("email").getAsString());
                     userDetails.setPhone(ob.get("contact").getAsString());
-                    userDetails.setJsonAddress(ob.get("address").getAsString());
+                    if (ob.get("address") != null){
+                        userDetails.setJsonAddress(ob.get("address").getAsString());
+                    }
                     userDetails.setProfilePicture(ob.get("profile_pic_url").getAsString());
                     userDetails.setProfilePictureSM(ob.get("image_sm").getAsString());
 

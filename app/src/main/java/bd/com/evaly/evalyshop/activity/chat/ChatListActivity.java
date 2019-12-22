@@ -1,7 +1,18 @@
 package bd.com.evaly.evalyshop.activity.chat;
 
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,7 +82,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     ProgressBar progressBar;
     @BindView(R.id.nestedScroll)
     NestedScrollView nestedScroll;
-
     @BindView(R.id.llEvaly)
     LinearLayout evalyChatRosterView;
 
@@ -410,7 +420,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     }
 
     private void disconnectXmpp(){
-        xmppHandler.disconnect();
+        if (xmppHandler != null){
+            xmppHandler.disconnect();
+        }
         stopService(new Intent(ChatListActivity.this, XMPPService.class));
     }
 
@@ -452,6 +464,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             }
         }
     }
+
 
 
     @Override
