@@ -24,7 +24,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -81,72 +80,12 @@ public class MainActivity extends BaseActivity {
     private NavController navController;
 
 
-
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-        @Override
-        public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-        }
-
-        //Event Listeners
-        public void onLoggedIn() {
-
-            if (xmppHandler != null) {
-                CredentialManager.saveUserRegistered(true);
-                if (xmppHandler.isLoggedin()) {
-                    VCard vCard = xmppHandler.mVcard;
-                    if (CredentialManager.getUserData() != null) {
-                        if (vCard != null) {
-                            if (vCard.getFirstName() == null || vCard.getLastName() == null) {
-                                Logger.d("========");
-                                xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                            }
-                            disconnectXmpp();
-                        }
-                    }
-                }
-            }
-        }
-
-        public void onLoginFailed(String msg) {
-            Logger.d(msg);
-            if (!msg.contains("already logged in")) {
-                if (xmppHandler == null){
-                    xmppHandler = AppController.getmService().xmpp;
-                }
-                if (xmppHandler.isConnected()){
-                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
-                }
-            } else {
-                CredentialManager.saveUserRegistered(true);
-                disconnectXmpp();
-            }
-        }
-
-        public void onSignupSuccess() {
-            Logger.d("Signup success");
-
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-            disconnectXmpp();
-        }
-
-        public void onSignupFailed(String msg) {
-
-        }
-    };
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-
 
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
@@ -221,24 +160,19 @@ public class MainActivity extends BaseActivity {
                 if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered()) {
                     Logger.d("===========");
                     if (AppController.getInstance().isNetworkConnected()) {
-                        AsyncTask.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                Logger.d("START_SERVICE");
-                                startXmppService();
-                            }
+                        AsyncTask.execute(() -> {
+                            Logger.d("START_SERVICE");
+                            startXmppService();
                         });
                     }
                 }
             }
         }
 
-
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
         String email = CredentialManager.getUserName();
         String strNew = email.replaceAll("[^A-Za-z0-9]", "");
 
-//        Logger.d(strNew);
         try {
             FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -277,7 +211,6 @@ public class MainActivity extends BaseActivity {
 
 
         } else {
-
 
             FirebaseMessaging.getInstance().subscribeToTopic("USER." + userDetails.getUserName());
 
@@ -326,12 +259,7 @@ public class MainActivity extends BaseActivity {
             });
         }
 
-
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
-
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             Intent intent;
             switch (menuItem.getItemId()) {
@@ -342,7 +270,6 @@ public class MainActivity extends BaseActivity {
                     navController.navigate(R.id.wishListFragment);
                     break;
                 case R.id.nav_cart:
-
                     intent = new Intent(MainActivity.this, CartActivity.class);
                     startActivity(intent);
                     break;
@@ -353,8 +280,6 @@ public class MainActivity extends BaseActivity {
                         startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
                     }
                     break;
-
-
             }
             return true;
         });
@@ -376,11 +301,7 @@ public class MainActivity extends BaseActivity {
                 bundle.putString("brand_name", data.getStringExtra("brand_name"));
                 bundle.putString("category", data.getStringExtra("category"));
                 bundle.putString("image_url", data.getStringExtra("image_url"));
-
-
                 navController.navigate(R.id.brandFragment, bundle);
-
-
 
             } else if (type == 3 || type == 6) {
 
@@ -392,28 +313,17 @@ public class MainActivity extends BaseActivity {
                 bundle.putString("category", data.getStringExtra("category"));
                 bundle.putString("groups", data.getStringExtra("groups"));
                 bundle.putString("campaign_slug", data.getStringExtra("campaign_slug"));
-
                 navController.navigate(R.id.shopFragment, bundle);
-
 
             } else if (type == 4) {
 
                 isLaunchActivity = false;
-
                 Bundle bundle2 = new Bundle();
                 bundle2.putInt("type", 1);
                 bundle2.putString("slug", data.getStringExtra("category_slug"));
                 bundle2.putString("category", "root");
-
-
                 navController.navigate(R.id.browseProductFragment, bundle);
-
-
             }
-
-        } else {
-
-            showHomeFragment();
         }
 
         if (data.hasExtra("fromBalance")) {
@@ -434,23 +344,13 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
-    public void showHomeFragment() {
-
-        navController.navigate(R.id.homeFragment);
-
-    }
-
-
     AlertDialog exitDialog;
     AlertDialog.Builder exitDialogBuilder;
 
     public UserDetails getUserDetails() {
 
         return userDetails;
-
     }
-
 
     private void startXmppService() {
         startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
@@ -487,11 +387,9 @@ public class MainActivity extends BaseActivity {
             item.setChecked(true);
         }
 
-
         if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()) {
 
             ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
-
 
             if (!userDetails.getProfilePictureSM().equals("null")) {
                 Glide.with(this)
@@ -516,7 +414,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    // 2) :
+
     @Override
     protected void onDestroy() {
         if (exitDialog != null && exitDialog.isShowing()) {
@@ -532,7 +430,6 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
 
     }
-
 
     public boolean isConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -583,7 +480,6 @@ public class MainActivity extends BaseActivity {
 
     private void checkUpdate(){
 
-
         int versionCode = BuildConfig.VERSION_CODE;
 
         AuthApiHelper.checkUpdate(new DataFetchingListener<Response<JsonObject>>() {
@@ -599,11 +495,9 @@ public class MainActivity extends BaseActivity {
                             userDetails.clearAll();
                             MyPreference.with(MainActivity.this).clearAll();
                             update(false);
-                        } else if (versionCode < v){
-
+                        } else if (versionCode < v)
                             update(true);
 
-                        }
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -613,12 +507,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onFailed(int status) {
 
-
             }
         });
-
     }
-
 
     private void update(boolean isCancelable) {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
@@ -643,4 +534,62 @@ public class MainActivity extends BaseActivity {
         dialog.show();
 
     }
+
+
+    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+        @Override
+        public void onConnected() {
+            xmppHandler = AppController.getmService().xmpp;
+            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+            xmppHandler.login();
+        }
+
+        //Event Listeners
+        public void onLoggedIn() {
+
+            if (xmppHandler != null) {
+                CredentialManager.saveUserRegistered(true);
+                if (xmppHandler.isLoggedin()) {
+                    VCard vCard = xmppHandler.mVcard;
+                    if (CredentialManager.getUserData() != null) {
+                        if (vCard != null) {
+                            if (vCard.getFirstName() == null || vCard.getLastName() == null) {
+                                Logger.d("========");
+                                xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                            }
+                            disconnectXmpp();
+                        }
+                    }
+                }
+            }
+        }
+
+        public void onLoginFailed(String msg) {
+            Logger.d(msg);
+            if (!msg.contains("already logged in")) {
+                if (xmppHandler == null){
+                    xmppHandler = AppController.getmService().xmpp;
+                }
+                if (xmppHandler.isConnected()){
+                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
+                }
+            } else {
+                CredentialManager.saveUserRegistered(true);
+                disconnectXmpp();
+            }
+        }
+
+        public void onSignupSuccess() {
+            Logger.d("Signup success");
+
+            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+            xmppHandler.login();
+            disconnectXmpp();
+        }
+
+        public void onSignupFailed(String msg) {
+
+        }
+    };
 }
