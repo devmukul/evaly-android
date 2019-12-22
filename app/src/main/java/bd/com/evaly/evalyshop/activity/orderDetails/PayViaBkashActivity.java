@@ -56,7 +56,7 @@ public class PayViaBkashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bkash_payment);
         getSupportActionBar().setElevation(4f);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_vector);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("bKash Payment");
 

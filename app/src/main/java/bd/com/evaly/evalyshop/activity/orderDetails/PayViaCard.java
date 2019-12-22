@@ -38,7 +38,7 @@ public class PayViaCard extends AppCompatActivity {
         setContentView(R.layout.activity_pay_via_card);
 
         getSupportActionBar().setElevation(4f);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_vector);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Pay via card");
 
