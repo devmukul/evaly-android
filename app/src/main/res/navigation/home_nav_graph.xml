@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_homeFragment_to_brandFragment"
             app:destination="@id/brandFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
     </fragment>
     <fragment
         android:id="@+id/browseProductFragment"
@@ -61,4 +64,9 @@
             android:id="@+id/action_brandFragment_to_wishListFragment"
             app:destination="@id/wishListFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="bd.com.evaly.evalyshop.fragment.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" />
 </navigation>

@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -41,21 +35,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
@@ -63,10 +51,8 @@ import bd.com.evaly.evalyshop.models.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shopItem.ShopItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -471,106 +457,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         });
 
     }
-
-
-    public void placeOrderz(JSONObject payload){
-
-        String url = UrlUtils.BASE_URL+"custom/order/create/";
-        dialog.showDialog();
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
-
-            // Logger.d(response);
-
-            bottomSheetDialog.hide();
-            dialog.hideDialog();
-
-
-            String errorMsg = "Couldn't place order, might be a server error";
-
-            Log.d("json order", response.toString());
-
-            try {
-
-                errorMsg = response.getString("message");
-
-            }catch (Exception e){
-
-            }
-
-            try {
-                if (response.getJSONArray("data").length() < 1) {
-                    Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
-                    BuyNowFragment.this.dismiss();
-                }
-
-            } catch (Exception e){}
-
-            try {
-
-                JSONArray data = response.getJSONArray("data");
-                for (int i = 0; i < data.length(); i++) {
-                    JSONObject item = data.getJSONObject(i);
-                    String invoice = item.getString("invoice_no");
-                    Intent intent = new Intent(context, OrderDetailsActivity.class);
-                    intent.putExtra("orderID", invoice);
-                    startActivity(intent);
-                }
-
-            } catch (Exception e) {
-
-                Log.e("json exception", e.toString());
-                Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-
-            }
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (response.statusCode == 401){
-
-                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                //placeOrder(payload);
-                            }
-
-                            @Override
-                            public void onFailed(int status) {
-
-                            }
-                        });
-
-                        return;
-
-                }}
-
-
-            dialog.hideDialog();
-            Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                return headers;
-            }
-
-        };
-        RequestQueue queue= Volley.newRequestQueue(context);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
-    }
-
-
 
 
 }

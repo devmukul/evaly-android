@@ -270,8 +270,7 @@ public class MainActivity extends BaseActivity {
                     navController.navigate(R.id.wishListFragment);
                     break;
                 case R.id.nav_cart:
-                    intent = new Intent(MainActivity.this, CartActivity.class);
-                    startActivity(intent);
+                    navController.navigate(R.id.cartFragment);
                     break;
                 case R.id.nav_dashboard:
                     if (userDetails.getToken().equals("")) {

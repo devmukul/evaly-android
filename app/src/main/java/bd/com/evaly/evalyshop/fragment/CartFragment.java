@@ -1,20 +1,19 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.fragment;
+
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -25,119 +24,141 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import bd.com.evaly.evalyshop.BaseActivity;
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.CartAdapter;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CartItem;
 import bd.com.evaly.evalyshop.models.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.placeOrder.PlaceOrderItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.util.UrlUtils;
+import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 
-public class CartActivity extends BaseActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class CartFragment extends Fragment {
 
-    /*
-        H. M. Tamim
-        24/Jun/2019
-     */
 
-    DbHelperCart db;
-    ArrayList<CartItem> itemList;
-    RecyclerView recyclerView;
-    CartAdapter adapter;
-    LinearLayoutManager manager;
-    ImageView back,person;
-    Context context;
-    CheckBox selectAll;
-    Button checkout, btnBottomSheet;
-    EditText customAddress, contact_number;
-    Switch addressSwitch;
-    Spinner addressSpinner;
-    ArrayAdapter<String> spinnerArrayAdapter;
-    ArrayList<String> spinnerArray;
-    ArrayList<Integer> spinnerArrayID;
-    UserDetails userDetails;
-    ViewDialog dialog;
-    boolean cartItem=false;
-    ViewDialog alert;
-    int spinnerPosition, paymentMethod = 2;
-    String userAgent;
-    boolean isCheckedFromAdapter = false;
-    double totalPriceDouble = 0;
-    CompoundButton.OnCheckedChangeListener selectAllListener;
-    BottomSheetDialog bottomSheetDialog;
-    View bottomSheetView;
+    private DbHelperCart db;
+    private ArrayList<CartItem> itemList;
+    private RecyclerView recyclerView;
+    private CartAdapter adapter;
+    private LinearLayoutManager manager;
+    private Context context;
+    private CheckBox selectAll;
+    private Button checkout, btnBottomSheet;
+    private EditText customAddress, contact_number;
+    private Switch addressSwitch;
+    private Spinner addressSpinner;
+    private ArrayList<String> spinnerArray;
+    private ArrayList<Integer> spinnerArrayID;
+    private UserDetails userDetails;
+    private ViewDialog dialog;
+    private boolean cartItem=false;
+    private ViewDialog alert;
+    private CompoundButton.OnCheckedChangeListener selectAllListener;
+    private BottomSheetDialog bottomSheetDialog;
+    private View bottomSheetView;
+    private int spinnerPosition, paymentMethod = 2;
+    private double totalPriceDouble = 0;
+    private View view;
+
+    private Toolbar mToolbar;
+
+    public CartFragment() {
+        // Required empty public constructor
+    }
+
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_cart, container, false);
+    }
+
+
+    
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_cart);
-        //getSupportActionBar().setElevation(0);
-
-        context = this;
-
-        dialog = new ViewDialog(this);
-
-        getSupportActionBar().setElevation(4f);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Shopping Cart");
-
+        
+        context = getContext();
+        dialog = new ViewDialog(getActivity());
         db = new DbHelperCart(context);
         userDetails = new UserDetails(context);
 
         itemList = new ArrayList<>();
-        recyclerView = findViewById(R.id.recycle);
 
-        checkout = findViewById(R.id.button);
-        selectAll = findViewById(R.id.checkBox);
-        alert=new ViewDialog(CartActivity.this);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        this.view = view;
+
+
+
+        recyclerView = view.findViewById(R.id.recycle);
+
+        checkout = view.findViewById(R.id.button);
+        selectAll = view.findViewById(R.id.checkBox);
+        alert = new ViewDialog(getActivity());
 
         manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
         adapter = new CartAdapter(itemList,context, db);
+
+        adapter.setListener(new CartAdapter.CartListener() {
+            @Override
+            public void updateCartFromRecycler() {
+                CartFragment.this.updateCartFromRecycler();
+            }
+
+            @Override
+            public void uncheckSelectAllBtn(boolean isChecked) {
+                CartFragment.this.uncheckSelectAllBtn(isChecked);
+            }
+        });
+
         recyclerView.setAdapter(adapter);
 
         // bottom sheet
 
-        bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog = new BottomSheetDialog(getContext());
         bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_checkout, null);
         bottomSheetDialog.setContentView(bottomSheetView);
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
 
-        checkout.setOnClickListener(view -> {
+        checkout.setOnClickListener(v -> {
             if(userDetails.getToken().equals("")) {
                 Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
                 return;
@@ -172,12 +193,12 @@ public class CartActivity extends BaseActivity {
         btnBottomSheet.setOnClickListener(v -> {
 
             if(userDetails.getToken().equals("")) {
-                startActivity(new Intent(CartActivity.this, SignInActivity.class));
+                startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
 
             if (!checkBox.isChecked()){
-                Toast.makeText(CartActivity.this, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -263,9 +284,9 @@ public class CartActivity extends BaseActivity {
         });
 
         getCartList();
-
+        
+        
     }
-
 
     public void uncheckSelectAllBtn(boolean isChecked){
 
@@ -295,27 +316,25 @@ public class CartActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
                 return true;
             case R.id.action_delete:
                 if(itemList.size() == 0){
                     Toast.makeText(context, "No item is available in cart to delete", Toast.LENGTH_SHORT).show();
                 }else{
-                    new AlertDialog.Builder(this)
+                    new AlertDialog.Builder(context)
                             .setMessage("Are you sure you want to delete the selected products from the cart?")
                             .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
+                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
 
-                                    ArrayList<CartItem> listAdapter = adapter.getItemList();
-                                    for (int i = 0; i < listAdapter.size(); i++){
-                                        if(listAdapter.get(i).isSelected()){
-                                            db.deleteData(listAdapter.get(i).getId());
-                                        }
+                                ArrayList<CartItem> listAdapter = adapter.getItemList();
+                                for (int i = 0; i < listAdapter.size(); i++){
+                                    if(listAdapter.get(i).isSelected()){
+                                        db.deleteData(listAdapter.get(i).getId());
                                     }
-                                    getCartList();
+                                }
+                                getCartList();
 
-                                }})
+                            })
                             .setNegativeButton(android.R.string.no, null).show();
                 }
                 return true;
@@ -329,14 +348,14 @@ public class CartActivity extends BaseActivity {
         Cursor res=db.getData();
         if(res.getCount()==0){
 
-            LinearLayout empty = findViewById(R.id.empty);
-            LinearLayout cal = findViewById(R.id.cal);
+            LinearLayout empty = view.findViewById(R.id.empty);
+            LinearLayout cal = view.findViewById(R.id.cal);
             recyclerView.setVisibility(View.GONE);
             cal.setVisibility(View.GONE);
             empty.setVisibility(View.VISIBLE);
-            Button button = findViewById(R.id.button);
+            Button button = view.findViewById(R.id.button);
             button.setVisibility(View.GONE);
-            NestedScrollView scrollView = findViewById(R.id.scroller);
+            NestedScrollView scrollView = view.findViewById(R.id.scroller);
             scrollView.setBackgroundColor(Color.WHITE);
         }else{
 
@@ -348,7 +367,7 @@ public class CartActivity extends BaseActivity {
                 adapter.notifyItemInserted(itemList.size());
                 updateCartFromRecycler();
             }
-             adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -366,7 +385,7 @@ public class CartActivity extends BaseActivity {
             }
         }
 
-        TextView priceView = findViewById(R.id.totalPrice);
+        TextView priceView = view.findViewById(R.id.totalPrice);
         priceView.setText("৳ "+totalPrice);
 
         TextView priceView2 = bottomSheetView.findViewById(R.id.bs_price);
@@ -375,129 +394,64 @@ public class CartActivity extends BaseActivity {
     }
 
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
+    public void placeOrder(JsonObject payload, ViewDialog dialog){
 
+        dialog.showDialog();
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.delete_btn, menu);
-        return true;
-    }
-
-
-    @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-    }
-
-    public void placeOrder(JSONObject payload, ViewDialog alert){
-
-        String url = UrlUtils.BASE_URL+"custom/order/create/";
-        alert.showDialog();
-
-        try{
-            int countItems = payload.getJSONArray("order_items").length();
-            if (countItems == 0) {
-                alert.hideDialog();
-                dialog.hideDialog();
-                return;
-            }
-
-        } catch (Exception e){ }
-
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
-
-            String errorMsg = "Couldn't place order, might be a server error";
-            Log.d("json order", response.toString());
-            try {
-
-                errorMsg = response.getString("message");
-
-            }catch (Exception e){ }
-
-            try {
-
-                if (response.getJSONArray("data").length() < 1) {
-                    dialog.hideDialog();
-                    // Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-
-                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                    orderPlaced();
-                    dialog.hideDialog();
-                    errorMsg = response.getString("message");
-                }
-
-            } catch (Exception e){ }
-
-            try {
-
-                JSONArray data = response.getJSONArray("data");
-                for (int i = 0; i < data.length(); i++) {
-                    JSONObject item = data.getJSONObject(i);
-                    String invoice = item.getString("invoice_no");
-                    Intent intent = new Intent(context, OrderDetailsActivity.class);
-                    intent.putExtra("orderID", invoice);
-                    startActivity(intent);
-                    //makePayment(invoice, alert, response.length()-1, i);
-                }
-
-
-            } catch (Exception e) {
-
-                Log.e("json exception", e.toString());
-                Toast.makeText(context, errorMsg , Toast.LENGTH_SHORT).show();
-                dialog.hideDialog();
-            }
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(CartActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        placeOrder(payload, alert);
-                    }
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-                return;
-            }}
-
-            Toast.makeText(context, "Couldn't place order", Toast.LENGTH_SHORT).show();
-            dialog.hideDialog();
-            alert.hideDialog();
-        }) {
+        OrderApiHelper.placeOrder(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-                return headers;
+                bottomSheetDialog.hide();
+                dialog.hideDialog();
+
+                if (response != null) {
+
+                    String errorMsg = response.get("message").getAsString();
+
+                    if (response.getAsJsonArray("data").size() < 1) {
+                        Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+
+                        orderPlaced();
+                    }
+
+                    JsonArray data = response.getAsJsonArray("data");
+                    for (int i = 0; i < data.size(); i++) {
+                        JsonObject item = data.get(i).getAsJsonObject();
+                        String invoice = item.get("invoice_no").getAsString();
+                        Intent intent = new Intent(context, OrderDetailsActivity.class);
+                        intent.putExtra("orderID", invoice);
+                        startActivity(intent);
+                    }
+                }
             }
 
-        };
-        RequestQueue queue= Volley.newRequestQueue(CartActivity.this);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+                dialog.hideDialog();
+                Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    placeOrder(payload, dialog);
+                else
+                if (getContext() != null)
+                    AppController.logout(getActivity());
+            }
+        });
+
     }
 
 
-    private JSONObject generateOrderJson(){
+
+
+    private JsonObject generateOrderJson(){
 
         PlaceOrderItem orderObejct = new PlaceOrderItem();
 
@@ -533,14 +487,8 @@ public class CartActivity extends BaseActivity {
 
         orderObejct.setOrderItems(productList);
 
-        String payload = new Gson().toJson(orderObejct);
 
-        try {
-            JSONObject jsonPayload = new JSONObject(payload);
-            return jsonPayload;
-        }catch (Exception e){}
-
-        return new JSONObject();
+        return new Gson().toJsonTree(orderObejct).getAsJsonObject();
     }
 
     public void orderPlaced(){
@@ -561,10 +509,13 @@ public class CartActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         if(db!=null){
             db.close();
         }
         super.onDestroy();
     }
+
+
+
 }

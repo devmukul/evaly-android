@@ -52,6 +52,18 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
     CartAdapter instance;
 
+    public CartListener listener;
+
+    public interface CartListener{
+        void updateCartFromRecycler();
+        void uncheckSelectAllBtn(boolean isChecked);
+    }
+
+    public void setListener(CartListener listener){
+
+        this.listener = listener;
+    }
+
     public CartAdapter(ArrayList<CartItem> itemList, Context context, DbHelperCart db) {
         this.itemList = itemList;
         this.context = context;
@@ -113,10 +125,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         myViewHolder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
             itemList.get(i).setSelected(isChecked);
-            ((CartActivity) context).updateCartFromRecycler();
 
-            // if(!isChecked)
+            if (context instanceof CartActivity) {
+
+                ((CartActivity) context).updateCartFromRecycler();
                 ((CartActivity) context).uncheckSelectAllBtn(isChecked);
+            }
+
+            if (listener != null){
+                listener.updateCartFromRecycler();
+                listener.uncheckSelectAllBtn(isChecked);
+            }
 
 
         });
