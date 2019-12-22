@@ -8,7 +8,7 @@
     tools:context=".activity.orderDetails.PayViaCard">
 
 
-    <WebView
+    <bd.com.evaly.evalyshop.views.LollipopFixedWebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
