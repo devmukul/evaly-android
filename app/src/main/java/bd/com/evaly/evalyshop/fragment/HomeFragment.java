@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -148,10 +149,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 }
                 @Override
                 public void onBackPress() {
-                    if (getFragmentManager() != null) {
-                        HomeFragment homeFragment = new HomeFragment();
-                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).addToBackStack("Home").commit();
-                    }
+
+                    if (getFragmentManager() != null)
+                        NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
+
                 }
             });
 

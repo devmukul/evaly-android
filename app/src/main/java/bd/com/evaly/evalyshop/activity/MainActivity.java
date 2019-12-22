@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,14 +24,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
-import androidx.navigation.NavGraph;
-import androidx.navigation.NavInflater;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -52,11 +47,6 @@ import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
-import bd.com.evaly.evalyshop.fragment.BrandFragment;
-import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
-import bd.com.evaly.evalyshop.fragment.HomeFragment;
-import bd.com.evaly.evalyshop.fragment.ShopFragment;
-import bd.com.evaly.evalyshop.fragment.WishListFragment;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
@@ -88,11 +78,8 @@ public class MainActivity extends BaseActivity {
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
 
-
-    private NavGraph navGraph;
     private NavController navController;
-    private NavInflater navInflater;
-    private NavHostFragment navHost;
+
 
 
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
@@ -300,7 +287,7 @@ public class MainActivity extends BaseActivity {
             navigationView.setNavigationItemSelectedListener(menuItem -> {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_wishlist:
-                        startActivity(new Intent(MainActivity.this, WishListActivity.class));
+                        navController.navigate(R.id.wishListFragment);
                         break;
                     case R.id.nav_contact:
                         startActivity(new Intent(MainActivity.this, ContactActivity.class));
@@ -349,39 +336,10 @@ public class MainActivity extends BaseActivity {
             Intent intent;
             switch (menuItem.getItemId()) {
                 case R.id.nav_home:
-
-                    try {
-
-                        WishListFragment myFragment = (WishListFragment) fragmentManager.findFragmentByTag("wishlist");
-                        if (myFragment != null && myFragment.isVisible()) {
-                            ft.hide(fragmentWishlist);
-                            ft.show(fragmentHome);
-                            ft.commit();
-                        } else {
-
-                            while (fragmentManager.getBackStackEntryCount() > 0) {
-                                fragmentManager.popBackStackImmediate();
-                            }
-                            showHomeFragment();
-                        }
-                    } catch (Exception e){
-
-                        showHomeFragment();
-
-                    }
-
+                    navController.navigate(R.id.homeFragment);
                     break;
                 case R.id.nav_wishlist:
-
-                    try {
-
-                        navController.navigate(R.id.wishListFragment);
-
-                    } catch (Exception e){
-
-                        startActivity(new Intent(this, WishListActivity.class));
-                    }
-
+                    navController.navigate(R.id.wishListFragment);
                     break;
                 case R.id.nav_cart:
 
@@ -413,18 +371,16 @@ public class MainActivity extends BaseActivity {
             if (type == 2) {
 
                 isLaunchActivity = false;
-
-                Log.d("json", data.getStringExtra("brand_name"));
                 bundle.putInt("type", type);
                 bundle.putString("brand_slug", data.getStringExtra("brand_slug"));
                 bundle.putString("brand_name", data.getStringExtra("brand_name"));
                 bundle.putString("category", data.getStringExtra("category"));
                 bundle.putString("image_url", data.getStringExtra("image_url"));
-                Fragment fragment3 = new BrandFragment();
-                fragment3.setArguments(bundle);
-                ft.replace(R.id.fragment_container, fragment3, data.getStringExtra("slug"));
-                ft.addToBackStack(null);
-                ft.commit();
+
+
+                navController.navigate(R.id.brandFragment, bundle);
+
+
 
             } else if (type == 3 || type == 6) {
 
@@ -436,25 +392,22 @@ public class MainActivity extends BaseActivity {
                 bundle.putString("category", data.getStringExtra("category"));
                 bundle.putString("groups", data.getStringExtra("groups"));
                 bundle.putString("campaign_slug", data.getStringExtra("campaign_slug"));
-                Fragment fragment3 = new ShopFragment();
-                fragment3.setArguments(bundle);
-                ft.replace(R.id.fragment_container, fragment3, data.getStringExtra("slug"));
-                ft.addToBackStack(null);
-                ft.commit();
+
+                navController.navigate(R.id.shopFragment, bundle);
+
+
             } else if (type == 4) {
 
                 isLaunchActivity = false;
 
-                Fragment fragment3 = new BrowseProductFragment();
                 Bundle bundle2 = new Bundle();
                 bundle2.putInt("type", 1);
                 bundle2.putString("slug", data.getStringExtra("category_slug"));
                 bundle2.putString("category", "root");
-                fragment3.setArguments(bundle2);
-                ft.setCustomAnimations(R.animator.slide_in_left, R.animator.abc_popup_exit, 0, 0);
-                ft.replace(R.id.fragment_container, fragment3, data.getStringExtra("category_slug"));
-                ft.addToBackStack(null);
-                ft.commit();
+
+
+                navController.navigate(R.id.browseProductFragment, bundle);
+
 
             }
 
@@ -482,52 +435,10 @@ public class MainActivity extends BaseActivity {
 
 
 
-    private HomeFragment fragmentHome = HomeFragment.newInstance();
-    private WishListFragment fragmentWishlist = WishListFragment.newInstance();
-
-
     public void showHomeFragment() {
 
         navController.navigate(R.id.homeFragment);
 
-
-
-//        try {
-//            fragmentHome = HomeFragment.newInstance();
-//
-//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//            // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-//            ft.replace(R.id.fragment_container, fragmentHome, "fragmentHome");
-//            ft.setReorderingAllowed(true);
-//            ft.addToBackStack("fragmentHome");
-//            ft.commit();
-//        } catch (Exception e) {
-//
-//        }
-    }
-
-
-    public void changeFragment(Fragment fragment, String tagFragmentName) {
-
-        FragmentManager mFragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-
-        Fragment currentFragment = mFragmentManager.getPrimaryNavigationFragment();
-        if (currentFragment != null) {
-            fragmentTransaction.detach(currentFragment);
-        }
-
-        Fragment fragmentTemp = mFragmentManager.findFragmentByTag(tagFragmentName);
-        if (fragmentTemp == null) {
-            fragmentTemp = fragment;
-            fragmentTransaction.add(R.id.fragment_container, fragmentTemp, tagFragmentName);
-        } else {
-            fragmentTransaction.attach(fragmentTemp);
-        }
-
-        fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp);
-        fragmentTransaction.setReorderingAllowed(true);
-        fragmentTransaction.commit();
     }
 
 
@@ -553,31 +464,16 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
 
-        int count = getSupportFragmentManager().getBackStackEntryCount();
-        if (count == 1) {
-
-            // this one works
-
-            if (isLaunchActivity) {
-                exitDialog.show();
-            } else {
-                super.onBackPressed();
-                finish();
-            }
-
-        } else {
-            getSupportFragmentManager().popBackStack();
+        if (navController.getCurrentDestination() != null) {
+            if (navController.getCurrentDestination().getId() == R.id.homeFragment){
+                if (isLaunchActivity)
+                    exitDialog.show();
+                else
+                    finish();
+            } else
+                navController.navigate(R.id.homeFragment);
         }
 
-        HomeFragment test = (HomeFragment) getSupportFragmentManager().findFragmentByTag("Home");
-        if (test != null && test.isVisible()) {
-
-            if (isLaunchActivity) {
-                exitDialog.show();
-            } else {
-                finish();
-            }
-        }
     }
 
     @Override
@@ -720,7 +616,6 @@ public class MainActivity extends BaseActivity {
 
             }
         });
-
 
     }
 

@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -95,10 +96,9 @@ public class BrandFragment extends Fragment {
                 }
                 @Override
                 public void onBackPress() {
-                    if (getFragmentManager() != null) {
-                        HomeFragment homeFragment = new HomeFragment();
-                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).addToBackStack("Home").commit();
-                    }
+                    if (getFragmentManager() != null)
+                        NavHostFragment.findNavController(BrandFragment.this).navigate(R.id.homeFragment);
+
                 }
             });
 

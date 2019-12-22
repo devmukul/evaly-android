@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -24,7 +24,6 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.CampaignShopActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
-import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.models.BannerItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -124,18 +123,13 @@ public class SliderAdapter extends PagerAdapter {
                     if (ar.length > 1) {
 
                         String slug = ar[1];
-                        Fragment fragment3 = new ShopFragment();
                         Bundle bundle = new Bundle();
                         bundle.putInt("type", 1);
                         bundle.putString("shop_name", itemList.get(position).getName());
                         bundle.putString("shop_slug", slug);
                         bundle.putString("category", "root");
 
-                        fragment3.setArguments(bundle);
-                        ft.setCustomAnimations(R.animator.slide_in_left, R.animator.abc_popup_exit, 0, 0);
-                        ft.replace(R.id.fragment_container, fragment3, itemList.get(position).getName());
-                        ft.addToBackStack(itemList.get(position).getName());
-                        ft.commit();
+                        Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.shopFragment, bundle);
 
                     } else {
 

@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -117,10 +118,8 @@ public class BrowseProductFragment extends Fragment {
                 }
                 @Override
                 public void onBackPress() {
-                    if (getFragmentManager() != null) {
-                        HomeFragment homeFragment = new HomeFragment();
-                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).addToBackStack("Home").commit();
-                    }
+                    if (getFragmentManager() != null)
+                        NavHostFragment.findNavController(BrowseProductFragment.this).navigate(R.id.homeFragment);
                 }
             });
 
