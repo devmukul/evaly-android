@@ -41,6 +41,7 @@ import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.viewmodel.RoomWIthRxViewModel;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
@@ -88,6 +89,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     XMPPEventReceiver xmppEventReceiver;
 
     RoomWIthRxViewModel viewModel;
+    ViewDialog dialog;
+
     RosterTable evalyTable;
 
 
@@ -100,6 +103,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             xmppHandler = AppController.getmService().xmpp;
             try {
                 ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
+                evalyTable.lastMessage = new Gson().toJson(chatItem);
                 updateEvalyChat(chatItem);
             } catch (XmppStringprepException e) {
                 e.printStackTrace();
@@ -110,6 +114,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             xmppHandler = AppController.getmService().xmpp;
             try {
                 ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
+                evalyTable.lastMessage = new Gson().toJson(chatItem);
                 updateEvalyChat(chatItem);
             } catch (XmppStringprepException e) {
                 e.printStackTrace();
@@ -176,7 +181,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                 if (chatItem.getSender().contains(Constants.EVALY_NUMBER)) {
                     updateEvalyChat(chatItem);
                 } else {
-
                     roasterModel.lastMessage = new Gson().toJson(chatItem);
                     roasterModel.unreadCount = roasterModel.unreadCount + 1;
                     rosterList.set(position, roasterModel);
@@ -234,17 +238,22 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         setSupportActionBar(toolbar);
 
+        dialog = new ViewDialog(this);
+
         rosterList = new ArrayList<>();
         evalyTable = new RosterTable();
+
+        adapter = new ChatListAdapter(rosterList, this, this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvChatList.setLayoutManager(layoutManager);
+        rvChatList.setAdapter(adapter);
 
         viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
 
         viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
             @Override
             public void onChanged(@Nullable List<RosterTable> rosterItemModels) {
-                if (currentPage == 1) {
-                    rosterList.clear();
-                }
+                dialog.hideDialog();
                 rosterList.addAll(rosterItemModels);
                 progressBar.setVisibility(View.GONE);
                 populateData(rosterList);
@@ -287,8 +296,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                     } catch (Exception e) {
                         Log.e("load more product", e.toString());
                     }
-
-
                 }
             }
         });
@@ -309,32 +316,28 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         xmppEventReceiver = mChatApp.getEventReceiver();
 //        mVCard = xmppHandler.mVcard;
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                currentPage = 1;
-                rosterList.clear();
-                viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
-
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            currentPage = 1;
+            rosterList.clear();
+            viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
         });
 
     }
 
     @OnClick(R.id.llEvaly)
     void evaly() {
-        RosterTable roasterModel = new RosterTable();
-        roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
-        roasterModel.rosterName = "Evaly";
-        roasterModel.imageUrl = Constants.EVALY_LOGO;
+        evalyTable.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
+        evalyTable.name = "Evaly";
+        evalyTable.imageUrl = Constants.EVALY_LOGO;
         startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class)
-                .putExtra("roster", (Serializable) roasterModel));
+                .putExtra("roster", (Serializable) evalyTable));
     }
 
     private void updateEvalyChat(ChatItem chatItem) {
         if (chatItem == null) {
 
         } else {
+            evalyTable.lastMessage = new Gson().toJson(chatItem);
             if (chatItem.getSender().contains(CredentialManager.getUserName())) {
                 if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
                     tvBody.setText("You: Sent an image");
@@ -356,11 +359,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
     private void populateData(List<RosterTable> roasterModelList) {
         swipeRefreshLayout.setRefreshing(false);
-        rosterList = roasterModelList;
-        adapter = new ChatListAdapter(rosterList, this, this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvChatList.setLayoutManager(layoutManager);
-        rvChatList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        Logger.d(rosterList.size() + "       ======");
 
 //        Logger.d(mUserList.size());
 
@@ -400,13 +401,11 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
         progressBar.setVisibility(View.VISIBLE);
+        rosterList.clear();
+        adapter.notifyDataSetChanged();
         currentPage = 1;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
-            }
-        }).start();
+        dialog.showDialog();
+        viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
 
         if (xmppHandler != null) {
             try {
@@ -421,15 +420,15 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
     @Override
     public void onBackPressed() {
-        if (xmppHandler!= null){
-            disconnectXmpp();
-        }
+        disconnectXmpp();
         finish();
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
     private void disconnectXmpp(){
-        xmppHandler.disconnect();
+        if (xmppHandler != null){
+            xmppHandler.disconnect();
+        }
         stopService(new Intent(ChatListActivity.this, XMPPService.class));
     }
 
@@ -471,6 +470,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             }
         }
     }
+
 
 
     @Override
