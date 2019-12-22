@@ -67,6 +67,7 @@ import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
 public class NewsfeedActivity extends AppCompatActivity {
@@ -90,6 +91,14 @@ public class NewsfeedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getPackageManager().hasSystemFeature("android.software.webview") && Utils.isPackageExisted("com.google.android.webview", this)) {
+
+        }else {
+            Toast.makeText(this, "Please install WebView from Google Play Store", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
         setContentView(R.layout.activity_newsfeed);
 
         getSupportActionBar().setElevation(0);

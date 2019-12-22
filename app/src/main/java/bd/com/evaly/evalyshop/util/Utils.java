@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.util;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -42,6 +44,20 @@ public class  Utils {
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
+
+
+    public static boolean isPackageExisted(String targetPackage, Context context){
+        List<ApplicationInfo> packages;
+        PackageManager pm;
+
+        pm = context.getPackageManager();
+        packages = pm.getInstalledApplications(0);
+        for (ApplicationInfo packageInfo : packages) {
+            if(packageInfo.packageName.equals(targetPackage))
+                return true;
+        }
+        return false;
+    }
 
     public static boolean isValidNumber(String text){
 

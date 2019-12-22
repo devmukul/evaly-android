@@ -3,8 +3,6 @@ package bd.com.evaly.evalyshop.activity.orderDetails;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,12 +16,11 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.util.List;
-
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class PayViaBkashActivity extends BaseActivity {
 
@@ -38,22 +35,19 @@ public class PayViaBkashActivity extends BaseActivity {
 
     String amount="0.0", context = "order_payment", context_reference = "", paymentID = "";
 
-    public boolean isPackageExisted(String targetPackage){
-        List<ApplicationInfo> packages;
-        PackageManager pm;
 
-        pm = getPackageManager();
-        packages = pm.getInstalledApplications(0);
-        for (ApplicationInfo packageInfo : packages) {
-            if(packageInfo.packageName.equals(targetPackage))
-                return true;
-        }
-        return false;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getPackageManager().hasSystemFeature("android.software.webview") && Utils.isPackageExisted("com.google.android.webview", this)) {
+
+        }else {
+            Toast.makeText(this, "Please install WebView from Google Play Store", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
         setContentView(R.layout.activity_bkash_payment);
         getSupportActionBar().setElevation(4f);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
@@ -61,12 +55,7 @@ public class PayViaBkashActivity extends BaseActivity {
         getSupportActionBar().setTitle("bKash Payment");
 
 
-        if(getPackageManager().hasSystemFeature("android.software.webview") && isPackageExisted("com.google.android.webview")) {
 
-        }else {
-            Toast.makeText(this, "Please install webview from Google Play Store", Toast.LENGTH_LONG).show();
-            return;
-        }
 
 
         Intent intent = getIntent();
