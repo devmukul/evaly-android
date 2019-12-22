@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
@@ -307,24 +308,24 @@ public class  Utils {
 
     public static void CustomTab(String url, Context context)
     {
-        Uri uri = Uri.parse(url);
 
-        CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+        try {
+            Uri uri = Uri.parse(url);
 
-        // set desired toolbar colors
+            CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
 
-        intentBuilder.setShowTitle(true);
-        intentBuilder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            // set desired toolbar colors
 
-        // add start and exit animations if you want(optional)
-    /*intentBuilder.setStartAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-    intentBuilder.setExitAnimations(this, android.R.anim.slide_in_left,
-            android.R.anim.slide_out_right);*/
+            intentBuilder.setShowTitle(true);
+            intentBuilder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
 
-        CustomTabsIntent customTabsIntent = intentBuilder.build();
+            CustomTabsIntent customTabsIntent = intentBuilder.build();
 
-        customTabsIntent.launchUrl(context, uri);
+            customTabsIntent.launchUrl(context, uri);
+        } catch (Exception e){
+            Toast.makeText(context,"Install Google Chrome", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static String toFirstCharUpperAll(String string){
