@@ -1368,8 +1368,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onDestroy()
     {
         super.onDestroy();
-        commentDialog.dismiss();
-        replyDialog.dismiss();
+        if (commentDialog != null)
+            commentDialog.dismiss();
+        if (replyDialog != null)
+            replyDialog.dismiss();
     }
 
 

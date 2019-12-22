@@ -32,9 +32,9 @@ android {
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
-            buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
-            buildConfigField "String", 'EVALY_NUMBER', "\"09638111666\""
+            buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
+            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
+            buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
             buildConfigField "String", 'BUILD', "\"prod\""
         }
 

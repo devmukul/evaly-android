@@ -38,6 +38,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -49,17 +50,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.activity.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
 import bd.com.evaly.evalyshop.models.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -258,15 +264,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
             orderJson.setOrderItems(list);
 
+            JsonObject payload = new Gson().toJsonTree(orderJson).getAsJsonObject();
 
-            String payload = new Gson().toJson(orderJson);
+            placeOrder(payload);
 
-            try {
-
-                JSONObject jsonPayload = new JSONObject(payload);
-                placeOrder(jsonPayload);
-
-            }catch (Exception e){}
 
         });
 
@@ -310,50 +311,37 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     }
 
 
+    public void getProductDetails(){
 
+        ProductApiHelper.getProductVariants(shop_slug, shop_item_slug, new ResponseListenerAuth<CommonSuccessResponse<List<ShopItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonSuccessResponse<List<ShopItem>> response, int statusCode) {
 
-    public void getProductDetails() {
+                skeleton.hide();
 
+                itemsList.clear();
+                itemsList.addAll(response.getData());
+                adapterVariation.notifyDataSetChanged();
 
-        String url = UrlUtils.BASE_URL+"/public/shops/"+ shop_slug +"/items/" +shop_item_slug+ "/variants";
-        Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
-                response -> {
+                if (itemsList.size() > 0) {
+                    itemsList.get(0).setSelected(true);
+                    loadProductById(0);
+                }
+            }
 
-                    skeleton.hide();
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
 
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("data");
-                        for(int i = 0; i < jsonArray.length(); i++){
-                            Gson gson = new Gson();
-                            ShopItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), ShopItem.class);
+            }
 
-                            if (i==0)
-                                item.setSelected(true);
+            @Override
+            public void onAuthError(boolean logout) {
 
-                            itemsList.add(item);
-                            adapterVariation.notifyDataSetChanged();
-                        }
-
-                        if (itemsList.size() > 0){
-
-                            loadProductById(0);
-
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }, error -> error.printStackTrace());
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        request.setShouldCache(false);
-        rq.getCache().clear();
-        rq.add(request);
-
+            }
+        });
 
     }
+
 
 
     private void loadProductById(int position){
@@ -431,8 +419,61 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     }
 
 
+    public void placeOrder(JsonObject payload){
 
-    public void placeOrder(JSONObject payload){
+        dialog.showDialog();
+
+        OrderApiHelper.placeOrder(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+                bottomSheetDialog.hide();
+                dialog.hideDialog();
+
+                if (response != null) {
+
+                    String errorMsg = response.get("message").getAsString();
+
+                    if (response.getAsJsonArray("data").size() < 1) {
+                        Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                        BuyNowFragment.this.dismiss();
+                    }
+
+                    JsonArray data = response.getAsJsonArray("data");
+                    for (int i = 0; i < data.size(); i++) {
+                        JsonObject item = data.get(i).getAsJsonObject();
+                        String invoice = item.get("invoice_no").getAsString();
+                        Intent intent = new Intent(context, OrderDetailsActivity.class);
+                        intent.putExtra("orderID", invoice);
+                        startActivity(intent);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+                dialog.hideDialog();
+                Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    placeOrder(payload);
+                else
+                    if (getContext() != null)
+                    AppController.logout(getActivity());
+            }
+        });
+
+    }
+
+
+    public void placeOrderz(JSONObject payload){
 
         String url = UrlUtils.BASE_URL+"custom/order/create/";
         dialog.showDialog();
@@ -497,7 +538,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                         AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                             @Override
                             public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                placeOrder(payload);
+                                //placeOrder(payload);
                             }
 
                             @Override

@@ -519,49 +519,40 @@ public class ChatDetailsActivity extends AppCompatActivity {
     }
 
     private void showProgressBar() {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.bringToFront();
-                progressBar.setVisibility(View.VISIBLE);
-            }
+        this.runOnUiThread(() -> {
+            progressBar.bringToFront();
+            progressBar.setVisibility(View.VISIBLE);
         });
     }
 
     private void loadMessage() {
         dialog.showDialog();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Logger.d(new Gson().toJson(rosterTable));
+        new Thread(() -> {
+            try {
+                Logger.d(new Gson().toJson(rosterTable));
 
-                    chatItemList = xmppHandler.getChatHistoryWithJID(JidCreate.bareFrom(senderId), 20, false);
+                chatItemList = xmppHandler.getChatHistoryWithJID(JidCreate.bareFrom(senderId), 20, false);
 //                    Logger.json(new Gson().toJson(chatItemList));
-                    if (rosterTable.unreadCount > 0) {
-                        chatItemList.get(chatItemList.size() - rosterTable.unreadCount).setUnread(true);
-                    }
-                } catch (XmppStringprepException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (rosterTable.unreadCount > 0) {
+                    chatItemList.get(chatItemList.size() - rosterTable.unreadCount).setUnread(true);
                 }
-
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter = new ChatDetailsAdapter(chatItemList, ChatDetailsActivity.this, rosterTable);
-                        rvChatDetails.setLayoutManager(layoutManager);
-                        rvChatDetails.setAdapter(adapter);
-                        if (adapter.getItemCount() > 0) {
-                            Logger.d("_+_+_+__+_+_+_+_+_+");
-                            rvChatDetails.scrollToPosition(adapter.getItemCount() - 1);
-                        }
-                        dialog.hideDialog();
-                    }
-                });
+            } catch (XmppStringprepException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+
+            runOnUiThread(() -> {
+                adapter = new ChatDetailsAdapter(chatItemList, ChatDetailsActivity.this, rosterTable);
+                rvChatDetails.setLayoutManager(layoutManager);
+                rvChatDetails.setAdapter(adapter);
+                if (adapter.getItemCount() > 0) {
+                    Logger.d("_+_+_+__+_+_+_+_+_+");
+                    rvChatDetails.scrollToPosition(adapter.getItemCount() - 1);
+                }
+                dialog.hideDialog();
+            });
         }).start();
     }
 
@@ -674,15 +665,18 @@ public class ChatDetailsActivity extends AppCompatActivity {
 //                        adapter.notifyItemRemoved(chatItemList.size()-1);
 //                        Logger.d(chatItemList.size());
 
-                        ChatItem chatItem = new ChatItem(smImg, rosterTable.name, mVCard.getField("URL"), rosterTable.nick_name, System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_IMAGE, true, img);
+                        if (mVCard != null) {
+
+                            ChatItem chatItem = new ChatItem(smImg, rosterTable.name, mVCard.getField("URL"), rosterTable.nick_name, System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_IMAGE, true, img);
 
 //                        chatItemList.add(chatItem);
 //                        adapter.notifyItemInserted(chatItemList.size() - 1);
 //                        rvChatDetails.smoothScrollToPosition(adapter.getItemCount() - 1);
-                        try {
-                            xmppHandler.sendMessage(chatItem);
-                        } catch (SmackException e) {
-                            e.printStackTrace();
+                            try {
+                                xmppHandler.sendMessage(chatItem);
+                            } catch (SmackException e) {
+                                e.printStackTrace();
+                            }
                         }
 //                        rvChatDetails.smoothScrollToPosition(chatItemList.size() - 1);
 

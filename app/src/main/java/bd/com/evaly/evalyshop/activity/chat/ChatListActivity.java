@@ -21,6 +21,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
@@ -41,7 +50,6 @@ import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.viewmodel.RoomWIthRxViewModel;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
@@ -74,6 +82,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     ProgressBar progressBar;
     @BindView(R.id.nestedScroll)
     NestedScrollView nestedScroll;
+    @BindView(R.id.llEvaly)
+    LinearLayout evalyChatRosterView;
 
     private boolean isFirst;
     int limit = 20;
@@ -89,8 +99,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     XMPPEventReceiver xmppEventReceiver;
 
     RoomWIthRxViewModel viewModel;
-    ViewDialog dialog;
-
     RosterTable evalyTable;
 
 
@@ -103,7 +111,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             xmppHandler = AppController.getmService().xmpp;
             try {
                 ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
-                evalyTable.lastMessage = new Gson().toJson(chatItem);
                 updateEvalyChat(chatItem);
             } catch (XmppStringprepException e) {
                 e.printStackTrace();
@@ -114,7 +121,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             xmppHandler = AppController.getmService().xmpp;
             try {
                 ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
-                evalyTable.lastMessage = new Gson().toJson(chatItem);
                 updateEvalyChat(chatItem);
             } catch (XmppStringprepException e) {
                 e.printStackTrace();
@@ -181,6 +187,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                 if (chatItem.getSender().contains(Constants.EVALY_NUMBER)) {
                     updateEvalyChat(chatItem);
                 } else {
+
                     roasterModel.lastMessage = new Gson().toJson(chatItem);
                     roasterModel.unreadCount = roasterModel.unreadCount + 1;
                     rosterList.set(position, roasterModel);
@@ -238,65 +245,50 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         setSupportActionBar(toolbar);
 
-        dialog = new ViewDialog(this);
-
         rosterList = new ArrayList<>();
         evalyTable = new RosterTable();
 
-        adapter = new ChatListAdapter(rosterList, this, this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvChatList.setLayoutManager(layoutManager);
-        rvChatList.setAdapter(adapter);
-
         viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
 
-        viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
-            @Override
-            public void onChanged(@Nullable List<RosterTable> rosterItemModels) {
-                dialog.hideDialog();
-                rosterList.addAll(rosterItemModels);
-                progressBar.setVisibility(View.GONE);
-                populateData(rosterList);
+        viewModel.rosterList.observe(this, rosterItemModels -> {
+            if (currentPage == 1) {
+                rosterList.clear();
+            }
+            rosterList.addAll(rosterItemModels);
+            progressBar.setVisibility(View.GONE);
+            evalyChatRosterView.setVisibility(View.VISIBLE);
+            populateData(rosterList);
+        });
+
+        viewModel.isSuccess.observe(this, aBoolean -> {
+            progressBar.setVisibility(View.GONE);
+            if (!aBoolean) {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
             }
         });
 
-        viewModel.isSuccess.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                progressBar.setVisibility(View.GONE);
-                if (!aBoolean) {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                }
+        viewModel.hasNext.observe(this, aBoolean -> {
+            if (aBoolean) {
+                currentPage = currentPage + 1;
             }
+            Logger.d(aBoolean + "    =======");
+            hasNext = aBoolean;
         });
 
-        viewModel.hasNext.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                if (aBoolean) {
-                    currentPage = currentPage + 1;
-                }
-                Logger.d(aBoolean + "    =======");
-                hasNext = aBoolean;
-            }
-        });
-
-        nestedScroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                String TAG = "nested_sync";
+        nestedScroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            String TAG = "nested_sync";
 //
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-
-                    try {
-                        if (hasNext) {
-                            viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
-                        }
-
-                    } catch (Exception e) {
-                        Log.e("load more product", e.toString());
+            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                try {
+                    if (hasNext) {
+                        viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
                     }
+
+                } catch (Exception e) {
+                    Log.e("load more product", e.toString());
                 }
+
+
             }
         });
 
@@ -320,24 +312,25 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             currentPage = 1;
             rosterList.clear();
             viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
+
         });
 
     }
 
     @OnClick(R.id.llEvaly)
     void evaly() {
-        evalyTable.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
-        evalyTable.name = "Evaly";
-        evalyTable.imageUrl = Constants.EVALY_LOGO;
+        RosterTable roasterModel = new RosterTable();
+        roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
+        roasterModel.rosterName = "Evaly";
+        roasterModel.imageUrl = Constants.EVALY_LOGO;
         startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class)
-                .putExtra("roster", (Serializable) evalyTable));
+                .putExtra("roster", (Serializable) roasterModel));
     }
 
     private void updateEvalyChat(ChatItem chatItem) {
         if (chatItem == null) {
 
         } else {
-            evalyTable.lastMessage = new Gson().toJson(chatItem);
             if (chatItem.getSender().contains(CredentialManager.getUserName())) {
                 if (chatItem.getMessageType().equalsIgnoreCase(Constants.TYPE_IMAGE)) {
                     tvBody.setText("You: Sent an image");
@@ -359,9 +352,11 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
     private void populateData(List<RosterTable> roasterModelList) {
         swipeRefreshLayout.setRefreshing(false);
-        adapter.notifyDataSetChanged();
-
-        Logger.d(rosterList.size() + "       ======");
+        rosterList = roasterModelList;
+        adapter = new ChatListAdapter(rosterList, this, this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvChatList.setLayoutManager(layoutManager);
+        rvChatList.setAdapter(adapter);
 
 //        Logger.d(mUserList.size());
 
@@ -401,13 +396,10 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
         progressBar.setVisibility(View.VISIBLE);
-        rosterList.clear();
-        adapter.notifyDataSetChanged();
         currentPage = 1;
-        dialog.showDialog();
-        viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
+        new Thread(() -> viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit)).start();
 
-        if (xmppHandler != null) {
+        if (xmppHandler != null && xmppHandler.isConnected()) {
             try {
                 ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
                 updateEvalyChat(chatItem);
@@ -420,7 +412,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
     @Override
     public void onBackPressed() {
-        disconnectXmpp();
+        if (xmppHandler!= null){
+            disconnectXmpp();
+        }
         finish();
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }

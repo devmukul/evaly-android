@@ -314,7 +314,10 @@ public class OrderDetailsActivity extends BaseActivity {
 
             double amountToPay = total_amount - paid_amount;
 
-            if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
+            if (amountToPayView.getText().toString().trim().equals("")){
+                Toast.makeText(context, "Please enter an amount", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
                 Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
                 return;
             } else if (amountToPayView.getText().toString().equals("0")){
@@ -339,7 +342,10 @@ public class OrderDetailsActivity extends BaseActivity {
 
             double amountToPay = total_amount - paid_amount;
 
-            if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
+            if (amountToPayView.getText().toString().trim().equals("")){
+                Toast.makeText(context, "Please enter an amount", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
                 Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
                 return;
             } else if (amountToPayView.getText().toString().equals("0")){
@@ -367,7 +373,10 @@ public class OrderDetailsActivity extends BaseActivity {
 
             double amountToPay = total_amount - paid_amount;
 
-            if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
+            if (amountToPayView.getText().toString().trim().equals("")){
+                Toast.makeText(context, "Please enter an amount", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
                 Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
                 return;
             } else if (amountToPayView.getText().toString().equals("0")){

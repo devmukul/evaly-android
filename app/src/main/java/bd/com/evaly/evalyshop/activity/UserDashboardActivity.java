@@ -94,19 +94,17 @@ public class UserDashboardActivity extends BaseActivity {
             if (xmppHandler == null){
                 xmppHandler = AppController.getmService().xmpp;
             }
-//            Logger.d("LOGIN =========");
-//            Logger.d(xmppHandler.isConnected());
-            VCard vCard = xmppHandler.mVcard;
-//            Logger.d(vCard.getFirstName());
 
-            if (CredentialManager.getUserData() != null)
-                if (vCard == null) {
-    //                Logger.d("========");
-                    xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                }else if (vCard.getLastName() == null || vCard.getFirstName() == null){
-                    Logger.d("========");
-                    xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                }
+            if (xmppHandler != null) {
+
+                VCard vCard = xmppHandler.mVcard;
+                if (CredentialManager.getUserData() != null)
+                    if (vCard == null) {
+                        xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                    } else if (vCard.getLastName() == null || vCard.getFirstName() == null) {
+                        xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                    }
+            }
 
         }
 

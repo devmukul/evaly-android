@@ -18,6 +18,7 @@ import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.models.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
@@ -100,10 +101,11 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL+"public/shops/items/{shopSlug}/")
     Call<JsonObject> getShopProducts(@Path("shopSlug") String shopSlug, @Query("page") int page, @Query("limit") int limit, @Query("category_slug") String categorySlug);
 
-
     @GET(UrlUtils.CAMPAIGNS+"/{campaignSlug}/shops/{shopSlug}/items")
     Call<JsonObject> getCampaignShopProducts(@Path("campaignSlug") String campaignSlug, @Path("shopSlug") String shopSlug, @Query("page") int page, @Query("limit") int limit, @Query("category_slug") String categorySlug);
 
+    @GET(UrlUtils.BASE_URL+"/public/shops/{shopSlug}/items/{shopItem}/variants")
+    Call<CommonSuccessResponse<List<ShopItem>>> getProductVariants(@Path("shopSlug") String shopSlug, @Path("shopItem") String shopItem);
 
     // Categories API
 
@@ -179,6 +181,12 @@ public interface IApiClient {
 
     @POST("https://nsuer.club/evaly/referral/submit-referral.php")
     Call<JsonObject> checkReferral(@Body HashMap<String, String> body);
+
+
+    // order apis
+
+    @POST(UrlUtils.BASE_URL+"custom/order/create/")
+    Call<JsonObject> placeOrder(@Header("Authorization") String token, @Body JsonObject body);
 
 
 }
