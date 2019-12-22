@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -116,7 +117,8 @@ public class HomeTabsFragment extends Fragment {
 
             CategoryUtils categoryUtils = new CategoryUtils(context);
 
-            adapter2 = new RootCategoriesAdapter(context, categoryItems);
+
+            adapter2 = new RootCategoriesAdapter(context, categoryItems, NavHostFragment.findNavController(this));
             recyclerView.setAdapter(adapter2);
 
             recyclerView.setItemAnimator(new MyDefaultItemAnimator());

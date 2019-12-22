@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,18 +18,18 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
-import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
 
 public class RootCategoriesAdapter extends RecyclerView.Adapter<RootCategoriesAdapter.MyViewHolder>{
 
     Context context;
     List<CategoryEntity> itemList;
+    private NavController navController;
 
-    public RootCategoriesAdapter(Context ctx, List<CategoryEntity> list){
+    public RootCategoriesAdapter(Context ctx, List<CategoryEntity> list, NavController navController){
         context=ctx;
         itemList = list;
+        this.navController = navController;
     }
 
     @Override
@@ -97,21 +96,12 @@ public class RootCategoriesAdapter extends RecyclerView.Adapter<RootCategoriesAd
 
             String category = itemList.get(p).getSlug();
 
-            Fragment fragment3 = new BrowseProductFragment();
-
             Bundle bundle = new Bundle();
             bundle.putInt("type", 1);
             bundle.putString("slug", category);
             bundle.putString("category", category);
 
-            fragment3.setArguments(bundle);
-
-            FragmentTransaction ft = ((MainActivity) context).getSupportFragmentManager().beginTransaction();
-
-            //ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-            ft.replace(R.id.fragment_container, fragment3, category);
-            ft.addToBackStack(category);
-            ft.commit();
+            navController.navigate(R.id.browseProductFragment, bundle);
 
 
         }

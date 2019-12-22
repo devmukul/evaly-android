@@ -374,16 +374,9 @@ public class MainActivity extends BaseActivity {
                 case R.id.nav_wishlist:
 
                     try {
-                        Fragment fragmentW = fragmentManager.findFragmentByTag("wishlist");
-                        if (fragmentW == null) {
 
-                            ft.add(R.id.fragment_container, fragmentWishlist, "wishlist");
-                            ft.addToBackStack("wishlist");
-                        }
+                        navController.navigate(R.id.wishListFragment);
 
-                        ft.hide(fragmentHome);
-                        ft.show(fragmentWishlist);
-                        ft.commit();
                     } catch (Exception e){
 
                         startActivity(new Intent(this, WishListActivity.class));

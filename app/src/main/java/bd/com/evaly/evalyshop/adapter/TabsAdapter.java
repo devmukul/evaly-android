@@ -14,8 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -30,9 +31,6 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.fragment.BrandFragment;
-import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
-import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -44,11 +42,14 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
     AppCompatActivity activity;
 
+    private NavController navController;
+
     public TabsAdapter(Context ctx, AppCompatActivity activity, ArrayList<TabsItem> item, int type){
         context=ctx;
         itemlist = item;
         this.type=type;
         this.activity = activity;
+        navController = Navigation.findNavController(activity, R.id.nav_host_fragment);
     }
 
     View.OnClickListener productListener = new View.OnClickListener() {
@@ -62,36 +63,29 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
                 if (type == 1) {
 
-                    Fragment fragment3 = new BrowseProductFragment();
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", itemlist.get(position).getType());
                     bundle.putString("slug", itemlist.get(position).getSlug());
                     bundle.putString("category", itemlist.get(position).getCategory());
-                    fragment3.setArguments(bundle);
-                    //.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-                    ft.replace(R.id.fragment_container, fragment3, itemlist.get(position).getSlug());
-                    // ft.addToBackStack(itemlist.get(position).getSlug());
-                    ft.addToBackStack(null);
-                    ft.commit();
+
+                    navController.navigate(R.id.browseProductFragment, bundle);
 
                 } else if (type == 2) {
 
-                    Fragment fragment3 = new BrandFragment();
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", itemlist.get(position).getType());
                     bundle.putString("brand_slug", itemlist.get(position).getSlug());
                     bundle.putString("brand_name", itemlist.get(position).getTitle());
                     bundle.putString("category", itemlist.get(position).getCategory());
                     bundle.putString("image_url", itemlist.get(position).getImage());
-                    fragment3.setArguments(bundle);
-                    ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-                    ft.replace(R.id.fragment_container, fragment3, itemlist.get(position).getSlug());
-                    ft.addToBackStack(itemlist.get(position).getSlug());
-                    ft.commit();
+
+                    navController.navigate(R.id.brandFragment, bundle);
+
+
+
 
                 } else if (type == 3 || type == 6) {
 
-                    Fragment fragment3 = new ShopFragment();
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", itemlist.get(position).getType());
                     bundle.putString("shop_name", itemlist.get(position).getTitle());
@@ -100,11 +94,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                     bundle.putString("category", itemlist.get(position).getCategory());
                     bundle.putString("campaign", itemlist.get(position).getCampaignSlug());
 
-                    fragment3.setArguments(bundle);
-                    ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-                    ft.replace(R.id.fragment_container, fragment3, itemlist.get(position).getSlug());
-                    ft.addToBackStack(itemlist.get(position).getSlug());
-                    ft.commit();
+                    navController.navigate(R.id.shopFragment, bundle);
 
                 }
             } else {
@@ -178,7 +168,6 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                 .into(holder.iv);
 
     }
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
