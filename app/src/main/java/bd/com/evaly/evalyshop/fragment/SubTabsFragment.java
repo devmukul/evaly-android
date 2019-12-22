@@ -132,7 +132,6 @@ public class SubTabsFragment extends Fragment {
         if(!(slug.equals("root") && type == 1)) {
             if (type == 1){
                 search.setHint("Search categories");
-                //search.setVisibility(View.GONE);
                 showMore.setVisibility(View.GONE);
                 getSubCategories();
             }
@@ -174,6 +173,13 @@ public class SubTabsFragment extends Fragment {
     }
 
     public void loadJsonToView(String json, int type){
+
+        if(!(slug.equals("root") && type == 1)) {
+            if (type == 1) {
+                search.setVisibility(View.GONE);
+                showMore.setVisibility(View.GONE);
+            }
+        }
 
         try {
             JsonParser parser = new JsonParser();
