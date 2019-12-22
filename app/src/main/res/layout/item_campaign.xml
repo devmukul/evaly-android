@@ -26,7 +26,6 @@
         android:text="Aniversary Pre Sale Stores"
         android:textAlignment="center"
         android:textColor="#333"
-        android:textSize="14sp"
-        android:maxLines="2"/>
+        android:textSize="12sp"/>
 
 </LinearLayout>
