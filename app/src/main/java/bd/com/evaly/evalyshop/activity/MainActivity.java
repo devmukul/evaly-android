@@ -371,7 +371,7 @@ public class MainActivity extends BaseActivity {
                 else
                     finish();
             } else
-                navController.navigate(R.id.homeFragment);
+                super.onBackPressed();
         }
 
     }
