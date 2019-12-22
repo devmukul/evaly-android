@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -112,25 +111,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void refreshFragment(){
 
-        //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-
-
-        if (getFragmentManager() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                getFragmentManager().beginTransaction().detach(this).commitNow();
-                getFragmentManager().beginTransaction().attach(this).commitNow();
-            } else {
-                getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-            }
-
-            pager.notifyDataSetChanged();
-
-            Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                shimmer.stopShimmer();
-                shimmer.setVisibility(View.GONE);
-            }, 300);
-        }
+        NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
 
     }
 
