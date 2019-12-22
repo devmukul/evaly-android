@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,10 +23,10 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -124,6 +123,42 @@ public class CartFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         this.view = view;
+
+
+        mToolbar = view.findViewById(R.id.toolbar);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        mToolbar.setNavigationOnClickListener(view1 -> {
+            if (getActivity() != null)
+                getActivity().onBackPressed();
+        });
+        mToolbar.inflateMenu(R.menu.delete_btn);
+        mToolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    return true;
+                case R.id.action_delete:
+                    if(itemList.size() == 0){
+                        Toast.makeText(context, "No item is available in cart to delete", Toast.LENGTH_SHORT).show();
+                    }else{
+                        new AlertDialog.Builder(context)
+                                .setMessage("Are you sure you want to delete the selected products from the cart?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                                    ArrayList<CartItem> listAdapter = adapter.getItemList();
+                                    for (int i = 0; i < listAdapter.size(); i++){
+                                        if(listAdapter.get(i).isSelected()){
+                                            db.deleteData(listAdapter.get(i).getId());
+                                        }
+                                    }
+                                    getCartList();
+                                })
+                                .setNegativeButton(android.R.string.no, null).show();
+                    }
+                    return true;
+            }
+
+            return false;
+        });
 
 
 
@@ -312,35 +347,7 @@ public class CartFragment extends Fragment {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                return true;
-            case R.id.action_delete:
-                if(itemList.size() == 0){
-                    Toast.makeText(context, "No item is available in cart to delete", Toast.LENGTH_SHORT).show();
-                }else{
-                    new AlertDialog.Builder(context)
-                            .setMessage("Are you sure you want to delete the selected products from the cart?")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
 
-                                ArrayList<CartItem> listAdapter = adapter.getItemList();
-                                for (int i = 0; i < listAdapter.size(); i++){
-                                    if(listAdapter.get(i).isSelected()){
-                                        db.deleteData(listAdapter.get(i).getId());
-                                    }
-                                }
-                                getCartList();
-
-                            })
-                            .setNegativeButton(android.R.string.no, null).show();
-                }
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     public void getCartList(){
         adapter.notifyItemRangeRemoved(0, itemList.size());
