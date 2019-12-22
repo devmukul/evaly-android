@@ -26,8 +26,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -302,35 +300,34 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
                         e.printStackTrace();
                         catchError();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
+                }, error -> {
+                    error.printStackTrace();
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
+                        if (error.networkResponse.statusCode == 401) {
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getGiftCardList();
-                        }
+                            if (getContext() != null) {
+                                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                    @Override
+                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                        getGiftCardList();
+                                    }
 
-                        @Override
-                        public void onFailed(int status) {
+                                    @Override
+                                    public void onFailed(int status) {
 
-                        }
-                    });
+                                    }
+                                });
+                            }
 
-                    return;
+                        return;
 
-                }}
+                    }}
 
-                progressContainer.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-            }
-        }) {
+                    progressContainer.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -368,50 +365,47 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         } catch (Exception e) {
             e.printStackTrace();
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, response -> {
 
-                dialog.hideDialog();
+            dialog.hideDialog();
 
-                try{
+            try{
 
-                    Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
-                    bottomSheetDialog.hide();
+                Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
+                bottomSheetDialog.hide();
 
-                }catch(Exception e){
-
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
-
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            redeemCard(invoice_no);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }}
-
-                dialog.hideDialog();
-                Toast.makeText(context, "Server error, try again", Toast.LENGTH_SHORT).show();
+            }catch(Exception e){
 
             }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
+
+                    if (getContext() != null) {
+
+                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                redeemCard(invoice_no);
+                            }
+
+                            @Override
+                            public void onFailed(int status) {
+
+                            }
+                        });
+                    }
+
+                return;
+
+            }}
+
+            dialog.hideDialog();
+            Toast.makeText(context, "Server error, try again", Toast.LENGTH_SHORT).show();
+
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
