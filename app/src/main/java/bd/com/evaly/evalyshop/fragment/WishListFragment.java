@@ -3,23 +3,23 @@ package bd.com.evaly.evalyshop.fragment;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.adapter.WishListAdapter;
 import bd.com.evaly.evalyshop.models.WishList;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -28,15 +28,14 @@ import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 public class WishListFragment extends Fragment {
 
 
-    DbHelperWishList db;
-    ArrayList<WishList> wishLists;
-    RecyclerView recyclerView;
-    WishListAdapter adapter;
-    LinearLayoutManager manager;
-    ViewDialog alert;
-    View view;
-
-    MainActivity activity;
+    private DbHelperWishList db;
+    private ArrayList<WishList> wishLists;
+    private RecyclerView recyclerView;
+    private WishListAdapter adapter;
+    private LinearLayoutManager manager;
+    private ViewDialog alert;
+    private View view;
+    private Toolbar mToolbar;
 
     public WishListFragment() {
         // Required empty public constructor
@@ -51,7 +50,6 @@ public class WishListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        activity = (MainActivity) getActivity();
 
 
     }
@@ -71,6 +69,13 @@ public class WishListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
+        mToolbar = view.findViewById(R.id.toolbar);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        mToolbar.setNavigationOnClickListener(view1 -> {
+            if (getActivity() != null)
+                getActivity().onBackPressed();
+        });
+
         wishLists=new ArrayList<>();
         recyclerView = view.findViewById(R.id.recycle);
         alert = new ViewDialog(getActivity());
@@ -78,15 +83,7 @@ public class WishListFragment extends Fragment {
 
         manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
-        adapter = new WishListAdapter(wishLists,getContext(), new WishListAdapter.WishListListener () {
-
-            @Override
-            public void checkEmpty() {
-
-                checkListEmpty();
-            }
-        });
-
+        adapter = new WishListAdapter(wishLists,getContext(), () -> checkListEmpty());
 
         recyclerView.setAdapter(adapter);
 
@@ -135,7 +132,7 @@ public class WishListFragment extends Fragment {
 
         if (wishLists.size() > 0) {
             empty.setVisibility(View.GONE);
-            scrollView.setBackgroundColor(Color.parseColor("#fafafa"));
+           // scrollView.setBackgroundColor(Color.parseColor("#fafafa"));
         } else {
 
 
