@@ -69,7 +69,6 @@ import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
 
-    private HomeFragment homeFragment;
     private BottomNavigationView bottomNavigationView;
     public DrawerLayout drawer;
     private Toolbar toolbar;
@@ -84,7 +83,6 @@ public class MainActivity extends BaseActivity {
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
 
         @Override
         public void onConnected() {
@@ -327,7 +325,6 @@ public class MainActivity extends BaseActivity {
 
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragmentWishtList = WishListFragment.newInstance();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
 
@@ -337,14 +334,12 @@ public class MainActivity extends BaseActivity {
             switch (menuItem.getItemId()) {
                 case R.id.nav_home:
 
-
                     try {
-
 
                         WishListFragment myFragment = (WishListFragment) fragmentManager.findFragmentByTag("wishlist");
                         if (myFragment != null && myFragment.isVisible()) {
-                            ft.hide(fragmentWishtList);
-                            ft.show(homeFragment);
+                            ft.hide(fragmentWishlist);
+                            ft.show(fragmentHome);
                             ft.commit();
                         } else {
 
@@ -361,17 +356,17 @@ public class MainActivity extends BaseActivity {
 
                     break;
                 case R.id.nav_wishlist:
+
                     try {
                         Fragment fragmentW = fragmentManager.findFragmentByTag("wishlist");
                         if (fragmentW == null) {
 
-                            ft.add(R.id.fragment_container, fragmentWishtList, "wishlist");
-
+                            ft.add(R.id.fragment_container, fragmentWishlist, "wishlist");
                             ft.addToBackStack("wishlist");
                         }
 
-                        ft.hide(homeFragment);
-                        ft.show(fragmentWishtList);
+                        ft.hide(fragmentHome);
+                        ft.show(fragmentWishlist);
                         ft.commit();
                     } catch (Exception e){
 
@@ -477,21 +472,50 @@ public class MainActivity extends BaseActivity {
     }
 
 
+
+    private HomeFragment fragmentHome = HomeFragment.newInstance();
+    private WishListFragment fragmentWishlist = WishListFragment.newInstance();
+
+
     public void showHomeFragment() {
         try {
-            homeFragment = new HomeFragment();
+            fragmentHome = HomeFragment.newInstance();
+
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             // ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-            ft.replace(R.id.fragment_container, homeFragment, "Home");
+            ft.replace(R.id.fragment_container, fragmentHome, "fragmentHome");
             ft.setReorderingAllowed(true);
-            ft.addToBackStack("home");
+            ft.addToBackStack("fragmentHome");
             ft.commit();
         } catch (Exception e) {
 
         }
-
-
     }
+
+
+    public void changeFragment(Fragment fragment, String tagFragmentName) {
+
+        FragmentManager mFragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+
+        Fragment currentFragment = mFragmentManager.getPrimaryNavigationFragment();
+        if (currentFragment != null) {
+            fragmentTransaction.detach(currentFragment);
+        }
+
+        Fragment fragmentTemp = mFragmentManager.findFragmentByTag(tagFragmentName);
+        if (fragmentTemp == null) {
+            fragmentTemp = fragment;
+            fragmentTransaction.add(R.id.fragment_container, fragmentTemp, tagFragmentName);
+        } else {
+            fragmentTransaction.attach(fragmentTemp);
+        }
+
+        fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp);
+        fragmentTransaction.setReorderingAllowed(true);
+        fragmentTransaction.commit();
+    }
+
 
     AlertDialog exitDialog;
     AlertDialog.Builder exitDialogBuilder;

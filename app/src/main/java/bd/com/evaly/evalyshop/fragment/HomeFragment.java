@@ -74,6 +74,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
 
+    public static HomeFragment newInstance(){
+        return new HomeFragment();
+    }
+
 
     @Override
     public void onRefresh() {
@@ -88,6 +92,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public HomeFragment() {
         // Required empty public constructor
     }
+
+
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
