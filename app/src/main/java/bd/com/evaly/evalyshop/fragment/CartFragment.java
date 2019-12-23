@@ -416,22 +416,25 @@ public class CartFragment extends Fragment {
 
                     String errorMsg = response.get("message").getAsString();
 
-                    if (response.getAsJsonArray("data").size() < 1) {
-                        Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
-                        return;
+                    if (response.has("data")) {
+                        if (response.getAsJsonArray("data").size() < 1) {
+                            Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
+                            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                            orderPlaced();
+                        }
+
+                        JsonArray data = response.getAsJsonArray("data");
+                        for (int i = 0; i < data.size(); i++) {
+                            JsonObject item = data.get(i).getAsJsonObject();
+                            String invoice = item.get("invoice_no").getAsString();
+                            Intent intent = new Intent(context, OrderDetailsActivity.class);
+                            intent.putExtra("orderID", invoice);
+                            startActivity(intent);
+                        }
                     } else {
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-
-                        orderPlaced();
-                    }
-
-                    JsonArray data = response.getAsJsonArray("data");
-                    for (int i = 0; i < data.size(); i++) {
-                        JsonObject item = data.get(i).getAsJsonObject();
-                        String invoice = item.get("invoice_no").getAsString();
-                        Intent intent = new Intent(context, OrderDetailsActivity.class);
-                        intent.putExtra("orderID", invoice);
-                        startActivity(intent);
+                        Toast.makeText(context, "Couldn't place order.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

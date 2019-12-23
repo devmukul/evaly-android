@@ -39,6 +39,8 @@ import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
+import java.util.Locale;
+
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.BuildConfig;
@@ -85,8 +87,6 @@ public class MainActivity extends BaseActivity {
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
-
-
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
@@ -123,7 +123,7 @@ public class MainActivity extends BaseActivity {
         BottomNavigationItemView itemView2 = bottomNavigationView.findViewById(R.id.nav_cart);
         View badge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView text = badge.findViewById(R.id.notification);
-        text.setText(dbHelperWishList.size() + "");
+        text.setText(String.format(Locale.ENGLISH, "%d", dbHelperWishList.size()));
         itemView.addView(badge);
 
         if (dbHelperWishList.size() == 0) {
@@ -132,7 +132,7 @@ public class MainActivity extends BaseActivity {
 
         View badge2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView text2 = badge2.findViewById(R.id.notification);
-        text2.setText(dbHelperCart.size() + "");
+        text2.setText(String.format(Locale.ENGLISH, "%d", dbHelperCart.size()));
         itemView2.addView(badge2);
 
         if (dbHelperCart.size() == 0) {
