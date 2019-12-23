@@ -7,8 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,12 +16,14 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -52,7 +52,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
     CartAdapter instance;
 
+    public CartListener listener;
 
+    public interface CartListener{
+        void updateCartFromRecycler();
+        void uncheckSelectAllBtn(boolean isChecked);
+    }
+
+    public void setListener(CartListener listener){
+
+        this.listener = listener;
+    }
 
     public CartAdapter(ArrayList<CartItem> itemList, Context context, DbHelperCart db) {
         this.itemList = itemList;
@@ -88,7 +98,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         }
 
 
-
         JSONObject jsonObject = new JSONObject();
 
 
@@ -111,64 +120,112 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         }
 
 
+        myViewHolder.checkBox.post(() -> myViewHolder.checkBox.setChecked(itemList.get(i).isSelected()));
 
+        myViewHolder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-        myViewHolder.checkBox.post(new Runnable(){
-            @Override
-            public void run(){
-                myViewHolder.checkBox.setChecked(itemList.get(i).isSelected());
-            }
-        });
+            itemList.get(i).setSelected(isChecked);
 
-        myViewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
+            if (context instanceof CartActivity) {
 
-                itemList.get(i).setSelected(isChecked);
                 ((CartActivity) context).updateCartFromRecycler();
-
-                // if(!isChecked)
-                    ((CartActivity) context).uncheckSelectAllBtn(isChecked);
-
-
+                ((CartActivity) context).uncheckSelectAllBtn(isChecked);
             }
+
+            if (listener != null){
+                listener.updateCartFromRecycler();
+                listener.uncheckSelectAllBtn(isChecked);
+            }
+
+
         });
 
 
         // quantity counter
 
-        myViewHolder.plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myViewHolder.plus.setOnClickListener(v -> {
+
+
+            int price = itemList.get(i).getPrice();
+            int wholeSaleMin = 0;
+            int wholesalePrice = price;
+            int priceTemp = price;
+
+            JSONObject jsonObject1 = new JSONObject();
+            try {
+
+                jsonObject1 = new JSONObject(itemList.get(i).getSellerJson());
+                wholeSaleMin = jsonObject1.getInt("minimum_wholesale_quantity");
+                wholesalePrice = (int) Double.parseDouble(jsonObject1.getString("wholesale_price"));
+
+
+            } catch (Exception e) {
+
+            }
+
+
+            myViewHolder.quantity.requestFocus();
+
+
+            int current = itemList.get(i).getQuantity();
+            itemList.get(i).setQuantity(++current);
+            myViewHolder.quantity.setText(current+"");
 
 
 
-                int price = itemList.get(i).getPrice();
-                int wholeSaleMin = 0;
-                int wholesalePrice = price;
-                int priceTemp = price;
-
-                JSONObject jsonObject = new JSONObject();
-                try {
-
-                    jsonObject = new JSONObject(itemList.get(i).getSellerJson());
-                    wholeSaleMin = jsonObject.getInt("minimum_wholesale_quantity");
-                    wholesalePrice = (int) Double.parseDouble(jsonObject.getString("wholesale_price"));
+            if (current >= wholeSaleMin && wholeSaleMin > 1) {
+                myViewHolder.wholeSalePrice.setVisibility(View.VISIBLE);
+                priceTemp = wholesalePrice;
+            } else {
 
 
-                } catch (Exception e) {
+                myViewHolder.wholeSalePrice.setVisibility(View.GONE);
+                priceTemp = price;
 
-                }
-
-
-                myViewHolder.quantity.requestFocus();
+            }
 
 
-                int current = itemList.get(i).getQuantity();
-                itemList.get(i).setQuantity(++current);
-                myViewHolder.quantity.setText(current+"");
+            myViewHolder.totalPrice.setText("৳ "+(priceTemp * itemList.get(i).getQuantity()));
+            myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
 
+            myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
+
+            db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
+
+            if (context instanceof CartActivity)
+                ((CartActivity) context).updateCartFromRecycler();
+
+            if (listener != null)
+                listener.updateCartFromRecycler();
+
+        });
+        myViewHolder.minus.setOnClickListener(v -> {
+
+
+            int price = itemList.get(i).getPrice();
+            int wholeSaleMin = 0;
+            int wholesalePrice = price;
+            int priceTemp = price;
+
+            JSONObject jsonObject12 = new JSONObject();
+            try {
+
+                jsonObject12 = new JSONObject(itemList.get(i).getSellerJson());
+                wholeSaleMin = jsonObject12.getInt("minimum_wholesale_quantity");
+                wholesalePrice = (int) Double.parseDouble(jsonObject12.getString("wholesale_price"));
+
+
+            } catch (Exception e) {
+
+            }
+
+
+            myViewHolder.quantity.requestFocus();
+
+            int current = itemList.get(i).getQuantity();
+            if(current >= 2) {
+                itemList.get(i).setQuantity(--current);
+                myViewHolder.quantity.setText(current + "");
 
 
                 if (current >= wholeSaleMin && wholeSaleMin > 1) {
@@ -182,164 +239,100 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
                 }
 
-
-                myViewHolder.totalPrice.setText("৳ "+(priceTemp * itemList.get(i).getQuantity()));
-                myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
-
-
-                myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
-
-                db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
-
-                ((CartActivity) context).updateCartFromRecycler();
-            }
-        });
-        myViewHolder.minus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                int price = itemList.get(i).getPrice();
-                int wholeSaleMin = 0;
-                int wholesalePrice = price;
-                int priceTemp = price;
-
-                JSONObject jsonObject = new JSONObject();
-                try {
-
-                    jsonObject = new JSONObject(itemList.get(i).getSellerJson());
-                    wholeSaleMin = jsonObject.getInt("minimum_wholesale_quantity");
-                    wholesalePrice = (int) Double.parseDouble(jsonObject.getString("wholesale_price"));
-
-
-                } catch (Exception e) {
-
-                }
-
-
-                myViewHolder.quantity.requestFocus();
-
-                int current = itemList.get(i).getQuantity();
-                if(current >= 2) {
-                    itemList.get(i).setQuantity(--current);
-                    myViewHolder.quantity.setText(current + "");
-
-
-                    if (current >= wholeSaleMin && wholeSaleMin > 1) {
-                        myViewHolder.wholeSalePrice.setVisibility(View.VISIBLE);
-                        priceTemp = wholesalePrice;
-                    } else {
-
-
-                        myViewHolder.wholeSalePrice.setVisibility(View.GONE);
-                        priceTemp = price;
-
-                    }
-
-
-
-
-                    myViewHolder.totalPrice.setText("৳ "+(priceTemp * itemList.get(i).getQuantity()));
-                    myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
-                    myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
-
-                    db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
-
-                }
-                ((CartActivity) context).updateCartFromRecycler();
-            }
-        });
-
-
-        myViewHolder.quantity.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-
-                int price = itemList.get(i).getPrice();
-                int wholeSaleMin = 0;
-                int wholesalePrice = price;
-                int priceTemp = price;
-
-                JSONObject jsonObject = new JSONObject();
-                try {
-
-                    jsonObject = new JSONObject(itemList.get(i).getSellerJson());
-                    wholeSaleMin = jsonObject.getInt("minimum_wholesale_quantity");
-                    wholesalePrice = (int) Double.parseDouble(jsonObject.getString("wholesale_price"));
-
-
-                } catch (Exception e) {
-
-                }
-
-
-
-
-
-                try{
-                    String val = myViewHolder.quantity.getText().toString();
-                    int value = Integer.parseInt(val);
-                    if(value >=1) {
-                        itemList.get(i).setQuantity(value);
-
-                    }
-
-
-
-                    if (value >= wholeSaleMin && wholeSaleMin > 1) {
-                        myViewHolder.wholeSalePrice.setVisibility(View.VISIBLE);
-                        priceTemp = wholesalePrice;
-                    } else {
-
-
-                        myViewHolder.wholeSalePrice.setVisibility(View.GONE);
-                        priceTemp = price;
-                    }
-
-                } catch (Exception e){
-
-                    itemList.get(i).setQuantity(1);
-                    myViewHolder.quantity.setText("1");
-
-
-                }
-
                 myViewHolder.totalPrice.setText("৳ "+(priceTemp * itemList.get(i).getQuantity()));
                 myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
                 myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
 
-
                 db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
-                // hide keyboard
 
-                if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
-                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    //or try following:
-                    //InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(myViewHolder.quantity.getWindowToken(), 0);
+            }
 
-                    myViewHolder.quantity.clearFocus();
+            if (context instanceof CartActivity)
+                ((CartActivity) context).updateCartFromRecycler();
+
+            if (listener != null)
+                listener.updateCartFromRecycler();
+        });
+
+
+        myViewHolder.quantity.setOnEditorActionListener((v, actionId, event) -> {
+
+
+            int price = itemList.get(i).getPrice();
+            int wholeSaleMin = 0;
+            int wholesalePrice = price;
+            int priceTemp = price;
+
+            JSONObject jsonObject13 = new JSONObject();
+            try {
+
+                jsonObject13 = new JSONObject(itemList.get(i).getSellerJson());
+                wholeSaleMin = jsonObject13.getInt("minimum_wholesale_quantity");
+                wholesalePrice = (int) Double.parseDouble(jsonObject13.getString("wholesale_price"));
+
+            } catch (Exception e) {
+
+            }
+
+
+            try{
+                String val = myViewHolder.quantity.getText().toString();
+                int value = Integer.parseInt(val);
+                if(value >=1) {
+                    itemList.get(i).setQuantity(value);
 
                 }
 
-                ((CartActivity) context).updateCartFromRecycler();
-                    return true;
+
+
+                if (value >= wholeSaleMin && wholeSaleMin > 1) {
+                    myViewHolder.wholeSalePrice.setVisibility(View.VISIBLE);
+                    priceTemp = wholesalePrice;
+                } else {
+
+
+                    myViewHolder.wholeSalePrice.setVisibility(View.GONE);
+                    priceTemp = price;
+                }
+
+            } catch (Exception e){
+
+                itemList.get(i).setQuantity(1);
+                myViewHolder.quantity.setText("1");
+
+
             }
 
+            myViewHolder.totalPrice.setText("৳ "+(priceTemp * itemList.get(i).getQuantity()));
+            myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
+            myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
+
+
+            db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
+            // hide keyboard
+
+            if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                //or try following:
+                //InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(myViewHolder.quantity.getWindowToken(), 0);
+
+                myViewHolder.quantity.clearFocus();
+
+            }
+
+            if (context instanceof CartActivity)
+                ((CartActivity) context).updateCartFromRecycler();
+
+            if (listener != null)
+                listener.updateCartFromRecycler();
+                return true;
         });
 
 
         myViewHolder.productName.setText(Html.fromHtml(itemList.get(i).getName()));
         myViewHolder.time.setText(Utils.getTimeAgo(itemList.get(i).getTime()));
         myViewHolder.quantity.setText(itemList.get(i).getQuantity()+"");
-
-//        myViewHolder.price.setText("৳ "+itemList.get(i).getPrice() + " x " + itemList.get(i).getQuantity());
-//        myViewHolder.totalPrice.setText("৳ "+(itemList.get(i).getPrice() * itemList.get(i).getQuantity()));
-//
-//
-
-
 
         {
 
@@ -384,7 +377,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 .apply(new RequestOptions().override(200, 200))
                 .listener(new RequestListener<Drawable>() {
                               @Override
-                              public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                              public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                   return false;
                               }
                               @Override
@@ -398,54 +391,19 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 .into(myViewHolder.productImage);
 
 
-        myViewHolder.productName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openProductPage(i);
-            }
+        myViewHolder.productName.setOnClickListener(v -> openProductPage(i));
+
+        myViewHolder.productImage.setOnClickListener(v -> openProductPage(i));
+
+
+        myViewHolder.trash.setOnClickListener(v -> {
+            db.deleteData(itemList.get(i).getId());
+
+            itemList.remove(i);
+            instance.notifyItemRemoved(i);
+            notifyItemRangeChanged(i, itemList.size());
+
         });
-
-        myViewHolder.productImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openProductPage(i);
-            }
-        });
-
-
-        myViewHolder.trash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                db.deleteData(itemList.get(i).getId());
-
-                itemList.remove(i);
-                instance.notifyItemRemoved(i);
-                notifyItemRangeChanged(i, itemList.size());
-
-            }
-        });
-
-
-//        try{
-//            JSONObject product_item = jsonObject.getJSONObject("product_item"); // get shop_product_item product_item
-//            Log.d("cart_print",product_item.toString());
-//            if(product_item.getJSONArray("varying_options").length() > 0) {
-//                //for(int j=0;j<product_item.getJSONArray("varying_options").length();j++){
-//                    String attr = product_item.getJSONArray("varying_options").getJSONArray(0).getJSONObject(0).getJSONObject("attribute").getString("name");
-//                    String variation = product_item.getJSONArray("varying_options").getJSONArray(0).getJSONObject(0).getJSONObject("option").getString("value");
-//                    myViewHolder.variation.setVisibility(View.VISIBLE);
-//                    if(myViewHolder.variation.getText().toString().equals("")){
-//                        myViewHolder.variation.setText(attr+": "+variation);
-//                    }else{
-//                        myViewHolder.variation.setText(myViewHolder.variation.getText()+"\n"+attr+": "+variation);
-//                    }
-//               // }
-//            } else
-//                myViewHolder.variation.setVisibility(View.GONE);
-//        } catch (Exception e){
-//
-//            Log.e("json error", e.toString());
-//        }
 
 
         myViewHolder.variation.setVisibility(View.GONE);

@@ -3,8 +3,6 @@ package bd.com.evaly.evalyshop.activity.newsfeed.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -54,6 +55,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         CommentItem commentItem = itemsList.get(i);
         Author author = commentItem.getAuthor();
         List<RepliesItem> repliesList = commentItem.getReplies();
+
+
+        if (author.getFullName() == null)
+            author.setFullName("");
 
         if (repliesList.size() > 0){
             if (repliesList.size() == 1){

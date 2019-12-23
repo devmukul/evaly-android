@@ -1,26 +1,22 @@
 package bd.com.evaly.evalyshop.activity.issue;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -31,12 +27,11 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
-import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.issue.IssuesModel;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -85,14 +80,21 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
             @Override
             public void onDataFetched(Response<JsonObject> response) {
                 dialog.hideDialog();
-                List<IssuesModel> models = new Gson().fromJson(response.body().get("results"), new TypeToken<List<IssuesModel>>(){}.getType());
-                list.addAll(models);
-                adapter.notifyDataSetChanged();
+                if (response.body()!=null) {
 
-                if (list.size() == 0){
+                    List<IssuesModel> models = new Gson().fromJson(response.body().get("results"), new TypeToken<List<IssuesModel>>() {
+                    }.getType());
+                    list.addAll(models);
+                    adapter.notifyDataSetChanged();
+
+                    if (list.size() == 0) {
+                        noIssue.setVisibility(View.VISIBLE);
+                    } else {
+                        noIssue.setVisibility(View.GONE);
+                    }
+                } else {
+
                     noIssue.setVisibility(View.VISIBLE);
-                }else {
-                    noIssue.setVisibility(View.GONE);
                 }
             }
 
@@ -143,7 +145,8 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
         IssueReplyAdapter adapter = new IssueReplyAdapter(this, repliedList);
         rvReply.setAdapter(adapter);
 
-        tvDate.setText(Utils.getConvertedTime(model.getCreated_at()));
+        tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss","",model.getCreated_at())));
+
         tvBody.setText(model.getDescription());
         if (model.getAttachment() != null){
             ivIssueImage.setVisibility(View.VISIBLE);
@@ -152,38 +155,35 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
                     .into(ivIssueImage);
         }
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (etDescription.getText().toString().trim().isEmpty()){
-                    etDescription.setError("Required");
-                    return;
-                }
+        btnSubmit.setOnClickListener(view -> {
+            if (etDescription.getText().toString().trim().isEmpty()){
+                etDescription.setError("Required");
+                return;
+            }
 
-                AuthApiHelper.replyIssue(etDescription.getText().toString(), model.getId()+"", new DataFetchingListener<Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(Response<JsonObject> response) {
-                        etDescription.setText("");
-                        if (response.code() == 200 || response.code() == 201){
-                            IssuesModel.ReplyModel replyModel = new Gson().fromJson(response.body(), IssuesModel.ReplyModel.class);
-                            repliedList.add(replyModel);
-                            adapter.notifyDataSetChanged();
-                        }else {
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
+            AuthApiHelper.replyIssue(etDescription.getText().toString(), model.getId()+"", new DataFetchingListener<Response<JsonObject>>() {
+                @Override
+                public void onDataFetched(Response<JsonObject> response) {
+                    etDescription.setText("");
+                    if (response.code() == 200 || response.code() == 201){
+                        IssuesModel.ReplyModel replyModel = new Gson().fromJson(response.body(), IssuesModel.ReplyModel.class);
+                        repliedList.add(replyModel);
+                        adapter.notifyDataSetChanged();
+                    }else {
                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                     }
-                });
+                }
+
+                @Override
+                public void onFailed(int status) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
+            });
 //                model.setDescription(etDescription.getText().toString());
 //
 //                model.setAttachment(imageUrl);
 //                dialog.showDialog();
 //                submitIssue(model, bottomSheetDialog);
-            }
         });
 
 
@@ -198,12 +198,7 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
             public void onStateChanged(@NonNull View view, int newState) {
                 if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     Logger.d("=---==========------");
-                    view.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    });
+                    view.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     bottomSheetDialog.dismiss();
                 }

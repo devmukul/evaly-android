@@ -30,7 +30,7 @@
         android:background="#f1f3f4"
         android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:cardBackgroundColor="@android:color/transparent"
@@ -46,7 +46,7 @@
                 android:background="@android:color/background_dark"
                 android:orientation="vertical" />
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 
     </LinearLayout>

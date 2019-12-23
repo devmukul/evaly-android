@@ -3,11 +3,6 @@ package bd.com.evaly.evalyshop.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,16 +18,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,9 +44,10 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.VoucherDetailsAdapter;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.VoucherDetails;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.models.VoucherDetails;
 
 
 public class VoucherListFragment extends Fragment {
@@ -327,7 +328,7 @@ public class VoucherListFragment extends Fragment {
 
     public void get150VoucherData(){
         String url="https://api-prod.evaly.com.bd/pay/voucher-variants/?voucher_slug=evaly-1919-150";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         dialog.hideDialog();
@@ -360,7 +361,7 @@ public class VoucherListFragment extends Fragment {
 
     public void get200VoucherData(){
         String url="https://api-prod.evaly.com.bd/pay/voucher-variants/?voucher_slug=evaly-1919-200";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         dialog.hideDialog();
@@ -417,7 +418,7 @@ public class VoucherListFragment extends Fragment {
 
     public void checkIfVoucherIsAvailable(){
         String url="https://api-prod.evaly.com.bd/pay/vouchers/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
 
@@ -519,7 +520,7 @@ public class VoucherListFragment extends Fragment {
     public void getVoucherDetails(String slug){
         dialog.showDialog();
         String url="https://api-prod.evaly.com.bd/pay/variants/details/"+slug+"/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,(String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
                 response -> {
                     try {
                         dialog.hideDialog();
@@ -628,7 +629,7 @@ public class VoucherListFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Content-Type", "application/json");
                 headers.put("Origin", "https://evaly.com.bd");

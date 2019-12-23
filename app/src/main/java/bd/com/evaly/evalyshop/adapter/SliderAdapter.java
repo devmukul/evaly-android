@@ -3,28 +3,29 @@ package bd.com.evaly.evalyshop.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.util.List;
+
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.EvalyStoreActivity;
+import bd.com.evaly.evalyshop.activity.CampaignShopActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
-import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.models.BannerItem;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class SliderAdapter extends PagerAdapter {
 
@@ -90,71 +91,56 @@ public class SliderAdapter extends PagerAdapter {
 
         ViewPager viewPager = (ViewPager) container;
         viewPager.addView(view, 0);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        view.setOnClickListener(v -> {
 
 
-                if(itemList.get(position).getSlug().equals("")){
-                    return;
-                }else if(itemList.get(position).getUrl().equals("https://evaly.com.bd")){
+            if(itemList.get(position).getSlug().equals("")){
+                return;
+            }else if(itemList.get(position).getUrl().equals("https://evaly.com.bd")){
 
-                    Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
 
-                    return;
-                }
-
-
-                if (itemList.get(position).getUrl().contains("shops-grand-brand-days")){
-
-                    Intent ni = new Intent(context, EvalyStoreActivity.class);
-                    ni.putExtra("title", "Grand Brand Days");
-                    ni.putExtra("slug", "grandbranddays");
-                    context.startActivity(ni);
-
-                    return;
-
-                }
+                return;
+            }
 
 
-                if (itemList.get(position).getUrl().contains("evaly.com.bd/shops")) {
+            if (itemList.get(position).getUrl().contains("shops-grand-brand-days")){
 
-                        String[] ar = itemList.get(position).getUrl().split("/shops/");
+                Intent ni = new Intent(context, CampaignShopActivity.class);
+                ni.putExtra("title", "Grand Brand Days");
+                ni.putExtra("slug", "grandbranddays");
+                context.startActivity(ni);
 
-                        if (ar.length > 1) {
+                return;
 
-                            String slug = ar[1];
-                            Fragment fragment3 = new ShopFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putInt("type", 1);
-                            bundle.putString("shop_name", itemList.get(position).getName());
-                            bundle.putString("shop_slug", slug);
-                            bundle.putString("category", "root");
+            }
 
-                            fragment3.setArguments(bundle);
-                            ft.setCustomAnimations(R.animator.slide_in_left, R.animator.abc_popup_exit, 0, 0);
-                            ft.replace(R.id.fragment_container, fragment3, itemList.get(position).getName());
-                            ft.addToBackStack(itemList.get(position).getName());
-                            ft.commit();
 
-                        } else {
+            if (itemList.get(position).getUrl().contains("evaly.com.bd/shops")) {
 
-                            Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
+                    String[] ar = itemList.get(position).getUrl().split("/shops/");
 
-                        }
+                    if (ar.length > 1) {
 
-                } else {
+                        String slug = ar[1];
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("type", 1);
+                        bundle.putString("shop_name", itemList.get(position).getName());
+                        bundle.putString("shop_slug", slug);
+                        bundle.putString("category", "root");
 
-                    new FinestWebView.Builder(activity)
-                            .titleDefault("Evaly Advertisement")
-                            .webViewBuiltInZoomControls(false)
-                            .webViewDisplayZoomControls(false)
-                            .dividerHeight(0)
-                            .gradientDivider(false)
-                            .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit, R.anim.activity_close_enter, R.anim.activity_close_exit)
-                            .show(itemList.get(position).getUrl());
-                }
+                        Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.shopFragment, bundle);
 
+                    } else {
+
+                        Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
+
+                    }
+
+            } else {
+
+
+                Utils.CustomTab(itemList.get(position).getUrl(),  context);
             }
 
         });

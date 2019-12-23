@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#fff"
     tools:context=".activity.chat.ChatListActivity">
 
     <LinearLayout
@@ -11,35 +12,35 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
+            android:background="?attr/colorPrimary"
             android:elevation="0dp"
-            android:gravity="center"
-            android:background="?attr/colorPrimary">
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/ivBack"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_marginRight="20dp"
                 android:background="?attr/actionBarItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                android:tint="#000"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp"
                 android:paddingTop="10dp"
+                android:paddingRight="10dp"
                 android:paddingBottom="10dp"
-                app:srcCompat="@drawable/ic_left_arrow_new"
-                android:layout_marginRight="20dp"/>
+                android:tint="#000"
+                app:srcCompat="@drawable/ic_left_arrow_new" />
 
             <TextView
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Messages"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                android:layout_marginRight="24dp" />
+                android:layout_marginRight="24dp"
+                android:text="Messages" />
 
             <LinearLayout
                 android:id="@+id/llRequest"
@@ -53,189 +54,186 @@
                     android:layout_height="34dp"
                     android:layout_gravity="center"
                     android:layout_marginRight="10dp"
+                    android:background="?android:attr/selectableItemBackground"
                     android:padding="8dp"
-                    app:srcCompat="@drawable/ic_pending_user"
                     android:tint="#333"
-                    android:background="?android:attr/selectableItemBackground"/>
+                    app:srcCompat="@drawable/ic_pending_user" />
             </LinearLayout>
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
 
-
-
-
-
-        <android.support.v4.widget.SwipeRefreshLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v4.widget.NestedScrollView
+            <androidx.core.widget.NestedScrollView
                 android:id="@+id/nestedScroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:paddingTop="5dp"
-                    android:background="@color/white"
-                    android:paddingBottom="5dp"
-                    android:foreground="?selectableItemBackground"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/llEvaly"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?selectableItemBackground"
                         android:gravity="center"
-                        android:orientation="horizontal"
-                        android:padding="10dp">
-
-                        <RelativeLayout
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:layout_marginLeft="10dp">
-
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/ivProfileImage"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@mipmap/ic_launcher" />
-
-                            <LinearLayout
-                                android:id="@+id/llOnlineStatus"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentRight="true"
-                                android:visibility="visible"
-                                android:background="@drawable/white_circle">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_margin="3dp"
-                                    android:background="@drawable/circle_green" />
-                            </LinearLayout>
-
-                        </RelativeLayout>
+                        android:orientation="vertical"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp">
 
                         <LinearLayout
+                            android:id="@+id/llEvaly"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
                             android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="5dp">
+                            android:orientation="horizontal"
+                            android:padding="10dp"
+                            android:visibility="gone">
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:orientation="horizontal">
+                            <RelativeLayout
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:layout_marginLeft="10dp">
 
-                                <TextView
-                                    android:id="@+id/tvName"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Evaly"
-                                    android:textColor="#333"
-                                    android:textSize="17sp"
-                                    android:textStyle="bold"
-                                    android:maxLines="1"
-                                    android:maxLength="100"
-                                    android:ellipsize="end"
-                                    android:layout_marginBottom="5dp"/>
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/ivProfileImage"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@mipmap/ic_launcher" />
 
-                                <TextView
-                                    android:id="@+id/tvTime"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginRight="10dp"
-                                    android:layout_marginLeft="20dp"
-                                    android:gravity="center"
-                                    android:text="" />
-
-                                <ImageView
+                                <LinearLayout
+                                    android:id="@+id/llOnlineStatus"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
-                                    app:srcCompat="@drawable/ic_keyboard_arrow_right"
-                                    android:visibility="gone"/>
+                                    android:layout_alignParentRight="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:background="@drawable/white_circle"
+                                    android:visibility="visible">
 
-                            </LinearLayout>
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_margin="3dp"
+                                        android:background="@drawable/circle_green" />
+                                </LinearLayout>
+
+                            </RelativeLayout>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <TextView
-                                    android:id="@+id/tvBody"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:maxLines="1"
-                                    android:ellipsize="end"
-                                    android:paddingRight="10dp"
-                                    android:text="" />
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="5dp">
 
-                                <TextView
-                                    android:id="@+id/tvEvalyUnreadCount"
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textStyle="bold"
                                     android:gravity="center"
-                                    android:minWidth="22dp"
-                                    android:background="@drawable/round_green"
-                                    android:paddingLeft="5dp"
-                                    android:visibility="gone"
-                                    android:text=""
-                                    android:textColor="@color/white"
-                                    android:paddingRight="5dp" />
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tvName"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="5dp"
+                                        android:layout_weight="1"
+                                        android:ellipsize="end"
+                                        android:maxLength="100"
+                                        android:maxLines="1"
+                                        android:text="Evaly"
+                                        android:textColor="#333"
+                                        android:textSize="17sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tvTime"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="20dp"
+                                        android:layout_marginRight="10dp"
+                                        android:gravity="center"
+                                        android:text="" />
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:visibility="gone"
+                                        app:srcCompat="@drawable/ic_keyboard_arrow_right" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tvBody"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:ellipsize="end"
+                                        android:maxLines="1"
+                                        android:paddingRight="10dp"
+                                        android:text="" />
+
+                                    <TextView
+                                        android:id="@+id/tvEvalyUnreadCount"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/round_green"
+                                        android:gravity="center"
+                                        android:minWidth="22dp"
+                                        android:paddingLeft="5dp"
+                                        android:paddingRight="5dp"
+                                        android:text=""
+                                        android:textColor="@color/white"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+                                </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
+
                     </LinearLayout>
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvChatList"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:clipToPadding="false"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingBottom="100dp"
+                        tools:listitem="@layout/chat_item_view" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="0"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp" />
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rvChatList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"
-                    android:paddingBottom="100dp"
-                    android:clipToPadding="false"
-                    tools:listitem="@layout/chat_item_view"
-                    android:nestedScrollingEnabled="false"/>
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="0"
-                    android:background="#fafafa"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp" />
-            </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
 
 
-            </android.support.v4.widget.NestedScrollView>
-
-
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 
 
@@ -265,7 +263,6 @@
     </LinearLayout>
 
 
-
     <LinearLayout
         android:id="@+id/firstLoad"
         android:layout_width="match_parent"
@@ -276,7 +273,7 @@
 
         <ProgressBar
             android:layout_width="match_parent"
-            android:layout_height="40dp"/>
+            android:layout_height="40dp" />
 
         <TextView
             android:id="@+id/loadingText"
@@ -286,21 +283,19 @@
             android:text="It may take some time to\nload for the first time"
             android:textAlignment="center"
             android:textColor="#555"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
     </LinearLayout>
 
 
-
-
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="30dp"
         android:src="@drawable/ic_add_user_male"
         android:tint="#fff"
-        android:layout_margin="30dp" />
+        android:visibility="visible" />
 
 </RelativeLayout>

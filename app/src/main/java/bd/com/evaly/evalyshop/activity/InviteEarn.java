@@ -6,18 +6,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.util.UserDetails;
-import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.util.ViewDialog;
-
-import android.provider.Settings.Secure;
 import android.text.Html;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -25,28 +14,33 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class InviteEarn extends AppCompatActivity {
 
@@ -133,53 +127,46 @@ public class InviteEarn extends AppCompatActivity {
         JSONObject parameters = new JSONObject();
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                //Log.d("onResponse", response.toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
+            //Log.d("onResponse", response.toString());
 
-                try{
+            try{
 
-                    boolean isAvailable = response.getBoolean("isAvailable");
-                    String messageString = response.getString("message");
-                    String statisticsString = response.getString("statistics");
+                boolean isAvailable = response.getBoolean("isAvailable");
+                String messageString = response.getString("message");
+                String statisticsString = response.getString("statistics");
 
 
-                    if (!isAvailable){
+                if (!isAvailable){
 
-                        Toast.makeText(InviteEarn.this, "Invite referral program is not available right now", Toast.LENGTH_LONG).show();
-                        finish();
-
-                    }
-
-
-                    scrollView.setVisibility(View.VISIBLE);
-
-
-                    userDetails.setRefMessage(messageString);
-                    userDetails.setRefStatistics(statisticsString);
-                    message.setText(messageString);
-                    statistics.setText(Html.fromHtml(statisticsString));
-
-
-                } catch (Exception e){
+                    Toast.makeText(InviteEarn.this, "Invite referral program is not available right now", Toast.LENGTH_LONG).show();
+                    finish();
 
                 }
 
 
+                scrollView.setVisibility(View.VISIBLE);
+
+
+                userDetails.setRefMessage(messageString);
+                userDetails.setRefStatistics(statisticsString);
+                message.setText(messageString);
+                statistics.setText(Html.fromHtml(statisticsString));
+
+
+            } catch (Exception e){
+
             }
 
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-                dialog.hideDialog();
-                Toast.makeText(InviteEarn.this, "Server error occurred, check your network settings.", Toast.LENGTH_LONG).show();
-                finish();
+
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+            dialog.hideDialog();
+            Toast.makeText(InviteEarn.this, "Server error occurred, check your network settings.", Toast.LENGTH_LONG).show();
+            finish();
 
 
 
-            }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {

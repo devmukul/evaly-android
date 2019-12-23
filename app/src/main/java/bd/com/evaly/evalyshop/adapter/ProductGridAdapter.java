@@ -3,38 +3,34 @@ package bd.com.evaly.evalyshop.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
-import bd.com.evaly.evalyshop.activity.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.listener.ProductListener;
-import bd.com.evaly.evalyshop.models.ProductListItem;
-import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 
 public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.MyViewHolder> {
     private Context mContext;
-    private ArrayList<ProductListItem> productsList;
-    private DbHelperWishList db;
+    private List<ProductItem> productsList;
     private String shopSlug = "";
+    private int cashback_rate  = 0;
 
     private ProductListener productListener;
 
@@ -46,19 +42,25 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
         this.shopSlug = shopSlug;
     }
 
-    public ProductGridAdapter(Context context, ArrayList<ProductListItem> a) {
+    public ProductGridAdapter(Context context, List<ProductItem> a) {
         mContext = context;
         productsList=a;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_product_grid_item, null);
-        db=new DbHelperWishList(mContext);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_product_grid_item, parent, false);
         return new MyViewHolder(view);
     }
 
 
+    public int getCashback_rate() {
+        return cashback_rate;
+    }
+
+    public void setCashback_rate(int cashback_rate) {
+        this.cashback_rate = cashback_rate;
+    }
 
     View.OnClickListener itemViewListener = new View.OnClickListener() {
         @Override
@@ -68,8 +70,8 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             Intent intent=new Intent(mContext, ViewProductActivity.class);
             intent.putExtra("product_slug",productsList.get(position).getSlug());
             intent.putExtra("product_name",productsList.get(position).getName());
-            intent.putExtra("product_price",productsList.get(position).getPriceMax());
-            intent.putExtra("product_image", productsList.get(position).getThumbnailSM());
+            intent.putExtra("product_price",productsList.get(position).getMaxPrice());
+            intent.putExtra("product_image", productsList.get(position).getImageUrls().get(0));
 
             mContext.startActivity(intent);
 
@@ -105,48 +107,49 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
         }
 
 
-                Glide.with(mContext)
-                        .asBitmap()
-                        .skipMemoryCache(true)
-                        .apply(new RequestOptions().override(260, 260))
-                        .load(productsList.get(position).getThumbnailSM())
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .placeholder(R.drawable.ic_placeholder_small)
-                        .into(holder.imageViewAndroid);
+        Glide.with(mContext)
+                .asBitmap()
+                .skipMemoryCache(true)
+                .apply(new RequestOptions().override(260, 260))
+                .load(productsList.get(position).getImageUrls().get(0))
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.ic_placeholder_small)
+                .into(holder.imageViewAndroid);
 
 
-
-        if((productsList.get(position).getPriceMin()==0) || (productsList.get(position).getPriceMax()==0)){
+        if((productsList.get(position).getMinPriceD()==0) || (productsList.get(position).getMaxPriceD()==0)){
 
             holder.price.setText("Call For Price");
 
-        } else if(productsList.get(position).getDiscountedPrice() != 0){
+        } else if(productsList.get(position).getMinDiscountedPriceD() != 0){
 
-            if (productsList.get(position).getDiscountedPrice() < productsList.get(position).getPriceMin()){
+            if (productsList.get(position).getMinDiscountedPriceD() < productsList.get(position).getMinPriceD()){
 
-                holder.priceDiscount.setText("৳ " +productsList.get(position).getPriceMin());
+                holder.priceDiscount.setText("৳ " +(int) productsList.get(position).getMinPriceD());
                 holder.priceDiscount.setVisibility(View.VISIBLE);
                 holder.priceDiscount.setPaintFlags(holder.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-                holder.price.setText("৳ " +productsList.get(position).getDiscountedPrice());
+                holder.price.setText("৳ " +(int)productsList.get(position).getMinDiscountedPriceD());
 
             } else {
                 holder.priceDiscount.setVisibility(View.GONE);
-                holder.price.setText("৳ " +productsList.get(position).getPriceMin());
-
+                holder.price.setText("৳ " +(int)productsList.get(position).getMinPriceD());
             }
-
-
         } else {
-            holder.price.setText("৳ " + productsList.get(position).getPriceMin());
+            holder.price.setText("৳ " + (int)productsList.get(position).getMinPriceD());
         }
 
-
-        //holder.sku.setText(productsList.get(position).getSlug());
 
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(itemViewListener);
 
+        if (cashback_rate==0)
+            holder.tvCashback.setVisibility(View.GONE);
+        else {
+            holder.tvCashback.setVisibility(View.VISIBLE);
+            holder.tvCashback.bringToFront();
+            holder.tvCashback.setText(cashback_rate+"% Cashback");
+        }
 
 
         if (!shopSlug.equals("") && productListener != null) {
@@ -158,48 +161,9 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             holder.buyNow.setVisibility(View.GONE);
 
 
-        if ((productsList.get(position).getPriceMin()==0) || (productsList.get(position).getPriceMax()==0)){
+        if ((productsList.get(position).getMinPriceD()==0) || (productsList.get(position).getMaxPriceD()==0)){
             holder.buyNow.setVisibility(View.GONE);
         }
-
-
-
-
-
-        //holder.favorite.setTag("no");
-
-
-
-//
-//        if(db.isSlugExist(productsList.get(position).getSlug())) {
-//            holder.favorite.setImageResource(R.drawable.ic_favorite_color);
-//            holder.favorite.setTag("yes");
-//        }
-
-
-//        holder.favorite.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Calendar calendar = Calendar.getInstance();
-//
-//                if(holder.favorite.getTag().equals("yes")){
-//                    holder.favorite.setImageResource(R.drawable.ic_favorite);
-//
-//                    Toast.makeText(mContext, "Removed from wish list", Toast.LENGTH_SHORT).show();
-//                    holder.favorite.setTag("no");
-//                    db.deleteDataBySlug(productsList.get(position).getSlug());
-//
-//                } else {
-//                    holder.favorite.setTag("yes");
-//
-//                    if (db.insertData(productsList.get(position).getSlug(), productsList.get(position).getName(), productsList.get(position).getThumbnailSM(), productsList.get(position).getPriceMin(), calendar.getTimeInMillis())) {
-//                        Toast.makeText(mContext, "Added to wish list", Toast.LENGTH_SHORT).show();
-//                        holder.favorite.setImageResource(R.drawable.ic_favorite_color);
-//                    }
-//                }
-//            }
-//        });
 
     }
 
@@ -210,8 +174,8 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textViewAndroid,price,priceDiscount, sku, buyNow;
-        ImageView imageViewAndroid,favorite;
+        TextView textViewAndroid,price,priceDiscount,buyNow,tvCashback;
+        ImageView imageViewAndroid;
         View itemView;
 
         public MyViewHolder(final View itemView) {
@@ -221,22 +185,12 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             imageViewAndroid=itemView.findViewById(R.id.image);
             priceDiscount = itemView.findViewById(R.id.priceDiscount);
             buyNow = itemView.findViewById(R.id.buy_now);
-
-            // favorite=itemView.findViewById(R.id.favorite);
-            //sku=itemView.findViewById(R.id.sku);
-
-
-
+            tvCashback = itemView.findViewById(R.id.tvCashback);
             this.itemView = itemView;
         }
     }
 
-    public void addItem(ProductListItem pr){
-        productsList.add(pr);
-        notifyDataSetChanged();
-    }
-
-    public void setFilter(ArrayList<ProductListItem> ar){
+    public void setFilter(ArrayList<ProductItem> ar){
         productsList=new ArrayList<>();
         productsList.addAll(ar);
         notifyDataSetChanged();

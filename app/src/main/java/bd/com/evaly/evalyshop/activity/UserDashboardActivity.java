@@ -5,9 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v7.view.menu.MenuBuilder;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,18 +15,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONObject;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,10 +38,8 @@ import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.adapter.AddressAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.models.db.RosterTable;
-import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Token;
@@ -101,16 +94,16 @@ public class UserDashboardActivity extends BaseActivity {
             if (xmppHandler == null){
                 xmppHandler = AppController.getmService().xmpp;
             }
-//            Logger.d("LOGIN =========");
-//            Logger.d(xmppHandler.isConnected());
-            VCard vCard = xmppHandler.mVcard;
-//            Logger.d(vCard.getFirstName());
-            if (vCard == null) {
-//                Logger.d("========");
-                xmppHandler.updateUserInfo(CredentialManager.getUserData());
-            }else if (vCard.getLastName() == null){
-                Logger.d("========");
-                xmppHandler.updateUserInfo(CredentialManager.getUserData());
+
+            if (xmppHandler != null) {
+
+                VCard vCard = xmppHandler.mVcard;
+                if (CredentialManager.getUserData() != null)
+                    if (vCard == null) {
+                        xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                    } else if (vCard.getLastName() == null || vCard.getFirstName() == null) {
+                        xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                    }
             }
 
         }
@@ -344,7 +337,6 @@ public class UserDashboardActivity extends BaseActivity {
         xmppEventReceiver.setListener(xmppCustomEventListener);
 
         Balance.update(this, balance);
-        Token.update(this, false);
 
         ImageView profilePicNav = findViewById(R.id.picture);
 

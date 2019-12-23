@@ -8,13 +8,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,38 +21,47 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.JsonObject;
-import com.thefinestartist.finestwebview.FinestWebView;
-import com.thefinestartist.finestwebview.listeners.WebViewListener;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.adapter.MyVoucherAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.MyVoucherInfo;
-import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.VoucherDetails;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
-import bd.com.evaly.evalyshop.models.VoucherDetails;
+
 import static android.app.Activity.RESULT_OK;
 
 
@@ -389,7 +391,7 @@ public class VoucherMyListFragment extends Fragment {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Content-Type", "application/json");
                 headers.put("Origin", "https://evaly.com.bd");
@@ -424,27 +426,11 @@ public class VoucherMyListFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 try {
                     String purl = response.getString("payment_gateway_url");
-                    final FinestWebView.Builder builder = new FinestWebView.Builder(getActivity());
-                    builder.titleDefault("Voucher Payment Via Card")
-                            .webViewBuiltInZoomControls(false)
-                            .toolbarScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS)
-                            .webViewDisplayZoomControls(false)
-                            .dividerHeight(0)
-                            .gradientDivider(false)
-                            .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit,
-                                    R.anim.activity_close_enter, R.anim.activity_close_exit)
-                            .setWebViewListener(new WebViewListener() {
-                                public void onPageFinished(String url) {
-                                    super.onPageStarted(url);
-                                    Log.d("json", url);
-                                    if (url.contains("https://dev.evaly.com.bd/")){
-                                        Toast.makeText(context, "Voucher payment completed successfully", Toast.LENGTH_LONG);
-                                        Intent intent = new Intent(context, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                    }
-                                }
-                            }).show(purl);
+
+
+                    Utils.CustomTab(purl, context);
+
+
                 }catch (Exception e){
 
                 }
@@ -480,7 +466,7 @@ public class VoucherMyListFragment extends Fragment {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Content-Type", "application/json");
                 headers.put("Origin", "https://evaly.com.bd");
@@ -582,7 +568,7 @@ public class VoucherMyListFragment extends Fragment {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Origin", "https://evaly.com.bd");
                 headers.put("Referer", "https://evaly.com.bd/");
@@ -658,7 +644,7 @@ public class VoucherMyListFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Content-Type", "application/json");
                 headers.put("Origin", "https://evaly.com.bd");
@@ -854,7 +840,7 @@ public class VoucherMyListFragment extends Fragment {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Content-Type", "application/json");
                 headers.put("Origin", "https://evaly.com.bd");
@@ -893,7 +879,7 @@ public class VoucherMyListFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
                 // headers.put("Host", "api-prod.evaly.com.bd");
                 headers.put("Content-Type", "application/json");
                 headers.put("Origin", "https://evaly.com.bd");
@@ -1023,7 +1009,7 @@ public class VoucherMyListFragment extends Fragment {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<>();
 
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
+                    headers.put("Authorization", CredentialManager.getToken());
                     // headers.put("Host", "api-prod.evaly.com.bd");
                     headers.put("Origin", "https://evaly.com.bd");
                     headers.put("Referer", "https://evaly.com.bd/");

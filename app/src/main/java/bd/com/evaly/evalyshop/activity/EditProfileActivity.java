@@ -5,52 +5,38 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.ColorSpace;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,14 +47,12 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
-import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -109,7 +93,11 @@ public class EditProfileActivity extends BaseActivity {
         public void onUpdateUserSuccess(){
             dialog.hideDialog();
             Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
-            onBackPressed();
+            try {
+                onBackPressed();
+            } catch (Exception e){
+                finish();
+            }
         }
 
         public void onUpdateUserFailed( String error ){
@@ -160,30 +148,7 @@ public class EditProfileActivity extends BaseActivity {
         editPicture.bringToFront();
 
 
-        View.OnClickListener uploadListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-//                Intent intent=new Intent();
-//                intent.setType("image/*");
-//                intent.setAction(Intent.ACTION_GET_CONTENT);
-//                startActivityForResult(Intent.createChooser(intent,"Select Profile Picture"),1000);
-
-//                Intent intent=new Intent(Intent.ACTION_PICK);
-//                // Sets the type as image/*. This ensures only components of type image are selected
-//                intent.setType("image/*");
-//                //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
-//                String[] mimeTypes = {"image/jpeg", "image/png"};
-//                intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
-//                // Launching the Intent
-//                startActivityForResult(intent,1001);
-
-
-                openImageSelector();
-
-
-            }
-        };
+        View.OnClickListener uploadListener = v -> openImageSelector();
 
         editPicture.setOnClickListener(uploadListener);
         profilePic.setOnClickListener(uploadListener);
@@ -350,68 +315,62 @@ public class EditProfileActivity extends BaseActivity {
         Logger.d(url);
 
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
-                new Response.Listener<NetworkResponse>() {
-                    @Override
-                    public void onResponse(NetworkResponse response) {
+                response -> {
 
-                        dialog.dismiss();
+                    dialog.dismiss();
 
-                        Log.d("json image" ,new String(response.data));
+                    Log.d("json image" ,new String(response.data));
 
 
-                        try {
-                            JSONObject jsonObject = new JSONObject(new String(response.data));
+                    try {
+                        JSONObject jsonObject = new JSONObject(new String(response.data));
 
-                            Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
 
-                            if(jsonObject.getBoolean("success")) {
-                                String image = jsonObject.getJSONObject("data").getString("url");
-                                String image_sm = jsonObject.getJSONObject("data").getString("url_sm");
-                                userDetails.setProfilePicture(image);
-                                userDetails.setProfilePictureSM(image_sm);
-                                setProfilePic();
+                        if(jsonObject.getBoolean("success")) {
+                            String image = jsonObject.getJSONObject("data").getString("url");
+                            String image_sm = jsonObject.getJSONObject("data").getString("url_sm");
+                            userDetails.setProfilePicture(image);
+                            userDetails.setProfilePictureSM(image_sm);
+                            setProfilePic();
 //                                getUserData();
 
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                error -> {
 
-                        NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
+                        if (error.networkResponse.statusCode == 401){
 
-                            AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                                @Override
-                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                    uploadProfilePicture(bitmap);
-                                }
+                                AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                    @Override
+                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                        uploadProfilePicture(bitmap);
+                                    }
 
-                                @Override
-                        public void onFailed(int status) {
+                                    @Override
+                                    public void onFailed(int status) {
 
-                        }
-                    });
+                                    }
+                                });
 
-                    return;
+                        return;
 
-                }}
+                    }}
 
 
-                        dialog.dismiss();
-                        Toast.makeText(context, "Image upload error", Toast.LENGTH_SHORT).show();
-                    }
+                    dialog.dismiss();
+                    Toast.makeText(context, "Image upload error", Toast.LENGTH_SHORT).show();
                 }) {
 
 
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 // params.put("tags", "ccccc");  add string parameters
                 return params;
@@ -419,13 +378,10 @@ public class EditProfileActivity extends BaseActivity {
 
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
 
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
+                headers.put("Authorization", CredentialManager.getToken());
 
                 return headers;
             }
@@ -473,73 +429,66 @@ public class EditProfileActivity extends BaseActivity {
         } catch (Exception e) {
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("onResponse", response.toString());
-                try {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
+            Log.d("onResponse", response.toString());
+            try {
 
-                    JSONObject userJson = response.getJSONObject("data");
-                    UserModel userModel = new Gson().fromJson(userJson.toString(), UserModel.class);
+                JSONObject userJson = response.getJSONObject("data");
+                UserModel userModel = new Gson().fromJson(userJson.toString(), UserModel.class);
 
-                    CredentialManager.saveUserData(userModel);
-                    JSONObject userInfo = userJson.getJSONObject("user");
-                    userInfo.put("first_name", firstname.getText().toString());
-                    userInfo.put("last_name", lastName.getText().toString());
-                    userInfo.put("email", email.getText().toString());
-                    userInfo.put("contact", phone.getText().toString());
-                    userInfo.put("address", address.getText().toString());
-                    userInfo.put("profile_pic_url", userDetails.getProfilePicture());
+                CredentialManager.saveUserData(userModel);
+                JSONObject userInfo = userJson.getJSONObject("user");
+                userInfo.put("first_name", firstname.getText().toString());
+                userInfo.put("last_name", lastName.getText().toString());
+                userInfo.put("email", email.getText().toString());
+                userInfo.put("contact", phone.getText().toString());
+                userInfo.put("address", address.getText().toString());
+                userInfo.put("profile_pic_url", userDetails.getProfilePicture());
 
-                    userDetails.setFirstName(firstname.getText().toString());
-                    userDetails.setLastName(lastName.getText().toString());
-                    userDetails.setEmail(email.getText().toString());
-                    userDetails.setPhone(phone.getText().toString());
-                    userDetails.setJsonAddress(address.getText().toString());
+                userDetails.setFirstName(firstname.getText().toString());
+                userDetails.setLastName(lastName.getText().toString());
+                userDetails.setEmail(email.getText().toString());
+                userDetails.setPhone(phone.getText().toString());
+                userDetails.setJsonAddress(address.getText().toString());
 
-                    setUserData(userInfo);
+                setUserData(userInfo);
 
-                    // Token.update(EditProfileActivity.this, false);
+                // Token.update(EditProfileActivity.this, false);
 
 
-                    Log.d("json user info", userJson.toString());
+                Log.d("json user info", userJson.toString());
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getUserData();
-                        }
+                AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        getUserData();
+                    }
 
-                        @Override
-                        public void onFailed(int status) {
+                    @Override
+                    public void onFailed(int status) {
 
-                        }
-                    });
+                    }
+                });
 
-                    return;
+                return;
 
-                }}
+            }}
 
 
-            }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
+                headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Content-Type", "application/json");
                 return headers;
             }
@@ -569,62 +518,55 @@ public class EditProfileActivity extends BaseActivity {
 
         String url = UrlUtils.BASE_URL_AUTH+"user-info-update/";
         Log.d("json user info url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, payload, response -> {
 
 
-                mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+            mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
-                dialog.hideDialog();
-                Log.d("json user info response", response.toString());
-                JSONObject data = null;
-                try {
-                    data = response.getJSONObject("data");
-                    UserModel userModel = new Gson().fromJson(data.toString(), UserModel.class);
+            dialog.hideDialog();
+            Log.d("json user info response", response.toString());
+            JSONObject data = null;
+            try {
+                data = response.getJSONObject("data");
+                UserModel userModel = new Gson().fromJson(data.toString(), UserModel.class);
 
-                    Logger.d(new Gson().toJson(userModel));
-                    CredentialManager.saveUserData(userModel);
+                Logger.d(new Gson().toJson(userModel));
+                CredentialManager.saveUserData(userModel);
 
-                    startXmppService();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
+                startXmppService();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
 
-                    AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            setUserData(payload);
-                        }
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
-                        @Override
-                        public void onFailed(int status) {
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
 
-                        }
-                    });
+                AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        setUserData(payload);
+                    }
 
-                    return;
+                    @Override
+                    public void onFailed(int status) {
 
-                }}
+                    }
+                });
 
-            }
+                return;
+
+            }}
+
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
+                headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Content-Type", "application/json");
                 return headers;
             }

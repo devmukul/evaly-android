@@ -15,7 +15,7 @@
             android:layout_alignTop="@+id/brd"
             android:orientation="vertical">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/imageCropperNav"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
@@ -34,7 +34,7 @@
                     android:adjustViewBounds="false"
                     android:cropToPadding="true"
                     app:srcCompat="@drawable/ic_avatar_person" />
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
         </LinearLayout>

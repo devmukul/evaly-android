@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -24,19 +24,19 @@
         app:tabTextColor="#666"
         app:tabTextAppearance="@style/AddBalanceTabs">
 
-        <android.support.design.widget.TabItem
+        <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_gateway"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Online Gateway" />
 
-        <android.support.design.widget.TabItem
+        <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_bkash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Evaly bKash Merchant" />
 
-    </android.support.design.widget.TabLayout>
+    </com.google.android.material.tabs.TabLayout>
 
 
     <bd.com.evaly.evalyshop.views.StickyScrollView

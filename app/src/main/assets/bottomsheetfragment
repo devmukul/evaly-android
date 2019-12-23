@@ -52,7 +52,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment {
             @Override
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
-                FrameLayout bottomSheet =  dialogz.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet =  dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
                 BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
                 BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
                 BottomSheetBehavior.from(bottomSheet).setHideable(true);

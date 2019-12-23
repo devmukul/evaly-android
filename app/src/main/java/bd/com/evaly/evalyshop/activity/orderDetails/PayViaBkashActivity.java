@@ -2,12 +2,8 @@ package bd.com.evaly.evalyshop.activity.orderDetails;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -17,20 +13,14 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class PayViaBkashActivity extends BaseActivity {
 
@@ -46,14 +36,26 @@ public class PayViaBkashActivity extends BaseActivity {
     String amount="0.0", context = "order_payment", context_reference = "", paymentID = "";
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getPackageManager().hasSystemFeature("android.software.webview") && Utils.isPackageExisted("com.google.android.webview", this)) {
+
+        }else {
+            Toast.makeText(this, "Please install WebView from Google Play Store", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
         setContentView(R.layout.activity_bkash_payment);
         getSupportActionBar().setElevation(4f);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_vector);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("bKash Payment");
+
+
+
 
 
         Intent intent = getIntent();

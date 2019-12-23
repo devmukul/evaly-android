@@ -1,20 +1,18 @@
 package bd.com.evaly.evalyshop.activity.chat;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,33 +21,35 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
 import bd.com.evaly.evalyshop.activity.chat.invite.InviteActivity;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
-import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.viewmodel.RoomWIthRxViewModel;
 import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
@@ -58,8 +58,6 @@ import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class ChatListActivity extends AppCompatActivity implements ChatListAdapter.RecyclerViewOnItemClickListenerChat {
 
@@ -84,6 +82,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     ProgressBar progressBar;
     @BindView(R.id.nestedScroll)
     NestedScrollView nestedScroll;
+    @BindView(R.id.llEvaly)
+    LinearLayout evalyChatRosterView;
 
     private boolean isFirst;
     int limit = 20;
@@ -250,57 +250,45 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
 
-        viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
-            @Override
-            public void onChanged(@Nullable List<RosterTable> rosterItemModels) {
-                if (currentPage == 1) {
-                    rosterList.clear();
-                }
-                rosterList.addAll(rosterItemModels);
-                progressBar.setVisibility(View.GONE);
-                populateData(rosterList);
+        viewModel.rosterList.observe(this, rosterItemModels -> {
+            if (currentPage == 1) {
+                rosterList.clear();
+            }
+            rosterList.addAll(rosterItemModels);
+            progressBar.setVisibility(View.GONE);
+            evalyChatRosterView.setVisibility(View.VISIBLE);
+            populateData(rosterList);
+        });
+
+        viewModel.isSuccess.observe(this, aBoolean -> {
+            progressBar.setVisibility(View.GONE);
+            if (!aBoolean) {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
             }
         });
 
-        viewModel.isSuccess.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                progressBar.setVisibility(View.GONE);
-                if (!aBoolean) {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                }
+        viewModel.hasNext.observe(this, aBoolean -> {
+            if (aBoolean) {
+                currentPage = currentPage + 1;
             }
+            Logger.d(aBoolean + "    =======");
+            hasNext = aBoolean;
         });
 
-        viewModel.hasNext.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                if (aBoolean) {
-                    currentPage = currentPage + 1;
-                }
-                Logger.d(aBoolean + "    =======");
-                hasNext = aBoolean;
-            }
-        });
-
-        nestedScroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                String TAG = "nested_sync";
+        nestedScroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            String TAG = "nested_sync";
 //
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-
-                    try {
-                        if (hasNext) {
-                            viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
-                        }
-
-                    } catch (Exception e) {
-                        Log.e("load more product", e.toString());
+            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                try {
+                    if (hasNext) {
+                        viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
                     }
 
-
+                } catch (Exception e) {
+                    Log.e("load more product", e.toString());
                 }
+
+
             }
         });
 
@@ -320,14 +308,11 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         xmppEventReceiver = mChatApp.getEventReceiver();
 //        mVCard = xmppHandler.mVcard;
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                currentPage = 1;
-                rosterList.clear();
-                viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            currentPage = 1;
+            rosterList.clear();
+            viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
 
-            }
         });
 
     }
@@ -412,14 +397,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
 
         progressBar.setVisibility(View.VISIBLE);
         currentPage = 1;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit);
-            }
-        }).start();
+        new Thread(() -> viewModel.loadRosterList(CredentialManager.getUserName(), currentPage, limit)).start();
 
-        if (xmppHandler != null) {
+        if (xmppHandler != null && xmppHandler.isConnected()) {
             try {
                 ChatItem chatItem = xmppHandler.getLastMessage(JidCreate.bareFrom(Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST));
                 updateEvalyChat(chatItem);
@@ -440,7 +420,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
     }
 
     private void disconnectXmpp(){
-        xmppHandler.disconnect();
+        if (xmppHandler != null){
+            xmppHandler.disconnect();
+        }
         stopService(new Intent(ChatListActivity.this, XMPPService.class));
     }
 
@@ -482,6 +464,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
             }
         }
     }
+
 
 
     @Override

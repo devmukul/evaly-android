@@ -9,23 +9,12 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -33,13 +22,20 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -49,7 +45,11 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
@@ -80,27 +80,27 @@ import bd.com.evaly.evalyshop.activity.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ProductListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.TabsItem;
-import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.views.StickyScrollView;
 import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 
 public class ShopFragment extends Fragment implements ProductListener {
 
-    String slug = "", title = "", groups = "", owner_number = "", shop_name = "";
+    String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug="";
     ImageView logo;
     TextView name, address, number, tvOffer, followText;
     NestedScrollView nestedSV;
@@ -134,6 +134,9 @@ public class ShopFragment extends Fragment implements ProductListener {
     private List<String> rosterList;
 
 
+    LinearLayout noItem;
+
+
     @Override
     public void buyNow(String productSlug) {
 
@@ -147,6 +150,30 @@ public class ShopFragment extends Fragment implements ProductListener {
     @Override
     public void onSuccess(int count) {
 
+        if (count == 0){
+
+            ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
+            noItem.setVisibility(View.VISIBLE);
+
+            try {
+                Glide.with(context)
+                        .load(R.drawable.ic_emptycart)
+                        .apply(new RequestOptions().override(600, 600))
+                        .into(placeholder);
+            } catch (Exception e) {
+
+            }
+
+            progressBar.setVisibility(View.GONE);
+
+        } else {
+            noItem.setVisibility(View.GONE);
+        }
+
+
+
+
+
     }
 
 
@@ -159,31 +186,7 @@ public class ShopFragment extends Fragment implements ProductListener {
         //On User Presence Changed
         public void onPresenceChanged(PresenceModel presenceModel) {
 
-            Logger.d(presenceModel.getUserStatus());
-
-//            try {
-//                for (int i = 0; i < rosterList.size(); i++) {
-//
-//                    String model = rosterList.get(i);
-////                    Logger.d(new Gson().toJson(model));
-////                    Logger.d(new Gson().toJson(presenceModel));
-//
-//
-//                    try {
-//                        if (AppController.getmService().xmpp.checkSender(JidCreate.bareFrom(model.id), JidCreate.bareFrom(presenceModel.getUser()))) {
-//                            model.status = presenceModel.getUserStatus();
-//                            rosterList.set(i, model);
-//                            adapter.notifyItemChanged(i);
-//                            break;
-//                        }
-//                    } catch (XmppStringprepException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.getMessage();
-//            }
-//            adapter.notifyDataSetChanged();
+            // Logger.d(presenceModel.getUserStatus());
         }
 
         public void onConnected() {
@@ -215,23 +218,51 @@ public class ShopFragment extends Fragment implements ProductListener {
             startXmppService();
         }
 
+
+
         return view;
     }
+
+
+    private void refreshFragment(){
+        if (getFragmentManager() != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                getFragmentManager().beginTransaction().detach(this).commitNow();
+                getFragmentManager().beginTransaction().attach(this).commitNow();
+            } else {
+                getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+            }
+    }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        InitializeActionBar InitializeActionbar = new InitializeActionBar((LinearLayout) view.findViewById(R.id.header_logo), mainActivity, "shop");
+        if (!Utils.isNetworkAvailable(context))
+            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
+                @Override
+                public void onRetry() {
+                    refreshFragment();
+                }
+                @Override
+                public void onBackPress() {
+                    if (getFragmentManager() != null)
+                        NavHostFragment.findNavController(ShopFragment.this).navigate(R.id.homeFragment);
+                }
+            });
+
+
+        InitializeActionBar InitializeActionbar = new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "shop");
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
-        homeSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, GlobalSearchActivity.class);
-                intent.putExtra("type", 1);
-                startActivity(intent);
-            }
+        homeSearch.setOnClickListener(view12 -> {
+            Intent intent = new Intent(context, GlobalSearchActivity.class);
+            intent.putExtra("type", 1);
+            startActivity(intent);
         });
+
+        noItem = view.findViewById(R.id.noItem);
         dialog = new ViewDialog(getActivity());
         name = view.findViewById(R.id.name);
         tvOffer = view.findViewById(R.id.tvOffer);
@@ -293,6 +324,9 @@ public class ShopFragment extends Fragment implements ProductListener {
 
         title = getArguments().getString("shop_name");
 
+        if (getArguments().getString("campaign_slug") != null)
+            campaign_slug = getArguments().getString("campaign_slug");
+
         name.setText(title);
 
 
@@ -301,7 +335,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                     .load(getArguments().getString("logo_image"))
                     .listener(new RequestListener<Drawable>() {
                                   @Override
-                                  public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                  public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                       return false;
                                   }
 
@@ -346,20 +380,16 @@ public class ShopFragment extends Fragment implements ProductListener {
 
         if (nestedSV != null) {
 
-            nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    String TAG = "nested_sync";
+            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                String TAG = "nested_sync";
 
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                    Log.i(TAG, "BOTTOM SCROLL");
 
-                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                        Log.i(TAG, "BOTTOM SCROLL");
-
-                        try {
-                            productGrid.loadNextShopProducts();
-                        } catch (Exception e) {
-                            Log.e("scroll error", e.toString());
-                        }
+                    try {
+                        productGrid.loadNextShopProducts();
+                    } catch (Exception e) {
+                        Log.e("scroll error", e.toString());
                     }
                 }
             });
@@ -369,32 +399,43 @@ public class ShopFragment extends Fragment implements ProductListener {
 
         reset.setVisibility(View.GONE);
 
-        reset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                showProductsByCategory("All Products", "", 0);
-                reset.setVisibility(View.GONE);
-            }
+        reset.setOnClickListener(view1 -> {
+            showProductsByCategory("All Products", "", 0);
+            reset.setVisibility(View.GONE);
         });
 
+
+
+        productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, "", campaign_slug, 1, progressBar);
+        productGrid.setScrollView(nestedSV);
+        productGrid.setListener(this);
+
+
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     private void startXmppService() {
 
         //Start XMPP Service (if not running already)
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(getActivity(), XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-        } else {
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
+        if (getContext() != null && getActivity() != null) {
+            if (!XMPPService.isServiceRunning) {
+                Intent intent = new Intent(getActivity(), XMPPService.class);
+                mChatApp.UnbindService();
+                mChatApp.BindService(intent);
             } else {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
+                xmppHandler = AppController.getmService().xmpp;
+                if (!xmppHandler.isConnected()) {
+                    xmppHandler.connect();
+                } else {
+                    xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                    xmppHandler.login();
+                }
             }
         }
 
@@ -404,17 +445,23 @@ public class ShopFragment extends Fragment implements ProductListener {
     public void showProductsByCategory(String categoryName, String categorySlug, int position) {
         reset.setVisibility(View.VISIBLE);
         categoryTitle.setText(categoryName);
-        productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, categorySlug, 1, view.findViewById(R.id.progressBar));
+        productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, categorySlug, campaign_slug, 1, view.findViewById(R.id.progressBar));
         productGrid.setScrollView(nestedSV);
         productGrid.setListener(this);
     }
 
     public void getShopProductCount() {
 
-        String url = UrlUtils.BASE_URL + "public/shops/items/" + slug + "/?page=" + currentPage;
+        String url;
+
+        if (campaign_slug.equals(""))
+            url = UrlUtils.BASE_URL + "public/shops/items/" + slug + "/?page=" + currentPage;
+        else
+            url = UrlUtils.CAMPAIGNS+"/" + campaign_slug + "/shops/"+slug+"/items?page=" + currentPage;
+
 
         Log.d("json url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
                     try {
                         Log.d("json response", response.toString());
@@ -427,74 +474,77 @@ public class ShopFragment extends Fragment implements ProductListener {
                         owner_number = jsonObject.getString("owner_name");
                         subCount = data.getInt("subscriber_count");
 
-                        llInbox.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (userDetails.getToken() == null || userDetails.getToken().equals("")) {
-                                    startActivity(new Intent(getActivity(), SignInActivity.class));
-                                    getActivity().finish();
-                                } else {
-                                    if (xmppHandler != null && xmppHandler.isConnected() && xmppHandler.isLoggedin()) {
-                                        String jid = getContactFromRoster(owner_number);
-                                        if (!CredentialManager.getUserName().equalsIgnoreCase(owner_number)) {
-                                            if (jid != null) {
-                                                dialog.hideDialog();
-                                                VCard vCard = null;
-                                                try {
-                                                    vCard = xmppHandler.getUserDetails(JidCreate.entityBareFrom(jid));
-                                                    RosterTable rosterTable = new RosterTable();
-                                                    rosterTable.name = vCard.getFirstName() + " " + vCard.getLastName();
-                                                    rosterTable.id = vCard.getFrom().asUnescapedString();
-                                                    rosterTable.imageUrl = vCard.getField("URL");
-                                                    rosterTable.status = 0;
-                                                    rosterTable.lastMessage = "";
-                                                    rosterTable.nick_name = vCard.getNickName();
-                                                    rosterTable.time = 0;
-                                                    Logger.d(new Gson().toJson(rosterTable));
-                                                    startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
-
-                                                } catch (XmppStringprepException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            } else {
-                                                dialog.showDialog();
-                                                HashMap<String, String> data = new HashMap<>();
-                                                data.put("localuser", CredentialManager.getUserName());
-                                                data.put("localserver", Constants.XMPP_HOST);
-                                                data.put("user", owner_number);
-                                                data.put("server", Constants.XMPP_HOST);
-                                                data.put("nick", shop_name);
-                                                data.put("subs", "both");
-                                                data.put("group", "evaly");
 
 
-                                                Logger.d(data);
-                                                AuthApiHelper.addRoster(data, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
-                                                    @Override
-                                                    public void onDataFetched(retrofit2.Response<JsonPrimitive> response) {
 
-                                                        if (response.code() == 200 || response.code() == 201) {
-                                                            addRosterByOther();
+                        llInbox.setOnClickListener(v -> {
 
 
-                                                        } else {
-                                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                                                        }
-                                                    }
 
-                                                    @Override
-                                                    public void onFailed(int status) {
-                                                        dialog.hideDialog();
-                                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                                                    }
-                                                });
+                            if (userDetails.getToken() == null || userDetails.getToken().equals("")) {
+                                startActivity(new Intent(getActivity(), SignInActivity.class));
+                                getActivity().finish();
+                            } else {
+                                if (xmppHandler != null && xmppHandler.isConnected() && xmppHandler.isLoggedin()) {
+                                    String jid = getContactFromRoster(owner_number);
+                                    if (!CredentialManager.getUserName().equalsIgnoreCase(owner_number)) {
+                                        if (jid != null) {
+                                            dialog.hideDialog();
+                                            VCard vCard = null;
+                                            try {
+                                                vCard = xmppHandler.getUserDetails(JidCreate.entityBareFrom(jid));
+                                                RosterTable rosterTable = new RosterTable();
+                                                rosterTable.name = vCard.getFirstName() + " " + vCard.getLastName();
+                                                rosterTable.id = vCard.getFrom().asUnescapedString();
+                                                rosterTable.imageUrl = vCard.getField("URL");
+                                                rosterTable.status = 0;
+                                                rosterTable.lastMessage = "";
+                                                rosterTable.nick_name = vCard.getNickName();
+                                                rosterTable.time = 0;
+                                                Logger.d(new Gson().toJson(rosterTable));
+                                                startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
+
+                                            } catch (XmppStringprepException e) {
+                                                e.printStackTrace();
                                             }
                                         } else {
-                                            Toast.makeText(getApplicationContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
+                                            dialog.showDialog();
+                                            HashMap<String, String> data1 = new HashMap<>();
+                                            data1.put("localuser", CredentialManager.getUserName());
+                                            data1.put("localserver", Constants.XMPP_HOST);
+                                            data1.put("user", owner_number);
+                                            data1.put("server", Constants.XMPP_HOST);
+                                            data1.put("nick", shop_name);
+                                            data1.put("subs", "both");
+                                            data1.put("group", "evaly");
+
+
+                                            Logger.d(data1);
+                                            AuthApiHelper.addRoster(data1, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
+                                                @Override
+                                                public void onDataFetched(retrofit2.Response<JsonPrimitive> response1) {
+
+                                                    if (response1.code() == 200 || response1.code() == 201) {
+                                                        addRosterByOther();
+
+
+                                                    } else {
+                                                        Toast.makeText(getContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailed(int status) {
+                                                    dialog.hideDialog();
+                                                    Toast.makeText(getContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
                                         }
                                     } else {
-                                        startXmppService();
+                                        Toast.makeText(getContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
                                     }
+                                } else {
+                                    startXmppService();
                                 }
                             }
                         });
@@ -505,16 +555,9 @@ public class ShopFragment extends Fragment implements ProductListener {
                             followText.setText("Follow (" + subCount + ")");
 
                         if (response.getInt("count") > 0) {
-                            productGrid = new ProductGrid(mainActivity, (RecyclerView) view.findViewById(R.id.products), slug, "", 1, view.findViewById(R.id.progressBar));
-                            productGrid.setScrollView(nestedSV);
-                            productGrid.setListener(this);
+
                             try {
-                                followBtn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        subscribe();
-                                    }
-                                });
+                                followBtn.setOnClickListener(v -> subscribe());
 
                             } catch (Exception e) {
                             }
@@ -527,7 +570,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                                             .load(jsonObject.getString("logo_image"))
                                             .listener(new RequestListener<Drawable>() {
                                                           @Override
-                                                          public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                                          public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                                               return false;
                                                           }
 
@@ -546,32 +589,26 @@ public class ShopFragment extends Fragment implements ProductListener {
 
                                 try {
                                     number.setText(jsonObject.getString("contact_number"));
-                                    callButton.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            String phone = "Not provided";
-                                            try {
-                                                phone = jsonObject.getString("contact_number");
-                                                final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-                                                snackBar.setAction("Call", new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v) {
+                                    callButton.setOnClickListener(v -> {
+                                        String phone = "Not provided";
+                                        try {
+                                            phone = jsonObject.getString("contact_number");
+                                            final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+                                            snackBar.setAction("Call", v12 -> {
 
-                                                        try {
-                                                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                                                            intent.setData(Uri.parse("tel:" + jsonObject.getString("contact_number")));
-                                                            startActivity(intent);
-                                                        } catch (Exception e) {
-                                                        }
-                                                        snackBar.dismiss();
-                                                    }
-                                                });
-                                                snackBar.show();
+                                                try {
+                                                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                                                    intent.setData(Uri.parse("tel:" + jsonObject.getString("contact_number")));
+                                                    startActivity(intent);
+                                                } catch (Exception e) {
+                                                }
+                                                snackBar.dismiss();
+                                            });
+                                            snackBar.show();
 
-                                            } catch (JSONException e) {
-                                                Toast.makeText(context, "Sorry shop number is not available", Toast.LENGTH_SHORT).show();
-                                                e.printStackTrace();
-                                            }
+                                        } catch (JSONException e) {
+                                            Toast.makeText(context, "Sorry shop number is not available", Toast.LENGTH_SHORT).show();
+                                            e.printStackTrace();
                                         }
                                     });
 
@@ -580,107 +617,77 @@ public class ShopFragment extends Fragment implements ProductListener {
                                     number.setText("");
                                 }
 
-                                location.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        String phone = "Not provided";
-                                        try {
-                                            phone = jsonObject.getString("address");
-                                            final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-                                            snackBar.setAction("Copy", new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
+                                location.setOnClickListener(v -> {
+                                    String phone = "Not provided";
+                                    try {
+                                        phone = jsonObject.getString("address");
+                                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+                                        snackBar.setAction("Copy", v1 -> {
 
-                                                    try {
-                                                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                                                        ClipData clip = ClipData.newPlainText("address", jsonObject.getString("address"));
-                                                        clipboard.setPrimaryClip(clip);
-                                                    } catch (Exception e) {
-                                                    }
+                                            try {
+                                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                                                ClipData clip = ClipData.newPlainText("address", jsonObject.getString("address"));
+                                                clipboard.setPrimaryClip(clip);
+                                            } catch (Exception e) {
+                                            }
 
-                                                    snackBar.dismiss();
-                                                }
-                                            });
-                                            snackBar.show();
+                                            snackBar.dismiss();
+                                        });
+                                        snackBar.show();
 
-                                        } catch (JSONException e) {
-                                            Toast.makeText(context, "Sorry shop number is not available", Toast.LENGTH_SHORT).show();
-                                            e.printStackTrace();
-                                        }
-
+                                    } catch (JSONException e) {
+                                        Toast.makeText(context, "Sorry shop number is not available", Toast.LENGTH_SHORT).show();
+                                        e.printStackTrace();
                                     }
+
                                 });
 
 
-                                link.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
+                                link.setOnClickListener(v -> {
 
-                                        String phone = "https://evaly.com.bd/";
-                                        try {
-                                            phone = "https://evaly.com.bd/shops/" + jsonObject.getString("slug");
-                                            final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-                                            snackBar.setAction("Copy", new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
+                                    String phone = "https://evaly.com.bd/";
+                                    try {
+                                        phone = "https://evaly.com.bd/shops/" + jsonObject.getString("slug");
+                                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+                                        snackBar.setAction("Copy", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
 
-                                                    try {
-                                                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                                                        ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/" + jsonObject.getString("slug"));
-                                                        clipboard.setPrimaryClip(clip);
-                                                    } catch (Exception e) {
-                                                    }
-
-                                                    snackBar.dismiss();
+                                                try {
+                                                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                                                    ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/" + jsonObject.getString("slug"));
+                                                    clipboard.setPrimaryClip(clip);
+                                                } catch (Exception e) {
                                                 }
-                                            });
-                                            snackBar.show();
 
-                                        } catch (JSONException e) {
-                                            Toast.makeText(context, "Sorry shop link is not available", Toast.LENGTH_SHORT).show();
-                                            e.printStackTrace();
-                                        }
+                                                snackBar.dismiss();
+                                            }
+                                        });
+                                        snackBar.show();
 
+                                    } catch (JSONException e) {
+                                        Toast.makeText(context, "Sorry shop link is not available", Toast.LENGTH_SHORT).show();
+                                        e.printStackTrace();
                                     }
+
                                 });
 
-                                reviews.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
+                                reviews.setOnClickListener(v -> {
 
-                                        String shop_id = "98989";
-                                        shop_id = slug;
-                                        Intent intent = new Intent(context, ReviewsActivity.class);
-                                        intent.putExtra("ratingJson", ratingJson);
-                                        intent.putExtra("type", "shop");
-                                        intent.putExtra("item_value", shop_id);
-                                        startActivity(intent);
+                                    String shop_id = "98989";
+                                    shop_id = slug;
+                                    Intent intent = new Intent(context, ReviewsActivity.class);
+                                    intent.putExtra("ratingJson", ratingJson);
+                                    intent.putExtra("type", "shop");
+                                    intent.putExtra("item_value", shop_id);
+                                    startActivity(intent);
 
-                                    }
                                 });
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-                        } else {
-
-                            ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
-                            LinearLayout noItem = view.findViewById(R.id.noItem);
-                            noItem.setVisibility(View.VISIBLE);
-
-                            try {
-                                Glide.with(context)
-                                        .load(R.drawable.ic_emptycart)
-                                        .apply(new RequestOptions().override(600, 600))
-                                        .into(placeholder);
-                            } catch (Exception e) {
-
-                            }
-
-                            progressBar.setVisibility(View.GONE);
-
-                            // Toast.makeText(context, "No product is available", Toast.LENGTH_SHORT).show();
                         }
 
                         JSONArray jsonArray = data.getJSONArray("groups");
@@ -697,75 +704,47 @@ public class ShopFragment extends Fragment implements ProductListener {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401) {
 
-                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                getShopProductCount();
-                            }
 
-                            @Override
-                            public void onFailed(int status) {
 
-                            }
-                        });
+                }, error -> {
+                    error.printStackTrace();
 
-                        return;
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
+                        if (error.networkResponse.statusCode == 401) {
 
+                            AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                @Override
+                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                    getShopProductCount();
+                                }
+
+                                @Override
+                                public void onFailed(int status) {
+
+                                }
+                            });
+
+                            return;
+
+                        }
                     }
-                }
 
-            }
-        }) {
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-
-
                 if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", "Bearer " + userDetails.getToken());
-
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-
-                String userAgent;
-
-                try {
-                    userAgent = WebSettings.getDefaultUserAgent(context);
-                } catch (Exception e) {
-                    userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-                }
-
-                headers.put("User-Agent", userAgent);
+                    headers.put("Authorization", CredentialManager.getToken());
                 return headers;
             }
         };
 
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         request.setShouldCache(false);
 
@@ -783,130 +762,99 @@ public class ShopFragment extends Fragment implements ProductListener {
     }
 
     public void getProductRating(final String sku) {
-        String url = UrlUtils.BASE_URL + "reviews/summary/shops/" + sku + "/";
-        Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
-                response -> {
-                    Log.d("json varying", response.toString());
-                    try {
 
-                        response = response.getJSONObject("data");
-                        ratingJson = response.toString();
-                        double avg = response.getDouble("avg_rating");
-                        RatingBar ratingBar = view.findViewById(R.id.ratingBar);
-                        TextView ratingsCount = view.findViewById(R.id.ratings_count);
-                        int tratings = response.getInt("total_ratings");
-                        ratingsCount.setText("(" + tratings + ")");
-                        ratingBar.setRating((float) avg);
+        GeneralApiHelper.getShopReviews(sku, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                try {
+                    response = response.getAsJsonObject("data");
+                    ratingJson = response.toString();
+                    double avg = response.get("avg_rating").getAsDouble();
+                    RatingBar ratingBar = view.findViewById(R.id.ratingBar);
+                    TextView ratingsCount = view.findViewById(R.id.ratings_count);
+                    int tratings = response.get("total_ratings").getAsInt();
+                    ratingsCount.setText("(" + tratings + ")");
+                    ratingBar.setRating((float) avg);
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-        // RequestQueue rq = Volley.newRequestQueue(context);
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
-            public int getCurrentRetryCount() {
-                return 50000;
+            public void onFailed(String errorBody, int errorCode) {
+
             }
 
             @Override
-            public void retry(VolleyError error) throws VolleyError {
+            public void onAuthError(boolean logout) {
 
             }
         });
 
-        request.setShouldCache(false);
-        rq.getCache().clear();
-        rq.add(request);
 
     }
 
 
     public void getSubCategories(int currentPage) {
 
-        String url = UrlUtils.BASE_URL + "public/shops/categories/" + slug + "/?page=" + currentPage;
 
-        Log.d("json", url);
+        ProductApiHelper.getCategoriesOfShop(slug, campaign_slug, currentPage, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, (String) null,
-                response -> {
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("data");
-                        Log.d("category_brands", jsonArray.toString());
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject ob = jsonArray.getJSONObject(i);
-                            TabsItem tabsItem = new TabsItem();
-                            tabsItem.setTitle(ob.getString("category_name"));
-                            tabsItem.setImage(ob.getString("category_image"));
-                            tabsItem.setSlug(ob.getString("category_slug"));
-                            tabsItem.setCategory(slug);
-                            itemList.add(tabsItem);
-                            adapter.notifyItemInserted(itemList.size());
-                        }
+                try {
+                    JsonArray jsonArray = response.getAsJsonArray("data");
 
-                        if (itemList.size() < 4) {
-
-                            GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
-
-                            recyclerView.setLayoutManager(mLayoutManager);
-                        }
-
-                        if (itemList.size() < 1)
-                            ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
-
-                        try {
-
-                            shimmer.stopShimmer();
-                        } catch (Exception e) {
-
-                        }
-
-                        shimmer.setVisibility(View.GONE);
-                        loading = true;
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(context, "brand_error", Toast.LENGTH_SHORT).show();
-
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        JsonObject ob = jsonArray.get(i).getAsJsonObject();
+                        TabsItem tabsItem = new TabsItem();
+                        tabsItem.setTitle(ob.get("category_name").getAsString());
+                        tabsItem.setImage(ob.get("category_image").getAsString());
+                        tabsItem.setSlug(ob.get("category_slug").getAsString());
+                        tabsItem.setCategory(slug);
+                        itemList.add(tabsItem);
+                        adapter.notifyItemInserted(itemList.size());
                     }
-                }, new Response.ErrorListener() {
+
+                    if (itemList.size() < 4) {
+
+                        GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
+                        recyclerView.setLayoutManager(mLayoutManager);
+                    }
+
+                    if (itemList.size() < 1)
+                        ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
+
+                    try {
+
+                        shimmer.stopShimmer();
+                    } catch (Exception e) {
+                    }
+
+                    shimmer.setVisibility(View.GONE);
+                    loading = true;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "Category load error", Toast.LENGTH_SHORT).show();
+                }
+            }
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
+            public void onFailed(String errorBody, int errorCode) {
+
+                loading = false;
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
             }
         });
-        // RequestQueue rq = Volley.newRequestQueue(context);
-        request.setShouldCache(false);
 
-        request.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
 
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-                getSubCategories(currentPage);
-
-            }
-        });
-        rq.add(request);
     }
 
     private void addRosterByOther() {
@@ -977,85 +925,36 @@ public class ShopFragment extends Fragment implements ProductListener {
             return;
         }
 
-
-        String url = UrlUtils.BASE_URL + "shop-subscriptions";
-
-
-        int requestMethod = Request.Method.POST;
+        boolean subscribe = true;
 
         if (followText.getText().toString().contains("Unfollow")) {
-            requestMethod = Request.Method.DELETE;
+            subscribe = false;
             followText.setText("Follow (" + (--subCount) + ")");
-            url = UrlUtils.BASE_URL + "unsubscribe-shop/" + slug + "/";
         } else
             followText.setText("Unfollow (" + (++subCount) + ")");
 
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("shop_slug", slug);
-        } catch (Exception e) {
-        }
 
-
-        JsonObjectRequest request = new JsonObjectRequest(requestMethod, url, parameters, new Response.Listener<JSONObject>() {
+        GeneralApiHelper.subscribeToShop(CredentialManager.getToken(), slug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public void onResponse(JSONObject response) {
-                //Log.d("onResponse", response.toString());
+            public void onDataFetched(JsonObject response, int statusCode) {
 
             }
 
-        }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401) {
-
-                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                subscribe();
-                            }
-
-                            @Override
-                            public void onFailed(int status) {
-
-                            }
-                        });
-
-                        return;
-
-                    }
-                }
+            public void onFailed(String errorBody, int errorCode) {
 
             }
-        }) {
+
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
+            public void onAuthError(boolean logout) {
 
-                String userAgent;
+                if (!logout)
+                    subscribe();
 
-                try {
-                    userAgent = WebSettings.getDefaultUserAgent(context);
-                } catch (Exception e) {
-                    userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-                }
-
-
-                headers.put("User-Agent", userAgent);
-                return headers;
             }
-        };
-        RequestQueue queue = Volley.newRequestQueue(context);
-        queue.add(request);
+        });
+
+
     }
 
 

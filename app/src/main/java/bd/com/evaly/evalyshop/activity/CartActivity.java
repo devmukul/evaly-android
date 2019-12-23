@@ -7,11 +7,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -31,15 +26,19 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -56,10 +55,11 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CartItem;
-import bd.com.evaly.evalyshop.models.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.placeOrder.PlaceOrderItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -410,86 +410,80 @@ public class CartActivity extends BaseActivity {
         } catch (Exception e){ }
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
 
-                String errorMsg = "Couldn't place order, might be a server error";
-                Log.d("json order", response.toString());
-                try {
+            String errorMsg = "Couldn't place order, might be a server error";
+            Log.d("json order", response.toString());
+            try {
 
-                    errorMsg = response.getString("message");
+                errorMsg = response.getString("message");
 
-                }catch (Exception e){ }
+            }catch (Exception e){ }
 
-                try {
+            try {
 
-                    if (response.getJSONArray("data").length() < 1) {
-                        dialog.hideDialog();
-                        // Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                        return;
-                    } else {
-
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                        orderPlaced();
-                        dialog.hideDialog();
-                        errorMsg = response.getString("message");
-                    }
-
-                } catch (Exception e){ }
-
-                try {
-
-                    JSONArray data = response.getJSONArray("data");
-                    for (int i = 0; i < data.length(); i++) {
-                        JSONObject item = data.getJSONObject(i);
-                        String invoice = item.getString("invoice_no");
-                        Intent intent = new Intent(context, OrderDetailsActivity.class);
-                        intent.putExtra("orderID", invoice);
-                        startActivity(intent);
-                        //makePayment(invoice, alert, response.length()-1, i);
-                    }
-
-
-                } catch (Exception e) {
-
-                    Log.e("json exception", e.toString());
-                    Toast.makeText(context, errorMsg , Toast.LENGTH_SHORT).show();
+                if (response.getJSONArray("data").length() < 1) {
                     dialog.hideDialog();
+                    // Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+
+                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    orderPlaced();
+                    dialog.hideDialog();
+                    errorMsg = response.getString("message");
                 }
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+            } catch (Exception e){ }
 
-                    AuthApiHelper.refreshToken(CartActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            placeOrder(payload, alert);
-                        }
-                        @Override
-                        public void onFailed(int status) {
+            try {
 
-                        }
-                    });
-                    return;
-                }}
+                JSONArray data = response.getJSONArray("data");
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject item = data.getJSONObject(i);
+                    String invoice = item.getString("invoice_no");
+                    Intent intent = new Intent(context, OrderDetailsActivity.class);
+                    intent.putExtra("orderID", invoice);
+                    startActivity(intent);
+                    //makePayment(invoice, alert, response.length()-1, i);
+                }
 
-                Toast.makeText(context, "Couldn't place order", Toast.LENGTH_SHORT).show();
+
+            } catch (Exception e) {
+
+                Log.e("json exception", e.toString());
+                Toast.makeText(context, errorMsg , Toast.LENGTH_SHORT).show();
                 dialog.hideDialog();
-                alert.hideDialog();
             }
+
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
+
+                AuthApiHelper.refreshToken(CartActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        placeOrder(payload, alert);
+                    }
+                    @Override
+                    public void onFailed(int status) {
+
+                    }
+                });
+                return;
+            }}
+
+            Toast.makeText(context, "Couldn't place order", Toast.LENGTH_SHORT).show();
+            dialog.hideDialog();
+            alert.hideDialog();
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + userDetails.getToken());
+                headers.put("Authorization", CredentialManager.getToken());
 
                 return headers;
             }

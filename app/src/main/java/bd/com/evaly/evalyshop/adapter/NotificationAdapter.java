@@ -5,29 +5,23 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Type;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.activity.OrderListActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.models.Notifications;
@@ -65,53 +59,37 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 .load(notifications.get(i).getImageURL())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(200, 200))
-                .listener(new RequestListener<Drawable>() {
-                              @Override
-                              public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                  return false;
-                              }
-                              @Override
-                              public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                  Bitmap bitmap = changeColor(((BitmapDrawable)resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
-                                  myViewHolder.shopImage.setImageBitmap(bitmap);
-                                  return true;
-                              }
-                          }
-                )
                 .into(myViewHolder.shopImage);
 
 
-        myViewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myViewHolder.view.setOnClickListener(v -> {
 
-                if (notifications.get(i).getContent_type().equals("order")){
+            if (notifications.get(i).getContent_type().equals("order")){
 
-                    Intent intent = new Intent(context, OrderDetailsActivity.class);
-                    intent.putExtra("orderID", notifications.get(i).getContent_url());
-                    context.startActivity(intent);
+                Intent intent = new Intent(context, OrderDetailsActivity.class);
+                intent.putExtra("orderID", notifications.get(i).getContent_url());
+                context.startActivity(intent);
 
-                } else if (notifications.get(i).getContent_type().equals("shop")){
+            } else if (notifications.get(i).getContent_type().equals("shop")){
 
-                    Intent intent = new Intent(context, MainActivity.class);
-                    intent.putExtra("type", 3);
-                    intent.putExtra("shop_slug", notifications.get(i).getContent_url());
-                    intent.putExtra("shop_name", notifications.get(i).getContent_url());
-                    context.startActivity(intent);
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra("type", 3);
+                intent.putExtra("shop_slug", notifications.get(i).getContent_url());
+                intent.putExtra("shop_name", notifications.get(i).getContent_url());
+                context.startActivity(intent);
 
-                } else if (notifications.get(i).getContent_type().equals("product")) {
+            } else if (notifications.get(i).getContent_type().equals("product")) {
 
-                    Intent intent=new Intent(context, ViewProductActivity.class);
-                    intent.putExtra("product_slug",notifications.get(i).getContent_url());
-                    intent.putExtra("product_name",notifications.get(i).getContent_url());
-                    context.startActivity(intent);
-                }
-
-
-
-
-
+                Intent intent=new Intent(context, ViewProductActivity.class);
+                intent.putExtra("product_slug",notifications.get(i).getContent_url());
+                intent.putExtra("product_name",notifications.get(i).getContent_url());
+                context.startActivity(intent);
             }
+
+
+
+
+
         });
 
 

@@ -1,9 +1,9 @@
 package bd.com.evaly.evalyshop.activity.chat;
 
 import android.app.Activity;
-import android.content.res.ColorStateList;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +12,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
-import com.orhanobut.logger.Logger;
 
-import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.Jid;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.chat.RequestedUserModel;
-import bd.com.evaly.evalyshop.util.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;

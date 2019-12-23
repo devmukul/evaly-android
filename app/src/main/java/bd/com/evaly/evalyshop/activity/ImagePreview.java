@@ -1,25 +1,19 @@
 package bd.com.evaly.evalyshop.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.webkit.WebView;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.util.Utils;
 
 public class ImagePreview extends AppCompatActivity {
     ImageView imageViewPreview;
@@ -31,7 +25,6 @@ public class ImagePreview extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_preview);
-        userAgent = new WebView(this).getSettings().getUserAgentString();
 
 
         imageViewPreview = findViewById(R.id.image);
@@ -40,14 +33,7 @@ public class ImagePreview extends AppCompatActivity {
 
         back.bringToFront();
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-
+        back.setOnClickListener(v -> finish());
 
         Intent intent = getIntent();
 
@@ -65,7 +51,7 @@ public class ImagePreview extends AppCompatActivity {
                 .skipMemoryCache(true)
                 .listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
                     @Override
@@ -75,8 +61,6 @@ public class ImagePreview extends AppCompatActivity {
                     }}
                 )
                 .into(imageViewPreview);
-
-
 
     }
 

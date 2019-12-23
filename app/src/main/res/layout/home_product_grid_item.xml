@@ -1,116 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="1dp"
-    android:orientation="vertical">
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="10dp"
+    app:cardBackgroundColor="#fff"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="false"
+    app:contentPadding="0dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/android_custom_gridview_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="10dp"
-        fresco:cardBackgroundColor="#fff"
-        fresco:cardCornerRadius="10dp"
-        fresco:cardElevation="0dp"
-        fresco:cardPreventCornerOverlap="true"
-        fresco:cardUseCompatPadding="false"
-        fresco:contentPadding="0dp">
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="top|center_horizontal"
+        android:paddingBottom="15dp">
 
-        <RelativeLayout
-            android:id="@+id/android_custom_gridview_layout"
+        <TextView
+            android:id="@+id/tvCashback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cashback_bg"
+            android:paddingLeft="10dp"
+            android:paddingTop="3dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="3dp"
+            android:textColor="#fff"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintDimensionRatio="H,1:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:maxLines="2"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:textAlignment="textStart"
+            android:textColor="#444"
+            android:textSize="14sp"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image"
+            tools:text="This is the product title" />
+
+        <TextView
+            android:id="@+id/priceDiscount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="40dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="5dp"
+            android:textColor="#888"
+            android:textSize="13sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="40dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="5dp"
+            android:textColor="#f57224"
+            android:textSize="17sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/priceDiscount"
+            tools:text="$ 500"
+            android:textStyle="bold"/>
+
+
+        <TextView
+            android:id="@+id/buy_now"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="top|center_horizontal">
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/buy_now_btn_line"
+            android:clickable="true"
+            android:paddingLeft="10dp"
+            android:paddingTop="7dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="8dp"
+            android:text="Buy Now"
+            android:textAlignment="center"
+            android:textColor="#444"
+            android:textStyle="normal"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/price"/>
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/image_holder"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true">
-
-                <ImageView
-                    android:id="@+id/image"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintDimensionRatio="H,1:1"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_image_placeholder"
-                    fresco:srcCompat="@drawable/ic_image_placeholder"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/image_holder"
-                android:layout_marginTop="15dp"
-                android:maxLines="3"
-                android:paddingLeft="15dp"
-                android:paddingRight="10dp"
-                android:textAlignment="textStart"
-                android:textColor="#444"
-                android:textIsSelectable="true"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/priceDiscount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/title"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="40dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="5dp"
-                android:textColor="#888"
-                android:visibility="gone"
-                android:textSize="13sp" />
-
-
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/priceDiscount"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="40dp"
-                android:layout_marginBottom="15dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="5dp"
-                android:textColor="#f57224"
-                android:textSize="16sp" />
-
-
-            <TextView
-                android:id="@+id/buy_now"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/price"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/buy_now_btn_line"
-                android:visibility="gone"
-                android:clickable="true"
-                android:paddingTop="7dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="Buy Now"
-                android:textAlignment="center"
-                android:textStyle="normal"
-                android:textColor="#444" />
-
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
-</LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

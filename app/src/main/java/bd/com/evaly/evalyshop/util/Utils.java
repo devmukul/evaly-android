@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.util;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -8,8 +10,11 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.content.ContextCompat;
 
 import com.orhanobut.logger.Logger;
 
@@ -21,7 +26,6 @@ import java.text.BreakIterator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,6 +45,20 @@ public class  Utils {
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
+
+
+    public static boolean isPackageExisted(String targetPackage, Context context){
+        List<ApplicationInfo> packages;
+        PackageManager pm;
+
+        pm = context.getPackageManager();
+        packages = pm.getInstalledApplications(0);
+        for (ApplicationInfo packageInfo : packages) {
+            if(packageInfo.packageName.equals(targetPackage))
+                return true;
+        }
+        return false;
+    }
 
     public static boolean isValidNumber(String text){
 
@@ -260,7 +278,7 @@ public class  Utils {
                 t = String.valueOf(8 * Integer.parseInt(e.substring(e.length() - 4)) - 2019);
             }
             }catch(Exception e){
-                t = String.valueOf(Math.floor(9e4 * Math.random()) + 1e4);
+                t = String.valueOf(Math.round(9e4 * Math.random()) + 1e4);
             }
             String encoded = t;
 
@@ -287,28 +305,28 @@ public class  Utils {
 
 
 
-//
-//    public static void CustomTab(String url, Context context)
-//    {
-//        Uri uri = Uri.parse(url);
-//
-//        CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
-//
-//        // set desired toolbar colors
-//
-//        intentBuilder.setShowTitle(true);
-//        intentBuilder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
-//        intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-//
-//        // add start and exit animations if you want(optional)
-//    /*intentBuilder.setStartAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-//    intentBuilder.setExitAnimations(this, android.R.anim.slide_in_left,
-//            android.R.anim.slide_out_right);*/
-//
-//        CustomTabsIntent customTabsIntent = intentBuilder.build();
-//
-//        customTabsIntent.launchUrl(context, uri);
-//    }
+
+    public static void CustomTab(String url, Context context)
+    {
+
+        try {
+            Uri uri = Uri.parse(url);
+
+            CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+
+            // set desired toolbar colors
+
+            intentBuilder.setShowTitle(true);
+            intentBuilder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+
+            CustomTabsIntent customTabsIntent = intentBuilder.build();
+
+            customTabsIntent.launchUrl(context, uri);
+        } catch (Exception e){
+            Toast.makeText(context,"Install Google Chrome", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     public static String toFirstCharUpperAll(String string){
 
@@ -394,6 +412,38 @@ public class  Utils {
 
         SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
         df_input.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.ENGLISH);
+        df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+
+
+        // You can set a different Locale, This example set a locale of Country Mexico.
+        //SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, new Locale("es", "MX"));
+        //SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, new Locale("es", "MX"));
+
+        try {
+            parsed = df_input.parse(inputDate);
+            outputDate = parsed.getTime();
+        } catch (Exception e) {
+            Log.e("formattedDateFromString", "Exception in formateDateFromstring(): " + e.getMessage());
+        }
+        return outputDate;
+
+    }
+
+
+    public static long formattedDateFromStringToTimestampGMT(String inputFormat, String outputFormat, String inputDate){
+        if(inputFormat.equals("")){ // if inputFormat = "", set a default input format.
+            inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        }
+        if(outputFormat.equals("")){
+            outputFormat = "EEEE d',' MMMM  yyyy"; // if inputFormat = "", set a default output format.
+        }
+        Date parsed = null;
+        long outputDate = 0;
+
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+        df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
 
         SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.ENGLISH);
         df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));

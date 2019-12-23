@@ -7,15 +7,17 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -29,9 +31,6 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.fragment.BrandFragment;
-import bd.com.evaly.evalyshop.fragment.BrowseProductFragment;
-import bd.com.evaly.evalyshop.fragment.ShopFragment;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -43,11 +42,15 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
     AppCompatActivity activity;
 
+    private NavController navController;
+
     public TabsAdapter(Context ctx, AppCompatActivity activity, ArrayList<TabsItem> item, int type){
         context=ctx;
         itemlist = item;
         this.type=type;
         this.activity = activity;
+        if (activity instanceof MainActivity)
+            navController = Navigation.findNavController(activity, R.id.nav_host_fragment);
     }
 
     View.OnClickListener productListener = new View.OnClickListener() {
@@ -55,61 +58,44 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         public void onClick(View view) {
             int position = (int) view.getTag(); // get item for position
 
-
             if(context instanceof MainActivity) {
-
 
                 FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
 
                 if (type == 1) {
 
-
-
-                    Fragment fragment3 = new BrowseProductFragment();
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", itemlist.get(position).getType());
                     bundle.putString("slug", itemlist.get(position).getSlug());
                     bundle.putString("category", itemlist.get(position).getCategory());
-                    fragment3.setArguments(bundle);
-                    //.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-                    ft.replace(R.id.fragment_container, fragment3, itemlist.get(position).getSlug());
-                    // ft.addToBackStack(itemlist.get(position).getSlug());
-                    ft.addToBackStack(null);
-                    ft.commit();
 
-
-
+                    navController.navigate(R.id.browseProductFragment, bundle);
 
                 } else if (type == 2) {
 
-
-                    Fragment fragment3 = new BrandFragment();
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", itemlist.get(position).getType());
                     bundle.putString("brand_slug", itemlist.get(position).getSlug());
                     bundle.putString("brand_name", itemlist.get(position).getTitle());
                     bundle.putString("category", itemlist.get(position).getCategory());
                     bundle.putString("image_url", itemlist.get(position).getImage());
-                    fragment3.setArguments(bundle);
-                    ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-                    ft.replace(R.id.fragment_container, fragment3, itemlist.get(position).getSlug());
-                    ft.addToBackStack(itemlist.get(position).getSlug());
-                    ft.commit();
 
-                } else if (type == 3) {
+                    navController.navigate(R.id.brandFragment, bundle);
 
-                    Fragment fragment3 = new ShopFragment();
+
+
+
+                } else if (type == 3 || type == 6) {
+
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", itemlist.get(position).getType());
                     bundle.putString("shop_name", itemlist.get(position).getTitle());
                     bundle.putString("logo_image", itemlist.get(position).getImage());
                     bundle.putString("shop_slug", itemlist.get(position).getSlug());
                     bundle.putString("category", itemlist.get(position).getCategory());
-                    fragment3.setArguments(bundle);
-                    ft.setCustomAnimations(R.animator.slide_in_left,R.animator.abc_popup_exit, 0, 0);
-                    ft.replace(R.id.fragment_container, fragment3, itemlist.get(position).getSlug());
-                    ft.addToBackStack(itemlist.get(position).getSlug());
-                    ft.commit();
+                    bundle.putString("campaign", itemlist.get(position).getCampaignSlug());
+
+                    navController.navigate(R.id.shopFragment, bundle);
 
                 }
             } else {
@@ -124,22 +110,22 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                     intent.putExtra("category", itemlist.get(position).getCategory());
                     intent.putExtra("image_url", itemlist.get(position).getImage());
 
-
                     context.startActivity(intent);
 
-
-                } else if (type == 3) {
+                } else if (type == 3 || type == 6) {
                     Intent intent = new Intent(context, MainActivity.class);
                     intent.putExtra("type", 3);
+                    intent.putExtra("shop_name", itemlist.get(position).getTitle());
+                    intent.putExtra("logo_image", itemlist.get(position).getImage());
                     intent.putExtra("shop_slug", itemlist.get(position).getSlug());
                     intent.putExtra("category", itemlist.get(position).getCategory());
+                    intent.putExtra("campaign_slug", itemlist.get(position).getCampaignSlug());
                     context.startActivity(intent);
 
                 }
 
-
             }
-            }
+        }
     };
 
 
@@ -162,18 +148,6 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         holder.view.setOnClickListener(productListener);
         holder.view.setTag(position);
 
-//        holder.iv.post(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//
-//
-//
-//            }
-//        });
-
-
-
         Glide.with(context)
                 .load(itemlist.get(position).getImage())
                 .apply(new RequestOptions().override(240, 240))
@@ -181,7 +155,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                 .placeholder(R.drawable.ic_placeholder_small)
                 .listener(new RequestListener<Drawable>() {
                               @Override
-                              public boolean onLoadFailed(@android.support.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                              public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                   return false;
                               }
                               @Override
@@ -194,16 +168,13 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                 )
                 .into(holder.iv);
 
-
     }
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView tv;
         ImageView iv;
         View view;
-
 
         public MyViewHolder(final View itemView) {
             super(itemView);
@@ -214,15 +185,10 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         }
     }
 
-
     public void setFilter(ArrayList<TabsItem> ar){
         itemlist=new ArrayList<>();
         itemlist.addAll(ar);
         notifyDataSetChanged();
     }
-
-
-
-
 
 }
