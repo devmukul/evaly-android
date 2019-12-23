@@ -47,6 +47,9 @@ public class ProductApiHelper extends ApiHelper{
         IApiClient iApiClient = getiApiClient();
         Call<JsonArray> call;
 
+        if (slug == null)
+            slug = "root";
+
         if (slug.equals("root"))
             call = iApiClient.getCategories();
         else

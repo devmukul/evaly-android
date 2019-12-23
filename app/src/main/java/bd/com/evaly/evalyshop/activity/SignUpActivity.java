@@ -2,13 +2,9 @@ package bd.com.evaly.evalyshop.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.view.View;
-import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -16,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
@@ -45,12 +43,6 @@ public class SignUpActivity extends BaseActivity {
         setContentView(R.layout.activity_sign_up);
 
 
-        try {
-            userAgent = WebSettings.getDefaultUserAgent(this);
-        } catch (Exception e) {
-            userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-        }
-
         firstName = findViewById(R.id.f_name);
         lastName = findViewById(R.id.l_name);
         phoneNumber = findViewById(R.id.number);
@@ -58,9 +50,6 @@ public class SignUpActivity extends BaseActivity {
         signIn = findViewById(R.id.sign_in);
         close = findViewById(R.id.close);
         userDetails = new UserDetails(this);
-
-
-
         TextView privacyText = findViewById(R.id.privacyText);
 
         privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/privacy-policy\">Privacy Policy</a> and <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> of Evaly."));
@@ -69,39 +58,28 @@ public class SignUpActivity extends BaseActivity {
         CheckBox checkBox = findViewById(R.id.checkBox);
 
 
-        signUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(firstName.getText().toString())) {
-                    Toast.makeText(SignUpActivity.this, "Please enter your first name", Toast.LENGTH_SHORT).show();
-                } else if (TextUtils.isEmpty(lastName.getText().toString())) {
-                    Toast.makeText(SignUpActivity.this, "Please enter your last name", Toast.LENGTH_SHORT).show();
-                } else if (TextUtils.isEmpty(phoneNumber.getText().toString())) {
-                    Toast.makeText(SignUpActivity.this, "Please enter your phone number", Toast.LENGTH_SHORT).show();
-                } else if (phoneNumber.getText().toString().length() != 11) {
-                    Toast.makeText(SignUpActivity.this, "Please enter your phone number correctly", Toast.LENGTH_SHORT).show();
-                } else if (!checkBox.isChecked()){
-                    Toast.makeText(SignUpActivity.this, "You must accept privacy policy and terms & conditions in order to sign up for Evaly", Toast.LENGTH_LONG).show();
-                } else {
-                    signUpUser();
-                }
+        signUp.setOnClickListener(v -> {
+            if (TextUtils.isEmpty(firstName.getText().toString())) {
+                Toast.makeText(SignUpActivity.this, "Please enter your first name", Toast.LENGTH_SHORT).show();
+            } else if (TextUtils.isEmpty(lastName.getText().toString())) {
+                Toast.makeText(SignUpActivity.this, "Please enter your last name", Toast.LENGTH_SHORT).show();
+            } else if (TextUtils.isEmpty(phoneNumber.getText().toString())) {
+                Toast.makeText(SignUpActivity.this, "Please enter your phone number", Toast.LENGTH_SHORT).show();
+            } else if (phoneNumber.getText().toString().length() != 11) {
+                Toast.makeText(SignUpActivity.this, "Please enter your phone number correctly", Toast.LENGTH_SHORT).show();
+            } else if (!checkBox.isChecked()){
+                Toast.makeText(SignUpActivity.this, "You must accept privacy policy and terms & conditions in order to sign up for Evaly", Toast.LENGTH_LONG).show();
+            } else {
+                signUpUser();
             }
         });
 
-        signIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
-                finish();
-            }
+        signIn.setOnClickListener(v -> {
+            startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+            finish();
         });
 
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        close.setOnClickListener(v -> onBackPressed());
     }
 
     public void signUpUser() {
