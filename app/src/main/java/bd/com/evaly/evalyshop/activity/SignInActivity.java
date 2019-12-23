@@ -20,6 +20,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONObject;
@@ -29,7 +30,9 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -141,7 +144,58 @@ public class SignInActivity extends BaseActivity {
         });
     }
 
-    public void signInUser() {
+
+
+    public void signInUser(){
+
+
+        HashMap<String, String> payload = new HashMap<>();
+
+        payload.put("username", phoneNumber.getText().toString());
+        payload.put("password", password.getText().toString());
+
+        AuthApiHelper.login(payload, new ResponseListener<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int code) {
+
+                alert.hideDialog();
+
+                switch (code) {
+                    case 200:
+                    case 201:
+                    case 202:
+                        token = response.get("access").getAsString();
+
+                        CredentialManager.saveToken(token);
+                        CredentialManager.saveRefreshToken(response.get("refresh").getAsString());
+                        CredentialManager.saveUserName(phoneNumber.getText().toString());
+                        CredentialManager.savePassword(password.getText().toString());
+
+                        userDetails.setUserName(phoneNumber.getText().toString());
+                        userDetails.setToken(token);
+                        userDetails.setRefreshToken(response.get("refresh").getAsString());
+
+                        Balance.update(SignInActivity.this, true);
+
+                        Toast.makeText(SignInActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
+
+                        break;
+                    default:
+                        Toast.makeText(SignInActivity.this, "Incorrect phone number or password. Please try again! ", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailed(String body, int status) {
+                Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
+    public void signInUserz() {
 
         JSONObject payload = new JSONObject();
 

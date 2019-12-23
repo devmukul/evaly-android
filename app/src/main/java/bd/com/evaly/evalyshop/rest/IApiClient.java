@@ -41,6 +41,9 @@ public interface IApiClient {
     @POST(UrlUtils.REGISTER)
     Call<JsonObject> register(@Body HashMap<String, String> data);
 
+    @POST(UrlUtils.LOGIN)
+    Call<JsonObject> login(@Body HashMap<String, String> data);
+
     @POST(UrlUtils.REFRESH_TOKEN)
     Call<JsonObject> refreshToken(@Body HashMap<String, String> data);
 

@@ -3,7 +3,6 @@ package bd.com.evaly.evalyshop.util;
 import android.app.Activity;
 import android.content.Intent;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -52,7 +51,7 @@ public class Balance {
                     CredentialManager.saveUserData(userModel);
 
                     if (openDashboard) {
-                        Toast.makeText(context, "Successfully signed in", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(context, "Successfully signed in", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, UserDashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("from", "signin");
                         context.startActivity(intent);

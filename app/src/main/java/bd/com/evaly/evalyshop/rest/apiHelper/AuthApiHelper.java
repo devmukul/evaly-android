@@ -19,6 +19,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
@@ -87,6 +88,25 @@ public class AuthApiHelper extends ApiHelper{
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 listener.onFailed(0);
+            }
+        });
+
+    }
+
+
+    public static void login(HashMap<String, String> data, ResponseListener<JsonObject, String> listener) {
+
+        IApiClient iApiClient = getiApiClient();
+        Call<JsonObject> call = iApiClient.login(data);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                listener.onDataFetched(response.body(), response.code());
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                listener.onFailed("Error", 0);
             }
         });
 

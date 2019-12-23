@@ -32,6 +32,7 @@ public class UrlUtils {
     public static final String SET_PASSWORD = BASE_URL_AUTH + "set-password/";
     public static final String REFRESH_TOKEN = BASE_URL_AUTH_API + "refresh/";
     public static final String REGISTER = BASE_URL_AUTH + "register/";
+    public static final String LOGIN = BASE_URL_AUTH_API + "login/";
     public static final String SEND_CUSTOM_MESSAGE = BASE_URL_AUTH + "custom-message/";
     public static final String CHANGE_XMPP_PASSWORD = "/api/change_password";
     public static final String ADD_ROSTER = "api/add_rosteritem";
