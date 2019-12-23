@@ -34,8 +34,9 @@ public class ProductApiHelper extends ApiHelper{
 
     public static void getCategoryBrandProducts(int page, String category, String brands, ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String> listener) {
 
-        if (category.equals("root"))
-            category = null;
+        if (category != null)
+            if (category.equals("root"))
+                category = null;
 
         getiApiClient().getCategoryBrandProducts(page, category, brands).enqueue(getResponseCallBackDefault(listener));
     }

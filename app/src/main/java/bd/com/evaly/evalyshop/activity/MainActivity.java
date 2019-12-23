@@ -341,7 +341,7 @@ public class MainActivity extends BaseActivity {
             startActivity(ip);
         }
 
-        exitDialogBuilder = new AlertDialog.Builder(this)
+        exitDialogBuilder = new AlertDialog.Builder(MainActivity.this)
                 .setMessage("Are you sure you want to close the app?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     exitDialog.dismiss();
@@ -541,7 +541,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void update(boolean isCancelable) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
         builder.setTitle("New update available!");
         builder.setMessage("Please update your app");
         builder.setCancelable(isCancelable);
