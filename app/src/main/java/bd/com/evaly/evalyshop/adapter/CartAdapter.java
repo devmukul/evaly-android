@@ -192,7 +192,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
 
-            ((CartActivity) context).updateCartFromRecycler();
+            if (context instanceof CartActivity)
+                ((CartActivity) context).updateCartFromRecycler();
+
+            if (listener != null)
+                listener.updateCartFromRecycler();
+
         });
         myViewHolder.minus.setOnClickListener(v -> {
 
@@ -241,7 +246,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
 
             }
-            ((CartActivity) context).updateCartFromRecycler();
+
+            if (context instanceof CartActivity)
+                ((CartActivity) context).updateCartFromRecycler();
+
+            if (listener != null)
+                listener.updateCartFromRecycler();
         });
 
 
@@ -311,7 +321,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             }
 
-            ((CartActivity) context).updateCartFromRecycler();
+            if (context instanceof CartActivity)
+                ((CartActivity) context).updateCartFromRecycler();
+
+            if (listener != null)
+                listener.updateCartFromRecycler();
                 return true;
         });
 
