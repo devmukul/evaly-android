@@ -37,15 +37,28 @@ public class Balance {
                         userDetails.setGroup(ob.getAsJsonArray("groups").toString());
 
                     userDetails.setUserName(ob.get("username").getAsString());
-                    userDetails.setFirstName(ob.get("first_name").getAsString());
-                    userDetails.setLastName(ob.get("last_name").getAsString());
-                    userDetails.setEmail(ob.get("email").getAsString());
-                    userDetails.setPhone(ob.get("contact").getAsString());
-                    if (!ob.get("address").isJsonNull()){
+
+
+                    if (!ob.get("first_name").isJsonNull())
+                        userDetails.setFirstName(ob.get("first_name").getAsString());
+
+                    if (!ob.get("last_name").isJsonNull())
+                        userDetails.setLastName(ob.get("last_name").getAsString());
+
+                    if (!ob.get("email").isJsonNull())
+                        userDetails.setEmail(ob.get("email").getAsString());
+
+                    if (!ob.get("contact").isJsonNull())
+                        userDetails.setPhone(ob.get("contact").getAsString());
+
+                    if (!ob.get("address").isJsonNull())
                         userDetails.setJsonAddress(ob.get("address").getAsString());
-                    }
-                    userDetails.setProfilePicture(ob.get("profile_pic_url").getAsString());
-                    userDetails.setProfilePictureSM(ob.get("image_sm").getAsString());
+
+                    if (!ob.get("profile_pic_url").isJsonNull())
+                        userDetails.setProfilePicture(ob.get("profile_pic_url").getAsString());
+
+                    if (!ob.get("image_sm").isJsonNull())
+                        userDetails.setProfilePictureSM(ob.get("image_sm").getAsString());
 
                     UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
 
