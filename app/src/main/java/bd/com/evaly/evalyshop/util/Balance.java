@@ -41,13 +41,20 @@ public class Balance {
                     userDetails.setLastName(ob.get("last_name").getAsString());
                     userDetails.setEmail(ob.get("email").getAsString());
                     userDetails.setPhone(ob.get("contact").getAsString());
-                    if (ob.get("address") != null){
+                    if (!ob.get("address").isJsonNull()){
                         userDetails.setJsonAddress(ob.get("address").getAsString());
                     }
                     userDetails.setProfilePicture(ob.get("profile_pic_url").getAsString());
                     userDetails.setProfilePictureSM(ob.get("image_sm").getAsString());
 
                     UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
+
+                    if (ob.get("first_name").isJsonNull())
+                        userModel.setFirst_name("");
+
+                    if (ob.get("last_name").isJsonNull())
+                        userModel.setLast_name("");
+
                     CredentialManager.saveUserData(userModel);
 
                     if (openDashboard) {
