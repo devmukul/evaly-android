@@ -463,5 +463,14 @@ public class AuthApiHelper extends ApiHelper{
 
     }
 
+    // change password
+
+    public static void changePassword(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
+
+        getiApiClient().changePassword(token, body).enqueue(getResponseCallBackDefault(listener));
+
+
+    }
+
 
 }

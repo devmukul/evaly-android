@@ -44,6 +44,10 @@ public interface IApiClient {
     @POST(UrlUtils.LOGIN)
     Call<JsonObject> login(@Body HashMap<String, String> data);
 
+
+    @POST(UrlUtils.CHANGE_PASSWORD)
+    Call<JsonObject> changePassword(@Header("Authorization") String token, @Body HashMap<String, String> data);
+
     @POST(UrlUtils.REFRESH_TOKEN)
     Call<JsonObject> refreshToken(@Body HashMap<String, String> data);
 
