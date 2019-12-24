@@ -21,12 +21,10 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -48,6 +46,7 @@ import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
@@ -171,7 +170,7 @@ public class EditProfileActivity extends BaseActivity {
                 return;
             }
 
-            getUserData();
+            setUserData();
         });
 
     }
@@ -417,86 +416,6 @@ public class EditProfileActivity extends BaseActivity {
 
 
 
-    public void getUserData() {
-        dialog.showDialog();
-
-
-        String url=UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName()+"/";
-
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
-            Log.d("onResponse", response.toString());
-            try {
-
-                JSONObject userJson = response.getJSONObject("data");
-                UserModel userModel = new Gson().fromJson(userJson.toString(), UserModel.class);
-
-                CredentialManager.saveUserData(userModel);
-                JSONObject userInfo = userJson.getJSONObject("user");
-                userInfo.put("first_name", firstname.getText().toString());
-                userInfo.put("last_name", lastName.getText().toString());
-                userInfo.put("email", email.getText().toString());
-                userInfo.put("contact", phone.getText().toString());
-                userInfo.put("address", address.getText().toString());
-                userInfo.put("profile_pic_url", userDetails.getProfilePicture());
-
-                userDetails.setFirstName(firstname.getText().toString());
-                userDetails.setLastName(lastName.getText().toString());
-                userDetails.setEmail(email.getText().toString());
-                userDetails.setPhone(phone.getText().toString());
-                userDetails.setJsonAddress(address.getText().toString());
-
-                setUserData(userInfo);
-
-                // Token.update(EditProfileActivity.this, false);
-
-
-                Log.d("json user info", userJson.toString());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        getUserData();
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-
-                return;
-
-            }}
-
-
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-        };
-        RequestQueue queue = Volley.newRequestQueue(EditProfileActivity.this);
-        queue.add(request);
-    }
-
     private void startXmppService() {
         if( !XMPPService.isServiceRunning ) {
             Intent intent = new Intent(this, XMPPService.class);
@@ -514,68 +433,82 @@ public class EditProfileActivity extends BaseActivity {
         }
     }
 
-    public void setUserData(JSONObject payload) {
+    public void setUserData() {
 
-        String url = UrlUtils.BASE_URL_AUTH+"user-info-update/";
-        Log.d("json user info url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, payload, response -> {
+        dialog.showDialog();
+
+        HashMap<String, String> userInfo =  new HashMap<>();
+
+        userInfo.put("first_name", firstname.getText().toString());
+        userInfo.put("last_name", lastName.getText().toString());
+        userInfo.put("email", email.getText().toString());
+        userInfo.put("contact", phone.getText().toString());
+        userInfo.put("address", address.getText().toString());
+        userInfo.put("profile_pic_url", userDetails.getProfilePicture());
 
 
-            mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
-            dialog.hideDialog();
-            Log.d("json user info response", response.toString());
-            JSONObject data = null;
-            try {
-                data = response.getJSONObject("data");
-                UserModel userModel = new Gson().fromJson(data.toString(), UserModel.class);
+        AuthApiHelper.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-                Logger.d(new Gson().toJson(userModel));
+                mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+                dialog.hideDialog();
+
+                JsonObject ob = response.getAsJsonObject("data");
+
+                if (!ob.get("first_name").isJsonNull())
+                    userDetails.setFirstName(ob.get("first_name").getAsString());
+
+                if (!ob.get("last_name").isJsonNull())
+                    userDetails.setLastName(ob.get("last_name").getAsString());
+
+                if (!ob.get("email").isJsonNull())
+                    userDetails.setEmail(ob.get("email").getAsString());
+
+                if (!ob.get("contact").isJsonNull())
+                    userDetails.setPhone(ob.get("contact").getAsString());
+
+                if (!ob.get("address").isJsonNull())
+                    userDetails.setJsonAddress(ob.get("address").getAsString());
+
+                if (!ob.get("profile_pic_url").isJsonNull())
+                    userDetails.setProfilePicture(ob.get("profile_pic_url").getAsString());
+
+                if (!ob.get("image_sm").isJsonNull())
+                    userDetails.setProfilePictureSM(ob.get("image_sm").getAsString());
+
+                UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
+
+                if (ob.get("first_name").isJsonNull())
+                    userModel.setFirst_name("");
+
+                if (ob.get("last_name").isJsonNull())
+                    userModel.setLast_name("");
+
                 CredentialManager.saveUserData(userModel);
 
                 startXmppService();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        setUserData(payload);
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-
-                return;
-
-            }}
-
-        }) {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                headers.put("Content-Type", "application/json");
-                return headers;
+            public void onFailed(String errorBody, int errorCode) {
+
+                dialog.hideDialog();
             }
-        };
-        RequestQueue queue = Volley.newRequestQueue(EditProfileActivity.this);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+                if (logout)
+                    AppController.logout(EditProfileActivity.this);
+                else
+                    setUserData();
+
+
+            }
+        });
+
     }
 
     @Override

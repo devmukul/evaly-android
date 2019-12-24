@@ -61,16 +61,13 @@ public class ContactActivity extends BaseActivity {
         }
 
         public void onLoggedIn() {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    xmppHandler = AppController.getmService().xmpp;
-                    rosterList = xmppHandler.rosterList;
-//                            Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
-                }
+            AsyncTask.execute(() -> {
+                xmppHandler = AppController.getmService().xmpp;
+                rosterList = xmppHandler.rosterList;
+
+//              Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
             });
         }
-        //On User Presence Changed
 
     };
 
@@ -80,9 +77,7 @@ public class ContactActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        //getSupportActionBar().setElevation(0);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setTitle("Contact us");
+
 
         dialog = new ViewDialog(this);
         rosterList = new ArrayList<>();
@@ -108,12 +103,7 @@ public class ContactActivity extends BaseActivity {
         if (!CredentialManager.getToken().equals("")){
             if (AppController.getmService() != null && AppController.getmService().xmpp != null && AppController.getmService().xmpp.isConnected()) {
                 xmppHandler = AppController.getmService().xmpp;
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        rosterList = xmppHandler.rosterList;
-                    }
-                });
+                AsyncTask.execute(() -> rosterList = xmppHandler.rosterList);
             } else {
                 startXmppService();
             }
@@ -122,11 +112,6 @@ public class ContactActivity extends BaseActivity {
         LinearLayout emailBox = findViewById(R.id.emailBox);
         emailBox.setOnClickListener(v -> {
 
-//            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-//                    "mailto","support@evaly.com.bd", null));
-//            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
-//            emailIntent.putExtra(Intent.EXTRA_TEXT, "");
-//            startActivity(emailIntent);
 
             if (CredentialManager.getToken().equals("")) {
                 Toast.makeText(getApplicationContext(), "Please login to send message", Toast.LENGTH_LONG).show();
@@ -156,22 +141,15 @@ public class ContactActivity extends BaseActivity {
         });
 
 
-        View.OnClickListener openMaps = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("geo:23.754241,90.3726478?q=" + Uri.encode("Evaly.com.bd"));
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(mapIntent);
-                } else {
+        View.OnClickListener openMaps = v -> {
+            Uri gmmIntentUri = Uri.parse("geo:23.754241,90.3726478?q=" + Uri.encode("Evaly.com.bd"));
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+            } else {
 
-
-                    Utils.CustomTab("https://g.page/evaly-com-bd?share", ContactActivity.this);
-
-
-
-                }
+                Utils.CustomTab("https://g.page/evaly-com-bd?share", ContactActivity.this);
             }
         };
 
@@ -179,10 +157,8 @@ public class ContactActivity extends BaseActivity {
         LinearLayout mapsBox = findViewById(R.id.mapsBox);
         mapsBox.setOnClickListener(openMaps);
 
-
         View mapsView = findViewById(R.id.mapOpener);
         mapsView.setOnClickListener(openMaps);
-
 
         ImageView back = findViewById(R.id.backArrow);
         back.setOnClickListener(v -> finish());
@@ -235,24 +211,12 @@ public class ContactActivity extends BaseActivity {
         super.onResume();
         mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
 
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (xmppHandler != null){
-                    rosterList = xmppHandler.rosterList;
-                }
+        AsyncTask.execute(() -> {
+            if (xmppHandler != null){
+                rosterList = xmppHandler.rosterList;
             }
         });
     }
 
-    //    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                onBackPressed();
-//                return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+
 }

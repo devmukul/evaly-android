@@ -29,6 +29,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -44,9 +45,14 @@ public interface IApiClient {
     @POST(UrlUtils.LOGIN)
     Call<JsonObject> login(@Body HashMap<String, String> data);
 
-
     @POST(UrlUtils.CHANGE_PASSWORD)
     Call<JsonObject> changePassword(@Header("Authorization") String token, @Body HashMap<String, String> data);
+
+    @GET(UrlUtils.BASE_URL_AUTH + "user-info-pay/{username}/")
+    Call<JsonObject> getUserInfoPay(@Header("Authorization") String token, @Path("username") String username);
+
+    @PUT(UrlUtils.BASE_URL_AUTH+"user-info-update/")
+    Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
     @POST(UrlUtils.REFRESH_TOKEN)
     Call<JsonObject> refreshToken(@Body HashMap<String, String> data);
@@ -94,9 +100,6 @@ public interface IApiClient {
     @GET(UrlUtils.GET_BANNERS)
     Call<JsonObject> getBanners(@Header("Authorization") String token);
 
-
-    @GET(UrlUtils.BASE_URL_AUTH + "user-info-pay/{username}/")
-    Call<JsonObject> getUserInfoPay(@Header("Authorization") String token, @Path("username") String username);
 
 
 

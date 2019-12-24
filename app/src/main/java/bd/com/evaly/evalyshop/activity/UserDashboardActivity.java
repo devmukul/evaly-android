@@ -343,6 +343,9 @@ public class UserDashboardActivity extends BaseActivity {
                     .into(profilePicNav);
         }
 
+        name.setText(String.format("%s %s", userDetails.getFirstName(), userDetails.getLastName()));
+        address.setText(userDetails.getJsonAddress());
+
 
     }
 

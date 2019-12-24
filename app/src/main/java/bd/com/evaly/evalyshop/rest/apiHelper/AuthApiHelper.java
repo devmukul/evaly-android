@@ -473,4 +473,13 @@ public class AuthApiHelper extends ApiHelper{
     }
 
 
+    // update profile data
+
+    public static void setUserData(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
+
+        getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
+
+
+    }
+
 }
