@@ -1,11 +1,11 @@
 package bd.com.evaly.evalyshop.adapter;
 
 
+import android.util.Log;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +40,5 @@ public class BaseViewPagerAdapter extends FragmentStatePagerAdapter {
 
         return mFragmentTitleList.get(position);
     }
-
-
-
-
-
 
 }

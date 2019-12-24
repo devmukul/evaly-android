@@ -2,17 +2,20 @@ package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.Locale;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.MainActivity;
 import bd.com.evaly.evalyshop.models.Products;
@@ -36,7 +39,6 @@ public class ViewProductAdapter extends RecyclerView.Adapter<ViewProductAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        // Log.d("view_product",products.get(position).getName());
 
         if(products.get(position).getName().contains("-")){
             String[] s=products.get(position).getName().split("-");
@@ -53,8 +55,8 @@ public class ViewProductAdapter extends RecyclerView.Adapter<ViewProductAdapter.
                 .load(products.get(position).getThumbnailSM())
                 .into(holder.image);
 
-        holder.price.setText("৳ " + products.get(position).getPriceMin());
-        //holder.sku.setText(products.get(position).getSku());
+        holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", products.get(position).getPriceMin()));
+
     }
 
     @Override
@@ -73,12 +75,7 @@ public class ViewProductAdapter extends RecyclerView.Adapter<ViewProductAdapter.
             price=itemView.findViewById(R.id.price);
             image= itemView.findViewById(R.id.image);
             //sku=itemView.findViewById(R.id.sku);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    context.startActivity(new Intent(context, MainActivity.class));
-                }
-            });
+            itemView.setOnClickListener(view -> context.startActivity(new Intent(context, MainActivity.class)));
         }
     }
 }

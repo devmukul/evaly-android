@@ -115,7 +115,6 @@ public class SliderAdapter extends PagerAdapter {
 
             }
 
-
             if (itemList.get(position).getUrl().contains("evaly.com.bd/shops")) {
 
                     String[] ar = itemList.get(position).getUrl().split("/shops/");

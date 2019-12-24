@@ -1,10 +1,6 @@
 package bd.com.evaly.evalyshop.adapter;
 
 import android.app.Activity;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +9,9 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -166,23 +165,17 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            llContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            llContainer.setOnClickListener(view -> {
 //                    cbUsers.setChecked(!cbUsers.isChecked());
-                    list.get(getLayoutPosition()).isSelected = !list.get(getLayoutPosition()).isSelected;
-                    notifyItemChanged(getLayoutPosition());
-                    listener.onUserSelected(list.get(getLayoutPosition()), list.get(getLayoutPosition()).isSelected);
-                }
+                list.get(getLayoutPosition()).isSelected = !list.get(getLayoutPosition()).isSelected;
+                notifyItemChanged(getLayoutPosition());
+                listener.onUserSelected(list.get(getLayoutPosition()), list.get(getLayoutPosition()).isSelected);
             });
 
-            cbUsers.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    list.get(getLayoutPosition()).isSelected = !list.get(getLayoutPosition()).isSelected;
-                    notifyItemChanged(getLayoutPosition());
-                    listener.onUserSelected(list.get(getLayoutPosition()), list.get(getLayoutPosition()).isSelected);
-                }
+            cbUsers.setOnClickListener(view -> {
+                list.get(getLayoutPosition()).isSelected = !list.get(getLayoutPosition()).isSelected;
+                notifyItemChanged(getLayoutPosition());
+                listener.onUserSelected(list.get(getLayoutPosition()), list.get(getLayoutPosition()).isSelected);
             });
 
 //            llSend.setOnClickListener(new View.OnClickListener() {

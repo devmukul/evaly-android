@@ -2,13 +2,14 @@ package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -46,10 +47,6 @@ public class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.
 
         if(i == orderStatuses.size()-1)
             myViewHolder.lineBottom.setBackgroundColor(Color.WHITE);
-
-
-
-
     }
 
     @Override

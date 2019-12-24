@@ -1,8 +1,6 @@
 package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +8,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
+import java.util.Locale;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.fragment.VoucherListFragment;
 import bd.com.evaly.evalyshop.models.VoucherDetails;
@@ -36,17 +40,10 @@ public class VoucherDetailsAdapter extends RecyclerView.Adapter<VoucherDetailsAd
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.tv.setText(voucherDetails.get(i).getName());
-        myViewHolder.amount.setText("৳ "+voucherDetails.get(i).getAmount());
+        myViewHolder.amount.setText(String.format(Locale.ENGLISH, "৳ %d", voucherDetails.get(i).getAmount()));
         Glide.with(context).load(voucherDetails.get(i).getThumnailImage()).placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
 
-        myViewHolder.lin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                VoucherListFragment.getInstance().toggleBottomSheet(voucherDetails.get(i).getSlug());
-            }
-        });
+        myViewHolder.lin.setOnClickListener(v -> VoucherListFragment.getInstance().toggleBottomSheet(voucherDetails.get(i).getSlug()));
     }
 
     @Override

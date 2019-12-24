@@ -83,17 +83,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onRefresh() {
 
         swipeLayout.setRefreshing(false);
-
         refreshFragment();
-
-
     }
 
     public HomeFragment() {
         // Required empty public constructor
     }
-
-
 
 
     @Override
@@ -114,7 +109,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
 
     }
-
 
 
     @Override
@@ -376,14 +370,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     sliderImages = new Gson().fromJson(response.body().get("results"), new TypeToken<List<BannerItem>>(){}.getType());
                     sliderPager.setAdapter(new SliderAdapter(context, activity, sliderImages));
                     sliderIndicator.setupWithViewPager(sliderPager, true);
-                }else {
-                    // Toast.makeText(getContext(), getContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailed(int status) {
-                // Toast.makeText(getContext(), getContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+
             }
         });
 

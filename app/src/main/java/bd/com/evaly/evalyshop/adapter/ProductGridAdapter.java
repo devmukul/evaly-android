@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -106,15 +107,15 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
         }
 
-
-        Glide.with(mContext)
-                .asBitmap()
-                .skipMemoryCache(true)
-                .apply(new RequestOptions().override(260, 260))
-                .load(productsList.get(position).getImageUrls().get(0))
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_placeholder_small)
-                .into(holder.imageViewAndroid);
+        if (mContext != null)
+            Glide.with(mContext)
+                    .asBitmap()
+                    .skipMemoryCache(true)
+                    .apply(new RequestOptions().override(260, 260))
+                    .load(productsList.get(position).getImageUrls().get(0))
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .placeholder(R.drawable.ic_placeholder_small)
+                    .into(holder.imageViewAndroid);
 
 
         if((productsList.get(position).getMinPriceD()==0) || (productsList.get(position).getMaxPriceD()==0)){
@@ -125,18 +126,18 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
             if (productsList.get(position).getMinDiscountedPriceD() < productsList.get(position).getMinPriceD()){
 
-                holder.priceDiscount.setText("৳ " +(int) productsList.get(position).getMinPriceD());
+                holder.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) productsList.get(position).getMinPriceD()));
                 holder.priceDiscount.setVisibility(View.VISIBLE);
                 holder.priceDiscount.setPaintFlags(holder.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-                holder.price.setText("৳ " +(int)productsList.get(position).getMinDiscountedPriceD());
+                holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) productsList.get(position).getMinDiscountedPriceD()));
 
             } else {
                 holder.priceDiscount.setVisibility(View.GONE);
-                holder.price.setText("৳ " +(int)productsList.get(position).getMinPriceD());
+                holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) productsList.get(position).getMinPriceD()));
             }
         } else {
-            holder.price.setText("৳ " + (int)productsList.get(position).getMinPriceD());
+            holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) productsList.get(position).getMinPriceD()));
         }
 
 
@@ -148,7 +149,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
         else {
             holder.tvCashback.setVisibility(View.VISIBLE);
             holder.tvCashback.bringToFront();
-            holder.tvCashback.setText(cashback_rate+"% Cashback");
+            holder.tvCashback.setText(String.format(Locale.ENGLISH, "%d%% Cashback", cashback_rate));
         }
 
 

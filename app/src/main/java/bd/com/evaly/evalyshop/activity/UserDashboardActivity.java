@@ -9,14 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -26,7 +24,6 @@ import com.orhanobut.logger.Logger;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +32,6 @@ import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.activity.orderDetails.PayViaBkashActivity;
-import bd.com.evaly.evalyshop.adapter.AddressAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
@@ -58,12 +54,6 @@ public class UserDashboardActivity extends BaseActivity {
     Context context;
     TextView name, balance, address;
     UserDetails userDetails;
-    ImageView addAddress;
-    EditText addressET;
-    RecyclerView addressList;
-    ArrayList<String> addresses;
-    ArrayList<Integer> addressID;
-    AddressAdapter addressAdapter;
     Map<String, String> map;
     String from = "";
     ViewDialog alert;

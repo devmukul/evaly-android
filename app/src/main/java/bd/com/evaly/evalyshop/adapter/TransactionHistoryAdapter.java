@@ -1,14 +1,18 @@
 package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
+import java.util.Locale;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -33,23 +37,11 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
-
-
         myViewHolder.messages.setText(itemList.get(i).getEvent());
-
-
-
-//        myViewHolder.view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                context.startActivity(new Intent(context, OrderListActivity.class));
-//            }
-//        });
-
 
         myViewHolder.time.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM", itemList.get(i).getDate_time()));
 
-        myViewHolder.amount.setText("৳ " + itemList.get(i).getAmount());
+        myViewHolder.amount.setText(String.format(Locale.ENGLISH, "৳ %d", itemList.get(i).getAmount()));
 
     }
 

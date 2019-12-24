@@ -128,17 +128,6 @@ public class BrowseProductFragment extends Fragment {
 
         tabLayoutSub = view.findViewById(R.id.tab_layout_sub_cat);
 
-//        try {
-//
-//            skeletonTabHeader = Skeleton.bind(tabLayoutSub)
-//                    .load(R.layout.skeleton_tablayout_header)
-//                    .color(R.color.ddd)
-//                    .show();
-//
-//        } catch (Exception e){
-//
-//        }
-
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view1 -> {
             Intent intent = new Intent(getContext(), GlobalSearchActivity.class);

@@ -71,9 +71,6 @@ public class HomeTabsFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_category, container, false);
@@ -94,7 +91,6 @@ public class HomeTabsFragment extends Fragment {
 
         return view;
     }
-
 
 
     @Override
@@ -376,11 +372,8 @@ public class HomeTabsFragment extends Fragment {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
 
-
                 if (onDoneListener != null)
                     onDoneListener.onDone();
-
-
                 progressBar2.setVisibility(View.GONE);
                 try {
 

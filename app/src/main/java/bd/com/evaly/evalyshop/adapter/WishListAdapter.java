@@ -6,8 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -26,9 +27,9 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
+import bd.com.evaly.evalyshop.models.WishList;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
-import bd.com.evaly.evalyshop.models.WishList;
 
 public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyViewHolder>{
 
@@ -39,7 +40,6 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
     WishListAdapter instance;
 
     WishListListener listener;
-
 
     public interface WishListListener{
 
@@ -53,10 +53,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
         this.listener = listener;
 
         db = new DbHelperWishList(context);
-
-
         instance = this;
-
     }
 
     @NonNull
@@ -88,27 +85,21 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
                           }
                 )
                 .into(myViewHolder.productImage);
-        myViewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(context, ViewProductActivity.class);
-                intent.putExtra("product_slug",wishlist.get(i).getProductSlug());
-                intent.putExtra("product_name",wishlist.get(i).getName());
-                context.startActivity(intent);
-            }
+        myViewHolder.view.setOnClickListener(v -> {
+            Intent intent=new Intent(context, ViewProductActivity.class);
+            intent.putExtra("product_slug",wishlist.get(i).getProductSlug());
+            intent.putExtra("product_name",wishlist.get(i).getName());
+            context.startActivity(intent);
         });
-        myViewHolder.trash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                db.deleteData(wishlist.get(i).getId());
+        myViewHolder.trash.setOnClickListener(v -> {
+            db.deleteData(wishlist.get(i).getId());
 
-                wishlist.remove(i);
-                instance.notifyItemRemoved(i);
-                notifyItemRangeChanged(i, wishlist.size());
+            wishlist.remove(i);
+            instance.notifyItemRemoved(i);
+            notifyItemRangeChanged(i, wishlist.size());
 
-                listener.checkEmpty();
+            listener.checkEmpty();
 
-            }
         });
     }
 

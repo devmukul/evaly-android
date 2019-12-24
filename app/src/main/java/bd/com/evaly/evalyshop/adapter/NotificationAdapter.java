@@ -2,8 +2,6 @@ package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,10 +84,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 context.startActivity(intent);
             }
 
-
-
-
-
         });
 
 
@@ -115,33 +109,5 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
     }
 
-    private double colorDistance(int a, int b) {
-        return Math.sqrt(Math.pow(Color.red(a) - Color.red(b), 2) + Math.pow(Color.blue(a) - Color.blue(b), 2) + Math.pow(Color.green(a) - Color.green(b), 2));
-    }
 
-
-    public Bitmap changeColor(Bitmap src, int fromColor, int targetColor) {
-        if(src == null) {
-            return null;
-        }
-        // Source image size
-        int width = src.getWidth();
-        int height = src.getHeight();
-        int[] pixels = new int[width * height];
-        //get pixels
-        src.getPixels(pixels, 0, width, 0, 0, width, height);
-
-        for(int x = 0; x < pixels.length; ++x) {
-
-            if(colorDistance(pixels[x], fromColor) < 10)
-                pixels[x] = targetColor;
-
-        }
-        // create result bitmap output
-        Bitmap result = Bitmap.createBitmap(width, height, src.getConfig());
-        //set pixels
-        result.setPixels(pixels, 0, width, 0, 0, width, height);
-
-        return result;
-    }
 }

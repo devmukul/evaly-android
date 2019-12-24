@@ -1,8 +1,6 @@
 package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +8,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.MyVoucherInfo;
@@ -41,31 +44,24 @@ public class MyVoucherAdapter extends RecyclerView.Adapter<MyVoucherAdapter.MyVi
             myViewHolder.orderID.setText(myVoucherInfos.get(i).getInvoiceNumber());
 
             try {
-
                 myViewHolder.orderDate.setText(Utils.formattedDateFromString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'","dd MMM, hh:mm a", myVoucherInfos.get(i).getDate()));
-
             } catch (Exception e) {
                 myViewHolder.orderDate.setText( myVoucherInfos.get(i).getDate());
                 e.printStackTrace();
             }
 
-
             try {
-
                 myViewHolder.applicableDate.setText(Utils.formattedDateFromString("yyyy-MM-dd'T'HH:mm:ss'Z'","dd MMM, hh:mm a", myVoucherInfos.get(i).getApplicableDate()));
-
             } catch (Exception e) {
                 myViewHolder.applicableDate.setText(myVoucherInfos.get(i).getApplicableDate());
                 e.printStackTrace();
             }
 
-
-
-            myViewHolder.quantity.setText("TK. "+myVoucherInfos.get(i).getAmount()+" x "+myVoucherInfos.get(i).getQuantity());
+            myViewHolder.quantity.setText(String.format(Locale.ENGLISH, "TK. %d x %d", myVoucherInfos.get(i).getAmount(), myVoucherInfos.get(i).getQuantity()));
             myViewHolder.status.setText(myVoucherInfos.get(i).getApplyStatus());
-            myViewHolder.holdingAmount.setText(myVoucherInfos.get(i).getClaimAmount()+"");
-            myViewHolder.totalPrice.setText(myVoucherInfos.get(i).getTotalPrice()+" BDT");
-            myViewHolder.totalPaid.setText(myVoucherInfos.get(i).getTotalPaid()+" BDT");
+            myViewHolder.holdingAmount.setText(String.format(Locale.ENGLISH,"%d", myVoucherInfos.get(i).getClaimAmount()));
+            myViewHolder.totalPrice.setText(String.format(Locale.ENGLISH, "%d BDT", myVoucherInfos.get(i).getTotalPrice()));
+            myViewHolder.totalPaid.setText(String.format(Locale.ENGLISH, "%d BDT", myVoucherInfos.get(i).getTotalPaid()));
             myViewHolder.paymentStatus.setText(myVoucherInfos.get(i).getPaymentStatus());
             if(myVoucherInfos.get(i).getPaymentStatus().equals("Submitted") || myVoucherInfos.get(i).getPaymentStatus().equals("Paid")){
                 myViewHolder.pay.setVisibility(View.GONE);
@@ -73,17 +69,11 @@ public class MyVoucherAdapter extends RecyclerView.Adapter<MyVoucherAdapter.MyVi
                 myViewHolder.pay.setVisibility(View.VISIBLE);
             }
             Glide.with(context).load(myVoucherInfos.get(i).getVoucherImage()).placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.voucherImage);
-            myViewHolder.pay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String str[]=myViewHolder.totalPrice.getText().toString().split(" ");
-                    int amountPay=Integer.parseInt(str[0]);
+            myViewHolder.pay.setOnClickListener(v -> {
+                String str[]=myViewHolder.totalPrice.getText().toString().split(" ");
+                int amountPay=Integer.parseInt(str[0]);
+                Toast.makeText(context,"Payment time is over", Toast.LENGTH_SHORT).show();
 
-
-                    Toast.makeText(context,"Payment time is over", Toast.LENGTH_SHORT).show();
-
-                    //VoucherMyListFragment.getInstance().toggleBottomSheet(myVoucherInfos.get(i).getInvoiceNumber(),myVoucherInfos.get(i).getVoucherSlug(),amountPay);
-                }
             });
         }catch(Exception e){
             //Toast.makeText(context, "Sorry something went wrong", Toast.LENGTH_SHORT).show();

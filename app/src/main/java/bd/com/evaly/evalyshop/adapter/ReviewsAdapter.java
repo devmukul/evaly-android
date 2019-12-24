@@ -2,15 +2,17 @@ package bd.com.evaly.evalyshop.adapter;
 
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.ReviewItem;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -36,15 +38,10 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.name.setText(itemList.get(i).getUser_name());
 
-        try
-        {
-
+        try {
             myViewHolder.time.setText(Utils.formattedDateFromString("","hh:mm aa - d',' MMMM", itemList.get(i).getTime()));
-
         } catch (Exception e) {
-
             myViewHolder.time.setText(Utils.getTimeAgo(Integer.parseInt(itemList.get(i).getTime()) * 1000));
-
         }
 
         myViewHolder.reviewText.setText(itemList.get(i).getRating_text());
@@ -53,8 +50,6 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
             myViewHolder.reviewText.setVisibility(View.GONE);
 
         myViewHolder.ratingBar.setRating((float) itemList.get(i).getRating_value());
-
-
 
     }
 

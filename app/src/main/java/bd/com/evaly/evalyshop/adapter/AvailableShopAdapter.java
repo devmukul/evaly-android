@@ -32,6 +32,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Set;
 
 import bd.com.evaly.evalyshop.R;
@@ -67,7 +68,6 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         return new MyViewHolder(view);
     }
 
-
     View.OnClickListener storeClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -79,10 +79,8 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
             intent.putExtra("shop_name", availableShops.get(i).getName());
             intent.putExtra("category", availableShops.get(i).getSlug());
             context.startActivity(intent);
-
         }
     };
-
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
@@ -94,7 +92,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
             myViewHolder.address.setText(availableShops.get(i).getAddress());
 
 
-        if(availableShops.get(i).getStock()==false){
+        if(!availableShops.get(i).getStock()){
             myViewHolder.buyBtn.setText("Out of Stock");
             myViewHolder.buyBtn.setEnabled(false);
         }
@@ -107,7 +105,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
             if (availableShops.get(i).getDiscountValue() == 0) {
 
-                myViewHolder.price.setText("৳ " + actualPrice);
+                myViewHolder.price.setText(String.format(Locale.ENGLISH, "৳ %s", actualPrice));
                 myViewHolder.maximumnPrice.setVisibility(View.GONE);
 
                 if(actualPrice.equals("0")){
@@ -121,15 +119,13 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
             }
             else {
                 myViewHolder.maximumnPrice.setPaintFlags(myViewHolder.maximumnPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                myViewHolder.price.setText("৳ " + discountPrice);
-                myViewHolder.maximumnPrice.setText("৳ " + actualPrice);
+                myViewHolder.price.setText(String.format("৳ %s", discountPrice));
+                myViewHolder.maximumnPrice.setText(String.format("৳ %s", actualPrice));
                 myViewHolder.maximumnPrice.setVisibility(View.VISIBLE);
             }
 
         } catch (Exception e){
-
-            myViewHolder.price.setText(" " + availableShops.get(i).getPrice());
-
+            myViewHolder.price.setText(String.format(" %s", availableShops.get(i).getPrice()));
         }
 
         Glide.with(context)
@@ -154,10 +150,8 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
         myViewHolder.chatBtn.setOnClickListener(v -> Toast.makeText(context,"Chat system coming soon!", Toast.LENGTH_SHORT).show());
 
-
         if(myViewHolder.buyBtn.getText().toString().equals("Out of Stock"))
             myViewHolder.buyBtn.setEnabled(false);
-
 
         myViewHolder.buyBtn.setOnClickListener(v -> {
 
@@ -173,40 +167,29 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                 cartItem.setSlug(availableShops.get(i).getSlug());
                 cartItem.setProductId(availableShops.get(i).getProductId());
 
-
-
                 if (availableShops.get(i).getDiscountValue() == 0) {
 
                     if (((int) Double.parseDouble(availableShops.get(i).getMaximumPrice())) < 1) {
                         Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
                         return;
                     }
-
                     try {
                         cartItem.setPrice((int) Math.round(Double.parseDouble(availableShops.get(i).getMaximumPrice())));
                     } catch (Exception e){
                         cartItem.setPrice(0);
                     }
-
-
-
                 } else {
 
                     if (((int) Double.parseDouble(availableShops.get(i).getPrice())) < 1) {
                         Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
                         return;
                     }
-
                     try {
                         cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getPrice()));
                     } catch (Exception e){
                         cartItem.setPrice(0);
                     }
-
                 }
-
-
-
 
                 cartItem.setQuantity(1);
                 cartItem.setSelected(true);
@@ -217,13 +200,11 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
                     Snackbar snackBar = Snackbar.make(view,"Added to cart", 1500);
                     snackBar.setAction("Go to Cart", v1 -> {
-
                         try {
 
                             Intent intent = new Intent(context, CartActivity.class);
                             context.startActivity(intent);
-
-                        } catch (Exception e){}
+                        } catch (Exception ignored){}
 
                         snackBar.dismiss();
                     });
@@ -259,7 +240,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
                         context.startActivity(intent);
 
-                    } catch (Exception e){}
+                    } catch (Exception ignored){}
 
                     snackBar.dismiss();
                 });
@@ -271,14 +252,12 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         myViewHolder.location.setOnClickListener(v -> {
 
                 final String location;
-
                 if(availableShops.get(i).getAddress().equals("xxx"))
                     location = "Dhaka, Bangladesh";
                 else
                    location = availableShops.get(i).getAddress();
 
                 final Snackbar snackBar = Snackbar.make(view, location+"", Snackbar.LENGTH_LONG);
-
                 snackBar.setAction("Copy", v13 -> {
 
                     try {
@@ -290,7 +269,6 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                     snackBar.dismiss();
                 });
                 snackBar.show();
-
         });
 
     }

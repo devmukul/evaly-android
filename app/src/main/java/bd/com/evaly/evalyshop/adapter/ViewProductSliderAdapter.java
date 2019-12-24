@@ -2,23 +2,23 @@ package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ImagePreview;
 
@@ -68,17 +68,14 @@ public class ViewProductSliderAdapter extends PagerAdapter {
 
         ViewPager viewPager = (ViewPager) container;
         viewPager.addView(view, 0);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(context, ImagePreview.class);
-                    intent.putExtra("image", imgURL);
-                    //Toast.makeText(context, imgURL, Toast.LENGTH_SHORT).show();
-                    context.startActivity(intent);
-                } catch (Exception e){
-                    Toast.makeText(context, "High resolution image not available.", Toast.LENGTH_SHORT).show();
-                }
+        view.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(context, ImagePreview.class);
+                intent.putExtra("image", imgURL);
+                //Toast.makeText(context, imgURL, Toast.LENGTH_SHORT).show();
+                context.startActivity(intent);
+            } catch (Exception e){
+                Toast.makeText(context, "High resolution image not available.", Toast.LENGTH_SHORT).show();
             }
         });
 

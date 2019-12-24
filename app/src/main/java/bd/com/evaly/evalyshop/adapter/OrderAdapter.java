@@ -66,7 +66,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             myViewHolder.status.setText(orderStatus);
         }
 
-
         try {
             myViewHolder.paymentStatus.setText(Utils.toFirstCharUpperAll(paymentStatus));
         }catch (Exception e){
@@ -106,9 +105,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             myViewHolder.status.setBackgroundColor(Color.parseColor("#5ac1de"));
 
 
-       // getOrderImage(myViewHolder.orderImage,myViewHolder.orderID.getText().toString());
-
-
         myViewHolder.phone.setText(userDetails.getPhone());
         myViewHolder.view.setOnClickListener(v -> {
 
@@ -132,7 +128,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView orderID,date,phone,status,paymentStatus;
-        //ImageView orderImage;
         View view;
         public MyViewHolder(final View itemView) {
             super(itemView);
@@ -141,7 +136,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             paymentStatus = itemView.findViewById(R.id.paymentStatus);
             phone=itemView.findViewById(R.id.phone);
             date=itemView.findViewById(R.id.date);
-           // orderImage=itemView.findViewById(R.id.order_image);
             view = itemView;
         }
     }

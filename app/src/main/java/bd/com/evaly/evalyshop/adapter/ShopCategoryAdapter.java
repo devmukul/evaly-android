@@ -5,12 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -53,7 +54,6 @@ public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapte
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.tv.setText(itemlist.get(position).getTitle());
 
-
         Glide.with(context)
                 .load(itemlist.get(position).getImage())
                 .listener(new RequestListener<Drawable>() {
@@ -72,17 +72,7 @@ public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapte
                 .placeholder(R.drawable.ic_placeholder_small)
                 .into(holder.iv);
 
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                    shopFragment.showProductsByCategory(itemlist.get(position).getTitle(), itemlist.get(position).getSlug(),position);
-
-
-            }
-        });
-
+        holder.view.setOnClickListener(view -> shopFragment.showProductsByCategory(itemlist.get(position).getTitle(), itemlist.get(position).getSlug(),position));
 
     }
 

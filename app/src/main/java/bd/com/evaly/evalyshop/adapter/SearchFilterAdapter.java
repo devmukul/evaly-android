@@ -2,15 +2,17 @@ package bd.com.evaly.evalyshop.adapter;
 
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
+import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.SearchFilterItem;
@@ -62,22 +64,17 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterAdapte
 
         }
 
-
-
         myViewHolder.type.setText(typeString);
         myViewHolder.name.setText(SearchFilterItems.get(i).getName());
-        myViewHolder.count.setText(SearchFilterItems.get(i).getCount() + "");
+        myViewHolder.count.setText(String.format(Locale.ENGLISH, "%d", SearchFilterItems.get(i).getCount()));
 
 
-        myViewHolder.name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myViewHolder.name.setOnClickListener(v -> {
 
-                if (SearchFilterItems.get(i).isSelected()) {
-                    SearchFilterItems.get(i).setSelected(false);
-                } else {
-                    SearchFilterItems.get(i).setSelected(true);
-                }
+            if (SearchFilterItems.get(i).isSelected()) {
+                SearchFilterItems.get(i).setSelected(false);
+            } else {
+                SearchFilterItems.get(i).setSelected(true);
             }
         });
 

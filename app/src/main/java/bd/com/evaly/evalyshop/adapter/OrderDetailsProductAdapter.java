@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
@@ -49,8 +50,8 @@ public class OrderDetailsProductAdapter extends RecyclerView.Adapter<OrderDetail
             myViewHolder.variation.setText(orderDetailsProducts.get(i).getVariation());
         }
 
-        myViewHolder.amount.setText(Math.round(Double.parseDouble(orderDetailsProducts.get(i).getAmount()))+"");
-        myViewHolder.productQuantity.setText(Math.round(Double.parseDouble(orderDetailsProducts.get(i).getProductRate()))+" x "+orderDetailsProducts.get(i).getProductQuantity());
+        myViewHolder.amount.setText(String.format(Locale.ENGLISH, "%d", Math.round(Double.parseDouble(orderDetailsProducts.get(i).getAmount()))));
+        myViewHolder.productQuantity.setText(String.format(Locale.ENGLISH, "%d x %s", Math.round(Double.parseDouble(orderDetailsProducts.get(i).getProductRate())), orderDetailsProducts.get(i).getProductQuantity()));
         Glide.with(context).
                 load(orderDetailsProducts.get(i).getImageUrl())
                 .apply(new RequestOptions().override(300, 300))
@@ -64,8 +65,6 @@ public class OrderDetailsProductAdapter extends RecyclerView.Adapter<OrderDetail
             context.startActivity(intent);
 
         });
-
-
 
     }
 

@@ -103,7 +103,7 @@ public class BrandFragment extends Fragment {
             });
 
 
-        InitializeActionBar InitializeActionbar = new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "brand");
+        new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "brand");
 
         name = view.findViewById(R.id.name);
         categoryName = view.findViewById(R.id.categoryName);
@@ -111,7 +111,6 @@ public class BrandFragment extends Fragment {
         number = view.findViewById(R.id.number);
         logo = view.findViewById(R.id.logo);
         placeHolder=view.findViewById(R.id.placeholder_image);
-        progressBar=view.findViewById(R.id.progressBar);
 
 
         LinearLayout homeSearch=view.findViewById(R.id.home_search);
@@ -139,31 +138,30 @@ public class BrandFragment extends Fragment {
         name.setText(title);
         categoryName.setText(categoryString);
 
-        Glide.with(getContext())
-                .load(imgUrl)
-                .listener(new RequestListener<Drawable>() {
-                              @Override
-                              public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                  return false;
+        if (getContext() != null)
+            Glide.with(getContext())
+                    .load(imgUrl)
+                    .listener(new RequestListener<Drawable>() {
+                                  @Override
+                                  public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                      return false;
+                                  }
+                                  @Override
+                                  public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                      Bitmap bitmap = Utils.changeColor(((BitmapDrawable)resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
+                                      logo.setImageBitmap(bitmap);
+                                      return true;
+                                  }
                               }
-                              @Override
-                              public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                  Bitmap bitmap = Utils.changeColor(((BitmapDrawable)resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
-                                  logo.setImageBitmap(bitmap);
-                                  return true;
-                              }
-                          }
-                )
-                .into(logo);
+                    )
+                    .into(logo);
 
         nestedSV = view.findViewById(R.id.stickyScrollView);
         if (nestedSV != null) {
 
             nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                String TAG = "nested_sync";
 
                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    Log.i(TAG, "BOTTOM SCROLL");
                     try{
                         productGrid.loadNextBrandProducts();
                     }catch(Exception e){
@@ -183,7 +181,6 @@ public class BrandFragment extends Fragment {
                     LinearLayout noItem = view.findViewById(R.id.noItem);
                     noItem.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
-                    // Toast.makeText(context, "No product is available", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -198,14 +195,12 @@ public class BrandFragment extends Fragment {
     }
 
 
-
     private String capitalize(String capString){
         StringBuffer capBuffer = new StringBuffer();
         Matcher capMatcher = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(capString);
         while (capMatcher.find()){
             capMatcher.appendReplacement(capBuffer, capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
         }
-
         return capMatcher.appendTail(capBuffer).toString();
     }
 

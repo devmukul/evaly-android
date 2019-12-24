@@ -1,10 +1,6 @@
 package bd.com.evaly.evalyshop.adapter;
 
 import android.content.Context;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -17,11 +13,13 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -127,8 +125,6 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filtera
                     text = constraint.toString();
 
                     if(!containsSubString(data,text.toLowerCase())) {
-
-
                         String query = constraint.toString();
 
                         query = query.replaceAll(" ", "+");
@@ -136,47 +132,27 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filtera
                         String url = server + query;
 
                         try {
-                            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
+                            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
 
+                                try {
 
-                                    try {
+                                    JSONArray list = response.getJSONArray("result");
+                                    ArrayList<String> suggestions = new ArrayList<>();
+                                    list = shuffleJsonArray(list);
+                                    list = removeRandom(list);
 
-                                        JSONArray list = response.getJSONArray("result");
-
-                                        ArrayList<String> suggestions = new ArrayList<>();
-
-                                        list = shuffleJsonArray(list);
-
-                                        list = removeRandom(list);
-
-
-                                        for (int i = 0; i < list.length(); i++) {
-
-                                            String term = list.getJSONObject(i).getJSONObject("model").getString("query");
-
-                                            suggestions.add(term);
-
-                                        }
-
-                                        data = suggestions;
-
-
-                                        notifyDataSetChanged();
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                                    for (int i = 0; i < list.length(); i++) {
+                                        String term = list.getJSONObject(i).getJSONObject("model").getString("query");
+                                        suggestions.add(term);
                                     }
 
+                                    data = suggestions;
+                                    notifyDataSetChanged();
 
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Log.e("onErrorResponse", error.toString());
-                                }
-                            }) {
+                            }, error -> Log.e("onErrorResponse", error.toString())) {
                                 @Override
                                 public Map<String, String> getHeaders() throws AuthFailureError {
                                     Map<String, String> headers = new HashMap<>();
@@ -191,31 +167,12 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filtera
                             ex.printStackTrace();
                         }
 
-
                     } else {
 
-
-
-                        ArrayList<String> suggestions = new ArrayList<>();
-
-                        for (int i = 0; i < data.size(); i++) {
-
-                            String term = data.get(i);
-
-                                suggestions.add(term);
-
-                        }
-
-                        //data = suggestions;
-
-                        //notifyDataSetChanged();
-
-
+                        ArrayList<String> suggestions = new ArrayList<>(data);
                         results.values = suggestions;//.toArray();
                         results.count = suggestions.size();
-
                     }
-
                 }
                 return results;
             }
@@ -248,28 +205,17 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filtera
 
 
     public static JSONArray removeRandom(JSONArray array) throws JSONException{
-
-
         Random r = new Random();
-
-
         JSONArray newArray = array;
 
         int needToRemove = (int) (array.length()/3);
 
-
         for (int i =0; i < needToRemove; i++) {
 
             int result = r.nextInt(array.length());
-
             newArray.remove(i);
-
-
         }
-
         return newArray;
-
-
     }
 
 

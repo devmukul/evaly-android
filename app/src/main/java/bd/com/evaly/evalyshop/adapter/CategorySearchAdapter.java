@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -15,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -85,9 +85,6 @@ public class CategorySearchAdapter extends RecyclerView.Adapter<CategorySearchAd
                 String name = item.getString("name");
                 String slug = item.getString("slug");
 
-
-
-
                 TextView htext =new TextView(context);
                 htext.setText(highlight(((SearchCategory)context).getQuery(), name));
                 htext.setTextColor(Color.parseColor("#333333"));
@@ -101,29 +98,16 @@ public class CategorySearchAdapter extends RecyclerView.Adapter<CategorySearchAd
                 htext.setClickable(true);
                 htext.setTag(slug);
 
-
-
                 htext.setOnTouchListener(new TextTouchListener());
 
                 htext.setOnClickListener(clickListener);
 
-
-
                 linearLayout.addView(htext);
 
-
             }
-
-
-
-
-        } catch (Exception e){
+        } catch (Exception ignored){
 
         }
-
-
-
-
 
     }
 
@@ -150,9 +134,6 @@ public class CategorySearchAdapter extends RecyclerView.Adapter<CategorySearchAd
                 int spanStart = Math.min(start, originalText.length());
                 int spanEnd = Math.min(start + search.length(),
                         originalText.length());
-
-                //  highlighted.setSpan(new ForegroundColorSpan(Color.BLUE), spanStart, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
 
                 highlighted.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), spanStart, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 

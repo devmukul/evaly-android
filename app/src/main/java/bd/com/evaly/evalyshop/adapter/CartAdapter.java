@@ -36,6 +36,7 @@ import com.bumptech.glide.request.target.Target;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.CartActivity;
@@ -274,7 +275,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             }
 
-
             try{
                 String val = myViewHolder.quantity.getText().toString();
                 int value = Integer.parseInt(val);
@@ -282,8 +282,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                     itemList.get(i).setQuantity(value);
 
                 }
-
-
 
                 if (value >= wholeSaleMin && wholeSaleMin > 1) {
                     myViewHolder.wholeSalePrice.setVisibility(View.VISIBLE);
@@ -303,9 +301,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             }
 
-            myViewHolder.totalPrice.setText("৳ "+(priceTemp * itemList.get(i).getQuantity()));
-            myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
-            myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
+            myViewHolder.totalPrice.setText(String.format(Locale.ENGLISH, "৳ %d", priceTemp * itemList.get(i).getQuantity()));
+            myViewHolder.price.setText(String.format(Locale.ENGLISH, "৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
+            myViewHolder.wholeSalePrice.setText(String.format(Locale.ENGLISH, "৳ %d", price * itemList.get(i).getQuantity()));
 
 
             db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
@@ -313,12 +311,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                //or try following:
-                //InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(myViewHolder.quantity.getWindowToken(), 0);
 
                 myViewHolder.quantity.clearFocus();
-
             }
 
             if (context instanceof CartActivity)
@@ -365,9 +360,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 priceTemp = price;
 
             }
-            myViewHolder.totalPrice.setText("৳ "+(priceTemp * itemList.get(i).getQuantity()));
-            myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
-            //myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
+            myViewHolder.totalPrice.setText(String.format(Locale.ENGLISH, "৳ %d", priceTemp * itemList.get(i).getQuantity()));
+            myViewHolder.price.setText(String.format(Locale.ENGLISH, "৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
 
         }
 
@@ -395,39 +389,25 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         myViewHolder.productImage.setOnClickListener(v -> openProductPage(i));
 
-
         myViewHolder.trash.setOnClickListener(v -> {
             db.deleteData(itemList.get(i).getId());
-
             itemList.remove(i);
             instance.notifyItemRemoved(i);
             notifyItemRangeChanged(i, itemList.size());
-
         });
-
-
         myViewHolder.variation.setVisibility(View.GONE);
-
-
-
     }
 
 
 
     private void openProductPage(int i){
-
-
         try {
-
-
             Intent intent = new Intent(context, ViewProductActivity.class);
             intent.putExtra("product_slug", itemList.get(i).getSlug());
             intent.putExtra("product_name", itemList.get(i).getName());
             context.startActivity(intent);
-        } catch (Exception e){
-
+        } catch (Exception e) {
             Toast.makeText(context, "This product is not available in Evaly right now.", Toast.LENGTH_LONG).show();
-
         }
 
     }
@@ -472,8 +452,5 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         return itemList;
 
     }
-
-
-
 
 }
