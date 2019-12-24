@@ -7,6 +7,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.util.Locale;
+
 import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -18,15 +20,12 @@ public class Balance {
 
     public static void update(Activity context, boolean openDashboard) {
 
-
         UserDetails userDetails = new UserDetails(context);
 
         AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
-
-                try {
                     JsonObject data = response.getAsJsonObject("data");
 
                     userDetails.setBalance(data.get("balance").getAsString());
@@ -37,7 +36,6 @@ public class Balance {
                         userDetails.setGroup(ob.getAsJsonArray("groups").toString());
 
                     userDetails.setUserName(ob.get("username").getAsString());
-
 
                     if (!ob.get("first_name").isJsonNull())
                         userDetails.setFirstName(ob.get("first_name").getAsString());
@@ -78,12 +76,6 @@ public class Balance {
                         context.finishAffinity();
                     }
 
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
             }
 
             @Override
@@ -96,8 +88,6 @@ public class Balance {
 
             }
         });
-
-
     }
 
 
@@ -108,20 +98,9 @@ public class Balance {
         AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
-
-                try {
-
                     response = response.getAsJsonObject("data");
                     userDetails.setBalance(response.get("balance").getAsString());
-
-                    textView.setText("৳ " + response.get("balance").getAsString());
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
+                    textView.setText(String.format(Locale.ENGLISH, "৳ %s", response.get("balance").getAsString()));
             }
 
             @Override

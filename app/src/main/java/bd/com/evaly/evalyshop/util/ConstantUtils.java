@@ -10,7 +10,6 @@ public class ConstantUtils {
     public static final String CONNECTIVITY_ACTION = "";
     public static final String SHOP_LIST = "shop_list";
 
-
     //Algolia
     public static final String APPLICATION_ID = "EZA2J926Q5";
     public static final String API_KEY = "ca9abeea06c16b7d531694d6783a8f04";

@@ -34,7 +34,6 @@ public class CategoryUtils {
         MyPreference.with(context, "category_db_new10").addLong("last_updated", calendar.getTimeInMillis()).save();
     }
 
-
     public void getLocalCategoryList(DataFetchingListener<List<CategoryEntity>> listener) {
         Executors.newSingleThreadExecutor().execute(() -> listener.onDataFetched(categoryDatabase.categoryDao().getAll()));
     }
@@ -46,7 +45,6 @@ public class CategoryUtils {
             public void onDataFetched(List<CategoryEntity> response, int statusCode) {
 
                 if (response != null) {
-
 //                    for (int i = 0; i < response.size(); i++)
 //                        response.get(i).setDrawable(getDrawableFromName(response.get(i).getName()));
 

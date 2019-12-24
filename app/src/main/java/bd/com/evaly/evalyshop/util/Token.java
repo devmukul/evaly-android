@@ -29,9 +29,7 @@ public class Token {
         String url = UrlUtils.BASE_URL_AUTH_API+"logout/";
         JSONObject parameters = new JSONObject();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
-            listener.onDataFetched(response);
-        }, error -> Log.e("onErrorResponse", error.toString())) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, listener::onDataFetched, error -> Log.e("onErrorResponse", error.toString())) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -46,7 +44,5 @@ public class Token {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
     }
-
-
 
 }
