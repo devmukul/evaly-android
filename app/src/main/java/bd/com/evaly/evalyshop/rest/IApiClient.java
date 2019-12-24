@@ -9,8 +9,9 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
-import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
+import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
@@ -102,6 +103,12 @@ public interface IApiClient {
 
 
 
+    // balance, transaction
+
+
+    @GET(UrlUtils.DOMAIN+"pay/wallet-history/{username}")
+    Call<CommonDataResponse<List<TransactionItem>>> getTransactionHistory(@Header("Authorization") String token, @Path("username") String username, @Query("page") int page);
+
 
     // product APIs
 
@@ -115,7 +122,7 @@ public interface IApiClient {
     Call<JsonObject> getCampaignShopProducts(@Path("campaignSlug") String campaignSlug, @Path("shopSlug") String shopSlug, @Query("page") int page, @Query("limit") int limit, @Query("category_slug") String categorySlug);
 
     @GET(UrlUtils.BASE_URL+"/public/shops/{shopSlug}/items/{shopItem}/variants")
-    Call<CommonSuccessResponse<List<ShopItem>>> getProductVariants(@Path("shopSlug") String shopSlug, @Path("shopItem") String shopItem);
+    Call<CommonDataResponse<List<ShopItem>>> getProductVariants(@Path("shopSlug") String shopSlug, @Path("shopItem") String shopItem);
 
     // Categories API
 
@@ -148,10 +155,10 @@ public interface IApiClient {
     // campaign APIs
 
     @GET(UrlUtils.CAMPAIGNS)
-    Call<CommonSuccessResponse<List<CampaignItem>>> getCampaigns();
+    Call<CommonDataResponse<List<CampaignItem>>> getCampaigns();
 
     @GET(UrlUtils.CAMPAIGNS+"/{group}/shops")
-    Call<CommonSuccessResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);
+    Call<CommonDataResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);
 
 
     // Root Category
@@ -167,7 +174,7 @@ public interface IApiClient {
     // brand
 
     @GET(UrlUtils.BASE_URL+"public/brands/{brandSlug}/")
-    Call<CommonSuccessResponse<BrandDetails>> getBrandDetails(@Path("brandSlug") String brandSlug);
+    Call<CommonDataResponse<BrandDetails>> getBrandDetails(@Path("brandSlug") String brandSlug);
 
 
     // Notification

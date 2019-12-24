@@ -1,9 +1,17 @@
 package bd.com.evaly.evalyshop.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class TransactionItem {
 
+    @SerializedName("amount")
     private int amount;
-    private String date_time,event;
+
+    @SerializedName("date_time")
+    private String date_time;
+
+    @SerializedName("event")
+    private String event;
 
 
     public TransactionItem(){

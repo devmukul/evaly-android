@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class CommonSuccessResponse<T> {
+public class CommonDataResponse<T> {
 
     @SerializedName("success")
     @Expose

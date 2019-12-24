@@ -7,7 +7,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
-import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.IApiClient;
@@ -102,7 +102,7 @@ public class ProductApiHelper extends ApiHelper{
 
 
 
-    public static void getProductVariants(String shopSlug, String shopItem, ResponseListenerAuth<CommonSuccessResponse<List<ShopItem>>, String> listener) {
+    public static void getProductVariants(String shopSlug, String shopItem, ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String> listener) {
 
         getiApiClient().getProductVariants(shopSlug, shopItem).enqueue(getResponseCallBackDefault(listener));
 

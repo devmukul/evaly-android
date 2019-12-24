@@ -22,7 +22,9 @@ import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CreatePostModel;
+import bd.com.evaly.evalyshop.models.TransactionItem;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
@@ -460,7 +462,6 @@ public class AuthApiHelper extends ApiHelper{
 
         getiApiClient().getUserInfoPay(token, username).enqueue(getResponseCallBackDefault(listener));
 
-
     }
 
     // change password
@@ -468,7 +469,6 @@ public class AuthApiHelper extends ApiHelper{
     public static void changePassword(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
 
         getiApiClient().changePassword(token, body).enqueue(getResponseCallBackDefault(listener));
-
 
     }
 
@@ -479,6 +479,12 @@ public class AuthApiHelper extends ApiHelper{
 
         getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
 
+    }
+
+    // balance, transaction
+    public static void getTransactionHistory(String token, String username, int page, ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String> listener){
+
+        getiApiClient().getTransactionHistory(token, username, page).enqueue(getResponseCallBackDefault(listener));
 
     }
 

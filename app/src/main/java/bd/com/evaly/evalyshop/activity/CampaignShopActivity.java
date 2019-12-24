@@ -40,7 +40,7 @@ import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.TabsItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
@@ -140,9 +140,9 @@ public class CampaignShopActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        CampaignApiHelper.getCampaignShops(slug, p, new ResponseListenerAuth<CommonSuccessResponse<List<CampaignShopItem>>, String>() {
+        CampaignApiHelper.getCampaignShops(slug, p, new ResponseListenerAuth<CommonDataResponse<List<CampaignShopItem>>, String>() {
             @Override
-            public void onDataFetched(CommonSuccessResponse<List<CampaignShopItem>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<CampaignShopItem>> response, int statusCode) {
 
                 progressBar.setVisibility(View.INVISIBLE);
 

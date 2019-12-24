@@ -46,7 +46,7 @@ import bd.com.evaly.evalyshop.activity.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.CommonSuccessResponse;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.shopItem.AttributesItem;
@@ -299,9 +299,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
     public void getProductDetails(){
 
-        ProductApiHelper.getProductVariants(shop_slug, shop_item_slug, new ResponseListenerAuth<CommonSuccessResponse<List<ShopItem>>, String>() {
+        ProductApiHelper.getProductVariants(shop_slug, shop_item_slug, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
             @Override
-            public void onDataFetched(CommonSuccessResponse<List<ShopItem>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<ShopItem>> response, int statusCode) {
 
                 skeleton.hide();
 

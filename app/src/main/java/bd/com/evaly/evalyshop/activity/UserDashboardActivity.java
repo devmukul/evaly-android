@@ -7,8 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.webkit.WebSettings;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -57,9 +55,6 @@ public class UserDashboardActivity extends BaseActivity {
     Map<String, String> map;
     String from = "";
     ViewDialog alert;
-
-    String userAgent;
-
     boolean isFromSignup;
 
     private AppController mChatApp = AppController.getInstance();
@@ -162,16 +157,6 @@ public class UserDashboardActivity extends BaseActivity {
         ButterKnife.bind(this);
         context = this;
 
-        // getSupportActionBar().setElevation(0);
-
-
-        try {
-            userAgent = WebSettings.getDefaultUserAgent(this);
-        } catch (Exception e) {
-            userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-        }
-
-
         getSupportActionBar().setTitle("Dashboard");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(4f);
@@ -182,12 +167,9 @@ public class UserDashboardActivity extends BaseActivity {
         }
 
         if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered()) {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    Logger.e("==========");
-                    startXmppService();
-                }
+            AsyncTask.execute(() -> {
+                Logger.e("==========");
+                startXmppService();
             });
         }
 
@@ -200,8 +182,8 @@ public class UserDashboardActivity extends BaseActivity {
         alert = new ViewDialog(UserDashboardActivity.this);
         // getAddress();
 
-        name.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
-        balance.setText("৳ " + userDetails.getBalance());
+        name.setText(String.format("%s %s", userDetails.getFirstName(), userDetails.getLastName()));
+        balance.setText(String.format("৳ %s", userDetails.getBalance()));
 
         if (userDetails.getJsonAddress().equals("null"))
             address.setText("Add an address");
@@ -210,81 +192,57 @@ public class UserDashboardActivity extends BaseActivity {
 
 
         LinearLayout orders = findViewById(R.id.order);
-        orders.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, OrderListActivity.class);
-                startActivity(intent);
-            }
+        orders.setOnClickListener(view -> {
+            Intent intent = new Intent(context, OrderListActivity.class);
+            startActivity(intent);
         });
 
 
         LinearLayout notification = findViewById(R.id.notification);
-        notification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        notification.setOnClickListener(view -> {
 
-                Intent intent = new Intent(context, NotificationActivity.class);
-                startActivity(intent);
+            Intent intent = new Intent(context, NotificationActivity.class);
+            startActivity(intent);
 
-
-            }
         });
 
 
         LinearLayout addBalance = findViewById(R.id.addBalance);
-        addBalance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        addBalance.setOnClickListener(view -> {
 
-                Intent intent = new Intent(context, PayViaBkashActivity.class);
-                startActivity(intent);
+            Intent intent = new Intent(context, PayViaBkashActivity.class);
+            startActivity(intent);
 
-
-            }
         });
 
 
         LinearLayout transactionHistory = findViewById(R.id.transaction_history);
-        transactionHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        transactionHistory.setOnClickListener(view -> {
 
-                Intent intent = new Intent(context, TransactionHistory.class);
-                startActivity(intent);
+            Intent intent = new Intent(context, TransactionHistory.class);
+            startActivity(intent);
 
-
-            }
         });
 
 
         LinearLayout editProfile = findViewById(R.id.editProfile);
-        editProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, EditProfileActivity.class);
-                startActivity(intent);
-            }
+        editProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(context, EditProfileActivity.class);
+            startActivity(intent);
         });
 
 
         LinearLayout editAddress = findViewById(R.id.addressClick);
-        editAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, EditProfileActivity.class);
-                startActivity(intent);
-            }
+        editAddress.setOnClickListener(view -> {
+            Intent intent = new Intent(context, EditProfileActivity.class);
+            startActivity(intent);
         });
 
 
         LinearLayout changePassword = findViewById(R.id.changePassword);
-        changePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, ChangePasswordActivity.class);
-                startActivity(intent);
-            }
+        changePassword.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ChangePasswordActivity.class);
+            startActivity(intent);
         });
 
     }
@@ -305,7 +263,6 @@ public class UserDashboardActivity extends BaseActivity {
                 xmppHandler.login();
             }
         }
-
     }
 
     @OnClick(R.id.llMessage)
@@ -390,20 +347,14 @@ public class UserDashboardActivity extends BaseActivity {
                 Token.logout(UserDashboardActivity.this, new DataFetchingListener<JSONObject>() {
                         @Override
                         public void onDataFetched(JSONObject response) {
-
                             Toast.makeText(context, "Successfully logged out...", Toast.LENGTH_SHORT).show();
-
                             AppController.logout(UserDashboardActivity.this);
-
-
                         }
-
                         @Override
                         public void onFailed(int status) {
 
                         }
                 });
-
 
                 return true;
         }
