@@ -50,8 +50,8 @@ import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.ReviewItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.reviewratings.BarLabels;
-import bd.com.evaly.evalyshop.reviewratings.RatingReviews;
+import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
+import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 

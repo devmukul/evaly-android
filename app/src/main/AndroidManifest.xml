@@ -58,7 +58,7 @@
 
         </activity>
         <activity
-            android:name=".ui.orderDetails.PayViaCard"
+            android:name=".ui.order.PayViaCard"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.chat.ChatListActivity"
@@ -98,7 +98,7 @@
             android:name=".activity.SearchCategory"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.orderDetails.PayViaBkashActivity"
+            android:name=".ui.order.PayViaBkashActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.NetworkErrorActivity"
@@ -111,11 +111,11 @@
 
         <activity android:name=".activity.ReviewsActivity" />
         <activity
-            android:name=".ui.orderDetails.OrderDetailsActivity"
+            android:name=".ui.order.orderDetails.OrderDetailsActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.orderDetails.AddBalanceActivity"
+            android:name=".ui.order.AddBalanceActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.ChangePasswordActivity"
@@ -144,7 +144,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activity.CartActivity"
+            android:name=".ui.cart.CartActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activity.ViewProductActivity"
@@ -172,7 +172,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activity.WishListActivity"
+            android:name=".ui.wishlist.WishListActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.NotificationActivity"
@@ -213,10 +213,10 @@
             android:value="@string/default_notification_channel_id" />
 
         <service
-            android:name=".xmpp.XMPPService"
+            android:name=".util.xmpp.XMPPService"
             android:enabled="true" />
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".service.MyFirebaseMessagingService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

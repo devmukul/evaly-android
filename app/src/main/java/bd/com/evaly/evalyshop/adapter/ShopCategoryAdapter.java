@@ -22,7 +22,7 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.fragment.ShopFragment;
+import bd.com.evaly.evalyshop.ui.shop.ShopFragment;
 import bd.com.evaly.evalyshop.models.TabsItem;
 
 public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapter.MyViewHolder>{

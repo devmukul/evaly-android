@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop;
 
 import android.app.Activity;
 import android.app.Application;
-import androidx.room.Room;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -22,13 +21,13 @@ import com.vanniktech.emoji.google.GoogleEmojiProvider;
 
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.preference.MyPreference;
+import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UserDetails;
-import bd.com.evaly.evalyshop.xmpp.LocalBinder;
-import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
-import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.util.xmpp.LocalBinder;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks{
 

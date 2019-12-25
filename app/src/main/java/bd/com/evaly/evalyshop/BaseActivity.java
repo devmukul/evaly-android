@@ -13,10 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import bd.com.evaly.evalyshop.activity.CartActivity;
+import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.activity.NetworkErrorActivity;
-import bd.com.evaly.evalyshop.activity.WishListActivity;
+import bd.com.evaly.evalyshop.ui.wishlist.WishListActivity;
 
 public class BaseActivity extends AppCompatActivity {
 

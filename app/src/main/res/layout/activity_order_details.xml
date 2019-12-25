@@ -15,7 +15,7 @@
             android:layout_height="match_parent"
             android:background="#fff"
             android:focusableInTouchMode="true"
-            tools:context=".ui.orderDetails.OrderDetailsActivity">
+            tools:context=".ui.order.orderDetails.OrderDetailsActivity">
 
             <LinearLayout
                 android:layout_width="match_parent"

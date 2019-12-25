@@ -11,7 +11,7 @@ import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.preference.MyPreference;
+import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 
 public class CategoryUtils {

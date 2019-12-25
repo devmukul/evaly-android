@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="#fff">
 
-    <bd.com.evaly.evalyshop.reviewratings.RatingReviews xmlns:bar="http://schemas.android.com/apk/res-auto"
+    <bd.com.evaly.evalyshop.util.reviewratings.RatingReviews xmlns:bar="http://schemas.android.com/apk/res-auto"
         android:id="@+id/rating_reviews"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

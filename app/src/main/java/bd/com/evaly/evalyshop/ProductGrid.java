@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
-import bd.com.evaly.evalyshop.fragment.HomeFragment;
+import bd.com.evaly.evalyshop.ui.home.HomeFragment;
 import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;

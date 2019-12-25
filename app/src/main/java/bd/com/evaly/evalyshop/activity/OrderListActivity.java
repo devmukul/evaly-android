@@ -10,7 +10,7 @@ import com.google.android.material.tabs.TabLayout;
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.OrderListTabAdapter;
-import bd.com.evaly.evalyshop.fragment.OrderListFragment;
+import bd.com.evaly.evalyshop.ui.order.orderList.OrderListFragment;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class OrderListActivity extends BaseActivity {

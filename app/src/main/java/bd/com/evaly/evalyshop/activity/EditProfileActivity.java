@@ -57,9 +57,9 @@ import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
-import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 
 public class EditProfileActivity extends BaseActivity {

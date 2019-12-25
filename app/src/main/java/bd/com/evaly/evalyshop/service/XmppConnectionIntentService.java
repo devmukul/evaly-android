@@ -6,8 +6,8 @@ import androidx.annotation.Nullable;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 
 public class XmppConnectionIntentService extends IntentService {
     AppController mChatApp = AppController.getInstance();

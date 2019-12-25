@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class NetworkErrorDialog extends Dialog {

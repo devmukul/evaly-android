@@ -34,10 +34,10 @@ import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.xmpp.XMPPEventReceiver;
-import bd.com.evaly.evalyshop.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.xmpp.XmppCustomEventListener;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import retrofit2.Response;
 
 import static bd.com.evaly.evalyshop.activity.ViewProductActivity.setWindowFlag;

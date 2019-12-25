@@ -80,7 +80,7 @@ import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.viewmodel.RoomWIthRxViewModel;
+import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 

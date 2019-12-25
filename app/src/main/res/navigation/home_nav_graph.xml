@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="bd.com.evaly.evalyshop.fragment.HomeFragment"
+        android:name="bd.com.evaly.evalyshop.ui.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -43,12 +43,12 @@
     </fragment>
     <fragment
         android:id="@+id/wishListFragment"
-        android:name="bd.com.evaly.evalyshop.fragment.WishListFragment"
+        android:name="bd.com.evaly.evalyshop.ui.wishlist.WishListFragment"
         android:label="fragment_wish_list"
         tools:layout="@layout/fragment_wish_list" />
     <fragment
         android:id="@+id/shopFragment"
-        android:name="bd.com.evaly.evalyshop.fragment.ShopFragment"
+        android:name="bd.com.evaly.evalyshop.ui.shop.ShopFragment"
         android:label="fragment_shop"
         tools:layout="@layout/fragment_shop" >
         <action
@@ -57,7 +57,7 @@
     </fragment>
     <fragment
         android:id="@+id/brandFragment"
-        android:name="bd.com.evaly.evalyshop.fragment.BrandFragment"
+        android:name="bd.com.evaly.evalyshop.ui.brand.BrandFragment"
         android:label="fragment_brand"
         tools:layout="@layout/fragment_brand" >
         <action
@@ -66,7 +66,7 @@
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
-        android:name="bd.com.evaly.evalyshop.fragment.CartFragment"
+        android:name="bd.com.evaly.evalyshop.ui.cart.CartFragment"
         android:label="fragment_cart"
         tools:layout="@layout/fragment_cart" />
 </navigation>

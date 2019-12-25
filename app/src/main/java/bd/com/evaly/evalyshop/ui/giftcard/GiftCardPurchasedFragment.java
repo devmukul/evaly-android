@@ -51,8 +51,8 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
-import bd.com.evaly.evalyshop.ui.orderDetails.PayViaBkashActivity;
-import bd.com.evaly.evalyshop.ui.orderDetails.PayViaCard;
+import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
+import bd.com.evaly.evalyshop.ui.order.PayViaCard;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
