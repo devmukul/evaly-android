@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
-import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.activity.SearchCategory;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;

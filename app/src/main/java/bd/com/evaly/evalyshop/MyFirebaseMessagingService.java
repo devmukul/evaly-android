@@ -19,8 +19,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
-import bd.com.evaly.evalyshop.activity.MainActivity;
-import bd.com.evaly.evalyshop.activity.issue.IssuesActivity;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 

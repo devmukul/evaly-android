@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.activity.buynow;
+package bd.com.evaly.evalyshop.ui.buynow;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

@@ -45,7 +45,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
-import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.ui.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;

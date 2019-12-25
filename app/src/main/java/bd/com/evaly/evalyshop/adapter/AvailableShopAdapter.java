@@ -37,7 +37,7 @@ import java.util.Set;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.CartActivity;
-import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.activity.ViewProductActivity;
 import bd.com.evaly.evalyshop.models.AvailableShop;
 import bd.com.evaly.evalyshop.models.CartItem;

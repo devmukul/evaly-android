@@ -31,7 +31,7 @@ import bd.com.evaly.evalyshop.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
-import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;

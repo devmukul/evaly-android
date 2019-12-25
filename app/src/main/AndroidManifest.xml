@@ -23,7 +23,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.issue.IssuesActivity"
+        <activity android:name=".ui.issue.IssuesActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="OPEN_ISSUES" />
@@ -31,11 +31,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.chat.invite.InviteActivity"
+            android:name=".ui.chat.invite.InviteActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.chat.RequestListActivity"
+            android:name=".ui.chat.RequestListActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SplashActivity"
@@ -44,10 +44,10 @@
 
         </activity>
         <activity
-            android:name=".activity.newsfeed.NewsfeedNotification"
+            android:name=".ui.newsfeed.NewsfeedNotification"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.newsfeed.NewsfeedActivity"
+            android:name=".ui.newsfeed.NewsfeedActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
 
@@ -58,13 +58,13 @@
 
         </activity>
         <activity
-            android:name=".activity.orderDetails.PayViaCard"
+            android:name=".ui.orderDetails.PayViaCard"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activity.chat.ChatListActivity"
+            android:name=".ui.chat.ChatListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.chat.ChatDetailsActivity"
+            android:name=".ui.chat.ChatDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="OPEN_CHAT_DETAILS" />
@@ -75,7 +75,7 @@
         <activity
             android:name=".activity.TransactionHistory"
             android:theme="@style/ThemeTransaction" />
-        <activity android:name=".activity.offers.OffersActivity" />
+        <activity android:name=".ui.offers.OffersActivity" />
         <activity
             android:name=".activity.InviteEarn"
             android:theme="@style/AppTheme" />
@@ -92,13 +92,13 @@
             android:name=".activity.VoucherActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.giftcard.GiftCardActivity"
+            android:name=".ui.giftcard.GiftCardActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.SearchCategory"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.orderDetails.PayViaBkashActivity"
+            android:name=".ui.orderDetails.PayViaBkashActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.NetworkErrorActivity"
@@ -111,11 +111,11 @@
 
         <activity android:name=".activity.ReviewsActivity" />
         <activity
-            android:name=".activity.orderDetails.OrderDetailsActivity"
+            android:name=".ui.orderDetails.OrderDetailsActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.orderDetails.AddBalanceActivity"
+            android:name=".ui.orderDetails.AddBalanceActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.ChangePasswordActivity"
@@ -128,7 +128,7 @@
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.password.PasswordActivity"
+            android:name=".ui.password.PasswordActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.UserDashboardActivity"
@@ -152,7 +152,7 @@
             android:theme="@style/AppThemeViewProduct"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:largeHeap="true"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">

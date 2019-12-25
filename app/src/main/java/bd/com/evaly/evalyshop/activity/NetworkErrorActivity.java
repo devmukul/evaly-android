@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class NetworkErrorActivity extends AppCompatActivity {

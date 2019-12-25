@@ -52,7 +52,7 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.ui.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;

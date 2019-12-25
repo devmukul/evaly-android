@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="#fff"
-        tools:context=".activity.newsfeed.NewsfeedActivity">
+        tools:context=".ui.newsfeed.NewsfeedActivity">
 
         <bd.com.evaly.evalyshop.views.StickyScrollView
             android:id="@+id/stickyScrollView"

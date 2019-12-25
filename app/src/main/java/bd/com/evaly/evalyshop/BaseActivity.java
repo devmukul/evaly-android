@@ -14,7 +14,7 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import bd.com.evaly.evalyshop.activity.CartActivity;
-import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.activity.NetworkErrorActivity;
 import bd.com.evaly.evalyshop.activity.WishListActivity;
 

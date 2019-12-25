@@ -21,7 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import bd.com.evaly.evalyshop.activity.MainActivity;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 
 public class generatePictureStyleNotification extends AsyncTask<String, Void, Bitmap> {
 
