@@ -109,7 +109,7 @@
             android:screenOrientation="sensor"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".ui.product.reviews.ReviewsActivity" />
+        <activity android:name=".ui.reviews.ReviewsActivity" />
         <activity
             android:name=".ui.order.orderDetails.OrderDetailsActivity"
             android:theme="@style/AppTheme"

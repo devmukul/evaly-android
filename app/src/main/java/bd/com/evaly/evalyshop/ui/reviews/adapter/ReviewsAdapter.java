@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.product.reviews.adapter;
+package bd.com.evaly.evalyshop.ui.reviews.adapter;
 
 
 import android.content.Context;
