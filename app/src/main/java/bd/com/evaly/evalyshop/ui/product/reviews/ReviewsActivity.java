@@ -48,7 +48,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.product.reviews.adapter.ReviewsAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.ReviewItem;
+import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;

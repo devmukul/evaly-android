@@ -41,7 +41,7 @@ import java.util.Locale;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.models.CartItem;
+import bd.com.evaly.evalyshop.models.cart.CartItem;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 

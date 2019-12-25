@@ -35,7 +35,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.notification.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.Notifications;
+import bd.com.evaly.evalyshop.models.notification.Notifications;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;

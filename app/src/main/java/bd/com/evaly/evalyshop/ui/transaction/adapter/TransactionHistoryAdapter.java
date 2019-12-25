@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.models.TransactionItem;
+import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionHistoryAdapter.MyViewHolder>{

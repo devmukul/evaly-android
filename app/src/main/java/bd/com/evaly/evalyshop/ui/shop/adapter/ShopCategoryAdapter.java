@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.shop.ShopFragment;
-import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 
 public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapter.MyViewHolder>{
 

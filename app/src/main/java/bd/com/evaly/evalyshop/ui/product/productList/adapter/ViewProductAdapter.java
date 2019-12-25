@@ -18,7 +18,7 @@ import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.models.Products;
+import bd.com.evaly.evalyshop.models.product.Products;
 
 public class ViewProductAdapter extends RecyclerView.Adapter<ViewProductAdapter.MyViewHolder>{
 

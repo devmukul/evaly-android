@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.models.SearchFilterItem;
+import bd.com.evaly.evalyshop.models.search.SearchFilterItem;
 
 public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterAdapter.MyViewHolder>{
 

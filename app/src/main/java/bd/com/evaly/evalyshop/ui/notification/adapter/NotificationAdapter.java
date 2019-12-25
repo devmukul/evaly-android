@@ -22,7 +22,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.models.Notifications;
+import bd.com.evaly.evalyshop.models.notification.Notifications;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder>{

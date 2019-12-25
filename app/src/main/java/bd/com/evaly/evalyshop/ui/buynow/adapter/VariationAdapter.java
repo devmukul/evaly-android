@@ -14,7 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.models.shopItem.ShopItem;
+import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 
 public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyViewHolder>{
 

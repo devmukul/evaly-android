@@ -24,7 +24,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.models.BannerItem;
+import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class SliderAdapter extends PagerAdapter {

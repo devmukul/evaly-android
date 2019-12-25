@@ -73,8 +73,8 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductA
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.OrderDetailsProducts;
-import bd.com.evaly.evalyshop.models.OrderStatus;
+import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
+import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;

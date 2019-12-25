@@ -9,8 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.orhanobut.logger.Logger;
 
-import bd.com.evaly.evalyshop.models.CartItem;
-
 public class DbHelperCart extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME="evaly_cart_3.db";

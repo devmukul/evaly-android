@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.models.WishList;
+import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 

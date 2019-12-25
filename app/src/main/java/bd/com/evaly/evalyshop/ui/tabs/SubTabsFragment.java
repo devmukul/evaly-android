@@ -31,7 +31,7 @@ import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.search.SearchCategory;
 import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 
 public class SubTabsFragment extends Fragment {

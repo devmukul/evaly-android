@@ -31,7 +31,7 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.models.TabsItem;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{

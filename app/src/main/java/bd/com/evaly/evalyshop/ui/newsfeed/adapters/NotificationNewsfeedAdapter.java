@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedNotification;
-import bd.com.evaly.evalyshop.models.Notifications;
+import bd.com.evaly.evalyshop.models.notification.Notifications;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class NotificationNewsfeedAdapter extends RecyclerView.Adapter<NotificationNewsfeedAdapter.MyViewHolder>{
