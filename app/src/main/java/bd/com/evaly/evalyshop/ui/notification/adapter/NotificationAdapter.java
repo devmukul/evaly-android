@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.adapter;
+package bd.com.evaly.evalyshop.ui.notification.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.activity.ViewProductActivity;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.models.Notifications;
 import bd.com.evaly.evalyshop.util.Utils;

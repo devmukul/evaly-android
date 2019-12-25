@@ -68,14 +68,14 @@ import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.AppController;
-import bd.com.evaly.evalyshop.ProductGrid;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.fragment.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.activity.ReviewsActivity;
+import bd.com.evaly.evalyshop.ui.product.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;

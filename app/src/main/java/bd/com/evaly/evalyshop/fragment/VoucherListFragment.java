@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.adapter.VoucherDetailsAdapter;
+import bd.com.evaly.evalyshop.ui.voucher.adapter.VoucherDetailsAdapter;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.VoucherDetails;
 import bd.com.evaly.evalyshop.util.UserDetails;

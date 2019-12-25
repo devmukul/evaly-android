@@ -73,7 +73,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.TransactionHistory"
+            android:name=".ui.transaction.TransactionHistory"
             android:theme="@style/ThemeTransaction" />
         <activity android:name=".ui.offers.OffersActivity" />
         <activity
@@ -89,7 +89,7 @@
 <!--            android:label="@string/app_name" />-->
 
         <activity
-            android:name=".activity.VoucherActivity"
+            android:name=".ui.voucher.VoucherActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.giftcard.GiftCardActivity"
@@ -109,7 +109,7 @@
             android:screenOrientation="sensor"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".activity.ReviewsActivity" />
+        <activity android:name=".ui.product.reviews.ReviewsActivity" />
         <activity
             android:name=".ui.order.orderDetails.OrderDetailsActivity"
             android:theme="@style/AppTheme"
@@ -124,7 +124,7 @@
             android:name=".activity.EditProfileActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activity.OrderListActivity"
+            android:name=".ui.order.orderList.OrderListActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait" />
         <activity
@@ -147,7 +147,7 @@
             android:name=".ui.cart.CartActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activity.ViewProductActivity"
+            android:name=".ui.product.productDetails.ViewProductActivity"
             android:label="@string/title_activity_view_product"
             android:theme="@style/AppThemeViewProduct"
             android:screenOrientation="portrait"/>
@@ -175,7 +175,7 @@
             android:name=".ui.wishlist.WishListActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activity.NotificationActivity"
+            android:name=".ui.notification.NotificationActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity

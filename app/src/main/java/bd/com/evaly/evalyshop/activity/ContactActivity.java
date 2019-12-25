@@ -40,7 +40,7 @@ import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import retrofit2.Response;
 
-import static bd.com.evaly.evalyshop.activity.ViewProductActivity.setWindowFlag;
+import static bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity.setWindowFlag;
 
 public class ContactActivity extends BaseActivity {
 

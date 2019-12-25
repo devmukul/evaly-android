@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.ui.order.orderList;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -9,8 +9,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.adapter.OrderListTabAdapter;
-import bd.com.evaly.evalyshop.ui.order.orderList.OrderListFragment;
+import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderListTabAdapter;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class OrderListActivity extends BaseActivity {

@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.ui.notification;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +32,7 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.adapter.NotificationAdapter;
+import bd.com.evaly.evalyshop.ui.notification.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.Notifications;

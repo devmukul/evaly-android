@@ -55,10 +55,10 @@ import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.BaseActivity;
-import bd.com.evaly.evalyshop.ProductGrid;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.adapter.AutoCompleteAdapter;
-import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
+import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.adapter.SearchFilterAdapter;
 import bd.com.evaly.evalyshop.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.models.SearchFilterItem;

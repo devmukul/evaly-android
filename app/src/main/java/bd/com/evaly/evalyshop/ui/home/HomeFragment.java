@@ -30,14 +30,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.AppController;
-import bd.com.evaly.evalyshop.ProductGrid;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.fragment.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.activity.OrderListActivity;
+import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.activity.SignInActivity;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;

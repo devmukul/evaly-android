@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.ui.transaction;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -22,7 +22,7 @@ import java.util.Locale;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.adapter.TransactionHistoryAdapter;
+import bd.com.evaly.evalyshop.ui.transaction.adapter.TransactionHistoryAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;

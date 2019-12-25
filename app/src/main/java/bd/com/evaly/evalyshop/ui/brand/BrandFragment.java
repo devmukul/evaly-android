@@ -32,7 +32,7 @@ import com.bumptech.glide.request.target.Target;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import bd.com.evaly.evalyshop.ProductGrid;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;

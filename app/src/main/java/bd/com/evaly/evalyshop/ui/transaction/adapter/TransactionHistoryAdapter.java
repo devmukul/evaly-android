@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.adapter;
+package bd.com.evaly.evalyshop.ui.transaction.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

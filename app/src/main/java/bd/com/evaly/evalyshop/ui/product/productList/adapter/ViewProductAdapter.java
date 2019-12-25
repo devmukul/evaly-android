@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.adapter;
+package bd.com.evaly.evalyshop.ui.product.productList.adapter;
 
 import android.content.Context;
 import android.content.Intent;

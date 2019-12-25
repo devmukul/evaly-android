@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop;
+package bd.com.evaly.evalyshop.ui.product.productList;
 
 import android.content.Context;
 import android.util.Log;
@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
+import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.home.HomeFragment;
 import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;

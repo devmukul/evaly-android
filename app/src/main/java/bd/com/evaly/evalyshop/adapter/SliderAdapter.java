@@ -23,7 +23,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.CampaignShopActivity;
-import bd.com.evaly.evalyshop.activity.ViewProductActivity;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.models.BannerItem;
 import bd.com.evaly.evalyshop.util.Utils;
 

@@ -27,14 +27,14 @@ import com.google.gson.JsonArray;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.ProductGrid;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
-import bd.com.evaly.evalyshop.adapter.ProductGridAdapter;
+import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;

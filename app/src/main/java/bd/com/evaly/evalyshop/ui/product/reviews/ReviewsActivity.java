@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.ui.product.reviews;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.adapter.ReviewsAdapter;
+import bd.com.evaly.evalyshop.ui.product.reviews.adapter.ReviewsAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.ReviewItem;

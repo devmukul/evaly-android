@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.ui.product.productDetails;
 
 import android.app.Activity;
 import android.content.Context;
@@ -68,9 +68,10 @@ import java.util.TreeMap;
 
 import bd.com.evaly.evalyshop.AppController;
 import bd.com.evaly.evalyshop.BaseActivity;
-import bd.com.evaly.evalyshop.ProductGrid;
+import bd.com.evaly.evalyshop.ui.product.reviews.ReviewsActivity;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.adapter.AvailableShopAdapter;
+import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAdapter;
 import bd.com.evaly.evalyshop.adapter.ContactShareAdapter;
 import bd.com.evaly.evalyshop.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.adapter.ViewProductSliderAdapter;
