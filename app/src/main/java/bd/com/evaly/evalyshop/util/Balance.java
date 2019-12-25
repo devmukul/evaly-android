@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 
 import java.util.Locale;
 
-import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
+import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;

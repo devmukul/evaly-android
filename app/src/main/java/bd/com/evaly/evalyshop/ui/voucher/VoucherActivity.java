@@ -8,9 +8,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.adapter.BaseViewPagerAdapter;
-import bd.com.evaly.evalyshop.fragment.VoucherListFragment;
-import bd.com.evaly.evalyshop.fragment.VoucherMyListFragment;
+import bd.com.evaly.evalyshop.ui.base.BaseViewPagerAdapter;
 
 public class VoucherActivity extends AppCompatActivity {
 

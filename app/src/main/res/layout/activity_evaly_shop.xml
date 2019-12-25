@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:transitionGroup="true"
-    tools:context=".activity.GlobalSearchActivity"
+    tools:context=".ui.search.GlobalSearchActivity"
     android:background="#fafafa">
 
     <LinearLayout

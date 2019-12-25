@@ -28,11 +28,11 @@ import java.util.Calendar;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.GlobalSearchActivity;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.activity.SearchCategory;
+import bd.com.evaly.evalyshop.ui.search.SearchCategory;
 import bd.com.evaly.evalyshop.ui.home.adapter.RootCategoriesAdapter;
-import bd.com.evaly.evalyshop.adapter.TabsAdapter;
+import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.OnDoneListener;

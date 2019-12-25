@@ -49,7 +49,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.AppController;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;

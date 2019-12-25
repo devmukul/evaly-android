@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.notification.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;

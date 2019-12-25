@@ -41,17 +41,17 @@ import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import java.util.Locale;
 
-import bd.com.evaly.evalyshop.AppController;
-import bd.com.evaly.evalyshop.BaseActivity;
+import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.CampaignShopActivity;
+import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.activity.ContactActivity;
 import bd.com.evaly.evalyshop.activity.InviteEarn;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
-import bd.com.evaly.evalyshop.activity.SignInActivity;
-import bd.com.evaly.evalyshop.activity.UserDashboardActivity;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.ui.wishlist.WishListActivity;
 import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;

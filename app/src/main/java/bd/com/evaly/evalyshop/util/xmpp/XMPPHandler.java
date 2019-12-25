@@ -70,7 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import bd.com.evaly.evalyshop.AppController;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;

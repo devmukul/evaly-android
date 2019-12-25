@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/browseProductFragment"
-        android:name="bd.com.evaly.evalyshop.fragment.BrowseProductFragment"
+        android:name="bd.com.evaly.evalyshop.ui.browseProduct.BrowseProductFragment"
         android:label="fragment_browse_product"
         tools:layout="@layout/fragment_browse_product" >
         <action

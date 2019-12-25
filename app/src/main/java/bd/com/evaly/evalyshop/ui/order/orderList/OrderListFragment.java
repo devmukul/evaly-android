@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.AppController;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;

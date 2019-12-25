@@ -50,9 +50,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.SignInActivity;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;

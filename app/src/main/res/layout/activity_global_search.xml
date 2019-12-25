@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.GlobalSearchActivity"
+    tools:context=".ui.search.GlobalSearchActivity"
     android:id="@+id/layout_drawer">
 
     <bd.com.evaly.evalyshop.views.StickyScrollView
@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:background="#fafafa"
         android:transitionGroup="true"
-        tools:context=".activity.GlobalSearchActivity">
+        tools:context=".ui.search.GlobalSearchActivity">
 
 
         <LinearLayout

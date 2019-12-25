@@ -23,9 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.CampaignShopActivity;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCampaignBinding;
+import bd.com.evaly.evalyshop.listener.CampaignListener;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
+import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignAdapter;
 
 public class CampaignBottomSheetFragment extends BottomSheetDialogFragment implements CampaignBottomSheetNavigator{
 

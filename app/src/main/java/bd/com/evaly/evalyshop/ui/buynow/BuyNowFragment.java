@@ -39,9 +39,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.AppController;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.SignInActivity;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;

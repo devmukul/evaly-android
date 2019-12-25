@@ -58,13 +58,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.AppController;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.ImagePreview;
+import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedAdapter;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.ReplyAdapter;
-import bd.com.evaly.evalyshop.adapter.ContactShareAdapter;
+import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;

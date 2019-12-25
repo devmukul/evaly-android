@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.fragment.VoucherListFragment;
+import bd.com.evaly.evalyshop.ui.voucher.VoucherListFragment;
 import bd.com.evaly.evalyshop.models.VoucherDetails;
 
 public class VoucherDetailsAdapter extends RecyclerView.Adapter<VoucherDetailsAdapter.MyViewHolder>{

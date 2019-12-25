@@ -53,7 +53,7 @@
             android:orientation="vertical"
             android:paddingTop="25dp"
             android:paddingBottom="10dp"
-            tools:context=".activity.ChangePasswordActivity">
+            tools:context=".ui.auth.ChangePasswordActivity">
 
 
             <LinearLayout

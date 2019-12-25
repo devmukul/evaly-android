@@ -14,7 +14,7 @@
         android:paddingLeft="20dp"
         android:paddingTop="20dp"
         android:paddingRight="20dp"
-        tools:context=".activity.EditProfileActivity">
+        tools:context=".ui.user.EditProfileActivity">
 
         <RelativeLayout
             android:layout_width="match_parent"

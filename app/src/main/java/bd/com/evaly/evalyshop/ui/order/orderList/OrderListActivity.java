@@ -7,7 +7,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-import bd.com.evaly.evalyshop.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderListTabAdapter;
 import bd.com.evaly.evalyshop.util.UserDetails;

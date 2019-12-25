@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.activity.ImagePreview;
+import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.models.ProductShareModel;
 import bd.com.evaly.evalyshop.models.db.RosterTable;

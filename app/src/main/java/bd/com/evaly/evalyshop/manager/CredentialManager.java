@@ -1,6 +1,6 @@
 package bd.com.evaly.evalyshop.manager;
 
-import bd.com.evaly.evalyshop.AppController;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.ConstantUtils;

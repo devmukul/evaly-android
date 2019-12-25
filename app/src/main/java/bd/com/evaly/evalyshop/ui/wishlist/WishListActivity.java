@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import bd.com.evaly.evalyshop.BaseActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.wishlist.adapter.WishListAdapter;
 import bd.com.evaly.evalyshop.models.WishList;

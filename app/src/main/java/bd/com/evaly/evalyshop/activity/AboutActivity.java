@@ -1,12 +1,12 @@
 package bd.com.evaly.evalyshop.activity;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import bd.com.evaly.evalyshop.BaseActivity;
+import androidx.annotation.Nullable;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 
 public class AboutActivity extends BaseActivity {
 
