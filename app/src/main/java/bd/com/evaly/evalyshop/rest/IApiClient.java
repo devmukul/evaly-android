@@ -40,6 +40,9 @@ public interface IApiClient {
     @POST(UrlUtils.SET_PASSWORD)
     Call<JsonObject> setPassword(@Body HashMap<String, String> setPasswordModel);
 
+    @POST(UrlUtils.BASE_URL_AUTH + "forgot-password")
+    Call<JsonObject> forgetPassword(@Body HashMap<String, String>  body);
+
     @POST(UrlUtils.REGISTER)
     Call<JsonObject> register(@Body HashMap<String, String> data);
 

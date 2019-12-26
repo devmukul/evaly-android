@@ -459,33 +459,35 @@ public class AuthApiHelper extends ApiHelper{
     // user info pay
 
     public static void getUserInfoPay(String token, String username, ResponseListenerAuth<JsonObject, String> listener){
-
         getiApiClient().getUserInfoPay(token, username).enqueue(getResponseCallBackDefault(listener));
-
     }
 
     // change password
 
     public static void changePassword(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
-
         getiApiClient().changePassword(token, body).enqueue(getResponseCallBackDefault(listener));
-
     }
 
 
     // update profile data
 
     public static void setUserData(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
-
         getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
-
     }
 
     // balance, transaction
     public static void getTransactionHistory(String token, String username, int page, ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String> listener){
-
         getiApiClient().getTransactionHistory(token, username, page).enqueue(getResponseCallBackDefault(listener));
-
     }
+
+    // forget password
+
+    public static void forgetPassword(String phone, ResponseListenerAuth<JsonObject, String> listener){
+
+        HashMap<String,String> body = new HashMap<>();
+        body.put("phone_number", phone);
+        getiApiClient().forgetPassword(body).enqueue(getResponseCallBackDefault(listener));
+    }
+
 
 }
