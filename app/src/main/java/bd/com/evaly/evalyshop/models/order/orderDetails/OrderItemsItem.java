@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.models.order.orderDetails;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class OrderItemsItem{
 	private String orderTimePrice;
 
 	@SerializedName("variations")
-	private List<Object> variations;
+	private List<JsonObject> variations;
 
 	@SerializedName("shop_item")
 	private int shopItem;
@@ -54,11 +55,11 @@ public class OrderItemsItem{
 		return orderTimePrice;
 	}
 
-	public void setVariations(List<Object> variations){
+	public void setVariations(List<JsonObject> variations){
 		this.variations = variations;
 	}
 
-	public List<Object> getVariations(){
+	public List<JsonObject> getVariations(){
 		return variations;
 	}
 

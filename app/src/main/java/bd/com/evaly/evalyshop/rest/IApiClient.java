@@ -17,6 +17,7 @@ import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
+import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
@@ -209,12 +210,14 @@ public interface IApiClient {
     @POST(UrlUtils.BASE_URL+"custom/order/create/")
     Call<JsonObject> placeOrder(@Header("Authorization") String token, @Body JsonObject body);
 
+    @GET(UrlUtils.BASE_URL+"custom/orders/{invoiceNo}/")
+    Call<OrderDetailsModel> getOrderDetails(@Header("Authorization") String token, @Path("invoiceNo") String invoiceNo);
+
 
     // gift card
 
     @POST(UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-code/")
     Call<JsonObject> payWithGiftCard(@Header("Authorization") String token, @Body HashMap<String, String> body);
-
 
 
     // payment

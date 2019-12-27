@@ -59,6 +59,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
@@ -69,6 +70,8 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
+import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
+import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
@@ -907,93 +910,40 @@ public class OrderDetailsActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     public void getOrderDetails(){
-        String url=UrlUtils.BASE_URL+"custom/orders/"+invoice_no+"/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
-            dialog.hideDialog();
 
-            // brand grand days only full payment through bKash
+        OrderApiHelper.getOrderDetails(CredentialManager.getToken(), invoice_no, new ResponseListenerAuth<OrderDetailsModel, String>() {
+            @Override
+            public void onDataFetched(OrderDetailsModel response, int statusCode) {
 
-            try{
+                dialog.hideDialog();
 
-                if(response.getJSONArray("shop_groups").toString().contains("grandbranddays")){
-                    payParially.setVisibility(View.GONE);
-                    shopGroup = response.getJSONArray("shop_groups").toString();
-                }
+                String orderStatus = response.getOrderStatus().toLowerCase();
 
-            }catch(Exception e){}
-
-
-            try{
-                if(response.getString("order_status").toLowerCase().equals("pending")){
+                if(orderStatus.equals("pending")){
                     indicator.setCurrentStep(1);
-                }else if(response.getString("order_status").toLowerCase().equals("confirmed")){
+                }else if(orderStatus.equals("confirmed")){
                     indicator.setCurrentStep(2);
-                }else if(response.getString("order_status").toLowerCase().equals("processing")){
+                }else if(orderStatus.equals("processing")){
                     indicator.setCurrentStep(3);
-                }else if(response.getString("order_status").toLowerCase().equals("picked")){
+                }else if(orderStatus.equals("picked")){
                     indicator.setCurrentStep(4);
-                }else if(response.getString("order_status").toLowerCase().equals("shipped")){
+                }else if(orderStatus.equals("shipped")){
                     indicator.setCurrentStep(5);
-                }else if(response.getString("order_status").toLowerCase().equals("delivered")){
+                }else if(orderStatus.equals("delivered")){
                     indicator.setCurrentStep(6);
                 }
-            }catch(Exception e){}
-
-            boolean delivery_confirmed, delivery_confirmation_required;
-            try {
-                delivery_confirmation_required = response.getBoolean("delivery_confirmation_required");
-                delivery_confirmed = response.getBoolean("delivery_confirmed");
-
-                if (!delivery_confirmed && delivery_confirmation_required){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailsActivity.this);
-                    builder.setTitle("Did you receive the product?");
-                    builder.setPositiveButton("Yes", (dialogInterface, i) -> {
-                        dialogInterface.dismiss();
-                        HashMap<String, String> data = new HashMap<>();
-                        data.put("invoice_no", invoice_no);
-                        AuthApiHelper.updateProductStatus(data, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response1) {
-                                if (response1.code() == 200 || response1.code() == 201){
-                                    dialog.hideDialog();
-                                    Toast.makeText(getApplicationContext(), "Order Updated", Toast.LENGTH_LONG).show();
-                                }else {
-                                    dialog.hideDialog();
-                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailed(int status) {
-                                dialog.hideDialog();
-                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }).setNegativeButton("No", null);
-
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
 
-            try {
-                orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getString("date")));
-            } catch (Exception e){
-
-                // json exception check :p
-                try {
-                    orderDate.setText(response.getString("date"));
-                } catch (Exception ee){}
-            }
+                if (!response.isDeliveryConfirmed() && response.isDeliveryConfirmationRequired())
+                    deliveryConfirmationDialog();
 
 
-            try{
+                orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
 
-                if(response.getString("order_status").toLowerCase().equals("cancel")){
+                if(response.getOrderStatus().toLowerCase().equals("cancel")){
+
                     StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);
                     indicatorCancelled.setVisibility(View.VISIBLE);
                     indicatorCancelled.setCurrentStep(6);
@@ -1002,76 +952,41 @@ public class OrderDetailsActivity extends BaseActivity {
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
-                }
-            }catch(Exception e){}
 
-            try{
-                if(response.getString("order_status").toLowerCase().equals("delivered")){
+                } else if(response.getOrderStatus().toLowerCase().equals("delivered")){
+
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
+
                 }
-            }catch(Exception e) {}
-
-            try{
-                username.setText(response.getJSONObject("customer").getString("first_name")+" "+response.getJSONObject("customer").getString("last_name"));
-            }catch(Exception e){}
-
-            try{
-                userAddress.setText(response.getString("customer_address"));
-            }catch(Exception e){
-                userAddress.setText("");
-            }
-
-            try{
-                userNumber.setText(response.getString("contact_number"));
-            }catch(Exception e){}
-
-            try{
-                totalPriceTextView.setText("৳ " + Math.round(Double.parseDouble(response.getString("total"))));
-            }catch(Exception e){}
-
-            try{
-                paidAmountTextView.setText("৳ " + Math.round(Double.parseDouble(response.getString("paid_amount"))));
-            }catch(Exception e){}
-
-            try{
-                duePriceTextView.setText("৳ " + (Math.round(Double.parseDouble(response.getString("total"))) - Math.round(Double.parseDouble(response.getString("paid_amount"))))+"");
-
-            }catch(Exception e){}
 
 
-            try{
-                if(response.getString("payment_method").equals("cod")){
+                username.setText(String.format("%s %s", response.getCustomer().getFirstName(), response.getCustomer().getLastName()));
+                userAddress.setText(response.getCustomerAddress());
+                userNumber.setText(response.getContactNumber());
+                totalPriceTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getTotal()))));
+                paidAmountTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getPaidAmount()))));
+                duePriceTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount()))));
+
+                String paymentMethod = response.getPaymentMethod();
+
+                if(paymentMethod.equals("cod"))
                     paymentMethods.setText("Cash on Delivery");
-                }else{
-                    paymentMethods.setText(response.getString("Evaly Pay"));
-                }
-            }catch(Exception e){
-
-            }
-            try{
-                shopName.setText(response.getJSONObject("shop").getString("name"));
-            }catch(Exception e){
-                Log.d("shop_error",e.getMessage());
-            }
-
-            try{
-                shopSlug=response.getJSONObject("shop").getString("slug");
-            }catch(Exception e){}
-
-            try{
-                shopAddress.setText(response.getJSONObject("shop").getString("address"));
-            }catch(Exception e){}
-
-            try{
-                shopnumber.setText(response.getJSONObject("shop").getString("contact_number"));
-            }catch(Exception e){}
+                else if (paymentMethod.equals(""))
+                    paymentMethods.setText("None");
+                else
+                    paymentMethods.setText(Utils.capitalize(response.getPaymentMethod()));
 
 
-            try {
-                total_amount = Math.round(Double.parseDouble(response.getString("total")));
-                paid_amount = Math.round(Double.parseDouble(response.getString("paid_amount")));
+                shopName.setText(response.getShop().getName());
+                shopSlug = response.getShop().getSlug();
+                shopAddress.setText(response.getShop().getAddress());
+                shopnumber.setText(response.getShop().getContactNumber());
+
+
+                total_amount = Math.round(Double.parseDouble(response.getTotal()));
+                paid_amount = Math.round(Double.parseDouble(response.getPaidAmount()));
                 due_amount = total_amount - paid_amount;
 
                 if (due_amount < 1) {
@@ -1079,100 +994,62 @@ public class OrderDetailsActivity extends BaseActivity {
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
                 }
-            } catch (Exception e) {
-            }
 
-
-            try{
 
                 orderDetailsProducts.clear();
                 orderDetailsProductAdapter.notifyDataSetChanged();
 
-                    JSONArray jsonArray = response.getJSONArray("order_items");
-                    for(int i=0;i<jsonArray.length();i++){
-                        JSONObject ob = jsonArray.getJSONObject(i);
-                        Log.d("object_details",ob.toString());
 
-                        String productVariation = "";
+                List<OrderItemsItem> orderItemList = response.getOrderItems();
 
-                        try{
+                for(int i=0;i<orderItemList.size();i++){
 
-                            for(int j = 0; j < ob.getJSONArray("variations").length(); j++) {
+                    OrderItemsItem orderItem = orderItemList.get(i);
+                    String productVariation = "";
 
-                                JSONObject varJ = ob.getJSONArray("variations").getJSONObject(j);
-                                String attr = varJ.getString("attribute");
-                                String variation = varJ.getString("attribute_value");
+                    for(int j = 0; j < orderItem.getVariations().size(); j++) {
 
-                                if (j > 0)
-                                    productVariation = productVariation + ", " +attr + ": "+ variation;
-                                else
-                                    productVariation = attr + ": "+ variation;
+                        JsonObject varJ = orderItem.getVariations().get(j).getAsJsonObject();
+                        String attr = varJ.get("attribute").getAsString();
+                        String variation = varJ.get("attribute_value").getAsString();
 
-                            }
-                        } catch (Exception e){
+                        if (j > 0)
+                            productVariation = productVariation + ", " +attr + ": "+ variation;
+                        else
+                            productVariation = attr + ": "+ variation;
+                    }
 
-                            Log.e("json error", e.toString());
-                        }
+                    orderDetailsProducts.add(
+                            new OrderDetailsProducts(
+                                    orderItem.getItemImages().get(0),
+                                    orderItem.getItemName(),
+                                    orderItem.getProductSlug(),
+                                    orderItem.getOrderTimePrice(),
+                                    String.valueOf(orderItem.getQuantity()),
+                                    (Math.round(Double.parseDouble(orderItem.getOrderTimePrice()))* orderItem.getQuantity())+"",
+                                    productVariation));
 
-                        try{
-                            orderDetailsProducts.add(
-                                    new OrderDetailsProducts(
-                                            ob.getJSONArray("item_images").getString(0),
-                                            ob.getString("item_name"),
-                                            ob.getString("product_slug"),
-                                            ob.getString("order_time_price"),
-                                            ob.getString("quantity"),
-                                            (Math.round(Double.parseDouble(ob.getString("order_time_price")))*Double.parseDouble(ob.getString("quantity")))+"",
-                                            productVariation));
-                            orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
-                        }catch(Exception e){
+                    orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
 
-                        }
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+
             }
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
 
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        getOrderDetails();
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-
-                return;
-
-            }}
-
-            dialog.hideDialog();
-            Toast.makeText(OrderDetailsActivity.this, "Error occured while grabing order details", Toast.LENGTH_SHORT).show();
-
-        }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                return headers;
-            }
-        };
+            public void onFailed(String errorBody, int errorCode) {
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+
     }
+
+
 
     public void getOrderHistory(){
         String url=UrlUtils.BASE_URL+"orders/histories/"+invoice_no+"/";
@@ -1241,5 +1118,41 @@ public class OrderDetailsActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+
+
+    public void deliveryConfirmationDialog(){
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailsActivity.this);
+        builder.setTitle("Did you receive the product?");
+        builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            HashMap<String, String> data = new HashMap<>();
+            data.put("invoice_no", invoice_no);
+            AuthApiHelper.updateProductStatus(data, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                @Override
+                public void onDataFetched(retrofit2.Response<JsonObject> response1) {
+                    if (response1.code() == 200 || response1.code() == 201){
+                        dialog.hideDialog();
+                        Toast.makeText(getApplicationContext(), "Order Updated", Toast.LENGTH_LONG).show();
+                    }else {
+                        dialog.hideDialog();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailed(int status) {
+                    dialog.hideDialog();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
+            });
+        }).setNegativeButton("No", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 }
