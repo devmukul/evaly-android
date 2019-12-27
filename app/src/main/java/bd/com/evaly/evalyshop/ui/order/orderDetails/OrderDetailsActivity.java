@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -42,7 +41,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.badoualy.stepperindicator.StepperIndicator;
@@ -57,7 +55,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -73,8 +70,10 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
+import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
@@ -744,93 +743,48 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void makePartialPayment(String invoice, String amount){
 
-        String url= UrlUtils.DOMAIN+"pay/transactions/payment/order/";
-
         dialog.showDialog();
-        Log.d("json order url", url);
-        Toast.makeText(this,"Partial payment is processing", Toast.LENGTH_SHORT).show();
 
-        JSONObject payload = new JSONObject();
+        ParitalPaymentModel model = new ParitalPaymentModel();
 
-        try{
-            payload.put("invoice_no", invoice);
-            payload.put("amount", Integer.parseInt(amount));
-        } catch (Exception e){
+        model.setInvoice_no(invoice);
+        model.setAmount(Integer.parseInt(amount));
 
+        OrderApiHelper.makePartialPayment(CredentialManager.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
+                dialog.hideDialog();
 
-            Log.d("json payment res", response.toString());
+                Toast.makeText(OrderDetailsActivity.this,response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
 
-            if(!response.has("success")){
-                try {
-                    dialog.hideDialog();
-                    shouldAddBalance();
+                if(response.get("success").getAsBoolean()){
 
-                } catch (Exception e){
+                    // it means all payment done
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(() -> {
+
+                        dialog.hideDialog();
+                        finish();
+                        startActivity(getIntent());
+
+                    }, 1000);
                 }
 
-            } else {
-
-                // it means all payment done
-                Toast.makeText(OrderDetailsActivity.this,"Partial payment successful!", Toast.LENGTH_LONG).show();
-
-                final Handler handler = new Handler();
-                handler.postDelayed(() -> {
-
-                    dialog.hideDialog();
-                    finish();
-                    startActivity(getIntent());
-
-                }, 1500);
-
             }
-        }, error -> {
 
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        makePartialPayment(invoice, amount);
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-                return;
-
-            }}
-            dialog.hideDialog();
-            Log.e("onErrorResponse", error.toString());
-
-            //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
-            shouldAddBalance();
-
-        }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                // headers.put("Host", "api-prod.evaly.com.bd");
-                headers.put("Content-Type", "application/json");
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                return headers;
+            public void onFailed(String errorBody, int errorCode) {
+
             }
 
-        };
+            @Override
+            public void onAuthError(boolean logout) {
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+            }
+        });
+
     }
 
 

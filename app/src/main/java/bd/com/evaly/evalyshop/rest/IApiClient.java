@@ -8,18 +8,19 @@ import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
-import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
-import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
+import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
+import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
+import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
@@ -213,6 +214,11 @@ public interface IApiClient {
 
     @POST(UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-code/")
     Call<JsonObject> payWithGiftCard(@Header("Authorization") String token, @Body HashMap<String, String> body);
+
+
+    @POST(UrlUtils.DOMAIN+"pay/transactions/payment/order/")
+    Call<JsonObject> makePartialPayment(@Header("Authorization") String token, @Body ParitalPaymentModel body);
+
 
 
 }
