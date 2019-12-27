@@ -65,6 +65,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -699,111 +702,51 @@ public class OrderDetailsActivity extends BaseActivity {
         });
     }
 
-    public void makePaymentViaGiftCard(String giftCode, String invoice, String amount){
-
-        String url= UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-code/";
-
-        dialog.showDialog();
-        Log.d("json order url", url);
-        Toast.makeText(this,"Payment is processing", Toast.LENGTH_SHORT).show();
-
-        JSONObject payload = new JSONObject();
-
-        try{
-            payload.put("invoice_no", invoice);
-            payload.put("gift_code", giftCode);
-            payload.put("amount", amount);
-        } catch (Exception e){
 
 
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
-
-            Log.d("json payment res", response.toString());
-
-            if(!response.has("success")){
-
-                try {
-                    dialog.hideDialog();
-                    Toast.makeText(OrderDetailsActivity.this, response.getString("message"), Toast.LENGTH_LONG).show();
-
-                } catch (Exception e){
-                }
-
-            } else {
+    public void makePaymentViaGiftCard(String giftCode, String invoice, String amount) {
 
 
-                try {
-                    // it means all payment done
-                    Toast.makeText(OrderDetailsActivity.this, response.getString("message"), Toast.LENGTH_LONG).show();
-                } catch (Exception e){
+        HashMap<String, String> payload = new HashMap<>();
 
-                }
+        payload.put("invoice_no", invoice);
+        payload.put("gift_code", giftCode);
+        payload.put("amount", amount);
 
-                final Handler handler = new Handler();
-                handler.postDelayed(() -> {
-
-                    dialog.hideDialog();
-                    finish();
-                    startActivity(getIntent());
-
-                }, 1500);
-
-            }
-        }, error -> {
-
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        makePaymentViaGiftCard(giftCode, invoice, amount);
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-
-                return;
-
-            }}
-
-            dialog.hideDialog();
-            Log.e("onErrorResponse", error.toString());
-
-            //Toast.makeText(OrderDetailsActivity.this,"Insufficient balance!", Toast.LENGTH_LONG).show();
-
-            Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
-
-            try {
-                String responseBody = new String(error.networkResponse.data, "utf-8");
-                JSONObject data = new JSONObject(responseBody);
-                Toast.makeText(OrderDetailsActivity.this, data.getString("message"), Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-            }
-
-
-
-
-        }) {
+        GiftCardApiHelper.payWithGiftCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                return headers;
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+                dialog.hideDialog();
+
+                Toast.makeText(OrderDetailsActivity.this, response.get("message").getAsString(), Toast.LENGTH_LONG).show();
+
+                if(response.has("success")) {
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(() -> {
+                        finish();
+                        startActivity(getIntent());
+                    }, 1000);
+                }
+
             }
 
-        };
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
+            }
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+            @Override
+            public void onAuthError(boolean logout) {
+                if (logout)
+                    AppController.logout(OrderDetailsActivity.this);
+                else
+                    makePaymentViaGiftCard(giftCode, invoice, amount);
+
+            }
+        });
+
     }
 
 

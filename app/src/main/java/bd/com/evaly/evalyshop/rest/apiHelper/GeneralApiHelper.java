@@ -12,7 +12,7 @@ import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 
 
-public class GeneralApiHelper extends ApiHelper{
+public class GeneralApiHelper extends BaseApiHelper {
 
 
     public static void getBrandsDetails(String brandSlug, ResponseListenerAuth<CommonDataResponse<BrandDetails>, String> listener) {

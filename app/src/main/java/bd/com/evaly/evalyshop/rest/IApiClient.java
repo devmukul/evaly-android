@@ -209,4 +209,10 @@ public interface IApiClient {
     Call<JsonObject> placeOrder(@Header("Authorization") String token, @Body JsonObject body);
 
 
+    // gift card
+
+    @POST(UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-code/")
+    Call<JsonObject> payWithGiftCard(@Header("Authorization") String token, @Body HashMap<String, String> body);
+
+
 }

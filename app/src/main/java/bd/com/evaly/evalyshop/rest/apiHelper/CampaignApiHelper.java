@@ -7,7 +7,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 
-public class CampaignApiHelper extends ApiHelper{
+public class CampaignApiHelper extends BaseApiHelper {
 
 
     public static void getCampaigns(ResponseListenerAuth<CommonDataResponse<List<CampaignItem>>, String> listener) {

@@ -8,7 +8,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 
-public class OrderApiHelper extends ApiHelper {
+public class OrderApiHelper extends BaseApiHelper {
 
 
     public static void getOrderList(String token, int page, String orderStatus, ResponseListenerAuth<CommonResultResponse<List<OrderListItem>>, String> listener) {

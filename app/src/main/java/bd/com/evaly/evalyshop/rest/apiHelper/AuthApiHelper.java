@@ -38,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AuthApiHelper extends ApiHelper{
+public class AuthApiHelper extends BaseApiHelper {
 
 
     public static void checkUpdate(DataFetchingListener<Response<JsonObject>> listener) {

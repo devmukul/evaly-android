@@ -13,7 +13,7 @@ import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import retrofit2.Call;
 
-public class ProductApiHelper extends ApiHelper{
+public class ProductApiHelper extends BaseApiHelper {
 
 
     public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, ResponseListenerAuth<JsonObject, String> listener){
