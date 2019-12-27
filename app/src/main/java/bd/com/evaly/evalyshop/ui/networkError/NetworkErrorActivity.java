@@ -39,8 +39,6 @@ public class NetworkErrorActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
 
     @Override

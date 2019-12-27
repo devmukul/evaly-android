@@ -62,7 +62,6 @@ public class HomeTabsFragment extends Fragment {
 
     private OnDoneListener onDoneListener;
 
-
     public void setOnDoneListener(OnDoneListener onDoneListener) {
         this.onDoneListener = onDoneListener;
     }

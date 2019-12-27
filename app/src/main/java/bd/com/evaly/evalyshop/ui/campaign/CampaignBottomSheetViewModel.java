@@ -13,26 +13,21 @@ public class CampaignBottomSheetViewModel extends ViewModel {
 
     private CampaignBottomSheetNavigator navigator;
 
-
     public void setNavigator(CampaignBottomSheetNavigator navigator) {
         this.navigator = navigator;
     }
-
 
     public void loadCampaigns(){
 
         CampaignApiHelper.getCampaigns(new ResponseListenerAuth<CommonDataResponse<List<CampaignItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignItem>> response, int statusCode) {
-
                 navigator.onListLoaded(response.getData());
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 navigator.onListFailed(errorBody, errorCode);
-
             }
 
             @Override

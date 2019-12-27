@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.cart;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -31,7 +30,6 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -50,17 +48,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.cart.CartItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -305,18 +303,17 @@ public class CartActivity extends BaseActivity {
                     new AlertDialog.Builder(this)
                             .setMessage("Are you sure you want to delete the selected products from the cart?")
                             .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
+                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
 
-                                    ArrayList<CartItem> listAdapter = adapter.getItemList();
-                                    for (int i = 0; i < listAdapter.size(); i++){
-                                        if(listAdapter.get(i).isSelected()){
-                                            db.deleteData(listAdapter.get(i).getId());
-                                        }
+                                ArrayList<CartItem> listAdapter = adapter.getItemList();
+                                for (int i = 0; i < listAdapter.size(); i++){
+                                    if(listAdapter.get(i).isSelected()){
+                                        db.deleteData(listAdapter.get(i).getId());
                                     }
-                                    getCartList();
+                                }
+                                getCartList();
 
-                                }})
+                            })
                             .setNegativeButton(android.R.string.no, null).show();
                 }
                 return true;
@@ -482,7 +479,7 @@ public class CartActivity extends BaseActivity {
             alert.hideDialog();
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", CredentialManager.getToken());
 

@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,8 +20,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.tabs.TabLayout;
@@ -33,11 +30,11 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -120,11 +117,7 @@ public class AddBalanceActivity extends BaseActivity
 
                     Intent intent = new Intent(AddBalanceActivity.this, PayViaBkashActivity.class);
                     startActivity(intent);
-
-
                 }
-
-
             }
 
             @Override
@@ -139,72 +132,37 @@ public class AddBalanceActivity extends BaseActivity
         });
 
 
-
-
-
-
-
-
-
-
         // select payment method
 
-        visa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        visa.setOnClickListener(v -> paymentMethod = 1);
 
 
-                paymentMethod = 1;
-
-
+        visa.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.performClick();
             }
         });
 
 
-        visa.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    v.performClick();
-                }
+        bkash.setOnClickListener(v -> paymentMethod = 2);
+
+        bkash.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.performClick();
             }
         });
-
-
-        bkash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                paymentMethod = 2;
-
-
-            }
-        });
-
-
-        bkash.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    v.performClick();
-                }
-            }
-        });
-
 
 
         visa.requestFocus();
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(paymentMethod == 1)
-                    addBalance();
-                else {
+        button.setOnClickListener(v -> {
+            if(paymentMethod == 1)
+                addBalance();
+            else {
 
-                    Intent intent = new Intent(AddBalanceActivity.this, PayViaBkashActivity.class);
-                    startActivity(intent);
+                Intent intent = new Intent(AddBalanceActivity.this, PayViaBkashActivity.class);
+                startActivity(intent);
 
-                }
             }
         });
 
@@ -217,9 +175,6 @@ public class AddBalanceActivity extends BaseActivity
             Toast.makeText(context,"Insufficient Balance", Toast.LENGTH_LONG).show();
             input.setText(String.valueOf(data.getDoubleExtra("due", 0.0)));
         }
-
-
-
     }
 
 
@@ -233,12 +188,6 @@ public class AddBalanceActivity extends BaseActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
-
-
 
     public void addBalance() {
 
@@ -265,54 +214,46 @@ public class AddBalanceActivity extends BaseActivity
 
         }
 
-
-
         dialog.showDialog();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                dialog.hideDialog();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
+            dialog.hideDialog();
 
-                try {
-                    String purl = response.getString("payment_gateway_url");
+            try {
+                String purl = response.getString("payment_gateway_url");
 
 
-                    Utils.CustomTab(url, AddBalanceActivity.this);
+                Utils.CustomTab(url, AddBalanceActivity.this);
 
-                }catch (Exception e){
-
-
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
-
-                    AuthApiHelper.refreshToken(AddBalanceActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            addBalance();
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }}
+            }catch (Exception e){
 
 
             }
+
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
+
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401){
+
+                AuthApiHelper.refreshToken(AddBalanceActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                    @Override
+                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                        addBalance();
+                    }
+
+                    @Override
+                    public void onFailed(int status) {
+
+                    }
+                });
+
+                return;
+
+            }}
+
+
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -321,10 +262,6 @@ public class AddBalanceActivity extends BaseActivity
 
                 return headers;
             }
-
-
-
-
         };
         RequestQueue queue= Volley.newRequestQueue(AddBalanceActivity.this);
         request.setRetryPolicy(new DefaultRetryPolicy(50000,

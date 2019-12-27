@@ -370,21 +370,16 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         if (nestedScrollViewComment != null) {
 
-            nestedScrollViewComment.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+            nestedScrollViewComment.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 
-                    Log.d("nested", "BOTTOM SCROLL all");
+                if (nestedScrollViewComment.getChildAt(0).getBottom()
+                        <= (nestedScrollViewComment.getHeight() + nestedScrollViewComment.getScrollY())) {
+                    try {
+                        if (!isCommentLoading)
+                            loadComments(selectedPostID, false);
 
-                    if (nestedScrollViewComment.getChildAt(0).getBottom()
-                            <= (nestedScrollViewComment.getHeight() + nestedScrollViewComment.getScrollY())) {
-                        try {
-                            if (!isCommentLoading)
-                                loadComments(selectedPostID, false);
-
-                        } catch (Exception e) {
-                            Log.e("load more error", e.toString());
-                        }
+                    } catch (Exception e) {
+                        Log.e("load more error", e.toString());
                     }
                 }
             });
@@ -415,18 +410,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         uploadImage.setOnClickListener(view1 -> Toast.makeText(context,"Photo comment is disabled now.", Toast.LENGTH_SHORT).show());
         reloadComment.setOnClickListener(view1 -> reloadRecyclerComment());
 
-        submitComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        submitComment.setOnClickListener(view12 -> {
 
-                if (selectedPostID.equals(""))
-                    Toast.makeText(context, "Couldn't create comment. Try again later.", Toast.LENGTH_SHORT).show();
-                else if (commentInput.getText().toString().trim().equals(""))
-                    Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
-                else {
-                    commentNot.setVisibility(View.GONE);
-                    createComment();
-                }
+            if (selectedPostID.equals(""))
+                Toast.makeText(context, "Couldn't create comment. Try again later.", Toast.LENGTH_SHORT).show();
+            else if (commentInput.getText().toString().trim().equals(""))
+                Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
+            else {
+                commentNot.setVisibility(View.GONE);
+                createComment();
             }
         });
 
@@ -1191,7 +1183,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
 
                 if (!userDetails.getToken().equals(""))
@@ -1348,7 +1340,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             Toast.makeText(context, "Couldn't like the status.", Toast.LENGTH_SHORT).show();
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 if (!userDetails.getToken().equals(""))
                     headers.put("Authorization", CredentialManager.getToken());
@@ -1417,7 +1409,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvContacts.setLayoutManager(layoutManager);
-//            List<RosterTable> list = AppController.database.taskDao().getAllRosterWithoutObserve();
         viewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
         viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
             @Override

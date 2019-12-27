@@ -160,13 +160,11 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                     {
                         if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
                         {
-
                             getGiftCardList();
                         }
                     } }
             }
         });
-
 
         getGiftCardList();
 
@@ -202,8 +200,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         placeOrder= bottomSheetDialog.findViewById(R.id.place_order);
         phoneNumber = bottomSheetDialog.findViewById(R.id.phone);
 
-
-
         TextView privacyText = bottomSheetDialog.findViewById(R.id.privacyText);
 
         privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
@@ -212,27 +208,21 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         CheckBox checkBox = bottomSheetDialog.findViewById(R.id.checkBox);
 
 
-        plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int quan=Integer.parseInt(quantity.getText().toString());
-                total.setText("৳ " + (quan*voucherAmount));
-                quan+=1;
-                quantity.setText(quan+"");
-            }
+        plus.setOnClickListener(v -> {
+            int quan=Integer.parseInt(quantity.getText().toString());
+            total.setText("৳ " + (quan*voucherAmount));
+            quan+=1;
+            quantity.setText(quan+"");
         });
 
-        minus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int quan=Integer.parseInt(quantity.getText().toString());
-                quan-=1;
-                if(quan<1){
-                    quan=1;
-                }
-                total.setText("৳ " + (quan*voucherAmount));
-                quantity.setText(quan+"");
+        minus.setOnClickListener(v -> {
+            int quan=Integer.parseInt(quantity.getText().toString());
+            quan-=1;
+            if(quan<1){
+                quan=1;
             }
+            total.setText("৳ " + (quan*voucherAmount));
+            quantity.setText(quan+"");
         });
 
         quantity.addTextChangedListener(new TextWatcher() {
@@ -257,40 +247,37 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             }
         });
 
-        placeOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        placeOrder.setOnClickListener(v -> {
 
 
-                if (phoneNumber.getText().toString().equals(userDetails.getUserName())){
-                    Toast.makeText(context,"You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (phoneNumber.getText().toString().equals("")){
-                    Toast.makeText(context,"Please enter a number", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (!Utils.isValidNumber(phoneNumber.getText().toString())){
-                    Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                if (Integer.parseInt(quantity.getText().toString()) > 10){
-                    Toast.makeText(context,"Quantity must be less than 10", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (!checkBox.isChecked()){
-                    Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-
-                createOrder(giftCardSlug);
+            if (phoneNumber.getText().toString().equals(userDetails.getUserName())){
+                Toast.makeText(context,"You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
+                return;
             }
+
+            if (phoneNumber.getText().toString().equals("")){
+                Toast.makeText(context,"Please enter a number", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (!Utils.isValidNumber(phoneNumber.getText().toString())){
+                Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
+            if (Integer.parseInt(quantity.getText().toString()) > 10){
+                Toast.makeText(context,"Quantity must be less than 10", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (!checkBox.isChecked()){
+                Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
+            createOrder(giftCardSlug);
         });
 
     }
@@ -306,29 +293,21 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
     }
 
     public void toggleBottomSheet(GiftCardListItem item){
-
-
-
         quantity.setText("1");
         giftCardSlug = item.getSlug();
         getGiftCardDetails(giftCardSlug);
-
-
     }
 
     public void getGiftCardList(){
 
         loading = false;
 
-
         if (currentPage == 1){
             progressContainer.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         } else  {
-
             progressContainer.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-
         }
 
         String url = UrlUtils.DOMAIN+"cpn/gift-cards/custom/list?page="+currentPage;

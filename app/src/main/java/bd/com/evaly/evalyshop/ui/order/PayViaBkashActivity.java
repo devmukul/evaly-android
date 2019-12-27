@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -16,8 +15,8 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -34,7 +33,6 @@ public class PayViaBkashActivity extends BaseActivity {
     UserDetails userDetails;
 
     String amount="0.0", context = "order_payment", context_reference = "", paymentID = "";
-
 
 
     @Override
@@ -54,23 +52,15 @@ public class PayViaBkashActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("bKash Payment");
 
-
-
-
-
         Intent intent = getIntent();
         amount = intent.getStringExtra("amount");
         context_reference = intent.getStringExtra("invoice_no");
         context = intent.getStringExtra("context");
 
-
-
         webView = findViewById(R.id.webView);
         progressBar = findViewById(R.id.progressBar);
 
         userDetails = new UserDetails(this);
-
-
 
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         WebSettings webSettings = webView.getSettings();
@@ -83,8 +73,6 @@ public class PayViaBkashActivity extends BaseActivity {
         webView.getSettings().setAppCacheEnabled(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         webSettings.setAllowFileAccessFromFileURLs(true);
-
-
 
         String javascript = "(function() {" +
                 "    var nTimer = setInterval(function() {" +
@@ -186,14 +174,7 @@ public class PayViaBkashActivity extends BaseActivity {
                 "    };" +
                 "}";
 
-
-
-
-
-
-
         webView.setWebViewClient(new WebViewClient() {
-
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
@@ -212,7 +193,6 @@ public class PayViaBkashActivity extends BaseActivity {
 
                 super.onPageStarted(view, url, favicon);
 
-
                 if (url.contains("success.html")){
 
                     Toast.makeText(PayViaBkashActivity.this, "Payment successful! If your order's payment status doesn't get updated within 5 minutes, please contact support.", Toast.LENGTH_LONG);
@@ -221,7 +201,6 @@ public class PayViaBkashActivity extends BaseActivity {
                     finish();
 
                     return;
-
 
                 }
 
@@ -241,17 +220,9 @@ public class PayViaBkashActivity extends BaseActivity {
                 super.onPageFinished(webView, url);
                 //Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
 
-
-
-
-                webView.evaluateJavascript(javascript, new ValueCallback<String>() {
-                    @Override
-                    public void onReceiveValue(String s) {
-                        Log.d("LogName", s); // Prints: {"var1":"variable1","var2":"variable2"}
-                    }
+                webView.evaluateJavascript(javascript, s -> {
+                    Log.d("LogName", s); // Prints: {"var1":"variable1","var2":"variable2"}
                 });
-
-
 
 
                 if(!redirect){
@@ -286,20 +257,12 @@ public class PayViaBkashActivity extends BaseActivity {
 
         webView.setWebChromeClient(new WebChromeClient());
 
-
-
-
-
         // webView.loadUrl("https://evaly.com.bd/bkash_payment?invoice_no="+context_reference+"&amount="+amount+"&token="+userDetails.getToken());
 
         if (UrlUtils.DOMAIN.contains("dev"))
             webView.loadUrl("file:///android_asset/bkash_dev.html");
         else
             webView.loadUrl("file:///android_asset/bkash.html");
-
-
-
-
     }
 
     @Override

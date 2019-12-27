@@ -34,6 +34,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import bd.com.evaly.evalyshop.R;
 
@@ -46,6 +48,14 @@ public class  Utils {
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
 
+    public static String capitalize(String capString){
+        StringBuffer capBuffer = new StringBuffer();
+        Matcher capMatcher = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(capString);
+        while (capMatcher.find()){
+            capMatcher.appendReplacement(capBuffer, capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
+        }
+        return capMatcher.appendTail(capBuffer).toString();
+    }
 
     public static boolean isPackageExisted(String targetPackage, Context context){
         List<ApplicationInfo> packages;

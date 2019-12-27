@@ -53,12 +53,7 @@ public class GiftCardActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Gift Cards");
 
-
-
-
         userDetails = new UserDetails(this);
-
-
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.viewpager);
@@ -84,8 +79,6 @@ public class GiftCardActivity extends AppCompatActivity {
         balance.setVisibility(View.GONE);
 
         updateBalance();
-
-
 
     }
 

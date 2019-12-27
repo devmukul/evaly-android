@@ -138,7 +138,6 @@ public class CampaignShopActivity extends AppCompatActivity {
 
     public void getEvalyShops(int p){
 
-
         progressBar.setVisibility(View.VISIBLE);
 
         CampaignApiHelper.getCampaignShops(slug, p, new ResponseListenerAuth<CommonDataResponse<List<CampaignShopItem>>, String>() {
@@ -193,8 +192,6 @@ public class CampaignShopActivity extends AppCompatActivity {
                     not.setVisibility(View.VISIBLE);
 
                 }
-
-
             }
 
             @Override

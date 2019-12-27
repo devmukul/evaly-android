@@ -94,16 +94,12 @@ public class CartFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_cart, container, false);
     }
-
-
-    
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -123,7 +119,6 @@ public class CartFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         this.view = view;
-
 
         mToolbar = view.findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);

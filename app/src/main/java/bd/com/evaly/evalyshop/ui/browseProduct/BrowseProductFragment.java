@@ -44,7 +44,6 @@ import bd.com.evaly.evalyshop.util.Utils;
 
 public class BrowseProductFragment extends Fragment {
 
-
     private MainActivity activity;
     private TabLayout tabLayoutSub;
     private HomeTabPagerAdapter pager;
@@ -62,9 +61,6 @@ public class BrowseProductFragment extends Fragment {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private Context context;
-
-
-
 
     public BrowseProductFragment() {
         // Required empty public constructor
@@ -105,7 +101,6 @@ public class BrowseProductFragment extends Fragment {
                 getFragmentManager().beginTransaction().detach(this).attach(this).commit();
             }
     }
-
 
 
     @Override
@@ -150,12 +145,10 @@ public class BrowseProductFragment extends Fragment {
 
         shimmer = view.findViewById(R.id.shimmer);
         shimmer.startShimmer();
-
         shimmerTabs = view.findViewById(R.id.shimmerTabs);
         shimmerTabs.startShimmer();
 
         viewPager.setOffscreenPageLimit(1);
-
         viewPager.setAdapter(pager);
         tabLayoutSub.setupWithViewPager(viewPager);
 
@@ -236,7 +229,6 @@ public class BrowseProductFragment extends Fragment {
                     bundle.putString("slug", slug);
                     bundle.putString("category", category);
                     bundle.putString("json", res.toString());
-
                     fragment.setArguments(bundle);
 
                     pager.addFragment(fragment,"Sub Categories");

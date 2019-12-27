@@ -74,12 +74,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private Context context;
     private SwipeRefreshLayout swipeLayout;
 
-
-
     public static HomeFragment newInstance(){
         return new HomeFragment();
     }
-
 
     @Override
     public void onRefresh() {
@@ -91,7 +88,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public HomeFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -107,9 +103,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
     private void refreshFragment(){
-
         NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
-
     }
 
 
@@ -280,8 +274,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             shimmer.setVisibility(View.GONE);
         }, 1500);
 
-
-
     }
 
 
@@ -353,7 +345,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 }
             });
         }
-
     }
 
 

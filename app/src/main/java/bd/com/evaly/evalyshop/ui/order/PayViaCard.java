@@ -17,7 +17,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class PayViaCard extends AppCompatActivity {
@@ -60,11 +59,6 @@ public class PayViaCard extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         progressBar.bringToFront();
 
-
-        UserDetails userDetails = new UserDetails(this);
-
-
-
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -75,8 +69,6 @@ public class PayViaCard extends AppCompatActivity {
         webView.getSettings().setAppCacheEnabled(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         webSettings.setAllowFileAccessFromFileURLs(true);
-
-
 
         webView.setWebViewClient(new WebViewClient() {
 
@@ -96,7 +88,7 @@ public class PayViaCard extends AppCompatActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
-                if (url.contains("evaly.com.bd")){
+                if (url.contains("evaly.com.bd")) {
 
                     Toast.makeText(PayViaCard.this, "Payment successful! If your order's payment status doesn't get updated within 5 minutes, please contact support.", Toast.LENGTH_LONG);
 
@@ -104,21 +96,14 @@ public class PayViaCard extends AppCompatActivity {
                     finish();
 
                     return;
-
                 }
-
 
                 super.onPageStarted(view, url, favicon);
                 loadingFinished = false;
 
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setProgress(0);
-
-
             }
-
-
-
 
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -155,14 +140,9 @@ public class PayViaCard extends AppCompatActivity {
             }
         });
 
-
-
         webView.loadUrl(url);
 
-
-
     }
-
 
 
     @Override
@@ -175,9 +155,5 @@ public class PayViaCard extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
 
 }

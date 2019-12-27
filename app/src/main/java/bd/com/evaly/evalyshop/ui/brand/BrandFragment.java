@@ -29,18 +29,15 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
-import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.listener.ProductListener;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
+import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class BrandFragment extends Fragment {
@@ -62,7 +59,6 @@ public class BrandFragment extends Fragment {
 
     }
 
-
     private void refreshFragment(){
         if (getFragmentManager() != null)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -81,14 +77,12 @@ public class BrandFragment extends Fragment {
         context = getContext();
         mainActivity = (MainActivity) getActivity();
 
-
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
         if (!Utils.isNetworkAvailable(context))
             new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
@@ -100,7 +94,6 @@ public class BrandFragment extends Fragment {
                 public void onBackPress() {
                     if (getFragmentManager() != null)
                         NavHostFragment.findNavController(BrandFragment.this).navigate(R.id.homeFragment);
-
                 }
             });
 
@@ -113,7 +106,6 @@ public class BrandFragment extends Fragment {
         number = view.findViewById(R.id.number);
         logo = view.findViewById(R.id.logo);
         placeHolder=view.findViewById(R.id.placeholder_image);
-
 
         LinearLayout homeSearch=view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view1 -> {
@@ -131,7 +123,7 @@ public class BrandFragment extends Fragment {
 
         else {
             categoryString = categorySlug.replace('-', ' ');
-            categoryString = capitalize(categoryString);
+            categoryString = Utils.capitalize(categoryString);
             categoryString = categoryString.replaceAll("\\w+$", "");
         }
 
@@ -192,20 +184,7 @@ public class BrandFragment extends Fragment {
             }
         });
 
-
-
     }
-
-
-    private String capitalize(String capString){
-        StringBuffer capBuffer = new StringBuffer();
-        Matcher capMatcher = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(capString);
-        while (capMatcher.find()){
-            capMatcher.appendReplacement(capBuffer, capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
-        }
-        return capMatcher.appendTail(capBuffer).toString();
-    }
-
 
 
 }

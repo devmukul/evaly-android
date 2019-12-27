@@ -457,7 +457,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
 
                 if (!userDetails.getToken().equals(""))

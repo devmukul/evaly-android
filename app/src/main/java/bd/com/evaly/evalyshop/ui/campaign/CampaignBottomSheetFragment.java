@@ -24,7 +24,6 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetCampaignBinding;
-import bd.com.evaly.evalyshop.listener.CampaignListener;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignAdapter;
 
@@ -76,19 +75,14 @@ public class CampaignBottomSheetFragment extends BottomSheetDialogFragment imple
 
    private void initRecycler(){
 
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-//        binding.recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new CampaignAdapter(getContext(), items, new CampaignListener() {
-            @Override
-            public void onItemClick(CampaignItem item) {
-                Intent ni = new Intent(getContext(), CampaignShopActivity.class);
-                ni.putExtra("title", item.getName());
-                ni.putExtra("slug", item.getSlug());
-                getContext().startActivity(ni);
+        adapter = new CampaignAdapter(getContext(), items, item -> {
+            Intent ni = new Intent(getContext(), CampaignShopActivity.class);
+            ni.putExtra("title", item.getName());
+            ni.putExtra("slug", item.getSlug());
+            getContext().startActivity(ni);
 
-                CampaignBottomSheetFragment.this.dismiss();
+            CampaignBottomSheetFragment.this.dismiss();
 
-            }
         });
         binding.recyclerView.setAdapter(adapter);
 

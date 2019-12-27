@@ -756,7 +756,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
 
                 headers.put("Authorization", CredentialManager.getToken());
