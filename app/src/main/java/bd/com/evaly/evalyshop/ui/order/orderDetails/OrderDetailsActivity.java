@@ -586,14 +586,8 @@ public class OrderDetailsActivity extends BaseActivity {
                 full_or_partial.setText("Partial Pay");
 
                 Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    }
-                }, 500);
-
+                handler.postDelayed(() -> sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED), 500);
             }
-
         });
     }
 
@@ -628,9 +622,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
         d_submit.setOnClickListener(v -> {
-
-
-
             if (amount.getText().toString().equals("")){
                 Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
                 return;
@@ -638,7 +629,6 @@ public class OrderDetailsActivity extends BaseActivity {
                 Toast.makeText(context, "Please enter gift card coupon code.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             double partial_amount = Double.parseDouble(amount.getText().toString());
 
             if (partial_amount > total_amount){
@@ -646,13 +636,7 @@ public class OrderDetailsActivity extends BaseActivity {
                 return;
             }
 
-
-            double userBalance = Double.parseDouble(userDetails.getBalance());
-
-
             makePaymentViaGiftCard(code.getText().toString(), invoice_no, String.valueOf((int) partial_amount));
-
-
 
         });
     }
@@ -922,18 +906,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-    public static void largeLog(String tag, String content) {
-        if (content.length() > 4000) {
-            Log.d(tag, content.substring(0, 4000));
-            largeLog(tag, content.substring(4000));
-        } else {
-            Log.d(tag, content);
-        }
-    }
-
 
     public void getOrderDetails(){
         String url=UrlUtils.BASE_URL+"custom/orders/"+invoice_no+"/";
