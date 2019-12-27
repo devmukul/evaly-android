@@ -46,4 +46,9 @@ public class OrderApiHelper extends BaseApiHelper {
     }
 
 
+    public static void getOrderHistories(String token, String invoiceNo, ResponseListenerAuth<JsonObject, String> listener){
+
+        getiApiClient().getOrderHistories(token, invoiceNo).enqueue(getResponseCallBackDefault(listener));
+    }
+
 }

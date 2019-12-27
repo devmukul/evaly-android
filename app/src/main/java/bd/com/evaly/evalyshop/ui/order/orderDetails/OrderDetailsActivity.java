@@ -36,23 +36,15 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.badoualy.stepperindicator.StepperIndicator;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -60,7 +52,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
@@ -88,7 +79,6 @@ import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -1046,73 +1036,45 @@ public class OrderDetailsActivity extends BaseActivity {
             }
         });
 
-
     }
 
 
 
     public void getOrderHistory(){
-        String url=UrlUtils.BASE_URL+"orders/histories/"+invoice_no+"/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
 
-            Log.d("json", response.toString());
+        orderStatuses.clear();
+        adapter.notifyDataSetChanged();
+        OrderApiHelper.getOrderHistories(CredentialManager.getToken(), invoice_no, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-            try {
+                JsonArray list  = response.getAsJsonObject("data").getAsJsonArray("histories");
 
-                JSONArray list  = response.getJSONObject("data").getJSONArray("histories");
+                for (int i=0; i < list.size(); i++) {
 
-                for (int i=0; i < list.length(); i++) {
+                    JsonObject jsonObject = list.get(i).getAsJsonObject();
 
                     orderStatuses.add(new OrderStatus(
-                            list.getJSONObject(i).getString("date"),
-                            list.getJSONObject(i).getString("order_status"),
-                            list.getJSONObject(i).getString("note"))
+                            jsonObject.get("date").getAsString(),
+                            jsonObject.get("order_status").getAsString(),
+                            jsonObject.get("note").getAsString())
                     );
+
                 }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+                adapter.notifyDataSetChanged();
             }
 
-            adapter.notifyDataSetChanged();
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        getOrderHistory();
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-
-                return;
-
-            }}
-
-        }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
+            public void onFailed(String errorBody, int errorCode) {
 
-                return headers;
             }
-        };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
     }
 
     @Override

@@ -214,6 +214,10 @@ public interface IApiClient {
     Call<OrderDetailsModel> getOrderDetails(@Header("Authorization") String token, @Path("invoiceNo") String invoiceNo);
 
 
+    @GET(UrlUtils.BASE_URL+"orders/histories/{invoiceNo}/")
+    Call<JsonObject> getOrderHistories(@Header("Authorization") String token, @Path("invoiceNo") String invoiceNo);
+
+
     // gift card
 
     @POST(UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-code/")
