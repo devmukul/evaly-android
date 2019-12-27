@@ -47,7 +47,6 @@ import com.badoualy.stepperindicator.StepperIndicator;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
@@ -777,6 +776,7 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
+                dialog.hideDialog();
             }
 
             @Override
@@ -791,100 +791,54 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void addBalanceViaCard(String invoice, String amount) {
 
-        String url = UrlUtils.DOMAIN+"pay/pg";
-        Log.d("json order url", url);
-        JSONObject payload = new JSONObject();
-
         if (balance.equals("")){
             Toast.makeText(this, "Enter amount", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        try {
-            payload.put("amount", amount);
-            payload.put("context", "order_payment");
-            payload.put("context_reference", invoice);
-
-        } catch (Exception e){
-
-        }
-
         dialog.showDialog();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
+        HashMap<String, String> payload = new HashMap<>();
+
+        payload.put("amount", amount);
+        payload.put("context", "order_payment");
+        payload.put("context_reference", invoice);
 
 
-            Log.d("json payload", payload.toString());
-            Log.d("json response", response.toString());
+        OrderApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-            dialog.hideDialog();
+                dialog.hideDialog();
 
-            try {
-
-                String purl = response.getString("payment_gateway_url");
-
-
-                Log.d("json response", purl);
+                String purl = response.get("payment_gateway_url").getAsString();
 
                 Intent intent = new Intent(OrderDetailsActivity.this, PayViaCard.class);
                 intent.putExtra("url", purl);
                 startActivityForResult(intent,10002);
 
-
-            }catch (Exception e){
-
-
             }
 
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        addBalanceViaCard(invoice, amount);
-                    }
-                    @Override
-                    public void onFailed(int status) {
-                    }
-                });
-                return;
-            }}
-        }) {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                headers.put("Origin", "https://evaly.com.bd");
-                headers.put("Referer", "https://evaly.com.bd/");
-                headers.put("User-Agent", userAgent);
-                headers.put("Content-Type", "application/json");
-                return headers;
+            public void onFailed(String errorBody, int errorCode) {
+
+                dialog.hideDialog();
             }
 
-        };
+            @Override
+            public void onAuthError(boolean logout) {
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
-    }
+            }
+        });
 
-
-    public void shouldAddBalance(){
-        Snackbar.make(findViewById(android.R.id.content), "Insufficient balance!", Snackbar.LENGTH_LONG)
-                .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
-                .show();
 
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 10002) {
 

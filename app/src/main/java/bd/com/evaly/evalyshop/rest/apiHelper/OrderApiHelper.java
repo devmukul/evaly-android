@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.rest.apiHelper;
 
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -29,6 +30,13 @@ public class OrderApiHelper extends BaseApiHelper {
     public static void makePartialPayment(String token, ParitalPaymentModel body, ResponseListenerAuth<JsonObject, String> listener){
 
         getiApiClient().makePartialPayment(token,body).enqueue(getResponseCallBackDefault(listener));
+
+    }
+
+
+    public static void payViaCard(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
+
+        getiApiClient().payViaCard(token, body).enqueue(getResponseCallBackDefault(listener));
 
     }
 
