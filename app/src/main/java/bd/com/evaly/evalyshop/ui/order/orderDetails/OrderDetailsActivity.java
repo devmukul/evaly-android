@@ -65,23 +65,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
-import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
-import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
-import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
+import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
+import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaCard;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
@@ -90,7 +91,6 @@ import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -154,12 +154,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
         context = this;
 
-        try {
-            userAgent = WebSettings.getDefaultUserAgent(this);
-        } catch (Exception e) {
-            userAgent = "Mozilla/5.0 (Linux; Android 9) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36";
-        }
-
         queue= Volley.newRequestQueue(context);
 
 
@@ -192,10 +186,6 @@ public class OrderDetailsActivity extends BaseActivity {
         orderDetailsProducts=new ArrayList<>();
         orderDetailsProductAdapter=new OrderDetailsProductAdapter(this,orderDetailsProducts);
         orderList.setAdapter(orderDetailsProductAdapter);
-
-
-        // update balance
-        Balance.update(this, false);
 
         mViewBg = findViewById(R.id.bg);
 
@@ -273,6 +263,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
             getOrderDetails();
         }
+
         balance.setText(Html.fromHtml("Balance: <b>৳ "+userDetails.getBalance() + "</b>"));
 
         getOrderHistory();
@@ -306,13 +297,8 @@ public class OrderDetailsActivity extends BaseActivity {
 
         payParially.setOnClickListener(v -> addPartialPayDialog());
 
-
-
-
         payViaGiftCard = findViewById(R.id.payViaGiftCard);
-
         payViaGiftCard.setOnClickListener(v -> dialogGiftCardPayment());
-
 
         evalyPay.setOnClickListener(v -> {
 
@@ -335,16 +321,11 @@ public class OrderDetailsActivity extends BaseActivity {
                 return;
             }
 
-
             makePartialPayment(invoice_no, amountToPayView.getText().toString());
-
-
         });
 
 
         bkash.setOnClickListener(v -> {
-
-
             double amountToPay = total_amount - paid_amount;
 
             if (amountToPayView.getText().toString().trim().equals("")){
@@ -357,7 +338,6 @@ public class OrderDetailsActivity extends BaseActivity {
                 Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
                 return;
             }
-
 
             Intent intent = new Intent(OrderDetailsActivity.this, PayViaBkashActivity.class);
             intent.putExtra("amount", amountToPayView.getText().toString());
@@ -366,16 +346,9 @@ public class OrderDetailsActivity extends BaseActivity {
             startActivityForResult(intent,10002);
 
             sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-
         });
 
-
-
-
         cards.setOnClickListener(v -> {
-
-
             double amountToPay = total_amount - paid_amount;
 
             if (amountToPayView.getText().toString().trim().equals("")){
@@ -389,18 +362,13 @@ public class OrderDetailsActivity extends BaseActivity {
                 return;
             }
 
-
             double amToPay = Double.parseDouble(amountToPayView.getText().toString());
 
             addBalanceViaCard(invoice_no, String.valueOf((int) amToPay));
 
             sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-
         });
-
-
-
 
     }
 
@@ -411,12 +379,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
     @OnClick(R.id.tvReport)
     void report(){
-        Logger.d("CLicked");
         OrderIssueModel model = new OrderIssueModel();
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        View view = LayoutInflater.from(this).inflate(R.layout.report_view, null, false);
-//        builder.setView(view);
-//        builder.setCancelable(false);
 
         bottomSheetDialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.report_view);
@@ -474,13 +437,7 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onStateChanged(@NonNull View view, int newState) {
                 if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    Logger.d("=---==========------");
-                    view.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    });
+                    view.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     bottomSheetDialog.dismiss();
                 }
@@ -706,7 +663,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void makePaymentViaGiftCard(String giftCode, String invoice, String amount) {
 
-
         HashMap<String, String> payload = new HashMap<>();
 
         payload.put("invoice_no", invoice);
@@ -760,58 +716,29 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void checkCardBalance(){
 
-        String url=UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName()+"/";
+        AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                response = response.getAsJsonObject("data");
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
-            Log.d("onResponse", response.toString());
-            try {
-
-                TextView payViaGiftCard = findViewById(R.id.payViaGiftCard);
-                response = response.getJSONObject("data");
-                if (response.getDouble("gift_card_balance") < 1)
+                if (response.get("gift_card_balance").getAsDouble() < 1)
                     payViaGiftCard.setVisibility(View.GONE);
 
+                balance.setText(Html.fromHtml("Balance: <b>৳ "+response.get("balance").getAsString() + "</b>"));
 
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
 
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(OrderDetailsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        checkCardBalance();
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-
-                return;
-
-            }}
-
-        }) {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                return headers;
+            public void onFailed(String errorBody, int errorCode) {
+
             }
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue queue= Volley.newRequestQueue(context);
-        queue.add(request);
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
     }
 
 
@@ -834,13 +761,10 @@ public class OrderDetailsActivity extends BaseActivity {
         }
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
 
-
             Log.d("json payment res", response.toString());
 
             if(!response.has("success")){
-
                 try {
-
                     dialog.hideDialog();
                     shouldAddBalance();
 
@@ -853,15 +777,12 @@ public class OrderDetailsActivity extends BaseActivity {
                 Toast.makeText(OrderDetailsActivity.this,"Partial payment successful!", Toast.LENGTH_LONG).show();
 
                 final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+                handler.postDelayed(() -> {
 
-                        dialog.hideDialog();
-                        finish();
-                        startActivity(getIntent());
+                    dialog.hideDialog();
+                    finish();
+                    startActivity(getIntent());
 
-                    }
                 }, 1500);
 
             }
@@ -981,7 +902,7 @@ public class OrderDetailsActivity extends BaseActivity {
             }}
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Origin", "https://evaly.com.bd");
@@ -1028,7 +949,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
             try {
 
-                String destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
 
                 try {
 
@@ -1051,18 +971,6 @@ public class OrderDetailsActivity extends BaseActivity {
                         return;
                     }
 
-
-//                    if (selectedImage != null && bottomSheetDialog.isShowing()) {
-//                        Glide.with(this)
-//                                .asBitmap()
-//                                .load(selectedImage)
-//                                .skipMemoryCache(true)
-//                                .fitCenter()
-//                                .optionalCenterCrop()
-//                                .placeholder(R.drawable.half_dp_bg_light)
-//                                .apply(new RequestOptions().override(300, 300))
-//                                .into((ImageView) bottomSheetDialog.findViewById(R.id.postImage));
-//                    }
                     dialog.showDialog();
 
                     Logger.d("+_+_+_+_+_+");
@@ -1300,8 +1208,6 @@ public class OrderDetailsActivity extends BaseActivity {
                 orderDetailsProducts.clear();
                 orderDetailsProductAdapter.notifyDataSetChanged();
 
-                    //Log.d("product_image",ob.getJSONObject("shop_product_item").getJSONObject("product_item").getJSONObject("product").getString("thumbnail"));
-
                     JSONArray jsonArray = response.getJSONArray("order_items");
                     for(int i=0;i<jsonArray.length();i++){
                         JSONObject ob = jsonArray.getJSONObject(i);
@@ -1390,32 +1296,29 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void getOrderHistory(){
         String url=UrlUtils.BASE_URL+"orders/histories/"+invoice_no+"/";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
 
-                Log.d("json", response.toString());
+            Log.d("json", response.toString());
 
-                try {
+            try {
 
-                    JSONArray list  = response.getJSONObject("data").getJSONArray("histories");
+                JSONArray list  = response.getJSONObject("data").getJSONArray("histories");
 
-                    for (int i=0; i < list.length(); i++) {
+                for (int i=0; i < list.length(); i++) {
 
-                        orderStatuses.add(new OrderStatus(
-                                list.getJSONObject(i).getString("date"),
-                                list.getJSONObject(i).getString("order_status"),
-                                list.getJSONObject(i).getString("note"))
-                        );
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    orderStatuses.add(new OrderStatus(
+                            list.getJSONObject(i).getString("date"),
+                            list.getJSONObject(i).getString("order_status"),
+                            list.getJSONObject(i).getString("note"))
+                    );
                 }
 
-                adapter.notifyDataSetChanged();
-
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+
+            adapter.notifyDataSetChanged();
+
         }, error -> {
             Log.e("onErrorResponse", error.toString());
 
