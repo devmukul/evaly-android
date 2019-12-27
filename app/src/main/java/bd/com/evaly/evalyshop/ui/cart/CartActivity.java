@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,36 +29,28 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.cart.CartItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -392,110 +383,67 @@ public class CartActivity extends BaseActivity {
         super.onBackPressed();
     }
 
-    public void placeOrder(JSONObject payload, ViewDialog alert){
 
-        String url = UrlUtils.BASE_URL+"custom/order/create/";
-        alert.showDialog();
+    public void placeOrder(JsonObject payload, ViewDialog dialog){
 
-        try{
-            int countItems = payload.getJSONArray("order_items").length();
-            if (countItems == 0) {
-                alert.hideDialog();
-                dialog.hideDialog();
-                return;
-            }
+        dialog.showDialog();
 
-        } catch (Exception e){ }
-
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
-
-            String errorMsg = "Couldn't place order, might be a server error";
-            Log.d("json order", response.toString());
-            try {
-
-                errorMsg = response.getString("message");
-
-            }catch (Exception e){ }
-
-            try {
-
-                if (response.getJSONArray("data").length() < 1) {
-                    dialog.hideDialog();
-                    // Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-
-                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                    orderPlaced();
-                    dialog.hideDialog();
-                    errorMsg = response.getString("message");
-                }
-
-            } catch (Exception e){ }
-
-            try {
-
-                JSONArray data = response.getJSONArray("data");
-                for (int i = 0; i < data.length(); i++) {
-                    JSONObject item = data.getJSONObject(i);
-                    String invoice = item.getString("invoice_no");
-                    Intent intent = new Intent(context, OrderDetailsActivity.class);
-                    intent.putExtra("orderID", invoice);
-                    startActivity(intent);
-                    //makePayment(invoice, alert, response.length()-1, i);
-                }
-
-
-            } catch (Exception e) {
-
-                Log.e("json exception", e.toString());
-                Toast.makeText(context, errorMsg , Toast.LENGTH_SHORT).show();
-                dialog.hideDialog();
-            }
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(CartActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        placeOrder(payload, alert);
-                    }
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-                return;
-            }}
-
-            Toast.makeText(context, "Couldn't place order", Toast.LENGTH_SHORT).show();
-            dialog.hideDialog();
-            alert.hideDialog();
-        }) {
+        OrderApiHelper.placeOrder(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-                return headers;
+                bottomSheetDialog.hide();
+                dialog.hideDialog();
+
+                if (response != null) {
+
+                    String errorMsg = response.get("message").getAsString();
+
+                    if (response.has("data")) {
+                        if (response.getAsJsonArray("data").size() < 1) {
+                            Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
+                            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                            orderPlaced();
+                        }
+
+                        JsonArray data = response.getAsJsonArray("data");
+                        for (int i = 0; i < data.size(); i++) {
+                            JsonObject item = data.get(i).getAsJsonObject();
+                            String invoice = item.get("invoice_no").getAsString();
+                            Intent intent = new Intent(context, OrderDetailsActivity.class);
+                            intent.putExtra("orderID", invoice);
+                            startActivity(intent);
+                        }
+                    } else {
+                        Toast.makeText(context, "Couldn't place order.", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
 
-        };
-        RequestQueue queue= Volley.newRequestQueue(CartActivity.this);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+                dialog.hideDialog();
+                Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    placeOrder(payload, dialog);
+                else
+                    AppController.logout(CartActivity.this);
+            }
+        });
+
     }
 
 
-    private JSONObject generateOrderJson(){
+
+
+    private JsonObject generateOrderJson(){
 
         PlaceOrderItem orderObejct = new PlaceOrderItem();
 
@@ -531,14 +479,8 @@ public class CartActivity extends BaseActivity {
 
         orderObejct.setOrderItems(productList);
 
-        String payload = new Gson().toJson(orderObejct);
 
-        try {
-            JSONObject jsonPayload = new JSONObject(payload);
-            return jsonPayload;
-        }catch (Exception e){}
-
-        return new JSONObject();
+        return new Gson().toJsonTree(orderObejct).getAsJsonObject();
     }
 
     public void orderPlaced(){
