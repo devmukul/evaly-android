@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.search;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -37,8 +36,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -54,16 +51,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.search.adapter.AutoCompleteAdapter;
-import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
-import bd.com.evaly.evalyshop.ui.search.adapter.SearchFilterAdapter;
-import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.search.SearchFilterItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
-import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
+import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
+import bd.com.evaly.evalyshop.ui.search.adapter.AutoCompleteAdapter;
+import bd.com.evaly.evalyshop.ui.search.adapter.SearchFilterAdapter;
+import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
@@ -464,96 +461,85 @@ public class GlobalSearchActivity extends BaseActivity {
             }
         });
 
-        searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
-                    nestedSV.setBackgroundColor(Color.parseColor("#fafafa"));
-                    noResult.setVisibility(View.GONE);
+        searchText.setOnEditorActionListener((v, actionId, event) -> {
+            if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
+                nestedSV.setBackgroundColor(Color.parseColor("#fafafa"));
+                noResult.setVisibility(View.GONE);
 
 
-                    minimum.setText("");
-                    maximum.setText("");
+                minimum.setText("");
+                maximum.setText("");
 
-                    fromFilter = false;
+                fromFilter = false;
 
-                    sortIndexName = "products";
-                    filterJSON = "[]";
-                    priceFilterJSON = "[\"price>=10\"]";
+                sortIndexName = "products";
+                filterJSON = "[]";
+                priceFilterJSON = "[\"price>=10\"]";
 
-                    itemList.clear();
-                    itemListProduct.clear();
-                    Log.d("json", "Enter pressed");
-                    RecyclerView.LayoutManager mLayoutManager;
-                    int type=1;
-                    if(searchSlug.equals("product")){
-                        type=1;
-                        // don't let show suggestion after search
-                        AutoCompleteAdapter adapterAuto = new AutoCompleteAdapter(GlobalSearchActivity.this, android.R.layout.simple_list_item_1);
-                        searchText.setAdapter(adapterAuto);
-                    }else if(searchSlug.equals("shop")){
-                        type=3;
-                        searchText.setAdapter(null);
-                    }else if(searchSlug.equals("brands")){
-                        type=3;
-                        searchText.setAdapter(null);
-                    }
-                    if(type == 1) {
-                        mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-                        recyclerView.setAdapter(adapterProduct);
-                    }
-                    else {
-                        mLayoutManager = new GridLayoutManager(GlobalSearchActivity.this, 3);
-                        recyclerView.setAdapter(adapter);
-                    }
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    page=1;
-
-                    categoryList.clear();
-                    allCategories.clear();
-                    getSearchedItems(page);
-                    // hide keyboard
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    //or try following:
-                    //InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
-                    searchText.clearFocus();
-                    return true;
-                } else {
-                    return false;
+                itemList.clear();
+                itemListProduct.clear();
+                Log.d("json", "Enter pressed");
+                RecyclerView.LayoutManager mLayoutManager;
+                int type1 =1;
+                if(searchSlug.equals("product")){
+                    type1 =1;
+                    // don't let show suggestion after search
+                    AutoCompleteAdapter adapterAuto1 = new AutoCompleteAdapter(GlobalSearchActivity.this, android.R.layout.simple_list_item_1);
+                    searchText.setAdapter(adapterAuto1);
+                }else if(searchSlug.equals("shop")){
+                    type1 =3;
+                    searchText.setAdapter(null);
+                }else if(searchSlug.equals("brands")){
+                    type1 =3;
+                    searchText.setAdapter(null);
                 }
+                if(type1 == 1) {
+                    mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                    recyclerView.setAdapter(adapterProduct);
+                }
+                else {
+                    mLayoutManager = new GridLayoutManager(GlobalSearchActivity.this, 3);
+                    recyclerView.setAdapter(adapter);
+                }
+                recyclerView.setLayoutManager(mLayoutManager);
+                page=1;
+
+                categoryList.clear();
+                allCategories.clear();
+                getSearchedItems(page);
+                // hide keyboard
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                //or try following:
+                //InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+                searchText.clearFocus();
+                return true;
+            } else {
+                return false;
             }
         });
 
         ImageView back = findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        back.setOnClickListener(v -> finish());
         //handler.post(runnableCode);
 
         if (nestedSV != null) {
-            nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    String TAG = "nested_sync";
-                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                        Log.i(TAG, "BOTTOM SCROLL");
-                        try {
-                            progressBar.setVisibility(View.VISIBLE);
-                            // Toast.makeText(GlobalSearchActivity.this, "products", Toast.LENGTH_SHORT).show();
-                            if (searchSlug.equals("shop")) {
-                                loadNextShops();
-                            } else if (searchSlug.equals("brands")) {
-                                loadNextBrands();
-                            } else {
-                                loadNextSearchPage();
-                            }
-                        } catch (Exception e) {
-                            Log.e("load more product", e.toString());
+            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                String TAG = "nested_sync";
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                    Log.i(TAG, "BOTTOM SCROLL");
+                    try {
+                        progressBar.setVisibility(View.VISIBLE);
+                        // Toast.makeText(GlobalSearchActivity.this, "products", Toast.LENGTH_SHORT).show();
+                        if (searchSlug.equals("shop")) {
+                            loadNextShops();
+                        } else if (searchSlug.equals("brands")) {
+                            loadNextBrands();
+                        } else {
+                            loadNextSearchPage();
                         }
+                    } catch (Exception e) {
+                        Log.e("load more product", e.toString());
                     }
                 }
             });
@@ -565,69 +551,52 @@ public class GlobalSearchActivity extends BaseActivity {
 
 
 
-        sortingBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        sortingBtn.setOnClickListener(v -> {
 
-                if (searchType.getSelectedItemPosition() == 1 || searchType.getSelectedItemPosition() == 2) {
-                    Toast.makeText(GlobalSearchActivity.this, "You can use sorting while searching for products", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                final AlertDialog.Builder builder = new AlertDialog.Builder(GlobalSearchActivity.this);
-                builder.setTitle("Sort Products By\n");
-                final String[] a={"Relevance","Price low to high","Price high to low"};
-
-                int checkItem = 0;
-
-                if (sortIndexName.equals("products_price_asc"))
-                    checkItem = 1;
-                else if (sortIndexName.equals("products_price_desc"))
-                    checkItem = 2;
-
-
-
-
-                builder.setSingleChoiceItems(a, checkItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        if(i==0)
-                            sortIndexName = "products";
-                        else if(i==1)
-                            sortIndexName = "products_price_asc";
-                        else if (i==2)
-                            sortIndexName = "products_price_desc";
-
-
-                        page = 1;
-                        itemListProduct.clear();
-                        getProducts(page);
-
-
-                        dialogInterface.dismiss();
-
-                    }
-                });
-
-//                builder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-
-//                    }
-//                });
-                builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        dialog.dismiss();
-                    }
-                });
-
-                builder.show();
-
-
+            if (searchType.getSelectedItemPosition() == 1 || searchType.getSelectedItemPosition() == 2) {
+                Toast.makeText(GlobalSearchActivity.this, "You can use sorting while searching for products", Toast.LENGTH_LONG).show();
+                return;
             }
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(GlobalSearchActivity.this);
+            builder.setTitle("Sort Products By\n");
+            final String[] a={"Relevance","Price low to high","Price high to low"};
+
+            int checkItem = 0;
+
+            if (sortIndexName.equals("products_price_asc"))
+                checkItem = 1;
+            else if (sortIndexName.equals("products_price_desc"))
+                checkItem = 2;
+
+
+
+
+            builder.setSingleChoiceItems(a, checkItem, (dialogInterface, i) -> {
+
+                if(i==0)
+                    sortIndexName = "products";
+                else if(i==1)
+                    sortIndexName = "products_price_asc";
+                else if (i==2)
+                    sortIndexName = "products_price_desc";
+
+
+                page = 1;
+                itemListProduct.clear();
+                getProducts(page);
+
+
+                dialogInterface.dismiss();
+
+            });
+
+
+            builder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
+
+            builder.show();
+
+
         });
 
 
@@ -682,22 +651,8 @@ public class GlobalSearchActivity extends BaseActivity {
 
 
     public void getProducts(int page){
-        //noFilterText();
-//        if (searchText.getText().toString().equals("")) {
-//            progressBar.setVisibility(View.VISIBLE);
-//            productGrid = new ProductGrid(GlobalSearchActivity.this, findViewById(R.id.recycle), "root", findViewById(R.id.progressBar));
-//            return;
-//        }
 
         String searchQuery = searchText.getText().toString();
-
-//        try {
-//            searchQuery=URLEncoder.encode(searchQuery, "UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-
-
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -793,14 +748,14 @@ public class GlobalSearchActivity extends BaseActivity {
                             images.add(ob.getString("product_image").replace("\n", "").replace("\r", ""));
                             tabsItem.setImageUrls(images);
                             tabsItem.setSlug(ob.getString("slug"));
-                            tabsItem.setMaxPrice(String.valueOf(ob.getInt("max_price")));
-                            tabsItem.setMinDiscountedPrice(String.valueOf(ob.getInt("discounted_price")));
+                            tabsItem.setMaxPrice(String.valueOf(ob.isNull("max_price") ? 0 : ob.getInt("max_price")));
+                            tabsItem.setMinDiscountedPrice(String.valueOf(ob.isNull("discounted_price") ? 0 : ob.getInt("discounted_price")));
                             tabsItem.setMinPrice(String.valueOf(ob.getInt("price")));
 
-                            if (!slugStore.contains(ob.getString("slug"))) {
+                            if (!slugStore.contains(ob.getString("slug"))) { }
                                 itemListProduct.add(tabsItem);
                                 adapterProduct.notifyItemInserted(itemListProduct.size());
-                            }
+
 
                             slugStore.add(ob.getString("slug"));
 
@@ -941,14 +896,11 @@ public class GlobalSearchActivity extends BaseActivity {
 
 
 
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                isLoading=false;
-                progressBar.setVisibility(View.GONE);
-                error.printStackTrace();
-            }
-        });
+                }, error -> {
+                    isLoading=false;
+                    progressBar.setVisibility(View.GONE);
+                    error.printStackTrace();
+                });
         request.setShouldCache(false);
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -1013,12 +965,7 @@ public class GlobalSearchActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+                }, error -> error.printStackTrace());
         request.setShouldCache(false);
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -1084,12 +1031,7 @@ public class GlobalSearchActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+                }, error -> error.printStackTrace());
 
         request.setShouldCache(false);
 
