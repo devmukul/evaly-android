@@ -47,6 +47,7 @@ public class OrderListFragment extends Fragment {
     private View view;
     private Context context;
     private String statusType = "all";
+    private View dummyView;
 
     public static OrderListFragment getInstance(String type){
 
@@ -89,6 +90,7 @@ public class OrderListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
+        dummyView = view.findViewById(R.id.dummyView);
         recyclerView=view.findViewById(R.id.recycle);
         notOrdered=view.findViewById(R.id.not_order);
         progressBar = view.findViewById(R.id.progressBar);
@@ -144,9 +146,14 @@ public class OrderListFragment extends Fragment {
 
     public void getOrderData(int page){
 
+        if (page == 1)
+            dummyView.setVisibility(View.VISIBLE);
+
         OrderApiHelper.getOrderList(CredentialManager.getToken(), page, statusType, new ResponseListenerAuth<CommonResultResponse<List<OrderListItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<OrderListItem>> response, int statusCode) {
+
+                dummyView.setVisibility(View.GONE);
 
                 hideProgressView();
 

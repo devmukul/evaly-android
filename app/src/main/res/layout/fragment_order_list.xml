@@ -19,6 +19,13 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
+
+        <View
+            android:visibility="gone"
+            android:id="@+id/dummyView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
