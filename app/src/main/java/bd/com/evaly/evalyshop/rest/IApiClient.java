@@ -20,6 +20,7 @@ import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
@@ -36,6 +37,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 public interface IApiClient {
 
@@ -189,6 +191,10 @@ public interface IApiClient {
 
     // shop releated
 
+
+    @GET
+    Call<ShopDetailsModel> getShopDetailsItems(@Header("Authorization") String token, @Url String url);
+
     @POST(UrlUtils.BASE_URL + "shop-subscriptions")
     Call<JsonObject> subscribeToShop(@Header("Authorization") String token, @Body HashMap<String, String> shopSlug);
 
@@ -196,7 +202,7 @@ public interface IApiClient {
     @DELETE(UrlUtils.BASE_URL + "unsubscribe-shop/{shop_slug}/")
     Call<JsonObject> unsubscribeShop(@Header("Authorization") String token, @Path("shop_slug") String shopSlug);
 
-    @GET(UrlUtils.BASE_URL+"reviews/summmary/shops/{sku}/")
+    @GET(UrlUtils.BASE_URL+"reviews/summary/shops/{sku}/")
     Call<JsonObject> getShopReviews(@Path("sku") String sku);
 
     // referral
