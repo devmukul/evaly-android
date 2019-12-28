@@ -305,6 +305,9 @@ public class EditProfileActivity extends BaseActivity {
 
     private void uploadProfilePicture(final Bitmap bitmap) {
 
+        AuthApiHelper.uploadImage();
+
+
         ProgressDialog dialog = ProgressDialog.show(EditProfileActivity.this, "",
                 "Uploading image...", true);
 

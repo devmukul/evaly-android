@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,29 +66,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
-import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
-import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
-import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
-import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
+import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
+import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
+import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -102,41 +101,36 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 public class ShopFragment extends Fragment implements ProductListener {
 
-    String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug="";
-    ImageView logo;
-    TextView name, address, number, tvOffer, followText;
-    NestedScrollView nestedSV;
-
-    ShimmerFrameLayout shimmer;
-    RecyclerView recyclerView;
-    ShopCategoryAdapter adapter;
-    ArrayList<TabsItem> itemList;
-    LinearLayout callButton, location, link, reviews, llInbox, followBtn;
-    View view;
-    Context context;
-    MainActivity mainActivity;
-    ProductGrid productGrid;
+    private String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug="";
+    private ImageView logo;
+    private TextView name, address, number, tvOffer, followText;
+    private NestedScrollView nestedSV;
+    private ShimmerFrameLayout shimmer;
+    private RecyclerView recyclerView;
+    private ShopCategoryAdapter adapter;
+    private ArrayList<TabsItem> itemList;
+    private LinearLayout callButton, location, link, reviews, llInbox, followBtn;
+    private View view;
+    private Context context;
+    private MainActivity mainActivity;
+    private ProductGrid productGrid;
     private TextView categoryTitle;
     private TextView reset;
-    int currentPage = 1;
+    private int currentPage = 1;
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
-    ImageView placeholder;
-    ProgressBar progressBar;
-    String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
-    RequestQueue rq;
-    UserDetails userDetails;
-    int subCount = 0;
+    private int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private ImageView placeholder;
+    private ProgressBar progressBar;
+    private String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
+    private RequestQueue rq;
+    private UserDetails userDetails;
+    private int subCount = 0;
     private ViewDialog dialog;
-
     private VCard vCard;
-    AppController mChatApp = AppController.getInstance();
-
-    XMPPHandler xmppHandler;
+    private AppController mChatApp = AppController.getInstance();
+    private XMPPHandler xmppHandler;
     private List<String> rosterList;
-
-
-    LinearLayout noItem;
+    private LinearLayout noItem;
 
 
     @Override
@@ -156,26 +150,18 @@ public class ShopFragment extends Fragment implements ProductListener {
 
             ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
             noItem.setVisibility(View.VISIBLE);
-
             try {
                 Glide.with(context)
                         .load(R.drawable.ic_emptycart)
                         .apply(new RequestOptions().override(600, 600))
                         .into(placeholder);
-            } catch (Exception e) {
-
-            }
+            } catch (Exception ignored) { }
 
             progressBar.setVisibility(View.GONE);
 
         } else {
             noItem.setVisibility(View.GONE);
         }
-
-
-
-
-
     }
 
 
@@ -216,26 +202,16 @@ public class ShopFragment extends Fragment implements ProductListener {
         mainActivity = (MainActivity) getActivity();
         rq = Volley.newRequestQueue(context);
 
-        if (!CredentialManager.getToken().equals("")) {
+        if (!CredentialManager.getToken().equals(""))
             startXmppService();
-        }
-
-
 
         return view;
     }
 
 
     private void refreshFragment(){
-        if (getFragmentManager() != null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                getFragmentManager().beginTransaction().detach(this).commitNow();
-                getFragmentManager().beginTransaction().attach(this).commitNow();
-            } else {
-                getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-            }
+        NavHostFragment.findNavController(ShopFragment.this).navigate(R.id.shopFragment);
     }
-
 
 
     @Override
@@ -406,13 +382,9 @@ public class ShopFragment extends Fragment implements ProductListener {
             reset.setVisibility(View.GONE);
         });
 
-
-
         productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, "", campaign_slug, 1, progressBar);
         productGrid.setScrollView(nestedSV);
         productGrid.setListener(this);
-
-
 
     }
 
@@ -440,7 +412,6 @@ public class ShopFragment extends Fragment implements ProductListener {
                 }
             }
         }
-
     }
 
 
@@ -475,9 +446,6 @@ public class ShopFragment extends Fragment implements ProductListener {
                         shop_name = jsonObject.getString("name");
                         owner_number = jsonObject.getString("owner_name");
                         subCount = data.getInt("subscriber_count");
-
-
-
 
                         llInbox.setOnClickListener(v -> {
 
@@ -707,9 +675,6 @@ public class ShopFragment extends Fragment implements ProductListener {
                         e.printStackTrace();
                     }
 
-
-
-
                 }, error -> {
                     error.printStackTrace();
 
@@ -728,9 +693,7 @@ public class ShopFragment extends Fragment implements ProductListener {
 
                                 }
                             });
-
                             return;
-
                         }
                     }
 
@@ -799,7 +762,6 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
     public void getSubCategories(int currentPage) {
-
 
         ProductApiHelper.getCategoriesOfShop(slug, campaign_slug, currentPage, new ResponseListenerAuth<JsonObject, String>() {
             @Override
@@ -927,6 +889,7 @@ public class ShopFragment extends Fragment implements ProductListener {
         }
     }
 
+
     public void subscribe() {
 
         if (userDetails.getToken().equals("")) {
@@ -965,6 +928,5 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
     }
-
 
 }
