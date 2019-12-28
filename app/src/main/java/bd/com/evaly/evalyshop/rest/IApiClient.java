@@ -131,6 +131,15 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL+"/public/shops/{shopSlug}/items/{shopItem}/variants")
     Call<CommonDataResponse<List<ShopItem>>> getProductVariants(@Path("shopSlug") String shopSlug, @Path("shopItem") String shopItem);
 
+    // with token
+
+    @GET(UrlUtils.BASE_URL+"public/shops/items/{shopSlug}/")
+    Call<ShopDetailsModel> getShopDetails(@Header("Authorization") String token, @Path("shopSlug") String shopSlug, @Query("page") int page, @Query("limit") int limit, @Query("category_slug") String categorySlug);
+
+    @GET(UrlUtils.CAMPAIGNS+"/{campaignSlug}/shops/{shopSlug}/items")
+    Call<ShopDetailsModel> getCampaignShopDetails(@Header("Authorization") String token, @Path("campaignSlug") String campaignSlug, @Path("shopSlug") String shopSlug, @Query("page") int page, @Query("limit") int limit, @Query("category_slug") String categorySlug);
+
+
     // Categories API
 
     @GET(UrlUtils.CATEGORIES)

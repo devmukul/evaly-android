@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.activity.InitializeActionBar;
@@ -78,7 +79,6 @@ import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -90,6 +90,7 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 public class ShopFragment extends Fragment implements ProductListener {
 
     private String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug="";
+    private String categorySlug = null;
     private ImageView logo;
     private TextView name, address, number, tvOffer, followText;
     private NestedScrollView nestedSV;
@@ -166,7 +167,7 @@ public class ShopFragment extends Fragment implements ProductListener {
         rq = Volley.newRequestQueue(context);
 
         if (!CredentialManager.getToken().equals(""))
-            startXmppService();
+            Executors.newSingleThreadExecutor().execute(() -> startXmppService());
 
         return view;
     }
@@ -316,7 +317,7 @@ public class ShopFragment extends Fragment implements ProductListener {
         reset.setVisibility(View.GONE);
 
         reset.setOnClickListener(view1 -> {
-            showProductsByCategory("All Products", "", 0);
+            showProductsByCategory("All Products", null, 0);
             reset.setVisibility(View.GONE);
         });
 
@@ -351,26 +352,23 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
     public void showProductsByCategory(String categoryName, String categorySlug, int position) {
+
+        this.categorySlug = categorySlug;
         reset.setVisibility(View.VISIBLE);
         categoryTitle.setText(categoryName);
-        productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, categorySlug, campaign_slug, 1, view.findViewById(R.id.progressBar));
-        productGrid.setScrollView(nestedSV);
-        productGrid.setListener(this);
+        productItemList.clear();
+        adapterProducts.notifyDataSetChanged();
+        currentPage = 1;
+        getShopProductCount();
+
     }
 
 
     public void getShopProductCount() {
 
-        String url;
-        if (campaign_slug.equals(""))
-            url = UrlUtils.BASE_URL + "public/shops/items/" + slug + "/?page=" + currentPage;
-        else
-            url = UrlUtils.CAMPAIGNS + "/" + campaign_slug + "/shops/" + slug + "/items?page=" + currentPage;
-
-
         progressBar.setVisibility(View.VISIBLE);
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), url, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), slug , currentPage, 21, categorySlug, campaign_slug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
 
@@ -459,7 +457,11 @@ public class ShopFragment extends Fragment implements ProductListener {
                     });
 
 
-                    llInbox.setOnClickListener(v -> setUpXmpp());
+                    llInbox.setOnClickListener(v -> {
+
+                        setUpXmpp();
+
+                    });
 
                     if (shopData.getMeta() != null){
                         int cashbackRate =shopData.getMeta().get("cashback_rate").getAsInt();
@@ -508,12 +510,6 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
     }
-
-
-
-
-
-
 
 
 
