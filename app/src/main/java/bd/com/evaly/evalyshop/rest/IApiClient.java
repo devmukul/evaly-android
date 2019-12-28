@@ -203,7 +203,7 @@ public interface IApiClient {
     Call<JsonObject> unsubscribeShop(@Header("Authorization") String token, @Path("shop_slug") String shopSlug);
 
     @GET(UrlUtils.BASE_URL+"reviews/summary/shops/{sku}/")
-    Call<JsonObject> getShopReviews(@Path("sku") String sku);
+    Call<JsonObject> getShopReviews(@Header("Authorization") String token, @Path("sku") String sku);
 
     // referral
 

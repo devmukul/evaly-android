@@ -43,8 +43,8 @@ public class GeneralApiHelper extends BaseApiHelper {
     }
 
 
-    public static void getShopReviews(String sku, ResponseListenerAuth<JsonObject, String> listener){
-        getiApiClient().getShopReviews(sku).enqueue(getResponseCallBackDefault(listener));
+    public static void getShopReviews(String token, String sku, ResponseListenerAuth<JsonObject, String> listener){
+        getiApiClient().getShopReviews(token, sku).enqueue(getResponseCallBackDefault(listener));
     }
 
 

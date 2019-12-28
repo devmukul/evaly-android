@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.models.shop.shopDetails;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public class Data{
 
 	@SerializedName("items")
 	private List<ItemsItem> items;
+
+	@SerializedName("meta")
+	private JsonObject meta;
 
 	public void setSubscribed(boolean subscribed){
 		this.subscribed = subscribed;
@@ -59,6 +63,14 @@ public class Data{
 
 	public List<ItemsItem> getItems(){
 		return items;
+	}
+
+	public JsonObject getMeta() {
+		return meta;
+	}
+
+	public void setMeta(JsonObject meta) {
+		this.meta = meta;
 	}
 
 	@Override

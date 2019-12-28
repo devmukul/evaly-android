@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -56,7 +56,9 @@ import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Data;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -71,6 +73,7 @@ import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
+import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
@@ -94,6 +97,10 @@ public class ShopFragment extends Fragment implements ProductListener {
     private RecyclerView recyclerView;
     private ShopCategoryAdapter adapter;
     private ArrayList<TabsItem> itemList;
+    private List<ProductItem> productItemList;
+    private ProductGridAdapter adapterProducts;
+    private RecyclerView productRecyclerView;
+    private ProgressBar progressBar;
     private LinearLayout callButton, location, link, reviews, llInbox, followBtn;
     private View view;
     private Context context;
@@ -105,7 +112,6 @@ public class ShopFragment extends Fragment implements ProductListener {
     private boolean loading = true;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private ImageView placeholder;
-    private ProgressBar progressBar;
     private String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
     private RequestQueue rq;
     private UserDetails userDetails;
@@ -132,7 +138,6 @@ public class ShopFragment extends Fragment implements ProductListener {
     public void onSuccess(int count) {
 
         if (count == 0){
-
             ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
             noItem.setVisibility(View.VISIBLE);
             try {
@@ -141,9 +146,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                         .apply(new RequestOptions().override(600, 600))
                         .into(placeholder);
             } catch (Exception ignored) { }
-
             progressBar.setVisibility(View.GONE);
-
         } else {
             noItem.setVisibility(View.GONE);
         }
@@ -153,31 +156,6 @@ public class ShopFragment extends Fragment implements ProductListener {
     public ShopFragment() {
         // Required empty public constructor
     }
-
-    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-        //On User Presence Changed
-        public void onPresenceChanged(PresenceModel presenceModel) {
-
-            // Logger.d(presenceModel.getUserStatus());
-        }
-
-        public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-            rosterList = xmppHandler.rosterList;
-            if (!owner_number.equals("")) {
-                try {
-                    Logger.d(owner_number);
-                    EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
-                            + Constants.XMPP_HOST);
-                    vCard = xmppHandler.getUserDetails(jid);
-                    Logger.d(new Gson().toJson(vCard));
-                } catch (XmppStringprepException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
 
 
     @Override
@@ -254,12 +232,10 @@ public class ShopFragment extends Fragment implements ProductListener {
         }
 
         try {
-
             shimmer.startShimmer();
         } catch (Exception e) {
 
         }
-
 
         recyclerView = view.findViewById(R.id.categoriesRecycler);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -305,31 +281,32 @@ public class ShopFragment extends Fragment implements ProductListener {
 
         slug = getArguments().getString("shop_slug");
 
-        if (groups != null && groups.equalsIgnoreCase("evaly1919")) {
-            tvOffer.setVisibility(View.VISIBLE);
-        } else {
-            tvOffer.setVisibility(View.GONE);
-        }
+        productRecyclerView = view.findViewById(R.id.productsRecyclerView);
 
-        getShopProductCount();
+        productItemList = new ArrayList<>();
+        RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        productRecyclerView.setLayoutManager(mLayoutManager);
+        productRecyclerView.setNestedScrollingEnabled(false);
+        productRecyclerView.setHasFixedSize(false);
+        adapterProducts = new ProductGridAdapter(context, productItemList);
+        adapterProducts.setHasStableIds(true);
+        adapterProducts.setproductListener(this);
+        productRecyclerView.setAdapter(adapterProducts);
+
+
         getProductRating(slug);
         getSubCategories(currentPage);
+
+        getShopProductCount();
 
         nestedSV = view.findViewById(R.id.stickyScrollView);
 
         if (nestedSV != null) {
 
             nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                String TAG = "nested_sync";
-
                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    Log.i(TAG, "BOTTOM SCROLL");
 
-                    try {
-                        productGrid.loadNextShopProducts();
-                    } catch (Exception e) {
-                        Log.e("scroll error", e.toString());
-                    }
+                    getShopProductCount();
                 }
             });
         }
@@ -343,9 +320,6 @@ public class ShopFragment extends Fragment implements ProductListener {
             reset.setVisibility(View.GONE);
         });
 
-        productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, "", campaign_slug, 1, progressBar);
-        productGrid.setScrollView(nestedSV);
-        productGrid.setListener(this);
 
     }
 
@@ -393,6 +367,9 @@ public class ShopFragment extends Fragment implements ProductListener {
         else
             url = UrlUtils.CAMPAIGNS + "/" + campaign_slug + "/shops/" + slug + "/items?page=" + currentPage;
 
+
+        progressBar.setVisibility(View.VISIBLE);
+
         ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), url, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
@@ -400,86 +377,121 @@ public class ShopFragment extends Fragment implements ProductListener {
                 Data shopData = response.getData();
                 Shop shopDetails = shopData.getShop();
 
-                shop_name = shopDetails.getName();
-                owner_number = shopDetails.getOwnerName();
-                subCount = shopData.getSubscriberCount();
+                if (currentPage == 1) {
+                    shop_name = shopDetails.getName();
+                    owner_number = shopDetails.getOwnerName();
+                    subCount = shopData.getSubscriberCount();
 
-                if (shopData.isSubscribed())
-                    followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
-                else
-                    followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subCount));
+                    if (shopData.isSubscribed())
+                        followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
+                    else
+                        followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subCount));
 
-                // click listeners
+                    // click listeners
 
-                followBtn.setOnClickListener(v -> subscribe());
+                    followBtn.setOnClickListener(v -> subscribe());
 
-                name.setText(shop_name);
-                address.setText(shopDetails.getAddress());
+                    name.setText(shop_name);
 
-                if (logo.getDrawable() == null)
-                    Glide.with(context)
-                            .load(shopDetails.getLogoImage())
-                            .skipMemoryCache(true)
-                            .into(logo);
+                    if (logo.getDrawable() == null)
+                        Glide.with(context)
+                                .load(shopDetails.getLogoImage())
+                                .skipMemoryCache(true)
+                                .into(logo);
 
-                callButton.setOnClickListener(v -> {
-                    String phone = shopDetails.getContactNumber();
-                    final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-                    snackBar.setAction("Call", v12 -> {
-                        try {
-                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                            intent.setData(Uri.parse("tel:" + shopDetails.getContactNumber()));
-                            startActivity(intent);
-                        } catch (Exception ignored) { }
-                        snackBar.dismiss();
+                    callButton.setOnClickListener(v -> {
+                        String phone = shopDetails.getContactNumber();
+                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+                        snackBar.setAction("Call", v12 -> {
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_DIAL);
+                                intent.setData(Uri.parse("tel:" + shopDetails.getContactNumber()));
+                                startActivity(intent);
+                            } catch (Exception ignored) {
+                            }
+                            snackBar.dismiss();
+                        });
+                        snackBar.show();
                     });
-                    snackBar.show();
-                });
 
 
-                location.setOnClickListener(v -> {
-                    String phone = shopDetails.getAddress();
-                    final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-                    snackBar.setAction("Copy", v1 -> {
-                        try {
-                            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText("address", shopDetails.getAddress());
-                            clipboard.setPrimaryClip(clip);
-                        } catch (Exception ignored) { }
+                    location.setOnClickListener(v -> {
+                        String phone = shopDetails.getAddress();
+                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+                        snackBar.setAction("Copy", v1 -> {
+                            try {
+                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("address", shopDetails.getAddress());
+                                clipboard.setPrimaryClip(clip);
+                            } catch (Exception ignored) {
+                            }
 
-                        snackBar.dismiss();
+                            snackBar.dismiss();
+                        });
+                        snackBar.show();
                     });
-                    snackBar.show();
-                });
 
 
-                link.setOnClickListener(v -> {
-                    String phone = "https://evaly.com.bd/shops/" + shopDetails.getSlug();
-                    final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-                    snackBar.setAction("Copy", v13 -> {
-                        try {
-                            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/" + shopDetails.getSlug());
-                            clipboard.setPrimaryClip(clip);
-                        } catch (Exception ignored) { }
-                        snackBar.dismiss();
+                    link.setOnClickListener(v -> {
+                        String phone = "https://evaly.com.bd/shops/" + shopDetails.getSlug();
+                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+                        snackBar.setAction("Copy", v13 -> {
+                            try {
+                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/" + shopDetails.getSlug());
+                                clipboard.setPrimaryClip(clip);
+                            } catch (Exception ignored) {
+                            }
+                            snackBar.dismiss();
+                        });
+                        snackBar.show();
+
                     });
-                    snackBar.show();
-
-                });
 
 
-                reviews.setOnClickListener(v -> {
-                    String shop_id = slug;
-                    Intent intent = new Intent(context, ReviewsActivity.class);
-                    intent.putExtra("ratingJson", ratingJson);
-                    intent.putExtra("type", "shop");
-                    intent.putExtra("item_value", shop_id);
-                    startActivity(intent);
-                });
+                    reviews.setOnClickListener(v -> {
+                        String shop_id = slug;
+                        Intent intent = new Intent(context, ReviewsActivity.class);
+                        intent.putExtra("ratingJson", ratingJson);
+                        intent.putExtra("type", "shop");
+                        intent.putExtra("item_value", shop_id);
+                        startActivity(intent);
+                    });
 
 
-                llInbox.setOnClickListener(v -> setUpXmpp());
+                    llInbox.setOnClickListener(v -> setUpXmpp());
+
+                    if (shopData.getMeta() != null){
+                        int cashbackRate =shopData.getMeta().get("cashback_rate").getAsInt();
+                        adapterProducts.setCashback_rate(cashbackRate);
+                    }
+
+                }
+
+                progressBar.setVisibility(View.INVISIBLE);
+                productRecyclerView.setVisibility(View.VISIBLE);
+
+                List<ItemsItem> shopItems = shopData.getItems();
+
+                for (int i=0; i<shopItems.size(); i++){
+                    if (i==0)
+                        currentPage++;
+
+                    ItemsItem shopItem = shopItems.get(i);
+
+                    ProductItem item = new ProductItem();
+                    item.setImageUrls(shopItem.getItemImages());
+                    item.setSlug(shopItem.getShopItemSlug());
+                    item.setName(shopItem.getItemName());
+                    item.setMaxPrice(String.valueOf(shopItem.getItemPrice()));
+                    item.setMinPrice(String.valueOf(shopItem.getItemPrice()));
+                    item.setMinDiscountedPrice(String.valueOf(shopItem.getDiscountedPrice()));
+
+                    productItemList.add(item);
+
+                    adapterProducts.notifyItemInserted(productItemList.size());
+
+                }
 
             }
 
@@ -496,6 +508,16 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
     }
+
+
+
+
+
+
+
+
+
+
 
 
     private void setUpXmpp(){
@@ -573,7 +595,7 @@ public class ShopFragment extends Fragment implements ProductListener {
 
     public void getProductRating(final String sku) {
 
-        GeneralApiHelper.getShopReviews(sku, new ResponseListenerAuth<JsonObject, String>() {
+        GeneralApiHelper.getShopReviews(CredentialManager.getToken(), sku, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 try {
@@ -602,6 +624,7 @@ public class ShopFragment extends Fragment implements ProductListener {
             }
         });
     }
+
 
 
     public void getSubCategories(int currentPage) {
@@ -660,9 +683,35 @@ public class ShopFragment extends Fragment implements ProductListener {
 
             }
         });
-
-
     }
+
+
+
+    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+        //On User Presence Changed
+        public void onPresenceChanged(PresenceModel presenceModel) {
+
+            // Logger.d(presenceModel.getUserStatus());
+        }
+
+        public void onConnected() {
+            xmppHandler = AppController.getmService().xmpp;
+            rosterList = xmppHandler.rosterList;
+            if (!owner_number.equals("")) {
+                try {
+                    Logger.d(owner_number);
+                    EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
+                            + Constants.XMPP_HOST);
+                    vCard = xmppHandler.getUserDetails(jid);
+                    Logger.d(new Gson().toJson(vCard));
+                } catch (XmppStringprepException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
 
     private void addRosterByOther() {
 
