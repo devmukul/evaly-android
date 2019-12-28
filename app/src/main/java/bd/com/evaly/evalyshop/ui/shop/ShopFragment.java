@@ -30,6 +30,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -302,15 +303,11 @@ public class ShopFragment extends Fragment implements ProductListener {
 
         nestedSV = view.findViewById(R.id.stickyScrollView);
 
-        if (nestedSV != null) {
-
-            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-
-                    getShopProductCount();
-                }
-            });
-        }
+        nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                getShopProductCount();
+            }
+        });
 
         reset = view.findViewById(R.id.resetBtn);
 
@@ -361,6 +358,9 @@ public class ShopFragment extends Fragment implements ProductListener {
         currentPage = 1;
         getShopProductCount();
 
+
+
+
     }
 
 
@@ -375,7 +375,24 @@ public class ShopFragment extends Fragment implements ProductListener {
                 Data shopData = response.getData();
                 Shop shopDetails = shopData.getShop();
 
-                if (currentPage == 1) {
+                List<ItemsItem> shopItems = shopData.getItems();
+
+                if (categorySlug != null){
+                    nestedSV.postDelayed(() -> {
+
+                        AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
+
+                        appBarLayout.setExpanded(false, true);
+
+                        TextView tv = view.findViewById(R.id.catTitle);
+                        int scrollTo = ((View) tv.getParent()).getTop() + tv.getTop() + 30;
+                        nestedSV.smoothScrollTo(0, scrollTo);
+                    }, 100);
+                }
+
+
+                if (currentPage == 1 && categorySlug == null) {
+
                     shop_name = shopDetails.getName();
                     owner_number = shopDetails.getOwnerName();
                     subCount = shopData.getSubscriberCount();
@@ -468,12 +485,17 @@ public class ShopFragment extends Fragment implements ProductListener {
                         adapterProducts.setCashback_rate(cashbackRate);
                     }
 
+                    if (shopItems.size() == 0) {
+                        noItem.setVisibility(View.VISIBLE);
+                        categoryTitle.setVisibility(View.GONE);
+                    }
+
+
                 }
 
                 progressBar.setVisibility(View.INVISIBLE);
                 productRecyclerView.setVisibility(View.VISIBLE);
 
-                List<ItemsItem> shopItems = shopData.getItems();
 
                 for (int i=0; i<shopItems.size(); i++){
                     if (i==0)
@@ -500,6 +522,8 @@ public class ShopFragment extends Fragment implements ProductListener {
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
+                progressBar.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -508,12 +532,7 @@ public class ShopFragment extends Fragment implements ProductListener {
             }
         });
 
-
     }
-
-
-
-
 
 
     private void setUpXmpp(){

@@ -399,8 +399,8 @@
                     android:adjustViewBounds="true"
                     android:background="#fafafa"
                     android:paddingLeft="90dp"
-                    android:paddingTop="20dp"
-                    android:paddingRight="90dp" />
+                    android:paddingRight="90dp"
+                    app:srcCompat="@drawable/ic_emptycart_new"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -454,7 +454,7 @@
                     android:paddingBottom="5dp"
                     android:text="Reset"
                     android:textColor="#333"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
