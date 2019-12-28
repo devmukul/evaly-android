@@ -467,6 +467,12 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp" />
 
+            <View
+                android:id="@+id/dummyViewTop"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
+
+
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyle"
@@ -477,6 +483,14 @@
                 android:background="#fafafa"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp" />
+
+
+
+            <View
+                android:id="@+id/dummyView"
+                android:layout_width="match_parent"
+                android:layout_height="600dp"
+                android:visibility="gone"/>
 
 
         </LinearLayout>

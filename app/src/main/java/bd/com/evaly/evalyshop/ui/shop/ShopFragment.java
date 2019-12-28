@@ -124,6 +124,8 @@ public class ShopFragment extends Fragment implements ProductListener {
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
     private LinearLayout noItem;
+    private View dummyView;
+    private View dummyViewTop;
 
 
     @Override
@@ -197,7 +199,7 @@ public class ShopFragment extends Fragment implements ProductListener {
             });
 
 
-        InitializeActionBar InitializeActionbar = new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "shop");
+        new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "shop");
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view12 -> {
             Intent intent = new Intent(context, GlobalSearchActivity.class);
@@ -205,6 +207,9 @@ public class ShopFragment extends Fragment implements ProductListener {
             startActivity(intent);
         });
 
+
+        dummyViewTop = view.findViewById(R.id.dummyViewTop);
+        dummyView = view.findViewById(R.id.dummyView);
         noItem = view.findViewById(R.id.noItem);
         dialog = new ViewDialog(getActivity());
         name = view.findViewById(R.id.name);
@@ -358,6 +363,18 @@ public class ShopFragment extends Fragment implements ProductListener {
         currentPage = 1;
         getShopProductCount();
 
+        dummyView.setVisibility(View.VISIBLE);
+
+        nestedSV.postDelayed(() -> {
+
+            AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
+
+            appBarLayout.setExpanded(false, true);
+
+            TextView tv = view.findViewById(R.id.catTitle);
+            int scrollTo = ((View) tv.getParent()).getTop() + tv.getTop() + 30;
+            nestedSV.smoothScrollTo(0, scrollTo);
+        }, 100);
 
 
 
@@ -368,28 +385,21 @@ public class ShopFragment extends Fragment implements ProductListener {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        if (currentPage==1)
+            dummyViewTop.setVisibility(View.VISIBLE);
+
         ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), slug , currentPage, 21, categorySlug, campaign_slug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
+
+
+                dummyView.setVisibility(View.GONE);
+                dummyViewTop.setVisibility(View.GONE);
 
                 Data shopData = response.getData();
                 Shop shopDetails = shopData.getShop();
 
                 List<ItemsItem> shopItems = shopData.getItems();
-
-                if (categorySlug != null){
-                    nestedSV.postDelayed(() -> {
-
-                        AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
-
-                        appBarLayout.setExpanded(false, true);
-
-                        TextView tv = view.findViewById(R.id.catTitle);
-                        int scrollTo = ((View) tv.getParent()).getTop() + tv.getTop() + 30;
-                        nestedSV.smoothScrollTo(0, scrollTo);
-                    }, 100);
-                }
-
 
                 if (currentPage == 1 && categorySlug == null) {
 
