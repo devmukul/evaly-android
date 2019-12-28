@@ -870,146 +870,114 @@ public class ViewProductActivity extends BaseActivity {
                             colorRel.setVisibility(View.VISIBLE);
                         }
 
-                        JSONObject firstVariant = product_variants.getJSONObject(0);
 
-                        productName.setText(Html.fromHtml(firstVariant.getString("product_name")));
-                        if (firstVariant.getString("product_description").equals("")) {
-                            descriptionView.setVisibility(View.GONE);
-                            descriptionRel.setVisibility(View.GONE);
-                        } else {
-                            description.setText(firstVariant.getString("product_description"));
-                        }
-
-                        JSONArray productSpecifications = response.getJSONArray("product_specifications");
-
-
-                        for (int i = 0; i < productSpecifications.length(); i++) {
-                            specTitle.add(productSpecifications.getJSONObject(i).getString("specification_name"));
-                            specValue.add(productSpecifications.getJSONObject(i).getString("specification_value"));
-                            specificationAdapter.notifyItemInserted(specTitle.size());
+                        if (product_variants.length() == 0){
+                            Toast.makeText(this, "Product is not found!", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
 
 
-                        if (specValue.size() < 2) {
-                            specView.setVisibility(View.GONE);
-                            specRel.setVisibility(View.GONE);
-                        }
+                            JSONObject firstVariant = product_variants.getJSONObject(0);
 
 
-                        Log.d("json product", responseMain.toString());
+
+                            productName.setText(Html.fromHtml(firstVariant.getString("product_name")));
+                            if (firstVariant.getString("product_description").equals("")) {
+                                descriptionView.setVisibility(View.GONE);
+                                descriptionRel.setVisibility(View.GONE);
+                            } else {
+                                description.setText(firstVariant.getString("product_description"));
+                            }
 
 
-                        getProductRating(slug);
-
-                        if (dbWish.isSlugExist(slug)) {
-
-                            ImageView addToWishList = findViewById(R.id.addToWishlist);
-                            addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
-                            isAddedToWishList = true;
-
-                        }
+                            JSONArray productSpecifications = response.getJSONArray("product_specifications");
 
 
-                        productJson = firstVariant.toString();
-
-                        showProductHolder();
-
-
-                        // for cart order
-                        cartItem.setId("0");
-                        cartItem.setName(firstVariant.getString("product_name"));
-                        cartItem.setImage(firstVariant.getString("color_image"));
-                        cartItem.setSlug(slug);
-
-                        // for wishlist
-
-                        int price = 0;
-                        try {
-                            price = (int) Math.round(firstVariant.getDouble("min_price"));
-                        } catch (Exception e) {
-
-                        }
-
-                        wishListItem.setId("0");
-                        wishListItem.setName(firstVariant.getString("product_name"));
-                        //wishListItem.setImage(firstVariant.getString("thumbnail"));
-                        wishListItem.setImage(firstVariant.getJSONArray("product_images").getString(0));
-                        wishListItem.setProductSlug(slug);
-                        wishListItem.setPrice(String.valueOf(price));
+                            for (int i = 0; i < productSpecifications.length(); i++) {
+                                specTitle.add(productSpecifications.getJSONObject(i).getString("specification_name"));
+                                specValue.add(productSpecifications.getJSONObject(i).getString("specification_value"));
+                                specificationAdapter.notifyItemInserted(specTitle.size());
+                            }
 
 
-                        collapsingToolbarLayout.setTitle(firstVariant.getString("product_name"));
-
-                        sku.setText(firstVariant.getString("sku"));
-
-
-//                        getProductRating(firstVariant.getString("variant_id"));
+                            if (specValue.size() < 2) {
+                                specView.setVisibility(View.GONE);
+                                specRel.setVisibility(View.GONE);
+                            }
 
 
-//                        if(firstVariant.getString("description").equals("")){
-//                            descriptionRel.setVisibility(View.GONE);
-//                            descriptionView.setVisibility(View.GONE);
-//                        }else{
-//                            description.setText(response.getString("description"));
-//                        }
-                        //Glide.with(context).asBitmap().load(response.getString("thumbnail")).into(productImage);
+                            Log.d("json product", responseMain.toString());
 
 
-                        sliderPager.setVisibility(View.VISIBLE);
+                            getProductRating(slug);
 
-                        //sliderImages.add(response.getString("thumbnail"));
-                        //sliderAdapter.notifyDataSetChanged();
+                            if (dbWish.isSlugExist(slug)) {
 
-                        //JSONObject ob=response.getJSONObject("category");
-                        //category=ob.getString("slug");
-                        //getCategoryProducts();
+                                ImageView addToWishList = findViewById(R.id.addToWishlist);
+                                addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
+                                isAddedToWishList = true;
 
-
-                        //JSONObject obBrand=response.getJSONObject("brand");
-                        //String brand =ob.getString("slug");
-
-                        shareURL = "https://evaly.com.bd/products/" + slug;
+                            }
 
 
-//                        JSONArray varyingOptions=response.getJSONArray("varying_options");
-//                        for(int i=0;i<product_variants.length();i++){
-//                            JSONObject varyingOB=varyingOptions.getJSONObject(i);
-//                            Log.d("varying_ob",varyingOB.toString());
-//                            JSONArray variations=varyingOB.getJSONArray("variations");
-//                            TreeMap<String,String> tempMap=new TreeMap<>(Collections.reverseOrder());
-//                            for(int j=0;j<variations.length();j++){
-//                                tempMap.put(variations.getJSONObject(j).getString("value"),variations.getJSONObject(j).getString("slug"));
-//                                if(j==variations.length()-1){
-//                                    varyingMap.put(varyingOB.getJSONObject("attribute").getString("name"),tempMap);
-//                                }
-//                            }
-//                            map.put(varyingOB.getJSONObject("attribute").getString("name"),varyingOB.getJSONObject("attribute").getString("slug"));
-//                            if(i==varyingOptions.length()-1){
-//                                addButtons();
-//                            }
-//                        }
+                            productJson = firstVariant.toString();
+
+                            showProductHolder();
 
 
-                        ProductGrid productGrid = new ProductGrid(context, findViewById(R.id.products), firstVariant.getString("category_slug"), findViewById(R.id.progressBar));
+                            // for cart order
+                            cartItem.setId("0");
+                            cartItem.setName(firstVariant.getString("product_name"));
+                            cartItem.setImage(firstVariant.getString("color_image"));
+                            cartItem.setSlug(slug);
+
+                            // for wishlist
+
+                            int price = 0;
+                            try {
+                                price = (int) Math.round(firstVariant.getDouble("min_price"));
+                            } catch (Exception ignored) {
+
+                            }
+
+                            wishListItem.setId("0");
+                            wishListItem.setName(firstVariant.getString("product_name"));
+                            //wishListItem.setImage(firstVariant.getString("thumbnail"));
+                            wishListItem.setImage(firstVariant.getJSONArray("product_images").getString(0));
+                            wishListItem.setProductSlug(slug);
+                            wishListItem.setPrice(String.valueOf(price));
 
 
-                        if (nestedSV != null) {
-                            productGrid.setScrollView(nestedSV);
+                            collapsingToolbarLayout.setTitle(firstVariant.getString("product_name"));
 
-                            nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                                @Override
-                                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                                        try {
+                            sku.setText(firstVariant.getString("sku"));
 
-                                            ((ProgressBar) findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-                                            productGrid.loadNextPage();
-                                        } catch (Exception e) {
 
+                            sliderPager.setVisibility(View.VISIBLE);
+
+                            shareURL = "https://evaly.com.bd/products/" + slug;
+
+                            ProductGrid productGrid = new ProductGrid(context, findViewById(R.id.products), firstVariant.getString("category_slug"), findViewById(R.id.progressBar));
+
+
+                            if (nestedSV != null) {
+                                productGrid.setScrollView(nestedSV);
+
+                                nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+                                    @Override
+                                    public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                                        if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                                            try {
+                                                ((ProgressBar) findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+                                                productGrid.loadNextPage();
+                                            } catch (Exception e) {
+
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
+
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
