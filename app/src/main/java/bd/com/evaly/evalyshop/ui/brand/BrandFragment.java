@@ -53,6 +53,7 @@ public class BrandFragment extends Fragment {
     private ProductGrid productGrid;
     private ImageView placeHolder;
     private ProgressBar progressBar;
+    private View dummyView;
 
     public BrandFragment(){
         // Required empty public constructor
@@ -100,6 +101,7 @@ public class BrandFragment extends Fragment {
 
         new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "brand");
 
+        dummyView = view.findViewById(R.id.dummyView);
         name = view.findViewById(R.id.name);
         categoryName = view.findViewById(R.id.categoryName);
         address = view.findViewById(R.id.address);
@@ -171,6 +173,9 @@ public class BrandFragment extends Fragment {
         productGrid.setListener(new ProductListener() {
             @Override
             public void onSuccess(int count) {
+
+                dummyView.setVisibility(View.GONE);
+
                 if(count==0){
                     LinearLayout noItem = view.findViewById(R.id.noItem);
                     noItem.setVisibility(View.VISIBLE);
