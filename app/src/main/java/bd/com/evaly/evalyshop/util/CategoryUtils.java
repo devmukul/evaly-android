@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -17,11 +17,11 @@ import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 public class CategoryUtils {
 
     private Context context;
-    private CategoryDatabase categoryDatabase;
+    private AppDatabase appDatabase;
 
     public CategoryUtils(Context context) {
         this.context = context;
-        categoryDatabase = CategoryDatabase.getInstance(context);
+        appDatabase = AppDatabase.getInstance(context);
 
     }
 
@@ -35,7 +35,7 @@ public class CategoryUtils {
     }
 
     public void getLocalCategoryList(DataFetchingListener<List<CategoryEntity>> listener) {
-        Executors.newSingleThreadExecutor().execute(() -> listener.onDataFetched(categoryDatabase.categoryDao().getAll()));
+        Executors.newSingleThreadExecutor().execute(() -> listener.onDataFetched(appDatabase.categoryDao().getAll()));
     }
 
     public void updateFromApi(DataFetchingListener<List<CategoryEntity>> listener){
@@ -51,8 +51,8 @@ public class CategoryUtils {
                     setLastUpdated();
 
                     Executors.newSingleThreadExecutor().execute(() -> {
-                        categoryDatabase.categoryDao().deleteAll();
-                        categoryDatabase.categoryDao().insertAll(response);
+                        appDatabase.categoryDao().deleteAll();
+                        appDatabase.categoryDao().insertAll(response);
                     });
 
                     listener.onDataFetched(response);
