@@ -7,7 +7,7 @@ import java.util.List;
 public class ItemsItem{
 
 	@SerializedName("item_price")
-	private int itemPrice;
+	private double itemPrice;
 
 	@SerializedName("item_name")
 	private String itemName;
@@ -22,13 +22,13 @@ public class ItemsItem{
 	private String shopSlug;
 
 	@SerializedName("discounted_price")
-	private int discountedPrice;
+	private double discountedPrice;
 
-	public void setItemPrice(int itemPrice){
+	public void setItemPrice(double itemPrice){
 		this.itemPrice = itemPrice;
 	}
 
-	public int getItemPrice(){
+	public double getItemPrice(){
 		return itemPrice;
 	}
 
@@ -64,11 +64,11 @@ public class ItemsItem{
 		return shopSlug;
 	}
 
-	public void setDiscountedPrice(int discountedPrice){
+	public void setDiscountedPrice(double discountedPrice){
 		this.discountedPrice = discountedPrice;
 	}
 
-	public int getDiscountedPrice(){
+	public double getDiscountedPrice(){
 		return discountedPrice;
 	}
 
