@@ -357,7 +357,8 @@ public class ViewProductActivity extends BaseActivity {
 
                 addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
 
-                wishListDao.deleteBySlug(wishListItem.getProductSlug());
+                Executors.newSingleThreadExecutor().execute(() -> wishListDao.deleteBySlug(wishListItem.getProductSlug()));
+
 
                 Toast.makeText(context, "Removed from wish list", Toast.LENGTH_SHORT).show();
                 isAddedToWishList = false;
@@ -373,10 +374,7 @@ public class ViewProductActivity extends BaseActivity {
                 wishListEntity.setTime(calendar.getTimeInMillis());
 
 
-                Executors.newSingleThreadExecutor().execute(() -> {
-
-                    wishListDao.insert(wishListEntity);
-                });
+                Executors.newSingleThreadExecutor().execute(() -> wishListDao.insert(wishListEntity));
 
                 Toast.makeText(context, "Added to wish list", Toast.LENGTH_SHORT).show();
                 addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
