@@ -993,14 +993,24 @@ public class OrderDetailsActivity extends BaseActivity {
                     }
                 }
 
-                String paymentMethod = response.getPaymentMethod();
 
-                if(paymentMethod.equals("cod"))
+                String payMethod = response.getPaymentMethod();
+
+                if(payMethod.equals("cod"))
                     paymentMethods.setText("Cash on Delivery");
-                else if (paymentMethod.equals(""))
+                else if (payMethod.equals(""))
                     paymentMethods.setText("None");
-                else
-                    paymentMethods.setText(Utils.capitalize(response.getPaymentMethod()));
+                else {
+
+                    payMethod = payMethod.replaceAll("card", "Card");
+                    payMethod = payMethod.replaceAll("balance", "Balance");
+                    payMethod = payMethod.replaceAll("bank", "Bank Account");
+                    payMethod = payMethod.replaceAll("gift_code", "Gift Code");
+                    payMethod = payMethod.replaceAll(",", ", ");
+                    payMethod = payMethod.replaceAll("  ", " ");
+
+                    paymentMethods.setText(Utils.capitalize(payMethod));
+                }
 
 
                 shopName.setText(response.getShop().getName());

@@ -73,7 +73,9 @@ public class Balance {
                         Intent intent = new Intent(context, UserDashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("from", "signin");
                         context.startActivity(intent);
-                        context.finishAffinity();
+                        try {
+                            context.finishAffinity();
+                        } catch (Exception ignored){}
                     }
 
             }

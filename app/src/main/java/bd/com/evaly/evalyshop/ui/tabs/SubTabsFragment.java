@@ -129,35 +129,38 @@ public class SubTabsFragment extends Fragment {
     }
 
     public void loadData(){
-        if(!(slug.equals("root") && type == 1)) {
-            if (type == 1){
-                search.setHint("Search categories");
-                showMore.setVisibility(View.GONE);
-                getSubCategories();
-            }
-            else if (type == 2){
-                search.setHint("Search brands");
-                getBrandsOfCategory(1);
-                showMore.setText("Show More");
-            }
-            else if (type == 3){
-                search.setHint("Search shops");
-                getShopsOfCategory(1);
-                showMore.setText("Show More");
-            }
-        }
-        final Handler handler = new Handler();
-        handler.postDelayed( new Runnable() {
-            @Override
-            public void run() {
-                if(!(slug.equals("root") && type == 1)) {
-                    if (adapter.getItemCount() < 1 || recyclerView.getHeight() < 100) {
-                        adapter.notifyDataSetChanged();
-                        handler.postDelayed(this, 1000);
-                    }
+        if (slug != null) {
+
+            if (!(slug.equals("root") && type == 1)) {
+                if (type == 1) {
+                    search.setHint("Search categories");
+                    showMore.setVisibility(View.GONE);
+                    getSubCategories();
+                } else if (type == 2) {
+                    search.setHint("Search brands");
+                    getBrandsOfCategory(1);
+                    showMore.setText("Show More");
+                } else if (type == 3) {
+                    search.setHint("Search shops");
+                    getShopsOfCategory(1);
+                    showMore.setText("Show More");
                 }
             }
-        }, 1000 );
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!(slug.equals("root") && type == 1)) {
+                        if (adapter.getItemCount() < 1 || recyclerView.getHeight() < 100) {
+                            adapter.notifyDataSetChanged();
+                            handler.postDelayed(this, 1000);
+                        }
+                    }
+                }
+            }, 1000);
+        } else {
+            Toast.makeText(getContext(), "Page is not available, go back please.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
