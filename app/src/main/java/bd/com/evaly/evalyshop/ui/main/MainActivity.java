@@ -139,9 +139,11 @@ public class MainActivity extends BaseActivity {
 
         wishListDao.getLiveCount().observe(this, integer -> {
             wishListCount.setText(String.format(Locale.ENGLISH, "%d", integer));
-            if (integer == 0) {
+            if (integer == 0)
                 wishListBadge.setVisibility(View.GONE);
-            }
+            else
+                wishListBadge.setVisibility(View.VISIBLE);
+
         });
 
         View badge2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
