@@ -16,6 +16,10 @@
         app:cardCornerRadius="5dp"
         app:cardPreventCornerOverlap="true">
 
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
         <LinearLayout
             android:id="@+id/bottom_sheet"
             android:layout_width="match_parent"
@@ -59,15 +63,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 tools:listitem="@layout/item_campaign"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 tools:itemCount="7"
-                app:spanCount="4"
-                android:nestedScrollingEnabled="true"
+                app:spanCount="2"
+                android:nestedScrollingEnabled="false"
                 android:paddingBottom="25dp"
                 android:paddingTop="15dp"
-                android:paddingLeft="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:clipToPadding="false"
                 android:visibility="gone"/>
 
@@ -103,6 +108,7 @@
 
 
         </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </androidx.cardview.widget.CardView>
 
 </layout>
