@@ -12,7 +12,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -65,38 +64,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.Executors;
 
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAdapter;
-import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
-import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
-import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
+import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
+import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.cart.CartItem;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
 import bd.com.evaly.evalyshop.models.product.ProductShareModel;
 import bd.com.evaly.evalyshop.models.product.ProductVariants;
 import bd.com.evaly.evalyshop.models.product.Products;
+import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
-import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
-import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
-import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;
+import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
+import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
+import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAdapter;
+import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
+import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
+import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
-import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
-import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
+import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
+import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;
 import bd.com.evaly.evalyshop.views.SliderViewPager;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
@@ -111,7 +113,6 @@ public class ViewProductActivity extends BaseActivity {
     ArrayList<Products> products;
     NestedScrollView nestedSV;
     ArrayList<AvailableShop> availableShops;
-    AvailableShopAdapter adapter;
     RecyclerView recyclerView;
     SliderViewPager sliderPager;
     TabLayout sliderIndicator;
@@ -132,15 +133,11 @@ public class ViewProductActivity extends BaseActivity {
 
     CartItem cartItem;
 
-    DbHelperWishList dbWish;
     LinearLayout productHolder;
     LinearLayout stickyButtons;
     TextView relatedTitle;
 
     RoomWIthRxViewModel viewModel;
-
-
-    int buttonCount = 0;
 
     String productJson = "{}";
 
@@ -174,6 +171,9 @@ public class ViewProductActivity extends BaseActivity {
     private BottomSheetDialog bottomSheetDialog;
     private BottomSheetDialog newsfeedShareDialog;
 
+    private AppDatabase appDatabase;
+    private WishListDao wishListDao;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,53 +194,51 @@ public class ViewProductActivity extends BaseActivity {
         productPrice = getIntent().getIntExtra("product_price", -1);
         productImage = getIntent().getStringExtra("product_image");
 
-        rqShop = Volley.newRequestQueue(context);
         rq = Volley.newRequestQueue(context);
+
+        appDatabase = AppDatabase.getInstance(this);
+        wishListDao = appDatabase.wishListDao();
+
 
         viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
 
         ImageView shareBtn = findViewById(R.id.share);
 
-        shareBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        shareBtn.setOnClickListener(v -> {
 
-                PopupMenu popup = new PopupMenu(context, shareBtn);
-                popup.getMenuInflater().inflate(R.menu.share_menu, popup.getMenu());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_share_contacts:
-                                if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
-                                    Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
-                                } else {
-                                    shareWithContacts();
-                                }
-                                break;
-                            case R.id.action_share_newsfeed:
-                                if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
-                                    Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
-                                } else {
-                                    shareToNewsFeed(shareURL);
-                                }
-                                break;
-                            case R.id.action_share_other:
-                                try {
-                                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                                    sharingIntent.setType("text/plain");
-                                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareURL);
-                                    startActivity(Intent.createChooser(sharingIntent, "Share Via"));
-                                } catch (Exception e) {
-                                    Toast.makeText(context, "Can't share the product.", Toast.LENGTH_SHORT).show();
-                                }
-                                break;
+            PopupMenu popup = new PopupMenu(context, shareBtn);
+            popup.getMenuInflater().inflate(R.menu.share_menu, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.action_share_contacts:
+                        if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
+                            Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
+                        } else {
+                            shareWithContacts();
                         }
+                        break;
+                    case R.id.action_share_newsfeed:
+                        if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
+                            Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
+                        } else {
+                            shareToNewsFeed(shareURL);
+                        }
+                        break;
+                    case R.id.action_share_other:
+                        try {
+                            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                            sharingIntent.setType("text/plain");
+                            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareURL);
+                            startActivity(Intent.createChooser(sharingIntent, "Share Via"));
+                        } catch (Exception e) {
+                            Toast.makeText(context, "Can't share the product.", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
 
-                        return true;
-                    }
-                });
-                popup.show();
-            }
+                return true;
+            });
+            popup.show();
         });
 
 
@@ -248,7 +246,6 @@ public class ViewProductActivity extends BaseActivity {
         cartItem = new CartItem();
         db = new DbHelperCart(context);
 
-        dbWish = new DbHelperWishList(context);
         varyingMap = new TreeMap<>(Collections.reverseOrder());
         parameters = new ArrayList<>();
         values = new ArrayList<>();
@@ -359,16 +356,31 @@ public class ViewProductActivity extends BaseActivity {
             if (isAddedToWishList) {
 
                 addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
-                dbWish.deleteDataBySlug(wishListItem.getProductSlug());
+
+                wishListDao.deleteBySlug(wishListItem.getProductSlug());
+
                 Toast.makeText(context, "Removed from wish list", Toast.LENGTH_SHORT).show();
                 isAddedToWishList = false;
 
             } else {
 
-                if (dbWish.insertData(wishListItem.getProductSlug(), wishListItem.getName(), wishListItem.getImage(), price, calendar.getTimeInMillis())) {
-                    Toast.makeText(context, "Added to wish list", Toast.LENGTH_SHORT).show();
-                    addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
-                }
+
+                WishListEntity wishListEntity = new WishListEntity();
+                wishListEntity.setSlug(wishListItem.getProductSlug());
+                wishListEntity.setName(wishListItem.getName());
+                wishListEntity.setImage(wishListItem.getImage());
+                wishListEntity.setPrice(wishListItem.getPrice());
+                wishListEntity.setTime(calendar.getTimeInMillis());
+
+
+                Executors.newSingleThreadExecutor().execute(() -> {
+
+                    wishListDao.insert(wishListEntity);
+                });
+
+                Toast.makeText(context, "Added to wish list", Toast.LENGTH_SHORT).show();
+                addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
+
 
                 isAddedToWishList = true;
 
@@ -379,15 +391,11 @@ public class ViewProductActivity extends BaseActivity {
         TextView addToCart = findViewById(R.id.addToCart);
         addToCart.setOnClickListener(v -> {
 
-            NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.sticky_scroll);
-            scrollView.postDelayed(() -> {
-
-
+            nestedSV.postDelayed(() -> {
                 appBarLayout.setExpanded(false, true);
-
                 TextView availableShopTitle = findViewById(R.id.avlshop);
                 int scrollTo = ((View) availableShopTitle.getParent()).getTop() + availableShopTitle.getTop();
-                scrollView.smoothScrollTo(0, scrollTo - productName.getHeight());
+                nestedSV.smoothScrollTo(0, scrollTo - productName.getHeight());
             }, 100);
 
         });
@@ -612,9 +620,9 @@ public class ViewProductActivity extends BaseActivity {
     public void onDestroy() {
         super.onDestroy();
         try {
-            dbWish.close();
             db.close();
             // finish();
+            appDatabase.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -625,7 +633,6 @@ public class ViewProductActivity extends BaseActivity {
         super.onResume();
         try {
             cartCount();
-            dbWish = new DbHelperWishList(context);
             db = new DbHelperCart(context);
         } catch (Exception e) {
 
@@ -639,7 +646,6 @@ public class ViewProductActivity extends BaseActivity {
         // destroy data here
 
 
-        dbWish.close();
         db.close();
 
     }
@@ -911,13 +917,18 @@ public class ViewProductActivity extends BaseActivity {
 
                             getProductRating(slug);
 
-                            if (dbWish.isSlugExist(slug)) {
 
-                                ImageView addToWishList = findViewById(R.id.addToWishlist);
-                                addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
-                                isAddedToWishList = true;
+                            Executors.newSingleThreadExecutor().execute(() -> {
+                                if (wishListDao.checkExists(slug)>0) {
 
-                            }
+                                    ImageView addToWishList = findViewById(R.id.addToWishlist);
+                                    addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
+                                    isAddedToWishList = true;
+
+                                }
+                            });
+
+
 
 
                             productJson = firstVariant.toString();
@@ -1195,8 +1206,8 @@ public class ViewProductActivity extends BaseActivity {
 
         request.setShouldCache(false);
         request.setTag(this);
-        rqShop.getCache().clear();
-        rqShop.add(request);
+        rq.getCache().clear();
+        rq.add(request);
     }
 
 

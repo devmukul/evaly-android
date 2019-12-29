@@ -40,31 +40,32 @@ import com.orhanobut.logger.Logger;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import java.util.Locale;
+import java.util.concurrent.Executors;
 
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
-import bd.com.evaly.evalyshop.ui.cart.CartActivity;
-import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
-import bd.com.evaly.evalyshop.ui.menu.InviteEarn;
-import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
-import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
-import bd.com.evaly.evalyshop.ui.wishlist.WishListActivity;
-import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
+import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
-import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
+import bd.com.evaly.evalyshop.ui.cart.CartActivity;
+import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
+import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
+import bd.com.evaly.evalyshop.ui.menu.InviteEarn;
+import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
+import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
+import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
-import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
+import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
@@ -79,7 +80,6 @@ public class MainActivity extends BaseActivity {
     private UserDetails userDetails;
     private TextView userNameNavHeader;
     private TextView phoneNavHeader;
-    private DbHelperWishList dbHelperWishList;
     private DbHelperCart dbHelperCart;
     public boolean isLaunchActivity = true;
     private View headerView;
@@ -87,6 +87,7 @@ public class MainActivity extends BaseActivity {
     private XMPPHandler xmppHandler;
 
     private NavController navController;
+    private AppDatabase appDatabase;
 
 
     @Override
@@ -126,18 +127,25 @@ public class MainActivity extends BaseActivity {
 
         checkUpdate();
 
-        dbHelperWishList = new DbHelperWishList(this);
+        appDatabase = AppDatabase.getInstance(this);
+        WishListDao wishListDao = appDatabase.wishListDao();
+
         dbHelperCart = new DbHelperCart(this);
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(R.id.nav_wishlist);
         BottomNavigationItemView itemView2 = bottomNavigationView.findViewById(R.id.nav_cart);
         View badge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView text = badge.findViewById(R.id.notification);
-        text.setText(String.format(Locale.ENGLISH, "%d", dbHelperWishList.size()));
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            text.setText(String.format(Locale.ENGLISH, "%d", wishListDao.getCount()));
+            if (wishListDao.getCount() == 0) {
+                badge.setVisibility(View.GONE);
+            }
+        });
+
         itemView.addView(badge);
 
-        if (dbHelperWishList.size() == 0) {
-            badge.setVisibility(View.GONE);
-        }
+
 
         View badge2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView text2 = badge2.findViewById(R.id.notification);
@@ -152,17 +160,18 @@ public class MainActivity extends BaseActivity {
         int delay = 3000;
         handler.postDelayed(new Runnable() {
             public void run() {
-                if (dbHelperWishList.size() == 0) {
-                    badge.setVisibility(View.GONE);
-                } else {
-                    badge.setVisibility(View.VISIBLE);
-                }
+//                if (wishListDao.getCount() == 0) {
+//                    badge.setVisibility(View.GONE);
+//                } else {
+//                    badge.setVisibility(View.VISIBLE);
+//                }
+
                 if (dbHelperCart.size() == 0) {
                     badge2.setVisibility(View.GONE);
                 } else {
                     badge2.setVisibility(View.VISIBLE);
                 }
-                text.setText(dbHelperWishList.size() + "");
+//                text.setText(wishListDao.getCount() + "");
                 text2.setText(dbHelperCart.size() + "");
                 handler.postDelayed(this, delay);
             }
@@ -209,7 +218,7 @@ public class MainActivity extends BaseActivity {
             navigationView2.setNavigationItemSelectedListener(menuItem -> {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_wishlist:
-                        startActivity(new Intent(MainActivity.this, WishListActivity.class));
+                        navController.navigate(R.id.wishListFragment);
                         break;
                     case R.id.nav_contact:
                         startActivity(new Intent(MainActivity.this, ContactActivity.class));
@@ -461,9 +470,9 @@ public class MainActivity extends BaseActivity {
         if (dbHelperCart != null) {
             dbHelperCart.close();
         }
-        if (dbHelperWishList != null) {
-            dbHelperWishList.close();
-        }
+
+        appDatabase.close();
+
         disconnectXmpp();
         super.onDestroy();
 

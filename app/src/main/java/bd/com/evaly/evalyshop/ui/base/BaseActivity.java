@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorActivity;
-import bd.com.evaly.evalyshop.ui.wishlist.WishListActivity;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -77,7 +76,7 @@ public class BaseActivity extends AppCompatActivity {
 
         if(!isNetworkAvailable(this)){
             Context context = this;
-            if(!((context instanceof CartActivity) || (context instanceof WishListActivity) || (context instanceof MainActivity))) {
+            if(!((context instanceof CartActivity) || (context instanceof MainActivity))) {
                 Intent intent = new Intent(this, NetworkErrorActivity.class);
                 startActivityForResult(intent, 9187);
             }

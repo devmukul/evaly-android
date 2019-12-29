@@ -171,9 +171,7 @@
             android:name=".ui.auth.SignUpActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".ui.wishlist.WishListActivity"
-            android:theme="@style/AppTheme" />
+
         <activity
             android:name=".ui.notification.NotificationActivity"
             android:theme="@style/AppTheme"

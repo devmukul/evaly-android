@@ -1,12 +1,10 @@
 package bd.com.evaly.evalyshop.ui.wishlist;
 
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -18,24 +16,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
+import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.ui.wishlist.adapter.WishListAdapter;
-import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 
 public class WishListFragment extends Fragment {
 
-
-    private DbHelperWishList db;
-    private ArrayList<WishList> wishLists;
+    private ArrayList<WishListEntity> wishLists;
     private RecyclerView recyclerView;
     private WishListAdapter adapter;
     private LinearLayoutManager manager;
     private ViewDialog alert;
     private View view;
     private Toolbar mToolbar;
+    private AppDatabase appDatabase;
+    private WishListDao wishListDao;
 
     public WishListFragment() {
         // Required empty public constructor
@@ -50,7 +50,8 @@ public class WishListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        appDatabase = AppDatabase.getInstance(getContext());
+        wishListDao = appDatabase.wishListDao();
 
     }
 
@@ -83,11 +84,24 @@ public class WishListFragment extends Fragment {
 
         manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
-        adapter = new WishListAdapter(wishLists,getContext(), () -> checkListEmpty());
+        adapter = new WishListAdapter(wishLists, getContext(), new WishListAdapter.WishListListener() {
+            @Override
+            public void checkEmpty() {
+                checkListEmpty();
+            }
+
+            @Override
+            public void delete(String slug) {
+
+                Executors.newSingleThreadExecutor().execute(() -> {
+
+                    wishListDao.deleteBySlug(slug);
+
+                });
+            }
+        });
 
         recyclerView.setAdapter(adapter);
-
-
 
     }
 
@@ -106,49 +120,37 @@ public class WishListFragment extends Fragment {
         wishLists.clear();
         adapter.notifyDataSetChanged();
 
-        db = new DbHelperWishList(getContext());
-        Cursor res = db.getData();
-
-        while(res.moveToNext()){
-            wishLists.add(new WishList(res.getString(0),res.getString(1),res.getString(2),res.getString(3),res.getString(4),res.getLong(5)));
-            adapter.notifyItemInserted(wishLists.size());
-
-        }
-
-
-        checkListEmpty();
-
-
+        Executors.newSingleThreadExecutor().execute(() -> {
+            wishLists.addAll(wishListDao.getAll());
+            adapter.notifyDataSetChanged();
+            checkListEmpty();
+        });
 
     }
 
 
     private void checkListEmpty(){
 
-
         LinearLayout empty = view.findViewById(R.id.empty);
         NestedScrollView scrollView = view.findViewById(R.id.scroller);
-        Button button = view.findViewById(R.id.button);
 
-        if (wishLists.size() > 0) {
-            empty.setVisibility(View.GONE);
-           // scrollView.setBackgroundColor(Color.parseColor("#fafafa"));
-        } else {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            if (wishLists.size() > 0) {
+                empty.setVisibility(View.GONE);
+            } else {
 
-
-            empty.setVisibility(View.VISIBLE);
-            scrollView.setBackgroundColor(Color.WHITE);
-
-        }
+                empty.setVisibility(View.VISIBLE);
+                scrollView.setBackgroundColor(Color.WHITE);
+            }
+        });
 
     }
 
 
     @Override
     public void onDestroy() {
-        if(db!=null){
-            db.close();
-        }
+
+        appDatabase.close();
         super.onDestroy();
     }
 }

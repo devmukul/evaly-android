@@ -26,33 +26,28 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.util.database.DbHelperWishList;
 
 public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyViewHolder>{
 
-    ArrayList<WishList> wishlist;
-    Context context;
-    DbHelperWishList db;
-
-    WishListAdapter instance;
-
-    WishListListener listener;
+    private ArrayList<WishListEntity> wishlist;
+    private Context context;
+    private WishListAdapter instance;
+    private WishListListener listener;
 
     public interface WishListListener{
 
-        public void checkEmpty();
+        void checkEmpty();
+        void delete(String slug);
 
     }
 
-    public WishListAdapter(ArrayList<WishList> wishlist, Context context, WishListListener listener) {
+    public WishListAdapter(ArrayList<WishListEntity> wishlist, Context context, WishListListener listener) {
         this.wishlist = wishlist;
         this.context = context;
         this.listener = listener;
-
-        db = new DbHelperWishList(context);
         instance = this;
     }
 
@@ -68,7 +63,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
         Log.d("wish_product",wishlist.get(i).getName());
         myViewHolder.productName.setText(Html.fromHtml(wishlist.get(i).getName()));
         myViewHolder.time.setText(Utils.getTimeAgo(wishlist.get(i).getTime()));
-        myViewHolder.price.setText("৳ "+wishlist.get(i).getPrice());
+        myViewHolder.price.setText(String.format("৳ %s", wishlist.get(i).getPrice()));
         Glide.with(context)
                 .load(wishlist.get(i).getImage())
                 .listener(new RequestListener<Drawable>() {
@@ -87,17 +82,13 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
                 .into(myViewHolder.productImage);
         myViewHolder.view.setOnClickListener(v -> {
             Intent intent=new Intent(context, ViewProductActivity.class);
-            intent.putExtra("product_slug",wishlist.get(i).getProductSlug());
+            intent.putExtra("product_slug",wishlist.get(i).getSlug());
             intent.putExtra("product_name",wishlist.get(i).getName());
             context.startActivity(intent);
         });
         myViewHolder.trash.setOnClickListener(v -> {
-            db.deleteData(wishlist.get(i).getId());
 
-            wishlist.remove(i);
-            instance.notifyItemRemoved(i);
-            notifyItemRangeChanged(i, wishlist.size());
-
+            listener.delete(wishlist.get(i).getSlug());
             listener.checkEmpty();
 
         });

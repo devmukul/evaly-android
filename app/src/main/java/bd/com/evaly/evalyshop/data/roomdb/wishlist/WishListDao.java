@@ -8,8 +8,6 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
-
 @Dao
 public interface WishListDao {
 
@@ -20,12 +18,23 @@ public interface WishListDao {
     void insertAll(List<WishListEntity> list);
 
     @Delete
-    void delete(CategoryEntity entity);
+    void delete(WishListEntity entity);
 
     @Query("DELETE FROM wishlist_table")
     void deleteAll();
 
+    @Query("DELETE FROM wishlist_table WHERE slug = :productSlug")
+    void deleteBySlug(String productSlug);
+
+    @Query("SELECT COUNT(id) FROM wishlist_table WHERE slug = :productSlug")
+    int checkExists(String productSlug);
+
     @Query("SELECT * FROM wishlist_table")
     List<WishListEntity> getAll();
+
+    @Query("SELECT COUNT(id) FROM wishlist_table")
+    int getCount();
+
+
 
 }
