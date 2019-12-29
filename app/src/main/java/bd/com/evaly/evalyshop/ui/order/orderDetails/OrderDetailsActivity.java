@@ -964,23 +964,25 @@ public class OrderDetailsActivity extends BaseActivity {
 
                         long endTime = 0;
 
+
+
+                        Calendar start = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"), Locale.ENGLISH);
+                        Calendar end = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"), Locale.ENGLISH);
+
                         try {
-                            endTime = df_input.parse(cashback_date).getTime();
+                            end.setTime(df_input.parse(cashback_date));
                         } catch (ParseException e) {
                             Log.e("timze", e.toString());
                         }
 
-                        Calendar start = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"), Locale.ENGLISH);
 
                         long startTime = start.getTimeInMillis();
-                        long diffTime = endTime - startTime;
+                        long diffTime = end.getTimeInMillis() - startTime;
 
                         Log.d("timez", start.toString()+"");
                         Log.d("timez 2", endTime+"");
 
                         long diffDays = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
-
-
 
                         String message = "Payments with <font color=\"#c53030\">"+payMethod+"</font> will be rewarded by <b>"+cashback_percentage+"%</b> cashback balance within <b>"+diffDays+" days</b>";
 
