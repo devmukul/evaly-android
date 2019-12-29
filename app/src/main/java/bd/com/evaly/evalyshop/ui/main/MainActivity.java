@@ -420,6 +420,7 @@ public class MainActivity extends BaseActivity {
                         .asBitmap()
                         .load(userDetails.getProfilePictureSM())
                         .skipMemoryCache(true)
+                        .placeholder(R.drawable.user_image)
                         .fitCenter()
                         .centerCrop()
                         .apply(new RequestOptions().override(200, 200))
