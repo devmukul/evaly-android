@@ -12,22 +12,20 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.transaction.adapter.TransactionHistoryAdapter;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.transaction.adapter.TransactionHistoryAdapter;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class TransactionHistory extends AppCompatActivity {
@@ -37,15 +35,11 @@ public class TransactionHistory extends AppCompatActivity {
     ArrayList<TransactionItem> itemList;
     UserDetails userDetails;
     LinearLayout not;
-    String userAgent;
     ProgressBar progressBar;
     int currentPage = 0;
 
     NestedScrollView nestedSV;
     TextView balance;
-
-
-    RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +65,6 @@ public class TransactionHistory extends AppCompatActivity {
 
         balance.setText("৳ " +userDetails.getBalance());
 
-        queue = Volley.newRequestQueue(this);
 
         getBalance();
         getTransactionHistory(++currentPage);

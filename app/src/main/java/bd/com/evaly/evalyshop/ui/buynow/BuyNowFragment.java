@@ -21,8 +21,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -39,11 +37,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
-import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -53,6 +48,9 @@ import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -65,7 +63,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
     private Context context;
     private UserDetails userDetails;
-    private RequestQueue rq;
     private ArrayList<ShopItem> itemsList;
     private String shop_slug = "tvs-bangladesh";
     private String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
@@ -161,7 +158,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         context = view.getContext();
         userDetails = new UserDetails(context);
-        rq = Volley.newRequestQueue(context);
 
 
         skeleton = Skeleton.bind((LinearLayout) view.findViewById(R.id.linearLayout))

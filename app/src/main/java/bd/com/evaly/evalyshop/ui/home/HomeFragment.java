@@ -111,7 +111,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         if (!Utils.isNetworkAvailable(context))
             new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
                 @Override
@@ -126,7 +125,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 }
             });
-
 
         tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -160,10 +158,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         evalyStore = view.findViewById(R.id.evaly_store);
         evalyStore.setOnClickListener(v -> {
-
             Intent ni = new Intent(context, GiftCardActivity.class);
             startActivity(ni);
-
         });
 
         voucher.setOnClickListener(v -> {
@@ -177,7 +173,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         userDetails = new UserDetails(context);
 
-        InitializeActionBar InitializeActionbar = new InitializeActionBar((LinearLayout) view.findViewById(R.id.header_logo), activity, "home");
+        new InitializeActionBar(view.findViewById(R.id.header_logo), activity, "home");
 
         LinearLayout orders = view.findViewById(R.id.orders);
 

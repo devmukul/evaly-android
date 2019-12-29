@@ -115,9 +115,7 @@ public class HomeTabsFragment extends Fragment {
 
             adapter2 = new RootCategoriesAdapter(context, categoryItems, NavHostFragment.findNavController(this));
             recyclerView.setAdapter(adapter2);
-
             recyclerView.setItemAnimator(new MyDefaultItemAnimator());
-
             adapter2.notifyDataSetChanged();
 
             Calendar calendar = Calendar.getInstance();
@@ -156,8 +154,6 @@ public class HomeTabsFragment extends Fragment {
                                 categoryItems.addAll(response);
                                 adapter2.notifyDataSetChanged();
                                 stopShimmer();
-
-
                             });
                         }
                     }
@@ -200,7 +196,6 @@ public class HomeTabsFragment extends Fragment {
             }
         });
 
-
         loadData();
     }
 
@@ -213,7 +208,6 @@ public class HomeTabsFragment extends Fragment {
 
             if (onDoneListener != null)
                 onDoneListener.onDone();
-
         }
 
     }

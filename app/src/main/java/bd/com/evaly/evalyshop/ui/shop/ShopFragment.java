@@ -25,8 +25,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -74,7 +72,6 @@ import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
@@ -107,7 +104,6 @@ public class ShopFragment extends Fragment implements ProductListener {
     private View view;
     private Context context;
     private MainActivity mainActivity;
-    private ProductGrid productGrid;
     private TextView categoryTitle;
     private TextView reset;
     private int currentPage = 1;
@@ -115,7 +111,6 @@ public class ShopFragment extends Fragment implements ProductListener {
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private ImageView placeholder;
     private String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
-    private RequestQueue rq;
     private UserDetails userDetails;
     private int subCount = 0;
     private ViewDialog dialog;
@@ -167,8 +162,6 @@ public class ShopFragment extends Fragment implements ProductListener {
         view = inflater.inflate(R.layout.fragment_shop, container, false);
         context = getContext();
         mainActivity = (MainActivity) getActivity();
-        rq = Volley.newRequestQueue(context);
-
         if (!CredentialManager.getToken().equals(""))
             Executors.newSingleThreadExecutor().execute(() -> startXmppService());
 
