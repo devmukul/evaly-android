@@ -87,85 +87,35 @@ public class WishListFragment extends Fragment {
         adapter = new WishListAdapter(wishLists, getContext(), new WishListAdapter.WishListListener() {
             @Override
             public void checkEmpty() {
-                checkListEmpty();
             }
 
             @Override
             public void delete(String slug) {
-
-                Executors.newSingleThreadExecutor().execute(() -> {
-
-                    if (appDatabase.isOpen()) {
-                        wishListDao.deleteBySlug(slug);
-
-                        if (getActivity() != null)
-                            getActivity().runOnUiThread(() -> getWishList());
-                    }
-
-                });
+                Executors.newSingleThreadExecutor().execute(() -> wishListDao.deleteBySlug(slug));
             }
         });
 
         recyclerView.setAdapter(adapter);
 
-    }
-
-
-    @Override
-    public void onResume(){
-
-        super.onResume();
-        getWishList();
-
-    }
-
-
-    public void getWishList(){
-
-        wishLists.clear();
-        adapter.notifyDataSetChanged();
-
-        Executors.newSingleThreadExecutor().execute(() -> {
-            wishLists.addAll(wishListDao.getAll());
-
-            if (getActivity() != null)
-                getActivity().runOnUiThread(() -> {
-                    adapter.notifyDataSetChanged();
-                    checkListEmpty();
-                });
-        });
-
-
-
-    }
-
-
-    private void checkListEmpty(){
-
         LinearLayout empty = view.findViewById(R.id.empty);
         NestedScrollView scrollView = view.findViewById(R.id.scroller);
 
-        Executors.newSingleThreadExecutor().execute(() -> {
+        wishListDao.getAllLive().observe(this, wishListEntities -> {
 
-            int c = wishLists.size();
+            wishLists.clear();
+            wishLists.addAll(wishListEntities);
+            adapter.notifyDataSetChanged();
 
-            if (getActivity()!=null)
-                getActivity().runOnUiThread(() -> {
-                    if (c > 0) {
-                        empty.setVisibility(View.GONE);
-                    } else {
-                        empty.setVisibility(View.VISIBLE);
-                        scrollView.setBackgroundColor(Color.WHITE);
-                    }
-                });
+            if (wishListEntities.size() > 0) {
+                empty.setVisibility(View.GONE);
+            } else {
+                empty.setVisibility(View.VISIBLE);
+                scrollView.setBackgroundColor(Color.WHITE);
+            }
         });
 
     }
 
 
-    @Override
-    public void onDestroy() {
 
-        super.onDestroy();
-    }
 }

@@ -33,6 +33,9 @@ public interface WishListDao {
     @Query("SELECT * FROM wishlist_table")
     List<WishListEntity> getAll();
 
+    @Query("SELECT * FROM wishlist_table")
+    LiveData<List<WishListEntity>> getAllLive();
+
     @Query("SELECT COUNT(id) FROM wishlist_table")
     int getCount();
 
