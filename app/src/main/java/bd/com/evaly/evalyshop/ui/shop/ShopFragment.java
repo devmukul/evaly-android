@@ -291,6 +291,7 @@ public class ShopFragment extends Fragment implements ProductListener {
         adapterProducts = new ProductGridAdapter(context, productItemList);
         adapterProducts.setHasStableIds(true);
         adapterProducts.setproductListener(this);
+        adapterProducts.setShopSlug(slug);
         productRecyclerView.setAdapter(adapterProducts);
 
 
