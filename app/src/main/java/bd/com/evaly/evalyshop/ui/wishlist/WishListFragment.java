@@ -95,10 +95,12 @@ public class WishListFragment extends Fragment {
 
                 Executors.newSingleThreadExecutor().execute(() -> {
 
-                    wishListDao.deleteBySlug(slug);
+                    if (appDatabase.isOpen()) {
+                        wishListDao.deleteBySlug(slug);
 
-                    if (getActivity()!=null)
-                        getActivity().runOnUiThread(() -> getWishList());
+                        if (getActivity() != null)
+                            getActivity().runOnUiThread(() -> getWishList());
+                    }
 
                 });
             }
@@ -164,7 +166,6 @@ public class WishListFragment extends Fragment {
     @Override
     public void onDestroy() {
 
-        appDatabase.close();
         super.onDestroy();
     }
 }

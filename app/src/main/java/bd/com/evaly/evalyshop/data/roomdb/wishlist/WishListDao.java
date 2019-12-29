@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.data.roomdb.wishlist;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -35,6 +36,8 @@ public interface WishListDao {
     @Query("SELECT COUNT(id) FROM wishlist_table")
     int getCount();
 
+    @Query("SELECT COUNT(*) FROM wishlist_table")
+    LiveData<Integer> getLiveCount();
 
 
 }

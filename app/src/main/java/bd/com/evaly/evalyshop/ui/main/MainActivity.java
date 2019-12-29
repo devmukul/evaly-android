@@ -40,7 +40,6 @@ import com.orhanobut.logger.Logger;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import java.util.Locale;
-import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
@@ -88,6 +87,7 @@ public class MainActivity extends BaseActivity {
 
     private NavController navController;
     private AppDatabase appDatabase;
+    private WishListDao wishListDao;
 
 
     @Override
@@ -107,7 +107,6 @@ public class MainActivity extends BaseActivity {
         phoneNavHeader = headerView.findViewById(R.id.phone);
         userDetails = new UserDetails(this);
 
-
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
             if (destination.getId() == R.id.homeFragment)
@@ -118,7 +117,6 @@ public class MainActivity extends BaseActivity {
                 bottomNavigationView.getMenu().findItem(R.id.nav_wishlist).setChecked(true);
             else if (destination.getId() == R.id.cartFragment){
                     bottomNavigationView.getMenu().findItem(R.id.nav_cart).setChecked(true);
-
             }
         });
 
@@ -128,24 +126,23 @@ public class MainActivity extends BaseActivity {
         checkUpdate();
 
         appDatabase = AppDatabase.getInstance(this);
-        WishListDao wishListDao = appDatabase.wishListDao();
+        wishListDao = appDatabase.wishListDao();
 
         dbHelperCart = new DbHelperCart(this);
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(R.id.nav_wishlist);
         BottomNavigationItemView itemView2 = bottomNavigationView.findViewById(R.id.nav_cart);
-        View badge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
-        TextView text = badge.findViewById(R.id.notification);
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            text.setText(String.format(Locale.ENGLISH, "%d", wishListDao.getCount()));
-            if (wishListDao.getCount() == 0) {
-                badge.setVisibility(View.GONE);
+        View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
+        TextView wishListCount = wishListBadge.findViewById(R.id.notification);
+        itemView.addView(wishListBadge);
+
+
+        wishListDao.getLiveCount().observe(this, integer -> {
+            wishListCount.setText(String.format(Locale.ENGLISH, "%d", integer));
+            if (integer == 0) {
+                wishListBadge.setVisibility(View.GONE);
             }
         });
-
-        itemView.addView(badge);
-
-
 
         View badge2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView text2 = badge2.findViewById(R.id.notification);
@@ -160,18 +157,11 @@ public class MainActivity extends BaseActivity {
         int delay = 3000;
         handler.postDelayed(new Runnable() {
             public void run() {
-//                if (wishListDao.getCount() == 0) {
-//                    badge.setVisibility(View.GONE);
-//                } else {
-//                    badge.setVisibility(View.VISIBLE);
-//                }
-
                 if (dbHelperCart.size() == 0) {
                     badge2.setVisibility(View.GONE);
                 } else {
                     badge2.setVisibility(View.VISIBLE);
                 }
-//                text.setText(wishListDao.getCount() + "");
                 text2.setText(dbHelperCart.size() + "");
                 handler.postDelayed(this, delay);
             }
@@ -436,6 +426,7 @@ public class MainActivity extends BaseActivity {
                         .into(profilePicNav);
             }
         }
+
     }
 
 
@@ -471,7 +462,6 @@ public class MainActivity extends BaseActivity {
             dbHelperCart.close();
         }
 
-        appDatabase.close();
 
         disconnectXmpp();
         super.onDestroy();
