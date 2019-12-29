@@ -48,10 +48,15 @@ import com.orhanobut.logger.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
@@ -88,18 +93,14 @@ import butterknife.OnClick;
 public class OrderDetailsActivity extends BaseActivity {
 
     private static final int SCROLL_DIRECTION_UP = -1;
-
     private NestedScrollView scrollView;
-    String shopSlug="", shopCategory="";
+    String shopSlug="";
 
-    // for payment
     String invoice_no="";
-
     double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
-
     UserDetails userDetails;
     StepperIndicator indicator;
-    TextView shopName,shopAddress,shopnumber,username,userAddress,userNumber,totalPriceTextView,paidAmountTextView,duePriceTextView;
+    TextView shopName,shopAddress,shopnumber,username,userAddress,userNumber,totalPriceTextView,paidAmountTextView,duePriceTextView, tvCampaignRule;
     TextView orderNumber,orderDate,paymentMethods,balance;
     RecyclerView recyclerView,orderList;
     ArrayList<OrderStatus> orderStatuses;
@@ -109,23 +110,14 @@ public class OrderDetailsActivity extends BaseActivity {
     ViewDialog dialog;
     TextView makePayment, payParially, full_or_partial;
     RelativeLayout shopInfo;
-
-    String userAgent;
-
     TextView payViaGiftCard;
-
-
     BottomSheetBehavior sheetBehavior;
-    LinearLayout layoutBottomSheet;
-    Button btnBottomSheet;
+    LinearLayout layoutBottomSheet, campaignRuleHolder;
     View mViewBg;
     TextView amountToPayView, evalyPayText;
     ImageView bkash,cards,evalyPay;
-
     BottomSheetDialog bottomSheetDialog;
 
-
-    int paymentMethod = -1;
 
     Context context;
     RequestQueue queue;
@@ -148,6 +140,8 @@ public class OrderDetailsActivity extends BaseActivity {
         queue= Volley.newRequestQueue(context);
 
 
+        campaignRuleHolder = findViewById(R.id.campaignRuleHolder);
+        tvCampaignRule = findViewById(R.id.tvCampaignRule);
         full_or_partial = findViewById(R.id.full_or_partial);
         scrollView = findViewById(R.id.scroll);
         shopName=findViewById(R.id.billfromName);
@@ -188,8 +182,6 @@ public class OrderDetailsActivity extends BaseActivity {
         cards = findViewById(R.id.card);
         evalyPay = findViewById(R.id.evaly_pay);
         evalyPayText = findViewById(R.id.evalyPayText);
-
-        final TextView cardText = findViewById(R.id.gatewayText);
 
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
@@ -261,25 +253,16 @@ public class OrderDetailsActivity extends BaseActivity {
 
         indicator = findViewById(R.id.indicator);
         indicator.setStepCount(6);
-        //indicator.setCurrentStep(3);
 
         dialog = new ViewDialog(this);
 
         dialog.showDialog();
-
-
         makePayment = findViewById(R.id.makePayment);
 
         payParially = findViewById(R.id.payPartially);
 
         makePayment.setOnClickListener(v -> {
-
-
             double amountToPay = total_amount - paid_amount;
-
-            double userBalance = Double.parseDouble(userDetails.getBalance());
-
-
             amountToPayView.setText((int)amountToPay + "");
             full_or_partial.setVisibility(View.GONE);
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -292,8 +275,6 @@ public class OrderDetailsActivity extends BaseActivity {
         payViaGiftCard.setOnClickListener(v -> dialogGiftCardPayment());
 
         evalyPay.setOnClickListener(v -> {
-
-
             double amountToPay = total_amount - paid_amount;
 
             if (amountToPayView.getText().toString().trim().equals("")){
@@ -948,9 +929,7 @@ public class OrderDetailsActivity extends BaseActivity {
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
-
                 }
-
 
                 username.setText(String.format("%s %s", response.getCustomer().getFirstName(), response.getCustomer().getLastName()));
                 userAddress.setText(response.getCustomerAddress());
@@ -958,6 +937,57 @@ public class OrderDetailsActivity extends BaseActivity {
                 totalPriceTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getTotal()))));
                 paidAmountTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getPaidAmount()))));
                 duePriceTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount()))));
+
+                if (response.getCampaignRules().size()>0){
+
+                    JsonObject campaignRuleObject = response.getCampaignRules().get(0);
+
+                    String payMethod = campaignRuleObject.get("cashback_on_payment_by").getAsString();
+                    double cashback_percentage = campaignRuleObject.get("cashback_percentage").getAsDouble();
+                    String cashback_date = campaignRuleObject.get("cashback_date").getAsString();
+
+                    if (cashback_percentage>0) {
+
+                        campaignRuleHolder.setVisibility(View.VISIBLE);
+
+                        payMethod = payMethod.replaceAll("card", "Credit/Debit Card");
+                        payMethod = payMethod.replaceAll("balance", "Balance");
+                        payMethod = payMethod.replaceAll("bank", "Bank Account");
+                        payMethod = payMethod.replaceAll("gift_code", "Gift Code");
+                        payMethod = payMethod.replaceAll(",", ", ");
+                        payMethod = payMethod.replaceAll("  ", " ");
+
+                        String inputFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+                        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+                        df_input.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+                        long endTime = 0;
+
+                        try {
+                            endTime = df_input.parse(cashback_date).getTime();
+                        } catch (ParseException e) {
+                            Log.e("timze", e.toString());
+                        }
+
+                        Calendar start = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"), Locale.ENGLISH);
+
+                        long startTime = start.getTimeInMillis();
+                        long diffTime = endTime - startTime;
+
+                        Log.d("timez", start.toString()+"");
+                        Log.d("timez 2", endTime+"");
+
+                        long diffDays = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
+
+
+
+                        String message = "Payments with <font color=\"#c53030\">"+payMethod+"</font> will be rewarded by <b>"+cashback_percentage+"%</b> cashback balance within <b>"+diffDays+" days</b>";
+
+                        tvCampaignRule.setText(Html.fromHtml(message));
+
+                    }
+                }
 
                 String paymentMethod = response.getPaymentMethod();
 

@@ -254,6 +254,36 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
+
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/campaignRuleHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="15dp"
+                        android:background="#fafafa" />
+
+                    <TextView
+                        android:id="@+id/tvCampaignRule"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:paddingTop="15dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingBottom="5dp"
+                        android:textColor="#444"/>
+
+                </LinearLayout>
+
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="8dp"

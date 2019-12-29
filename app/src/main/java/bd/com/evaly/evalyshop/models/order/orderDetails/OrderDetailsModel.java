@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.models.order.orderDetails;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class OrderDetailsModel {
 	private boolean deliveryConfirmed;
 
 	@SerializedName("campaign_rules")
-	private List<Object> campaignRules;
+	private List<JsonObject> campaignRules;
 
 	@SerializedName("contact_number")
 	private String contactNumber;
@@ -62,6 +63,7 @@ public class OrderDetailsModel {
 
 	@SerializedName("status")
 	private String status;
+
 
 	public void setDate(String date){
 		this.date = date;
@@ -111,11 +113,11 @@ public class OrderDetailsModel {
 		return deliveryConfirmed;
 	}
 
-	public void setCampaignRules(List<Object> campaignRules){
+	public void setCampaignRules(List<JsonObject> campaignRules){
 		this.campaignRules = campaignRules;
 	}
 
-	public List<Object> getCampaignRules(){
+	public List<JsonObject> getCampaignRules(){
 		return campaignRules;
 	}
 
