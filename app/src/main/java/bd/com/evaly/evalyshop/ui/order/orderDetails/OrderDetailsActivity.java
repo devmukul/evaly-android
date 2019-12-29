@@ -942,14 +942,13 @@ public class OrderDetailsActivity extends BaseActivity {
 
                     JsonObject campaignRuleObject = response.getCampaignRules().get(0);
 
-                    String payMethod = campaignRuleObject.get("cashback_on_payment_by").getAsString();
                     double cashback_percentage = campaignRuleObject.get("cashback_percentage").getAsDouble();
-                    String cashback_date = campaignRuleObject.get("cashback_date").getAsString();
 
                     if (cashback_percentage>0) {
 
-                        campaignRuleHolder.setVisibility(View.VISIBLE);
+                        String payMethod = campaignRuleObject.get("cashback_on_payment_by").getAsString();
 
+                        campaignRuleHolder.setVisibility(View.VISIBLE);
                         payMethod = payMethod.replaceAll("card", "Credit/Debit Card");
                         payMethod = payMethod.replaceAll("balance", "Balance");
                         payMethod = payMethod.replaceAll("bank", "Bank Account");
@@ -957,39 +956,39 @@ public class OrderDetailsActivity extends BaseActivity {
                         payMethod = payMethod.replaceAll(",", ", ");
                         payMethod = payMethod.replaceAll("  ", " ");
 
-                        String inputFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+                        if (!campaignRuleObject.get("cashback_date").isJsonNull()) {
 
-                        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
-                        df_input.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            String cashback_date = campaignRuleObject.get("cashback_date").getAsString();
+                            String inputFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-                        long endTime = 0;
+                            SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+                            df_input.setTimeZone(TimeZone.getTimeZone("UTC"));
 
+                            Calendar start = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"), Locale.ENGLISH);
+                            Calendar end = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"), Locale.ENGLISH);
 
+                            end.set(Calendar.HOUR_OF_DAY, 0);
+                            start.set(Calendar.HOUR_OF_DAY, 0);
 
-                        Calendar start = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"), Locale.ENGLISH);
-                        Calendar end = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"), Locale.ENGLISH);
+                            try {
+                                end.setTime(df_input.parse(cashback_date));
+                            } catch (ParseException e) {
+                                Log.e("timze", e.toString());
+                            }
 
-                        end.set(Calendar.HOUR_OF_DAY, 0);
-                        start.set(Calendar.HOUR_OF_DAY, 0);
+                            long startTime = start.getTimeInMillis();
+                            long diffTime = end.getTimeInMillis() - startTime;
 
-                        try {
-                            end.setTime(df_input.parse(cashback_date));
-                        } catch (ParseException e) {
-                            Log.e("timze", e.toString());
+                            long diffDays = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS) + 1;
+
+                            String message = "Payments with <font color=\"#c53030\">" + payMethod + "</font> will be rewarded by <b>" + cashback_percentage + "%</b> cashback balance within <b>" + diffDays + " days</b>.";
+                            tvCampaignRule.setText(Html.fromHtml(message));
+                        } else {
+
+                            String message = "Payments with <font color=\"#c53030\">" + payMethod + "</font> will be rewarded by <b>" + cashback_percentage + "%</b> cashback balance instantly.";
+                            tvCampaignRule.setText(Html.fromHtml(message));
+
                         }
-
-
-                        long startTime = start.getTimeInMillis();
-                        long diffTime = end.getTimeInMillis() - startTime;
-
-                        Log.d("timez", start.toString()+"");
-                        Log.d("timez 2", endTime+"");
-
-                        long diffDays = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS)+1;
-
-                        String message = "Payments with <font color=\"#c53030\">"+payMethod+"</font> will be rewarded by <b>"+cashback_percentage+"%</b> cashback balance within <b>"+diffDays+" days</b>";
-
-                        tvCampaignRule.setText(Html.fromHtml(message));
 
                     }
                 }
