@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.ui.menu;
 
 import android.os.Bundle;
 import android.view.MenuItem;

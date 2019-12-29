@@ -212,15 +212,12 @@ public class AppController extends Application implements Application.ActivityLi
 //        });
 
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                context.stopService(new Intent(context, XMPPService.class));
-                context.startActivity(new Intent(context, SignInActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                context.finish();
-            }
+        new Handler().postDelayed(() -> {
+            context.stopService(new Intent(context, XMPPService.class));
+            context.startActivity(new Intent(context, SignInActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            context.finish();
         }, 300);
 
 

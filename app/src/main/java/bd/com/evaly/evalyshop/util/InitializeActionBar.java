@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.util;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -38,7 +38,7 @@
             android:name=".ui.chat.RequestListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.SplashActivity"
+            android:name=".controller.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
@@ -77,7 +77,7 @@
             android:theme="@style/ThemeTransaction" />
         <activity android:name=".ui.offers.OffersActivity" />
         <activity
-            android:name=".activity.InviteEarn"
+            android:name=".ui.menu.InviteEarn"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".util.ImagePreview"
@@ -179,10 +179,10 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activity.ContactActivity"
+            android:name=".ui.menu.ContactActivity"
             android:theme="@style/AppThemeViewProduct" />
         <activity
-            android:name=".activity.AboutActivity"
+            android:name=".ui.menu.AboutActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.campaign.CampaignShopActivity"

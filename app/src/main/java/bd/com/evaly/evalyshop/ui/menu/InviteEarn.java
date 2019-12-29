@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.activity;
+package bd.com.evaly.evalyshop.ui.menu;
 
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -27,8 +27,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -80,12 +78,7 @@ public class InviteEarn extends AppCompatActivity {
 
         Button rate = findViewById(R.id.rate);
 
-        rate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addDialog();
-            }
-        });
+        rate.setOnClickListener(v -> addDialog());
 
 
         if (userDetails.isRated())
@@ -95,21 +88,18 @@ public class InviteEarn extends AppCompatActivity {
 
         TextView copy = findViewById(R.id.copy);
 
-        copy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try{
+        copy.setOnClickListener(v -> {
+            try{
 
-                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("referral",referText.getText().toString().trim());
-                    clipboard.setPrimaryClip(clip);
-                    Toast.makeText(InviteEarn.this, "Invitation code copied.", Toast.LENGTH_SHORT).show();
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("referral",referText.getText().toString().trim());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(InviteEarn.this, "Invitation code copied.", Toast.LENGTH_SHORT).show();
 
-                } catch (Exception e){
+            } catch (Exception e){
 
-                    Toast.makeText(InviteEarn.this, "Can't copy invitation code.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InviteEarn.this, "Can't copy invitation code.", Toast.LENGTH_SHORT).show();
 
-                }
             }
         });
     }
@@ -208,59 +198,56 @@ public class InviteEarn extends AppCompatActivity {
         alertDialog.show();
 
 
-        d_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        d_submit.setOnClickListener(v -> {
 
-                if (d_rating_bar.getRating() < 1){
-                    Toast.makeText(InviteEarn.this, "Please set star rating.", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (d_rating_bar.getRating() < 4){
+            if (d_rating_bar.getRating() < 1){
+                Toast.makeText(InviteEarn.this, "Please set star rating.", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (d_rating_bar.getRating() < 4){
 
 
-                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                            "mailto","hm.tamim@evaly.com.bd", null));
-                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Evaly App Feedback");
-                    //emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
-                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto","hm.tamim@evaly.com.bd", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Evaly App Feedback");
+                //emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
+                startActivity(Intent.createChooser(emailIntent, "Send email..."));
 
-                    alertDialog.dismiss();
+                alertDialog.dismiss();
 
-                    return;
+                return;
 
-                } else {
+            } else {
 
 
-                    Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
-                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                    // To count with Play market backstack, After pressing back button,
-                    // to taken back to our application, we need to add following flags to intent.
-                    goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                            Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
-                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                    try {
-                        startActivity(goToMarket);
-                    } catch (ActivityNotFoundException e) {
-                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
-                    }
-
-                    ratingUpdate();
-
-                    userDetails.setRated(true);
-
-                    alertDialog.dismiss();
-
+                Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
+                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                // To count with Play market backstack, After pressing back button,
+                // to taken back to our application, we need to add following flags to intent.
+                goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                        Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                try {
+                    startActivity(goToMarket);
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
                 }
 
+                ratingUpdate();
 
+                userDetails.setRated(true);
 
-
-
-
-
+                alertDialog.dismiss();
 
             }
+
+
+
+
+
+
+
+
         });
     }
 
@@ -275,24 +262,12 @@ public class InviteEarn extends AppCompatActivity {
 
         //Log.d("json url", url);
 
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //Log.d("json", response);
+        StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
+            //Log.d("json", response);
 
 
 
-            }
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
-
-
-
-            }
-        }) {
+        }, error -> Log.e("onErrorResponse", error.toString())) {
 
             @Override
             public Map<String, String> getParams() {
@@ -304,7 +279,7 @@ public class InviteEarn extends AppCompatActivity {
             }
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 return headers;
             }
@@ -315,12 +290,7 @@ public class InviteEarn extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
 
-
     }
-
-
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
