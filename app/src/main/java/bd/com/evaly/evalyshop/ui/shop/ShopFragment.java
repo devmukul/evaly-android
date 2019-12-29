@@ -140,10 +140,11 @@ public class ShopFragment extends Fragment implements ProductListener {
             ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
             noItem.setVisibility(View.VISIBLE);
             try {
-                Glide.with(context)
-                        .load(R.drawable.ic_emptycart)
-                        .apply(new RequestOptions().override(600, 600))
-                        .into(placeholder);
+                if (getContext() != null)
+                    Glide.with(context)
+                            .load(R.drawable.ic_emptycart)
+                            .apply(new RequestOptions().override(600, 600))
+                            .into(placeholder);
             } catch (Exception ignored) { }
             progressBar.setVisibility(View.GONE);
         } else {
@@ -267,9 +268,10 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
         if (getArguments().getString("logo_image") != null) {
-            Glide.with(context)
-                    .load(getArguments().getString("logo_image"))
-                    .into(logo);
+            if (getContext() != null)
+                Glide.with(context)
+                        .load(getArguments().getString("logo_image"))
+                        .into(logo);
         }
 
         itemList = new ArrayList<>();
@@ -413,10 +415,11 @@ public class ShopFragment extends Fragment implements ProductListener {
                     name.setText(shop_name);
 
                     if (logo.getDrawable() == null)
-                        Glide.with(context)
-                                .load(shopDetails.getLogoImage())
-                                .skipMemoryCache(true)
-                                .into(logo);
+                        if (getContext() != null)
+                            Glide.with(context)
+                                    .load(shopDetails.getLogoImage())
+                                    .skipMemoryCache(true)
+                                    .into(logo);
 
                     callButton.setOnClickListener(v -> {
                         String phone = shopDetails.getContactNumber();

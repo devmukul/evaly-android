@@ -101,6 +101,7 @@ public class BrandFragment extends Fragment {
 
         new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "brand");
 
+        progressBar = view.findViewById(R.id.progressBar);
         dummyView = view.findViewById(R.id.dummyView);
         name = view.findViewById(R.id.name);
         categoryName = view.findViewById(R.id.categoryName);
@@ -168,7 +169,7 @@ public class BrandFragment extends Fragment {
         }
 
 
-        productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, categorySlug, "",2, view.findViewById(R.id.progressBar));
+        productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, categorySlug, "",2, progressBar);
         productGrid.setScrollView(nestedSV);
         productGrid.setListener(new ProductListener() {
             @Override
