@@ -109,8 +109,9 @@ public class MainActivity extends BaseActivity {
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
-            if (destination.getId() == R.id.homeFragment)
+            if (destination.getId() == R.id.homeFragment) {
                 bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+            }
             else if (destination.getId() == R.id.browseProductFragment)
                 unCheckAllMenuItems(bottomNavigationView.getMenu());
             else if (destination.getId() == R.id.wishListFragment)
@@ -281,7 +282,7 @@ public class MainActivity extends BaseActivity {
 
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
 
-            Intent intent;
+
             switch (menuItem.getItemId()) {
                 case R.id.nav_home:
                     navController.navigate(R.id.homeFragment);
