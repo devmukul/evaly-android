@@ -622,7 +622,6 @@ public class ViewProductActivity extends BaseActivity {
         try {
             db.close();
             // finish();
-            appDatabase.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -919,13 +918,18 @@ public class ViewProductActivity extends BaseActivity {
 
 
                             Executors.newSingleThreadExecutor().execute(() -> {
-                                if (wishListDao.checkExists(slug)>0) {
 
-                                    ImageView addToWishList = findViewById(R.id.addToWishlist);
-                                    addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
-                                    isAddedToWishList = true;
+                                int c = wishListDao.checkExists(slug);
 
-                                }
+                                runOnUiThread(() -> {
+                                    if (c>0) {
+                                        ImageView addToWishList = findViewById(R.id.addToWishlist);
+                                        addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
+                                        isAddedToWishList = true;
+                                    }
+                                });
+
+
                             });
 
 

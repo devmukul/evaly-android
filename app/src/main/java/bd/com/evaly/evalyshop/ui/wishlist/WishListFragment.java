@@ -97,6 +97,9 @@ public class WishListFragment extends Fragment {
 
                     wishListDao.deleteBySlug(slug);
 
+                    if (getActivity()!=null)
+                        getActivity().runOnUiThread(() -> getWishList());
+
                 });
             }
         });
@@ -122,9 +125,15 @@ public class WishListFragment extends Fragment {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             wishLists.addAll(wishListDao.getAll());
-            adapter.notifyDataSetChanged();
-            checkListEmpty();
+
+            if (getActivity() != null)
+                getActivity().runOnUiThread(() -> {
+                    adapter.notifyDataSetChanged();
+                    checkListEmpty();
+                });
         });
+
+
 
     }
 
@@ -135,13 +144,18 @@ public class WishListFragment extends Fragment {
         NestedScrollView scrollView = view.findViewById(R.id.scroller);
 
         Executors.newSingleThreadExecutor().execute(() -> {
-            if (wishLists.size() > 0) {
-                empty.setVisibility(View.GONE);
-            } else {
 
-                empty.setVisibility(View.VISIBLE);
-                scrollView.setBackgroundColor(Color.WHITE);
-            }
+            int c = wishLists.size();
+
+            if (getActivity()!=null)
+                getActivity().runOnUiThread(() -> {
+                    if (c > 0) {
+                        empty.setVisibility(View.GONE);
+                    } else {
+                        empty.setVisibility(View.VISIBLE);
+                        scrollView.setBackgroundColor(Color.WHITE);
+                    }
+                });
         });
 
     }
