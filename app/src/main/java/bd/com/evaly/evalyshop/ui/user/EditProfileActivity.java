@@ -317,7 +317,8 @@ public class EditProfileActivity extends BaseActivity {
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
                 response -> {
 
-                    dialog.dismiss();
+                    if (dialog!=null && dialog.isShowing())
+                        dialog.dismiss();
 
                     Log.d("json image" ,new String(response.data));
 
