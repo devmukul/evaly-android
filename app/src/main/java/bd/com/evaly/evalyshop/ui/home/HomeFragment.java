@@ -300,7 +300,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     getNotificationCount();
                 else
                     if (getActivity() != null) {
-                        Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
                         AppController.logout(getActivity());
                     }
             }

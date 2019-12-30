@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,14 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderAdapter;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
+import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderAdapter;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class OrderListFragment extends Fragment {
@@ -186,7 +185,7 @@ public class OrderListFragment extends Fragment {
                     getOrderData(page);
                 else
                     if (getActivity() != null) {
-                        Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
                         AppController.logout(getActivity());
                     }
 

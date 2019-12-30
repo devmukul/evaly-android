@@ -88,7 +88,7 @@ public class InitializeActionBar {
                     getNotificationCount();
                 else
                     if (context != null) {
-                        Toast.makeText(context, "Token expired, please login again", Toast.LENGTH_LONG).show();
+                       // Toast.makeText(context, "Token expired, please login again", Toast.LENGTH_LONG).show();
                         AppController.logout(context);
                     }
 
