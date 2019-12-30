@@ -259,6 +259,13 @@ public class ShopFragment extends Fragment implements ProductListener {
             }
         });
 
+
+        if (getArguments() == null){
+
+            Toast.makeText(context,"Shop not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         title = getArguments().getString("shop_name");
 
         if (getArguments().getString("campaign_slug") != null)
