@@ -44,6 +44,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
@@ -60,40 +61,33 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
-    View view;
-    RecyclerView recyclerView;
-    ArrayList<GiftCardListItem> itemList;
-    GiftCardListAdapter adapter;
-    RequestQueue rq;
+    private View view;
+    private RecyclerView recyclerView;
+    private ArrayList<GiftCardListItem> itemList;
+    private GiftCardListAdapter adapter;
+    private RequestQueue rq;
     static GiftCardListFragment instance;
-
-    ViewDialog dialog;
-    ImageView image,plus,minus;
-    UserDetails userDetails;
-    TextView details,name,amount,total,cardValue;
-    EditText quantity, phoneNumber;
-    int voucherAmount=0;
-    Button placeOrder;
-    String giftCardSlug="";
-
-    LinearLayout noItem;
-    Context context;
-
-    BottomSheetBehavior sheetBehavior;
-    LinearLayout layoutBottomSheet;
-    BottomSheetDialog bottomSheetDialog;
-    BottomSheetBehavior bottomSheetBehavior;
-    View bottomSheetInternal;
-
-    LinearLayout progressContainer;
-    ProgressBar progressBar;
-    int currentPage;
+    private ViewDialog dialog;
+    private ImageView image,plus,minus;
+    private UserDetails userDetails;
+    private TextView details,name,amount,total,cardValue;
+    private EditText quantity, phoneNumber;
+    private int voucherAmount=0;
+    private Button placeOrder;
+    private String giftCardSlug="";
+    private LinearLayout noItem;
+    private Context context;
+    private BottomSheetBehavior sheetBehavior;
+    private LinearLayout layoutBottomSheet;
+    private BottomSheetDialog bottomSheetDialog;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private View bottomSheetInternal;
+    private LinearLayout progressContainer;
+    private ProgressBar progressBar;
+    private int currentPage;
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
-
-
-
-    SwipeRefreshLayout swipeLayout;
+    private int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private SwipeRefreshLayout swipeLayout;
 
     @Override
     public void onRefresh() {
@@ -202,6 +196,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
         TextView privacyText = bottomSheetDialog.findViewById(R.id.privacyText);
 
+        assert privacyText != null;
         privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -210,9 +205,9 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
         plus.setOnClickListener(v -> {
             int quan=Integer.parseInt(quantity.getText().toString());
-            total.setText("৳ " + (quan*voucherAmount));
+            total.setText(String.format(Locale.ENGLISH, "৳ %d", quan * voucherAmount));
             quan+=1;
-            quantity.setText(quan+"");
+            quantity.setText(String.format(Locale.ENGLISH, "%d", quan));
         });
 
         minus.setOnClickListener(v -> {
@@ -221,8 +216,8 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             if(quan<1){
                 quan=1;
             }
-            total.setText("৳ " + (quan*voucherAmount));
-            quantity.setText(quan+"");
+            total.setText(String.format(Locale.ENGLISH, "৳ %d", quan * voucherAmount));
+            quantity.setText(String.format(Locale.ENGLISH, "%d", quan));
         });
 
         quantity.addTextChangedListener(new TextWatcher() {
@@ -235,7 +230,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try{
                     int quan=Integer.parseInt(s.toString());
-                    total.setText("৳ " +(quan*voucherAmount));
+                    total.setText(String.format(Locale.ENGLISH, "৳ %d", quan * voucherAmount));
                 }catch(Exception e){
 
                 }
@@ -265,12 +260,17 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                 return;
             }
 
-
-            if (Integer.parseInt(quantity.getText().toString()) > 10){
-                Toast.makeText(context,"Quantity must be less than 10", Toast.LENGTH_LONG).show();
+            if (Utils.isNumeric(quantity.getText().toString())) {
+                if (Integer.parseInt(quantity.getText().toString()) > 10) {
+                    Toast.makeText(context, "Quantity must be less than 10", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            } else {
+                Toast.makeText(context, "Enter valid quantity", Toast.LENGTH_LONG).show();
                 return;
             }
 
+            assert checkBox != null;
             if (!checkBox.isChecked()){
                 Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
                 return;

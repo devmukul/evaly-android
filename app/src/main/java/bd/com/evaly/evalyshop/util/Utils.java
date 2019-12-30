@@ -75,6 +75,10 @@ public class  Utils {
         return text.matches("^(01)[3-9][0-9]{8}$");
     }
 
+    public static boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+    }
+
     public static String getConvertedTime(String time) {
         String dateTime = "";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
