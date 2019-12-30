@@ -621,7 +621,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_GALLERY) {
+        if (requestCode == REQUEST_CODE_GALLERY && mVCard != null) {
             if (resultCode == RESULT_OK) {
                 Uri resultUri = data.getData();
                 InputStream imageStream = null;
