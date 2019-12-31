@@ -107,6 +107,14 @@ public class AvailableShop {
         return price;
     }
 
+    public int getPriceInt() {
+        try {
+            return (int) Double.parseDouble(price);
+        } catch (Exception e){
+            return 0;
+        }
+    }
+
     public void setPrice(String price) {
         this.price = price;
     }
@@ -129,6 +137,14 @@ public class AvailableShop {
 
     public String getMaximumPrice() {
         return maximumPrice;
+    }
+
+    public int getMaximumPriceInt() {
+        try {
+            return (int) Double.parseDouble(maximumPrice);
+        } catch (Exception e){
+            return 0;
+        }
     }
 
     public void setMaximumPrice(String maximumPrice) {

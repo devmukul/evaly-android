@@ -143,13 +143,14 @@ public class CartFragment extends Fragment {
                                 .setMessage("Are you sure you want to delete the selected products from the cart?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+
                                     ArrayList<CartEntity> listAdapter = adapter.getItemList();
                                     for (int i = 0; i < listAdapter.size(); i++){
-                                        if(listAdapter.get(i).isSelected()){
-                                           // db.deleteData(listAdapter.get(i).getId());
-                                        }
+                                        if(listAdapter.get(i).isSelected())
+                                            cartDao.deleteBySlug(listAdapter.get(i).getSlug());
                                     }
                                     getCartList();
+
                                 })
                                 .setNegativeButton(android.R.string.no, null).show();
                     }
@@ -474,7 +475,7 @@ public class CartFragment extends Fragment {
 
         for (int i = 0; i < listAdapter.size(); i++){
             if(listAdapter.get(i).isSelected()){
-                // db.deleteData(listAdapter.get(i).getId());
+                cartDao.deleteBySlug(listAdapter.get(i).getSlug());
             }
         }
 

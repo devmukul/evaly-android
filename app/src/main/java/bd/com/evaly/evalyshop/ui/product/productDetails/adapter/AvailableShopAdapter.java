@@ -31,16 +31,16 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
+import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.models.shop.AvailableShop;
-import bd.com.evaly.evalyshop.models.cart.CartItem;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 
@@ -49,14 +49,15 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
     ArrayList<AvailableShop> availableShops;
     Context context;
     DbHelperCart db;
-    CartItem cartItem;
+    CartEntity cartItem;
     View view;
     Set<AvailableShop> set;
+    private CartDao cartDao;
 
-    public AvailableShopAdapter(Context context, View view,ArrayList<AvailableShop> availableShops, DbHelperCart db, CartItem cartItem) {
+    public AvailableShopAdapter(Context context, View view,ArrayList<AvailableShop> availableShops, CartDao cartDao, CartEntity cartItem) {
         this.availableShops = availableShops;
-        this.context=context;
-        this.db = db;
+        this.context = context;
+        this.cartDao = cartDao;
         this.cartItem = cartItem;
         this.view = view;
     }
@@ -161,58 +162,51 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
             }else{
 
-
-                Calendar calendar = Calendar.getInstance();
-
                 cartItem.setSlug(availableShops.get(i).getSlug());
-                cartItem.setProductId(availableShops.get(i).getProductId());
+                cartItem.setProductID(availableShops.get(i).getProductId());
 
                 if (availableShops.get(i).getDiscountValue() == 0) {
 
-                    if (((int) Double.parseDouble(availableShops.get(i).getMaximumPrice())) < 1) {
+                    if (availableShops.get(i).getMaximumPriceInt() < 1) {
                         Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
                         return;
                     }
                     try {
-                        cartItem.setPrice((int) Math.round(Double.parseDouble(availableShops.get(i).getMaximumPrice())));
+                        cartItem.setPriceRound(availableShops.get(i).getMaximumPrice());
                     } catch (Exception e){
-                        cartItem.setPrice(0);
+                        cartItem.setPrice("0");
                     }
                 } else {
 
-                    if (((int) Double.parseDouble(availableShops.get(i).getPrice())) < 1) {
+                    if (availableShops.get(i).getPriceInt() < 1) {
                         Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
                         return;
                     }
                     try {
-                        cartItem.setPrice((int) Double.parseDouble(availableShops.get(i).getPrice()));
+                        cartItem.setPrice(availableShops.get(i).getPrice());
                     } catch (Exception e){
-                        cartItem.setPrice(0);
+                        cartItem.setPrice("0");
                     }
                 }
 
                 cartItem.setQuantity(1);
                 cartItem.setSelected(true);
-                cartItem.setSellerJson(availableShops.get(i).getShopJson());
+                cartItem.setShopJson(availableShops.get(i).getShopJson());
                 cartItem.setShopSlug(availableShops.get(i).getShopSlug());
 
-                if(db.insertData(cartItem.getSlug(),cartItem.getName(),cartItem.getImage(),cartItem.getPrice(), calendar.getTimeInMillis(), cartItem.getSellerJson(), 1, cartItem.getShopSlug(), cartItem.getProductId())){
+                Executors.newSingleThreadExecutor().execute(() -> cartDao.insert(cartItem));
 
-                    Snackbar snackBar = Snackbar.make(view,"Added to cart", 1500);
-                    snackBar.setAction("Go to Cart", v1 -> {
-                        try {
+                Snackbar snackBar = Snackbar.make(view,"Added to cart", 1500);
+                snackBar.setAction("Go to Cart", v1 -> {
+                    try {
+                        Intent intent = new Intent(context, CartActivity.class);
+                        context.startActivity(intent);
+                    } catch (Exception ignored){}
 
-                            Intent intent = new Intent(context, CartActivity.class);
-                            context.startActivity(intent);
-                        } catch (Exception ignored){}
+                    snackBar.dismiss();
+                });
+                snackBar.show();
 
-                        snackBar.dismiss();
-                    });
-                    snackBar.show();
-
-                }
-
-                ((ViewProductActivity) context).cartCount();
             }
         });
 

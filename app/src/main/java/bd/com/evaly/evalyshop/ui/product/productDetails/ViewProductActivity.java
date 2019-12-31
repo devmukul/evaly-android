@@ -69,11 +69,12 @@ import java.util.concurrent.Executors;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.cart.CartItem;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
 import bd.com.evaly.evalyshop.models.product.ProductShareModel;
@@ -131,7 +132,7 @@ public class ViewProductActivity extends BaseActivity {
     RelativeLayout specRel, descriptionRel;
     DbHelperCart db;
 
-    CartItem cartItem;
+    CartEntity cartItem;
 
     LinearLayout productHolder;
     LinearLayout stickyButtons;
@@ -173,6 +174,7 @@ public class ViewProductActivity extends BaseActivity {
 
     private AppDatabase appDatabase;
     private WishListDao wishListDao;
+    private CartDao cartDao;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -198,6 +200,7 @@ public class ViewProductActivity extends BaseActivity {
 
         appDatabase = AppDatabase.getInstance(this);
         wishListDao = appDatabase.wishListDao();
+        cartDao = appDatabase.cartDao();
 
 
         viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
@@ -243,7 +246,7 @@ public class ViewProductActivity extends BaseActivity {
 
 
         wishListItem = new WishList();
-        cartItem = new CartItem();
+        cartItem = new CartEntity();
         db = new DbHelperCart(context);
 
         varyingMap = new TreeMap<>(Collections.reverseOrder());
@@ -303,16 +306,10 @@ public class ViewProductActivity extends BaseActivity {
         sliderIndicator.setupWithViewPager(sliderPager, true);
 
 
-        //adapter = new AvailableShopAdapter(context, findViewById(R.id.rootView),availableShops, db, cartItem);
-        //recyclerView.setAdapter(adapter);
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             slug = extras.getString("product_slug");
-
             name = extras.getString("product_name");
-
-
             productName.setVisibility(View.GONE);
 
             if (name != null) {
@@ -327,11 +324,8 @@ public class ViewProductActivity extends BaseActivity {
         }
 
         back.setOnClickListener(v -> onBackPressed());
-
-
         hideProductHolder();
 
-        cartCount();
 
 
         LinearLayout cartPage = findViewById(R.id.cart);
@@ -345,20 +339,12 @@ public class ViewProductActivity extends BaseActivity {
         final ImageView addToWishList = findViewById(R.id.addToWishlist);
         addToWishList.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
-            int price = 0;
-            try {
-                price = Integer.parseInt(wishListItem.getPrice());
-            } catch (Exception e) {
-
-            }
-
 
             if (isAddedToWishList) {
 
                 addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
 
                 Executors.newSingleThreadExecutor().execute(() -> wishListDao.deleteBySlug(wishListItem.getProductSlug()));
-
 
                 Toast.makeText(context, "Removed from wish list", Toast.LENGTH_SHORT).show();
                 isAddedToWishList = false;
@@ -378,7 +364,6 @@ public class ViewProductActivity extends BaseActivity {
 
                 Toast.makeText(context, "Added to wish list", Toast.LENGTH_SHORT).show();
                 addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
-
 
                 isAddedToWishList = true;
 
@@ -614,53 +599,6 @@ public class ViewProductActivity extends BaseActivity {
         bottomSheetDialog.show();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        try {
-            db.close();
-            // finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            cartCount();
-            db = new DbHelperCart(context);
-        } catch (Exception e) {
-
-        }
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // destroy data here
-
-
-        db.close();
-
-    }
-
-
-    public void cartCount() {
-
-        if (db.size() > 0) {
-
-            TextView cartCounter = findViewById(R.id.cartCount);
-            cartCounter.setText(db.size() + "");
-
-        }
-
-
-    }
-
-
     public void hideProductHolder() {
 
         productHolder.setVisibility(View.GONE);
@@ -669,7 +607,6 @@ public class ViewProductActivity extends BaseActivity {
         stickyButtons.setVisibility(View.GONE);
 
     }
-
 
     public void showProductHolder() {
 
@@ -699,16 +636,12 @@ public class ViewProductActivity extends BaseActivity {
             flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;   // add LIGHT_STATUS_BAR to flag
             activity.getWindow().getDecorView().setSystemUiVisibility(flags);
         } else {
-
             activity.getWindow().setStatusBarColor(Color.BLACK);
-
-
         }
     }
 
 
     public void getProductRating(final String sku) {
-
 
         String url = "https://nsuer.club/evaly/reviews/?sku=" + sku + "&type=product&isRating=true";
         Log.d("json rating", url);
@@ -914,11 +847,8 @@ public class ViewProductActivity extends BaseActivity {
 
                             getProductRating(slug);
 
-
                             Executors.newSingleThreadExecutor().execute(() -> {
-
                                 int c = wishListDao.checkExists(slug);
-
                                 runOnUiThread(() -> {
                                     if (c>0) {
                                         ImageView addToWishList = findViewById(R.id.addToWishlist);
@@ -926,11 +856,7 @@ public class ViewProductActivity extends BaseActivity {
                                         isAddedToWishList = true;
                                     }
                                 });
-
-
                             });
-
-
 
 
                             productJson = firstVariant.toString();
@@ -939,7 +865,6 @@ public class ViewProductActivity extends BaseActivity {
 
 
                             // for cart order
-                            cartItem.setId("0");
                             cartItem.setName(firstVariant.getString("product_name"));
                             cartItem.setImage(firstVariant.getString("color_image"));
                             cartItem.setSlug(slug);
@@ -1111,13 +1036,10 @@ public class ViewProductActivity extends BaseActivity {
             rqShop.cancelAll(this);
         }
 
-
-        ((ProgressBar) findViewById(R.id.progressBarShop)).setVisibility(View.VISIBLE);
-
+        (findViewById(R.id.progressBarShop)).setVisibility(View.VISIBLE);
 
         availableShops.clear();
         recyclerView.setAdapter(null);
-
 
         isShopLoading = true;
 
@@ -1130,7 +1052,7 @@ public class ViewProductActivity extends BaseActivity {
                     isShopLoading = false;
                     //adapter.notifyItemRangeRemoved(0, availableShops.size());
                     availableShops.clear();
-                    AvailableShopAdapter adapterm = new AvailableShopAdapter(context, findViewById(R.id.rootView), availableShops, db, cartItem);
+                    AvailableShopAdapter adapterm = new AvailableShopAdapter(context, findViewById(R.id.rootView), availableShops, cartDao, cartItem);
                     //recyclerView.setAdapter(null);
                     recyclerView.setAdapter(adapterm);
                     ArrayList<String> shopname = new ArrayList<>();

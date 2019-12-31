@@ -37,6 +37,7 @@ public class CartEntity {
     @ColumnInfo(name = "shop_json")
     private String shopJson;
 
+    @ColumnInfo(name = "is_selected")
     private boolean selected = true;
 
     public int getId() {
@@ -86,6 +87,11 @@ public class CartEntity {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public void setPriceRound(String p){
+        p = String.valueOf((int) Math.round(Double.parseDouble(p)));
+        this.price = p;
     }
 
     public long getTime() {
