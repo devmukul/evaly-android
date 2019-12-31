@@ -43,13 +43,11 @@ import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 
 public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdapter.MyViewHolder>{
 
     ArrayList<AvailableShop> availableShops;
     Context context;
-    DbHelperCart db;
     CartEntity cartItem;
     View view;
     Set<AvailableShop> set;

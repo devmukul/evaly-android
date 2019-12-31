@@ -97,7 +97,6 @@ import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;
 import bd.com.evaly.evalyshop.views.SliderViewPager;
@@ -130,7 +129,6 @@ public class ViewProductActivity extends BaseActivity {
 
     View specView, descriptionView;
     RelativeLayout specRel, descriptionRel;
-    DbHelperCart db;
 
     CartEntity cartItem;
 
@@ -187,10 +185,9 @@ public class ViewProductActivity extends BaseActivity {
         context = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.z_toolbar);
+
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         getSupportActionBar().setTitle("View Product");
 
         productPrice = getIntent().getIntExtra("product_price", -1);
@@ -247,10 +244,8 @@ public class ViewProductActivity extends BaseActivity {
             popup.show();
         });
 
-
         wishListItem = new WishList();
         cartItem = new CartEntity();
-        db = new DbHelperCart(context);
 
         varyingMap = new TreeMap<>(Collections.reverseOrder());
         parameters = new ArrayList<>();

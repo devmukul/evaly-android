@@ -65,7 +65,6 @@ import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UserDetails;
-import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
@@ -80,7 +79,6 @@ public class MainActivity extends BaseActivity {
     public DrawerLayout drawer;
     private NavigationView navigationView, navigationView2;
     private UserDetails userDetails;
-    private DbHelperCart dbHelperCart;
     public boolean isLaunchActivity = true;
     private View headerView;
     private AppController mChatApp = AppController.getInstance();
@@ -134,7 +132,7 @@ public class MainActivity extends BaseActivity {
         WishListDao wishListDao = appDatabase.wishListDao();
         CartDao cartDao = appDatabase.cartDao();
 
-        dbHelperCart = new DbHelperCart(this);
+
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(R.id.wishListFragment);
         BottomNavigationItemView itemView2 = bottomNavigationView.findViewById(R.id.cartFragment);
 
@@ -153,7 +151,6 @@ public class MainActivity extends BaseActivity {
 
         View cartBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView cartCount = cartBadge.findViewById(R.id.notification);
-        cartCount.setText(String.format(Locale.ENGLISH, "%d", dbHelperCart.size()));
         itemView2.addView(cartBadge);
 
 
@@ -436,10 +433,6 @@ public class MainActivity extends BaseActivity {
         if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
-        if (dbHelperCart != null) {
-            dbHelperCart.close();
-        }
-
 
         disconnectXmpp();
         super.onDestroy();
