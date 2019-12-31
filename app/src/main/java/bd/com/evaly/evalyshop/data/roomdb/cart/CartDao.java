@@ -25,19 +25,19 @@ public interface CartDao {
     @Query("DELETE FROM cart_table")
     void deleteAll();
 
-    @Query("DELETE FROM cart_table WHERE slug = :productSlug")
-    void deleteBySlug(String productSlug);
+    @Query("DELETE FROM cart_table WHERE product_id = :productID")
+    void deleteBySlug(String productID);
 
-    @Query("SELECT COUNT(id) FROM cart_table WHERE slug = :productSlug")
-    int checkExists(String productSlug);
+    @Query("SELECT COUNT(id) FROM cart_table WHERE product_id = :productID")
+    int checkExists(String productID);
 
-    @Query("SELECT * FROM cart_table WHERE slug = :productSlug LIMIT 1")
-    List<CartEntity> checkExistsEntity(String productSlug);
+    @Query("SELECT * FROM cart_table WHERE product_id = :productID LIMIT 1")
+    List<CartEntity> checkExistsEntity(String productID);
 
-    @Query("SELECT * FROM cart_table")
+    @Query("SELECT * FROM cart_table ORDER BY shop_slug, time desc")
     List<CartEntity> getAll();
 
-    @Query("SELECT * FROM cart_table")
+    @Query("SELECT * FROM cart_table ORDER BY shop_slug, time desc")
     LiveData<List<CartEntity>> getAllLive();
 
     @Query("SELECT COUNT(id) FROM cart_table")
@@ -46,11 +46,11 @@ public interface CartDao {
     @Query("SELECT COUNT(*) FROM cart_table")
     LiveData<Integer> getLiveCount();
 
-    @Query("UPDATE cart_table SET quantity = :q WHERE slug = :slug")
-    void updateQuantity(String slug, int q);
+    @Query("UPDATE cart_table SET quantity = :q WHERE product_id = :productID")
+    void updateQuantity(String productID, int q);
 
-    @Query("UPDATE cart_table SET is_selected = :s WHERE slug = :slug")
-    void markSelected(String slug, boolean s);
+    @Query("UPDATE cart_table SET is_selected = :s WHERE slug = :productID")
+    void markSelected(String productID, boolean s);
 
 
 }

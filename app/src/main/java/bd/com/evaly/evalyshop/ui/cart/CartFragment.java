@@ -150,7 +150,7 @@ public class CartFragment extends Fragment {
                                         ArrayList<CartEntity> listAdapter = adapter.getItemList();
                                         for (int i = 0; i < listAdapter.size(); i++){
                                             if(listAdapter.get(i).isSelected())
-                                                cartDao.deleteBySlug(listAdapter.get(i).getSlug());
+                                                cartDao.deleteBySlug(listAdapter.get(i).getProductID());
                                         }
                                     });
 
@@ -475,7 +475,7 @@ public class CartFragment extends Fragment {
             ArrayList<CartEntity> listAdapter = adapter.getItemList();
             for (int i = 0; i < listAdapter.size(); i++){
                 if(listAdapter.get(i).isSelected())
-                    cartDao.deleteBySlug(listAdapter.get(i).getSlug());
+                    cartDao.deleteBySlug(listAdapter.get(i).getProductID());
             }
         });
 

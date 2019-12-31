@@ -104,7 +104,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             itemList.get(i).setSelected(isChecked);
 
-            Executors.newSingleThreadExecutor().execute(() -> cartDao.markSelected(itemList.get(i).getSlug(), isChecked));
+            Executors.newSingleThreadExecutor().execute(() -> cartDao.markSelected(itemList.get(i).getProductID(), isChecked));
 
             if (listener != null){
                 listener.updateCartFromRecycler();
@@ -145,7 +145,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             myViewHolder.price.setText(String.format("৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
             myViewHolder.wholeSalePrice.setText(String.format("৳ %d", price * itemList.get(i).getQuantity()));
 
-            Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getSlug(), itemList.get(i).getQuantity()));
+            Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getProductID(), itemList.get(i).getQuantity()));
 
         });
 
@@ -183,7 +183,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 myViewHolder.price.setText(String.format("৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
                 myViewHolder.wholeSalePrice.setText(String.format("৳ %d", price * itemList.get(i).getQuantity()));
 
-                Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getSlug(), itemList.get(i).getQuantity()));
+                Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getProductID(), itemList.get(i).getQuantity()));
             }
         });
 
@@ -228,7 +228,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             myViewHolder.price.setText(String.format(Locale.ENGLISH, "৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
             myViewHolder.wholeSalePrice.setText(String.format(Locale.ENGLISH, "৳ %d", price * itemList.get(i).getQuantity()));
 
-            Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getSlug(), itemList.get(i).getQuantity()));
+            Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getProductID(), itemList.get(i).getQuantity()));
             // hide keyboard
 
             if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
@@ -282,7 +282,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         myViewHolder.trash.setOnClickListener(v -> {
 
-            Executors.newSingleThreadExecutor().execute(() ->  cartDao.deleteBySlug(itemList.get(i).getSlug()));
+            Executors.newSingleThreadExecutor().execute(() ->  cartDao.deleteBySlug(itemList.get(i).getProductID()));
             itemList.remove(i);
             instance.notifyItemRemoved(i);
             notifyItemRangeChanged(i, itemList.size());

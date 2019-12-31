@@ -197,10 +197,10 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
                 Executors.newSingleThreadExecutor().execute(() -> {
 
-                    List<CartEntity> dbItem = cartDao.checkExistsEntity(cartItem.getSlug());
+                    List<CartEntity> dbItem = cartDao.checkExistsEntity(cartItem.getProductID());
 
                     if (dbItem.size() > 0)
-                        cartDao.updateQuantity(cartItem.getSlug(), dbItem.get(0).getQuantity()+1);
+                        cartDao.updateQuantity(cartItem.getProductID(), dbItem.get(0).getQuantity()+1);
                     else
                         cartDao.insert(cartItem);
 
