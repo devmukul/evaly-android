@@ -39,9 +39,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.cart.CartActivity;
-import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.models.cart.CartItem;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 
@@ -127,11 +126,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             itemList.get(i).setSelected(isChecked);
 
-            if (context instanceof CartActivity) {
 
-                ((CartActivity) context).updateCartFromRecycler();
-                ((CartActivity) context).uncheckSelectAllBtn(isChecked);
-            }
 
             if (listener != null){
                 listener.updateCartFromRecycler();
@@ -193,8 +188,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
 
-            if (context instanceof CartActivity)
-                ((CartActivity) context).updateCartFromRecycler();
+
 
             if (listener != null)
                 listener.updateCartFromRecycler();
@@ -248,8 +242,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             }
 
-            if (context instanceof CartActivity)
-                ((CartActivity) context).updateCartFromRecycler();
 
             if (listener != null)
                 listener.updateCartFromRecycler();
@@ -316,8 +308,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 myViewHolder.quantity.clearFocus();
             }
 
-            if (context instanceof CartActivity)
-                ((CartActivity) context).updateCartFromRecycler();
+
 
             if (listener != null)
                 listener.updateCartFromRecycler();

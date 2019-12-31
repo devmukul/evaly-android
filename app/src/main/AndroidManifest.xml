@@ -145,7 +145,8 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.cart.CartActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".ui.product.productDetails.ViewProductActivity"
             android:label="@string/title_activity_view_product"

@@ -94,6 +94,10 @@ public class CartFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static CartFragment newInstance(){
+        return new CartFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -104,7 +108,7 @@ public class CartFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         context = getContext();
         dialog = new ViewDialog(getActivity());
         db = new DbHelperCart(context);
@@ -314,8 +318,8 @@ public class CartFragment extends Fragment {
         });
 
         getCartList();
-        
-        
+
+
     }
 
     public void uncheckSelectAllBtn(boolean isChecked){
