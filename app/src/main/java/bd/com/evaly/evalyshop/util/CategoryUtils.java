@@ -26,12 +26,12 @@ public class CategoryUtils {
     }
 
     public long getLastUpdated(){
-        return MyPreference.with(context, "category_db_new12").getLong("last_updated", 0);
+        return MyPreference.with(context, "category_db_new13").getLong("last_updated", 0);
     }
 
     public void setLastUpdated(){
         Calendar calendar = Calendar.getInstance();
-        MyPreference.with(context, "category_db_new12").addLong("last_updated", calendar.getTimeInMillis()).save();
+        MyPreference.with(context, "category_db_new13").addLong("last_updated", calendar.getTimeInMillis()).save();
     }
 
     public void getLocalCategoryList(DataFetchingListener<List<CategoryEntity>> listener) {

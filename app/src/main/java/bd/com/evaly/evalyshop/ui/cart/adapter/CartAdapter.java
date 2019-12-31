@@ -287,17 +287,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         myViewHolder.variation.setVisibility(View.GONE);
 
-
-        if (i>0){
-
-            if (itemList.get(i).getShopSlug().equals(itemList.get(i-1).getShopSlug())) {
-                myViewHolder.sellerHolder.setVisibility(View.GONE);
-                myViewHolder.dividerView.setVisibility(View.GONE);
-            }
-            else {
-                myViewHolder.sellerHolder.setVisibility(View.VISIBLE);
-                myViewHolder.dividerView.setVisibility(View.VISIBLE);
-            }
+        if (!itemList.get(i).isShowShopTitle()) {
+            myViewHolder.sellerHolder.setVisibility(View.GONE);
+            myViewHolder.dividerView.setVisibility(View.GONE);
+        } else {
+            myViewHolder.sellerHolder.setVisibility(View.VISIBLE);
+            myViewHolder.dividerView.setVisibility(View.VISIBLE);
         }
 
 
@@ -364,6 +359,18 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
     public void setItemList(final List<CartEntity> productList) {
 
+        List<String> shopSlugList =  new ArrayList<>();
+
+        for (int i=0; i<productList.size(); i++){
+
+            if (!shopSlugList.contains(productList.get(i).getShopSlug())){
+                productList.get(i).setShowShopTitle(true);
+                shopSlugList.add(productList.get(i).getShopSlug());
+            } else
+                productList.get(i).setShowShopTitle(false);
+        }
+
+
         if (itemList == null) {
             itemList = productList;
             notifyItemRangeInserted(0, productList.size());
@@ -392,9 +399,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                     return Objects.equals(newProduct.getProductID(), oldProduct.getProductID())
                             && Objects.equals(newProduct.getName(), oldProduct.getName())
                             && newProduct.getQuantity() == oldProduct.getQuantity()
-                            && newProduct.isSelected() == oldProduct.isSelected();
+                            && newProduct.isSelected() == oldProduct.isSelected()
+                            && newProduct.isShowShopTitle() == oldProduct.isShowShopTitle();
                 }
             });
+
 
             itemList = productList;
             result.dispatchUpdatesTo(this);

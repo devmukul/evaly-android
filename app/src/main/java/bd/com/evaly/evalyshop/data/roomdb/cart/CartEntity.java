@@ -40,6 +40,17 @@ public class CartEntity {
     @ColumnInfo(name = "is_selected")
     private boolean selected = true;
 
+    private boolean showShopTitle;
+
+
+    public boolean isShowShopTitle() {
+        return showShopTitle;
+    }
+
+    public void setShowShopTitle(boolean showShopTitle) {
+        this.showShopTitle = showShopTitle;
+    }
+
     public int getId() {
         return id;
     }
