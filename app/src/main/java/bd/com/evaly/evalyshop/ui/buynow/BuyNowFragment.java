@@ -36,9 +36,13 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -54,7 +58,6 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -69,7 +72,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private int shop_item_id;
     private int quantityCount = 1;
     private int productPriceInt = 0;
-    private DbHelperCart db;
+    private AppDatabase appDatabase;
+    private CartDao cartDao;
 
     @BindView(R.id.shop) TextView shopName;
     @BindView(R.id.product_name) TextView productName;
@@ -133,7 +137,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         Bundle args = getArguments();
 
-        db = new DbHelperCart(getActivity());
+        appDatabase = AppDatabase.getInstance(getContext());
+        cartDao = appDatabase.cartDao();
+
         dialog = new ViewDialog(getActivity());
 
         shop_slug = args.getString("shopSlug");
@@ -389,11 +395,30 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
             String sellerJson = new Gson().toJson(firstItem);
 
-            if(db.insertData(shop_item_slug,firstItem.getShopItemName(),firstItem.getShopItemImage(), (int) Math.round(Double.parseDouble(price)), calendar.getTimeInMillis(), sellerJson, 1, firstItem.getShopSlug(), String.valueOf(firstItem.getShopItemId()))){
 
-                Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
-                BuyNowFragment.this.dismiss();
-            }
+            CartEntity cartEntity = new CartEntity();
+            cartEntity.setName(firstItem.getShopItemName());
+            cartEntity.setImage(firstItem.getShopItemImage());
+            cartEntity.setPriceRound(price);
+            cartEntity.setTime(calendar.getTimeInMillis());
+            cartEntity.setShopJson(sellerJson);
+            cartEntity.setQuantity(1);
+            cartEntity.setShopSlug(firstItem.getShopSlug());
+            cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
+
+            Executors.newSingleThreadExecutor().execute(() -> {
+
+                List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
+
+                if (dbItem.size() == 0)
+                    cartDao.insert(cartEntity);
+                else
+                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity()+1);
+
+            });
+
+            Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
+            BuyNowFragment.this.dismiss();
 
         });
 
