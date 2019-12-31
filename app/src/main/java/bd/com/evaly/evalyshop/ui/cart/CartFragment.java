@@ -27,7 +27,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +39,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
@@ -88,6 +89,7 @@ public class CartFragment extends Fragment {
     private Toolbar mToolbar;
     private int paymentMethod = 2;
     private double totalPriceDouble = 0;
+    private TextView tvTotalPrice;
 
     public CartFragment() {
         // Required empty public constructor
@@ -144,12 +146,14 @@ public class CartFragment extends Fragment {
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
 
-                                    ArrayList<CartEntity> listAdapter = adapter.getItemList();
-                                    for (int i = 0; i < listAdapter.size(); i++){
-                                        if(listAdapter.get(i).isSelected())
-                                            cartDao.deleteBySlug(listAdapter.get(i).getSlug());
-                                    }
-                                    getCartList();
+                                    Executors.newSingleThreadExecutor().execute(() -> {
+                                        ArrayList<CartEntity> listAdapter = adapter.getItemList();
+                                        for (int i = 0; i < listAdapter.size(); i++){
+                                            if(listAdapter.get(i).isSelected())
+                                                cartDao.deleteBySlug(listAdapter.get(i).getSlug());
+                                        }
+                                    });
+
 
                                 })
                                 .setNegativeButton(android.R.string.no, null).show();
@@ -164,14 +168,15 @@ public class CartFragment extends Fragment {
         checkout = view.findViewById(R.id.button);
         selectAll = view.findViewById(R.id.checkBox);
         alert = new ViewDialog(getActivity());
+        tvTotalPrice = view.findViewById(R.id.totalPrice);
         manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
-        adapter = new CartAdapter(itemList,context);
+        adapter = new CartAdapter(itemList,context, cartDao);
 
         adapter.setListener(new CartAdapter.CartListener() {
             @Override
             public void updateCartFromRecycler() {
-                CartFragment.this.updateCartFromRecycler();
+
             }
 
             @Override
@@ -280,7 +285,6 @@ public class CartFragment extends Fragment {
 
         getCartList();
 
-
     }
 
     public void uncheckSelectAllBtn(boolean isChecked){
@@ -307,42 +311,37 @@ public class CartFragment extends Fragment {
     }
 
 
-
-
     public void getCartList(){
         adapter.notifyItemRangeRemoved(0, itemList.size());
         itemList.clear();
 
-        cartDao.getAllLive().observe(this, new Observer<List<CartEntity>>() {
-            @Override
-            public void onChanged(List<CartEntity> cartEntities) {
+        cartDao.getAllLive().observe(this, cartEntities -> {
 
-                if(cartEntities.size()==0){
+            if(cartEntities.size()==0){
 
-                    LinearLayout empty = view.findViewById(R.id.empty);
-                    LinearLayout cal = view.findViewById(R.id.cal);
-                    recyclerView.setVisibility(View.GONE);
-                    cal.setVisibility(View.GONE);
-                    empty.setVisibility(View.VISIBLE);
-                    Button button = view.findViewById(R.id.button);
-                    button.setVisibility(View.GONE);
-                    NestedScrollView scrollView = view.findViewById(R.id.scroller);
-                    scrollView.setBackgroundColor(Color.WHITE);
-                }else{
-                    totalPriceDouble = 0;
-                    cartItem=true;
+                LinearLayout empty = view.findViewById(R.id.empty);
+                LinearLayout cal = view.findViewById(R.id.cal);
+                recyclerView.setVisibility(View.GONE);
+                cal.setVisibility(View.GONE);
+                empty.setVisibility(View.VISIBLE);
+                Button button = view.findViewById(R.id.button);
+                button.setVisibility(View.GONE);
+                NestedScrollView scrollView = view.findViewById(R.id.scroller);
+                scrollView.setBackgroundColor(Color.WHITE);
+            }else{
+                totalPriceDouble = 0;
+                cartItem=true;
+                itemList.clear();
 
-                    itemList.addAll(cartEntities);
-                    adapter.notifyDataSetChanged();
+                itemList.addAll(cartEntities);
+                adapter.notifyDataSetChanged();
 
-
-                    for (int i = 0; i < itemList.size(); i++){
-                        if(itemList.get(i).isSelected()){
-                            totalPriceDouble += itemList.get(i).getPriceInt() * itemList.get(i).getQuantity();
-                        }
-                    }
-
+                for (int i = 0; i < itemList.size(); i++){
+                    if(itemList.get(i).isSelected())
+                        totalPriceDouble += itemList.get(i).getPriceInt() * itemList.get(i).getQuantity();
                 }
+
+                tvTotalPrice.setText(String.format(Locale.ENGLISH, "৳%d", (int) totalPriceDouble));
             }
         });
 
@@ -351,15 +350,15 @@ public class CartFragment extends Fragment {
 
 
     public void updateCartFromRecycler(){
-
-//        ArrayList<CartItem> listAdapter = adapter.getItemList();
+//
+//        ArrayList<CartEntity> listAdapter = adapter.getItemList();
 //        int totalPrice = 0;
 //        totalPriceDouble = 0;
 //
 //        for (int i = 0; i < listAdapter.size(); i++){
 //            if(listAdapter.get(i).isSelected()){
-//                totalPrice += listAdapter.get(i).getPrice() * listAdapter.get(i).getQuantity();
-//                totalPriceDouble += listAdapter.get(i).getPrice() * listAdapter.get(i).getQuantity();
+//                totalPrice += listAdapter.get(i).getPriceInt() * listAdapter.get(i).getQuantity();
+//                totalPriceDouble += listAdapter.get(i).getPriceInt() * listAdapter.get(i).getQuantity();
 //            }
 //        }
 //
@@ -471,26 +470,19 @@ public class CartFragment extends Fragment {
     public void orderPlaced(){
 
         dialog.hideDialog();
-        ArrayList<CartEntity> listAdapter = adapter.getItemList();
 
-        for (int i = 0; i < listAdapter.size(); i++){
-            if(listAdapter.get(i).isSelected()){
-                cartDao.deleteBySlug(listAdapter.get(i).getSlug());
+        Executors.newSingleThreadExecutor().execute(() -> {
+            ArrayList<CartEntity> listAdapter = adapter.getItemList();
+            for (int i = 0; i < listAdapter.size(); i++){
+                if(listAdapter.get(i).isSelected())
+                    cartDao.deleteBySlug(listAdapter.get(i).getSlug());
             }
-        }
+        });
 
         bottomSheetDialog.hide();
-        getCartList();
         Toast.makeText(context, "Your order has been placed!", Toast.LENGTH_LONG).show();
 
     }
-
-    @Override
-    public void onDestroy() {
-
-        super.onDestroy();
-    }
-
 
 
 }

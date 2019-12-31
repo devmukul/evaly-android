@@ -43,6 +43,12 @@ public interface CartDao {
     @Query("SELECT COUNT(*) FROM cart_table")
     LiveData<Integer> getLiveCount();
 
+    @Query("UPDATE cart_table SET quantity = :q WHERE slug = :slug")
+    void updateQuantity(String slug, int q);
+
+    @Query("UPDATE cart_table SET is_selected = :s WHERE slug = :slug")
+    void markSelected(String slug, boolean s);
+
 
 }
 
