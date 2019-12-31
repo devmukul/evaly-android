@@ -37,6 +37,7 @@ public class CartEntity {
     @ColumnInfo(name = "shop_json")
     private String shopJson;
 
+    private boolean selected = true;
 
     public int getId() {
         return id;
@@ -73,6 +74,15 @@ public class CartEntity {
     public String getPrice() {
         return price;
     }
+
+    public int getPriceInt() {
+        try {
+            return Integer.parseInt(price);
+        } catch (Exception e){
+            return 0;
+        }
+    }
+
 
     public void setPrice(String price) {
         this.price = price;
@@ -116,5 +126,13 @@ public class CartEntity {
 
     public void setShopJson(String shopJson) {
         this.shopJson = shopJson;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

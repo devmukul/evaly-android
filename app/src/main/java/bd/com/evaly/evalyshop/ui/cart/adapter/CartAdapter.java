@@ -39,14 +39,14 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.models.cart.CartItem;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
-    ArrayList<CartItem> itemList;
+    ArrayList<CartEntity> itemList;
     Context context;
     DbHelperCart db;
 
@@ -64,12 +64,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         this.listener = listener;
     }
 
-    public CartAdapter(ArrayList<CartItem> itemList, Context context, DbHelperCart db) {
+    public CartAdapter(ArrayList<CartEntity> itemList, Context context) {
         this.itemList = itemList;
         this.context = context;
-        this.db = db;
         instance = this;
-
     }
 
     @NonNull
@@ -82,8 +80,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         //Log.d("wish_product",itemList.get(i).getName());
-
-
+        
         if (i>0){
 
             if (itemList.get(i).getShopSlug().equals(itemList.get(i-1).getShopSlug())) {
@@ -94,10 +91,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 myViewHolder.sellerHolder.setVisibility(View.VISIBLE);
                 myViewHolder.dividerView.setVisibility(View.VISIBLE);
             }
-
         }
-
-
+        
         JSONObject jsonObject = new JSONObject();
 
 
@@ -105,10 +100,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         try {
 
-            jsonObject = new JSONObject(itemList.get(i).getSellerJson());
-
-
-            Log.d("json cart", itemList.get(i).getSellerJson());
+            jsonObject = new JSONObject(itemList.get(i).getShopJson());
+            
+            Log.d("json cart", itemList.get(i).getShopJson());
 
             String shopName = jsonObject.getString("shop_name");
             myViewHolder.shop.setText("Seller: " + shopName);
@@ -142,7 +136,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         myViewHolder.plus.setOnClickListener(v -> {
 
 
-            int price = itemList.get(i).getPrice();
+            int price = itemList.get(i).getPriceInt();
             int wholeSaleMin = 0;
             int wholesalePrice = price;
             int priceTemp = price;
@@ -150,7 +144,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             JSONObject jsonObject1 = new JSONObject();
             try {
 
-                jsonObject1 = new JSONObject(itemList.get(i).getSellerJson());
+                jsonObject1 = new JSONObject(itemList.get(i).getShopJson());
                 wholeSaleMin = jsonObject1.getInt("minimum_wholesale_quantity");
                 wholesalePrice = (int) Double.parseDouble(jsonObject1.getString("wholesale_price"));
 
@@ -186,7 +180,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
 
-            db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
+            // db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
 
 
 
@@ -197,7 +191,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         myViewHolder.minus.setOnClickListener(v -> {
 
 
-            int price = itemList.get(i).getPrice();
+            int price = itemList.get(i).getPriceInt();
             int wholeSaleMin = 0;
             int wholesalePrice = price;
             int priceTemp = price;
@@ -205,7 +199,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             JSONObject jsonObject12 = new JSONObject();
             try {
 
-                jsonObject12 = new JSONObject(itemList.get(i).getSellerJson());
+                jsonObject12 = new JSONObject(itemList.get(i).getShopJson());
                 wholeSaleMin = jsonObject12.getInt("minimum_wholesale_quantity");
                 wholesalePrice = (int) Double.parseDouble(jsonObject12.getString("wholesale_price"));
 
@@ -238,7 +232,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
                 myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
 
-                db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
+                // db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
 
             }
 
@@ -251,7 +245,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         myViewHolder.quantity.setOnEditorActionListener((v, actionId, event) -> {
 
 
-            int price = itemList.get(i).getPrice();
+            int price = itemList.get(i).getPriceInt();
             int wholeSaleMin = 0;
             int wholesalePrice = price;
             int priceTemp = price;
@@ -259,7 +253,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             JSONObject jsonObject13 = new JSONObject();
             try {
 
-                jsonObject13 = new JSONObject(itemList.get(i).getSellerJson());
+                jsonObject13 = new JSONObject(itemList.get(i).getShopJson());
                 wholeSaleMin = jsonObject13.getInt("minimum_wholesale_quantity");
                 wholesalePrice = (int) Double.parseDouble(jsonObject13.getString("wholesale_price"));
 
@@ -298,7 +292,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             myViewHolder.wholeSalePrice.setText(String.format(Locale.ENGLISH, "৳ %d", price * itemList.get(i).getQuantity()));
 
 
-            db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
+            // db.updateQuantity(itemList.get(i).getId(), itemList.get(i).getQuantity());
             // hide keyboard
 
             if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
@@ -322,7 +316,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         {
 
-            int price = itemList.get(i).getPrice();
+            int price = itemList.get(i).getPriceInt();
             int wholeSaleMin = 0;
             int wholesalePrice = price;
             int priceTemp = price;
@@ -381,11 +375,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         myViewHolder.productImage.setOnClickListener(v -> openProductPage(i));
 
         myViewHolder.trash.setOnClickListener(v -> {
-            db.deleteData(itemList.get(i).getId());
+           // db.deleteData(itemList.get(i).getId());
             itemList.remove(i);
             instance.notifyItemRemoved(i);
             notifyItemRangeChanged(i, itemList.size());
         });
+
         myViewHolder.variation.setVisibility(View.GONE);
     }
 
@@ -438,7 +433,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         }
     }
 
-    public ArrayList<CartItem>  getItemList(){
+    public ArrayList<CartEntity>  getItemList(){
 
         return itemList;
 

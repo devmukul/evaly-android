@@ -4,7 +4,6 @@ package bd.com.evaly.evalyshop.ui.cart;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
@@ -12,7 +11,6 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -29,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,30 +41,29 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
+import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.cart.CartItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.database.DbHelperCart;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class CartFragment extends Fragment {
 
-
-    private DbHelperCart db;
-    private ArrayList<CartItem> itemList;
+    private ArrayList<CartEntity> itemList;
     private RecyclerView recyclerView;
     private CartAdapter adapter;
     private LinearLayoutManager manager;
@@ -84,11 +82,12 @@ public class CartFragment extends Fragment {
     private CompoundButton.OnCheckedChangeListener selectAllListener;
     private BottomSheetDialog bottomSheetDialog;
     private View bottomSheetView;
-    private int spinnerPosition, paymentMethod = 2;
-    private double totalPriceDouble = 0;
     private View view;
-
+    private AppDatabase appDatabase;
+    private CartDao cartDao;
     private Toolbar mToolbar;
+    private int paymentMethod = 2;
+    private double totalPriceDouble = 0;
 
     public CartFragment() {
         // Required empty public constructor
@@ -111,10 +110,11 @@ public class CartFragment extends Fragment {
 
         context = getContext();
         dialog = new ViewDialog(getActivity());
-        db = new DbHelperCart(context);
         userDetails = new UserDetails(context);
-
         itemList = new ArrayList<>();
+
+        appDatabase = AppDatabase.getInstance(getContext());
+        cartDao = appDatabase.cartDao();
 
     }
 
@@ -143,10 +143,10 @@ public class CartFragment extends Fragment {
                                 .setMessage("Are you sure you want to delete the selected products from the cart?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-                                    ArrayList<CartItem> listAdapter = adapter.getItemList();
+                                    ArrayList<CartEntity> listAdapter = adapter.getItemList();
                                     for (int i = 0; i < listAdapter.size(); i++){
                                         if(listAdapter.get(i).isSelected()){
-                                            db.deleteData(listAdapter.get(i).getId());
+                                           // db.deleteData(listAdapter.get(i).getId());
                                         }
                                     }
                                     getCartList();
@@ -159,17 +159,13 @@ public class CartFragment extends Fragment {
             return false;
         });
 
-
-
         recyclerView = view.findViewById(R.id.recycle);
-
         checkout = view.findViewById(R.id.button);
         selectAll = view.findViewById(R.id.checkBox);
         alert = new ViewDialog(getActivity());
-
         manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
-        adapter = new CartAdapter(itemList,context, db);
+        adapter = new CartAdapter(itemList,context);
 
         adapter.setListener(new CartAdapter.CartListener() {
             @Override
@@ -217,7 +213,6 @@ public class CartFragment extends Fragment {
             adapter.notifyDataSetChanged();
         };
 
-
         TextView privacyText = bottomSheetView.findViewById(R.id.privacyText);
         privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         privacyText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -230,24 +225,19 @@ public class CartFragment extends Fragment {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
-
             if (!checkBox.isChecked()){
                 Toast.makeText(getContext(), "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
                 return;
             }
-
             if (addressSwitch.isChecked() && customAddress.getText().toString().equals("")){
                 Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             if (!Utils.isValidNumber(contact_number.getText().toString())){
                 Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             placeOrder(generateOrderJson(), dialog);
-
         });
 
         // bottom sheet
@@ -256,40 +246,10 @@ public class CartFragment extends Fragment {
         addressSwitch = bottomSheetView.findViewById(R.id.addressSwitch);
         customAddress = bottomSheetView.findViewById(R.id.customAddress);
         addressSpinner = bottomSheetView.findViewById(R.id.spinner);
-
         contact_number.setText(userDetails.getPhone());
         spinnerArray = new ArrayList<String>();
         spinnerArrayID = new ArrayList<Integer>();
-
         customAddress.setText(userDetails.getJsonAddress());
-
-        addressSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
-            if(isChecked){
-                customAddress.setVisibility(View.VISIBLE);
-                addressSpinner.setVisibility(View.GONE);
-
-            } else{
-                customAddress.setVisibility(View.GONE);
-                addressSpinner.setVisibility(View.VISIBLE);
-
-            }
-
-        });
-
-        addressSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int arg2, long arg3) {
-                spinnerPosition = arg2; //Here is your selected position
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                spinnerPosition = 0;
-            }
-
-        });
 
 
         if(spinnerArray.size() < 1){
@@ -351,51 +311,62 @@ public class CartFragment extends Fragment {
     public void getCartList(){
         adapter.notifyItemRangeRemoved(0, itemList.size());
         itemList.clear();
-        Cursor res=db.getData();
-        if(res.getCount()==0){
 
-            LinearLayout empty = view.findViewById(R.id.empty);
-            LinearLayout cal = view.findViewById(R.id.cal);
-            recyclerView.setVisibility(View.GONE);
-            cal.setVisibility(View.GONE);
-            empty.setVisibility(View.VISIBLE);
-            Button button = view.findViewById(R.id.button);
-            button.setVisibility(View.GONE);
-            NestedScrollView scrollView = view.findViewById(R.id.scroller);
-            scrollView.setBackgroundColor(Color.WHITE);
-        }else{
+        cartDao.getAllLive().observe(this, new Observer<List<CartEntity>>() {
+            @Override
+            public void onChanged(List<CartEntity> cartEntities) {
 
-            totalPriceDouble = 0;
-            cartItem=true;
-            while(res.moveToNext()){
-                itemList.add(new CartItem(res.getString(0),res.getString(1),res.getString(2),res.getString(3),res.getInt(4),res.getLong(5),res.getString(6),res.getInt(7),true, res.getString(8), res.getString(9)));
-                totalPriceDouble +=  res.getInt(4);
-                adapter.notifyItemInserted(itemList.size());
-                updateCartFromRecycler();
+                if(cartEntities.size()==0){
+
+                    LinearLayout empty = view.findViewById(R.id.empty);
+                    LinearLayout cal = view.findViewById(R.id.cal);
+                    recyclerView.setVisibility(View.GONE);
+                    cal.setVisibility(View.GONE);
+                    empty.setVisibility(View.VISIBLE);
+                    Button button = view.findViewById(R.id.button);
+                    button.setVisibility(View.GONE);
+                    NestedScrollView scrollView = view.findViewById(R.id.scroller);
+                    scrollView.setBackgroundColor(Color.WHITE);
+                }else{
+                    totalPriceDouble = 0;
+                    cartItem=true;
+
+                    itemList.addAll(cartEntities);
+                    adapter.notifyDataSetChanged();
+
+
+                    for (int i = 0; i < itemList.size(); i++){
+                        if(itemList.get(i).isSelected()){
+                            totalPriceDouble += itemList.get(i).getPriceInt() * itemList.get(i).getQuantity();
+                        }
+                    }
+
+                }
             }
-            adapter.notifyDataSetChanged();
-        }
+        });
+
+
     }
 
 
     public void updateCartFromRecycler(){
 
-        ArrayList<CartItem> listAdapter = adapter.getItemList();
-        int totalPrice = 0;
-        totalPriceDouble = 0;
-
-        for (int i = 0; i < listAdapter.size(); i++){
-            if(listAdapter.get(i).isSelected()){
-                totalPrice += listAdapter.get(i).getPrice() * listAdapter.get(i).getQuantity();
-                totalPriceDouble += listAdapter.get(i).getPrice() * listAdapter.get(i).getQuantity();
-            }
-        }
-
-        TextView priceView = view.findViewById(R.id.totalPrice);
-        priceView.setText("৳ "+totalPrice);
-
-        TextView priceView2 = bottomSheetView.findViewById(R.id.bs_price);
-        priceView2.setText("৳ "+totalPrice);
+//        ArrayList<CartItem> listAdapter = adapter.getItemList();
+//        int totalPrice = 0;
+//        totalPriceDouble = 0;
+//
+//        for (int i = 0; i < listAdapter.size(); i++){
+//            if(listAdapter.get(i).isSelected()){
+//                totalPrice += listAdapter.get(i).getPrice() * listAdapter.get(i).getQuantity();
+//                totalPriceDouble += listAdapter.get(i).getPrice() * listAdapter.get(i).getQuantity();
+//            }
+//        }
+//
+//        TextView priceView = view.findViewById(R.id.totalPrice);
+//        priceView.setText("৳ "+totalPrice);
+//
+//        TextView priceView2 = bottomSheetView.findViewById(R.id.bs_price);
+//        priceView2.setText("৳ "+totalPrice);
 
     }
 
@@ -454,9 +425,7 @@ public class CartFragment extends Fragment {
                     AppController.logout(getActivity());
             }
         });
-
     }
-
 
 
 
@@ -468,18 +437,17 @@ public class CartFragment extends Fragment {
         orderObejct.setCustomerAddress(customAddress.getText().toString());
         orderObejct.setOrderOrigin("app");
 
-
         orderObejct.setPaymentMethod("evaly_pay");
 
         List<OrderItemsItem> productList = new ArrayList<>();
 
-        ArrayList<CartItem> adapterItems = adapter.getItemList();
+        ArrayList<CartEntity> adapterItems = adapter.getItemList();
 
         for(int i=0; i < adapterItems.size(); i++) {
 
             if(adapterItems.get(i).isSelected()) {
 
-                String fromShopJson = adapterItems.get(i).getSellerJson();
+                String fromShopJson = adapterItems.get(i).getShopJson();
                 OrderItemsItem item = new OrderItemsItem();
                 item.setQuantity(adapterItems.get(i).getQuantity());
 
@@ -496,18 +464,17 @@ public class CartFragment extends Fragment {
 
         orderObejct.setOrderItems(productList);
 
-
         return new Gson().toJsonTree(orderObejct).getAsJsonObject();
     }
 
     public void orderPlaced(){
 
         dialog.hideDialog();
-        ArrayList<CartItem> listAdapter = adapter.getItemList();
+        ArrayList<CartEntity> listAdapter = adapter.getItemList();
 
         for (int i = 0; i < listAdapter.size(); i++){
             if(listAdapter.get(i).isSelected()){
-                db.deleteData(listAdapter.get(i).getId());
+                // db.deleteData(listAdapter.get(i).getId());
             }
         }
 
@@ -519,9 +486,7 @@ public class CartFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(db!=null){
-            db.close();
-        }
+
         super.onDestroy();
     }
 
