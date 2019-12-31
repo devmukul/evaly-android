@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.giftcard;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -10,27 +9,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.base.BaseViewPagerAdapter;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.util.UrlUtils;
+import bd.com.evaly.evalyshop.ui.base.BaseViewPagerAdapter;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class GiftCardActivity extends AppCompatActivity {
@@ -97,63 +84,31 @@ public class GiftCardActivity extends AppCompatActivity {
     public void updateBalance() {
 
 
-
-        String url = UrlUtils.BASE_URL_AUTH + "user-info-pay/" + userDetails.getUserName() + "/";
-        JSONObject parameters = new JSONObject();
-
-        Log.d("onResponse", url);
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
-            Log.d("onResponse", response.toString());
-
-            try {
-                response = response.getJSONObject("data");
-                balance.setText("Gift Card Balance: ৳ " + response.getString("gift_card_balance"));
-                balance.setVisibility(View.VISIBLE);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                    AuthApiHelper.refreshToken(GiftCardActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            updateBalance();
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-                }}
-        }) {
+        AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), userDetails.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-
-                return headers;
+            public void onDataFetched(JsonObject response, int statusCode) {
+                response = response.getAsJsonObject("data");
+                balance.setText(String.format("Gift Card Balance: ৳ %s", response.get("gift_card_balance").getAsString()));
+                balance.setVisibility(View.VISIBLE);
             }
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue queue = Volley.newRequestQueue(GiftCardActivity.this);
-        queue.add(request);
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+                balance.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (logout)
+                    AppController.logout(GiftCardActivity.this);
+                else
+                    updateBalance();
+
+            }
+        });
+
+
     }
 
 }
