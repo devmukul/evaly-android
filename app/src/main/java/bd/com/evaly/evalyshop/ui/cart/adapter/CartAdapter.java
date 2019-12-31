@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.text.Html;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +17,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.Executors;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
@@ -35,7 +42,7 @@ import bd.com.evaly.evalyshop.util.Utils;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
-    private ArrayList<CartEntity> itemList;
+    private List<CartEntity> itemList;
     private Context context;
     private CartAdapter instance;
     private CartDao cartDao;
@@ -52,11 +59,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         this.listener = listener;
     }
 
-    public CartAdapter(ArrayList<CartEntity> itemList, Context context, CartDao cartDao) {
-        this.itemList = itemList;
+    public CartAdapter(Context context, CartDao cartDao) {
         this.context = context;
         instance = this;
         this.cartDao = cartDao;
+
+        itemList = new ArrayList<>();
+
     }
 
     @NonNull
@@ -70,17 +79,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
-        if (i>0){
 
-            if (itemList.get(i).getShopSlug().equals(itemList.get(i-1).getShopSlug())) {
-                myViewHolder.sellerHolder.setVisibility(View.GONE);
-                myViewHolder.dividerView.setVisibility(View.GONE);
-            }
-            else {
-                myViewHolder.sellerHolder.setVisibility(View.VISIBLE);
-                myViewHolder.dividerView.setVisibility(View.VISIBLE);
-            }
-        }
         
         JSONObject jsonObject = new JSONObject();
 
@@ -99,13 +98,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         myViewHolder.checkBox.post(() -> myViewHolder.checkBox.setChecked(itemList.get(i).isSelected()));
 
         myViewHolder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
-            Log.d("hmt", "checked");
-
-            itemList.get(i).setSelected(isChecked);
-
             Executors.newSingleThreadExecutor().execute(() -> cartDao.markSelected(itemList.get(i).getProductID(), isChecked));
-
             if (listener != null){
                 listener.updateCartFromRecycler();
                 listener.uncheckSelectAllBtn(isChecked);
@@ -290,6 +283,21 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         });
 
         myViewHolder.variation.setVisibility(View.GONE);
+
+
+        if (i>0){
+
+            if (itemList.get(i).getShopSlug().equals(itemList.get(i-1).getShopSlug())) {
+                myViewHolder.sellerHolder.setVisibility(View.GONE);
+                myViewHolder.dividerView.setVisibility(View.GONE);
+            }
+            else {
+                myViewHolder.sellerHolder.setVisibility(View.VISIBLE);
+                myViewHolder.dividerView.setVisibility(View.VISIBLE);
+            }
+        }
+
+
     }
 
     private void openProductPage(int i){
@@ -339,10 +347,58 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         }
     }
 
-    public ArrayList<CartEntity>  getItemList(){
+    public List<CartEntity>  getItemList(){
 
         return itemList;
 
     }
+
+
+    @Override
+    public long getItemId(int position) {
+        return itemList == null ? 0 : itemList.get(position).getId();
+    }
+
+    public void setItemList(final List<CartEntity> productList) {
+
+        if (itemList == null) {
+            itemList = productList;
+            notifyItemRangeInserted(0, productList.size());
+        } else {
+            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+                @Override
+                public int getOldListSize() {
+                    return itemList.size();
+                }
+
+                @Override
+                public int getNewListSize() {
+                    return productList.size();
+                }
+
+                @Override
+                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                    return Objects.equals(itemList.get(oldItemPosition).getProductID(), productList.get(newItemPosition).getProductID());
+                }
+
+                @Override
+                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                    CartEntity newProduct = productList.get(newItemPosition);
+                    CartEntity oldProduct = itemList.get(oldItemPosition);
+
+                    return Objects.equals(newProduct.getProductID(), oldProduct.getProductID())
+                            && Objects.equals(newProduct.getName(), oldProduct.getName())
+                            && newProduct.getQuantity() == oldProduct.getQuantity()
+                            && newProduct.isSelected() == oldProduct.isSelected();
+                }
+            });
+
+            itemList = productList;
+            result.dispatchUpdatesTo(this);
+
+        }
+    }
+
+
 
 }

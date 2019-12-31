@@ -49,7 +49,7 @@ public interface CartDao {
     @Query("UPDATE cart_table SET quantity = :q WHERE product_id = :productID")
     void updateQuantity(String productID, int q);
 
-    @Query("UPDATE cart_table SET is_selected = :s WHERE slug = :productID")
+    @Query("UPDATE cart_table SET is_selected = :s WHERE product_id = :productID")
     void markSelected(String productID, boolean s);
 
 

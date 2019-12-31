@@ -191,7 +191,9 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="1"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:enabled="false"
+                android:textColor="#333"/>
 
             <ImageView
                 android:id="@+id/plus"
