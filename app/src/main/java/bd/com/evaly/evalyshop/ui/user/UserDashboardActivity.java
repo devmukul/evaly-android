@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
@@ -167,6 +168,13 @@ public class UserDashboardActivity extends BaseActivity {
         getSupportActionBar().setTitle("Dashboard");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(4f);
+
+        if(CredentialManager.getToken().equals(""))
+        {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+        }
+
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -316,14 +324,17 @@ public class UserDashboardActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (from.equals("signin")) {
-            Intent intent = new Intent(UserDashboardActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        } else {
-            disconnectXmpp();
+        if (from != null)
+            if (from.equals("signin")) {
+                Intent intent = new Intent(UserDashboardActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            } else {
+                disconnectXmpp();
+                super.onBackPressed();
+            }
+        else
             super.onBackPressed();
-        }
     }
 
     private void disconnectXmpp(){

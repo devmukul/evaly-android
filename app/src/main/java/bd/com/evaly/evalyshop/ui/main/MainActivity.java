@@ -27,6 +27,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -70,6 +71,8 @@ import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import retrofit2.Response;
 
+import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
+
 public class MainActivity extends BaseActivity {
 
     private BottomNavigationView bottomNavigationView;
@@ -109,17 +112,27 @@ public class MainActivity extends BaseActivity {
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
-            if (destination.getId() == R.id.homeFragment) {
-                bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
-            }
-            else if (destination.getId() == R.id.browseProductFragment)
-                unCheckAllMenuItems(bottomNavigationView.getMenu());
-            else if (destination.getId() == R.id.wishListFragment)
-                bottomNavigationView.getMenu().findItem(R.id.nav_wishlist).setChecked(true);
-            else if (destination.getId() == R.id.cartFragment){
-                    bottomNavigationView.getMenu().findItem(R.id.nav_cart).setChecked(true);
-            }
+
         });
+
+
+
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                (BottomNavigationView.OnNavigationItemSelectedListener) item -> {
+                    if (item.getItemId() == R.id.userDashboardActivity){
+                        if (userDetails.getToken().equals(""))
+                            startActivity(new Intent(MainActivity.this, SignInActivity.class));
+                        else
+                            startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
+
+                        return false;
+                    } else
+                    return onNavDestinationSelected(item, navController);
+                });
 
 
         // check for update
@@ -130,13 +143,12 @@ public class MainActivity extends BaseActivity {
         wishListDao = appDatabase.wishListDao();
 
         dbHelperCart = new DbHelperCart(this);
-        BottomNavigationItemView itemView = bottomNavigationView.findViewById(R.id.nav_wishlist);
-        BottomNavigationItemView itemView2 = bottomNavigationView.findViewById(R.id.nav_cart);
+        BottomNavigationItemView itemView = bottomNavigationView.findViewById(R.id.wishListFragment);
+        BottomNavigationItemView itemView2 = bottomNavigationView.findViewById(R.id.cartFragment);
 
         View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
         TextView wishListCount = wishListBadge.findViewById(R.id.notification);
         itemView.addView(wishListBadge);
-
 
         wishListDao.getLiveCount().observe(this, integer -> {
             wishListCount.setText(String.format(Locale.ENGLISH, "%d", integer));
@@ -280,29 +292,8 @@ public class MainActivity extends BaseActivity {
             });
         }
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
 
 
-            switch (menuItem.getItemId()) {
-                case R.id.nav_home:
-                    navController.navigate(R.id.homeFragment);
-                    break;
-                case R.id.nav_wishlist:
-                    navController.navigate(R.id.wishListFragment);
-                    break;
-                case R.id.nav_cart:
-                    navController.navigate(R.id.cartFragment);
-                    break;
-                case R.id.nav_dashboard:
-                    if (userDetails.getToken().equals("")) {
-                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                    } else {
-                        startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
-                    }
-                    break;
-            }
-            return true;
-        });
 
 
         Intent data = getIntent();
