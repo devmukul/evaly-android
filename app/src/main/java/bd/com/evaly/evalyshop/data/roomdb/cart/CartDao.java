@@ -31,6 +31,9 @@ public interface CartDao {
     @Query("SELECT COUNT(id) FROM cart_table WHERE slug = :productSlug")
     int checkExists(String productSlug);
 
+    @Query("SELECT * FROM cart_table WHERE slug = :productSlug LIMIT 1")
+    List<CartEntity> checkExistsEntity(String productSlug);
+
     @Query("SELECT * FROM cart_table")
     List<CartEntity> getAll();
 

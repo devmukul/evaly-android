@@ -46,6 +46,7 @@ import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -77,20 +78,14 @@ public class MainActivity extends BaseActivity {
 
     private BottomNavigationView bottomNavigationView;
     public DrawerLayout drawer;
-    private Toolbar toolbar;
     private NavigationView navigationView, navigationView2;
     private UserDetails userDetails;
-    private TextView userNameNavHeader;
-    private TextView phoneNavHeader;
     private DbHelperCart dbHelperCart;
     public boolean isLaunchActivity = true;
     private View headerView;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
-
     private NavController navController;
-    private AppDatabase appDatabase;
-    private WishListDao wishListDao;
 
 
     @Override
@@ -101,13 +96,13 @@ public class MainActivity extends BaseActivity {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
         drawer = findViewById(R.id.drawer_layout);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
         navigationView2 = findViewById(R.id.nav_view2);
         headerView = navigationView.getHeaderView(0);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        userNameNavHeader = headerView.findViewById(R.id.userNameNavHeader);
-        phoneNavHeader = headerView.findViewById(R.id.phone);
+        TextView userNameNavHeader = headerView.findViewById(R.id.userNameNavHeader);
+        TextView phoneNavHeader = headerView.findViewById(R.id.phone);
         userDetails = new UserDetails(this);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
@@ -115,14 +110,10 @@ public class MainActivity extends BaseActivity {
 
         });
 
-
-
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-
-
         bottomNavigationView.setOnNavigationItemSelectedListener(
-                (BottomNavigationView.OnNavigationItemSelectedListener) item -> {
+                item -> {
                     if (item.getItemId() == R.id.userDashboardActivity){
                         if (userDetails.getToken().equals(""))
                             startActivity(new Intent(MainActivity.this, SignInActivity.class));
@@ -139,8 +130,9 @@ public class MainActivity extends BaseActivity {
 
         checkUpdate();
 
-        appDatabase = AppDatabase.getInstance(this);
-        wishListDao = appDatabase.wishListDao();
+        AppDatabase appDatabase = AppDatabase.getInstance(this);
+        WishListDao wishListDao = appDatabase.wishListDao();
+        CartDao cartDao = appDatabase.cartDao();
 
         dbHelperCart = new DbHelperCart(this);
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(R.id.wishListFragment);
@@ -159,33 +151,24 @@ public class MainActivity extends BaseActivity {
 
         });
 
-        View badge2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
-        TextView text2 = badge2.findViewById(R.id.notification);
-        text2.setText(String.format(Locale.ENGLISH, "%d", dbHelperCart.size()));
-        itemView2.addView(badge2);
+        View cartBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
+        TextView cartCount = cartBadge.findViewById(R.id.notification);
+        cartCount.setText(String.format(Locale.ENGLISH, "%d", dbHelperCart.size()));
+        itemView2.addView(cartBadge);
 
-        if (dbHelperCart.size() == 0) {
-            badge2.setVisibility(View.GONE);
-        }
 
-        Handler handler = new Handler();
-        int delay = 3000;
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                if (dbHelperCart.size() == 0) {
-                    badge2.setVisibility(View.GONE);
-                } else {
-                    badge2.setVisibility(View.VISIBLE);
-                }
-                text2.setText(dbHelperCart.size() + "");
-                handler.postDelayed(this, delay);
-            }
-        }, delay);
+        cartDao.getLiveCount().observe(this, integer -> {
+            cartCount.setText(String.format(Locale.ENGLISH, "%d", integer));
+            if (integer == 0)
+                cartBadge.setVisibility(View.GONE);
+            else
+                cartBadge.setVisibility(View.VISIBLE);
+        });
+
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
 
         if (!isConnected(MainActivity.this)) {
             buildDialog(MainActivity.this).show();

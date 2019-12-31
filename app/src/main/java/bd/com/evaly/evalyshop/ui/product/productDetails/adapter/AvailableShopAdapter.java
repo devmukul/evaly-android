@@ -31,6 +31,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -194,7 +195,16 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                 cartItem.setShopJson(availableShops.get(i).getShopJson());
                 cartItem.setShopSlug(availableShops.get(i).getShopSlug());
 
-                Executors.newSingleThreadExecutor().execute(() -> cartDao.insert(cartItem));
+                Executors.newSingleThreadExecutor().execute(() -> {
+
+                    List<CartEntity> dbItem = cartDao.checkExistsEntity(cartItem.getSlug());
+
+                    if (dbItem.size() > 0)
+                        cartDao.updateQuantity(cartItem.getSlug(), dbItem.get(0).getQuantity()+1);
+                    else
+                        cartDao.insert(cartItem);
+
+                });
 
                 Snackbar snackBar = Snackbar.make(view,"Added to cart", 1500);
                 snackBar.setAction("Go to Cart", v1 -> {

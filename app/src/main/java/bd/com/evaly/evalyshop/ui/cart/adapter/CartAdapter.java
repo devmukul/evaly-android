@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.cart.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -17,20 +18,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.Executors;
-
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
@@ -70,6 +66,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         return new MyViewHolder(view);
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
@@ -87,11 +84,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         
         JSONObject jsonObject = new JSONObject();
 
-
         myViewHolder.wholeSalePrice.setPaintFlags(myViewHolder.wholeSalePrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         try {
-
             jsonObject = new JSONObject(itemList.get(i).getShopJson());
             String shopName = jsonObject.getString("shop_name");
             myViewHolder.shop.setText("Seller: " + shopName);
@@ -100,7 +95,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             myViewHolder.shop.setText("Seller: Unknown");
 
         }
-
 
         myViewHolder.checkBox.post(() -> myViewHolder.checkBox.setChecked(itemList.get(i).isSelected()));
 
@@ -116,11 +110,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 listener.updateCartFromRecycler();
                 listener.uncheckSelectAllBtn(isChecked);
             }
-
         });
 
-
-        // quantity counter
 
         myViewHolder.plus.setOnClickListener(v -> {
 
@@ -129,10 +120,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             int wholesalePrice = price;
             int priceTemp = price;
 
-            JSONObject jsonObject1 = new JSONObject();
             try {
 
-                jsonObject1 = new JSONObject(itemList.get(i).getShopJson());
+                JSONObject jsonObject1 = new JSONObject(itemList.get(i).getShopJson());
                 wholeSaleMin = jsonObject1.getInt("minimum_wholesale_quantity");
                 wholesalePrice = (int) Double.parseDouble(jsonObject1.getString("wholesale_price"));
 
@@ -141,7 +131,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             myViewHolder.quantity.requestFocus();
             int current = itemList.get(i).getQuantity();
             itemList.get(i).setQuantity(++current);
-            myViewHolder.quantity.setText(current+"");
+            myViewHolder.quantity.setText(String.format("%d", current));
 
             if (current >= wholeSaleMin && wholeSaleMin > 1) {
                 myViewHolder.wholeSalePrice.setVisibility(View.VISIBLE);
@@ -151,9 +141,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 priceTemp = price;
             }
 
-            myViewHolder.totalPrice.setText("৳ "+(priceTemp * itemList.get(i).getQuantity()));
-            myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
-            myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
+            myViewHolder.totalPrice.setText(String.format("৳ %d", priceTemp * itemList.get(i).getQuantity()));
+            myViewHolder.price.setText(String.format("৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
+            myViewHolder.wholeSalePrice.setText(String.format("৳ %d", price * itemList.get(i).getQuantity()));
 
             Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getSlug(), itemList.get(i).getQuantity()));
 
@@ -165,11 +155,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             int price = itemList.get(i).getPriceInt();
             int wholeSaleMin = 0;
             int wholesalePrice = price;
-            int priceTemp = price;
+            int priceTemp;
 
-            JSONObject jsonObject12 = new JSONObject();
             try {
-                jsonObject12 = new JSONObject(itemList.get(i).getShopJson());
+                JSONObject jsonObject12 = new JSONObject(itemList.get(i).getShopJson());
                 wholeSaleMin = jsonObject12.getInt("minimum_wholesale_quantity");
                 wholesalePrice = (int) Double.parseDouble(jsonObject12.getString("wholesale_price"));
 
@@ -190,13 +179,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                     priceTemp = price;
                 }
 
-                myViewHolder.totalPrice.setText("৳ "+(priceTemp * itemList.get(i).getQuantity()));
-                myViewHolder.price.setText("৳ "+priceTemp + " x " + itemList.get(i).getQuantity());
-                myViewHolder.wholeSalePrice.setText("৳ "+(price * itemList.get(i).getQuantity()));
+                myViewHolder.totalPrice.setText(String.format("৳ %d", priceTemp * itemList.get(i).getQuantity()));
+                myViewHolder.price.setText(String.format("৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
+                myViewHolder.wholeSalePrice.setText(String.format("৳ %d", price * itemList.get(i).getQuantity()));
 
                 Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getSlug(), itemList.get(i).getQuantity()));
             }
-
         });
 
 
@@ -207,16 +195,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
             int wholesalePrice = price;
             int priceTemp = price;
 
-            JSONObject jsonObject13 = new JSONObject();
             try {
 
-                jsonObject13 = new JSONObject(itemList.get(i).getShopJson());
+                JSONObject jsonObject13 = new JSONObject(itemList.get(i).getShopJson());
                 wholeSaleMin = jsonObject13.getInt("minimum_wholesale_quantity");
                 wholesalePrice = (int) Double.parseDouble(jsonObject13.getString("wholesale_price"));
 
-            } catch (Exception e) {
-
-            }
+            } catch (Exception e) { }
 
             try{
                 String val = myViewHolder.quantity.getText().toString();
@@ -258,13 +243,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         myViewHolder.productName.setText(Html.fromHtml(itemList.get(i).getName()));
         myViewHolder.time.setText(Utils.getTimeAgo(itemList.get(i).getTime()));
-        myViewHolder.quantity.setText(itemList.get(i).getQuantity()+"");
+        myViewHolder.quantity.setText(String.format(Locale.ENGLISH, "%d", itemList.get(i).getQuantity()));
 
         {
             int price = itemList.get(i).getPriceInt();
             int wholeSaleMin = 0;
             int wholesalePrice = price;
-            int priceTemp = price;
+            int priceTemp;
 
             try {
                 wholeSaleMin = jsonObject.getInt("minimum_wholesale_quantity");
@@ -293,7 +278,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 .into(myViewHolder.productImage);
 
         myViewHolder.productName.setOnClickListener(v -> openProductPage(i));
-
         myViewHolder.productImage.setOnClickListener(v -> openProductPage(i));
 
         myViewHolder.trash.setOnClickListener(v -> {
@@ -307,8 +291,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         myViewHolder.variation.setVisibility(View.GONE);
     }
-
-
 
     private void openProductPage(int i){
         try {

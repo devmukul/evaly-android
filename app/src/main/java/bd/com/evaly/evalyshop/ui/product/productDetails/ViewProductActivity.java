@@ -202,6 +202,9 @@ public class ViewProductActivity extends BaseActivity {
         wishListDao = appDatabase.wishListDao();
         cartDao = appDatabase.cartDao();
 
+        TextView cartCount = findViewById(R.id.cartCount);
+        cartDao.getLiveCount().observe(this, integer -> cartCount.setText(integer.toString()));
+
 
         viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
 
