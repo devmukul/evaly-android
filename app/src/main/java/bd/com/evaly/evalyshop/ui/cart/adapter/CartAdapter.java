@@ -80,13 +80,15 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
 
+        CartEntity model = itemList.get(i);
+
         
         JSONObject jsonObject = new JSONObject();
 
         myViewHolder.wholeSalePrice.setPaintFlags(myViewHolder.wholeSalePrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         try {
-            jsonObject = new JSONObject(itemList.get(i).getShopJson());
+            jsonObject = new JSONObject(model.getShopJson());
             String shopName = jsonObject.getString("shop_name");
             myViewHolder.shop.setText("Seller: " + shopName);
 
@@ -95,13 +97,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         }
 
-        myViewHolder.checkBox.post(() -> myViewHolder.checkBox.setChecked(itemList.get(i).isSelected()));
+        myViewHolder.checkBox.post(() -> myViewHolder.checkBox.setChecked(model.isSelected()));
 
         myViewHolder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            // itemList.get(i).setSelected(isChecked);
+            // model.setSelected(isChecked);
 
-            Executors.newSingleThreadExecutor().execute(() -> cartDao.markSelected(itemList.get(i).getProductID(), isChecked));
+            Executors.newSingleThreadExecutor().execute(() -> cartDao.markSelected(model.getProductID(), isChecked));
             if (listener != null){
                 listener.updateCartFromRecycler();
                 listener.uncheckSelectAllBtn(isChecked);
@@ -111,22 +113,22 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         myViewHolder.plus.setOnClickListener(v -> {
 
-            int price = itemList.get(i).getPriceInt();
+            int price = model.getPriceInt();
             int wholeSaleMin = 0;
             int wholesalePrice = price;
             int priceTemp = price;
 
             try {
 
-                JSONObject jsonObject1 = new JSONObject(itemList.get(i).getShopJson());
+                JSONObject jsonObject1 = new JSONObject(model.getShopJson());
                 wholeSaleMin = jsonObject1.getInt("minimum_wholesale_quantity");
                 wholesalePrice = (int) Double.parseDouble(jsonObject1.getString("wholesale_price"));
 
             } catch (Exception e) { }
 
             myViewHolder.quantity.requestFocus();
-            int current = itemList.get(i).getQuantity();
-            itemList.get(i).setQuantity(++current);
+            int current = model.getQuantity();
+            model.setQuantity(++current);
             myViewHolder.quantity.setText(String.format("%d", current));
 
             if (current >= wholeSaleMin && wholeSaleMin > 1) {
@@ -137,24 +139,24 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 priceTemp = price;
             }
 
-            myViewHolder.totalPrice.setText(String.format("৳ %d", priceTemp * itemList.get(i).getQuantity()));
-            myViewHolder.price.setText(String.format("৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
-            myViewHolder.wholeSalePrice.setText(String.format("৳ %d", price * itemList.get(i).getQuantity()));
+            myViewHolder.totalPrice.setText(String.format("৳ %d", priceTemp * model.getQuantity()));
+            myViewHolder.price.setText(String.format("৳ %d x %d", priceTemp, model.getQuantity()));
+            myViewHolder.wholeSalePrice.setText(String.format("৳ %d", price * model.getQuantity()));
 
-            Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getProductID(), itemList.get(i).getQuantity()));
+            Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(model.getProductID(), model.getQuantity()));
 
         });
 
         myViewHolder.minus.setOnClickListener(v -> {
 
 
-            int price = itemList.get(i).getPriceInt();
+            int price = model.getPriceInt();
             int wholeSaleMin = 0;
             int wholesalePrice = price;
             int priceTemp;
 
             try {
-                JSONObject jsonObject12 = new JSONObject(itemList.get(i).getShopJson());
+                JSONObject jsonObject12 = new JSONObject(model.getShopJson());
                 wholeSaleMin = jsonObject12.getInt("minimum_wholesale_quantity");
                 wholesalePrice = (int) Double.parseDouble(jsonObject12.getString("wholesale_price"));
 
@@ -162,9 +164,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             myViewHolder.quantity.requestFocus();
 
-            int current = itemList.get(i).getQuantity();
+            int current = model.getQuantity();
             if(current >= 2) {
-                itemList.get(i).setQuantity(--current);
+                model.setQuantity(--current);
                 myViewHolder.quantity.setText(current + "");
 
                 if (current >= wholeSaleMin && wholeSaleMin > 1) {
@@ -175,25 +177,25 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                     priceTemp = price;
                 }
 
-                myViewHolder.totalPrice.setText(String.format("৳ %d", priceTemp * itemList.get(i).getQuantity()));
-                myViewHolder.price.setText(String.format("৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
-                myViewHolder.wholeSalePrice.setText(String.format("৳ %d", price * itemList.get(i).getQuantity()));
+                myViewHolder.totalPrice.setText(String.format("৳ %d", priceTemp * model.getQuantity()));
+                myViewHolder.price.setText(String.format("৳ %d x %d", priceTemp, model.getQuantity()));
+                myViewHolder.wholeSalePrice.setText(String.format("৳ %d", price * model.getQuantity()));
 
-                Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getProductID(), itemList.get(i).getQuantity()));
+                Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(model.getProductID(), model.getQuantity()));
             }
         });
 
 
         myViewHolder.quantity.setOnEditorActionListener((v, actionId, event) -> {
 
-            int price = itemList.get(i).getPriceInt();
+            int price = model.getPriceInt();
             int wholeSaleMin = 0;
             int wholesalePrice = price;
             int priceTemp = price;
 
             try {
 
-                JSONObject jsonObject13 = new JSONObject(itemList.get(i).getShopJson());
+                JSONObject jsonObject13 = new JSONObject(model.getShopJson());
                 wholeSaleMin = jsonObject13.getInt("minimum_wholesale_quantity");
                 wholesalePrice = (int) Double.parseDouble(jsonObject13.getString("wholesale_price"));
 
@@ -204,7 +206,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 int value = Integer.parseInt(val);
 
                 if(value >=1) {
-                    itemList.get(i).setQuantity(value);
+                    model.setQuantity(value);
                 }
 
                 if (value >= wholeSaleMin && wholeSaleMin > 1) {
@@ -216,15 +218,15 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 }
 
             } catch (Exception e){
-                itemList.get(i).setQuantity(1);
+                model.setQuantity(1);
                 myViewHolder.quantity.setText("1");
             }
 
-            myViewHolder.totalPrice.setText(String.format(Locale.ENGLISH, "৳ %d", priceTemp * itemList.get(i).getQuantity()));
-            myViewHolder.price.setText(String.format(Locale.ENGLISH, "৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
-            myViewHolder.wholeSalePrice.setText(String.format(Locale.ENGLISH, "৳ %d", price * itemList.get(i).getQuantity()));
+            myViewHolder.totalPrice.setText(String.format(Locale.ENGLISH, "৳ %d", priceTemp * model.getQuantity()));
+            myViewHolder.price.setText(String.format(Locale.ENGLISH, "৳ %d x %d", priceTemp, model.getQuantity()));
+            myViewHolder.wholeSalePrice.setText(String.format(Locale.ENGLISH, "৳ %d", price * model.getQuantity()));
 
-            Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(itemList.get(i).getProductID(), itemList.get(i).getQuantity()));
+            Executors.newSingleThreadExecutor().execute(() ->  cartDao.updateQuantity(model.getProductID(), model.getQuantity()));
             // hide keyboard
 
             if ((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
@@ -237,12 +239,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
         });
 
 
-        myViewHolder.productName.setText(Html.fromHtml(itemList.get(i).getName()));
-        myViewHolder.time.setText(Utils.getTimeAgo(itemList.get(i).getTime()));
-        myViewHolder.quantity.setText(String.format(Locale.ENGLISH, "%d", itemList.get(i).getQuantity()));
+        myViewHolder.productName.setText(Html.fromHtml(model.getName()));
+        myViewHolder.time.setText(Utils.getTimeAgo(model.getTime()));
+        myViewHolder.quantity.setText(String.format(Locale.ENGLISH, "%d", model.getQuantity()));
 
         {
-            int price = itemList.get(i).getPriceInt();
+            int price = model.getPriceInt();
             int wholeSaleMin = 0;
             int wholesalePrice = price;
             int priceTemp;
@@ -253,7 +255,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
             } catch (Exception e) { }
 
-            int current = itemList.get(i).getQuantity();
+            int current = model.getQuantity();
 
             if (current >= wholeSaleMin && wholeSaleMin > 1) {
                 myViewHolder.wholeSalePrice.setVisibility(View.VISIBLE);
@@ -263,12 +265,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
                 priceTemp = price;
             }
 
-            myViewHolder.totalPrice.setText(String.format(Locale.ENGLISH, "৳ %d", priceTemp * itemList.get(i).getQuantity()));
-            myViewHolder.price.setText(String.format(Locale.ENGLISH, "৳ %d x %d", priceTemp, itemList.get(i).getQuantity()));
+            myViewHolder.totalPrice.setText(String.format(Locale.ENGLISH, "৳ %d", priceTemp * model.getQuantity()));
+            myViewHolder.price.setText(String.format(Locale.ENGLISH, "৳ %d x %d", priceTemp, model.getQuantity()));
         }
 
         Glide.with(context)
-                .load(itemList.get(i).getImage())
+                .load(model.getImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(200, 200))
                 .into(myViewHolder.productImage);
@@ -278,7 +280,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         myViewHolder.trash.setOnClickListener(v -> {
 
-            Executors.newSingleThreadExecutor().execute(() ->  cartDao.deleteBySlug(itemList.get(i).getProductID()));
+            Executors.newSingleThreadExecutor().execute(() ->  cartDao.deleteBySlug(model.getProductID()));
             itemList.remove(i);
             instance.notifyItemRemoved(i);
             notifyItemRangeChanged(i, itemList.size());
@@ -287,7 +289,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         myViewHolder.variation.setVisibility(View.GONE);
 
-        if (!itemList.get(i).isShowShopTitle()) {
+        if (!model.isShowShopTitle()) {
             myViewHolder.sellerHolder.setVisibility(View.GONE);
             myViewHolder.dividerView.setVisibility(View.GONE);
         } else {
