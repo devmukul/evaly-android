@@ -72,7 +72,8 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             intent.putExtra("product_slug",productsList.get(position).getSlug());
             intent.putExtra("product_name",productsList.get(position).getName());
             intent.putExtra("product_price",productsList.get(position).getMaxPrice());
-            intent.putExtra("product_image", productsList.get(position).getImageUrls().get(0));
+            if (productsList.get(position).getImageUrls().size()>0)
+                intent.putExtra("product_image", productsList.get(position).getImageUrls().get(0));
 
             mContext.startActivity(intent);
 
