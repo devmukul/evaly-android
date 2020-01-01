@@ -58,6 +58,8 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         public void onClick(View view) {
             int position = (int) view.getTag(); // get item for position
 
+            TabsItem model = itemlist.get(position);
+
             if(context instanceof MainActivity) {
 
                 FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
@@ -65,20 +67,20 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                 if (type == 1) {
 
                     Bundle bundle = new Bundle();
-                    bundle.putInt("type", itemlist.get(position).getType());
-                    bundle.putString("slug", itemlist.get(position).getSlug());
-                    bundle.putString("category", itemlist.get(position).getCategory());
+                    bundle.putInt("type", model.getType());
+                    bundle.putString("slug", model.getSlug());
+                    bundle.putString("category", model.getCategory());
 
                     navController.navigate(R.id.browseProductFragment, bundle);
 
                 } else if (type == 2) {
 
                     Bundle bundle = new Bundle();
-                    bundle.putInt("type", itemlist.get(position).getType());
-                    bundle.putString("brand_slug", itemlist.get(position).getSlug());
-                    bundle.putString("brand_name", itemlist.get(position).getTitle());
-                    bundle.putString("category", itemlist.get(position).getCategory());
-                    bundle.putString("image_url", itemlist.get(position).getImage());
+                    bundle.putInt("type", model.getType());
+                    bundle.putString("brand_slug", model.getSlug());
+                    bundle.putString("brand_name", model.getTitle());
+                    bundle.putString("category", model.getCategory());
+                    bundle.putString("image_url", model.getImage());
 
                     navController.navigate(R.id.brandFragment, bundle);
 
@@ -88,12 +90,12 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                 } else if (type == 3 || type == 6) {
 
                     Bundle bundle = new Bundle();
-                    bundle.putInt("type", itemlist.get(position).getType());
-                    bundle.putString("shop_name", itemlist.get(position).getTitle());
-                    bundle.putString("logo_image", itemlist.get(position).getImage());
-                    bundle.putString("shop_slug", itemlist.get(position).getSlug());
-                    bundle.putString("category", itemlist.get(position).getCategory());
-                    bundle.putString("campaign", itemlist.get(position).getCampaignSlug());
+                    bundle.putInt("type", model.getType());
+                    bundle.putString("shop_name", model.getTitle());
+                    bundle.putString("logo_image", model.getImage());
+                    bundle.putString("shop_slug", model.getSlug());
+                    bundle.putString("category", model.getCategory());
+                    bundle.putString("campaign", model.getCampaignSlug());
 
                     navController.navigate(R.id.shopFragment, bundle);
 
@@ -105,21 +107,21 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
                     Intent intent = new Intent(context, MainActivity.class);
                     intent.putExtra("type", 2);
-                    intent.putExtra("brand_slug", itemlist.get(position).getSlug());
-                    intent.putExtra("brand_name", itemlist.get(position).getTitle());
-                    intent.putExtra("category", itemlist.get(position).getCategory());
-                    intent.putExtra("image_url", itemlist.get(position).getImage());
+                    intent.putExtra("brand_slug", model.getSlug());
+                    intent.putExtra("brand_name", model.getTitle());
+                    intent.putExtra("category", model.getCategory());
+                    intent.putExtra("image_url", model.getImage());
 
                     context.startActivity(intent);
 
                 } else if (type == 3 || type == 6) {
                     Intent intent = new Intent(context, MainActivity.class);
                     intent.putExtra("type", 3);
-                    intent.putExtra("shop_name", itemlist.get(position).getTitle());
-                    intent.putExtra("logo_image", itemlist.get(position).getImage());
-                    intent.putExtra("shop_slug", itemlist.get(position).getSlug());
-                    intent.putExtra("category", itemlist.get(position).getCategory());
-                    intent.putExtra("campaign_slug", itemlist.get(position).getCampaignSlug());
+                    intent.putExtra("shop_name", model.getTitle());
+                    intent.putExtra("logo_image", model.getImage());
+                    intent.putExtra("shop_slug", model.getSlug());
+                    intent.putExtra("category", model.getCategory());
+                    intent.putExtra("campaign_slug", model.getCampaignSlug());
                     context.startActivity(intent);
 
                 }
@@ -143,13 +145,16 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.tv.setText(Utils.titleBeautify(itemlist.get(position).getTitle()));
+
+        TabsItem model = itemlist.get(position);
+
+        holder.tv.setText(Utils.titleBeautify(model.getTitle()));
 
         holder.view.setOnClickListener(productListener);
         holder.view.setTag(position);
 
         Glide.with(context)
-                .load(itemlist.get(position).getImage())
+                .load(model.getImage())
                 .apply(new RequestOptions().override(240, 240))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_placeholder_small)
