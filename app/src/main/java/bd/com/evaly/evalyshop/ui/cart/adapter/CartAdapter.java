@@ -99,7 +99,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder>{
 
         myViewHolder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            itemList.get(i).setSelected(isChecked);
+            // itemList.get(i).setSelected(isChecked);
 
             Executors.newSingleThreadExecutor().execute(() -> cartDao.markSelected(itemList.get(i).getProductID(), isChecked));
             if (listener != null){
