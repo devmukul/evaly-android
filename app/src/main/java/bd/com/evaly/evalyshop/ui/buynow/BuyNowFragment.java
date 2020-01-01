@@ -361,7 +361,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         shop_item_id = firstItem.getShopItemId();
 
 
-
         Glide.with(context)
                 .load(firstItem.getShopItemImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -378,10 +377,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             variationTitle.setText(varName + ": " + varValue);
         } else
             variationHolder.setVisibility(View.GONE);
-
-
-
-
 
         addToCartBtn.setOnClickListener(v -> {
 
@@ -437,25 +432,28 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 dialog.hideDialog();
 
                 if (response != null) {
-
                     String errorMsg = response.get("message").getAsString();
+                    if (response.has("data")) {
 
-                    if (response.getAsJsonArray("data").size() < 1) {
-                        Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
-                        return;
-                    } else {
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                        BuyNowFragment.this.dismiss();
-                    }
+                        if (response.getAsJsonArray("data").size() < 1) {
+                            Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
+                            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                            if (BuyNowFragment.this.isVisible())
+                                BuyNowFragment.this.dismiss();
+                        }
 
-                    JsonArray data = response.getAsJsonArray("data");
-                    for (int i = 0; i < data.size(); i++) {
-                        JsonObject item = data.get(i).getAsJsonObject();
-                        String invoice = item.get("invoice_no").getAsString();
-                        Intent intent = new Intent(context, OrderDetailsActivity.class);
-                        intent.putExtra("orderID", invoice);
-                        startActivity(intent);
-                    }
+                        JsonArray data = response.getAsJsonArray("data");
+                        for (int i = 0; i < data.size(); i++) {
+                            JsonObject item = data.get(i).getAsJsonObject();
+                            String invoice = item.get("invoice_no").getAsString();
+                            Intent intent = new Intent(context, OrderDetailsActivity.class);
+                            intent.putExtra("orderID", invoice);
+                            startActivity(intent);
+                        }
+                    } else
+                        Toast.makeText(getContext(), "Couldn't place order.", Toast.LENGTH_SHORT).show();
                 }
             }
 
