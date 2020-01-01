@@ -58,6 +58,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="invite_friends_to_start_messaging">Invite friends to start messaging</string>
     <string name="report_details">Report Details</string>
     <string name="need_help">Need help with this order?</string>
+    <string name="evaly_wallet">Evaly Wallet</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="search_categories">
