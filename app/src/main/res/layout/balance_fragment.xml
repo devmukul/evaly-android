@@ -40,10 +40,11 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/tvBalance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="৳ 54000"
+                    android:text="৳"
                     android:textColor="#333"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -66,11 +67,11 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/textView57"
+                    android:id="@+id/tvHoldingBalance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="৳ 54000"
+                    android:text="৳"
                     android:textColor="#333"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -103,11 +104,11 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/textView59"
+                    android:id="@+id/tvGiftCardBalance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="৳ 54000"
+                    android:text="৳"
                     android:textColor="#333"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -131,11 +132,11 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/textView61"
+                    android:id="@+id/tvCashbackBalance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="৳ 54000"
+                    android:text="৳"
                     android:textColor="#333"
                     android:textSize="20sp"
                     android:textStyle="bold" />

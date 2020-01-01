@@ -37,8 +37,15 @@ public class BalanceFragment extends BottomSheetDialogFragment {
 
         mViewModel.getData().observe(this, balanceModel -> {
 
+            binding.tvBalance.setText(String.format("৳ %s", balanceModel.getBalance()));
+            binding.tvHoldingBalance.setText(String.format("৳ %s", balanceModel.getHolding_balance()));
+            binding.tvGiftCardBalance.setText(String.format("৳ %s", balanceModel.getGift_card_balance()));
+            binding.tvCashbackBalance.setText(String.format("৳ %s", balanceModel.getCashback_balance()));
 
         });
+
+        mViewModel.updateBalance();
+
 
     }
 

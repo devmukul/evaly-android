@@ -25,22 +25,22 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
-import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
-import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
-import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
+import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.transaction.TransactionHistory;
-import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -198,7 +198,7 @@ public class UserDashboardActivity extends BaseActivity {
         // getAddress();
 
         name.setText(String.format("%s %s", userDetails.getFirstName(), userDetails.getLastName()));
-        balance.setText(String.format("৳ %s", userDetails.getBalance()));
+//        balance.setText(String.format("৳ %s", userDetails.getBalance()));
 
         if (userDetails.getJsonAddress().equals("null"))
             address.setText("Add an address");
@@ -260,6 +260,17 @@ public class UserDashboardActivity extends BaseActivity {
             startActivity(intent);
         });
 
+
+        balance.setOnClickListener(view -> {
+
+
+            BalanceFragment balanceFragment = BalanceFragment.newInstance();
+
+            balanceFragment.show(getSupportFragmentManager(), "balance");
+
+
+        });
+
     }
 
     private void startXmppService() {
@@ -298,7 +309,7 @@ public class UserDashboardActivity extends BaseActivity {
         mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
         xmppEventReceiver.setListener(xmppCustomEventListener);
 
-        Balance.update(this, balance);
+        // Balance.update(this, balance);
 
         ImageView profilePicNav = findViewById(R.id.picture);
 
