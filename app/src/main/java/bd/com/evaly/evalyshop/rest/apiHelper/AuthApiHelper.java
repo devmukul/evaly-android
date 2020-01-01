@@ -462,6 +462,12 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().getUserInfoPay(token, username).enqueue(getResponseCallBackDefault(listener));
     }
 
+    // cashback claim
+
+    public static void claimCashback(String token, String username, ResponseListenerAuth<JsonObject, String> listener){
+        getiApiClient().claimCashBack(token, username).enqueue(getResponseCallBackDefault(listener));
+    }
+
     // change password
 
     public static void changePassword(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){

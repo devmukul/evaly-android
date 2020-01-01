@@ -117,6 +117,10 @@ public interface IApiClient {
     Call<CommonDataResponse<List<TransactionItem>>> getTransactionHistory(@Header("Authorization") String token, @Path("username") String username, @Query("page") int page);
 
 
+    @GET(UrlUtils.DOMAIN+"pay/apply/cashback-balance/{username}/")
+    Call<JsonObject> claimCashBack(@Header("Authorization") String header, @Path("username") String username);
+
+
     // product APIs
 
     @GET(UrlUtils.PUBLIC_PRODUCTS)

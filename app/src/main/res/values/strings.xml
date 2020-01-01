@@ -59,6 +59,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="report_details">Report Details</string>
     <string name="need_help">Need help with this order?</string>
     <string name="evaly_wallet">Evaly Wallet</string>
+    <string name="taka">৳</string>
+    <string name="cashback">Cashback</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="search_categories">

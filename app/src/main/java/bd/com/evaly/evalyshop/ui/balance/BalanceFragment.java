@@ -60,9 +60,16 @@ public class BalanceFragment extends BottomSheetDialogFragment {
             binding.tvGiftCardBalance.setText(String.format("৳ %s", balanceModel.getGift_card_balance()));
             binding.tvCashbackBalance.setText(String.format("৳ %s", balanceModel.getCashback_balance()));
 
+            if (balanceModel.getCashback_balance() == 0)
+                binding.claimCashback.setVisibility(View.GONE);
+            else
+                binding.claimCashback.setVisibility(View.VISIBLE);
+
         });
 
         mViewModel.updateBalance();
+
+        binding.claimCashback.setOnClickListener(view -> mViewModel.claimCashback());
 
     }
 
