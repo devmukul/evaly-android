@@ -54,7 +54,6 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
         return new MyViewHolder(view);
     }
 
-
     public int getCashback_rate() {
         return cashback_rate;
     }
@@ -83,12 +82,12 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        if(productsList.get(position).getName().contains("-")){
-            String str = productsList.get(position).getName();
 
+        ProductItem model = productsList.get(position);
+
+        if(model.getName().contains("-")){
+            String str = model.getName();
             str = str.trim();
-
-
             String regex = "-[a-zA-Z0-9]+$";
 
             final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
@@ -99,48 +98,41 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
                 holder.textViewAndroid.setText(Html.fromHtml(output));
             }
             else
+                holder.textViewAndroid.setText(Html.fromHtml(model.getName()));
 
-            holder.textViewAndroid.setText(Html.fromHtml(productsList.get(position).getName()));
+        }else
+            holder.textViewAndroid.setText(Html.fromHtml(model.getName()));
 
-
-        }else {
-            holder.textViewAndroid.setText(Html.fromHtml(productsList.get(position).getName()));
-
-        }
 
         if (mContext != null)
             Glide.with(mContext)
                     .asBitmap()
                     .skipMemoryCache(true)
                     .apply(new RequestOptions().override(260, 260))
-                    .load(productsList.get(position).getImageUrls().get(0))
+                    .load(model.getImageUrls().get(0))
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .placeholder(R.drawable.ic_placeholder_small)
                     .into(holder.imageViewAndroid);
 
 
-        if((productsList.get(position).getMinPriceD()==0) || (productsList.get(position).getMaxPriceD()==0)){
-
+        if((model.getMinPriceD()==0) || (model.getMaxPriceD()==0))
             holder.price.setText("Call For Price");
 
-        } else if(productsList.get(position).getMinDiscountedPriceD() != 0){
+        else if(model.getMinDiscountedPriceD() != 0){
 
-            if (productsList.get(position).getMinDiscountedPriceD() < productsList.get(position).getMinPriceD()){
+            if (model.getMinDiscountedPriceD() < model.getMinPriceD()){
 
-                holder.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) productsList.get(position).getMinPriceD()));
+                holder.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
                 holder.priceDiscount.setVisibility(View.VISIBLE);
                 holder.priceDiscount.setPaintFlags(holder.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
-                holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) productsList.get(position).getMinDiscountedPriceD()));
+                holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinDiscountedPriceD()));
 
             } else {
                 holder.priceDiscount.setVisibility(View.GONE);
-                holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) productsList.get(position).getMinPriceD()));
+                holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
             }
-        } else {
-            holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) productsList.get(position).getMinPriceD()));
-        }
-
+        } else
+            holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
 
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(itemViewListener);
@@ -157,13 +149,12 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
         if (!shopSlug.equals("") && productListener != null) {
             holder.buyNow.setTag(position);
             holder.buyNow.setVisibility(View.VISIBLE);
-            holder.buyNow.setOnClickListener(v -> productListener.buyNow(productsList.get(position).getSlug()));
+            holder.buyNow.setOnClickListener(v -> productListener.buyNow(model.getSlug()));
         }
         else
             holder.buyNow.setVisibility(View.GONE);
 
-
-        if ((productsList.get(position).getMinPriceD()==0) || (productsList.get(position).getMaxPriceD()==0)){
+        if ((model.getMinPriceD()==0) || (model.getMaxPriceD()==0)){
             holder.buyNow.setVisibility(View.GONE);
         }
 
