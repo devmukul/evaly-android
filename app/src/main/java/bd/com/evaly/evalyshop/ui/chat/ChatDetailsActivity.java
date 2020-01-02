@@ -36,7 +36,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 import com.vanniktech.emoji.EmojiPopup;
-import com.vanniktech.emoji.listeners.OnSoftKeyboardCloseListener;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.chatstates.ChatState;
@@ -49,18 +48,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.models.xmpp.ChatStateModel;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
@@ -430,7 +429,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
         etCommentsBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {]
+                                      int count) {
                 if (AppController.getmService() != null)
                     if (AppController.getmService().xmpp != null)
                         AppController.getmService().xmpp.updateChatStatus(rosterTable.id, ChatState.composing);
