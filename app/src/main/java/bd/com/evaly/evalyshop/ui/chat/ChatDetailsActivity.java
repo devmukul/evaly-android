@@ -435,9 +435,10 @@ public class ChatDetailsActivity extends AppCompatActivity {
         etCommentsBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-
-                AppController.getmService().xmpp.updateChatStatus(rosterTable.id, ChatState.composing);
+                                      int count) {]
+                if (AppController.getmService() != null)
+                    if (AppController.getmService().xmpp != null)
+                        AppController.getmService().xmpp.updateChatStatus(rosterTable.id, ChatState.composing);
             }
 
             @Override
