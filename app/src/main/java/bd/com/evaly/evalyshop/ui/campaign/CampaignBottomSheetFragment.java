@@ -81,7 +81,8 @@ public class CampaignBottomSheetFragment extends BottomSheetDialogFragment imple
             ni.putExtra("slug", item.getSlug());
             getContext().startActivity(ni);
 
-            CampaignBottomSheetFragment.this.dismiss();
+            if (CampaignBottomSheetFragment.this.isVisible())
+                CampaignBottomSheetFragment.this.dismiss();
 
         });
         binding.recyclerView.setAdapter(adapter);

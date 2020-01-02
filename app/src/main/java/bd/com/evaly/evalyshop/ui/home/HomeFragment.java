@@ -164,7 +164,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         voucher.setOnClickListener(v -> {
             CampaignBottomSheetFragment campaignBottomSheetFragment = CampaignBottomSheetFragment.newInstance();
-            campaignBottomSheetFragment.show(getFragmentManager(), "Campaign BottomSheet");
+            if (getFragmentManager() != null)
+                campaignBottomSheetFragment.show(getFragmentManager(), "Campaign BottomSheet");
         });
 
 

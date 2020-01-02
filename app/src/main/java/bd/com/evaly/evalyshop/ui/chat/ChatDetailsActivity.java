@@ -292,12 +292,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         EmojiPopup.Builder emojiBuilder = EmojiPopup.Builder.fromRootView(rootView);
 
-        emojiBuilder.setOnSoftKeyboardCloseListener(new OnSoftKeyboardCloseListener() {
-            @Override
-            public void onKeyboardClose() {
-                emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy));
-            }
-        });
+        emojiBuilder.setOnSoftKeyboardCloseListener(() -> emojiBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_icons8_happy)));
 
 
         final EmojiPopup emojiPopup = emojiBuilder.build(etCommentsBox);
