@@ -8,27 +8,169 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-
-    <include layout="@layout/fragment_app_bar_header"/>
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
+    <com.google.android.material.appbar.AppBarLayout android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:elevation="0dp">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/stickyScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#fafafa">
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentScrim="?attr/colorPrimary"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            android:clickable="false"
+            android:elevation="0dp"
+            app:titleEnabled="false">
+
+            <LinearLayout
+                android:id="@+id/header_logo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/fff"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"
+                    android:gravity="left"
+                    android:clickable="true"
+                    android:paddingLeft="8dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_weight="0">
+
+                    <ImageView
+                        android:id="@+id/menuBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:background="?attr/actionBarItemBackground"
+                        android:clickable="true"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:adjustViewBounds="true"
+                        android:tag="menu"
+                        app:srcCompat="@drawable/ic_menu" />
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:paddingBottom="5dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_evaly_new_logo" />
+
+                <RelativeLayout
+                    android:id="@+id/notification_holder"
+                    android:layout_width="50dp"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"
+                    android:gravity="right"
+                    android:clickable="true"
+                    android:layout_weight="0"
+                    style="@android:style/Widget.ActionButton"
+                    android:layout_marginRight="4dp">
+
+                    <ImageView
+                        android:id="@+id/hotlist_bell"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:contentDescription="bell"
+                        android:gravity="center"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/ic_notification" />
+
+                    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/hotlist_hot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/hotlist_bell"
+                        android:layout_alignRight="@id/hotlist_bell"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginRight="0dp"
+                        android:background="@drawable/rounded_square"
+                        android:gravity="center"
+                        android:minWidth="15sp"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:paddingBottom="1dp"
+                        android:text="@null"
+                        android:textColor="#ffffffff"
+                        android:textSize="10sp"
+                        android:visibility="gone" />
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:elevation="0dp"
+                android:fitsSystemWindows="true" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/fff"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginTop="-5dp">
+
+            <LinearLayout
+                android:id="@+id/home_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/round_box"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="40dp"
+                    android:layout_height="20dp"
+                    android:layout_weight="0"
+                    app:srcCompat="@drawable/ic_search" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="What would you like to buy?" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="#fafafa"
             android:orientation="vertical"
-            android:transitionGroup="false">
+            android:transitionGroup="false"
+            android:visibility="gone">
+
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"></androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,14 +184,14 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:background="@drawable/banner_skeleton_bg"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/banner_skeleton_bg"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintDimensionRatio="H,2.93478:1"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintDimensionRatio="H,2.93478:1" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <bd.com.evaly.evalyshop.views.SliderViewPager
                     android:id="@+id/sliderPager"
@@ -67,14 +209,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:layout_alignParentBottom="true"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="40dp"
                     app:layout_constraintBottom_toBottomOf="@id/sliderPager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:tabBackground="@drawable/indicator_selector"
                     app:tabGravity="center"
-                    app:tabIndicatorHeight="0dp"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"/>
+                    app:tabIndicatorHeight="0dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -280,15 +422,6 @@
                 android:visibility="visible" />
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/products"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#fafafa"
-                android:nestedScrollingEnabled="false"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" />
-
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyle"
@@ -303,9 +436,18 @@
         </LinearLayout>
 
 
-    </androidx.core.widget.NestedScrollView>
+    </com.google.android.material.appbar.AppBarLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/products"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fafafa"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+            app:spanCount="2"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

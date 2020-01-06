@@ -86,6 +86,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private NestedScrollView nestedSV;
     private boolean isLoading = false;
     private ProgressBar progressBar;
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
 
     public HomeFragment() {
@@ -212,16 +214,46 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         sliderImages = new ArrayList<>();
         getSliderImage();
 
-            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
 
-                    if (!isLoading) {
-                        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-                        getProducts();
+
+
+        productItemList = new ArrayList<>();
+        productRecyclerView = view.findViewById(R.id.products);
+        // productRecyclerView.setNestedScrollingEnabled(false);
+        productRecyclerView.setHasFixedSize(false);
+        adapterProducts = new ProductGridAdapter(context, productItemList);
+        adapterProducts.setHasStableIds(true);
+        productRecyclerView.setAdapter(adapterProducts);
+
+        StaggeredGridLayoutManager mLayoutManager =
+                (StaggeredGridLayoutManager) productRecyclerView.getLayoutManager();
+
+        productRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if(dy > 0) //check for scroll down
+                {
+                    visibleItemCount = mLayoutManager.getChildCount();
+                    totalItemCount = mLayoutManager.getItemCount();
+                    int[] firstVisibleItems = mLayoutManager.findFirstVisibleItemPositions(null);
+                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
+                        pastVisiblesItems = firstVisibleItems[0];
+
+                    if (!isLoading)
+                    {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        {
+                            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+                            getProducts();
+                        }
                     }
-
                 }
-            });
+            }
+        });
+
+
 
 
         try {
@@ -271,38 +303,26 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }, 1500);
 
 
-
-        productItemList = new ArrayList<>();
-        productRecyclerView = view.findViewById(R.id.products);
-        RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        productRecyclerView.setLayoutManager(mLayoutManager);
-        productRecyclerView.setNestedScrollingEnabled(false);
-        productRecyclerView.setHasFixedSize(false);
-        adapterProducts = new ProductGridAdapter(context, productItemList);
-        adapterProducts.setHasStableIds(true);
-        productRecyclerView.setAdapter(adapterProducts);
-
         getProducts();
-
 
 
     }
 
 
-    private void getProducts(){
+    private void getProducts() {
 
         isLoading = true;
 
-        ProductApiHelper.getCategoryBrandProducts( currentPage, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+        ProductApiHelper.getCategoryBrandProducts(currentPage, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
-
-                nestedSV.fling(0);
 
                 List<ProductItem> data = response.getData();
 
                 productItemList.addAll(data);
-                adapterProducts.notifyItemRangeInserted(productItemList.size()-data.size(), data.size());
+                adapterProducts.notifyItemRangeInserted(productItemList.size()-data.size(),  data.size());
+
+                //adapterProducts.notifyDataSetChanged();
 
                 isLoading = false;
 
