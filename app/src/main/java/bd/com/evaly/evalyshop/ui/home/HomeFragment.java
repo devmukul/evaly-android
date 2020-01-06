@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -35,10 +38,13 @@ import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
@@ -48,7 +54,7 @@ import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
+import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -73,6 +79,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private UserDetails userDetails;
     private Context context;
     private SwipeRefreshLayout swipeLayout;
+    private int currentPage = 1;
+    private List<ProductItem> productItemList;
+    private ProductGridAdapter adapterProducts;
+    private RecyclerView productRecyclerView;
+    private NestedScrollView nestedSV;
+    private boolean isLoading = false;
+    private ProgressBar progressBar;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -131,6 +145,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         tabLayout.setSmoothScrollingEnabled(true);
         voucher = view.findViewById(R.id.voucher);
         homeSearch = view.findViewById(R.id.home_search);
+        progressBar = view.findViewById(R.id.progressBar);
 
         homeSearch.setOnClickListener(view1 -> {
             Intent intent = new Intent(context, GlobalSearchActivity.class);
@@ -188,10 +203,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
 
-        NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
-
-        ProductGrid productGrid = new ProductGrid(context, view.findViewById(R.id.products), defaultCategory, view.findViewById(R.id.progressBar));
-        productGrid.setScrollView(nestedSV);
+        nestedSV = view.findViewById(R.id.stickyScrollView);
 
         // slider
         sliderPager = view.findViewById(R.id.sliderPager);
@@ -200,19 +212,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         sliderImages = new ArrayList<>();
         getSliderImage();
 
-        if (nestedSV != null) {
             nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    try {
-                        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-                        productGrid.loadNextPage();
 
-                    } catch (Exception e) {
-                        Log.e("load more product", e.toString());
+                    if (!isLoading) {
+                        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+                        getProducts();
                     }
+
                 }
             });
-        }
 
 
         try {
@@ -229,12 +238,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         categoryFragment.setArguments(bundle);
 
 
-        categoryFragment.setOnDoneListener(() -> {
-
-            shimmer.setVisibility(View.GONE);
-
-
-        });
+        categoryFragment.setOnDoneListener(() -> shimmer.setVisibility(View.GONE));
 
 
         HomeTabsFragment brandFragment = new HomeTabsFragment();
@@ -244,12 +248,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         bundle2.putString("category", "root");
         brandFragment.setArguments(bundle2);
 
-        brandFragment.setOnDoneListener(() -> {
-
-            shimmer.setVisibility(View.GONE);
-
-
-        });
+        brandFragment.setOnDoneListener(this::onDone);
 
 
         HomeTabsFragment shopFragment = new HomeTabsFragment();
@@ -271,10 +270,67 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             shimmer.setVisibility(View.GONE);
         }, 1500);
 
+
+
+        productItemList = new ArrayList<>();
+        productRecyclerView = view.findViewById(R.id.products);
+        RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        productRecyclerView.setLayoutManager(mLayoutManager);
+        productRecyclerView.setNestedScrollingEnabled(false);
+        productRecyclerView.setHasFixedSize(false);
+        adapterProducts = new ProductGridAdapter(context, productItemList);
+        adapterProducts.setHasStableIds(true);
+        productRecyclerView.setAdapter(adapterProducts);
+
+        getProducts();
+
+
+
     }
 
 
-    public void getNotificationCount() {
+    private void getProducts(){
+
+        isLoading = true;
+
+        ProductApiHelper.getCategoryBrandProducts( currentPage, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
+
+                nestedSV.fling(0);
+
+                List<ProductItem> data = response.getData();
+
+                productItemList.addAll(data);
+                adapterProducts.notifyItemRangeInserted(productItemList.size()-data.size(), data.size());
+
+                isLoading = false;
+
+                if (productItemList.size() < 10)
+                    progressBar.setVisibility(View.GONE);
+
+
+                if (response.getCount() > 10)
+                    currentPage++;
+
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+
+    }
+
+    private void getNotificationCount() {
 
         if (CredentialManager.getToken().equals(""))
             return;
@@ -368,5 +424,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
+    }
+
+    private void onDone() {
+        shimmer.setVisibility(View.GONE);
     }
 }

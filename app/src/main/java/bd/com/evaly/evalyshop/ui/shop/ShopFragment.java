@@ -122,7 +122,6 @@ public class ShopFragment extends Fragment implements ProductListener {
     private View dummyView;
     private View dummyViewTop;
 
-
     @Override
     public void buyNow(String productSlug) {
 
@@ -130,7 +129,6 @@ public class ShopFragment extends Fragment implements ProductListener {
                 BuyNowFragment.newInstance(slug, productSlug);
         addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
                 "BuyNow");
-
     }
 
     @Override
