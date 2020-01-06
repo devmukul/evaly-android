@@ -65,11 +65,12 @@
 
                 </LinearLayout>
 
-                <com.badoualy.stepperindicator.StepperIndicator
+                <bd.com.evaly.evalyshop.views.StepperIndicator
                     android:id="@+id/indicator"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    app:stpi_doneIconDrawable="@drawable/ic_tick"
                     app:stpi_circleColor="#ddd"
                     app:stpi_circleRadius="10dp"
                     app:stpi_circleStrokeWidth="2dp"
@@ -80,7 +81,7 @@
                     app:stpi_lineDoneColor="#4cb81a"
                     app:stpi_stepCount="6" />
 
-                <com.badoualy.stepperindicator.StepperIndicator
+                <bd.com.evaly.evalyshop.views.StepperIndicator
                     android:id="@+id/indicatorCancelled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
