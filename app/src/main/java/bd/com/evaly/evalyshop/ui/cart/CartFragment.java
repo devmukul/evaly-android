@@ -59,9 +59,7 @@ import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class CartFragment extends Fragment {
 
     private RecyclerView recyclerView;
@@ -77,7 +75,7 @@ public class CartFragment extends Fragment {
     private List<Integer> spinnerArrayID;
     private UserDetails userDetails;
     private ViewDialog dialog;
-    private boolean cartItem=false;
+    private boolean cartItem = false;
     private ViewDialog alert;
     private CompoundButton.OnCheckedChangeListener selectAllListener;
     private BottomSheetDialog bottomSheetDialog;
@@ -94,7 +92,7 @@ public class CartFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static CartFragment newInstance(){
+    public static CartFragment newInstance() {
         return new CartFragment();
     }
 
@@ -138,9 +136,9 @@ public class CartFragment extends Fragment {
                 case R.id.action_delete:
 
 
-                    if(adapter.getItemCount() == 0){
+                    if (adapter.getItemCount() == 0) {
                         Toast.makeText(context, "No item is available in cart to delete", Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else {
                         new AlertDialog.Builder(context)
                                 .setMessage("Are you sure you want to delete the selected products from the cart?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -148,8 +146,8 @@ public class CartFragment extends Fragment {
 
                                     Executors.newSingleThreadExecutor().execute(() -> {
                                         List<CartEntity> listAdapter = adapter.getItemList();
-                                        for (int i = 0; i < listAdapter.size(); i++){
-                                            if(listAdapter.get(i).isSelected())
+                                        for (int i = 0; i < listAdapter.size(); i++) {
+                                            if (listAdapter.get(i).isSelected())
                                                 cartDao.deleteBySlug(listAdapter.get(i).getProductID());
                                         }
                                     });
@@ -195,19 +193,19 @@ public class CartFragment extends Fragment {
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
 
         checkout.setOnClickListener(v -> {
-            if(userDetails.getToken().equals("")) {
+            if (userDetails.getToken().equals("")) {
                 Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            boolean selected=false;
-            for (int i = 0; i < adapter.getItemList().size(); i++){
-                if(adapter.getItemList().get(i).isSelected()){
+            boolean selected = false;
+            for (int i = 0; i < adapter.getItemList().size(); i++) {
+                if (adapter.getItemList().get(i).isSelected()) {
                     bottomSheetDialog.show();
-                    selected=true;
+                    selected = true;
                     break;
                 }
             }
-            if(!selected){
+            if (!selected) {
                 Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();
             }
         });
@@ -231,19 +229,19 @@ public class CartFragment extends Fragment {
 
         btnBottomSheet.setOnClickListener(v -> {
 
-            if(userDetails.getToken().equals("")) {
+            if (userDetails.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
-            if (!checkBox.isChecked()){
+            if (!checkBox.isChecked()) {
                 Toast.makeText(getContext(), "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
                 return;
             }
-            if (addressSwitch.isChecked() && customAddress.getText().toString().equals("")){
+            if (addressSwitch.isChecked() && customAddress.getText().toString().equals("")) {
                 Toast.makeText(context, "Please enter address.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!Utils.isValidNumber(contact_number.getText().toString())){
+            if (!Utils.isValidNumber(contact_number.getText().toString())) {
                 Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -262,7 +260,7 @@ public class CartFragment extends Fragment {
         customAddress.setText(userDetails.getJsonAddress());
 
 
-        if(spinnerArray.size() < 1){
+        if (spinnerArray.size() < 1) {
             addressSwitch.setChecked(true);
         }
 
@@ -291,19 +289,18 @@ public class CartFragment extends Fragment {
 
     }
 
-    public void uncheckSelectAllBtn(boolean isChecked){
+    public void uncheckSelectAllBtn(boolean isChecked) {
 
-        if(!isChecked) {
+        if (!isChecked) {
             selectAll.setOnCheckedChangeListener(null);
             selectAll.setChecked(false);
             selectAll.setOnCheckedChangeListener(selectAllListener);
-        }
-        else {
+        } else {
 
             boolean isAllSelected = true;
 
-            for (int i = 0; i < adapter.getItemList().size(); i++){
-                if(!adapter.getItemList().get(i).isSelected()){
+            for (int i = 0; i < adapter.getItemList().size(); i++) {
+                if (!adapter.getItemList().get(i).isSelected()) {
                     isAllSelected = false;
                     break;
                 }
@@ -315,11 +312,11 @@ public class CartFragment extends Fragment {
     }
 
 
-    public void getCartList(){
+    public void getCartList() {
 
         cartDao.getAllLive().observe(this, cartEntities -> {
 
-            if(cartEntities.size()==0){
+            if (cartEntities.size() == 0) {
 
                 LinearLayout empty = view.findViewById(R.id.empty);
                 LinearLayout cal = view.findViewById(R.id.cal);
@@ -330,16 +327,16 @@ public class CartFragment extends Fragment {
                 button.setVisibility(View.GONE);
                 NestedScrollView scrollView = view.findViewById(R.id.scroller);
                 scrollView.setBackgroundColor(Color.WHITE);
-            }else{
+            } else {
                 totalPriceDouble = 0;
-                cartItem=true;
+                cartItem = true;
 
                 adapter.setItemList(cartEntities);
 
                 List<CartEntity> itemList = adapter.getItemList();
 
-                for (int i = 0; i < adapter.getItemList().size(); i++){
-                    if(itemList.get(i).isSelected())
+                for (int i = 0; i < adapter.getItemList().size(); i++) {
+                    if (itemList.get(i).isSelected())
                         totalPriceDouble += itemList.get(i).getPriceInt() * itemList.get(i).getQuantity();
                 }
 
@@ -351,7 +348,7 @@ public class CartFragment extends Fragment {
     }
 
 
-    public void placeOrder(JsonObject payload, ViewDialog dialog){
+    public void placeOrder(JsonObject payload, ViewDialog dialog) {
 
         dialog.showDialog();
 
@@ -400,16 +397,14 @@ public class CartFragment extends Fragment {
             public void onAuthError(boolean logout) {
                 if (!logout)
                     placeOrder(payload, dialog);
-                else
-                if (getContext() != null)
+                else if (getContext() != null)
                     AppController.logout(getActivity());
             }
         });
     }
 
 
-
-    private JsonObject generateOrderJson(){
+    private JsonObject generateOrderJson() {
 
         PlaceOrderItem orderObejct = new PlaceOrderItem();
 
@@ -423,21 +418,22 @@ public class CartFragment extends Fragment {
 
         List<CartEntity> adapterItems = adapter.getItemList();
 
-        for(int i=0; i < adapterItems.size(); i++) {
+        for (int i = 0; i < adapterItems.size(); i++) {
 
-            if(adapterItems.get(i).isSelected()) {
+            if (adapterItems.get(i).isSelected()) {
 
                 String fromShopJson = adapterItems.get(i).getShopJson();
                 OrderItemsItem item = new OrderItemsItem();
                 item.setQuantity(adapterItems.get(i).getQuantity());
 
-                try{
+                try {
                     JSONObject sellerJson = new JSONObject(fromShopJson);
                     String item_id = sellerJson.getString("shop_item_id");
                     item.setShopItemId(Integer.parseInt(item_id));
                     productList.add(item);
 
-                } catch (Exception e){ }
+                } catch (Exception e) {
+                }
 
             }
         }
@@ -447,14 +443,14 @@ public class CartFragment extends Fragment {
         return new Gson().toJsonTree(orderObejct).getAsJsonObject();
     }
 
-    public void orderPlaced(){
+    public void orderPlaced() {
 
         dialog.hideDialog();
 
         Executors.newSingleThreadExecutor().execute(() -> {
             List<CartEntity> listAdapter = adapter.getItemList();
-            for (int i = 0; i < listAdapter.size(); i++){
-                if(listAdapter.get(i).isSelected())
+            for (int i = 0; i < listAdapter.size(); i++) {
+                if (listAdapter.get(i).isSelected())
                     cartDao.deleteBySlug(listAdapter.get(i).getProductID());
             }
         });

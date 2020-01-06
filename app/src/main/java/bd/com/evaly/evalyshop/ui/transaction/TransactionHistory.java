@@ -54,16 +54,16 @@ public class TransactionHistory extends AppCompatActivity {
 
         nestedSV = findViewById(R.id.stickyScrollView);
         progressBar = findViewById(R.id.progressBar);
-        recyclerView=findViewById(R.id.recycle);
-        not=findViewById(R.id.empty);
+        recyclerView = findViewById(R.id.recycle);
+        not = findViewById(R.id.empty);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         itemList = new ArrayList<>();
-        adapter = new TransactionHistoryAdapter(itemList,this);
+        adapter = new TransactionHistoryAdapter(itemList, this);
         recyclerView.setAdapter(adapter);
         userDetails = new UserDetails(this);
 
-        balance.setText("৳ " +userDetails.getBalance());
+        balance.setText("৳ " + userDetails.getBalance());
 
 
         getBalance();
@@ -72,15 +72,14 @@ public class TransactionHistory extends AppCompatActivity {
         if (nestedSV != null) {
             nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()))
-                        getTransactionHistory(++currentPage);
+                    getTransactionHistory(++currentPage);
             });
         }
 
     }
 
 
-
-    public void getTransactionHistory(int page){
+    public void getTransactionHistory(int page) {
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -90,11 +89,11 @@ public class TransactionHistory extends AppCompatActivity {
 
                 progressBar.setVisibility(View.INVISIBLE);
 
-                if (response != null){
+                if (response != null) {
                     itemList.addAll(response.getData());
                     adapter.notifyDataSetChanged();
 
-                    if (response.getData().size() == 0 && page == 1){
+                    if (response.getData().size() == 0 && page == 1) {
                         not.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                     }
@@ -118,7 +117,6 @@ public class TransactionHistory extends AppCompatActivity {
         });
 
     }
-
 
 
     public void getBalance() {

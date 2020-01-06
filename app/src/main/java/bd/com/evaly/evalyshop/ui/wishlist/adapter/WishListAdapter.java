@@ -30,19 +30,12 @@ import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 
-public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyViewHolder>{
+public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyViewHolder> {
 
     private ArrayList<WishListEntity> wishlist;
     private Context context;
     private WishListAdapter instance;
     private WishListListener listener;
-
-    public interface WishListListener{
-
-        void checkEmpty();
-        void delete(String slug);
-
-    }
 
     public WishListAdapter(ArrayList<WishListEntity> wishlist, Context context, WishListListener listener) {
         this.wishlist = wishlist;
@@ -54,13 +47,13 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_wishlist,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_wishlist, viewGroup, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        Log.d("wish_product",wishlist.get(i).getName());
+        Log.d("wish_product", wishlist.get(i).getName());
         myViewHolder.productName.setText(Html.fromHtml(wishlist.get(i).getName()));
         myViewHolder.time.setText(Utils.getTimeAgo(wishlist.get(i).getTime()));
         myViewHolder.price.setText(String.format("৳ %s", wishlist.get(i).getPrice()));
@@ -71,9 +64,10 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
                               public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                   return false;
                               }
+
                               @Override
                               public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                  Bitmap bitmap = Utils.changeColor(((BitmapDrawable)resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
+                                  Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
                                   myViewHolder.productImage.setImageBitmap(bitmap);
                                   return true;
                               }
@@ -81,9 +75,9 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
                 )
                 .into(myViewHolder.productImage);
         myViewHolder.view.setOnClickListener(v -> {
-            Intent intent=new Intent(context, ViewProductActivity.class);
-            intent.putExtra("product_slug",wishlist.get(i).getSlug());
-            intent.putExtra("product_name",wishlist.get(i).getName());
+            Intent intent = new Intent(context, ViewProductActivity.class);
+            intent.putExtra("product_slug", wishlist.get(i).getSlug());
+            intent.putExtra("product_name", wishlist.get(i).getName());
             context.startActivity(intent);
         });
         myViewHolder.trash.setOnClickListener(v -> {
@@ -99,17 +93,26 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
         return wishlist.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView productName,time,price;
-        ImageView productImage,trash;
+    public interface WishListListener {
+
+        void checkEmpty();
+
+        void delete(String slug);
+
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView productName, time, price;
+        ImageView productImage, trash;
         View view;
+
         public MyViewHolder(final View itemView) {
             super(itemView);
-            productName=itemView.findViewById(R.id.product_name);
-            time=itemView.findViewById(R.id.time);
-            price=itemView.findViewById(R.id.price);
-            productImage= itemView.findViewById(R.id.product_image);
-            trash= itemView.findViewById(R.id.trash);
+            productName = itemView.findViewById(R.id.product_name);
+            time = itemView.findViewById(R.id.time);
+            price = itemView.findViewById(R.id.price);
+            productImage = itemView.findViewById(R.id.product_image);
+            trash = itemView.findViewById(R.id.trash);
             view = itemView;
         }
     }

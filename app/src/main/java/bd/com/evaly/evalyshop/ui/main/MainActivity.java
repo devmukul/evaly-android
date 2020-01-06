@@ -75,16 +75,75 @@ import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
 public class MainActivity extends BaseActivity {
 
-    private BottomNavigationView bottomNavigationView;
     public DrawerLayout drawer;
+    public boolean isLaunchActivity = true;
+    AlertDialog exitDialog;
+    AlertDialog.Builder exitDialogBuilder;
+    private BottomNavigationView bottomNavigationView;
     private NavigationView navigationView, navigationView2;
     private UserDetails userDetails;
-    public boolean isLaunchActivity = true;
     private View headerView;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private NavController navController;
+    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
+        @Override
+        public void onConnected() {
+            if (AppController.getmService() != null) {
+                xmppHandler = AppController.getmService().xmpp;
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+            }
+        }
+
+        //Event Listeners
+        public void onLoggedIn() {
+
+            if (xmppHandler != null) {
+                CredentialManager.saveUserRegistered(true);
+                if (xmppHandler.isLoggedin()) {
+                    VCard vCard = xmppHandler.mVcard;
+                    if (CredentialManager.getUserData() != null) {
+                        if (vCard != null) {
+                            if (vCard.getFirstName() == null || vCard.getLastName() == null) {
+                                Logger.d("========");
+                                xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                            }
+                            disconnectXmpp();
+                        }
+                    }
+                }
+            }
+        }
+
+        public void onLoginFailed(String msg) {
+            Logger.d(msg);
+            if (!msg.contains("already logged in")) {
+                if (xmppHandler == null){
+                    xmppHandler = AppController.getmService().xmpp;
+                }
+                if (xmppHandler.isConnected()){
+                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
+                }
+            } else {
+                CredentialManager.saveUserRegistered(true);
+                disconnectXmpp();
+            }
+        }
+
+        public void onSignupSuccess() {
+            Logger.d("Signup success");
+
+            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+            xmppHandler.login();
+            disconnectXmpp();
+        }
+
+        public void onSignupFailed(String msg) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -334,10 +393,6 @@ public class MainActivity extends BaseActivity {
 
     }
 
-
-    AlertDialog exitDialog;
-    AlertDialog.Builder exitDialogBuilder;
-
     public UserDetails getUserDetails() {
 
         return userDetails;
@@ -404,7 +459,6 @@ public class MainActivity extends BaseActivity {
 
     }
 
-
     private void unCheckAllMenuItems(@NonNull final Menu menu) {
         int size = menu.size();
         for (int i = 0; i < size; i++) {
@@ -426,7 +480,6 @@ public class MainActivity extends BaseActivity {
             exitDialog.cancel();
         }
     }
-
 
     @Override
     protected void onDestroy() {
@@ -484,8 +537,6 @@ public class MainActivity extends BaseActivity {
         return builder;
     }
 
-
-
     private void checkUpdate(){
 
         int versionCode = BuildConfig.VERSION_CODE;
@@ -542,64 +593,4 @@ public class MainActivity extends BaseActivity {
         dialog.show();
 
     }
-
-
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-        @Override
-        public void onConnected() {
-            if (AppController.getmService() != null) {
-                xmppHandler = AppController.getmService().xmpp;
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-            }
-        }
-
-        //Event Listeners
-        public void onLoggedIn() {
-
-            if (xmppHandler != null) {
-                CredentialManager.saveUserRegistered(true);
-                if (xmppHandler.isLoggedin()) {
-                    VCard vCard = xmppHandler.mVcard;
-                    if (CredentialManager.getUserData() != null) {
-                        if (vCard != null) {
-                            if (vCard.getFirstName() == null || vCard.getLastName() == null) {
-                                Logger.d("========");
-                                xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                            }
-                            disconnectXmpp();
-                        }
-                    }
-                }
-            }
-        }
-
-        public void onLoginFailed(String msg) {
-            Logger.d(msg);
-            if (!msg.contains("already logged in")) {
-                if (xmppHandler == null){
-                    xmppHandler = AppController.getmService().xmpp;
-                }
-                if (xmppHandler.isConnected()){
-                    xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
-                }
-            } else {
-                CredentialManager.saveUserRegistered(true);
-                disconnectXmpp();
-            }
-        }
-
-        public void onSignupSuccess() {
-            Logger.d("Signup success");
-
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-            disconnectXmpp();
-        }
-
-        public void onSignupFailed(String msg) {
-
-        }
-    };
 }

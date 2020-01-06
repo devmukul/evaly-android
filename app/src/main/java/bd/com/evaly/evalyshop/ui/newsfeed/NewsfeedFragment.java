@@ -86,6 +86,8 @@ import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, NewsfeedAdapter.NewsFeedShareListener {
 
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    SkeletonScreen skeletonCommentHeader;
     private String type;
     private RecyclerView recyclerView;
     private NewsfeedAdapter adapter;
@@ -95,15 +97,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private UserDetails userDetails;
     private LinearLayout not, progressContainer;
     private RequestQueue queue;
-
     // newfeed scroller
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private int currentPage;
-
     private ProgressBar bottomProgressBar;
     private SwipeRefreshLayout swipeLayout;
-
     // comment bottom sheet items
     private BottomSheetBehavior bottomSheetBehaviorComment;
     private BottomSheetDialog commentDialog;
@@ -118,12 +116,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ImageView submitComment;
     private ImageView uploadImage;
     private ImageView reloadComment;
-    private boolean isCommentLoading = false;
 
 
 
     // reply bottom sheet items
-
+    private boolean isCommentLoading = false;
     private BottomSheetBehavior bottomSheetBehaviorReply;
     private BottomSheetDialog replyDialog;
     private String selectedCommentID = "";
@@ -141,7 +138,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private int maxCountNewfeed;
     private int maxCountComment;
     private int maxCountReply;
-
     private BottomSheetDialog bottomSheetDialog;
     private RoomWIthRxViewModel viewModel;
 
@@ -176,7 +172,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         return inflater.inflate(R.layout.fragment_newsfeed, container, false);
     }
 
-
     @Override
     public void onRefresh() {
 
@@ -198,7 +193,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     public UserDetails getUserDetails(){
         return userDetails;
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -477,8 +471,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-
-
     public void openReplyBottomSheet(String id, String authorName, String authorImage, boolean isAdmin, String postText, String date, Object postImage){
 
         if (replyDialog != null){
@@ -542,8 +534,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-
-
     public void openCommentBottomSheet(String id, String authorName, String authorImage, boolean isAdmin, String postText, String date, String postImageUrl){
 
 
@@ -578,7 +568,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
     }
-
 
     public boolean isJSONValid(String test) {
         try {
@@ -690,9 +679,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-
-
-
     public void loadReplies(String comment_id){
 
 
@@ -783,7 +769,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         queue.add(request);
     }
 
-
     public void createReply(){
 
         if (replyDialog == null)
@@ -832,15 +817,13 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
-        
+
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         queue.add(request);
     }
-
-
 
     public void deletePost(String id, final String type){
 
@@ -898,14 +881,13 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
-        
+
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         queue.add(request);
     }
-
 
     public void loadComments(String post_id, boolean fromRoute){
 
@@ -1013,12 +995,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         queue.add(request);
     }
-
-
-
-
-    SkeletonScreen skeletonCommentHeader;
-
 
     public void loadPostDetails(String post_id){
 

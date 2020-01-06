@@ -29,28 +29,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
-import bd.com.evaly.evalyshop.util.InitializeActionBar;
-import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
-import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
-import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
-import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
-import bd.com.evaly.evalyshop.ui.home.adapter.SliderAdapter;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetFragment;
+import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
+import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
+import bd.com.evaly.evalyshop.ui.home.adapter.SliderAdapter;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
+import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
+import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
+import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.SliderViewPager;
@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private SliderViewPager sliderPager;
     private TabLayout sliderIndicator;
     private List<BannerItem> sliderImages;
-    private LinearLayout homeSearch,evalyStore;
+    private LinearLayout homeSearch, evalyStore;
     private TabLayout tabLayout;
     private LinearLayout voucher;
     private ShimmerFrameLayout shimmer;
@@ -74,19 +74,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private Context context;
     private SwipeRefreshLayout swipeLayout;
 
-    public static HomeFragment newInstance(){
+    public HomeFragment() {
+        // Required empty public constructor
+    }
+
+    public static HomeFragment newInstance() {
         return new HomeFragment();
     }
 
     @Override
     public void onRefresh() {
-
         swipeLayout.setRefreshing(false);
         refreshFragment();
-    }
-
-    public HomeFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -102,7 +101,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
 
-    private void refreshFragment(){
+    private void refreshFragment() {
         NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
     }
 
@@ -117,6 +116,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 public void onRetry() {
                     refreshFragment();
                 }
+
                 @Override
                 public void onBackPress() {
 
@@ -274,8 +274,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
 
-
-    public void getNotificationCount(){
+    public void getNotificationCount() {
 
         if (CredentialManager.getToken().equals(""))
             return;
@@ -283,7 +282,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         GeneralApiHelper.getNotificationCount(CredentialManager.getToken(), "newsfeed", new ResponseListenerAuth<NotificationCount, String>() {
             @Override
             public void onDataFetched(NotificationCount response, int statusCode) {
-                if (response.getCount()>0)
+                if (response.getCount() > 0)
                     view.findViewById(R.id.newsfeedIndicator).setVisibility(View.VISIBLE);
                 else
                     view.findViewById(R.id.newsfeedIndicator).setVisibility(View.GONE);
@@ -299,19 +298,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 if (!logout)
                     getNotificationCount();
-                else
-                    if (getActivity() != null) {
-                       // Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
-                        AppController.logout(getActivity());
-                    }
+                else if (getActivity() != null) {
+                    // Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
+                    AppController.logout(getActivity());
+                }
             }
         });
     }
 
 
-    private void checkReferral(){
+    private void checkReferral() {
 
-        if (!userDetails.getRef().equals("")){
+        if (!userDetails.getRef().equals("")) {
 
             HashMap<String, String> params = new HashMap<>();
 
@@ -351,13 +349,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onResume();
     }
 
-    public void getSliderImage(){
+    public void getSliderImage() {
 
         AuthApiHelper.getBanners(new DataFetchingListener<Response<JsonObject>>() {
             @Override
             public void onDataFetched(Response<JsonObject> response) {
-                if (response.code() == 200 || response.code() == 201){
-                    sliderImages = new Gson().fromJson(response.body().get("results"), new TypeToken<List<BannerItem>>(){}.getType());
+                if (response.code() == 200 || response.code() == 201) {
+                    sliderImages = new Gson().fromJson(response.body().get("results"), new TypeToken<List<BannerItem>>() {
+                    }.getType());
                     sliderPager.setAdapter(new SliderAdapter(context, activity, sliderImages));
                     sliderIndicator.setupWithViewPager(sliderPager, true);
                 }

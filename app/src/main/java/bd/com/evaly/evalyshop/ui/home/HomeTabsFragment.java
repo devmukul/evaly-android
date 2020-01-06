@@ -28,21 +28,22 @@ import java.util.Calendar;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.search.SearchCategory;
-import bd.com.evaly.evalyshop.ui.home.adapter.RootCategoriesAdapter;
-import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.ui.home.adapter.RootCategoriesAdapter;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
+import bd.com.evaly.evalyshop.ui.search.SearchCategory;
+import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.util.CategoryUtils;
 
 public class HomeTabsFragment extends Fragment {
 
+    public ShimmerFrameLayout shimmer;
     private RecyclerView recyclerView;
     private TabsAdapter adapter;
     private Context context;
@@ -55,19 +56,17 @@ public class HomeTabsFragment extends Fragment {
     private Button showMore;
     private View view;
     private boolean isEmpty = false;
-    private int brandCounter=1,shopCounter=1;
+    private int brandCounter = 1, shopCounter = 1;
     private ProgressBar progressBar2;
     private List<CategoryEntity> categoryItems;
-    public ShimmerFrameLayout shimmer;
-
     private OnDoneListener onDoneListener;
+
+    public HomeTabsFragment() {
+        // Required empty public constructor
+    }
 
     public void setOnDoneListener(OnDoneListener onDoneListener) {
         this.onDoneListener = onDoneListener;
-    }
-
-    public HomeTabsFragment(){
-        // Required empty public constructor
     }
 
     @Override
@@ -84,7 +83,7 @@ public class HomeTabsFragment extends Fragment {
 
         try {
             shimmer.startShimmer();
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -120,7 +119,7 @@ public class HomeTabsFragment extends Fragment {
 
             Calendar calendar = Calendar.getInstance();
 
-            if (categoryUtils.getLastUpdated() == 0 || (categoryUtils.getLastUpdated() != 0 && calendar.getTimeInMillis() - categoryUtils.getLastUpdated() > 20200000)){
+            if (categoryUtils.getLastUpdated() == 0 || (categoryUtils.getLastUpdated() != 0 && calendar.getTimeInMillis() - categoryUtils.getLastUpdated() > 20200000)) {
                 categoryUtils.updateFromApi(new DataFetchingListener<List<CategoryEntity>>() {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
@@ -134,7 +133,7 @@ public class HomeTabsFragment extends Fragment {
                             });
                         }
 
-                       // skeletonScreen.hide();
+                        // skeletonScreen.hide();
                     }
 
                     @Override
@@ -185,7 +184,7 @@ public class HomeTabsFragment extends Fragment {
         });
 
         search.setOnClickListener(v -> {
-            if(type == 1){
+            if (type == 1) {
                 Intent intent = new Intent(context, SearchCategory.class);
                 intent.putExtra("type", type);
                 context.startActivity(intent);
@@ -199,35 +198,18 @@ public class HomeTabsFragment extends Fragment {
         loadData();
     }
 
-
-
-    public class MyDefaultItemAnimator extends DefaultItemAnimator {
-
-        @Override public void onAddFinished(RecyclerView.ViewHolder item) {
-            super.onAddFinished(item);
-
-            if (onDoneListener != null)
-                onDoneListener.onDone();
-        }
-
-    }
-
-
-
-    public void loadData(){
-        if(!(slug.equals("root") && type == 1)) {
-            if (type == 1){
+    public void loadData() {
+        if (!(slug.equals("root") && type == 1)) {
+            if (type == 1) {
                 search.setHint("Search categories");
                 //search.setVisibility(View.GONE);
                 showMore.setVisibility(View.GONE);
                 getSubCategories();
-            }
-            else if (type == 2){
+            } else if (type == 2) {
                 search.setHint("Search brands");
                 getBrandsOfCategory(1);
                 showMore.setText("Show More");
-            }
-            else if (type == 3){
+            } else if (type == 3) {
                 search.setHint("Search shops");
                 getShopsOfCategory(1);
                 showMore.setText("Show More");
@@ -235,10 +217,10 @@ public class HomeTabsFragment extends Fragment {
         }
 
         final Handler handler = new Handler();
-        handler.postDelayed( new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(!(slug.equals("root") && type == 1)) {
+                if (!(slug.equals("root") && type == 1)) {
                     if (adapter.getItemCount() < 1 || recyclerView.getHeight() < 100) {
                         adapter.notifyDataSetChanged();
                         handler.postDelayed(this, 1000);
@@ -255,21 +237,18 @@ public class HomeTabsFragment extends Fragment {
 
                 }
             }
-        }, 1000 );
+        }, 1000);
     }
 
-
-
-    public void stopShimmer(){
+    public void stopShimmer() {
         try {
             shimmer.stopShimmer();
-        } catch (Exception e){
+        } catch (Exception e) {
         }
         shimmer.setVisibility(View.GONE);
     }
 
-
-    public void getSubCategories(){
+    public void getSubCategories() {
 
         ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<JsonArray, String>() {
 
@@ -289,16 +268,17 @@ public class HomeTabsFragment extends Fragment {
                         JsonObject ob = response.get(i).getAsJsonObject();
                         TabsItem tabsItem = new TabsItem();
                         tabsItem.setTitle(ob.get("name").getAsString());
-                        tabsItem.setImage(ob.get("image_url").isJsonNull()? null : ob.get("image_url").getAsString());
+                        tabsItem.setImage(ob.get("image_url").isJsonNull() ? null : ob.get("image_url").getAsString());
                         tabsItem.setSlug(ob.get("slug").getAsString());
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
                     }
-                }  catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);
@@ -313,7 +293,7 @@ public class HomeTabsFragment extends Fragment {
 
     }
 
-    public void getBrandsOfCategory(int counter){
+    public void getBrandsOfCategory(int counter) {
         ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
@@ -331,7 +311,7 @@ public class HomeTabsFragment extends Fragment {
                         JsonObject ob = jsonArray.get(i).getAsJsonObject();
                         TabsItem tabsItem = new TabsItem();
                         tabsItem.setTitle(ob.get("name").getAsString());
-                        tabsItem.setImage(ob.get("image_url").isJsonNull()? null : ob.get("image_url").getAsString());
+                        tabsItem.setImage(ob.get("image_url").isJsonNull() ? null : ob.get("image_url").getAsString());
                         tabsItem.setSlug(ob.get("slug").getAsString());
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
@@ -346,6 +326,7 @@ public class HomeTabsFragment extends Fragment {
                 }
 
             }
+
             @Override
             public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);
@@ -359,8 +340,7 @@ public class HomeTabsFragment extends Fragment {
 
     }
 
-
-    public void getShopsOfCategory(int counter){
+    public void getShopsOfCategory(int counter) {
         ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
@@ -376,7 +356,7 @@ public class HomeTabsFragment extends Fragment {
                         JsonObject ob = jsonArray.get(i).getAsJsonObject();
                         TabsItem tabsItem = new TabsItem();
                         tabsItem.setTitle(ob.get("shop_name").getAsString());
-                        tabsItem.setImage(ob.get("shop_image").isJsonNull()? null : ob.get("shop_image").getAsString());
+                        tabsItem.setImage(ob.get("shop_image").isJsonNull() ? null : ob.get("shop_image").getAsString());
 
                         if (slug.equals("root"))
                             tabsItem.setSlug(ob.get("slug").getAsString());
@@ -397,6 +377,7 @@ public class HomeTabsFragment extends Fragment {
                 }
 
             }
+
             @Override
             public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);
@@ -407,6 +388,18 @@ public class HomeTabsFragment extends Fragment {
 
             }
         });
+
+    }
+
+    public class MyDefaultItemAnimator extends DefaultItemAnimator {
+
+        @Override
+        public void onAddFinished(RecyclerView.ViewHolder item) {
+            super.onAddFinished(item);
+
+            if (onDoneListener != null)
+                onDoneListener.onDone();
+        }
 
     }
 

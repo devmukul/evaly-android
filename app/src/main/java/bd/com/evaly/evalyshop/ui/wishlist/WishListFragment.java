@@ -59,7 +59,7 @@ public class WishListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view =  inflater.inflate(R.layout.fragment_wish_list, container, false);
+        view = inflater.inflate(R.layout.fragment_wish_list, container, false);
 
         return view;
     }
@@ -77,7 +77,7 @@ public class WishListFragment extends Fragment {
                 getActivity().onBackPressed();
         });
 
-        wishLists=new ArrayList<>();
+        wishLists = new ArrayList<>();
         recyclerView = view.findViewById(R.id.recycle);
         alert = new ViewDialog(getActivity());
 
@@ -115,7 +115,6 @@ public class WishListFragment extends Fragment {
         });
 
     }
-
 
 
 }

@@ -30,7 +30,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -38,13 +37,14 @@ import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
+import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class BrandFragment extends Fragment {
 
-    private String slug="", title="", categoryString="", imgUrl="", categorySlug="";
+    private String slug = "", title = "", categoryString = "", imgUrl = "", categorySlug = "";
     private ImageView logo;
-    private TextView name,categoryName,address,number;
+    private TextView name, categoryName, address, number;
     private NestedScrollView nestedSV;
     private ShopCategoryAdapter adapter;
     private View view;
@@ -55,12 +55,12 @@ public class BrandFragment extends Fragment {
     private ProgressBar progressBar;
     private View dummyView;
 
-    public BrandFragment(){
+    public BrandFragment() {
         // Required empty public constructor
 
     }
 
-    private void refreshFragment(){
+    private void refreshFragment() {
         if (getFragmentManager() != null)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 getFragmentManager().beginTransaction().detach(this).commitNow();
@@ -91,6 +91,7 @@ public class BrandFragment extends Fragment {
                 public void onRetry() {
                     refreshFragment();
                 }
+
                 @Override
                 public void onBackPress() {
                     if (getFragmentManager() != null)
@@ -99,7 +100,7 @@ public class BrandFragment extends Fragment {
             });
 
 
-        new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "brand");
+        new InitializeActionBar(view.findViewById(R.id.header_logo), mainActivity, "brand");
 
         progressBar = view.findViewById(R.id.progressBar);
         dummyView = view.findViewById(R.id.dummyView);
@@ -108,9 +109,9 @@ public class BrandFragment extends Fragment {
         address = view.findViewById(R.id.address);
         number = view.findViewById(R.id.number);
         logo = view.findViewById(R.id.logo);
-        placeHolder=view.findViewById(R.id.placeholder_image);
+        placeHolder = view.findViewById(R.id.placeholder_image);
 
-        LinearLayout homeSearch=view.findViewById(R.id.home_search);
+        LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view1 -> {
             Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
             intent.putExtra("type", 1);
@@ -121,7 +122,7 @@ public class BrandFragment extends Fragment {
         title = getArguments().getString("brand_name");
         categorySlug = getArguments().getString("category");
 
-        if(categorySlug.equals("root"))
+        if (categorySlug.equals("root"))
             categoryString = "All Categories";
 
         else {
@@ -143,9 +144,10 @@ public class BrandFragment extends Fragment {
                                   public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                       return false;
                                   }
+
                                   @Override
                                   public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                      Bitmap bitmap = Utils.changeColor(((BitmapDrawable)resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
+                                      Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
                                       logo.setImageBitmap(bitmap);
                                       return true;
                                   }
@@ -159,9 +161,9 @@ public class BrandFragment extends Fragment {
             nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 
                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    try{
+                    try {
                         productGrid.loadNextBrandProducts();
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         Log.e("scroll error", e.toString());
                     }
                 }
@@ -169,7 +171,7 @@ public class BrandFragment extends Fragment {
         }
 
 
-        productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, categorySlug, "",2, progressBar);
+        productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, categorySlug, "", 2, progressBar);
         productGrid.setScrollView(nestedSV);
         productGrid.setListener(new ProductListener() {
             @Override
@@ -177,7 +179,7 @@ public class BrandFragment extends Fragment {
 
                 dummyView.setVisibility(View.GONE);
 
-                if(count==0){
+                if (count == 0) {
                     LinearLayout noItem = view.findViewById(R.id.noItem);
                     noItem.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);

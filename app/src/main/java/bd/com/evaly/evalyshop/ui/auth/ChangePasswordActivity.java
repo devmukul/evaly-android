@@ -17,12 +17,12 @@ import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
 
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -32,19 +32,17 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 public class ChangePasswordActivity extends BaseActivity {
 
+    String userAgent;
+    ViewDialog dialog;
     private EditText oldPassword, newPassword, confirmPassword;
     private Button changePassword;
     private UserDetails userDetails;
     private ImageView showCurrent, showNew, showNewConfirm;
     private boolean isCurrentShowing, isNewShowing, isNewConfirmShowing;
-
-    String userAgent;
-    ViewDialog dialog;
-
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
 
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener(){
+    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         //Event Listeners
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
@@ -53,11 +51,11 @@ public class ChangePasswordActivity extends BaseActivity {
             Logger.d("======   CONNECTED  -========");
         }
 
-        public void onLoggedIn(){
+        public void onLoggedIn() {
             xmppHandler.changePassword(newPassword.getText().toString());
         }
 
-        public void onPasswordChanged(){
+        public void onPasswordChanged() {
             dialog.hideDialog();
             Snackbar.make(newPassword, "Password change successfully, Please Login!", Snackbar.LENGTH_LONG).show();
             new Handler().postDelayed(() -> AppController.logout(ChangePasswordActivity.this), 2000);
@@ -134,7 +132,7 @@ public class ChangePasswordActivity extends BaseActivity {
                 Toast.makeText(ChangePasswordActivity.this, "Please confirm your new password", Toast.LENGTH_SHORT).show();
             } else if (!confirmPassword.getText().toString().equals(newPassword.getText().toString())) {
                 Toast.makeText(ChangePasswordActivity.this, "Password didn't match. Please enter your new password again.", Toast.LENGTH_SHORT).show();
-            } else if(!Utils.isStrongPassword(confirmPassword.getText().toString()).equals("yes")) {
+            } else if (!Utils.isStrongPassword(confirmPassword.getText().toString()).equals("yes")) {
                 Toast.makeText(ChangePasswordActivity.this, Utils.isStrongPassword(confirmPassword.getText().toString()), Toast.LENGTH_SHORT).show();
             } else {
                 updatePassword();
@@ -145,8 +143,7 @@ public class ChangePasswordActivity extends BaseActivity {
     }
 
 
-
-    private void updatePassword(){
+    private void updatePassword() {
 
         dialog.showDialog();
 
@@ -162,7 +159,7 @@ public class ChangePasswordActivity extends BaseActivity {
                 dialog.hideDialog();
 
                 Toast.makeText(ChangePasswordActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
-                if (response.get("success").getAsBoolean()){
+                if (response.get("success").getAsBoolean()) {
                     CredentialManager.savePassword(newPassword.getText().toString());
                     startXmppService();
                 }
@@ -189,7 +186,7 @@ public class ChangePasswordActivity extends BaseActivity {
 
 
     private void startXmppService() {
-        if( !XMPPService.isServiceRunning ) {
+        if (!XMPPService.isServiceRunning) {
             Intent intent = new Intent(this, XMPPService.class);
             mChatApp.UnbindService();
             mChatApp.BindService(intent);
@@ -197,7 +194,7 @@ public class ChangePasswordActivity extends BaseActivity {
         } else {
             Logger.d("---------");
             xmppHandler = AppController.getmService().xmpp;
-            if(!xmppHandler.isConnected()){
+            if (!xmppHandler.isConnected()) {
                 xmppHandler.connect();
             } else {
                 xmppHandler.changePassword(newPassword.getText().toString());

@@ -39,8 +39,7 @@ import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
-public class AddBalanceActivity extends BaseActivity
-{
+public class AddBalanceActivity extends BaseActivity {
 
 
     /*
@@ -70,16 +69,15 @@ public class AddBalanceActivity extends BaseActivity
         finish();
 
 
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             try {
 
                 getWindow().setStatusBarColor(Color.parseColor("#f7f7f7"));
                 // getWindow().getDecorView().setSystemUiVisibility(0);
-            } catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
-
 
 
         getSupportActionBar().setElevation(0);
@@ -110,7 +108,7 @@ public class AddBalanceActivity extends BaseActivity
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
-                if (tab.getPosition() == 1){
+                if (tab.getPosition() == 1) {
 
                     TabLayout.Tab tabz = tabs.getTabAt(0);
                     tabz.select();
@@ -156,7 +154,7 @@ public class AddBalanceActivity extends BaseActivity
         visa.requestFocus();
 
         button.setOnClickListener(v -> {
-            if(paymentMethod == 1)
+            if (paymentMethod == 1)
                 addBalance();
             else {
 
@@ -170,9 +168,9 @@ public class AddBalanceActivity extends BaseActivity
 
         Intent data = getIntent();
 
-        if(data.hasExtra("due")){
+        if (data.hasExtra("due")) {
 
-            Toast.makeText(context,"Insufficient Balance", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Insufficient Balance", Toast.LENGTH_LONG).show();
             input.setText(String.valueOf(data.getDoubleExtra("due", 0.0)));
         }
     }
@@ -196,13 +194,12 @@ public class AddBalanceActivity extends BaseActivity
         Log.d("json order url", url);
 
 
-
         JSONObject payload = new JSONObject();
 
 
         String balance = input.getText().toString();
 
-        if (balance.equals("")){
+        if (balance.equals("")) {
             Toast.makeText(this, "Enter amount", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -210,7 +207,7 @@ public class AddBalanceActivity extends BaseActivity
 
         try {
             payload.put("amount", balance);
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -225,7 +222,7 @@ public class AddBalanceActivity extends BaseActivity
 
                 Utils.CustomTab(url, AddBalanceActivity.this);
 
-            }catch (Exception e){
+            } catch (Exception e) {
 
 
             }
@@ -235,23 +232,24 @@ public class AddBalanceActivity extends BaseActivity
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(AddBalanceActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        addBalance();
-                    }
+                    AuthApiHelper.refreshToken(AddBalanceActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            addBalance();
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
 
         }) {
@@ -263,14 +261,12 @@ public class AddBalanceActivity extends BaseActivity
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(AddBalanceActivity.this);
+        RequestQueue queue = Volley.newRequestQueue(AddBalanceActivity.this);
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
     }
-
-
 
 
 }

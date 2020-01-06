@@ -47,7 +47,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         close.setOnClickListener(v -> onBackPressed());
     }
 
-    private void resetPassword(){
+    private void resetPassword() {
 
         AuthApiHelper.forgetPassword(number.getText().toString(), new ResponseListenerAuth<JsonObject, String>() {
             @Override

@@ -27,21 +27,19 @@ public class PayViaBkashActivity extends BaseActivity {
     ProgressDialog prDialog;
 
     ProgressBar progressBar;
+    UserDetails userDetails;
+    String amount = "0.0", context = "order_payment", context_reference = "", paymentID = "";
     private boolean loadingFinished = false;
     private boolean redirect = false;
     private boolean isShowed = true;
-    UserDetails userDetails;
-
-    String amount="0.0", context = "order_payment", context_reference = "", paymentID = "";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getPackageManager().hasSystemFeature("android.software.webview") && Utils.isPackageExisted("com.google.android.webview", this)) {
+        if (getPackageManager().hasSystemFeature("android.software.webview") && Utils.isPackageExisted("com.google.android.webview", this)) {
 
-        }else {
+        } else {
             Toast.makeText(this, "Please install WebView from Google Play Store", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -92,18 +90,18 @@ public class PayViaBkashActivity extends BaseActivity {
                 "    bKash.init({" +
                 "        paymentMode: 'checkout'," +
                 "        paymentRequest: {" +
-                "            amount: '"+amount+"'," +
+                "            amount: '" + amount + "'," +
                 "            intent: 'sale'," +
-                "            context: '"+context+"'," +
-                "            context_reference: '"+context_reference+"'" +
+                "            context: '" + context + "'," +
+                "            context_reference: '" + context_reference + "'" +
                 "        }," +
                 "        createRequest: function(request) {" +
                 "            $.ajax({" +
-                "                url: '"+UrlUtils.DOMAIN+"pay/bkash_payment/create'," +
+                "                url: '" + UrlUtils.DOMAIN + "pay/bkash_payment/create'," +
                 "                type: 'POST'," +
                 "                contentType: 'application/json'," +
                 "                headers: {" +
-                "                    \"Authorization\": \"Bearer "+userDetails.getToken()+"\"," +
+                "                    \"Authorization\": \"Bearer " + userDetails.getToken() + "\"," +
                 "                }," +
                 "                data: JSON.stringify(request)," +
                 "                success: function(data) {" +
@@ -121,11 +119,11 @@ public class PayViaBkashActivity extends BaseActivity {
                 "        }," +
                 "        executeRequestOnAuthorization: function() {" +
                 "            $.ajax({" +
-                "                url: '"+ UrlUtils.DOMAIN +"pay/bkash_payment/execute'," +
+                "                url: '" + UrlUtils.DOMAIN + "pay/bkash_payment/execute'," +
                 "                type: 'POST'," +
                 "                contentType: 'application/json'," +
                 "                headers: {" +
-                "                    \"Authorization\": \"Bearer "+userDetails.getToken()+"\"," +
+                "                    \"Authorization\": \"Bearer " + userDetails.getToken() + "\"," +
                 "                }," +
                 "                data: JSON.stringify({" +
                 "                    \"paymentID\": paymentID" +
@@ -136,12 +134,12 @@ public class PayViaBkashActivity extends BaseActivity {
                 "                            \"success.html\";" +
                 "                    } else {" +
                 "                        bKash.execute().onError();" +
-                "                        errorMessage(data.data);"+
+                "                        errorMessage(data.data);" +
                 "                    }" +
                 "                }," +
                 "                error: function(err) {" +
                 "                    bKash.execute().onError();" +
-                "                    errorMessage(err.responseJSON);"+
+                "                    errorMessage(err.responseJSON);" +
                 "                }" +
                 "            });" +
                 "        }" +
@@ -153,19 +151,19 @@ public class PayViaBkashActivity extends BaseActivity {
                 "            if (paymentID) {" +
                 "                bKash.reconfigure({" +
                 "                    paymentRequest: {" +
-                "                        amount: '"+amount+"'," +
+                "                        amount: '" + amount + "'," +
                 "                        intent: \"sale\"," +
-                "                        context: \""+context+"\"," +
-                "                        context_reference: '"+context_reference+"'" +
+                "                        context: \"" + context + "\"," +
+                "                        context_reference: '" + context_reference + "'" +
                 "                    }" +
                 "                });" +
                 "            } else {" +
                 "                bKash.reconfigure({" +
                 "                    paymentRequest: {" +
-                "                        amount: '"+amount+"'," +
+                "                        amount: '" + amount + "'," +
                 "                        intent: \"sale\"," +
-                "                        context: \""+context+"\"," +
-                "                        context_reference: '"+context_reference+"'" +
+                "                        context: \"" + context + "\"," +
+                "                        context_reference: '" + context_reference + "'" +
                 "                    }" +
                 "                });" +
                 "            }" +
@@ -193,7 +191,7 @@ public class PayViaBkashActivity extends BaseActivity {
 
                 super.onPageStarted(view, url, favicon);
 
-                if (url.contains("success.html")){
+                if (url.contains("success.html")) {
 
                     Toast.makeText(PayViaBkashActivity.this, "Payment successful! If your order's payment status doesn't get updated within 5 minutes, please contact support.", Toast.LENGTH_LONG);
 
@@ -213,8 +211,6 @@ public class PayViaBkashActivity extends BaseActivity {
             }
 
 
-
-
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(webView, url);
@@ -225,14 +221,14 @@ public class PayViaBkashActivity extends BaseActivity {
                 });
 
 
-                if(!redirect){
+                if (!redirect) {
                     loadingFinished = true;
                 }
 
-                if(loadingFinished && isShowed){
+                if (loadingFinished && isShowed) {
                     isShowed = false;
 
-                } else{
+                } else {
                     redirect = false;
                 }
 
@@ -275,7 +271,6 @@ public class PayViaBkashActivity extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     // old code
@@ -323,7 +318,6 @@ public class PayViaBkashActivity extends BaseActivity {
 //
 //        }
 //    });
-
 
 
 }

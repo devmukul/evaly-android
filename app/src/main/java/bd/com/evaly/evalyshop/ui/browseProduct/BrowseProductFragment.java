@@ -27,19 +27,19 @@ import com.google.gson.JsonArray;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
-import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
-import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
+import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
+import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.tabs.SubTabsFragment;
+import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class BrowseProductFragment extends Fragment {
@@ -92,7 +92,7 @@ public class BrowseProductFragment extends Fragment {
 
     }
 
-    private void refreshFragment(){
+    private void refreshFragment() {
         if (getFragmentManager() != null)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 getFragmentManager().beginTransaction().detach(this).commitNow();
@@ -114,6 +114,7 @@ public class BrowseProductFragment extends Fragment {
                 public void onRetry() {
                     refreshFragment();
                 }
+
                 @Override
                 public void onBackPress() {
                     if (getFragmentManager() != null)
@@ -136,11 +137,11 @@ public class BrowseProductFragment extends Fragment {
 
         viewPager = view.findViewById(R.id.pager_sub);
 
-        pager =  new HomeTabPagerAdapter(getChildFragmentManager());
+        pager = new HomeTabPagerAdapter(getChildFragmentManager());
 
         NestedScrollView nestedSV = view.findViewById(R.id.stickyScrollView);
 
-        final ProductGrid productGrid = new ProductGrid(getContext(), view.findViewById(R.id.products),slug, view.findViewById(R.id.progressBar));
+        final ProductGrid productGrid = new ProductGrid(getContext(), view.findViewById(R.id.products), slug, view.findViewById(R.id.progressBar));
         productGrid.setScrollView(nestedSV);
 
         shimmer = view.findViewById(R.id.shimmer);
@@ -156,18 +157,18 @@ public class BrowseProductFragment extends Fragment {
         tabLayoutSub.setSmoothScrollingEnabled(true);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutSub));
         tabLayoutSub.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                    @Override
-                    public void onTabSelected(TabLayout.Tab tab) {
-                        viewPager.setCurrentItem(tab.getPosition());
-                    }
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
 
-                    @Override
-                    public void onTabUnselected(TabLayout.Tab tab) {
-                    }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
-                    @Override
-                    public void onTabReselected(TabLayout.Tab tab) {
-                    }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
 
         getSubCategories();
@@ -179,8 +180,7 @@ public class BrowseProductFragment extends Fragment {
                     try {
                         progressBar.setVisibility(View.VISIBLE);
                         productGrid.loadNextPage();
-                    } catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         Log.e("load more product", e.toString());
                     }
                 }
@@ -188,12 +188,12 @@ public class BrowseProductFragment extends Fragment {
         }
     }
 
-    public void hideShimmer(){
+    public void hideShimmer() {
 
         try {
             shimmer.stopShimmer();
             shimmerTabs.stopShimmer();
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e("ozii shimmer", e.toString());
         }
         shimmer.setVisibility(View.GONE);
@@ -208,7 +208,7 @@ public class BrowseProductFragment extends Fragment {
     }
 
 
-    public void getSubCategories(){
+    public void getSubCategories() {
 
         shimmer.startShimmer();
         shimmer.setVisibility(View.VISIBLE);
@@ -221,8 +221,7 @@ public class BrowseProductFragment extends Fragment {
 
                 int length = res.size();
 
-                if (length>0)
-                {
+                if (length > 0) {
                     SubTabsFragment fragment = new SubTabsFragment();
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", 1);
@@ -231,7 +230,7 @@ public class BrowseProductFragment extends Fragment {
                     bundle.putString("json", res.toString());
                     fragment.setArguments(bundle);
 
-                    pager.addFragment(fragment,"Sub Categories");
+                    pager.addFragment(fragment, "Sub Categories");
                     pager.notifyDataSetChanged();
                 }
 
@@ -239,6 +238,7 @@ public class BrowseProductFragment extends Fragment {
                 tabLayoutSub.setVisibility(View.VISIBLE);
                 loadOtherTabs();
             }
+
             @Override
             public void onFailed(String body, int errorCode) {
 
@@ -252,7 +252,7 @@ public class BrowseProductFragment extends Fragment {
         });
     }
 
-    public void loadOtherTabs(){
+    public void loadOtherTabs() {
 
         {
             SubTabsFragment fragment = new SubTabsFragment();
@@ -278,7 +278,6 @@ public class BrowseProductFragment extends Fragment {
             pager.notifyDataSetChanged();
         }
     }
-
 
 
 }

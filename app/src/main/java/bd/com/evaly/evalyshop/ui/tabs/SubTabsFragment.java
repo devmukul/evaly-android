@@ -26,16 +26,17 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.search.SearchCategory;
-import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
+import bd.com.evaly.evalyshop.ui.search.SearchCategory;
+import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
 
 public class SubTabsFragment extends Fragment {
 
+    public ShimmerFrameLayout shimmer;
     private RecyclerView recyclerView;
     private TabsAdapter adapter;
     private Context context;
@@ -46,13 +47,11 @@ public class SubTabsFragment extends Fragment {
     private EditText search;
     private Button showMore;
     private View view;
-    private int brandCounter=1,shopCounter=1;
+    private int brandCounter = 1, shopCounter = 1;
     private ProgressBar progressBar2;
-    public ShimmerFrameLayout shimmer;
-
     private String json = "[]";
 
-    public SubTabsFragment(){
+    public SubTabsFragment() {
         // Required empty public constructor
     }
 
@@ -72,7 +71,7 @@ public class SubTabsFragment extends Fragment {
 
         try {
             shimmer.startShimmer();
-        } catch (Exception e){
+        } catch (Exception e) {
         }
 
 
@@ -108,7 +107,7 @@ public class SubTabsFragment extends Fragment {
 
         search.setOnClickListener(v -> {
 
-            if(type == 1){
+            if (type == 1) {
                 Intent intent = new Intent(context, SearchCategory.class);
                 intent.putExtra("type", type);
                 context.startActivity(intent);
@@ -128,7 +127,7 @@ public class SubTabsFragment extends Fragment {
 
     }
 
-    public void loadData(){
+    public void loadData() {
         if (slug != null) {
 
             if (!(slug.equals("root") && type == 1)) {
@@ -164,18 +163,17 @@ public class SubTabsFragment extends Fragment {
     }
 
 
-
-    public void stopShimmer(){
+    public void stopShimmer() {
 
         try {
             shimmer.stopShimmer();
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
         shimmer.setVisibility(View.GONE);
     }
 
-    public void loadJsonToView(String json, int type){
+    public void loadJsonToView(String json, int type) {
 
         if (slug != null) {
 
@@ -224,8 +222,7 @@ public class SubTabsFragment extends Fragment {
     }
 
 
-
-    public void getSubCategories(){
+    public void getSubCategories() {
 
         ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<JsonArray, String>() {
 
@@ -247,10 +244,11 @@ public class SubTabsFragment extends Fragment {
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
                     }
-                }  catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);
@@ -265,7 +263,7 @@ public class SubTabsFragment extends Fragment {
 
     }
 
-    public void getBrandsOfCategory(int counter){
+    public void getBrandsOfCategory(int counter) {
         ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
@@ -280,7 +278,7 @@ public class SubTabsFragment extends Fragment {
                         TabsItem tabsItem = new TabsItem();
                         tabsItem.setTitle(ob.get("name").getAsString());
 
-                        tabsItem.setImage(ob.get("image_url").isJsonNull()? null : ob.get("image_url").getAsString());
+                        tabsItem.setImage(ob.get("image_url").isJsonNull() ? null : ob.get("image_url").getAsString());
 
                         tabsItem.setSlug(ob.get("slug").getAsString());
                         tabsItem.setCategory(category);
@@ -295,6 +293,7 @@ public class SubTabsFragment extends Fragment {
                     Toast.makeText(context, "Brand loading error", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);
@@ -309,7 +308,7 @@ public class SubTabsFragment extends Fragment {
     }
 
 
-    public void getShopsOfCategory(int counter){
+    public void getShopsOfCategory(int counter) {
         ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
@@ -324,7 +323,7 @@ public class SubTabsFragment extends Fragment {
                         JsonObject ob = jsonArray.get(i).getAsJsonObject();
                         TabsItem tabsItem = new TabsItem();
                         tabsItem.setTitle(ob.get("shop_name").getAsString());
-                        tabsItem.setImage(ob.get("shop_image").isJsonNull()? null : ob.get("shop_image").getAsString());
+                        tabsItem.setImage(ob.get("shop_image").isJsonNull() ? null : ob.get("shop_image").getAsString());
 
                         if (slug.equals("root"))
                             tabsItem.setSlug(ob.get("slug").getAsString());
@@ -344,6 +343,7 @@ public class SubTabsFragment extends Fragment {
                 }
 
             }
+
             @Override
             public void onFailed(String body, int errorCode) {
                 progressBar2.setVisibility(View.GONE);

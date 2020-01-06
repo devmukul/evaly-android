@@ -64,24 +64,24 @@ import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 import static android.app.Activity.RESULT_OK;
 
 
-public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    static GiftCardPurchasedFragment instance;
     View view;
     RecyclerView recyclerView;
     ArrayList<GiftCardListPurchasedItem> itemList;
     GiftCardListPurchasedAdapter adapter;
     RequestQueue rq;
-    static GiftCardPurchasedFragment instance;
     BottomSheetBehavior sheetBehavior;
     LinearLayout layoutBottomSheet;
     ViewDialog dialog;
-    ImageView image,plus,minus;
+    ImageView image, plus, minus;
     UserDetails userDetails;
-    TextView details,name,total;
+    TextView details, name, total;
     EditText quantity;
-    int voucherAmount=0;
+    int voucherAmount = 0;
     Button placeOrder;
-    String giftCardInvoice="";
+    String giftCardInvoice = "";
     String amount;
 
     LinearLayout noItem;
@@ -94,14 +94,21 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     LinearLayout progressContainer;
     ProgressBar progressBar;
     int currentPage;
-    private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
-
     TextView amountToPayView;
-    ImageView bkash,cards, bank;
-
-
+    ImageView bkash, cards, bank;
     SwipeRefreshLayout swipeLayout;
+    private boolean loading = true;
+    private boolean isImageSelected = false;
+
+
+    public GiftCardPurchasedFragment() {
+        // Required empty public constructor
+    }
+
+    public static GiftCardPurchasedFragment getInstance() {
+        return instance;
+    }
 
     @Override
     public void onRefresh() {
@@ -116,9 +123,8 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     }
 
-
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
 
         itemList.clear();
@@ -128,11 +134,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     }
 
-    public GiftCardPurchasedFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
@@ -141,12 +142,12 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         swipeLayout = view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
 
-        itemList=new ArrayList<>();
-        dialog=new ViewDialog(getActivity());
+        itemList = new ArrayList<>();
+        dialog = new ViewDialog(getActivity());
 
         context = getContext();
         rq = Volley.newRequestQueue(context);
-        userDetails=new UserDetails(context);
+        userDetails = new UserDetails(context);
 
         progressContainer = view.findViewById(R.id.progressContainer);
         progressBar = view.findViewById(R.id.progressBar);
@@ -160,66 +161,59 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         LinearLayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
 
-        instance=this;
-        adapter=new GiftCardListPurchasedAdapter(context, itemList, 0);
+        instance = this;
+        adapter = new GiftCardListPurchasedAdapter(context, itemList, 0);
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if(dy > 0) //check for scroll down
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
                 {
                     visibleItemCount = manager.getChildCount();
                     totalItemCount = manager.getItemCount();
                     pastVisiblesItems = manager.findFirstVisibleItemPosition();
 
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                        {
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             getGiftCardList();
                         }
-                    } }
+                    }
+                }
             }
         });
 
         return view;
     }
 
-
-    private boolean isImageSelected = false;
-
-
-    public void buildBankDialog(Bitmap bitmap){
+    public void buildBankDialog(Bitmap bitmap) {
         final AlertDialog dialogBuilder = new AlertDialog.Builder(context).create();
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_bank_receipt, null);
-        TextView amountET =  dialogView.findViewById(R.id.amount);
+        TextView amountET = dialogView.findViewById(R.id.amount);
 
 
         double amToPay = Double.parseDouble(amountToPayView.getText().toString());
 
-        amountET.setText((int)amToPay+"");
+        amountET.setText((int) amToPay + "");
         amountET.setVisibility(View.GONE);
 
 
-        Button submit =  dialogView.findViewById(R.id.buttonSubmit);
-        Button cancel =  dialogView.findViewById(R.id.buttonCancel);
+        Button submit = dialogView.findViewById(R.id.buttonSubmit);
+        Button cancel = dialogView.findViewById(R.id.buttonCancel);
 
         ImageView selectImage = dialogView.findViewById(R.id.upload);
 
-        if(isImageSelected) {
+        if (isImageSelected) {
             selectImage.setImageBitmap(bitmap);
         }
 
 
         selectImage.setOnClickListener(v -> {
-            Intent intent=new Intent();
+            Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent,"Select Bank Deposit Photo"),1000);
+            startActivityForResult(Intent.createChooser(intent, "Select Bank Deposit Photo"), 1000);
             dialogBuilder.dismiss();
         });
 
@@ -227,13 +221,15 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         cancel.setOnClickListener(view -> dialogBuilder.dismiss());
         submit.setOnClickListener(view -> {
 
-            if (!isImageSelected){
+            if (!isImageSelected) {
                 Toast.makeText(context, "Please select your bank receipt image", Toast.LENGTH_LONG).show();
-                return; }
+                return;
+            }
 
             if (amount.equals("")) {
                 Toast.makeText(context, "Please enter amount.", Toast.LENGTH_LONG).show();
-                return; }
+                return;
+            }
 
             uploadBankDepositImage(bitmap);
 
@@ -243,27 +239,26 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         dialogBuilder.show();
     }
 
-
-    public void paymentViaBank(String image){
+    public void paymentViaBank(String image) {
 
         ProgressDialog dialog = ProgressDialog.show(context, "",
                 "Updating data...", true);
 
-        String url= UrlUtils.DOMAIN+"pay/bank_deposit/";
+        String url = UrlUtils.DOMAIN + "pay/bank_deposit/";
         JSONObject parameters = new JSONObject();
 
         try {
             int a = Integer.parseInt(amount);
             parameters.put("amount", a);
-        } catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(context, "Invalid amount, enter only numbers!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         try {
-            parameters.put("context","gift_card_order_payment");
-            parameters.put("context_reference",giftCardInvoice);
-            parameters.put("bank_receipt_copy",image);
+            parameters.put("context", "gift_card_order_payment");
+            parameters.put("context_reference", giftCardInvoice);
+            parameters.put("bank_receipt_copy", image);
         } catch (Exception e) {
             Toast.makeText(context, "Error occured!", Toast.LENGTH_SHORT).show();
             return;
@@ -272,7 +267,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         Log.d("json param", parameters.toString());
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, response -> {
-            try{
+            try {
 
                 dialog.dismiss();
                 Log.d("json set image", response.toString());
@@ -282,7 +277,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 startActivity(getActivity().getIntent());
 
 
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
         }, error -> {
@@ -291,23 +286,24 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        paymentViaBank(image);
-                    }
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            paymentViaBank(image);
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
         }) {
             @Override
@@ -321,18 +317,17 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         rq.add(request);
     }
 
-
     private void uploadBankDepositImage(final Bitmap bitmap) {
 
         ProgressDialog dialog = ProgressDialog.show(context, "",
                 "Uploading image...", true);
         RequestQueue rQueue;
-        String url= UrlUtils.BASE_URL+"image/upload";
+        String url = UrlUtils.BASE_URL + "image/upload";
 
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
                 response -> {
                     dialog.dismiss();
-                    Log.d("json image",new String(response.data));
+                    Log.d("json image", new String(response.data));
                     try {
                         JSONObject jsonObject = new JSONObject(new String(response.data));
                         jsonObject = jsonObject.getJSONObject("data");
@@ -347,24 +342,25 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 error -> {
 
                     NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                    if (response != null && response.data != null) {
+                        if (error.networkResponse.statusCode == 401) {
 
-                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                uploadBankDepositImage(bitmap);
-                            }
+                            AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                @Override
+                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                    uploadBankDepositImage(bitmap);
+                                }
 
-                            @Override
-                    public void onFailed(int status) {
+                                @Override
+                                public void onFailed(int status) {
 
+                                }
+                            });
+
+                            return;
+
+                        }
                     }
-                });
-
-                return;
-
-            }}
 
                     dialog.dismiss();
                     Toast.makeText(context, "Image upload error, might be too large image", Toast.LENGTH_SHORT).show();
@@ -410,24 +406,22 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         return byteArrayOutputStream.toByteArray();
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1000 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-            try{
+        if (requestCode == 1000 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
                 isImageSelected = true;
                 buildBankDialog(bitmap);
 
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
         }
     }
 
-    public void initializeBottomSheet(){
+    public void initializeBottomSheet() {
 
         bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_gift_card_payment);
@@ -456,7 +450,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             intent.putExtra("amount", amountToPayView.getText().toString());
             intent.putExtra("invoice_no", giftCardInvoice);
             intent.putExtra("context", "gift_card_order_payment");
-            startActivityForResult(intent,10002);
+            startActivityForResult(intent, 10002);
         });
 
 
@@ -480,47 +474,47 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     }
 
-
-    public void catchError(){
-        try{
+    public void catchError() {
+        try {
             dialog.hideDialog();
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
 
         Toast.makeText(context, "Sorry something went wrong(server error). Please try again.", Toast.LENGTH_SHORT).show();
 
     }
 
-    public void toggleBottomSheet(GiftCardListPurchasedItem item){
+    public void toggleBottomSheet(GiftCardListPurchasedItem item) {
 
         initializeBottomSheet();
 
         giftCardInvoice = item.getInvoiceNo();
 
-        amountToPayView.setText(item.getTotal()+"");
-        amount = item.getTotal()+"";
+        amountToPayView.setText(item.getTotal() + "");
+        amount = item.getTotal() + "";
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetDialog.show();
 
     }
 
-    public void getGiftCardList(){
+    public void getGiftCardList() {
 
         loading = false;
 
 
-        if (currentPage == 1){
+        if (currentPage == 1) {
             progressContainer.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-        } else  {
+        } else {
 
             progressContainer.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
 
         }
 
-        String url = UrlUtils.DOMAIN+"cpn/gift-card-orders?show=purchased&page="+currentPage;
+        String url = UrlUtils.DOMAIN + "cpn/gift-card-orders?show=purchased&page=" + currentPage;
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
                     try {
 
@@ -533,7 +527,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                             progressContainer.setVisibility(View.GONE);
 
 
-                        if (jsonArray.length() == 0 && currentPage == 1){
+                        if (jsonArray.length() == 0 && currentPage == 1) {
                             noItem.setVisibility(View.VISIBLE);
                             TextView noText = view.findViewById(R.id.noText);
                             noText.setText("You haven't purchased any gift card yet");
@@ -547,7 +541,8 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                                 GiftCardListPurchasedItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListPurchasedItem.class);
                                 itemList.add(item);
                                 adapter.notifyItemInserted(itemList.size());
-                            }catch (Exception e){}
+                            } catch (Exception e) {
+                            }
 
                         }
 
@@ -559,29 +554,30 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                     }
                 }, error -> {
 
-                    NetworkResponse response = error.networkResponse;
-                    if (response != null && response.data != null) {
-                        if (error.networkResponse.statusCode == 401 && getContext()!= null){
-                                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                                    @Override
-                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                        getGiftCardList();
-                                    }
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401 && getContext() != null) {
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getGiftCardList();
+                        }
 
-                                    @Override
-                                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                                    }
-                                });
+                        }
+                    });
 
-                        return;
+                    return;
 
-                    }}
+                }
+            }
 
-                    error.printStackTrace();
-                    progressContainer.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
-                }) {
+            error.printStackTrace();
+            progressContainer.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        }) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -600,12 +596,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         rq.add(request);
     }
 
-
-    public static GiftCardPurchasedFragment getInstance() {
-        return instance;
-    }
-
-
     public void addBalanceViaCard(String invoice, String amount) {
 
         String url = UrlUtils.DOMAIN + "pay/pg";
@@ -614,7 +604,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         JSONObject payload = new JSONObject();
 
-        if (amountToPayView.getText().toString().equals("")){
+        if (amountToPayView.getText().toString().equals("")) {
             Toast.makeText(context, "Enter amount", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -624,7 +614,8 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             payload.put("context", "gift_card_order_payment");
             payload.put("context_reference", invoice);
 
-        } catch (Exception e){ }
+        } catch (Exception e) {
+        }
 
         dialog.showDialog();
 
@@ -638,10 +629,10 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 String purl = response.getString("payment_gateway_url");
                 Intent intent = new Intent(context, PayViaCard.class);
                 intent.putExtra("url", purl);
-                startActivityForResult(intent,10002);
+                startActivityForResult(intent, 10002);
 
 
-            }catch (Exception e){
+            } catch (Exception e) {
 
 
             }
@@ -651,23 +642,24 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401 && getActivity() != null){
+                if (error.networkResponse.statusCode == 401 && getActivity() != null) {
 
-                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        addBalanceViaCard(invoice, amount);
-                    }
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            addBalanceViaCard(invoice, amount);
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
 
         }) {
@@ -677,8 +669,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 headers.put("Authorization", CredentialManager.getToken());
                 return headers;
             }
-
-
 
 
         };

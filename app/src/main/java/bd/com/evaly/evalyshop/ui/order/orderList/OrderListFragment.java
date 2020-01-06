@@ -39,7 +39,7 @@ public class OrderListFragment extends Fragment {
     private ArrayList<OrderListItem> orders;
     private OrderAdapter adapter;
     private LinearLayout notOrdered;
-    private int currentPage = 1,errorCounter=0;
+    private int currentPage = 1, errorCounter = 0;
     private boolean loading = true;
     private ProgressBar progressBar;
     private NestedScrollView nestedSV;
@@ -48,7 +48,11 @@ public class OrderListFragment extends Fragment {
     private String statusType = "all";
     private View dummyView;
 
-    public static OrderListFragment getInstance(String type){
+    public OrderListFragment() {
+        // Required empty public constructor
+    }
+
+    public static OrderListFragment getInstance(String type) {
 
         OrderListFragment myFragment = new OrderListFragment();
 
@@ -58,11 +62,6 @@ public class OrderListFragment extends Fragment {
 
         return myFragment;
 
-    }
-
-
-    public OrderListFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -90,17 +89,17 @@ public class OrderListFragment extends Fragment {
 
 
         dummyView = view.findViewById(R.id.dummyView);
-        recyclerView=view.findViewById(R.id.recycle);
-        notOrdered=view.findViewById(R.id.not_order);
+        recyclerView = view.findViewById(R.id.recycle);
+        notOrdered = view.findViewById(R.id.not_order);
         progressBar = view.findViewById(R.id.progressBar);
-        LinearLayoutManager manager=new LinearLayoutManager(context);
+        LinearLayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
-        orders=new ArrayList<>();
-        adapter=new OrderAdapter(context,orders);
+        orders = new ArrayList<>();
+        adapter = new OrderAdapter(context, orders);
         recyclerView.setAdapter(adapter);
 
 
-        userDetails=new UserDetails(context);
+        userDetails = new UserDetails(context);
 
         showProgressView();
 
@@ -113,24 +112,23 @@ public class OrderListFragment extends Fragment {
 
             nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 
-                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
 
-                            try {
+                    try {
 
-                                showProgressView();
-                                getOrderData(++currentPage);
+                        showProgressView();
+                        getOrderData(++currentPage);
 
-                            } catch (Exception e) {
-                                Log.e("load more product", e.toString());
-                            }
+                    } catch (Exception e) {
+                        Log.e("load more product", e.toString());
+                    }
 
-                 }
+                }
             });
         }
-        
-        
-    }
 
+
+    }
 
 
     void showProgressView() {
@@ -142,8 +140,7 @@ public class OrderListFragment extends Fragment {
     }
 
 
-
-    public void getOrderData(int page){
+    public void getOrderData(int page) {
 
         if (page == 1)
             dummyView.setVisibility(View.VISIBLE);
@@ -183,18 +180,15 @@ public class OrderListFragment extends Fragment {
 
                 if (!logout)
                     getOrderData(page);
-                else
-                    if (getActivity() != null) {
-                       // Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
-                        AppController.logout(getActivity());
-                    }
+                else if (getActivity() != null) {
+                    // Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
+                    AppController.logout(getActivity());
+                }
 
             }
         });
 
     }
-
-
 
 
 }

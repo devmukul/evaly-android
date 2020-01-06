@@ -67,31 +67,31 @@ import bd.com.evaly.evalyshop.views.StickyScrollView;
 
 public class GlobalSearchActivity extends BaseActivity {
 
-    String searchSlug="product",selectedCategory="";
-    Spinner searchType,sortby;
+    String searchSlug = "product", selectedCategory = "";
+    Spinner searchType, sortby;
     AutoCompleteTextView searchText;
     ProductGrid productGrid;
     ArrayList<TabsItem> itemList;
-    List<ProductItem> itemListProduct,itemListProductWithCategory;
+    List<ProductItem> itemListProduct, itemListProductWithCategory;
     TabsAdapter adapter;
-    ProductGridAdapter adapterProduct,adapterProductCategory;
+    ProductGridAdapter adapterProduct, adapterProductCategory;
     RecyclerView recyclerView, filterRecyclerView;
     StickyScrollView nestedSV;
-    int page=1,filterCategoryPage=1,gotProductCounter=0;
+    int page = 1, filterCategoryPage = 1, gotProductCounter = 0;
     ProgressBar progressBar;
-    LinearLayout filter,drawerRel;
+    LinearLayout filter, drawerRel;
     DrawerLayout mDrawerLayout;
-    Map<String,String> map,categoryMapping;
-    String filterURL="";
+    Map<String, String> map, categoryMapping;
+    String filterURL = "";
     Button applyFilterBtn;
-    ArrayList<String> categoryList,allCategories;
+    ArrayList<String> categoryList, allCategories;
     ArrayAdapter<String> arrayAdapter;
-    boolean searched=false;
+    boolean searched = false;
     LinearLayout noResult;
     RequestQueue rq;
     ImageView searchClear;
-    EditText minimum,maximum;
-    String highestSlug="";
+    EditText minimum, maximum;
+    String highestSlug = "";
     boolean isLoading = false;
     Button clearFilters;
 
@@ -108,7 +108,6 @@ public class GlobalSearchActivity extends BaseActivity {
     LinearLayout sortingBtn;
 
     boolean fromFilter = false;
-
 
 
     @Override
@@ -130,40 +129,34 @@ public class GlobalSearchActivity extends BaseActivity {
 
         searchText.requestFocus();
 
-        filter=findViewById(R.id.filter);
-        applyFilterBtn=findViewById(R.id.header);
+        filter = findViewById(R.id.filter);
+        applyFilterBtn = findViewById(R.id.header);
         noResult = findViewById(R.id.noResult);
-        minimum=findViewById(R.id.minimum);
-        maximum=findViewById(R.id.maximum);
-        clearFilters=findViewById(R.id.clear);
+        minimum = findViewById(R.id.minimum);
+        maximum = findViewById(R.id.maximum);
+        clearFilters = findViewById(R.id.clear);
         // clearFilters.setVisibility(View.GONE);
 
-        categoryList=new ArrayList<>();
-        allCategories=new ArrayList<>();
-        categoryMapping=new HashMap<>();
-        arrayAdapter=new ArrayAdapter<>(this,R.layout.category_filter_item,categoryList);
+        categoryList = new ArrayList<>();
+        allCategories = new ArrayList<>();
+        categoryMapping = new HashMap<>();
+        arrayAdapter = new ArrayAdapter<>(this, R.layout.category_filter_item, categoryList);
 
         rq = Volley.newRequestQueue(GlobalSearchActivity.this);
-        map=new HashMap<>();
-        mDrawerLayout=findViewById(R.id.layout_drawer);
-        drawerRel=findViewById(R.id.drawer_rel);
-
+        map = new HashMap<>();
+        mDrawerLayout = findViewById(R.id.layout_drawer);
+        drawerRel = findViewById(R.id.drawer_rel);
 
 
         filterRecyclerView = findViewById(R.id.filterRecycler);
 
-        LinearLayoutManager managerFilter=new LinearLayoutManager(this);
+        LinearLayoutManager managerFilter = new LinearLayoutManager(this);
         filterRecyclerView.setLayoutManager(managerFilter);
 
         filterItemlist = new ArrayList<>();
         filterAdapter = new SearchFilterAdapter(this, filterItemlist);
 
         filterRecyclerView.setAdapter(filterAdapter);
-
-
-
-
-
 
 
         filter.setOnClickListener(new View.OnClickListener() {
@@ -177,9 +170,9 @@ public class GlobalSearchActivity extends BaseActivity {
                 }
 
 
-                if(mDrawerLayout.isDrawerOpen(drawerRel)){
+                if (mDrawerLayout.isDrawerOpen(drawerRel)) {
                     mDrawerLayout.closeDrawer(drawerRel);
-                }else {
+                } else {
                     mDrawerLayout.openDrawer(drawerRel);
                 }
             }
@@ -205,19 +198,19 @@ public class GlobalSearchActivity extends BaseActivity {
                 JSONArray brand_name = new JSONArray();
                 JSONArray color = new JSONArray();
 
-                for (int i = 0; i < filterItemlist.size(); i++){
+                for (int i = 0; i < filterItemlist.size(); i++) {
 
                     SearchFilterItem item = filterItemlist.get(i);
 
-                    if(item.isSelected()){
+                    if (item.isSelected()) {
 
 
                         if (item.getType().equals("category_name"))
-                            category_name.put("category_name:"+item.getName());
-                        else if(item.getType().equals("brand_name"))
-                            brand_name.put("brand_name:"+item.getName());
-                        else if(item.getType().equals("color"))
-                            color.put("color:"+item.getName());
+                            category_name.put("category_name:" + item.getName());
+                        else if (item.getType().equals("brand_name"))
+                            brand_name.put("brand_name:" + item.getName());
+                        else if (item.getType().equals("color"))
+                            color.put("color:" + item.getName());
 
 
                     }
@@ -240,20 +233,19 @@ public class GlobalSearchActivity extends BaseActivity {
                 filterJSON = facetFiltersJSON.toString();
 
 
-
                 // min max price filter generator
 
                 String min = minimum.getText().toString();
                 String max = maximum.getText().toString();
 
-                if(min.equals("") && max.equals(""))
+                if (min.equals("") && max.equals(""))
                     priceFilterJSON = "[\"price>=10\"]";
                 else if (min.equals(""))
-                    priceFilterJSON = "[\"price>=10\",\"price<="+ max  +"\"]";
+                    priceFilterJSON = "[\"price>=10\",\"price<=" + max + "\"]";
                 else if (max.equals(""))
-                    priceFilterJSON = "[\"price>="+ min  +"\"]";
+                    priceFilterJSON = "[\"price>=" + min + "\"]";
                 else
-                    priceFilterJSON = "[\"price>="+ min  +"\",\"price<="+max+"\"]";
+                    priceFilterJSON = "[\"price>=" + min + "\",\"price<=" + max + "\"]";
 
 
                 Log.d("json price filter", priceFilterJSON);
@@ -270,10 +262,9 @@ public class GlobalSearchActivity extends BaseActivity {
                 getProducts(page);
 
 
-
-                if(mDrawerLayout.isDrawerOpen(drawerRel)){
+                if (mDrawerLayout.isDrawerOpen(drawerRel)) {
                     mDrawerLayout.closeDrawer(drawerRel);
-                }else {
+                } else {
                     mDrawerLayout.openDrawer(drawerRel);
                 }
             }
@@ -283,7 +274,7 @@ public class GlobalSearchActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                    page=1;
+                page = 1;
 
                 filterJSON = "[]";
                 priceFilterJSON = "[\"price>=10\"]";
@@ -291,10 +282,10 @@ public class GlobalSearchActivity extends BaseActivity {
                 maximum.setText("");
 
                 itemListProduct.clear();
-                page=1;
+                page = 1;
                 getSearchedItems(page);
 
-                for (int i = 0; i < filterItemlist.size(); i++){
+                for (int i = 0; i < filterItemlist.size(); i++) {
 
                     SearchFilterItem item = filterItemlist.get(i);
                     item.setSelected(false);
@@ -303,9 +294,9 @@ public class GlobalSearchActivity extends BaseActivity {
                 }
 
 
-                if(mDrawerLayout.isDrawerOpen(drawerRel)){
+                if (mDrawerLayout.isDrawerOpen(drawerRel)) {
                     mDrawerLayout.closeDrawer(drawerRel);
-                }else {
+                } else {
                     mDrawerLayout.openDrawer(drawerRel);
                 }
             }
@@ -318,7 +309,7 @@ public class GlobalSearchActivity extends BaseActivity {
         LinearLayoutManager manager = new LinearLayoutManager(GlobalSearchActivity.this);
         itemList = new ArrayList<>();
         itemListProduct = new ArrayList<>();
-        int type=1;
+        int type = 1;
 
         adapter = new TabsAdapter(GlobalSearchActivity.this, this, itemList, type);
         adapterProduct = new ProductGridAdapter(GlobalSearchActivity.this, itemListProduct);
@@ -336,7 +327,7 @@ public class GlobalSearchActivity extends BaseActivity {
                 if (parent.getItemAtPosition(position).equals("Products")) {
                     searchSlug = "product";
                     filter.setVisibility(View.VISIBLE);
-                    
+
                     getProducts(1);
 
                 } else if (parent.getItemAtPosition(position).equals("Shops")) {
@@ -345,7 +336,7 @@ public class GlobalSearchActivity extends BaseActivity {
 
                     searchSlug = "shop";
                     page = 1;
-                    searched=false;
+                    searched = false;
                     itemList = new ArrayList<>();
                     StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
                     recyclerView.setLayoutManager(mLayoutManager);
@@ -358,7 +349,7 @@ public class GlobalSearchActivity extends BaseActivity {
 
                     searchSlug = "brands";
                     page = 1;
-                    searched=false;
+                    searched = false;
                     itemList = new ArrayList<>();
                     StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
                     recyclerView.setLayoutManager(mLayoutManager);
@@ -387,15 +378,13 @@ public class GlobalSearchActivity extends BaseActivity {
         if (extras != null) {
             if (extras.containsKey("type")) {
                 int iType = extras.getInt("type");
-                if(iType == 1) {
+                if (iType == 1) {
                     searchType.setSelection(0);
                     searchText.setAdapter(adapterAuto);
-                }
-                else if (iType == 2) {
+                } else if (iType == 2) {
                     searchType.setSelection(2);
                     searchText.setAdapter(null);
-                }
-                else if (iType == 3) {
+                } else if (iType == 3) {
                     searchType.setSelection(1);
                     searchText.setAdapter(null);
                 }
@@ -411,7 +400,7 @@ public class GlobalSearchActivity extends BaseActivity {
 
                 fromFilter = false;
 
-                page=1;
+                page = 1;
                 filterURL = "";
                 itemList.clear();
                 itemListProduct.clear();
@@ -435,14 +424,15 @@ public class GlobalSearchActivity extends BaseActivity {
         searchClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(searchClear.getTag().equals("clear"))
+                if (searchClear.getTag().equals("clear"))
                     searchText.setText("");
             }
         });
 
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -450,11 +440,10 @@ public class GlobalSearchActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() != 0) {
+                if (s.length() != 0) {
                     searchClear.setImageDrawable(getDrawable(R.drawable.ic_close_smallest));
                     searchClear.setTag("clear");
-                }
-                else {
+                } else {
                     searchClear.setImageDrawable(getDrawable(R.drawable.ic_search));
                     searchClear.setTag("search");
                 }
@@ -480,29 +469,28 @@ public class GlobalSearchActivity extends BaseActivity {
                 itemListProduct.clear();
                 Log.d("json", "Enter pressed");
                 RecyclerView.LayoutManager mLayoutManager;
-                int type1 =1;
-                if(searchSlug.equals("product")){
-                    type1 =1;
+                int type1 = 1;
+                if (searchSlug.equals("product")) {
+                    type1 = 1;
                     // don't let show suggestion after search
                     AutoCompleteAdapter adapterAuto1 = new AutoCompleteAdapter(GlobalSearchActivity.this, android.R.layout.simple_list_item_1);
                     searchText.setAdapter(adapterAuto1);
-                }else if(searchSlug.equals("shop")){
-                    type1 =3;
+                } else if (searchSlug.equals("shop")) {
+                    type1 = 3;
                     searchText.setAdapter(null);
-                }else if(searchSlug.equals("brands")){
-                    type1 =3;
+                } else if (searchSlug.equals("brands")) {
+                    type1 = 3;
                     searchText.setAdapter(null);
                 }
-                if(type1 == 1) {
+                if (type1 == 1) {
                     mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                     recyclerView.setAdapter(adapterProduct);
-                }
-                else {
+                } else {
                     mLayoutManager = new GridLayoutManager(GlobalSearchActivity.this, 3);
                     recyclerView.setAdapter(adapter);
                 }
                 recyclerView.setLayoutManager(mLayoutManager);
-                page=1;
+                page = 1;
 
                 categoryList.clear();
                 allCategories.clear();
@@ -546,11 +534,6 @@ public class GlobalSearchActivity extends BaseActivity {
         }
 
 
-
-
-
-
-
         sortingBtn.setOnClickListener(v -> {
 
             if (searchType.getSelectedItemPosition() == 1 || searchType.getSelectedItemPosition() == 2) {
@@ -560,7 +543,7 @@ public class GlobalSearchActivity extends BaseActivity {
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(GlobalSearchActivity.this);
             builder.setTitle("Sort Products By\n");
-            final String[] a={"Relevance","Price low to high","Price high to low"};
+            final String[] a = {"Relevance", "Price low to high", "Price high to low"};
 
             int checkItem = 0;
 
@@ -570,15 +553,13 @@ public class GlobalSearchActivity extends BaseActivity {
                 checkItem = 2;
 
 
-
-
             builder.setSingleChoiceItems(a, checkItem, (dialogInterface, i) -> {
 
-                if(i==0)
+                if (i == 0)
                     sortIndexName = "products";
-                else if(i==1)
+                else if (i == 1)
                     sortIndexName = "products_price_asc";
-                else if (i==2)
+                else if (i == 2)
                     sortIndexName = "products_price_desc";
 
 
@@ -600,23 +581,18 @@ public class GlobalSearchActivity extends BaseActivity {
         });
 
 
-
-
-
     }
 
 
-
-
-    public void loadNextSearchPage(){
+    public void loadNextSearchPage() {
         getSearchedItems(++page);
     }
 
-    public void loadNextShops(){
+    public void loadNextShops() {
         getShops(++page);
     }
 
-    public void loadNextBrands(){
+    public void loadNextBrands() {
         getBrands(++page);
     }
 
@@ -648,20 +624,18 @@ public class GlobalSearchActivity extends BaseActivity {
     }
 
 
-
-
-    public void getProducts(int page){
+    public void getProducts(int page) {
 
         String searchQuery = searchText.getText().toString();
 
         progressBar.setVisibility(View.VISIBLE);
 
 
-        Map<String,Object> paramsMap = new HashMap<String,Object>();
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
 
         paramsMap.put("query", searchQuery);
         paramsMap.put("maxValuesPerFacet", "20");
-        paramsMap.put("page", page-1);
+        paramsMap.put("page", page - 1);
         paramsMap.put("highlightPreTag", "<ais-highlight-0000000000>");
         paramsMap.put("highlightPostTag", "</ais-highlight-0000000000>");
         paramsMap.put("facets", "[\"price\",\"category_name\",\"brand_name\",\"color\"]");
@@ -673,8 +647,6 @@ public class GlobalSearchActivity extends BaseActivity {
 
         if (!priceFilterJSON.equals("[\"price>=10\"]"))
             paramsMap.put("numericFilters", priceFilterJSON);
-
-
 
 
         JSONObject payload = new JSONObject();
@@ -689,13 +661,11 @@ public class GlobalSearchActivity extends BaseActivity {
             payload.putOpt("requests", new JSONArray());
             payload.getJSONArray("requests").put(paramsJson);
 
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
 
 
-
-
-        if (page < 2){
-
+        if (page < 2) {
 
 
             RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -705,7 +675,7 @@ public class GlobalSearchActivity extends BaseActivity {
         }
 
 
-        String url="https://eza2j926q5-dsn.algolia.net/1/indexes/*/queries?x-algolia-application-id=EZA2J926Q5&x-algolia-api-key=ca9abeea06c16b7d531694d6783a8f04";
+        String url = "https://eza2j926q5-dsn.algolia.net/1/indexes/*/queries?x-algolia-application-id=EZA2J926Q5&x-algolia-api-key=ca9abeea06c16b7d531694d6783a8f04";
         Log.d("json", url);
 
 
@@ -714,16 +684,16 @@ public class GlobalSearchActivity extends BaseActivity {
         isLoading = true;
 
 
-        Log.d("json params",payload.toString());
+        Log.d("json params", payload.toString());
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload,
                 response -> {
 
 
-                    if (nestedSV!=null)
+                    if (nestedSV != null)
                         nestedSV.fling(0);
 
-                    Log.d("json search_result",response.toString());
+                    Log.d("json search_result", response.toString());
 
 
                     try {
@@ -744,7 +714,7 @@ public class GlobalSearchActivity extends BaseActivity {
                             ProductItem tabsItem = new ProductItem();
                             tabsItem.setName(ob.getString("name"));
 
-                            List<String> images =  new ArrayList<>();
+                            List<String> images = new ArrayList<>();
                             images.add(ob.getString("product_image").replace("\n", "").replace("\r", ""));
                             tabsItem.setImageUrls(images);
                             tabsItem.setSlug(ob.getString("slug"));
@@ -752,9 +722,10 @@ public class GlobalSearchActivity extends BaseActivity {
                             tabsItem.setMinDiscountedPrice(String.valueOf(ob.isNull("discounted_price") ? 0 : ob.getInt("discounted_price")));
                             tabsItem.setMinPrice(String.valueOf(ob.getInt("price")));
 
-                            if (!slugStore.contains(ob.getString("slug"))) { }
-                                itemListProduct.add(tabsItem);
-                                adapterProduct.notifyItemInserted(itemListProduct.size());
+                            if (!slugStore.contains(ob.getString("slug"))) {
+                            }
+                            itemListProduct.add(tabsItem);
+                            adapterProduct.notifyItemInserted(itemListProduct.size());
 
 
                             slugStore.add(ob.getString("slug"));
@@ -762,7 +733,7 @@ public class GlobalSearchActivity extends BaseActivity {
                         }
 
 
-                        if(jsonObject.getInt("nbHits") > 10) {
+                        if (jsonObject.getInt("nbHits") > 10) {
                             if (itemListProduct.size() < 10 && page < 4)
                                 loadNextSearchPage();
                         }
@@ -775,7 +746,6 @@ public class GlobalSearchActivity extends BaseActivity {
                             filterAdapter.notifyDataSetChanged();
 
                             JSONObject facets = jsonObject.getJSONObject("facets");
-
 
 
                             Iterator<String> iter;
@@ -846,7 +816,6 @@ public class GlobalSearchActivity extends BaseActivity {
                             filterAdapter.notifyDataSetChanged();
 
 
-
                             //filterAdapter.notifyDataSetChanged();
 
 
@@ -860,7 +829,7 @@ public class GlobalSearchActivity extends BaseActivity {
                         progressBar.setVisibility(View.INVISIBLE);
                         try {
 
-                            if((productList.length() < 1 && page==1) || jsonObject.getInt("nbHits") < 2) {
+                            if ((productList.length() < 1 && page == 1) || jsonObject.getInt("nbHits") < 2) {
                                 nestedSV.setBackgroundColor(Color.parseColor("#ffffff"));
                                 noResult.setVisibility(View.VISIBLE);
 
@@ -870,7 +839,7 @@ public class GlobalSearchActivity extends BaseActivity {
                                                 .load(R.drawable.ic_search_not_found)
                                                 .apply(new RequestOptions().override(800, 800))
                                                 .into((ImageView) findViewById(R.id.noImage));
-                                    } catch (Exception e){
+                                    } catch (Exception e) {
 
                                     }
                                 }
@@ -881,13 +850,13 @@ public class GlobalSearchActivity extends BaseActivity {
                                 nestedSV.setBackgroundColor(Color.parseColor("#fafafa"));
                                 noResult.setVisibility(View.GONE);
                             }
-                        } catch (Exception e){
+                        } catch (Exception e) {
 
                         }
 
 
                         progressBar.setVisibility(View.INVISIBLE);
-                        if(!searchSlug.equals("product") && page == 1)
+                        if (!searchSlug.equals("product") && page == 1)
                             loadNextSearchPage();
 
                     } catch (JSONException e) {
@@ -895,12 +864,11 @@ public class GlobalSearchActivity extends BaseActivity {
                     }
 
 
-
                 }, error -> {
-                    isLoading=false;
-                    progressBar.setVisibility(View.GONE);
-                    error.printStackTrace();
-                });
+            isLoading = false;
+            progressBar.setVisibility(View.GONE);
+            error.printStackTrace();
+        });
         request.setShouldCache(false);
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -911,27 +879,27 @@ public class GlobalSearchActivity extends BaseActivity {
     }
 
 
-    public void getShops(int p){
+    public void getShops(int p) {
 
         if (isLoading)
             return;
         isLoading = true;
 
         String query = "root";
-        if(!searchText.getText().toString().equals(""))
+        if (!searchText.getText().toString().equals(""))
             query = searchText.getText().toString();
 
 
-        String url = UrlUtils.BASE_URL+"custom/shops/?page="+p+"&limit=15";
-        if(!query.equals("root"))
-            url = UrlUtils.BASE_URL+"custom/shops/?page="+p+"&limit=15&search="+query;
+        String url = UrlUtils.BASE_URL + "custom/shops/?page=" + p + "&limit=15";
+        if (!query.equals("root"))
+            url = UrlUtils.BASE_URL + "custom/shops/?page=" + p + "&limit=15&search=" + query;
 
 
         Log.d("json", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
 
-                    if (nestedSV!=null)
+                    if (nestedSV != null)
                         nestedSV.fling(0);
 
                     isLoading = false;
@@ -940,17 +908,17 @@ public class GlobalSearchActivity extends BaseActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
 
-                                TabsItem tabsItem = new TabsItem();
-                                tabsItem.setTitle(ob.getString("shop_name"));
-                                tabsItem.setImage(ob.getString("shop_image"));
-                                tabsItem.setSlug(ob.getString("slug"));
-                                tabsItem.setCategory("root");
-                                itemList.add(tabsItem);
+                            TabsItem tabsItem = new TabsItem();
+                            tabsItem.setTitle(ob.getString("shop_name"));
+                            tabsItem.setImage(ob.getString("shop_image"));
+                            tabsItem.setSlug(ob.getString("slug"));
+                            tabsItem.setCategory("root");
+                            itemList.add(tabsItem);
 
-                                adapter.notifyItemInserted(itemList.size());
+                            adapter.notifyItemInserted(itemList.size());
 
                         }
-                        if(page == 1)
+                        if (page == 1)
                             loadNextShops();
                         else
                             progressBar.setVisibility(View.INVISIBLE);
@@ -974,29 +942,27 @@ public class GlobalSearchActivity extends BaseActivity {
     }
 
 
-
-
-    public void getBrands(int p){
+    public void getBrands(int p) {
         if (isLoading)
             return;
         isLoading = true;
 
 
         String query = "root";
-        if(!searchText.getText().toString().equals(""))
+        if (!searchText.getText().toString().equals(""))
             query = searchText.getText().toString();
 
 
-        String url = UrlUtils.BASE_URL+"public/brands/?page="+p+"&limit=15";
-        if(!query.equals("root"))
-            url = UrlUtils.BASE_URL+"public/brands/?page="+p+"&limit=15&search="+query;
+        String url = UrlUtils.BASE_URL + "public/brands/?page=" + p + "&limit=15";
+        if (!query.equals("root"))
+            url = UrlUtils.BASE_URL + "public/brands/?page=" + p + "&limit=15&search=" + query;
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
 
 
-                    if (nestedSV!=null)
+                    if (nestedSV != null)
                         nestedSV.fling(0);
 
                     try {
@@ -1005,16 +971,16 @@ public class GlobalSearchActivity extends BaseActivity {
                         // Log.d("category_brands",jsonArray.toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
-                                TabsItem tabsItem = new TabsItem();
-                                tabsItem.setTitle(ob.getString("name"));
-                                tabsItem.setImage(ob.getString("image_url"));
-                                tabsItem.setSlug(ob.getString("slug"));
-                                tabsItem.setCategory("root");
-                                itemList.add(tabsItem);
-                                adapter.notifyItemInserted(itemList.size());
+                            TabsItem tabsItem = new TabsItem();
+                            tabsItem.setTitle(ob.getString("name"));
+                            tabsItem.setImage(ob.getString("image_url"));
+                            tabsItem.setSlug(ob.getString("slug"));
+                            tabsItem.setCategory("root");
+                            itemList.add(tabsItem);
+                            adapter.notifyItemInserted(itemList.size());
 
                         }
-                        if(page == 1)
+                        if (page == 1)
                             loadNextBrands();
                         else
                             progressBar.setVisibility(View.INVISIBLE);
@@ -1024,8 +990,6 @@ public class GlobalSearchActivity extends BaseActivity {
                             setNotFound(false);
                         else
                             setNotFound(true);
-
-
 
 
                     } catch (JSONException e) {
@@ -1043,10 +1007,9 @@ public class GlobalSearchActivity extends BaseActivity {
     }
 
 
+    public void setNotFound(boolean notFound) {
 
-    public void setNotFound(boolean notFound){
-
-        if(notFound && !GlobalSearchActivity.this.isFinishing()) {
+        if (notFound && !GlobalSearchActivity.this.isFinishing()) {
             nestedSV.setBackgroundColor(Color.parseColor("#ffffff"));
             noResult.setVisibility(View.VISIBLE);
 
@@ -1055,8 +1018,8 @@ public class GlobalSearchActivity extends BaseActivity {
                         .load(R.drawable.ic_search_not_found)
                         .apply(new RequestOptions().override(800, 800))
                         .into((ImageView) findViewById(R.id.noImage));
-            } catch (Exception e){
-                Toast.makeText(getApplicationContext(),"Search result not found", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), "Search result not found", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -1069,17 +1032,16 @@ public class GlobalSearchActivity extends BaseActivity {
 
     }
 
-    
 
-    public void noFilterText(){
-        
+    public void noFilterText() {
+
         TextView valueTV = new TextView(this);
         valueTV.setText("No filter attribute available for the searched item");
         valueTV.setTextColor(Color.BLACK);
         valueTV.setTextSize(16f);
         valueTV.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0,100,0,0);
+        params.setMargins(0, 100, 0, 0);
         params.gravity = Gravity.CENTER;
         valueTV.setLayoutParams(params);
     }
@@ -1096,12 +1058,12 @@ public class GlobalSearchActivity extends BaseActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
     }
 

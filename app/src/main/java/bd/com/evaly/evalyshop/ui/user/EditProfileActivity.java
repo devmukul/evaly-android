@@ -42,14 +42,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -76,7 +76,7 @@ public class EditProfileActivity extends BaseActivity {
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
 
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener(){
+    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
         //Event Listeners
         public void onConnected() {
@@ -84,26 +84,26 @@ public class EditProfileActivity extends BaseActivity {
             Logger.d("======   CONNECTED  -========");
         }
 
-        public void onLoggedIn(){
+        public void onLoggedIn() {
             xmppHandler = AppController.getmService().xmpp;
             xmppHandler.updateUserInfo(CredentialManager.getUserData());
         }
 
-        public void onUpdateUserSuccess(){
+        public void onUpdateUserSuccess() {
             dialog.hideDialog();
             Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
             try {
                 onBackPressed();
-            } catch (Exception e){
+            } catch (Exception e) {
                 finish();
             }
         }
 
-        public void onUpdateUserFailed( String error ){
+        public void onUpdateUserFailed(String error) {
             Logger.d(error);
 
             xmppHandler.disconnect();
-            Toast.makeText(getApplicationContext(),error,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
         }
 
     };
@@ -156,16 +156,16 @@ public class EditProfileActivity extends BaseActivity {
         update.setOnClickListener(v -> {
             //setUserData();
 
-            if (!Utils.isValidNumber(phone.getText().toString())){
+            if (!Utils.isValidNumber(phone.getText().toString())) {
                 Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
                 return;
-            }else if (firstname.getText().toString().trim().isEmpty()){
+            } else if (firstname.getText().toString().trim().isEmpty()) {
                 firstname.setError("Required");
                 return;
-            }else if (lastName.getText().toString().trim().isEmpty()){
+            } else if (lastName.getText().toString().trim().isEmpty()) {
                 lastName.setError("Required");
                 return;
-            }else if (email.getText().toString().trim().isEmpty()){
+            } else if (email.getText().toString().trim().isEmpty()) {
                 email.setError("Required");
                 return;
             }
@@ -252,7 +252,7 @@ public class EditProfileActivity extends BaseActivity {
 
                 try {
 
-                    File cImage = compressImage(data.getData(),Bitmap.CompressFormat.JPEG, 60, destinationDirectoryPath);
+                    File cImage = compressImage(data.getData(), Bitmap.CompressFormat.JPEG, 60, destinationDirectoryPath);
 
                     Bitmap bitmap = BitmapFactory.decodeFile(destinationDirectoryPath);
 
@@ -301,8 +301,6 @@ public class EditProfileActivity extends BaseActivity {
     }
 
 
-
-
     private void uploadProfilePicture(final Bitmap bitmap) {
 
 
@@ -310,17 +308,17 @@ public class EditProfileActivity extends BaseActivity {
                 "Uploading image...", true);
 
         RequestQueue rQueue;
-        String url=UrlUtils.BASE_URL+"image/upload";
+        String url = UrlUtils.BASE_URL + "image/upload";
 
         Logger.d(url);
 
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
                 response -> {
 
-                    if (dialog!=null && dialog.isShowing())
+                    if (dialog != null && dialog.isShowing())
                         dialog.dismiss();
 
-                    Log.d("json image" ,new String(response.data));
+                    Log.d("json image", new String(response.data));
 
 
                     try {
@@ -328,7 +326,7 @@ public class EditProfileActivity extends BaseActivity {
 
                         Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
 
-                        if(jsonObject.getBoolean("success")) {
+                        if (jsonObject.getBoolean("success")) {
                             String image = jsonObject.getJSONObject("data").getString("url");
                             String image_sm = jsonObject.getJSONObject("data").getString("url_sm");
                             userDetails.setProfilePicture(image);
@@ -346,23 +344,24 @@ public class EditProfileActivity extends BaseActivity {
 
                     NetworkResponse response = error.networkResponse;
                     if (response != null && response.data != null) {
-                        if (error.networkResponse.statusCode == 401){
+                        if (error.networkResponse.statusCode == 401) {
 
-                                AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                                    @Override
-                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                        uploadProfilePicture(bitmap);
-                                    }
+                            AuthApiHelper.refreshToken(EditProfileActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                @Override
+                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                    uploadProfilePicture(bitmap);
+                                }
 
-                                    @Override
-                                    public void onFailed(int status) {
+                                @Override
+                                public void onFailed(int status) {
 
-                                    }
-                                });
+                                }
+                            });
 
-                        return;
+                            return;
 
-                    }}
+                        }
+                    }
 
 
                     dialog.dismiss();
@@ -415,11 +414,8 @@ public class EditProfileActivity extends BaseActivity {
     }
 
 
-
-
-
     private void startXmppService() {
-        if( !XMPPService.isServiceRunning ) {
+        if (!XMPPService.isServiceRunning) {
             Intent intent = new Intent(this, XMPPService.class);
             mChatApp.UnbindService();
             mChatApp.BindService(intent);
@@ -427,7 +423,7 @@ public class EditProfileActivity extends BaseActivity {
         } else {
             Logger.d("---------");
             xmppHandler = AppController.getmService().xmpp;
-            if(!xmppHandler.isConnected()){
+            if (!xmppHandler.isConnected()) {
                 xmppHandler.connect();
             } else {
                 xmppHandler.updateUserInfo(CredentialManager.getUserData());
@@ -439,7 +435,7 @@ public class EditProfileActivity extends BaseActivity {
 
         dialog.showDialog();
 
-        HashMap<String, String> userInfo =  new HashMap<>();
+        HashMap<String, String> userInfo = new HashMap<>();
 
         userInfo.put("first_name", firstname.getText().toString());
         userInfo.put("last_name", lastName.getText().toString());
@@ -447,7 +443,6 @@ public class EditProfileActivity extends BaseActivity {
         userInfo.put("contact", phone.getText().toString());
         userInfo.put("address", address.getText().toString());
         userInfo.put("profile_pic_url", userDetails.getProfilePicture());
-
 
 
         AuthApiHelper.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<JsonObject, String>() {

@@ -36,9 +36,9 @@ public class PayViaCard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getPackageManager().hasSystemFeature("android.software.webview") && Utils.isPackageExisted("com.google.android.webview", this)) {
+        if (getPackageManager().hasSystemFeature("android.software.webview") && Utils.isPackageExisted("com.google.android.webview", this)) {
 
-        }else {
+        } else {
             Toast.makeText(this, "Please install WebView from Google Play Store", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -110,14 +110,14 @@ public class PayViaCard extends AppCompatActivity {
                 super.onPageFinished(webView, url);
                 //Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
 
-                if(!redirect){
+                if (!redirect) {
                     loadingFinished = true;
                 }
 
-                if(loadingFinished && isShowed){
+                if (loadingFinished && isShowed) {
                     isShowed = false;
 
-                } else{
+                } else {
                     redirect = false;
                 }
 

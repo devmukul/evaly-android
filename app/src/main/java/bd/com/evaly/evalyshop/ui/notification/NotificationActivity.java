@@ -55,14 +55,14 @@ public class NotificationActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        recyclerView=findViewById(R.id.recycle);
-        not=findViewById(R.id.empty);
-        LinearLayoutManager manager=new LinearLayoutManager(this);
+        recyclerView = findViewById(R.id.recycle);
+        not = findViewById(R.id.empty);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
-        notifications=new ArrayList<>();
-        adapter=new NotificationAdapter(notifications,this);
+        notifications = new ArrayList<>();
+        adapter = new NotificationAdapter(notifications, this);
         recyclerView.setAdapter(adapter);
-        userDetails=new UserDetails(this);
+        userDetails = new UserDetails(this);
         getNotifications();
 
     }
@@ -74,9 +74,8 @@ public class NotificationActivity extends BaseActivity {
     }
 
 
-
-    public void getNotifications(){
-        String url= UrlUtils.BASE_URL+"notifications/";
+    public void getNotifications() {
+        String url = UrlUtils.BASE_URL + "notifications/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -86,12 +85,12 @@ public class NotificationActivity extends BaseActivity {
             Log.d("notifications_response", response.toString());
             try {
                 JSONArray jsonArray = response.getJSONArray("results");
-                if(jsonArray.length()==0){
+                if (jsonArray.length() == 0) {
                     not.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                }else{
+                } else {
                     not.setVisibility(View.GONE);
-                    for(int i=0;i<jsonArray.length();i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject ob = jsonArray.getJSONObject(i);
 
                         Notifications item = new Notifications();
@@ -118,23 +117,24 @@ public class NotificationActivity extends BaseActivity {
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(NotificationActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        getNotifications();
-                    }
+                    AuthApiHelper.refreshToken(NotificationActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getNotifications();
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
         }) {
             @Override
@@ -144,7 +144,7 @@ public class NotificationActivity extends BaseActivity {
                 return headers;
             }
         };
-        RequestQueue queue= Volley.newRequestQueue(this);
+        RequestQueue queue = Volley.newRequestQueue(this);
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -152,12 +152,10 @@ public class NotificationActivity extends BaseActivity {
     }
 
 
+    public void markAsRead() {
 
 
-    public void markAsRead(){
-
-
-        String url = UrlUtils.BASE_URL+"update-notifications/";
+        String url = UrlUtils.BASE_URL + "update-notifications/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -172,23 +170,24 @@ public class NotificationActivity extends BaseActivity {
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(NotificationActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        markAsRead();
-                    }
+                    AuthApiHelper.refreshToken(NotificationActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            markAsRead();
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
         }) {
             @Override
@@ -210,7 +209,7 @@ public class NotificationActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_mark_as_read){
+        if (item.getItemId() == R.id.action_mark_as_read) {
             markAsRead();
         }
         return super.onOptionsItemSelected(item);

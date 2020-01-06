@@ -44,7 +44,7 @@ import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 
-public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdapter.MyViewHolder>{
+public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdapter.MyViewHolder> {
 
     ArrayList<AvailableShop> availableShops;
     Context context;
@@ -53,7 +53,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
     Set<AvailableShop> set;
     private CartDao cartDao;
 
-    public AvailableShopAdapter(Context context, View view,ArrayList<AvailableShop> availableShops, CartDao cartDao, CartEntity cartItem) {
+    public AvailableShopAdapter(Context context, View view, ArrayList<AvailableShop> availableShops, CartDao cartDao, CartEntity cartItem) {
         this.availableShops = availableShops;
         this.context = context;
         this.cartDao = cartDao;
@@ -64,7 +64,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
     @NonNull
     @Override
     public AvailableShopAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.available_shop,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.available_shop, viewGroup, false);
         return new MyViewHolder(view);
     }
 
@@ -86,13 +86,13 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.shopName.setText(availableShops.get(i).getName());
 
-        if(availableShops.get(i).getAddress().equals("xxx"))
+        if (availableShops.get(i).getAddress().equals("xxx"))
             myViewHolder.address.setText("Dhaka, Bangladesh");
         else
             myViewHolder.address.setText(availableShops.get(i).getAddress());
 
 
-        if(!availableShops.get(i).getStock()){
+        if (!availableShops.get(i).getStock()) {
             myViewHolder.buyBtn.setText("Out of Stock");
             myViewHolder.buyBtn.setEnabled(false);
         }
@@ -108,7 +108,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                 myViewHolder.price.setText(String.format(Locale.ENGLISH, "৳ %s", actualPrice));
                 myViewHolder.maximumnPrice.setVisibility(View.GONE);
 
-                if(actualPrice.equals("0")){
+                if (actualPrice.equals("0")) {
                     myViewHolder.price.setVisibility(View.INVISIBLE);
                     myViewHolder.buyBtn.setText("Call For Price");
                     myViewHolder.buyBtn.getBackground().setAlpha(140);
@@ -116,15 +116,14 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                     myViewHolder.maximumnPrice.setVisibility(View.GONE);
                 }
 
-            }
-            else {
+            } else {
                 myViewHolder.maximumnPrice.setPaintFlags(myViewHolder.maximumnPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 myViewHolder.price.setText(String.format("৳ %s", discountPrice));
                 myViewHolder.maximumnPrice.setText(String.format("৳ %s", actualPrice));
                 myViewHolder.maximumnPrice.setVisibility(View.VISIBLE);
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             myViewHolder.price.setText(String.format(" %s", availableShops.get(i).getPrice()));
         }
 
@@ -137,9 +136,10 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                               public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                   return false;
                               }
+
                               @Override
                               public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                  Bitmap bitmap = Utils.changeColor(((BitmapDrawable)resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
+                                  Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
                                   myViewHolder.shopImage.setImageBitmap(bitmap);
                                   return true;
                               }
@@ -148,18 +148,18 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                 .into(myViewHolder.shopImage);
 
 
-        myViewHolder.chatBtn.setOnClickListener(v -> Toast.makeText(context,"Chat system coming soon!", Toast.LENGTH_SHORT).show());
+        myViewHolder.chatBtn.setOnClickListener(v -> Toast.makeText(context, "Chat system coming soon!", Toast.LENGTH_SHORT).show());
 
-        if(myViewHolder.buyBtn.getText().toString().equals("Out of Stock"))
+        if (myViewHolder.buyBtn.getText().toString().equals("Out of Stock"))
             myViewHolder.buyBtn.setEnabled(false);
 
         myViewHolder.buyBtn.setOnClickListener(v -> {
 
-            if(myViewHolder.buyBtn.getText().toString().equals("Out of Stock")){
+            if (myViewHolder.buyBtn.getText().toString().equals("Out of Stock")) {
                 Toast.makeText(context, "Sorry the product is out of stock in this shop. Please select another shop.", Toast.LENGTH_LONG).show();
 
 
-            }else{
+            } else {
 
                 cartItem.setSlug(availableShops.get(i).getSlug());
                 cartItem.setProductID(availableShops.get(i).getProductId());
@@ -172,7 +172,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                     }
                     try {
                         cartItem.setPriceRound(availableShops.get(i).getMaximumPrice());
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         cartItem.setPrice("0");
                     }
                 } else {
@@ -183,7 +183,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                     }
                     try {
                         cartItem.setPrice(availableShops.get(i).getPrice());
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         cartItem.setPrice("0");
                     }
                 }
@@ -198,18 +198,19 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                     List<CartEntity> dbItem = cartDao.checkExistsEntity(cartItem.getProductID());
 
                     if (dbItem.size() > 0)
-                        cartDao.updateQuantity(cartItem.getProductID(), dbItem.get(0).getQuantity()+1);
+                        cartDao.updateQuantity(cartItem.getProductID(), dbItem.get(0).getQuantity() + 1);
                     else
                         cartDao.insert(cartItem);
 
                 });
 
-                Snackbar snackBar = Snackbar.make(view,"Added to cart", 1500);
+                Snackbar snackBar = Snackbar.make(view, "Added to cart", 1500);
                 snackBar.setAction("Go to Cart", v1 -> {
                     try {
                         Intent intent = new Intent(context, CartActivity.class);
                         context.startActivity(intent);
-                    } catch (Exception ignored){}
+                    } catch (Exception ignored) {
+                    }
 
                     snackBar.dismiss();
                 });
@@ -229,48 +230,50 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
         myViewHolder.call.setOnClickListener(v -> {
 
-                final String phone = availableShops.get(i).getPhone();
+            final String phone = availableShops.get(i).getPhone();
 
-                final Snackbar snackBar = Snackbar.make(view, phone+"", Snackbar.LENGTH_LONG);
+            final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
 
-                snackBar.setAction("Call", v12 -> {
+            snackBar.setAction("Call", v12 -> {
 
-                    try {
+                try {
 
-                        Intent intent = new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + phone));
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + phone));
 
-                        context.startActivity(intent);
+                    context.startActivity(intent);
 
-                    } catch (Exception ignored){}
+                } catch (Exception ignored) {
+                }
 
-                    snackBar.dismiss();
-                });
-                snackBar.show();
+                snackBar.dismiss();
+            });
+            snackBar.show();
 
 
         });
 
         myViewHolder.location.setOnClickListener(v -> {
 
-                final String location;
-                if(availableShops.get(i).getAddress().equals("xxx"))
-                    location = "Dhaka, Bangladesh";
-                else
-                   location = availableShops.get(i).getAddress();
+            final String location;
+            if (availableShops.get(i).getAddress().equals("xxx"))
+                location = "Dhaka, Bangladesh";
+            else
+                location = availableShops.get(i).getAddress();
 
-                final Snackbar snackBar = Snackbar.make(view, location+"", Snackbar.LENGTH_LONG);
-                snackBar.setAction("Copy", v13 -> {
+            final Snackbar snackBar = Snackbar.make(view, location + "", Snackbar.LENGTH_LONG);
+            snackBar.setAction("Copy", v13 -> {
 
-                    try {
-                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("address", location);
-                        clipboard.setPrimaryClip(clip);
-                    } catch (Exception e){}
+                try {
+                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("address", location);
+                    clipboard.setPrimaryClip(clip);
+                } catch (Exception e) {
+                }
 
-                    snackBar.dismiss();
-                });
-                snackBar.show();
+                snackBar.dismiss();
+            });
+            snackBar.show();
         });
 
     }
@@ -290,18 +293,18 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         return availableShops.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView shopName,price,chatBtn,buyBtn,address,maximumnPrice,priceOff;
-        ImageView shopImage,shop,call,location;
+        TextView shopName, price, chatBtn, buyBtn, address, maximumnPrice, priceOff;
+        ImageView shopImage, shop, call, location;
         LinearLayout discount;
         View view;
 
         public MyViewHolder(final View itemView) {
             super(itemView);
-            shopImage=itemView.findViewById(R.id.shop_image);
-            shopName= itemView.findViewById(R.id.shop_name);
-            address= itemView.findViewById(R.id.address);
+            shopImage = itemView.findViewById(R.id.shop_image);
+            shopName = itemView.findViewById(R.id.shop_name);
+            address = itemView.findViewById(R.id.address);
             shop = itemView.findViewById(R.id.shopPage);
             call = itemView.findViewById(R.id.call);
             discount = itemView.findViewById(R.id.discount);
@@ -309,11 +312,11 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
             maximumnPrice = itemView.findViewById(R.id.max_price);
             priceOff = itemView.findViewById(R.id.price_off);
 
-            chatBtn=itemView.findViewById(R.id.chat);
-            buyBtn= itemView.findViewById(R.id.buy);
+            chatBtn = itemView.findViewById(R.id.chat);
+            buyBtn = itemView.findViewById(R.id.buy);
 
-            price=itemView.findViewById(R.id.price);
-            view=itemView;
+            price = itemView.findViewById(R.id.price);
+            view = itemView;
         }
     }
 }

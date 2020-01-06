@@ -36,16 +36,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    SkeletonScreen skeletonCommentHeader;
     private String type;
     private RecyclerView recyclerView;
     private NewsfeedPendingAdapter adapter;
@@ -54,18 +56,12 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
     private NewsfeedActivity activity;
     private UserDetails userDetails;
     private LinearLayout not, progressContainer;
-
     // newfeed scroller
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private int currentPage;
-
     private ProgressBar bottomProgressBar;
     private SwipeRefreshLayout swipeLayout;
     private RequestQueue queue;
-
-
-
 
     public NewsfeedPendingFragment() {
         // Required empty public constructor
@@ -85,7 +81,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
         context = getContext();
         activity = (NewsfeedActivity) getActivity();
-        queue= Volley.newRequestQueue(context);
+        queue = Volley.newRequestQueue(context);
 
         if (getArguments() != null) {
             type = getArguments().getString("type");
@@ -98,7 +94,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_newsfeed, container, false);
     }
-
 
     @Override
     public void onRefresh() {
@@ -114,27 +109,25 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
             ((NewsfeedActivity) getActivity()).getNotificationCount();
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
     }
 
-    public UserDetails getUserDetails(){
+    public UserDetails getUserDetails() {
         return userDetails;
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
 
-
         userDetails = new UserDetails(context);
 
         // pull to refresh
-        swipeLayout =  view.findViewById(R.id.swipe_container);
+        swipeLayout = view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
 
         try {
@@ -142,7 +135,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
                     android.R.color.holo_red_dark,
                     android.R.color.holo_blue_dark,
                     android.R.color.holo_orange_dark);
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -162,21 +155,17 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
         currentPage = 1;
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if(dy > 0) //check for scroll down
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
                 {
                     visibleItemCount = manager.getChildCount();
                     totalItemCount = manager.getItemCount();
                     pastVisiblesItems = manager.findFirstVisibleItemPosition();
 
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                        {
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             getPosts(++currentPage);
 
                         }
@@ -189,11 +178,9 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
     }
 
+    public void action(String id, final String type, int position) {
 
-
-    public void action(String id, final String type, int position){
-
-        String url = UrlUtils.BASE_URL_NEWSFEED+"posts/"+id;
+        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + id;
 
         JSONObject parameter = new JSONObject();
         JSONObject parameterPost = new JSONObject();
@@ -201,15 +188,15 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         try {
 
             if (type.equals("reject"))
-                parameter.put("status","archieved");
+                parameter.put("status", "archieved");
             else if (type.equals("approve"))
-                parameter.put("status","active");
+                parameter.put("status", "active");
 
 
             parameterPost.put("post", parameter);
 
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -234,26 +221,27 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    if (error.networkResponse.statusCode == 401) {
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            action(id,type,position);
-                        }
+                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                action(id, type, position);
+                            }
 
-                        @Override
-                        public void onFailed(int status) {
+                            @Override
+                            public void onFailed(int status) {
 
-                        }
-                    });
+                            }
+                        });
 
-                    return;
+                        return;
 
-                }}
+                    }
+                }
 
                 Log.e("onErrorResponse", error.toString());
-               // Toast.makeText(context, "Couldn't delete post", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context, "Couldn't delete post", Toast.LENGTH_SHORT).show();
 
             }
         }) {
@@ -267,7 +255,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
             }
         };
 
-        RequestQueue queue= Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(context);
         request.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -275,19 +263,10 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         queue.add(request);
     }
 
+    public void loadPostDetails(String post_id) {
 
 
-
-
-
-
-    SkeletonScreen skeletonCommentHeader;
-
-
-    public void loadPostDetails(String post_id){
-
-
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id;
+        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + post_id;
 
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
@@ -318,23 +297,24 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    if (error.networkResponse.statusCode == 401) {
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            loadPostDetails(post_id);
-                        }
+                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                loadPostDetails(post_id);
+                            }
 
-                        @Override
-                        public void onFailed(int status) {
+                            @Override
+                            public void onFailed(int status) {
 
-                        }
-                    });
+                            }
+                        });
 
-                    return;
+                        return;
 
-                }}
+                    }
+                }
 
                 Log.e("onErrorResponse", error.toString());
 
@@ -360,18 +340,17 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
     }
 
 
-
-    public void getPosts(int page){
+    public void getPosts(int page) {
 
 
         loading = false;
 
-        String url = UrlUtils.BASE_URL_NEWSFEED+"posts?status=pending&page="+page;
+        String url = UrlUtils.BASE_URL_NEWSFEED + "posts?status=pending&page=" + page;
 
         if (page == 1)
             progressContainer.setVisibility(View.VISIBLE);
 
-        if (page>1)
+        if (page > 1)
             bottomProgressBar.setVisibility(View.VISIBLE);
 
         Log.d("json url", url);
@@ -384,12 +363,12 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
             try {
                 JSONArray jsonArray = response.getJSONArray("posts");
-                if(jsonArray.length()==0 && page == 1){
+                if (jsonArray.length() == 0 && page == 1) {
                     not.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                } else{
+                } else {
                     not.setVisibility(View.GONE);
-                    for(int i=0;i<jsonArray.length();i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject ob = jsonArray.getJSONObject(i);
 
                         NewsfeedItem item = new NewsfeedItem();
@@ -404,7 +383,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
                         try {
                             item.setAttachment(ob.getString("attachment"));
                             item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             item.setAttachment(null);
                             item.setAttachmentCompressed(null);
                         }
@@ -432,23 +411,24 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        getPosts(page);
-                    }
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getPosts(page);
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
             progressContainer.setVisibility(View.GONE);
             bottomProgressBar.setVisibility(View.INVISIBLE);
@@ -473,11 +453,8 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
     }
 
 
-
-
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
 
         super.onDestroy();
 

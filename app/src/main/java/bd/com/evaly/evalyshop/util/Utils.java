@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 
 import bd.com.evaly.evalyshop.R;
 
-public class  Utils {
+public class Utils {
 
     public static final int REQUEST_CODE_CAMERA = 300;
     private static final int SECOND_MILLIS = 1000;
@@ -48,29 +48,29 @@ public class  Utils {
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
 
-    public static String capitalize(String capString){
+    public static String capitalize(String capString) {
         StringBuffer capBuffer = new StringBuffer();
         Matcher capMatcher = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(capString);
-        while (capMatcher.find()){
+        while (capMatcher.find()) {
             capMatcher.appendReplacement(capBuffer, capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
         }
         return capMatcher.appendTail(capBuffer).toString();
     }
 
-    public static boolean isPackageExisted(String targetPackage, Context context){
+    public static boolean isPackageExisted(String targetPackage, Context context) {
         List<ApplicationInfo> packages;
         PackageManager pm;
 
         pm = context.getPackageManager();
         packages = pm.getInstalledApplications(0);
         for (ApplicationInfo packageInfo : packages) {
-            if(packageInfo.packageName.equals(targetPackage))
+            if (packageInfo.packageName.equals(targetPackage))
                 return true;
         }
         return false;
     }
 
-    public static boolean isValidNumber(String text){
+    public static boolean isValidNumber(String text) {
 
         return text.matches("^(01)[3-9][0-9]{8}$");
     }
@@ -88,7 +88,7 @@ public class  Utils {
             date = dateFormat.parse(time);
         } catch (ParseException e) {
             e.printStackTrace();
-        } catch (Exception e){
+        } catch (Exception e) {
             Logger.d(e.getMessage());
         }
         Calendar calendar = Calendar.getInstance();
@@ -103,7 +103,7 @@ public class  Utils {
         return dateTime;
     }
 
-    public static String isStrongPassword(String password){
+    public static String isStrongPassword(String password) {
 
         if (password.length() < 8) {
             return "Passwords must be at least 8 characters in length";
@@ -115,8 +115,8 @@ public class  Utils {
                 c = password.charAt(i);
                 if (!Character.isLetterOrDigit(c))
                     count++;
-                 else if (Character.isDigit(c))
-                     numCount++;
+                else if (Character.isDigit(c))
+                    numCount++;
 
             }
             if (count < 1)
@@ -129,18 +129,18 @@ public class  Utils {
 
     public static String getStatusMode(int status) {
         String mPresenceMode = "";
-        switch (status){
+        switch (status) {
             case Constants.PRESENCE_MODE_AVAILABLE_INT:
-                mPresenceMode =  Constants.PRESENCE_MODE_AVAILABLE;
+                mPresenceMode = Constants.PRESENCE_MODE_AVAILABLE;
                 break;
             case Constants.PRESENCE_MODE_AWAY_INT:
-                mPresenceMode =  Constants.PRESENCE_MODE_AWAY;
+                mPresenceMode = Constants.PRESENCE_MODE_AWAY;
                 break;
             case Constants.PRESENCE_MODE_DND_INT:
-                mPresenceMode =  Constants.PRESENCE_MODE_DND;
+                mPresenceMode = Constants.PRESENCE_MODE_DND;
                 break;
             case Constants.PRESENCE_MODE_OFFLINE_INT:
-                mPresenceMode =  Constants.PRESENCE_MODE_XA;
+                mPresenceMode = Constants.PRESENCE_MODE_XA;
                 break;
             default:
                 mPresenceMode = Constants.PRESENCE_MODE_XA;
@@ -150,7 +150,7 @@ public class  Utils {
         return mPresenceMode;
     }
 
-    public static String getTimeAgoOnline(long time){
+    public static String getTimeAgoOnline(long time) {
 
         // TODO: localize
         final long diff = time;
@@ -169,20 +169,20 @@ public class  Utils {
         }
     }
 
-    public static String getChatMode (ChatState mode) {
+    public static String getChatMode(ChatState mode) {
         String mChatMode = "";
-        switch (mode){
+        switch (mode) {
             case composing:
-                mChatMode =  Constants.CHAT_MODE_TYPING;
+                mChatMode = Constants.CHAT_MODE_TYPING;
                 break;
             case gone:
-                mChatMode =  Constants.CHAT_MODE_LEFT;
+                mChatMode = Constants.CHAT_MODE_LEFT;
                 break;
             case paused:
-                mChatMode =  Constants.CHAT_MODE_PAUSED;
+                mChatMode = Constants.CHAT_MODE_PAUSED;
                 break;
             case active:
-                mChatMode =  Constants.CHAT_MODE_ACTIVE;
+                mChatMode = Constants.CHAT_MODE_ACTIVE;
                 break;
         }
 
@@ -190,15 +190,15 @@ public class  Utils {
     }
 
     public static String truncateText(String text, int maxLength, String endWith) {
-        if(text != null && text.length() > maxLength) {
+        if (text != null && text.length() > maxLength) {
             BreakIterator bi = BreakIterator.getWordInstance();
             bi.setText(text);
 
-            if(bi.isBoundary(maxLength-1)) {
-                return text.substring(0, maxLength-2) + " " + endWith;
+            if (bi.isBoundary(maxLength - 1)) {
+                return text.substring(0, maxLength - 2) + " " + endWith;
             } else {
-                int preceding = bi.preceding(maxLength-1);
-                return text.substring(0, preceding-1) + " " + endWith;
+                int preceding = bi.preceding(maxLength - 1);
+                return text.substring(0, preceding - 1) + " " + endWith;
             }
         } else {
             return text;
@@ -206,7 +206,7 @@ public class  Utils {
     }
 
 
-    public static String getDeviceID(Context context){
+    public static String getDeviceID(Context context) {
 
 
         String android_id = "";
@@ -215,7 +215,8 @@ public class  Utils {
 
             android_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         if (android_id == null || android_id.equals("")) {
             android_id = "35" +
@@ -230,10 +231,9 @@ public class  Utils {
 
         //String val = String.valueOf(Calendar.getInstance().getTimeInMillis()/100986056);
 
-        android_id = "evaly"+android_id+"evalyevaly"+android_id+"evaly";
+        android_id = "evaly" + android_id + "evalyevaly" + android_id + "evaly";
 
         String s1 = encode(new String(android.util.Base64.encode(android_id.getBytes(), android.util.Base64.DEFAULT)));
-
 
 
         String str = reverseIt(s1);
@@ -244,7 +244,6 @@ public class  Utils {
     }
 
 
-
     public static String urlEncodeUTF8(String s) {
         try {
             return URLEncoder.encode(s, "UTF-8");
@@ -252,9 +251,10 @@ public class  Utils {
             throw new UnsupportedOperationException(e);
         }
     }
-    public  static String urlEncodeUTF8(Map<?,?> map) {
+
+    public static String urlEncodeUTF8(Map<?, ?> map) {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<?,?> entry : map.entrySet()) {
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
             if (sb.length() > 0) {
                 sb.append("&");
             }
@@ -271,7 +271,7 @@ public class  Utils {
         int i, len = source.length();
         StringBuilder dest = new StringBuilder(len);
 
-        for (i = (len - 1); i >= 0; i--){
+        for (i = (len - 1); i >= 0; i--) {
             dest.append(source.charAt(i));
         }
 
@@ -279,7 +279,7 @@ public class  Utils {
     }
 
 
-    public static String extraToken(String number){
+    public static String extraToken(String number) {
 
 
         String t = "";
@@ -291,21 +291,20 @@ public class  Utils {
             if (e.length() > 4) {
                 t = String.valueOf(8 * Integer.parseInt(e.substring(e.length() - 4)) - 2019);
             }
-            }catch(Exception e){
-                t = String.valueOf(Math.round(9e4 * Math.random()) + 1e4);
-            }
-            String encoded = t;
+        } catch (Exception e) {
+            t = String.valueOf(Math.round(9e4 * Math.random()) + 1e4);
+        }
+        String encoded = t;
 
         try {
             encoded = new String(android.util.Base64.encode(t.getBytes(), android.util.Base64.DEFAULT));
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
         return encoded;
 
     }
-
 
 
     public static void largeLog(String tag, String content) {
@@ -318,10 +317,7 @@ public class  Utils {
     }
 
 
-
-
-    public static void CustomTab(String url, Context context)
-    {
+    public static void CustomTab(String url, Context context) {
 
         try {
             Uri uri = Uri.parse(url);
@@ -337,12 +333,12 @@ public class  Utils {
             CustomTabsIntent customTabsIntent = intentBuilder.build();
 
             customTabsIntent.launchUrl(context, uri);
-        } catch (Exception e){
-            Toast.makeText(context,"Install Google Chrome", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(context, "Install Google Chrome", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public static String toFirstCharUpperAll(String string){
+    public static String toFirstCharUpperAll(String string) {
 
         try {
 
@@ -352,18 +348,18 @@ public class  Utils {
                     sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
             return sb.toString();
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
             return string;
 
         }
     }
 
-    public static String formattedDateFromString(String inputFormat, String outputFormat, String inputDate){
-        if(inputFormat.equals("")){ // if inputFormat = "", set a default input format.
+    public static String formattedDateFromString(String inputFormat, String outputFormat, String inputDate) {
+        if (inputFormat.equals("")) { // if inputFormat = "", set a default input format.
             inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         }
-        if(outputFormat.equals("")){
+        if (outputFormat.equals("")) {
             outputFormat = "EEEE d',' MMMM  yyyy"; // if inputFormat = "", set a default output format.
         }
         Date parsed = null;
@@ -391,8 +387,8 @@ public class  Utils {
     }
 
 
-    public static Date formattedDateFromString(String inputFormat, String inputDate){
-        if(inputFormat.equals("")){ // if inputFormat = "", set a default input format.
+    public static Date formattedDateFromString(String inputFormat, String inputDate) {
+        if (inputFormat.equals("")) { // if inputFormat = "", set a default input format.
             inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         }
 
@@ -413,12 +409,11 @@ public class  Utils {
     }
 
 
-
-    public static long formattedDateFromStringTimestamp(String inputFormat, String outputFormat, String inputDate){
-        if(inputFormat.equals("")){ // if inputFormat = "", set a default input format.
+    public static long formattedDateFromStringTimestamp(String inputFormat, String outputFormat, String inputDate) {
+        if (inputFormat.equals("")) { // if inputFormat = "", set a default input format.
             inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         }
-        if(outputFormat.equals("")){
+        if (outputFormat.equals("")) {
             outputFormat = "EEEE d',' MMMM  yyyy"; // if inputFormat = "", set a default output format.
         }
         Date parsed = null;
@@ -446,11 +441,11 @@ public class  Utils {
     }
 
 
-    public static long formattedDateFromStringToTimestampGMT(String inputFormat, String outputFormat, String inputDate){
-        if(inputFormat.equals("")){ // if inputFormat = "", set a default input format.
+    public static long formattedDateFromStringToTimestampGMT(String inputFormat, String outputFormat, String inputDate) {
+        if (inputFormat.equals("")) { // if inputFormat = "", set a default input format.
             inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         }
-        if(outputFormat.equals("")){
+        if (outputFormat.equals("")) {
             outputFormat = "EEEE d',' MMMM  yyyy"; // if inputFormat = "", set a default output format.
         }
         Date parsed = null;
@@ -478,7 +473,7 @@ public class  Utils {
     }
 
 
-    public static String titleBeautify(String str){
+    public static String titleBeautify(String str) {
 
         str = str.replace("-", " ");
         return str;
@@ -521,14 +516,12 @@ public class  Utils {
 
             return result;
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
             return src;
 
         }
     }
-
-
 
 
     public static String getTimeAgo(long time) {
@@ -568,7 +561,6 @@ public class  Utils {
 
         return timeAgo;
     }
-
 
 
     public static String getTimeAgoSmall(long time) {
@@ -612,14 +604,12 @@ public class  Utils {
     public static String getHumanTime(long timestamp) {
 
 
-
         Date tdate = new Date(timestamp * 1000);
 
         SimpleDateFormat jdf = new SimpleDateFormat("MMM dd 'at' h:mm a", Locale.ENGLISH);
 
 
         String timeAgo = jdf.format(tdate);
-
 
 
         return timeAgo;
@@ -634,9 +624,6 @@ public class  Utils {
         long timeDistance = currentDate().getTime() - time;
         return Math.round((Math.abs(timeDistance) / 1000) / 60);
     }
-
-
-
 
 
     public static String decode(String input) {
@@ -670,19 +657,15 @@ public class  Utils {
 
 
         StringBuffer output = new StringBuffer();
-        for(int i = 0; i < input.length(); i++)
-        {
-            String ch = input.charAt(i)+"";
-            if(hm.containsValue(ch))
-            {
+        for (int i = 0; i < input.length(); i++) {
+            String ch = input.charAt(i) + "";
+            if (hm.containsValue(ch)) {
                 for (Map.Entry<String, String> entry : hm.entrySet()) {
                     if (entry.getValue().equals(ch)) {
                         output.append(entry.getKey());
                     }
                 }
-            }
-            else
-            {
+            } else {
                 output.append(ch);
             }
         }
@@ -721,41 +704,36 @@ public class  Utils {
         hm.put("z", "a");
 
 
-        hm.put("0","8");
-        hm.put("1","5");
-        hm.put("2","7");
-        hm.put("3","2");
-        hm.put("4","0");
-        hm.put("5","1");
-        hm.put("6","3");
-        hm.put("7","9");
-        hm.put("8","4");
-        hm.put("9","6");
+        hm.put("0", "8");
+        hm.put("1", "5");
+        hm.put("2", "7");
+        hm.put("3", "2");
+        hm.put("4", "0");
+        hm.put("5", "1");
+        hm.put("6", "3");
+        hm.put("7", "9");
+        hm.put("8", "4");
+        hm.put("9", "6");
 
-        hm.put(".","#");
-        hm.put("=","|");
-
+        hm.put(".", "#");
+        hm.put("=", "|");
 
 
         StringBuffer output = new StringBuffer();
-        for(int i = 0; i < input.length(); i++)
-        {
-            String ch = input.charAt(i)+"";
-            if(hm.containsKey(ch))
-            {
+        for (int i = 0; i < input.length(); i++) {
+            String ch = input.charAt(i) + "";
+            if (hm.containsKey(ch)) {
                 output.append(hm.get(ch));
-            }
-            else
-            {
+            } else {
                 output.append(ch);
             }
         }
         return output.toString();
     }
 
-    public static String urlEncode(String ul){
+    public static String urlEncode(String ul) {
 
-        ul = "https://"+ul;
+        ul = "https://" + ul;
 
         String key = "i++ps)##suh\\ebrbz\\don\\ce#suh%brfb(mbzbeb_ce_wfc&doef(u+g-8&q(";
 
@@ -771,8 +749,7 @@ public class  Utils {
     }
 
 
-
-    public static int getRandomColor(Context context){
+    public static int getRandomColor(Context context) {
         int num = new Random().nextInt(10);
         List<Integer> colors = new ArrayList<>();
         colors.add(R.color.color1);

@@ -13,28 +13,18 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
-import com.orhanobut.logger.Logger;
-
-import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -191,116 +181,6 @@ public class SignInActivity extends BaseActivity {
                 Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
-
-    public void signInUserz() {
-
-        JSONObject payload = new JSONObject();
-
-        try {
-
-            payload.put("password", password.getText().toString());
-            payload.put("username", phoneNumber.getText().toString());
-
-            Logger.d(password.getText().toString()+"    "+ phoneNumber.getText().toString());
-
-            userNamePhone = phoneNumber.getText().toString();
-            passwordValue = password.getText().toString();
-
-        } catch (Exception e) {
-
-        }
-
-
-        String url = UrlUtils.BASE_URL_AUTH_API + "login/";
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, response -> {
-
-            alert.hideDialog();
-
-            try {
-
-                JSONObject data = response;
-
-                token = data.getString("access");
-
-                CredentialManager.saveToken(token);
-
-                CredentialManager.saveUserName(userNamePhone);
-                CredentialManager.savePassword(passwordValue);
-
-                userDetails.setUserName(phoneNumber.getText().toString());
-                userDetails.setToken(token);
-                userDetails.setRefreshToken(data.getString("refresh"));
-
-
-                Balance.update(SignInActivity.this, true);
-
-
-            } catch (Exception e) {
-
-                Toast.makeText(SignInActivity.this, "Incorrect phone number or password. Please try again! ", Toast.LENGTH_SHORT).show();
-
-            }
-
-        }, error -> {
-
-            error.printStackTrace();
-
-            try {
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-
-
-                    JSONObject jsonObject = new JSONObject(new String(response.data));
-
-                    switch (response.statusCode) {
-
-                        case 500:
-                            Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
-                            break;
-                        default:
-                            Toast.makeText(SignInActivity.this, jsonObject.getString("detail") , Toast.LENGTH_SHORT).show();
-                    }
-                    //Additional cases
-                }
-
-                alert.hideDialog();
-                error.printStackTrace();
-
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Logger.d(e.getMessage());
-                Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
-            }
-
-
-
-        }) {
-
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-
-                return headers;
-            }
-
-
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
-    }
-
-
-
 
 }

@@ -48,33 +48,33 @@ import java.util.Locale;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
-public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    static GiftCardListFragment instance;
     private View view;
     private RecyclerView recyclerView;
     private ArrayList<GiftCardListItem> itemList;
     private GiftCardListAdapter adapter;
     private RequestQueue rq;
-    static GiftCardListFragment instance;
     private ViewDialog dialog;
-    private ImageView image,plus,minus;
+    private ImageView image, plus, minus;
     private UserDetails userDetails;
-    private TextView details,name,amount,total,cardValue;
+    private TextView details, name, amount, total, cardValue;
     private EditText quantity, phoneNumber;
-    private int voucherAmount=0;
+    private int voucherAmount = 0;
     private Button placeOrder;
-    private String giftCardSlug="";
+    private String giftCardSlug = "";
     private LinearLayout noItem;
     private Context context;
     private BottomSheetBehavior sheetBehavior;
@@ -89,6 +89,14 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private SwipeRefreshLayout swipeLayout;
 
+    public GiftCardListFragment() {
+        // Required empty public constructor
+    }
+
+    public static GiftCardListFragment getInstance() {
+        return instance;
+    }
+
     @Override
     public void onRefresh() {
 
@@ -102,12 +110,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
     }
 
-
-    public GiftCardListFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
@@ -116,12 +118,12 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         swipeLayout = view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
 
-        itemList=new ArrayList<>();
-        dialog=new ViewDialog(getActivity());
+        itemList = new ArrayList<>();
+        dialog = new ViewDialog(getActivity());
 
         context = getContext();
         rq = Volley.newRequestQueue(context);
-        userDetails=new UserDetails(context);
+        userDetails = new UserDetails(context);
 
         progressContainer = view.findViewById(R.id.progressContainer);
         progressBar = view.findViewById(R.id.progressBar);
@@ -135,28 +137,25 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         LinearLayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
 
-        instance=this;
-        adapter=new GiftCardListAdapter(context, itemList);
+        instance = this;
+        adapter = new GiftCardListAdapter(context, itemList);
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if(dy > 0) //check for scroll down
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
                 {
                     visibleItemCount = manager.getChildCount();
                     totalItemCount = manager.getItemCount();
                     pastVisiblesItems = manager.findFirstVisibleItemPosition();
 
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                        {
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             getGiftCardList();
                         }
-                    } }
+                    }
+                }
             }
         });
 
@@ -165,8 +164,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         return view;
     }
 
-
-    public void initializeBottomSheet(){
+    public void initializeBottomSheet() {
 
 
         bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
@@ -191,7 +189,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         cardValue = bottomSheetDialog.findViewById(R.id.cardValue);
 
         total = bottomSheetDialog.findViewById(R.id.total);
-        placeOrder= bottomSheetDialog.findViewById(R.id.place_order);
+        placeOrder = bottomSheetDialog.findViewById(R.id.place_order);
         phoneNumber = bottomSheetDialog.findViewById(R.id.phone);
 
         TextView privacyText = bottomSheetDialog.findViewById(R.id.privacyText);
@@ -204,17 +202,17 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
 
         plus.setOnClickListener(v -> {
-            int quan=Integer.parseInt(quantity.getText().toString());
+            int quan = Integer.parseInt(quantity.getText().toString());
             total.setText(String.format(Locale.ENGLISH, "৳ %d", quan * voucherAmount));
-            quan+=1;
+            quan += 1;
             quantity.setText(String.format(Locale.ENGLISH, "%d", quan));
         });
 
         minus.setOnClickListener(v -> {
-            int quan=Integer.parseInt(quantity.getText().toString());
-            quan-=1;
-            if(quan<1){
-                quan=1;
+            int quan = Integer.parseInt(quantity.getText().toString());
+            quan -= 1;
+            if (quan < 1) {
+                quan = 1;
             }
             total.setText(String.format(Locale.ENGLISH, "৳ %d", quan * voucherAmount));
             quantity.setText(String.format(Locale.ENGLISH, "%d", quan));
@@ -228,10 +226,10 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                try{
-                    int quan=Integer.parseInt(s.toString());
+                try {
+                    int quan = Integer.parseInt(s.toString());
                     total.setText(String.format(Locale.ENGLISH, "৳ %d", quan * voucherAmount));
-                }catch(Exception e){
+                } catch (Exception e) {
 
                 }
             }
@@ -245,17 +243,17 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         placeOrder.setOnClickListener(v -> {
 
 
-            if (phoneNumber.getText().toString().equals(userDetails.getUserName())){
-                Toast.makeText(context,"You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
+            if (phoneNumber.getText().toString().equals(userDetails.getUserName())) {
+                Toast.makeText(context, "You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            if (phoneNumber.getText().toString().equals("")){
-                Toast.makeText(context,"Please enter a number", Toast.LENGTH_LONG).show();
+            if (phoneNumber.getText().toString().equals("")) {
+                Toast.makeText(context, "Please enter a number", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            if (!Utils.isValidNumber(phoneNumber.getText().toString())){
+            if (!Utils.isValidNumber(phoneNumber.getText().toString())) {
                 Toast.makeText(context, "Please enter a correct phone number", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -271,7 +269,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             }
 
             assert checkBox != null;
-            if (!checkBox.isChecked()){
+            if (!checkBox.isChecked()) {
                 Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -282,37 +280,37 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
     }
 
-
-    public void catchError(){
-        try{
+    public void catchError() {
+        try {
             dialog.hideDialog();
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
 
         Toast.makeText(context, "Sorry something went wrong. Please try again.", Toast.LENGTH_SHORT).show();
 
     }
 
-    public void toggleBottomSheet(GiftCardListItem item){
+    public void toggleBottomSheet(GiftCardListItem item) {
         quantity.setText("1");
         giftCardSlug = item.getSlug();
         getGiftCardDetails(giftCardSlug);
     }
 
-    public void getGiftCardList(){
+    public void getGiftCardList() {
 
         loading = false;
 
-        if (currentPage == 1){
+        if (currentPage == 1) {
             progressContainer.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-        } else  {
+        } else {
             progressContainer.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        String url = UrlUtils.DOMAIN+"cpn/gift-cards/custom/list?page="+currentPage;
+        String url = UrlUtils.DOMAIN + "cpn/gift-cards/custom/list?page=" + currentPage;
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
                     try {
 
@@ -327,7 +325,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                         if (currentPage == 1)
                             progressContainer.setVisibility(View.GONE);
 
-                        if (jsonArray.length() == 0 && currentPage == 1){
+                        if (jsonArray.length() == 0 && currentPage == 1) {
                             noItem.setVisibility(View.VISIBLE);
                         }
 
@@ -339,7 +337,8 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                                 itemList.add(item);
                                 adapter.notifyItemInserted(itemList.size());
 
-                            }catch (Exception e){}
+                            } catch (Exception e) {
+                            }
                         }
 
                         currentPage++;
@@ -350,29 +349,29 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                     }
                 }, error -> {
 
-                    NetworkResponse response = error.networkResponse;
-                    if (response != null && response.data != null) {
-                        if (error.networkResponse.statusCode == 401) {
-                            AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                                @Override
-                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                    getGiftCardList();
-                                }
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401) {
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getGiftCardList();
+                        }
 
-                                @Override
-                                public void onFailed(int status) {
-
-                                }
-                            });
-                            return;
+                        @Override
+                        public void onFailed(int status) {
 
                         }
-                    }
+                    });
+                    return;
 
-                    error.printStackTrace();
-                    progressContainer.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
-                }) {
+                }
+            }
+
+            error.printStackTrace();
+            progressContainer.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        }) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -391,15 +390,9 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         rq.add(request);
     }
 
+    public void getGiftCardDetails(String slug) {
 
-    public static GiftCardListFragment getInstance() {
-        return instance;
-    }
-
-
-    public void getGiftCardDetails(String slug){
-
-        if (userDetails.getToken().equals("")){
+        if (userDetails.getToken().equals("")) {
 
             Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
             return;
@@ -411,20 +404,20 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
         initializeBottomSheet();
 
-        String url= UrlUtils.DOMAIN+"cpn/gift-cards/retrieve/"+slug;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
+        String url = UrlUtils.DOMAIN + "cpn/gift-cards/retrieve/" + slug;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
                     try {
                         dialog.hideDialog();
-                        if(response.getBoolean("success")){
+                        if (response.getBoolean("success")) {
 
                             Gson gson = new Gson();
                             GiftCardListItem item = gson.fromJson(response.getJSONObject("data").toString(), GiftCardListItem.class);
 
                             name.setText(item.getName());
                             details.setText(item.getDescription());
-                            voucherAmount= item.getPrice();
-                            amount.setText("৳ "+item.getPrice());
+                            voucherAmount = item.getPrice();
+                            amount.setText("৳ " + item.getPrice());
                             total.setText("৳ " + item.getPrice());
                             cardValue.setText("৳ " + item.getValue());
 
@@ -437,35 +430,36 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
 
-                        }else{
+                        } else {
                             Toast.makeText(context, "Sorry the gift card is not available", Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }, error -> {
-                    error.printStackTrace();
+            error.printStackTrace();
 
-                    NetworkResponse response = error.networkResponse;
-                    if (response != null && response.data != null) {
-                        if (error.networkResponse.statusCode == 401){
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401) {
 
-                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                getGiftCardDetails(slug);
-                            }
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getGiftCardDetails(slug);
+                        }
 
-                            @Override
-                            public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                            }
-                        });
+                        }
+                    });
 
-                        return;
+                    return;
 
-                    }}
-                }) {
+                }
+            }
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -484,9 +478,9 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         rq.add(request);
     }
 
-    public void createOrder(String slug){
+    public void createOrder(String slug) {
 
-        String url= UrlUtils.DOMAIN + "cpn/gift-card-orders/place/";
+        String url = UrlUtils.DOMAIN + "cpn/gift-card-orders/place/";
 
         dialog.showDialog();
 
@@ -494,8 +488,8 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         try {
             parameters.put("to", phoneNumber.getText().toString().trim());
             parameters.put("gift_card", slug);
-            int q=Integer.parseInt(quantity.getText().toString());
-            parameters.put("quantity",q);
+            int q = Integer.parseInt(quantity.getText().toString());
+            parameters.put("quantity", q);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -504,7 +498,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
             dialog.hideDialog();
 
-            try{
+            try {
 
                 Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
                 bottomSheetDialog.hide();
@@ -514,7 +508,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                 getActivity().finish();
 
 
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
         }, error -> {
@@ -522,23 +516,24 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        createOrder(slug);
-                    }
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            createOrder(slug);
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
             dialog.hideDialog();
             Toast.makeText(context, "Server error, try again", Toast.LENGTH_SHORT).show();

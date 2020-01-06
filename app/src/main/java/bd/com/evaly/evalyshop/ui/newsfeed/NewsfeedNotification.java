@@ -50,13 +50,10 @@ public class NewsfeedNotification extends AppCompatActivity {
     int page = 1;
 
     RequestQueue queue;
-
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    ProgressBar progressBar;
     // newfeed scroller
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
-
-    ProgressBar progressBar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,38 +65,34 @@ public class NewsfeedNotification extends AppCompatActivity {
         getSupportActionBar().setTitle("Newsfeed Notifications");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        queue= Volley.newRequestQueue(this);
+        queue = Volley.newRequestQueue(this);
 
-        recyclerView=findViewById(R.id.recycle);
+        recyclerView = findViewById(R.id.recycle);
         progressBar = findViewById(R.id.progressBar);
         progressContainer = findViewById(R.id.progressContainer);
 
-        not=findViewById(R.id.empty);
-        LinearLayoutManager manager=new LinearLayoutManager(this);
+        not = findViewById(R.id.empty);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
-        notifications=new ArrayList<>();
-        adapter=new NotificationNewsfeedAdapter(notifications,this);
+        notifications = new ArrayList<>();
+        adapter = new NotificationNewsfeedAdapter(notifications, this);
         recyclerView.setAdapter(adapter);
-        userDetails=new UserDetails(this);
+        userDetails = new UserDetails(this);
 
         getNotifications();
 
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if(dy > 0) //check for scroll down
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
                 {
                     visibleItemCount = manager.getChildCount();
                     totalItemCount = manager.getItemCount();
                     pastVisiblesItems = manager.findFirstVisibleItemPosition();
 
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                        {
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             getNotifications();
 
                         }
@@ -119,8 +112,8 @@ public class NewsfeedNotification extends AppCompatActivity {
     }
 
 
-    public void getNotifications(){
-        String url= UrlUtils.BASE_URL_NEWSFEED+"notifications?page="+page;
+    public void getNotifications() {
+        String url = UrlUtils.BASE_URL_NEWSFEED + "notifications?page=" + page;
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -134,7 +127,7 @@ public class NewsfeedNotification extends AppCompatActivity {
         if (page == 1)
             progressContainer.setVisibility(View.VISIBLE);
 
-        if (page>1)
+        if (page > 1)
             progressBar.setVisibility(View.VISIBLE);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
@@ -149,12 +142,12 @@ public class NewsfeedNotification extends AppCompatActivity {
             Log.d("notifications_response", response.toString());
             try {
                 JSONArray jsonArray = response.getJSONArray("results");
-                if(jsonArray.length()==0){
+                if (jsonArray.length() == 0) {
                     not.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                }else{
+                } else {
                     not.setVisibility(View.GONE);
-                    for(int i=0;i<jsonArray.length();i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject ob = jsonArray.getJSONObject(i);
 
                         Notifications item = new Notifications();
@@ -183,23 +176,24 @@ public class NewsfeedNotification extends AppCompatActivity {
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(NewsfeedNotification.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        getNotifications();
-                    }
+                    AuthApiHelper.refreshToken(NewsfeedNotification.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getNotifications();
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
             progressContainer.setVisibility(View.GONE);
 
@@ -212,7 +206,7 @@ public class NewsfeedNotification extends AppCompatActivity {
                 return headers;
             }
         };
-         
+
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -221,12 +215,10 @@ public class NewsfeedNotification extends AppCompatActivity {
     }
 
 
+    public void markAsRead() {
 
 
-    public void markAsRead(){
-
-
-        String url = UrlUtils.BASE_URL_NEWSFEED+"update-notifications/";
+        String url = UrlUtils.BASE_URL_NEWSFEED + "update-notifications/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -238,23 +230,24 @@ public class NewsfeedNotification extends AppCompatActivity {
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(NewsfeedNotification.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        markAsRead();
-                    }
+                    AuthApiHelper.refreshToken(NewsfeedNotification.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            markAsRead();
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
         }) {
             @Override
@@ -264,7 +257,7 @@ public class NewsfeedNotification extends AppCompatActivity {
                 return headers;
             }
         };
-         
+
         queue.add(request);
 
 

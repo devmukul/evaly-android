@@ -29,13 +29,12 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class SignUpActivity extends BaseActivity {
 
-    EditText firstName, lastName, phoneNumber;
-    Button signUp;
-    LinearLayout signIn;
-    ImageView close;
-    UserDetails userDetails;
+    private EditText firstName, lastName, phoneNumber;
+    private Button signUp;
+    private LinearLayout signIn;
+    private ImageView close;
+    private UserDetails userDetails;
 
-    String userAgent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
