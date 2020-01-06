@@ -65,7 +65,7 @@
 
                 </LinearLayout>
 
-                <bd.com.evaly.evalyshop.views.StepperIndicator
+                <com.badoualy.stepperindicator.StepperIndicator
                     android:id="@+id/indicator"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                     app:stpi_lineDoneColor="#4cb81a"
                     app:stpi_stepCount="6" />
 
-                <bd.com.evaly.evalyshop.views.StepperIndicator
+                <com.badoualy.stepperindicator.StepperIndicator
                     android:id="@+id/indicatorCancelled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

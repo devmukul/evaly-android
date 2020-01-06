@@ -36,8 +36,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
+import com.badoualy.stepperindicator.StepperIndicator;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -86,23 +85,20 @@ import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.views.StepperIndicator;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class OrderDetailsActivity extends BaseActivity {
 
     private static final int SCROLL_DIRECTION_UP = -1;
-    private NestedScrollView scrollView;
-    String shopSlug="";
-
-    String invoice_no="";
+    String shopSlug = "";
+    String invoice_no = "";
     double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
     UserDetails userDetails;
     StepperIndicator indicator;
-    TextView shopName,shopAddress,shopnumber,username,userAddress,userNumber,totalPriceTextView,paidAmountTextView,duePriceTextView, tvCampaignRule;
-    TextView orderNumber,orderDate,paymentMethods,balance;
-    RecyclerView recyclerView,orderList;
+    TextView shopName, shopAddress, shopnumber, username, userAddress, userNumber, totalPriceTextView, paidAmountTextView, duePriceTextView, tvCampaignRule;
+    TextView orderNumber, orderDate, paymentMethods, balance;
+    RecyclerView recyclerView, orderList;
     ArrayList<OrderStatus> orderStatuses;
     OrderStatusAdapter adapter;
     ArrayList<OrderDetailsProducts> orderDetailsProducts;
@@ -115,14 +111,11 @@ public class OrderDetailsActivity extends BaseActivity {
     LinearLayout layoutBottomSheet, campaignRuleHolder;
     View mViewBg;
     TextView amountToPayView, evalyPayText;
-    ImageView bkash,cards,evalyPay;
+    ImageView bkash, cards, evalyPay;
     BottomSheetDialog bottomSheetDialog;
-
-
     Context context;
-    RequestQueue queue;
-
     String shopGroup = "";
+    private NestedScrollView scrollView;
     private String imageUrl;
 
     @Override
@@ -137,39 +130,36 @@ public class OrderDetailsActivity extends BaseActivity {
 
         context = this;
 
-        queue= Volley.newRequestQueue(context);
-
-
         campaignRuleHolder = findViewById(R.id.campaignRuleHolder);
         tvCampaignRule = findViewById(R.id.tvCampaignRule);
         full_or_partial = findViewById(R.id.full_or_partial);
         scrollView = findViewById(R.id.scroll);
-        shopName=findViewById(R.id.billfromName);
-        shopAddress=findViewById(R.id.billfromAddress);
-        shopnumber=findViewById(R.id.billfromPhone);
-        username=findViewById(R.id.billtoName);
-        userAddress=findViewById(R.id.billtoAddress);
-        userNumber=findViewById(R.id.billtoPhone);
-        totalPriceTextView=findViewById(R.id.total_price);
-        paidAmountTextView=findViewById(R.id.paid_amount);
-        duePriceTextView=findViewById(R.id.due_price);
-        orderNumber=findViewById(R.id.order_id);
+        shopName = findViewById(R.id.billfromName);
+        shopAddress = findViewById(R.id.billfromAddress);
+        shopnumber = findViewById(R.id.billfromPhone);
+        username = findViewById(R.id.billtoName);
+        userAddress = findViewById(R.id.billtoAddress);
+        userNumber = findViewById(R.id.billtoPhone);
+        totalPriceTextView = findViewById(R.id.total_price);
+        paidAmountTextView = findViewById(R.id.paid_amount);
+        duePriceTextView = findViewById(R.id.due_price);
+        orderNumber = findViewById(R.id.order_id);
         orderNumber.setText(invoice_no);
-        orderDate=findViewById(R.id.order_date);
-        paymentMethods=findViewById(R.id.payment_method);
-        recyclerView=findViewById(R.id.recycle);
-        balance=findViewById(R.id.balance);
-        orderList=findViewById(R.id.product_list);
-        shopInfo=findViewById(R.id.shop_info);
-        LinearLayoutManager manager=new LinearLayoutManager(this);
+        orderDate = findViewById(R.id.order_date);
+        paymentMethods = findViewById(R.id.payment_method);
+        recyclerView = findViewById(R.id.recycle);
+        balance = findViewById(R.id.balance);
+        orderList = findViewById(R.id.product_list);
+        shopInfo = findViewById(R.id.shop_info);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         orderList.setLayoutManager(new LinearLayoutManager(this));
-        userDetails=new UserDetails(this);
-        orderStatuses=new ArrayList<>();
-        adapter=new OrderStatusAdapter(orderStatuses,this);
+        userDetails = new UserDetails(this);
+        orderStatuses = new ArrayList<>();
+        adapter = new OrderStatusAdapter(orderStatuses, this);
         recyclerView.setAdapter(adapter);
-        orderDetailsProducts=new ArrayList<>();
-        orderDetailsProductAdapter=new OrderDetailsProductAdapter(this,orderDetailsProducts);
+        orderDetailsProducts = new ArrayList<>();
+        orderDetailsProductAdapter = new OrderDetailsProductAdapter(this, orderDetailsProducts);
         orderList.setAdapter(orderDetailsProductAdapter);
 
         mViewBg = findViewById(R.id.bg);
@@ -223,10 +213,10 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
         scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-           if (scrollY == 0)
-               getSupportActionBar().setElevation(0);
-           else
-               getSupportActionBar().setElevation(4f);
+            if (scrollY == 0)
+                getSupportActionBar().setElevation(0);
+            else
+                getSupportActionBar().setElevation(4f);
         });
 
         shopInfo.setOnClickListener(v -> {
@@ -237,17 +227,17 @@ public class OrderDetailsActivity extends BaseActivity {
             startActivity(intent);
         });
 
-        Bundle extras=getIntent().getExtras();
-        if(extras!=null){
-            invoice_no=extras.getString("orderID");
-            Log.d("order_id",invoice_no);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            invoice_no = extras.getString("orderID");
+            Log.d("order_id", invoice_no);
 
-            orderNumber.setText("#"+invoice_no);
+            orderNumber.setText("#" + invoice_no);
 
             getOrderDetails();
         }
 
-        balance.setText(Html.fromHtml("Balance: <b>৳ "+userDetails.getBalance() + "</b>"));
+        balance.setText(Html.fromHtml("Balance: <b>৳ " + userDetails.getBalance() + "</b>"));
 
         getOrderHistory();
 
@@ -263,7 +253,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
         makePayment.setOnClickListener(v -> {
             double amountToPay = total_amount - paid_amount;
-            amountToPayView.setText((int)amountToPay + "");
+            amountToPayView.setText((int) amountToPay + "");
             full_or_partial.setVisibility(View.GONE);
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         });
@@ -277,19 +267,19 @@ public class OrderDetailsActivity extends BaseActivity {
         evalyPay.setOnClickListener(v -> {
             double amountToPay = total_amount - paid_amount;
 
-            if (amountToPayView.getText().toString().trim().equals("")){
+            if (amountToPayView.getText().toString().trim().equals("")) {
                 Toast.makeText(context, "Please enter an amount", Toast.LENGTH_SHORT).show();
                 return;
             } else if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
                 Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (amountToPayView.getText().toString().equals("0")){
+            } else if (amountToPayView.getText().toString().equals("0")) {
                 Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (Double.parseDouble(amountToPayView.getText().toString()) > Double.parseDouble(userDetails.getBalance())){
-                Toast.makeText(context, "Insufficient Evaly balance (৳ "+userDetails.getBalance()+")", Toast.LENGTH_SHORT).show();
+            if (Double.parseDouble(amountToPayView.getText().toString()) > Double.parseDouble(userDetails.getBalance())) {
+                Toast.makeText(context, "Insufficient Evaly balance (৳ " + userDetails.getBalance() + ")", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -300,13 +290,13 @@ public class OrderDetailsActivity extends BaseActivity {
         bkash.setOnClickListener(v -> {
             double amountToPay = total_amount - paid_amount;
 
-            if (amountToPayView.getText().toString().trim().equals("")){
+            if (amountToPayView.getText().toString().trim().equals("")) {
                 Toast.makeText(context, "Please enter an amount", Toast.LENGTH_SHORT).show();
                 return;
             } else if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
                 Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (amountToPayView.getText().toString().equals("0")){
+            } else if (amountToPayView.getText().toString().equals("0")) {
                 Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -315,7 +305,7 @@ public class OrderDetailsActivity extends BaseActivity {
             intent.putExtra("amount", amountToPayView.getText().toString());
             intent.putExtra("invoice_no", invoice_no);
             intent.putExtra("context", "order_payment");
-            startActivityForResult(intent,10002);
+            startActivityForResult(intent, 10002);
 
             sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         });
@@ -323,13 +313,13 @@ public class OrderDetailsActivity extends BaseActivity {
         cards.setOnClickListener(v -> {
             double amountToPay = total_amount - paid_amount;
 
-            if (amountToPayView.getText().toString().trim().equals("")){
+            if (amountToPayView.getText().toString().trim().equals("")) {
                 Toast.makeText(context, "Please enter an amount", Toast.LENGTH_SHORT).show();
                 return;
             } else if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
                 Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (amountToPayView.getText().toString().equals("0")){
+            } else if (amountToPayView.getText().toString().equals("0")) {
                 Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -345,12 +335,12 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
     @OnClick(R.id.tvViewIssue)
-    void viewIssues(){
+    void viewIssues() {
         startActivity(new Intent(OrderDetailsActivity.this, IssuesActivity.class).putExtra("invoice", invoice_no));
     }
 
     @OnClick(R.id.tvReport)
-    void report(){
+    void report() {
         OrderIssueModel model = new OrderIssueModel();
 
         bottomSheetDialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
@@ -364,7 +354,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
         List<String> options = new ArrayList<>();
         List<OrderIssueModel> list = Constants.getDelivaryIssueList();
-        for (int i = 0; i<list.size(); i++){
+        for (int i = 0; i < list.size(); i++) {
             options.add(list.get(i).getDescription());
         }
 
@@ -386,7 +376,7 @@ public class OrderDetailsActivity extends BaseActivity {
         addPhoto.setOnClickListener(view -> openImageSelector());
 
         btnSubmit.setOnClickListener(view -> {
-            if (etDescription.getText().toString().trim().isEmpty()){
+            if (etDescription.getText().toString().trim().isEmpty()) {
                 etDescription.setError("Required");
                 return;
             }
@@ -432,12 +422,12 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onDataFetched(retrofit2.Response<JsonObject> response) {
                 dialog.hideDialog();
-                if (response.code() == 200 || response.code() == 201){
+                if (response.code() == 200 || response.code() == 201) {
                     Toast.makeText(getApplicationContext(), "Your issue has been submitted, you will be notified shortly", Toast.LENGTH_LONG).show();
                     bottomSheetDialog.dismiss();
-                } else if (response.code() == 401){
+                } else if (response.code() == 401) {
                     submitIssue(model, bottomSheetDialog);
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                 }
             }
@@ -456,7 +446,6 @@ public class OrderDetailsActivity extends BaseActivity {
         if (imageUrl != null && bottomSheetDialog.isShowing()) {
 
             bottomSheetDialog.findViewById(R.id.postImage).setVisibility(View.VISIBLE);
-
             Glide.with(this)
                     .asBitmap()
                     .load(imageUrl)
@@ -506,7 +495,7 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
 
-    public void addPartialPayDialog(){
+    public void addPartialPayDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
 
         LayoutInflater inflater = this.getLayoutInflater();
@@ -519,7 +508,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
         final EditText amount = dialogView.findViewById(R.id.amount);
 
-
         alertDialog.getWindow()
                 .setLayout(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -528,25 +516,23 @@ public class OrderDetailsActivity extends BaseActivity {
 
         alertDialog.show();
 
-
         d_submit.setOnClickListener(v -> {
 
-            if (amount.getText().toString().equals("")){
+            if (amount.getText().toString().equals("")) {
                 Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             double partial_amount = Double.parseDouble(amount.getText().toString());
 
-            if (partial_amount > total_amount){
+            if (partial_amount > total_amount) {
                 Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
                 return;
             }
 
-
             double userBalance = Double.parseDouble(userDetails.getBalance());
 
-            if (partial_amount <= userBalance){
+            if (partial_amount <= userBalance) {
                 makePartialPayment(invoice_no, String.valueOf((int) partial_amount));
                 Logger.d(partial_amount);
             } else {
@@ -556,7 +542,7 @@ public class OrderDetailsActivity extends BaseActivity {
                 //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
                 double amountToPay = partial_amount - userBalance;
 
-                amountToPayView.setText(amountToPay+"");
+                amountToPayView.setText(amountToPay + "");
                 full_or_partial.setText("Partial Pay");
 
                 Handler handler = new Handler();
@@ -566,9 +552,7 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
 
-
-
-    public void dialogGiftCardPayment(){
+    public void dialogGiftCardPayment() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
 
         LayoutInflater inflater = this.getLayoutInflater();
@@ -578,13 +562,10 @@ public class OrderDetailsActivity extends BaseActivity {
         AlertDialog alertDialog = dialogBuilder.create();
 
         Button d_submit = dialogView.findViewById(R.id.submit);
-
         final EditText amount = dialogView.findViewById(R.id.amount);
         final EditText code = dialogView.findViewById(R.id.code);
 
-
-        amount.setText((int)due_amount+"");
-
+        amount.setText((int) due_amount + "");
 
         alertDialog.getWindow()
                 .setLayout(
@@ -594,18 +575,17 @@ public class OrderDetailsActivity extends BaseActivity {
 
         alertDialog.show();
 
-
         d_submit.setOnClickListener(v -> {
-            if (amount.getText().toString().equals("")){
+            if (amount.getText().toString().equals("")) {
                 Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (code.getText().toString().equals("")){
+            } else if (code.getText().toString().equals("")) {
                 Toast.makeText(context, "Please enter gift card coupon code.", Toast.LENGTH_SHORT).show();
                 return;
             }
             double partial_amount = Double.parseDouble(amount.getText().toString());
 
-            if (partial_amount > total_amount){
+            if (partial_amount > total_amount) {
                 Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -614,7 +594,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
         });
     }
-
 
 
     public void makePaymentViaGiftCard(String giftCode, String invoice, String amount) {
@@ -633,7 +612,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 Toast.makeText(OrderDetailsActivity.this, response.get("message").getAsString(), Toast.LENGTH_LONG).show();
 
-                if(response.has("success")) {
+                if (response.has("success")) {
 
                     final Handler handler = new Handler();
                     handler.postDelayed(() -> {
@@ -646,7 +625,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                Toast.makeText(OrderDetailsActivity.this,"Payment unsuccessful!", Toast.LENGTH_LONG).show();
+                Toast.makeText(OrderDetailsActivity.this, "Payment unsuccessful!", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -663,14 +642,14 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         Balance.update(this, false);
         checkCardBalance();
 
     }
 
-    public void checkCardBalance(){
+    public void checkCardBalance() {
 
         AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
@@ -680,7 +659,7 @@ public class OrderDetailsActivity extends BaseActivity {
                 if (response.get("gift_card_balance").getAsDouble() < 1)
                     payViaGiftCard.setVisibility(View.GONE);
 
-                balance.setText(Html.fromHtml("Balance: <b>৳ "+response.get("balance").getAsString() + "</b>"));
+                balance.setText(Html.fromHtml("Balance: <b>৳ " + response.get("balance").getAsString() + "</b>"));
 
             }
 
@@ -698,7 +677,7 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
 
-    public void makePartialPayment(String invoice, String amount){
+    public void makePartialPayment(String invoice, String amount) {
 
         dialog.showDialog();
 
@@ -713,9 +692,9 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 dialog.hideDialog();
 
-                Toast.makeText(OrderDetailsActivity.this,response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(OrderDetailsActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
 
-                if(response.get("success").getAsBoolean()){
+                if (response.get("success").getAsBoolean()) {
 
                     // it means all payment done
 
@@ -728,7 +707,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
                     }, 1000);
                 }
-
             }
 
             @Override
@@ -746,10 +724,9 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
 
-
     public void addBalanceViaCard(String invoice, String amount) {
 
-        if (balance.equals("")){
+        if (balance.equals("")) {
             Toast.makeText(this, "Enter amount", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -773,8 +750,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 Intent intent = new Intent(OrderDetailsActivity.this, PayViaCard.class);
                 intent.putExtra("url", purl);
-                startActivityForResult(intent,10002);
-
+                startActivityForResult(intent, 10002);
             }
 
             @Override
@@ -788,7 +764,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
             }
         });
-
 
     }
 
@@ -814,7 +789,6 @@ public class OrderDetailsActivity extends BaseActivity {
             Log.d("json image uri", imagePath);
 
             try {
-
 
                 try {
 
@@ -853,7 +827,6 @@ public class OrderDetailsActivity extends BaseActivity {
                         public void onImageUploadFailed(String msg) {
                             dialog.hideDialog();
                             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-
                         }
                     });
 
@@ -882,7 +855,7 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
 
-    public void getOrderDetails(){
+    public void getOrderDetails() {
 
         OrderApiHelper.getOrderDetails(CredentialManager.getToken(), invoice_no, new ResponseListenerAuth<OrderDetailsModel, String>() {
             @Override
@@ -892,17 +865,17 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 String orderStatus = response.getOrderStatus().toLowerCase();
 
-                if(orderStatus.equals("pending")){
+                if (orderStatus.equals("pending")) {
                     indicator.setCurrentStep(1);
-                }else if(orderStatus.equals("confirmed")){
+                } else if (orderStatus.equals("confirmed")) {
                     indicator.setCurrentStep(2);
-                }else if(orderStatus.equals("processing")){
+                } else if (orderStatus.equals("processing")) {
                     indicator.setCurrentStep(3);
-                }else if(orderStatus.equals("picked")){
+                } else if (orderStatus.equals("picked")) {
                     indicator.setCurrentStep(4);
-                }else if(orderStatus.equals("shipped")){
+                } else if (orderStatus.equals("shipped")) {
                     indicator.setCurrentStep(5);
-                }else if(orderStatus.equals("delivered")){
+                } else if (orderStatus.equals("delivered")) {
                     indicator.setCurrentStep(6);
                 }
 
@@ -913,7 +886,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
 
-                if(response.getOrderStatus().toLowerCase().equals("cancel")){
+                if (response.getOrderStatus().toLowerCase().equals("cancel")) {
 
                     StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);
                     indicatorCancelled.setVisibility(View.VISIBLE);
@@ -924,7 +897,7 @@ public class OrderDetailsActivity extends BaseActivity {
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
 
-                } else if(response.getOrderStatus().toLowerCase().equals("delivered")){
+                } else if (response.getOrderStatus().toLowerCase().equals("delivered")) {
 
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
@@ -938,13 +911,13 @@ public class OrderDetailsActivity extends BaseActivity {
                 paidAmountTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getPaidAmount()))));
                 duePriceTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount()))));
 
-                if (response.getCampaignRules().size()>0){
+                if (response.getCampaignRules().size() > 0) {
 
                     JsonObject campaignRuleObject = response.getCampaignRules().get(0);
 
                     double cashback_percentage = campaignRuleObject.get("cashback_percentage").getAsDouble();
 
-                    if (cashback_percentage>0) {
+                    if (cashback_percentage > 0) {
 
                         String payMethod = campaignRuleObject.get("cashback_on_payment_by").getAsString();
 
@@ -996,7 +969,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 String payMethod = response.getPaymentMethod();
 
-                if(payMethod.equals("cod"))
+                if (payMethod.equals("cod"))
                     paymentMethods.setText("Cash on Delivery");
                 else if (payMethod.equals(""))
                     paymentMethods.setText("None");
@@ -1036,21 +1009,21 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 List<OrderItemsItem> orderItemList = response.getOrderItems();
 
-                for(int i=0;i<orderItemList.size();i++){
+                for (int i = 0; i < orderItemList.size(); i++) {
 
                     OrderItemsItem orderItem = orderItemList.get(i);
                     String productVariation = "";
 
-                    for(int j = 0; j < orderItem.getVariations().size(); j++) {
+                    for (int j = 0; j < orderItem.getVariations().size(); j++) {
 
                         JsonObject varJ = orderItem.getVariations().get(j).getAsJsonObject();
                         String attr = varJ.get("attribute").getAsString();
                         String variation = varJ.get("attribute_value").getAsString();
 
                         if (j > 0)
-                            productVariation = productVariation + ", " +attr + ": "+ variation;
+                            productVariation = productVariation + ", " + attr + ": " + variation;
                         else
-                            productVariation = attr + ": "+ variation;
+                            productVariation = attr + ": " + variation;
                     }
 
                     orderDetailsProducts.add(
@@ -1060,13 +1033,12 @@ public class OrderDetailsActivity extends BaseActivity {
                                     orderItem.getProductSlug(),
                                     orderItem.getOrderTimePrice(),
                                     String.valueOf(orderItem.getQuantity()),
-                                    (Math.round(Double.parseDouble(orderItem.getOrderTimePrice()))* orderItem.getQuantity())+"",
+                                    (Math.round(Double.parseDouble(orderItem.getOrderTimePrice())) * orderItem.getQuantity()) + "",
                                     productVariation));
 
                     orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
 
                 }
-
             }
 
             @Override
@@ -1079,12 +1051,10 @@ public class OrderDetailsActivity extends BaseActivity {
 
             }
         });
-
     }
 
 
-
-    public void getOrderHistory(){
+    public void getOrderHistory() {
 
         orderStatuses.clear();
         adapter.notifyDataSetChanged();
@@ -1092,9 +1062,9 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
-                JsonArray list  = response.getAsJsonObject("data").getAsJsonArray("histories");
+                JsonArray list = response.getAsJsonObject("data").getAsJsonArray("histories");
 
-                for (int i=0; i < list.size(); i++) {
+                for (int i = 0; i < list.size(); i++) {
 
                     JsonObject jsonObject = list.get(i).getAsJsonObject();
 
@@ -1127,8 +1097,7 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
 
-
-    public void deliveryConfirmationDialog(){
+    public void deliveryConfirmationDialog() {
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailsActivity.this);
@@ -1140,10 +1109,10 @@ public class OrderDetailsActivity extends BaseActivity {
             AuthApiHelper.updateProductStatus(data, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                 @Override
                 public void onDataFetched(retrofit2.Response<JsonObject> response1) {
-                    if (response1.code() == 200 || response1.code() == 201){
+                    if (response1.code() == 200 || response1.code() == 201) {
                         dialog.hideDialog();
                         Toast.makeText(getApplicationContext(), "Order Updated", Toast.LENGTH_LONG).show();
-                    }else {
+                    } else {
                         dialog.hideDialog();
                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                     }
