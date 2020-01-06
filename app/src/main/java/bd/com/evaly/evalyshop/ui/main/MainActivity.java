@@ -548,9 +548,11 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
+            if (AppController.getmService() != null) {
+                xmppHandler = AppController.getmService().xmpp;
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+            }
         }
 
         //Event Listeners
