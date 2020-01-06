@@ -462,10 +462,10 @@ public class GlobalSearchActivity extends BaseActivity {
         });
 
         searchText.setOnEditorActionListener((v, actionId, event) -> {
-            if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
+            if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
+
                 nestedSV.setBackgroundColor(Color.parseColor("#fafafa"));
                 noResult.setVisibility(View.GONE);
-
 
                 minimum.setText("");
                 maximum.setText("");

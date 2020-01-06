@@ -101,4 +101,14 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Fortuna</item>
         <item>Kidz</item>
     </string-array>
+
+
+    <string-array name="orderTrackingStepLabels">
+        <item>Pending</item>
+        <item>Confirmed</item>
+        <item>Processing</item>
+        <item>Picked</item>
+        <item>Shipped</item>
+        <item>Delivered</item>
+    </string-array>
 </resources>

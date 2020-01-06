@@ -548,24 +548,26 @@ public class ViewProductActivity extends BaseActivity {
                 llSend.setOnClickListener(view -> {
                     ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
 
-                    if (AppController.getmService().xmpp.isLoggedin()) {
-                        try {
-                            for (RosterTable rosterTable : selectedRosterList) {
-                                ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
-                                AppController.getmService().xmpp.sendMessage(chatItem);
+                    if (AppController.getmService() !=null) {
+                        if (AppController.getmService().xmpp.isLoggedin()) {
+                            try {
+                                for (RosterTable rosterTable : selectedRosterList) {
+                                    ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
+                                    AppController.getmService().xmpp.sendMessage(chatItem);
+                                }
+                                for (int i = 0; i < rosterList.size(); i++) {
+                                    rosterList.get(i).isSelected = false;
+                                }
+                                contactShareAdapter.notifyDataSetChanged();
+                                selectedRosterList.clear();
+                                tvCount.setText("(" + selectedRosterList.size() + ") ");
+                                Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
+                            } catch (SmackException e) {
+                                e.printStackTrace();
                             }
-                            for (int i = 0; i<rosterList.size(); i++){
-                                rosterList.get(i).isSelected = false;
-                            }
-                            contactShareAdapter.notifyDataSetChanged();
-                            selectedRosterList.clear();
-                            tvCount.setText("(" + selectedRosterList.size() + ") ");
-                            Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
-                        } catch (SmackException e) {
-                            e.printStackTrace();
+                        } else {
+                            AppController.getmService().xmpp.connect();
                         }
-                    } else {
-                        AppController.getmService().xmpp.connect();
                     }
                 });
 
