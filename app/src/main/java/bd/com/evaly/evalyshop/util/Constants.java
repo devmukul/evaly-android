@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.BuildConfig;
@@ -90,15 +89,17 @@ public class Constants {
     public static final String EVALY_LOGO = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/media/2019-08-04_090235.843922android-icon-200x200.png";
 
     public static List<OrderIssueModel> getDelivaryIssueList() {
+
         List<OrderIssueModel> list = new ArrayList<>();
         list.add(new OrderIssueModel("delivery", "Delivery Issue"));
         list.add(new OrderIssueModel("cashback", "Cashback Issue"));
         list.add(new OrderIssueModel("product", "Product Issue"));
         list.add(new OrderIssueModel("refund", "Refund Issue"));
         list.add(new OrderIssueModel("payment", "Payment Issue"));
+        list.add(new OrderIssueModel("return", "Product return"));
+        list.add(new OrderIssueModel("bank deposit", "Bank Deposit"));
         list.add(new OrderIssueModel("order cancel", "Request for order cancel"));
         list.add(new OrderIssueModel("others", "Others"));
-
         return list;
     }
 }
