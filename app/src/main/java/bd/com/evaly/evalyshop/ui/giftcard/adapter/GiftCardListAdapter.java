@@ -1,8 +1,6 @@
 package bd.com.evaly.evalyshop.ui.giftcard.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +9,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
+
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.giftcard.GiftCardListFragment;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
+import bd.com.evaly.evalyshop.ui.giftcard.GiftCardListFragment;
 
 public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapter.MyViewHolder>{
 
@@ -40,18 +43,12 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
 
 
         if (itemList.get(i).getImageUrl() == null)
-            Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
+            Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").into(myViewHolder.iv);
         else
-            Glide.with(context).load(itemList.get(i).getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
+            Glide.with(context).load(itemList.get(i).getImageUrl()).into(myViewHolder.iv);
 
         myViewHolder.amount.setText("৳ " + itemList.get(i).getPrice());
-        myViewHolder.button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                GiftCardListFragment.getInstance().toggleBottomSheet(itemList.get(i));
-            }
-        });
+        myViewHolder.button.setOnClickListener(v -> GiftCardListFragment.getInstance().toggleBottomSheet(itemList.get(i)));
 
     }
 

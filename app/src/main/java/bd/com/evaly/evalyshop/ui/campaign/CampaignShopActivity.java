@@ -107,7 +107,6 @@ public class CampaignShopActivity extends AppCompatActivity {
     }
 
 
-
     public void getEvalyShops(int p){
 
         progressBar.setVisibility(View.VISIBLE);

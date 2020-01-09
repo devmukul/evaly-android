@@ -38,20 +38,23 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -107,7 +110,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
         getGiftCardList();
 
-
     }
 
     @Override
@@ -130,7 +132,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         currentPage = 1;
 
         initializeBottomSheet();
-
 
         noItem = view.findViewById(R.id.noItem);
 
@@ -242,7 +243,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
         placeOrder.setOnClickListener(v -> {
 
-
             if (phoneNumber.getText().toString().equals(userDetails.getUserName())) {
                 Toast.makeText(context, "You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
                 return;
@@ -273,7 +273,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                 Toast.makeText(context, "You must accept terms & conditions and purchasing policy to place an order.", Toast.LENGTH_LONG).show();
                 return;
             }
-
 
             createOrder(giftCardSlug);
         });
@@ -308,86 +307,38 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        String url = UrlUtils.DOMAIN + "cpn/gift-cards/custom/list?page=" + currentPage;
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
-                response -> {
-                    try {
-
-
-                        Log.d("json gift", response.toString());
-
-                        loading = true;
-                        progressBar.setVisibility(View.GONE);
-
-                        JSONArray jsonArray = response.getJSONArray("data");
-
-                        if (currentPage == 1)
-                            progressContainer.setVisibility(View.GONE);
-
-                        if (jsonArray.length() == 0 && currentPage == 1) {
-                            noItem.setVisibility(View.VISIBLE);
-                        }
-
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            Gson gson = new Gson();
-                            try {
-
-                                GiftCardListItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListItem.class);
-                                itemList.add(item);
-                                adapter.notifyItemInserted(itemList.size());
-
-                            } catch (Exception e) {
-                            }
-                        }
-
-                        currentPage++;
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        catchError();
-                    }
-                }, error -> {
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401) {
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getGiftCardList();
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-                    return;
-
-                }
-            }
-
-            error.printStackTrace();
-            progressContainer.setVisibility(View.GONE);
-            progressBar.setVisibility(View.GONE);
-        }) {
+        GiftCardApiHelper.getGiftCard(currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListItem>>, String>() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
+            public void onDataFetched(CommonDataResponse<List<GiftCardListItem>> response, int statusCode) {
 
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
+                loading = true;
+                progressBar.setVisibility(View.GONE);
 
-                headers.put("Content-Type", "application/json");
-                return headers;
+                List<GiftCardListItem> list = response.getData();
+
+                itemList.addAll(list);
+                adapter.notifyItemRangeChanged(itemList.size()-list.size(), list.size());
+
+                if (currentPage == 1)
+                    progressContainer.setVisibility(View.GONE);
+
+                if (list.size() == 0 && currentPage == 1)
+                    noItem.setVisibility(View.VISIBLE);
+
+                currentPage++;
             }
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
     }
 
     public void getGiftCardDetails(String slug) {

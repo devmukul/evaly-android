@@ -13,6 +13,7 @@ import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
+import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
@@ -238,8 +239,11 @@ public interface IApiClient {
 
     // gift card
 
-    @POST(UrlUtils.DOMAIN+"pay/transactions/payment/order/gift-code/")
+    @POST(UrlUtils.DOMAIN + "pay/transactions/payment/order/gift-code/")
     Call<JsonObject> payWithGiftCard(@Header("Authorization") String token, @Body HashMap<String, String> body);
+
+    @GET(UrlUtils.DOMAIN + "cpn/gift-cards/custom/list")
+    Call<CommonDataResponse<List<GiftCardListItem>>> getGiftCardList(@Query("page") int page);
 
 
     // payment
