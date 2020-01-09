@@ -23,5 +23,9 @@ public class GiftCardApiHelper extends BaseApiHelper{
         getiApiClient().getGiftCardList(page).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void placeGiftCardOrder(String token, JsonObject body, ResponseListenerAuth<JsonObject, String> listener){
+
+        getiApiClient().placeGiftCardOrder(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
 
 }

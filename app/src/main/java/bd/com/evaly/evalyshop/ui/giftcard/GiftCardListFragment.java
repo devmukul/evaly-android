@@ -7,7 +7,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -429,80 +429,43 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
         rq.add(request);
     }
 
-    public void createOrder(String slug) {
 
-        String url = UrlUtils.DOMAIN + "cpn/gift-card-orders/place/";
+
+
+
+    public void createOrder(String slug) {
 
         dialog.showDialog();
 
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("to", phoneNumber.getText().toString().trim());
-            parameters.put("gift_card", slug);
-            int q = Integer.parseInt(quantity.getText().toString());
-            parameters.put("quantity", q);
+        JsonObject parameters = new JsonObject();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, response -> {
+        parameters.addProperty("to", phoneNumber.getText().toString().trim());
+        parameters.addProperty("gift_card", slug);
+        int q = Integer.parseInt(quantity.getText().toString());
+        parameters.addProperty("quantity", q);
 
-            dialog.hideDialog();
-
-            try {
-
-                Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
-                bottomSheetDialog.hide();
-
-                startActivity(getActivity().getIntent());
-
-                getActivity().finish();
-
-
-            } catch (Exception e) {
-
-            }
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401) {
-
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            createOrder(slug);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }
-            }
-
-            dialog.hideDialog();
-            Toast.makeText(context, "Server error, try again", Toast.LENGTH_SHORT).show();
-
-        }) {
+        GiftCardApiHelper.placeGiftCardOrder(CredentialManager.getToken(), parameters, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                return headers;
-            }
-        };
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
+                dialog.hideDialog();
+
+                Toast.makeText(context, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+                bottomSheetDialog.hide();
+                startActivity(Objects.requireNonNull(getActivity()).getIntent());
+                getActivity().finish();
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
 
     }
 

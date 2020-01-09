@@ -245,6 +245,8 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN + "cpn/gift-cards/custom/list")
     Call<CommonDataResponse<List<GiftCardListItem>>> getGiftCardList(@Query("page") int page);
 
+    @POST(UrlUtils.DOMAIN + "cpn/gift-card-orders/place/")
+    Call<JsonObject> placeGiftCardOrder(@Header("Authorization") String token, @Body JsonObject body);
 
     // payment
     @POST(UrlUtils.DOMAIN+"pay/transactions/payment/order/")
