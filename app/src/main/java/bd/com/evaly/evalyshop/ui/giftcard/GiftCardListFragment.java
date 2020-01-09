@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.giftcard;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,12 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -37,26 +33,18 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -344,89 +332,59 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
     public void getGiftCardDetails(String slug) {
 
         if (userDetails.getToken().equals("")) {
-
             Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
             return;
-
         }
 
-
         dialog.showDialog();
-
         initializeBottomSheet();
 
-        String url = UrlUtils.DOMAIN + "cpn/gift-cards/retrieve/" + slug;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
-                response -> {
-                    try {
-                        dialog.hideDialog();
-                        if (response.getBoolean("success")) {
 
-                            Gson gson = new Gson();
-                            GiftCardListItem item = gson.fromJson(response.getJSONObject("data").toString(), GiftCardListItem.class);
-
-                            name.setText(item.getName());
-                            details.setText(item.getDescription());
-                            voucherAmount = item.getPrice();
-                            amount.setText("৳ " + item.getPrice());
-                            total.setText("৳ " + item.getPrice());
-                            cardValue.setText("৳ " + item.getValue());
-
-                            if (item.getImageUrl() == null)
-                                Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(image);
-                            else
-                                Glide.with(context).load(item.getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(image);
-
-                            bottomSheetDialog.show();
-                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-
-                        } else {
-                            Toast.makeText(context, "Sorry the gift card is not available", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }, error -> {
-            error.printStackTrace();
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401) {
-
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getGiftCardDetails(slug);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }
-            }
-        }) {
+        GiftCardApiHelper.getGiftCardDetails(slug, new ResponseListenerAuth<JsonObject, String>() {
+            @SuppressLint("DefaultLocale")
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
+                dialog.hideDialog();
+                if (response.get("success").getAsBoolean()) {
 
-                headers.put("Content-Type", "application/json");
-                return headers;
+                    Gson gson = new Gson();
+                    GiftCardListItem item = gson.fromJson(response.get("data").toString(), GiftCardListItem.class);
+
+                    name.setText(item.getName());
+                    details.setText(item.getDescription());
+                    voucherAmount = item.getPrice();
+                    amount.setText(String.format("৳ %d", item.getPrice()));
+                    total.setText(String.format("৳ %d", item.getPrice()));
+                    cardValue.setText(String.format("৳ %d", item.getValue()));
+
+                    if (item.getImageUrl() == null)
+                        Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(image);
+                    else
+                        Glide.with(context).load(item.getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(image);
+
+                    bottomSheetDialog.show();
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+
+                } else {
+                    Toast.makeText(context, "Sorry the gift card is not available", Toast.LENGTH_SHORT).show();
+                }
+
             }
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+
     }
 
 

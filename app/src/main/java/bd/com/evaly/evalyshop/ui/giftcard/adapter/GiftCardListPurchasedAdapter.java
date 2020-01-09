@@ -1,8 +1,6 @@
 package bd.com.evaly.evalyshop.ui.giftcard.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardMyFragment;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardPurchasedFragment;
-import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardListPurchasedAdapter.MyViewHolder>{
@@ -46,9 +49,9 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
 
 
         if (itemList.get(i).getGiftCardImage() == null)
-            Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
+            Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").into(myViewHolder.iv);
         else
-            Glide.with(context).load(itemList.get(i).getGiftCardImage()).placeholder(R.drawable.ic_placeholder_small).into(myViewHolder.iv);
+            Glide.with(context).load(itemList.get(i).getGiftCardImage()).into(myViewHolder.iv);
 
         myViewHolder.amount.setText("৳ " + itemList.get(i).getGiftCardPrice());
         myViewHolder.quantity.setText("x "+itemList.get(i).getQuantity());
@@ -63,14 +66,11 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
             myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
         }
 
-        myViewHolder.button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (type == 0)
-                    GiftCardPurchasedFragment.getInstance().toggleBottomSheet(itemList.get(i));
-                else
-                    GiftCardMyFragment.getInstance().toggleBottomSheet(itemList.get(i));
-            }
+        myViewHolder.button.setOnClickListener(v -> {
+            if (type == 0)
+                GiftCardPurchasedFragment.getInstance().toggleBottomSheet(itemList.get(i));
+            else
+                GiftCardMyFragment.getInstance().toggleBottomSheet(itemList.get(i));
         });
 
 

@@ -248,6 +248,10 @@ public interface IApiClient {
     @POST(UrlUtils.DOMAIN + "cpn/gift-card-orders/place/")
     Call<JsonObject> placeGiftCardOrder(@Header("Authorization") String token, @Body JsonObject body);
 
+    @GET(UrlUtils.DOMAIN + "cpn/gift-cards/retrieve/{slug}")
+    Call<JsonObject> getGiftCardDetails(@Path("slug") String slug);
+
+
     // payment
     @POST(UrlUtils.DOMAIN+"pay/transactions/payment/order/")
     Call<JsonObject> makePartialPayment(@Header("Authorization") String token, @Body ParitalPaymentModel body);
