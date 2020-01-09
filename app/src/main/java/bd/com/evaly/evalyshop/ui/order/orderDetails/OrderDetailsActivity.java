@@ -952,10 +952,15 @@ public class OrderDetailsActivity extends BaseActivity {
                             long startTime = start.getTimeInMillis();
                             long diffTime = end.getTimeInMillis() - startTime;
 
-                            long diffDays = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS) + 1;
+                            long diffDays = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
 
                             String message = "Payments with <font color=\"#c53030\">" + payMethod + "</font> will be rewarded by <b>" + cashback_percentage + "%</b> cashback balance within <b>" + diffDays + " days</b>.";
                             tvCampaignRule.setText(Html.fromHtml(message));
+
+
+                            if (diffDays<1)
+                                campaignRuleHolder.setVisibility(View.GONE);
+
                         } else {
 
                             String message = "Payments with <font color=\"#c53030\">" + payMethod + "</font> will be rewarded by <b>" + cashback_percentage + "%</b> cashback balance instantly.";
