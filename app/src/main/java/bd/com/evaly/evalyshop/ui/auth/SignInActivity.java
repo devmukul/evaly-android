@@ -178,7 +178,9 @@ public class SignInActivity extends BaseActivity {
 
             @Override
             public void onFailed(String body, int status) {
-                Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes.", Toast.LENGTH_SHORT).show();
+
+                alert.hideDialog();
+                Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes. "+ body, Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -106,12 +106,9 @@ public interface IApiClient {
     Call<JsonObject> getIssueList(@Header("Authorization") String header, @Path("invoice") String invoice);
 
     @GET(UrlUtils.GET_BANNERS)
-    Call<JsonObject> getBanners(@Header("Authorization") String token);
-
-
+    Call<JsonObject> getBanners();
 
     // balance, transaction
-
 
     @GET(UrlUtils.DOMAIN+"pay/wallet-history/{username}")
     Call<CommonDataResponse<List<TransactionItem>>> getTransactionHistory(@Header("Authorization") String token, @Path("username") String username, @Query("page") int page);

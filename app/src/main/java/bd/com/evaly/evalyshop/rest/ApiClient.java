@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.rest;
 
 import androidx.annotation.Nullable;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.concurrent.TimeUnit;
@@ -14,12 +13,10 @@ import javax.net.ssl.X509TrustManager;
 
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Converter;
@@ -31,11 +28,14 @@ public class ApiClient {
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
+
+        if (retrofit == null) {
             retrofit = new Retrofit.Builder().baseUrl(UrlUtils.BASE_URL)
                     .addConverterFactory(StringConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .client(getUnsafeOkHttpClient()).build();
+        }
 
         return retrofit;
     }
@@ -77,18 +77,19 @@ public class ApiClient {
                     .connectTimeout(120, TimeUnit.SECONDS)
                     .readTimeout(120, TimeUnit.SECONDS)
                     .writeTimeout(120, TimeUnit.SECONDS);
-            httpClient.addInterceptor(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Request original = chain.request();
-                    Request request = original.newBuilder()
-                            .header("Content-Type", "application/json")
-                            .method(original.method(), original.body())
-                            .build();
 
-                    return chain.proceed(request);
-                }
+            // httpClient.authenticator(new TokenAuthenticator());
+            httpClient.addInterceptor(chain -> {
+                Request original = chain.request();
+                Request request = original.newBuilder()
+                        .header("Content-Type", "application/json")
+                        .method(original.method(), original.body())
+                        .build();
+
+                return chain.proceed(request);
             });
+
+           // httpClient.addInterceptor(new TokenInterceptor());
 
             // Install the all-trusting trust manager
             final SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -125,12 +126,7 @@ public class ApiClient {
         @Override
         public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
             if(String.class.equals(type)) {
-                return new Converter<String, RequestBody>() {
-                    @Override
-                    public RequestBody convert(String value) throws IOException {
-                        return RequestBody.create(MEDIA_TYPE, value);
-                    }
-                };
+                return (Converter<String, RequestBody>) value -> RequestBody.create(MEDIA_TYPE, value);
             }
 
             return null;
@@ -140,13 +136,7 @@ public class ApiClient {
         @Override
         public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
             if (String.class.equals(type)) {
-                return new Converter<ResponseBody, String>() {
-
-                    @Override
-                    public String convert(ResponseBody value) throws IOException {
-                        return value.string();
-                    }
-                };
+                return (Converter<ResponseBody, String>) value -> value.string();
             }
             return null;
         }

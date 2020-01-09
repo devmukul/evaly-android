@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
+import android.util.Log;
+
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -14,16 +16,18 @@ import retrofit2.Response;
 
 public class BaseApiHelper {
 
+
     protected static Call<JsonObject> call;
 
     protected static IApiClient getiApiClient() {
+
         return ApiClient.getClient().create(IApiClient.class);
     }
 
 
     protected static void tokenRefresh(ResponseListenerAuth<JsonObject, String> listener) {
         HashMap<String, String> data = new HashMap<>();
-        data.put("access", CredentialManager.getToken());
+        data.put("access", CredentialManager.getTokenNoBearer());
         data.put("refresh", CredentialManager.getRefreshToken());
 
         getiApiClient().refreshToken(data).enqueue(new Callback<JsonObject>() {
@@ -35,6 +39,7 @@ public class BaseApiHelper {
                     CredentialManager.saveToken(token);
                     CredentialManager.saveRefreshToken(refresh);
 
+                    listener.onDataFetched(response.body(), response.code());
 
                 }else if (response.code() == 401){
 
@@ -69,7 +74,10 @@ public class BaseApiHelper {
                         @Override
                         public void onDataFetched(JsonObject response, int statusCode) {
 
+                            Log.d("refresh", "Refreshed and calling again");
+
                             dataFetchingListener.onAuthError(false);
+
                         }
 
                         @Override

@@ -108,7 +108,7 @@ public class AuthApiHelper extends BaseApiHelper {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                listener.onFailed("Error", 0);
+                listener.onFailed(t.getMessage(), 0);
             }
         });
 
@@ -121,8 +121,8 @@ public class AuthApiHelper extends BaseApiHelper {
 
         IApiClient iApiClient = getiApiClient();
         HashMap<String, String> data = new HashMap<>();
-        data.put("access", userDetails.getToken());
-        data.put("refresh", userDetails.getRefreshToken());
+        data.put("access", CredentialManager.getTokenNoBearer());
+        data.put("refresh", CredentialManager.getRefreshToken());
         Call<JsonObject> call = iApiClient.refreshToken(data);
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -330,7 +330,7 @@ public class AuthApiHelper extends BaseApiHelper {
 
     public static void getBanners(DataFetchingListener<Response<JsonObject>> listener) {
         IApiClient iApiClient = getiApiClient();
-        Call<JsonObject> call = iApiClient.getBanners(CredentialManager.getToken());
+        Call<JsonObject> call = iApiClient.getBanners();
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
