@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,60 +14,42 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
+import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.util.ImagePreview;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
-import retrofit2.Response;
 
 public class CampaignShopActivity extends AppCompatActivity {
 
-    TabsAdapter adapter;
-    ArrayList<TabsItem> itemList;
-    ProgressBar progressBar;
-    int page=1;
-    StickyScrollView nestedSV;
-    RecyclerView recyclerView;
-    ViewDialog dialog;
-    Button loadMore;
-    boolean isLoading = false;
-
-    String title = "19.19 Shops";
-    String slug = "evaly1919";
-
-    LinearLayout not, layoutImageHolder;
-    UserDetails userDetails;
-    ImageView cover;
+    private TabsAdapter adapter;
+    private ArrayList<TabsItem> itemList;
+    private ProgressBar progressBar;
+    private int page=1;
+    private StickyScrollView nestedSV;
+    private RecyclerView recyclerView;
+    private ViewDialog dialog;
+    private boolean isLoading = false;
+    private String title = "19.19 Shops";
+    private String slug = "evaly1919";
+    private LinearLayout not, layoutImageHolder;
+    private UserDetails userDetails;
+    private ImageView cover;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,15 +59,12 @@ public class CampaignShopActivity extends AppCompatActivity {
         getSupportActionBar().setElevation(0f);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         Intent intent = getIntent();
 
         title = intent.getStringExtra("title");
         slug = intent.getStringExtra("slug");
 
         userDetails = new UserDetails(this);
-
-
 
         getSupportActionBar().setTitle(title);
 
@@ -105,29 +82,24 @@ public class CampaignShopActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
         dialog=new ViewDialog(CampaignShopActivity.this);
-       // dialog.showDialog();
+
 
         if (slug.equals("shop-subscriptions"))
             getFollowedShops(page);
         else
             getEvalyShops(page);
 
-
         progressBar.setVisibility(View.VISIBLE);
 
-
         nestedSV = findViewById(R.id.sticky);
+
         if (nestedSV != null) {
-
             nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-
                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-
                     if (slug.equals("shop-subscriptions"))
                         getFollowedShops(page);
                     else
                         getEvalyShops(page);
-
                 }
             });
         }
@@ -145,9 +117,7 @@ public class CampaignShopActivity extends AppCompatActivity {
             public void onDataFetched(CommonDataResponse<List<CampaignShopItem>> response, int statusCode) {
 
                 progressBar.setVisibility(View.INVISIBLE);
-
                 findViewById(R.id.title).setVisibility(View.VISIBLE);
-
 
                 try {
                     JsonObject meta = response.getMeta();
@@ -156,18 +126,12 @@ public class CampaignShopActivity extends AppCompatActivity {
                             .into(cover);
 
                     cover.setOnClickListener(view -> {
-
                         Intent intent = new Intent(CampaignShopActivity.this, ImagePreview.class);
                         intent.putExtra("image", meta.get("campaign_banner").getAsString());
                         startActivity(intent);
 
                     });
-
-
-                } catch (Exception e){
-
-                }
-
+                } catch (Exception ignored){ }
 
                 List<CampaignShopItem> list = response.getData();
 
@@ -186,12 +150,9 @@ public class CampaignShopActivity extends AppCompatActivity {
                 if (list.size() > 0)
                     page++;
 
-
-                if (page == 1 && list.size() == 0){
-
+                if (page == 1 && list.size() == 0)
                     not.setVisibility(View.VISIBLE);
 
-                }
             }
 
             @Override
@@ -205,10 +166,7 @@ public class CampaignShopActivity extends AppCompatActivity {
             public void onAuthError(boolean logout) {
 
             }
-
         });
-
-
     }
 
 
@@ -216,96 +174,61 @@ public class CampaignShopActivity extends AppCompatActivity {
     public void getFollowedShops(int p){
 
         layoutImageHolder.setVisibility(View.GONE);
-
         isLoading = true;
-
         progressBar.setVisibility(View.VISIBLE);
 
-        String url = UrlUtils.BASE_URL+"shop-subscriptions";
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url , new JSONObject(),
-                response -> {
-                    try {
-                        isLoading = false;
-                        JSONArray jsonArray;
-
-                        if (slug.equals("shop-subscriptions"))
-                            jsonArray = response.getJSONArray("data");
-                        else
-                            jsonArray = response.getJSONArray("shops");
-
-                        boolean b=false;
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject ob = jsonArray.getJSONObject(i);
-                            TabsItem tabsItem = new TabsItem();
-                            tabsItem.setTitle(ob.getString("name"));
-                            tabsItem.setImage(ob.getString("logo_image"));
-                            tabsItem.setSlug(ob.getString("slug"));
-                            tabsItem.setCategory("root");
-                            itemList.add(tabsItem);
-                            adapter.notifyItemInserted(itemList.size());
-                        }
-
-                        if (jsonArray.length() == 0)
-                            not.setVisibility(View.VISIBLE);
-                        else {
-                            not.setVisibility(View.GONE);
-                            page++;
-                        }
-
-                        // dialog.hideDialog();
-
-                        progressBar.setVisibility(View.INVISIBLE);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } , error -> {
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-
-                if (error.networkResponse.statusCode == 401){
-
-                    AuthApiHelper.refreshToken(CampaignShopActivity.this, new DataFetchingListener<Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getEvalyShops(p);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-                        }
-                    });
-                    return;
-                }}
-            progressBar.setVisibility(View.GONE);
-            Toast.makeText(CampaignShopActivity.this, "All shops are loaded", Toast.LENGTH_SHORT).show();
-
-            error.printStackTrace();
-        }){
+        ShopApiHelper.getFollowedShop(CredentialManager.getToken(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-                return headers;
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+                isLoading = false;
+                JsonArray jsonArray;
+
+                if (slug.equals("shop-subscriptions"))
+                    jsonArray = response.getAsJsonArray("data");
+                else
+                    jsonArray = response.getAsJsonArray("shops");
+
+                boolean b=false;
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JsonObject ob = jsonArray.get(i).getAsJsonObject();
+                    TabsItem tabsItem = new TabsItem();
+                    tabsItem.setTitle(ob.get("name").getAsString());
+                    tabsItem.setImage(ob.get("logo_image").getAsString());
+                    tabsItem.setSlug(ob.get("slug").getAsString());
+                    tabsItem.setCategory("root");
+                    itemList.add(tabsItem);
+                    adapter.notifyItemInserted(itemList.size());
+                }
+
+                if (jsonArray.size() == 0)
+                    not.setVisibility(View.VISIBLE);
+                else {
+                    not.setVisibility(View.GONE);
+                    page++;
+                }
+
+
+                progressBar.setVisibility(View.INVISIBLE);
+
             }
-        };
-        RequestQueue rq = Volley.newRequestQueue(this);
-        request.setShouldCache(false);
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+                if (!logout)
+                    getFollowedShops(p);
+
+            }
+        });
+
     }
 
-
-
-    public void loadNextShops(){
-        getEvalyShops(++page);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

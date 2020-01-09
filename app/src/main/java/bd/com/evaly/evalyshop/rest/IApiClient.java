@@ -201,7 +201,6 @@ public interface IApiClient {
 
     // shop releated
 
-
     @GET
     Call<ShopDetailsModel> getShopDetailsItems(@Header("Authorization") String token, @Url String url);
 
@@ -214,6 +213,9 @@ public interface IApiClient {
 
     @GET(UrlUtils.BASE_URL+"reviews/summary/shops/{sku}/")
     Call<JsonObject> getShopReviews(@Header("Authorization") String token, @Path("sku") String sku);
+
+    @GET(UrlUtils.BASE_URL+"shop-subscriptions")
+    Call<JsonObject> getFollowedShops(@Header("Authorization") String token);
 
     // referral
 

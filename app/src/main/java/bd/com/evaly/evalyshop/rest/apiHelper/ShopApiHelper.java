@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
+import com.google.gson.JsonObject;
+
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.rest.IApiClient;
@@ -27,5 +29,11 @@ public class ShopApiHelper extends BaseApiHelper{
 
     }
 
+
+
+    public static void getFollowedShop(String token, ResponseListenerAuth<JsonObject, String> listener){
+
+        getiApiClient().getFollowedShops(token).enqueue(getResponseCallBackDefault(listener));
+    }
 
 }
