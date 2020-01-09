@@ -12,7 +12,11 @@ public class CredentialManager {
     }
 
     public static String getToken(){
-        return "Bearer "+ MyPreference.with(AppController.getmContext()).getString(ConstantUtils.TOKEN, "");
+        String token =  MyPreference.with(AppController.getmContext()).getString(ConstantUtils.TOKEN, "");
+        if (token.equals(""))
+            return "";
+        else
+            return "Bearer "+token;
     }
 
 
