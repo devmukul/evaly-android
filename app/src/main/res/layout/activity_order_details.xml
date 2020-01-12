@@ -618,15 +618,4 @@
     </LinearLayout>
 
 
-    <View
-        android:visibility="gone"
-        android:id="@+id/bg"
-        android:background="#70000000"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true" />
-
-    <include layout="@layout/bottom_sheet_order_details_payment" />
-
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

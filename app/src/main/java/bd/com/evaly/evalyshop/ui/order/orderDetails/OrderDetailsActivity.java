@@ -66,7 +66,6 @@ import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
-import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
@@ -74,8 +73,6 @@ import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
-import bd.com.evaly.evalyshop.ui.order.PayViaCard;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.payment.PaymentBottomSheet;
@@ -163,55 +160,6 @@ public class OrderDetailsActivity extends BaseActivity {
         orderDetailsProductAdapter = new OrderDetailsProductAdapter(this, orderDetailsProducts);
         orderList.setAdapter(orderDetailsProductAdapter);
 
-        mViewBg = findViewById(R.id.bg);
-
-        // bottom sheet
-        layoutBottomSheet = findViewById(R.id.bottom_sheet);
-        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-        amountToPayView = findViewById(R.id.amountPay);
-        bkash = findViewById(R.id.bkash);
-        cards = findViewById(R.id.card);
-        evalyPay = findViewById(R.id.evaly_pay);
-        evalyPayText = findViewById(R.id.evalyPayText);
-
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        mViewBg.setVisibility(View.GONE);
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-                        mViewBg.setVisibility(View.VISIBLE);
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-                        mViewBg.setVisibility(View.GONE);
-                        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
-
-        mViewBg.setOnClickListener(v -> {
-            sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            mViewBg.setVisibility(View.GONE);
-
-        });
-
 
         scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY == 0)
@@ -257,85 +205,13 @@ public class OrderDetailsActivity extends BaseActivity {
             PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
 
-//            double amountToPay = total_amount - paid_amount;
-//            amountToPayView.setText((int) amountToPay + "");
-//            full_or_partial.setVisibility(View.GONE);
-//            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         });
 
-
-        payParially.setOnClickListener(v -> addPartialPayDialog());
 
         payViaGiftCard = findViewById(R.id.payViaGiftCard);
         payViaGiftCard.setOnClickListener(v -> dialogGiftCardPayment());
 
-        evalyPay.setOnClickListener(v -> {
-            double amountToPay = total_amount - paid_amount;
 
-            if (amountToPayView.getText().toString().trim().equals("")) {
-                Toast.makeText(context, "Please enter an amount", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
-                Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (amountToPayView.getText().toString().equals("0")) {
-                Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (Double.parseDouble(amountToPayView.getText().toString()) > Double.parseDouble(userDetails.getBalance())) {
-                Toast.makeText(context, "Insufficient Evaly balance (৳ " + userDetails.getBalance() + ")", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            makePartialPayment(invoice_no, amountToPayView.getText().toString());
-        });
-
-
-        bkash.setOnClickListener(v -> {
-            double amountToPay = total_amount - paid_amount;
-
-            if (amountToPayView.getText().toString().trim().equals("")) {
-                Toast.makeText(context, "Please enter an amount", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
-                Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (amountToPayView.getText().toString().equals("0")) {
-                Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Intent intent = new Intent(OrderDetailsActivity.this, PayViaBkashActivity.class);
-            intent.putExtra("amount", amountToPayView.getText().toString());
-            intent.putExtra("invoice_no", invoice_no);
-            intent.putExtra("context", "order_payment");
-            startActivityForResult(intent, 10002);
-
-            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        });
-
-        cards.setOnClickListener(v -> {
-            double amountToPay = total_amount - paid_amount;
-
-            if (amountToPayView.getText().toString().trim().equals("")) {
-                Toast.makeText(context, "Please enter an amount", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (Double.parseDouble(amountToPayView.getText().toString()) > amountToPay) {
-                Toast.makeText(context, "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (amountToPayView.getText().toString().equals("0")) {
-                Toast.makeText(context, "Amount can't be zero", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            double amToPay = Double.parseDouble(amountToPayView.getText().toString());
-
-            addBalanceViaCard(invoice_no, String.valueOf((int) amToPay));
-
-            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-        });
 
     }
 
@@ -495,65 +371,7 @@ public class OrderDetailsActivity extends BaseActivity {
             else {
                 Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
             }
-
         }
-    }
-
-
-    public void addPartialPayDialog() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
-
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.alert_partial_pay, null);
-        dialogBuilder.setView(dialogView);
-
-        AlertDialog alertDialog = dialogBuilder.create();
-
-        Button d_submit = dialogView.findViewById(R.id.submit);
-
-        final EditText amount = dialogView.findViewById(R.id.amount);
-
-        alertDialog.getWindow()
-                .setLayout(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-
-        alertDialog.show();
-
-        d_submit.setOnClickListener(v -> {
-
-            if (amount.getText().toString().equals("")) {
-                Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            double partial_amount = Double.parseDouble(amount.getText().toString());
-
-            if (partial_amount > total_amount) {
-                Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            double userBalance = Double.parseDouble(userDetails.getBalance());
-
-            if (partial_amount <= userBalance) {
-                makePartialPayment(invoice_no, String.valueOf((int) partial_amount));
-                Logger.d(partial_amount);
-            } else {
-
-                alertDialog.dismiss();
-
-                //Toast.makeText(context, "Insufficient Balance, pay the rest amount.", Toast.LENGTH_SHORT).show();
-                double amountToPay = partial_amount - userBalance;
-
-                amountToPayView.setText(amountToPay + "");
-                full_or_partial.setText("Partial Pay");
-
-                Handler handler = new Handler();
-                handler.postDelayed(() -> sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED), 500);
-            }
-        });
     }
 
 
@@ -653,7 +471,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
     }
 
-
     public void updatePage(){
 
         scrollView.postDelayed(() -> scrollView.fullScroll(View.FOCUS_UP), 50);
@@ -689,97 +506,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
             }
         });
-    }
-
-
-    public void makePartialPayment(String invoice, String amount) {
-
-        dialog.showDialog();
-
-        ParitalPaymentModel model = new ParitalPaymentModel();
-
-        model.setInvoice_no(invoice);
-        model.setAmount(Integer.parseInt(amount));
-
-        OrderApiHelper.makePartialPayment(CredentialManager.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                dialog.hideDialog();
-
-                Toast.makeText(OrderDetailsActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
-
-                if (response.get("success").getAsBoolean()) {
-
-                    // it means all payment done
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(() -> {
-
-                        dialog.hideDialog();
-                        finish();
-                        startActivity(getIntent());
-
-                    }, 1000);
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-                dialog.hideDialog();
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-    }
-
-
-    public void addBalanceViaCard(String invoice, String amount) {
-
-        if (balance.equals("")) {
-            Toast.makeText(this, "Enter amount", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        dialog.showDialog();
-
-        HashMap<String, String> payload = new HashMap<>();
-
-        payload.put("amount", amount);
-        payload.put("context", "order_payment");
-        payload.put("context_reference", invoice);
-
-
-        OrderApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                dialog.hideDialog();
-
-                String purl = response.get("payment_gateway_url").getAsString();
-
-                Intent intent = new Intent(OrderDetailsActivity.this, PayViaCard.class);
-                intent.putExtra("url", purl);
-                startActivityForResult(intent, 10002);
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-                dialog.hideDialog();
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
     }
 
 
@@ -894,10 +620,8 @@ public class OrderDetailsActivity extends BaseActivity {
                     indicator.setCurrentStep(6);
                 }
 
-
                 if (!response.isDeliveryConfirmed() && response.isDeliveryConfirmationRequired())
                     deliveryConfirmationDialog();
-
 
                 orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
 
@@ -982,7 +706,6 @@ public class OrderDetailsActivity extends BaseActivity {
                             tvCampaignRule.setText(Html.fromHtml(message));
 
                         }
-
                     }
                 }
 
@@ -1005,12 +728,10 @@ public class OrderDetailsActivity extends BaseActivity {
                     paymentMethods.setText(Utils.capitalize(payMethod));
                 }
 
-
                 shopName.setText(response.getShop().getName());
                 shopSlug = response.getShop().getSlug();
                 shopAddress.setText(response.getShop().getAddress());
                 shopnumber.setText(response.getShop().getContactNumber());
-
 
                 total_amount = Math.round(Double.parseDouble(response.getTotal()));
                 paid_amount = Math.round(Double.parseDouble(response.getPaidAmount()));
@@ -1022,10 +743,8 @@ public class OrderDetailsActivity extends BaseActivity {
                     payViaGiftCard.setVisibility(View.GONE);
                 }
 
-
                 orderDetailsProducts.clear();
                 orderDetailsProductAdapter.notifyDataSetChanged();
-
 
                 List<OrderItemsItem> orderItemList = response.getOrderItems();
 
@@ -1108,6 +827,7 @@ public class OrderDetailsActivity extends BaseActivity {
         });
 
     }
+
 
     @Override
     public void onBackPressed() {
