@@ -65,42 +65,41 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
 
     @BindView(R.id.shop)
-    TextView shopName;
+    private TextView shopName;
     @BindView(R.id.product_name)
-    TextView productName;
+    private TextView productName;
     @BindView(R.id.product_image)
-    ImageView productImage;
+    private ImageView productImage;
     @BindView(R.id.minus)
-    ImageView minus;
+    private ImageView minus;
     @BindView(R.id.plus)
-    ImageView plus;
+    private ImageView plus;
     @BindView(R.id.price)
-    TextView productPrice;
+    private TextView productPrice;
     @BindView(R.id.priceTotal)
-    TextView productTotalPrice;
+    private TextView productTotalPrice;
     @BindView(R.id.wholeSalePrice)
-    TextView productWholesalePrice;
+    private TextView productWholesalePrice;
     @BindView(R.id.quantity)
-    EditText productQuantity;
+    private EditText productQuantity;
     @BindView(R.id.variation_title)
-    TextView variationTitle;
+    private TextView variationTitle;
     @BindView(R.id.add_to_cart)
-    TextView addToCartBtn;
+    private TextView addToCartBtn;
     @BindView(R.id.buy_now)
-    TextView checkOutBtn;
+    private TextView checkOutBtn;
     @BindView(R.id.variationHolder)
-    LinearLayout variationHolder;
-    // checkout bottomsheet
-    CheckBox selectAll;
-    Button checkout;
-    Button btnBottomSheet;
-    EditText customAddress, contact_number;
-    BottomSheetDialog bottomSheetDialog;
-    CheckBox checkBox;
-    View bottomSheetView;
-    SkeletonScreen skeleton;
+    private LinearLayout variationHolder;
     @BindView(R.id.recyclerViewVariation)
-    RecyclerView recyclerVariation;
+    private RecyclerView recyclerVariation;
+
+    // checkout bottomsheet
+    private Button btnBottomSheet;
+    private EditText customAddress, contact_number;
+    private BottomSheetDialog bottomSheetDialog;
+    private CheckBox checkBox;
+    private View bottomSheetView;
+    private SkeletonScreen skeleton;
     private Context context;
     private UserDetails userDetails;
     private ArrayList<ShopItem> itemsList;
@@ -152,12 +151,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme);
 
         Bundle args = getArguments();
-
         appDatabase = AppDatabase.getInstance(getContext());
         cartDao = appDatabase.cartDao();
-
         dialog = new ViewDialog(getActivity());
-
         shop_slug = args.getString("shopSlug");
         shop_item_slug = args.getString("productSlug");
 
@@ -340,10 +336,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         try {
             productPriceInt = (int) Math.round(Double.parseDouble(firstItem.getShopItemPrice()));
 
-        } catch (Exception e) {
-
-        }
-
+        } catch (Exception ignored) { }
 
         if (firstItem.getShopItemDiscountedPrice() != null)
             if (!(firstItem.getShopItemDiscountedPrice().equals("0.0") || firstItem.getShopItemDiscountedPrice().equals("0"))) {
@@ -361,7 +354,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         shop_item_id = firstItem.getShopItemId();
 
-
         if (getContext() != null)
             Glide.with(getContext())
                     .load(firstItem.getShopItemImage())
@@ -372,7 +364,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         if (firstItem.getAttributes().size() > 0) {
 
             variationHolder.setVisibility(View.VISIBLE);
-
             AttributesItem attributesItem = firstItem.getAttributes().get(0);
             String varName = attributesItem.getName();
             String varValue = attributesItem.getValue();
@@ -383,15 +374,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         addToCartBtn.setOnClickListener(v -> {
 
             Calendar calendar = Calendar.getInstance();
-
             String price = firstItem.getShopItemPrice();
-
             if (firstItem.getShopItemDiscountedPrice() != null)
                 if (!firstItem.getShopItemDiscountedPrice().equals("0"))
                     price = firstItem.getShopItemDiscountedPrice();
 
             String sellerJson = new Gson().toJson(firstItem);
-
 
             CartEntity cartEntity = new CartEntity();
             cartEntity.setName(firstItem.getShopItemName());
@@ -433,7 +421,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 bottomSheetDialog.hide();
                 dialog.hideDialog();
 
-                if (response != null) {
+                if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
                     if (response.has("data")) {
 

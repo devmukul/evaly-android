@@ -57,36 +57,33 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
 
 
     static GiftCardMyFragment instance;
-    View view;
-    RecyclerView recyclerView;
-    ArrayList<GiftCardListPurchasedItem> itemList;
-    GiftCardListPurchasedAdapter adapter;
-    RequestQueue rq;
-    BottomSheetBehavior sheetBehavior;
-    LinearLayout layoutBottomSheet;
-    ViewDialog dialog;
-    ImageView image, plus, minus;
-    UserDetails userDetails;
-    TextView details, name, amount, total;
-    EditText quantity;
-    int voucherAmount = 0;
-    Button placeOrder;
-    String giftCardInvoice = "";
-
-    LinearLayout noItem;
-    Context context;
-
-    BottomSheetDialog bottomSheetDialog;
-    BottomSheetBehavior bottomSheetBehavior;
-    View bottomSheetInternal;
-
-    LinearLayout progressContainer;
-    ProgressBar progressBar;
-    int currentPage;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
-    TextView amountToPayView;
-    ImageView bkash, cards;
-    SwipeRefreshLayout swipeLayout;
+    private View view;
+    private RecyclerView recyclerView;
+    private ArrayList<GiftCardListPurchasedItem> itemList;
+    private GiftCardListPurchasedAdapter adapter;
+    private RequestQueue rq;
+    private BottomSheetBehavior sheetBehavior;
+    private LinearLayout layoutBottomSheet;
+    private ViewDialog dialog;
+    private ImageView image, plus, minus;
+    private UserDetails userDetails;
+    private TextView details, name, amount, total;
+    private EditText quantity;
+    private int voucherAmount = 0;
+    private Button placeOrder;
+    private String giftCardInvoice = "";
+    private LinearLayout noItem;
+    private Context context;
+    private BottomSheetDialog bottomSheetDialog;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private View bottomSheetInternal;
+    private LinearLayout progressContainer;
+    private ProgressBar progressBar;
+    private int currentPage;
+    private int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private TextView amountToPayView;
+    private ImageView bkash, cards;
+    private SwipeRefreshLayout swipeLayout;
     private boolean loading = true;
 
     public GiftCardMyFragment() {
@@ -104,10 +101,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         adapter.notifyDataSetChanged();
         currentPage = 1;
         swipeLayout.setRefreshing(false);
-
         getGiftCardList();
-
-
     }
 
     @Override
@@ -176,7 +170,6 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
 
         giftCardInvoice = item.getInvoiceNo();
 
-
         bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_gift_card_redeem);
 
@@ -189,11 +182,9 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
 
         layoutBottomSheet = bottomSheetDialog.findViewById(R.id.bottom_sheet);
 
-
         Button button = bottomSheetDialog.findViewById(R.id.button);
         EditText email = bottomSheetDialog.findViewById(R.id.email);
         TextView details = bottomSheetDialog.findViewById(R.id.details);
-
 
         email.setText(userDetails.getEmail());
 
@@ -202,17 +193,13 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         else
             button.setText("REDEEM");
 
-
         button.setOnClickListener(view1 -> {
-
 
             if (userDetails.getEmail().equals("")) {
                 context.startActivity(new Intent(context, EditProfileActivity.class));
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             } else
                 redeemCard(giftCardInvoice);
-
-
         });
 
 
@@ -225,21 +212,15 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
 
         loading = false;
 
-
         if (currentPage == 1) {
             progressContainer.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         } else {
-
             progressContainer.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-
         }
 
         String url = UrlUtils.DOMAIN + "cpn/gift-card-orders?show=gifts&page=" + currentPage;
-
-        Log.d("json url", url);
-
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
@@ -271,18 +252,6 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
                             GiftCardListPurchasedItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListPurchasedItem.class);
                             itemList.add(item);
                             adapter.notifyItemInserted(itemList.size());
-
-                            try {
-
-                                Log.d("json", "added");
-
-
-                            } catch (Exception e) {
-
-                                Log.d("json exc", e.toString());
-
-                            }
-
                         }
 
                         currentPage++;
