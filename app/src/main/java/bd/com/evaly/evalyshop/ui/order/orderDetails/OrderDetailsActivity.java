@@ -657,10 +657,10 @@ public class OrderDetailsActivity extends BaseActivity {
     public void updatePage(){
 
         scrollView.postDelayed(() -> scrollView.fullScroll(View.FOCUS_UP), 50);
+
+        getOrderHistory();
         Balance.update(this, balance);
         getOrderDetails();
-        getOrderHistory();
-
 
     }
 
@@ -1077,7 +1077,6 @@ public class OrderDetailsActivity extends BaseActivity {
     public void getOrderHistory() {
 
         orderStatuses.clear();
-        adapter.notifyDataSetChanged();
         OrderApiHelper.getOrderHistories(CredentialManager.getToken(), invoice_no, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
@@ -1085,7 +1084,6 @@ public class OrderDetailsActivity extends BaseActivity {
                 JsonArray list = response.getAsJsonObject("data").getAsJsonArray("histories");
 
                 for (int i = 0; i < list.size(); i++) {
-
                     JsonObject jsonObject = list.get(i).getAsJsonObject();
 
                     orderStatuses.add(new OrderStatus(
@@ -1094,8 +1092,8 @@ public class OrderDetailsActivity extends BaseActivity {
                             jsonObject.get("note").getAsString())
                     );
 
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
             }
 
             @Override
