@@ -362,11 +362,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         shop_item_id = firstItem.getShopItemId();
 
 
-        Glide.with(context)
-                .load(firstItem.getShopItemImage())
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .apply(new RequestOptions().override(250, 250))
-                .into(productImage);
+        if (getContext() != null)
+            Glide.with(getContext())
+                    .load(firstItem.getShopItemImage())
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .apply(new RequestOptions().override(250, 250))
+                    .into(productImage);
 
         if (firstItem.getAttributes().size() > 0) {
 
