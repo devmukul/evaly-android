@@ -196,6 +196,7 @@
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:text="1"
+                            android:maxLength="4"
                             android:textSize="22sp" />
 
                         <ImageView

@@ -305,7 +305,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                 List<GiftCardListItem> list = response.getData();
 
                 itemList.addAll(list);
-                adapter.notifyItemRangeChanged(itemList.size()-list.size(), list.size());
+                adapter.notifyItemRangeChanged(itemList.size() - list.size(), list.size());
 
                 if (currentPage == 1)
                     progressContainer.setVisibility(View.GONE);
@@ -386,9 +386,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
 
     }
-
-
-
 
 
     public void createOrder(String slug) {
