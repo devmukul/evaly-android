@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,20 +33,41 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
     private List<ProductItem> productsList;
     private String shopSlug = "";
     private int cashback_rate  = 0;
-
     private ProductListener productListener;
+
+
+    View.OnClickListener itemViewListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            if (productsList.size() > 0) {
+                int position = (int) view.getTag(); // get item for position
+
+                Intent intent = new Intent(mContext, ViewProductActivity.class);
+                intent.putExtra("product_slug", productsList.get(position).getSlug());
+                intent.putExtra("product_name", productsList.get(position).getName());
+                intent.putExtra("product_price", productsList.get(position).getMaxPrice());
+                if (productsList.get(position).getImageUrls().size() > 0)
+                    intent.putExtra("product_image", productsList.get(position).getImageUrls().get(0));
+
+                mContext.startActivity(intent);
+            } else
+                Toast.makeText(mContext, "Product not found!", Toast.LENGTH_SHORT).show();
+
+        }
+    };
+    
+    public ProductGridAdapter(Context context, List<ProductItem> a) {
+        mContext = context;
+        productsList=a;
+    }
 
     public void setproductListener(ProductListener productListener){
         this.productListener = productListener;
     }
-    
+
     public void setShopSlug(String shopSlug){
         this.shopSlug = shopSlug;
-    }
-
-    public ProductGridAdapter(Context context, List<ProductItem> a) {
-        mContext = context;
-        productsList=a;
     }
 
     @Override
@@ -61,24 +83,6 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
     public void setCashback_rate(int cashback_rate) {
         this.cashback_rate = cashback_rate;
     }
-
-    View.OnClickListener itemViewListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            int position = (int) view.getTag(); // get item for position
-
-            Intent intent=new Intent(mContext, ViewProductActivity.class);
-            intent.putExtra("product_slug",productsList.get(position).getSlug());
-            intent.putExtra("product_name",productsList.get(position).getName());
-            intent.putExtra("product_price",productsList.get(position).getMaxPrice());
-            if (productsList.get(position).getImageUrls().size()>0)
-                intent.putExtra("product_image", productsList.get(position).getImageUrls().get(0));
-
-            mContext.startActivity(intent);
-
-        }
-    };
-
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
@@ -165,6 +169,12 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
         return productsList.size();
     }
 
+    public void setFilter(ArrayList<ProductItem> ar){
+        productsList=new ArrayList<>();
+        productsList.addAll(ar);
+        notifyDataSetChanged();
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView textViewAndroid,price,priceDiscount,buyNow,tvCashback;
@@ -181,12 +191,6 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.
             tvCashback = itemView.findViewById(R.id.tvCashback);
             this.itemView = itemView;
         }
-    }
-
-    public void setFilter(ArrayList<ProductItem> ar){
-        productsList=new ArrayList<>();
-        productsList.addAll(ar);
-        notifyDataSetChanged();
     }
 }
 
