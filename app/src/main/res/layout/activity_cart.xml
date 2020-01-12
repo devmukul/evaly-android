@@ -129,7 +129,8 @@
                 android:layout_weight="0"
                 android:text="FREE SHIPPING"
                 android:textColor="#555"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <Button

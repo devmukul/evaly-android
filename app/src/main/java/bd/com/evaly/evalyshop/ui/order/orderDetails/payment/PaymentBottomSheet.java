@@ -121,6 +121,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 return;
             }
 
+            binding.evalyPay.setEnabled(false);
+
             viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
             
         });
@@ -138,6 +140,13 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 Toast.makeText(getContext(), "Amount can't be zero", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+
+            binding.bkash.setEnabled(false);
+
+            dismiss();
+
+            Toast.makeText(getContext(), "Opening bKash payment gateway!", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(getActivity(), PayViaBkashActivity.class);
             intent.putExtra("amount", binding.amountPay.getText().toString());
@@ -162,9 +171,11 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 return;
             }
 
+
+            binding.card.setEnabled(false);
             double amToPay = Double.parseDouble(binding.amountPay.getText().toString());
 
-            Toast.makeText(getContext(), "Redirecting to payment page!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaCard(invoice_no, String.valueOf((int) amToPay));
 
         });
@@ -172,33 +183,38 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
 
     @Override
     public void onPaymentSuccess(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 
-        if (isVisible()) {
+        binding.evalyPay.setEnabled(true);
 
-            if (getActivity() != null) {
-                ((OrderDetailsActivity) getActivity()).updatePage();
+        if (getContext() != null) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            if (isVisible()) {
+                if (getActivity() != null)
+                    ((OrderDetailsActivity) getActivity()).updatePage();
+                dismiss();
             }
-
-            dismiss();
         }
     }
 
     @Override
     public void onPaymentFailed(String message) {
+
+        binding.evalyPay.setEnabled(true);
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void payViaCard(String url) {
 
-        if (url.equals(""))
-            Toast.makeText(getContext(), "Unable to make payment!", Toast.LENGTH_SHORT).show();
-        else {
-            dismiss();
-            Intent intent = new Intent(getActivity(), PayViaCard.class);
-            intent.putExtra("url", url);
-            Objects.requireNonNull(getActivity()).startActivityForResult(intent, 10002);
+        if (getContext() != null) {
+            if (url.equals(""))
+                Toast.makeText(getContext(), "Unable to make payment!", Toast.LENGTH_SHORT).show();
+            else {
+                dismiss();
+                Intent intent = new Intent(getActivity(), PayViaCard.class);
+                intent.putExtra("url", url);
+                Objects.requireNonNull(getActivity()).startActivityForResult(intent, 10002);
+            }
         }
     }
 }

@@ -91,17 +91,14 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         else
             myViewHolder.address.setText(availableShops.get(i).getAddress());
 
-
         if (!availableShops.get(i).getStock()) {
             myViewHolder.buyBtn.setText("Out of Stock");
             myViewHolder.buyBtn.setEnabled(false);
         }
 
         try {
-
             String actualPrice = Integer.toString((int) Math.round(Double.parseDouble(availableShops.get(i).getMaximumPrice())));
             String discountPrice = Integer.toString((int) Math.round(Double.parseDouble(availableShops.get(i).getPrice())));
-
 
             if (availableShops.get(i).getDiscountValue() == 0) {
 
@@ -165,7 +162,6 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
                 cartItem.setProductID(availableShops.get(i).getProductId());
 
                 if (availableShops.get(i).getDiscountValue() == 0) {
-
                     if (availableShops.get(i).getMaximumPriceInt() < 1) {
                         Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
                         return;
