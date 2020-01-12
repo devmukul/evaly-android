@@ -78,6 +78,7 @@ import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaCard;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.payment.PaymentBottomSheet;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
@@ -252,10 +253,14 @@ public class OrderDetailsActivity extends BaseActivity {
         payParially = findViewById(R.id.payPartially);
 
         makePayment.setOnClickListener(v -> {
-            double amountToPay = total_amount - paid_amount;
-            amountToPayView.setText((int) amountToPay + "");
-            full_or_partial.setVisibility(View.GONE);
-            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount);
+            paymentBottomSheet.show(getSupportFragmentManager(), "payment");
+
+//            double amountToPay = total_amount - paid_amount;
+//            amountToPayView.setText((int) amountToPay + "");
+//            full_or_partial.setVisibility(View.GONE);
+//            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         });
 
 
@@ -637,7 +642,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
             }
         });
-
     }
 
 
@@ -648,6 +652,18 @@ public class OrderDetailsActivity extends BaseActivity {
         checkCardBalance();
 
     }
+
+
+    public void updatePage(){
+
+        scrollView.postDelayed(() -> scrollView.fullScroll(View.FOCUS_UP), 50);
+        Balance.update(this, balance);
+        getOrderDetails();
+        getOrderHistory();
+
+
+    }
+
 
     public void checkCardBalance() {
 
@@ -673,7 +689,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
             }
         });
-
     }
 
 

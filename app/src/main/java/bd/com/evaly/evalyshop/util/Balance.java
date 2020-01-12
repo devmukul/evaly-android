@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.util;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.Html;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -9,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import java.util.Locale;
 
+import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -102,7 +104,12 @@ public class Balance {
             public void onDataFetched(JsonObject response, int statusCode) {
                     response = response.getAsJsonObject("data");
                     userDetails.setBalance(response.get("balance").getAsString());
-                    textView.setText(String.format(Locale.ENGLISH, "৳ %s", response.get("balance").getAsString()));
+
+                    if (context instanceof OrderDetailsActivity)
+                        textView.setText(Html.fromHtml(String.format(Locale.ENGLISH, "Balance: <b>৳ %s</b>", response.get("balance").getAsString())));
+                    else
+                        textView.setText(String.format(Locale.ENGLISH, "৳ %s", response.get("balance").getAsString()));
+
             }
 
             @Override

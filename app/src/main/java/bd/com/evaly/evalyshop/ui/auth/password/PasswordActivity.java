@@ -10,15 +10,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
-
 import java.util.HashMap;
-
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -56,16 +52,11 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     TextView tvPasswordWarning;
 
     ViewDialog dialog;
-
     private boolean isFromSignUp;
-
     private int size = 1;
-
     private String phoneNumber, password;
     private String name;
-
     private SetPasswordPresenter presenter;
-
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
 
@@ -182,7 +173,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin1Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
+
                 if (pin1Et.getText().toString().length() == size) {
                     pin2Et.requestFocus();
                 }
@@ -190,12 +181,11 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-                // TODO Auto-generated method stub
 
             }
 
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
+
             }
 
         });
@@ -203,7 +193,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin2Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
+
                 if (pin2Et.getText().toString().length() == size) {
                     pin3Et.requestFocus();
                 }
@@ -211,12 +201,11 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-                // TODO Auto-generated method stub
 
             }
 
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
+
                 if (pin2Et.getText().toString().trim().length() == 0) {
                     pin1Et.requestFocus();
                 }
@@ -227,7 +216,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin3Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
+
                 if (pin3Et.getText().toString().length() == size) {
                     pin4Et.requestFocus();
                 }
@@ -235,12 +224,11 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-                // TODO Auto-generated method stub
 
             }
 
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
+
                 if (pin3Et.getText().toString().trim().length() == 0) {
                     pin2Et.requestFocus();
                 }
@@ -251,7 +239,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin4Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
+
                 if (pin4Et.getText().toString().length() == size) {
                     pin5Et.requestFocus();
                 }
@@ -259,12 +247,12 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-                // TODO Auto-generated method stub
+
 
             }
 
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
+
                 if (pin4Et.getText().toString().trim().length() == 0) {
                     pin3Et.requestFocus();
                 }
@@ -275,18 +263,15 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin5Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
 
             }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-                // TODO Auto-generated method stub
-
             }
 
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
+
                 if (pin5Et.getText().toString().trim().length() == 0) {
                     pin4Et.requestFocus();
                 }

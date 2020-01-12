@@ -18,10 +18,10 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class ForgotPasswordActivity extends BaseActivity {
 
-    EditText number;
-    Button reset;
-    ImageView close;
-    ViewDialog dialog;
+    private EditText number;
+    private Button reset;
+    private ImageView close;
+    private ViewDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,6 @@ public class ForgotPasswordActivity extends BaseActivity {
 
                 dialog.hideDialog();
 
-
                 Toast.makeText(ForgotPasswordActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
 
                 if (statusCode == 201) {
@@ -79,6 +78,8 @@ public class ForgotPasswordActivity extends BaseActivity {
 
             @Override
             public void onAuthError(boolean logout) {
+
+                dialog.hideDialog();
 
             }
         });

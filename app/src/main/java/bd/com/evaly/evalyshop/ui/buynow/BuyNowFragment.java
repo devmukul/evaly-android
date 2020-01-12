@@ -65,33 +65,33 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
 
     @BindView(R.id.shop)
-    private TextView shopName;
+    TextView shopName;
     @BindView(R.id.product_name)
-    private TextView productName;
+    TextView productName;
     @BindView(R.id.product_image)
-    private ImageView productImage;
+    ImageView productImage;
     @BindView(R.id.minus)
-    private ImageView minus;
+    ImageView minus;
     @BindView(R.id.plus)
-    private ImageView plus;
+    ImageView plus;
     @BindView(R.id.price)
-    private TextView productPrice;
+    TextView productPrice;
     @BindView(R.id.priceTotal)
-    private TextView productTotalPrice;
+    TextView productTotalPrice;
     @BindView(R.id.wholeSalePrice)
-    private TextView productWholesalePrice;
+    TextView productWholesalePrice;
     @BindView(R.id.quantity)
-    private EditText productQuantity;
+    EditText productQuantity;
     @BindView(R.id.variation_title)
-    private TextView variationTitle;
+    TextView variationTitle;
     @BindView(R.id.add_to_cart)
-    private TextView addToCartBtn;
+    TextView addToCartBtn;
     @BindView(R.id.buy_now)
-    private TextView checkOutBtn;
+    TextView checkOutBtn;
     @BindView(R.id.variationHolder)
-    private LinearLayout variationHolder;
+    LinearLayout variationHolder;
     @BindView(R.id.recyclerViewVariation)
-    private RecyclerView recyclerVariation;
+    RecyclerView recyclerVariation;
 
     // checkout bottomsheet
     private Button btnBottomSheet;

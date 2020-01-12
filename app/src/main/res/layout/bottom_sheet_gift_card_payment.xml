@@ -65,7 +65,8 @@
         android:paddingLeft="15dp"
         android:paddingTop="10dp"
         android:paddingRight="15dp"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="10dp"
+        android:imeOptions="actionDone"/>
 
     <TextView
         android:layout_width="match_parent"

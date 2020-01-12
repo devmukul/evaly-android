@@ -8,7 +8,7 @@ public class ParitalPaymentModel {
     private String invoice_no;
 
     @SerializedName("amount")
-    private int amount;
+    private double amount;
 
     public ParitalPaymentModel(){
 
@@ -27,11 +27,11 @@ public class ParitalPaymentModel {
         this.invoice_no = invoice_no;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 }
