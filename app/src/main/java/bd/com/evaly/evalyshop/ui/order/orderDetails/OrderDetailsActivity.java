@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.order.orderDetails;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -813,10 +812,10 @@ public class OrderDetailsActivity extends BaseActivity {
 
     public void cancelOrder(){
 
-        Dialog dialog = new Dialog(context, R.style.WideDialog);
+        BottomSheetDialog dialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_cancel_order);
+        dialog.setContentView(R.layout.bottom_sheet_cancel_order);
         dialog.setTitle("Select Cancellation Reason");
 
         Spinner spinner = dialog.findViewById(R.id.spinner);
