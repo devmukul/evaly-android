@@ -21,6 +21,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
         android:orientation="horizontal">
 
         <Spinner
@@ -31,25 +32,78 @@
             android:layout_weight="1"
             android:entries="@array/cancelReasons"
             android:paddingTop="7dp"
-            android:paddingBottom="7dp" />
-
-        <TextView
-            android:id="@+id/btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="@drawable/red_rounded_bg"
-            android:clickable="true"
-            android:paddingLeft="10dp"
-            android:paddingTop="7dp"
-            android:paddingRight="10dp"
             android:paddingBottom="7dp"
-            android:text="Cancel Order"
-            android:textAlignment="center"
-            android:textColor="#fff" />
+            android:visibility="gone" />
+
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/radioButton6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ordered by mistake"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/radioButton5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Changed my mind"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/radioButton4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Entered wrong information"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Selected wrong product variant"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Want to buy from another seller"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Other reason"
+                android:textSize="16sp" />
+        </RadioGroup>
 
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_weight="0"
+        android:background="@drawable/red_rounded_bg"
+        android:clickable="true"
+        android:paddingLeft="10dp"
+        android:paddingTop="7dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="7dp"
+        android:text="Cancel Order"
+        android:textAlignment="center"
+        android:textColor="#fff" />
 
 
 </LinearLayout>

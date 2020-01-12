@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -816,7 +817,38 @@ public class OrderDetailsActivity extends BaseActivity {
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_cancel_order);
-        dialog.setTitle("Select cancellation reason");
+        dialog.setTitle("Select Cancellation Reason");
+
+        Spinner spinner = dialog.findViewById(R.id.spinner);
+        TextView button = dialog.findViewById(R.id.btn);
+        RadioGroup radioGroup = dialog.findViewById(R.id.radioGroup);
+
+        button.setOnClickListener(view -> {
+
+            int index = radioGroup.indexOfChild(dialog.findViewById(radioGroup.getCheckedRadioButtonId()));
+
+            String reason = getResources().getStringArray(R.array.cancelReasons)[index];
+
+            OrderApiHelper.cancelOrder(CredentialManager.getToken(), invoice_no, reason, new ResponseListenerAuth<JsonObject, String>() {
+                @Override
+                public void onDataFetched(JsonObject response, int statusCode) {
+
+                    updatePage();
+                    cancelBtn.setVisibility(View.GONE);
+                    dialog.dismiss();
+                }
+
+                @Override
+                public void onFailed(String errorBody, int errorCode) {
+                    Toast.makeText(context, "Can't cancel this order!", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onAuthError(boolean logout) {
+
+                }
+            });
+        });
 
         dialog.show();
 
