@@ -48,6 +48,8 @@ import java.util.Locale;
 import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
+import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -87,7 +89,7 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 public class ShopFragment extends Fragment implements ProductListener {
 
-    private String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug="";
+    private String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug="", logo_image;
     private String categorySlug = null;
     private ImageView logo;
     private TextView name, address, number, tvOffer, followText;
@@ -121,6 +123,8 @@ public class ShopFragment extends Fragment implements ProductListener {
     private LinearLayout noItem;
     private View dummyView;
     private View dummyViewTop;
+
+
 
     @Override
     public void buyNow(String productSlug) {
@@ -331,6 +335,7 @@ public class ShopFragment extends Fragment implements ProductListener {
     @Override
     public void onResume() {
         super.onResume();
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
     }
 
     private void startXmppService() {
@@ -353,6 +358,18 @@ public class ShopFragment extends Fragment implements ProductListener {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        disconnectXmpp();
+    }
+
+    private void disconnectXmpp(){
+        if (xmppHandler != null){
+            xmppHandler.disconnect();
+        }
+        getActivity().stopService(new Intent(getActivity(), XMPPService.class));
+    }
 
     public void showProductsByCategory(String categoryName, String categorySlug, int position) {
 
@@ -407,6 +424,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                     shop_name = shopDetails.getName();
                     owner_number = shopDetails.getOwnerName();
                     subCount = shopData.getSubscriberCount();
+                    logo_image = shopDetails.getLogoImage();
 
                     if (shopData.isSubscribed())
                         followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
@@ -563,9 +581,9 @@ public class ShopFragment extends Fragment implements ProductListener {
                         try {
                             vCard = xmppHandler.getUserDetails(JidCreate.entityBareFrom(jid));
                             RosterTable rosterTable = new RosterTable();
-                            rosterTable.name = vCard.getFirstName() + " " + vCard.getLastName();
+                            rosterTable.name = shop_name;
                             rosterTable.id = vCard.getFrom().asUnescapedString();
-                            rosterTable.imageUrl = vCard.getField("URL");
+                            rosterTable.imageUrl = logo_image;
                             rosterTable.status = 0;
                             rosterTable.lastMessage = "";
                             rosterTable.nick_name = vCard.getNickName();
@@ -723,6 +741,7 @@ public class ShopFragment extends Fragment implements ProductListener {
         }
 
         public void onConnected() {
+            Logger.d("===========");
             xmppHandler = AppController.getmService().xmpp;
             rosterList = xmppHandler.rosterList;
             if (!owner_number.equals("")) {
@@ -764,7 +783,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                         VCard mVCard = xmppHandler.getUserDetails(jid);
                         HashMap<String, String> data1 = new HashMap<>();
                         data1.put("phone_number", owner_number);
-                        data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant");
+                        data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.evalyshop");
 
                         Logger.d(new Gson().toJson(mVCard.getFirstName()) + "       ====");
                         if (mVCard.getFirstName() == null) {
@@ -776,7 +795,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                             table.status = 0;
                             table.unreadCount = 0;
                             table.nick_name = "";
-                            table.imageUrl = "";
+                            table.imageUrl = logo_image;
                             table.lastMessage = "";
 
                             startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", table));
