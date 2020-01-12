@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.order.orderDetails;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -105,6 +107,7 @@ public class OrderDetailsActivity extends BaseActivity {
     TextView makePayment, payParially, full_or_partial;
     RelativeLayout shopInfo;
     TextView payViaGiftCard;
+    private TextView cancelBtn;
     BottomSheetBehavior sheetBehavior;
     LinearLayout layoutBottomSheet, campaignRuleHolder;
     View mViewBg;
@@ -129,6 +132,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
         context = this;
 
+        cancelBtn = findViewById(R.id.cancelBtn);
         campaignRuleHolder = findViewById(R.id.campaignRuleHolder);
         tvCampaignRule = findViewById(R.id.tvCampaignRule);
         full_or_partial = findViewById(R.id.full_or_partial);
@@ -751,6 +755,11 @@ public class OrderDetailsActivity extends BaseActivity {
                     payViaGiftCard.setVisibility(View.GONE);
                 }
 
+                if (orderStatus.equals("pending") && paid_amount < 1) {
+                    cancelBtn.setVisibility(View.VISIBLE);
+                    cancelBtn.setOnClickListener(view -> cancelOrder());
+                }
+
                 orderDetailsProducts.clear();
                 orderDetailsProductAdapter.notifyDataSetChanged();
 
@@ -799,6 +808,19 @@ public class OrderDetailsActivity extends BaseActivity {
         });
     }
 
+
+
+    public void cancelOrder(){
+
+        Dialog dialog = new Dialog(context, R.style.WideDialog);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_cancel_order);
+        dialog.setTitle("Select cancellation reason");
+
+        dialog.show();
+
+    }
 
     public void getOrderHistory() {
 

@@ -99,18 +99,42 @@
                     app:stpi_stepCount="6" />
 
 
-                <TextView
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginBottom="15dp">
+
+                    <TextView
                     android:id="@+id/textView24"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="35dp"
-                    android:layout_marginBottom="15dp"
-                    android:layout_weight="0"
+                    android:layout_weight="1"
                     android:text="ORDER STATUS"
                     android:textAllCaps="true"
                     android:textColor="#333"
                     android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/cancelBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cancel"
+                        android:background="@drawable/cancel_brd"
+                        android:textColor="@color/colorAccent"
+                        android:layout_marginRight="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="6dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textSize="16sp"
+                        android:clickable="true"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
 
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -217,7 +241,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="20dp"
                     android:orientation="horizontal"
@@ -227,7 +251,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -254,6 +278,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
+                            android:text="Balance: "
                             android:textColor="#444"/>
 
                         <TextView
@@ -307,7 +332,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -323,7 +348,8 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -347,7 +373,8 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -371,7 +398,8 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp">
 
                             <TextView
                                 android:id="@+id/textView46"

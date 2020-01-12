@@ -111,4 +111,14 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Shipped</item>
         <item>Delivered</item>
     </string-array>
+
+    <string-array name="cancelReasons">
+        <item>Ordered by mistake</item>
+        <item>Changed my mind</item>
+        <item>Entered wrong information</item>
+        <item>Selected wrong product variant</item>
+        <item>Want to buy from another seller</item>
+        <item>Other reason</item>
+    </string-array>
+
 </resources>
