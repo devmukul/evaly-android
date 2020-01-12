@@ -115,6 +115,7 @@ public class OrderDetailsActivity extends BaseActivity {
     String shopGroup = "";
     private NestedScrollView scrollView;
     private String imageUrl;
+    private String orderStatus = "pending", paymentStatus = "unpaid";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,7 +235,14 @@ public class OrderDetailsActivity extends BaseActivity {
         LinearLayout addPhoto = bottomSheetDialog.findViewById(R.id.addPhoto);
 
         List<String> options = new ArrayList<>();
-        List<OrderIssueModel> list = Constants.getDelivaryIssueList();
+
+        List<OrderIssueModel> list;
+        if (orderStatus.equals("pending"))
+            list = Constants.getIssueListPending();
+        else
+            list = Constants.getDelivaryIssueList();
+
+
         for (int i = 0; i < list.size(); i++) {
             options.add(list.get(i).getDescription());
         }
@@ -604,7 +612,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 dialog.hideDialog();
 
-                String orderStatus = response.getOrderStatus().toLowerCase();
+                orderStatus = response.getOrderStatus().toLowerCase();
 
                 if (orderStatus.equals("pending")) {
                     indicator.setCurrentStep(1);
@@ -776,7 +784,6 @@ public class OrderDetailsActivity extends BaseActivity {
                                     productVariation));
 
                     orderDetailsProductAdapter.notifyItemInserted(orderDetailsProducts.size());
-
                 }
             }
 

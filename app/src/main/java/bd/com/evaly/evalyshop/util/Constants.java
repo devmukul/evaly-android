@@ -102,4 +102,13 @@ public class Constants {
         list.add(new OrderIssueModel("others", "Others"));
         return list;
     }
+
+
+    public static List<OrderIssueModel> getIssueListPending() {
+
+        List<OrderIssueModel> list = new ArrayList<>();
+        list.add(new OrderIssueModel("payment", "Payment Issue"));
+        return list;
+    }
+
 }
