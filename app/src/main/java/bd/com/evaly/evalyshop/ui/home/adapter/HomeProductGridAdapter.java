@@ -68,6 +68,10 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.activityInstance = activityInstance;
     }
 
+    public void updateFragmentInstance(Fragment fragmentInstance){
+        this.fragmentInstance = fragmentInstance;
+    }
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -233,7 +237,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         LinearLayout voucher = view.findViewById(R.id.voucher);
         
         final ViewPager viewPager = view.findViewById(R.id.pager);
-        HomeTabPagerAdapter pager = new HomeTabPagerAdapter(fragmentInstance.getChildFragmentManager());
+        HomeTabPagerAdapter pager = new HomeTabPagerAdapter(fragmentInstance.getFragmentManager());
 
         ShimmerFrameLayout shimmer = view.findViewById(R.id.shimmer);
 

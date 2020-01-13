@@ -125,6 +125,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity,this);
         productRecyclerView.setAdapter(adapterProducts);
 
+       // productRecyclerView.getRecycledViewPool().setMaxRecycledViews(0, 1);
+
         StaggeredGridLayoutManager mLayoutManager =
                 (StaggeredGridLayoutManager) productRecyclerView.getLayoutManager();
 
@@ -145,18 +147,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         pastVisiblesItems = firstVisibleItems[0];
 
                     if (!isLoading)
-                    {
-                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
                             getProducts();
-                        }
-                    }
                 }
             }
         });
 
 
         checkReferral();
+
+
+        currentPage = 1;
+
         getProducts();
 
     }
@@ -165,7 +167,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void getProducts() {
 
         isLoading = true;
-        progressBar.setVisibility(View.VISIBLE);
+
+        if (currentPage>1)
+            progressBar.setVisibility(View.VISIBLE);
+        else
+            progressBar.setVisibility(View.GONE);
 
         ProductApiHelper.getCategoryBrandProducts(currentPage, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
@@ -236,6 +242,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onResume() {
         super.onResume();
+//        adapterProducts.updateFragmentInstance(this);
+
     }
 
 }
