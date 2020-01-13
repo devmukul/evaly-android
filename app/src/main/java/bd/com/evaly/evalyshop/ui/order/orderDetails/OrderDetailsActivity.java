@@ -818,12 +818,18 @@ public class OrderDetailsActivity extends BaseActivity {
         dialog.setContentView(R.layout.bottom_sheet_cancel_order);
         dialog.setTitle("Select Cancellation Reason");
 
-        Spinner spinner = dialog.findViewById(R.id.spinner);
         TextView button = dialog.findViewById(R.id.btn);
         RadioGroup radioGroup = dialog.findViewById(R.id.radioGroup);
 
+        assert button != null;
         button.setOnClickListener(view -> {
 
+            if ((radioGroup != null ? radioGroup.getCheckedRadioButtonId() : 0) == -1) {
+                Toast.makeText(this, "Select a cancellation reason", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            assert radioGroup != null;
             int index = radioGroup.indexOfChild(dialog.findViewById(radioGroup.getCheckedRadioButtonId()));
 
             String reason = getResources().getStringArray(R.array.cancelReasons)[index];
