@@ -29,6 +29,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         OrderApiHelper.makePartialPayment(CredentialManager.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
+
                 if (response.get("success").getAsBoolean())
                     navigator.onPaymentSuccess("Payment successful!");
                 else

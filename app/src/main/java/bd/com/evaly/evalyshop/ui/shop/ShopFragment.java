@@ -45,12 +45,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
-import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
-import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
@@ -79,6 +77,7 @@ import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -567,29 +566,34 @@ public class ShopFragment extends Fragment implements ProductListener {
 
     private void setUpXmpp(){
 
-
-        if (CredentialManager.getToken() == null || CredentialManager.getToken().equals("")) {
+        if (CredentialManager.getToken().equals("")) {
             startActivity(new Intent(getActivity(), SignInActivity.class));
-            getActivity().finish();
+            Objects.requireNonNull(getActivity()).finish();
         } else {
             if (xmppHandler != null && xmppHandler.isConnected() && xmppHandler.isLoggedin()) {
                 String jid = getContactFromRoster(owner_number);
                 if (!CredentialManager.getUserName().equalsIgnoreCase(owner_number)) {
                     if (jid != null) {
                         dialog.hideDialog();
-                        VCard vCard = null;
+                        VCard vCard;
                         try {
                             vCard = xmppHandler.getUserDetails(JidCreate.entityBareFrom(jid));
-                            RosterTable rosterTable = new RosterTable();
-                            rosterTable.name = shop_name;
-                            rosterTable.id = vCard.getFrom().asUnescapedString();
-                            rosterTable.imageUrl = logo_image;
-                            rosterTable.status = 0;
-                            rosterTable.lastMessage = "";
-                            rosterTable.nick_name = vCard.getNickName();
-                            rosterTable.time = 0;
-                            Logger.d(new Gson().toJson(rosterTable));
-                            startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
+                            if (vCard != null) {
+                                if (vCard.getFrom() != null) {
+                                    RosterTable rosterTable = new RosterTable();
+                                    rosterTable.name = shop_name;
+                                    rosterTable.id = vCard.getFrom().asUnescapedString();
+                                    rosterTable.imageUrl = logo_image;
+                                    rosterTable.status = 0;
+                                    rosterTable.lastMessage = "";
+                                    rosterTable.nick_name = vCard.getNickName();
+                                    rosterTable.time = 0;
+                                    Logger.d(new Gson().toJson(rosterTable));
+                                    startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
+                                } else {
+                                    Toast.makeText(context, "Can't send message", Toast.LENGTH_SHORT).show();
+                                }
+                            }
 
                         } catch (XmppStringprepException e) {
                             e.printStackTrace();
