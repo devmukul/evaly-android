@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.order.orderDetails.payment;
 
-import android.util.Log;
-
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonObject;
@@ -17,10 +15,6 @@ public class PaymentBottomSheetViewModel extends ViewModel {
 
     private PaymentBottomSheetNavigator navigator;
 
-    public PaymentBottomSheetNavigator getNavigator() {
-        return navigator;
-    }
-
     public void setNavigator(PaymentBottomSheetNavigator navigator) {
         this.navigator = navigator;
     }
@@ -35,26 +29,19 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         OrderApiHelper.makePartialPayment(CredentialManager.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
-                Log.d("payment", response.toString());
-
                 if (response.get("success").getAsBoolean())
                     navigator.onPaymentSuccess("Payment successful!");
                 else
                     navigator.onPaymentFailed(response.get("message").toString());
-
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 navigator.onPaymentFailed("Payment failed!");
-
             }
 
             @Override
             public void onAuthError(boolean logout) {
-
                 if (!logout)
                     makePartialPayment(invoice, amount);
             }
@@ -63,11 +50,9 @@ public class PaymentBottomSheetViewModel extends ViewModel {
     }
 
 
-
     public void payViaCard(String invoice, String amount) {
 
         HashMap<String, String> payload = new HashMap<>();
-
         payload.put("amount", amount);
         payload.put("context", "order_payment");
         payload.put("context_reference", invoice);
@@ -95,7 +80,6 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         });
 
     }
-
 
 
 }

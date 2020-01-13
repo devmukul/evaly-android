@@ -28,7 +28,7 @@ import bd.com.evaly.evalyshop.ui.order.PayViaCard;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
-public class PaymentBottomSheet extends BottomSheetDialogFragment implements PaymentBottomSheetNavigator{
+public class PaymentBottomSheet extends BottomSheetDialogFragment implements PaymentBottomSheetNavigator {
 
     private PaymentBottomSheetViewModel viewModel;
     private PaymentBottomSheetFragmentBinding binding;
@@ -80,10 +80,10 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BottomSheetDialog bottomSheetDialog=(BottomSheetDialog)super.onCreateDialog(savedInstanceState);
+        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         bottomSheetDialog.setOnShowListener(dialog -> {
             BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
-            FrameLayout bottomSheet =  dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            FrameLayout bottomSheet = dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
             assert bottomSheet != null;
             BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
             BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
@@ -124,7 +124,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             binding.evalyPay.setEnabled(false);
 
             viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
-            
+
         });
 
         binding.bkash.setOnClickListener(v -> {
@@ -141,11 +141,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 return;
             }
 
-
             binding.bkash.setEnabled(false);
-
             dismiss();
-
             Toast.makeText(getContext(), "Opening bKash payment gateway!", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(getActivity(), PayViaBkashActivity.class);
@@ -158,6 +155,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         });
 
         binding.card.setOnClickListener(v -> {
+
             double amountToPay = total_amount - paid_amount;
 
             if (binding.amountPay.getText().toString().trim().equals("")) {
@@ -170,7 +168,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 Toast.makeText(getContext(), "Amount can't be zero", Toast.LENGTH_SHORT).show();
                 return;
             }
-
 
             binding.card.setEnabled(false);
             double amToPay = Double.parseDouble(binding.amountPay.getText().toString());
@@ -200,7 +197,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     public void onPaymentFailed(String message) {
 
         binding.evalyPay.setEnabled(true);
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        if (getContext() != null)
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
