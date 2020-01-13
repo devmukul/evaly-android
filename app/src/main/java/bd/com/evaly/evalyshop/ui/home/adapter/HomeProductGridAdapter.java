@@ -62,6 +62,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.activityInstance = activityInstance;
     }
 
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 

@@ -226,6 +226,9 @@ public class HomeFragment extends Fragment  {
        // adapterProducts.setHasStableIds(true);
         productRecyclerView.setAdapter(adapterProducts);
 
+
+        productRecyclerView.getRecycledViewPool().setMaxRecycledViews(0, 1);
+
         StaggeredGridLayoutManager mLayoutManager =
                 (StaggeredGridLayoutManager) productRecyclerView.getLayoutManager();
 
