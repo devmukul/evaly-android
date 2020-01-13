@@ -149,6 +149,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     if (!isLoading)
                         if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
                             getProducts();
+                } else {
+                    if (isLoading)
+                        progressBar.setVisibility(View.INVISIBLE);
                 }
             }
         });
