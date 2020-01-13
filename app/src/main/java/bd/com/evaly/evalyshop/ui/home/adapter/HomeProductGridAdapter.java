@@ -37,10 +37,13 @@ import java.util.regex.Pattern;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.OnDoneListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
+import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
@@ -334,6 +337,32 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
             }
         });
+
+
+
+
+        if (!CredentialManager.getToken().equals("")){
+            GeneralApiHelper.getNotificationCount(CredentialManager.getToken(), "newsfeed", new ResponseListenerAuth<NotificationCount, String>() {
+                @Override
+                public void onDataFetched(NotificationCount response, int statusCode) {
+                    if (response.getCount() > 0)
+                        view.findViewById(R.id.newsfeedIndicator).setVisibility(View.VISIBLE);
+                    else
+                        view.findViewById(R.id.newsfeedIndicator).setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onFailed(String errorBody, int errorCode) {
+
+                }
+
+                @Override
+                public void onAuthError(boolean logout) {
+
+
+                }
+            });
+        }
 
 
     }
