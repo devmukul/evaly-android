@@ -99,11 +99,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
             layoutParams.setFullSpan(true);
 
-
-            initHeader(holder.view);
-
-
-
         } else if (holderz instanceof VHItem){
 
             VHItem holder = (VHItem) holderz;
@@ -179,6 +174,8 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         public VHHeader(View itemView) {
             super(itemView);
             view = itemView;
+
+            initHeader(view);
         }
     }
 
