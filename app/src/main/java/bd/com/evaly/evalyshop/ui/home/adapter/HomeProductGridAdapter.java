@@ -24,7 +24,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
@@ -95,9 +98,9 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderz, int position) {
         if (holderz instanceof VHHeader) {
-            VHHeader holder = (VHHeader) holderz;
-            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
-            layoutParams.setFullSpan(true);
+//            VHHeader holder = (VHHeader) holderz;
+//            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+//            layoutParams.setFullSpan(true);
 
         } else if (holderz instanceof VHItem){
 
@@ -170,11 +173,14 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
     class VHHeader extends RecyclerView.ViewHolder{
+
         View view;
-        public VHHeader(View itemView) {
+
+        private VHHeader(View itemView) {
             super(itemView);
             view = itemView;
-
+            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+            layoutParams.setFullSpan(true);
             initHeader(view);
         }
     }
@@ -217,16 +223,10 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private void initHeader(View view){
 
-
-        
-
-
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSmoothScrollingEnabled(true);
-        
-        
-        
+
         LinearLayout voucher = view.findViewById(R.id.voucher);
         
         final ViewPager viewPager = view.findViewById(R.id.pager);
@@ -274,7 +274,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         });
 
 
-
         // slider
         ViewPager sliderPager = view.findViewById(R.id.sliderPager);
         TabLayout sliderIndicator = view.findViewById(R.id.sliderIndicator);
@@ -288,8 +287,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         categoryFragment.setArguments(bundle);
 
 
-
-
         HomeTabsFragment brandFragment = new HomeTabsFragment();
         Bundle bundle2 = new Bundle();
         bundle2.putInt("type", 2);
@@ -301,7 +298,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         brandFragment.setOnDoneListener(onDoneListener);
         categoryFragment.setOnDoneListener(onDoneListener);
-
 
         HomeTabsFragment shopFragment = new HomeTabsFragment();
         Bundle bundle3 = new Bundle();
@@ -322,16 +318,15 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             shimmer.setVisibility(View.GONE);
         }, 1500);
 
-
         AuthApiHelper.getBanners(new DataFetchingListener<Response<JsonObject>>() {
             @Override
             public void onDataFetched(Response<JsonObject> response) {
-//                if (response.code() == 200 || response.code() == 201) {
-//                    ArrayList<BannerItem> sliderImages = new Gson().fromJson(response.body().get("results"), new TypeToken<List<BannerItem>>() {
-//                    }.getType());
-//                    sliderPager.setAdapter(new SliderAdapter(context, activityInstance, sliderImages));
-//                    sliderIndicator.setupWithViewPager(sliderPager, true);
-//                }
+                if (response.code() == 200 || response.code() == 201) {
+                    ArrayList<BannerItem> sliderImages = new Gson().fromJson(response.body().get("results"), new TypeToken<List<BannerItem>>() {
+                    }.getType());
+                    sliderPager.setAdapter(new SliderAdapter(context, activityInstance, sliderImages));
+                    sliderIndicator.setupWithViewPager(sliderPager, true);
+                }
             }
 
             @Override
