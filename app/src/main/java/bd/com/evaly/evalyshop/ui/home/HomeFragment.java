@@ -138,20 +138,23 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy)
             {
-                if(dy > 0) //check for scroll down
+                if(dy < 0) //check for scroll down
                 {
-                    visibleItemCount = mLayoutManager.getChildCount();
-                    totalItemCount = mLayoutManager.getItemCount();
-                    int[] firstVisibleItems = mLayoutManager.findFirstVisibleItemPositions(null);
-                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
-                        pastVisiblesItems = firstVisibleItems[0];
-
-                    if (!isLoading)
-                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                            getProducts();
-                } else {
                     if (isLoading)
                         progressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+
+        productRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!isLoading)
+                        getProducts();
                 }
             }
         });
