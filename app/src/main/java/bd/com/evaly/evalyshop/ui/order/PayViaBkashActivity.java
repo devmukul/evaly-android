@@ -15,7 +15,9 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -123,7 +125,7 @@ public class PayViaBkashActivity extends BaseActivity {
                 "                type: 'POST'," +
                 "                contentType: 'application/json'," +
                 "                headers: {" +
-                "                    \"Authorization\": \"Bearer " + userDetails.getToken() + "\"," +
+                "                    \"Authorization\": \"Bearer " + CredentialManager.getToken() + "\"," +
                 "                }," +
                 "                data: JSON.stringify({" +
                 "                    \"paymentID\": paymentID" +
@@ -193,7 +195,7 @@ public class PayViaBkashActivity extends BaseActivity {
 
                 if (url.contains("success.html")) {
 
-                    Toast.makeText(PayViaBkashActivity.this, "Payment successful! If your order's payment status doesn't get updated within 5 minutes, please contact support.", Toast.LENGTH_LONG);
+                    Toast.makeText(PayViaBkashActivity.this, "Payment successful! If your order's payment status doesn't get updated within 5 minutes, please contact support.", Toast.LENGTH_LONG).show();
 
                     setResult(Activity.RESULT_OK);
                     finish();
@@ -255,7 +257,8 @@ public class PayViaBkashActivity extends BaseActivity {
 
         // webView.loadUrl("https://evaly.com.bd/bkash_payment?invoice_no="+context_reference+"&amount="+amount+"&token="+userDetails.getToken());
 
-        if (UrlUtils.DOMAIN.contains("dev"))
+
+        if (BuildConfig.DEBUG)
             webView.loadUrl("file:///android_asset/bkash_dev.html");
         else
             webView.loadUrl("file:///android_asset/bkash.html");
