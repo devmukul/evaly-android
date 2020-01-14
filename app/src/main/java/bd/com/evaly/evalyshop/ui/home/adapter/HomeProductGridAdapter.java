@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -68,11 +69,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.activityInstance = activityInstance;
     }
 
-    public void updateFragmentInstance(Fragment fragmentInstance){
-        this.fragmentInstance = fragmentInstance;
-    }
-
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -81,7 +77,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             View v = inflater.inflate(R.layout.recycler_header_home, parent, false);
             return  new VHHeader(v);
         } else {
-            View v = inflater.inflate(R.layout.home_product_grid_item, parent, false);
+            View v = inflater.inflate(R.layout.item_home_product_grid, parent, false);
             return new VHItem(v);
         }
     }
@@ -105,6 +101,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderz, int position) {
         if (holderz instanceof VHHeader) {
+
 //            VHHeader holder = (VHHeader) holderz;
 //            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
 //            layoutParams.setFullSpan(true);
@@ -112,6 +109,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         } else if (holderz instanceof VHItem){
 
             VHItem holder = (VHItem) holderz;
+
 
             ProductItem model = productsList.get(position);
 
@@ -177,8 +175,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return productsList.size();
     }
 
-
-
     class VHHeader extends RecyclerView.ViewHolder{
 
         View view;
@@ -196,6 +192,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         TextView textViewAndroid,price,priceDiscount,buyNow,tvCashback;
         ImageView imageViewAndroid;
         View itemView;
+        CardView cardView;
 
         public VHItem(final View itemView) {
             super(itemView);
@@ -205,6 +202,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             priceDiscount = itemView.findViewById(R.id.priceDiscount);
             buyNow = itemView.findViewById(R.id.buy_now);
             tvCashback = itemView.findViewById(R.id.tvCashback);
+            cardView = itemView.findViewById(R.id.cardView);
             this.itemView = itemView;
         }
     }
@@ -252,7 +250,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         viewPager.setOffscreenPageLimit(1);
 
-
         LinearLayout evalyStore = view.findViewById(R.id.evaly_store);
         evalyStore.setOnClickListener(v -> {
             Intent ni = new Intent(context, GiftCardActivity.class);
@@ -265,10 +262,8 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 campaignBottomSheetFragment.show(fragmentInstance.getFragmentManager(), "Campaign BottomSheet");
         });
 
-
         LinearLayout wholesale = view.findViewById(R.id.evaly_wholesale);
         wholesale.setOnClickListener(v -> context.startActivity(new Intent(context, NewsfeedActivity.class)));
-
 
         LinearLayout orders = view.findViewById(R.id.orders);
         orders.setOnClickListener(v -> {
@@ -285,14 +280,12 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         ViewPager sliderPager = view.findViewById(R.id.sliderPager);
         TabLayout sliderIndicator = view.findViewById(R.id.sliderIndicator);
 
-
         HomeTabsFragment categoryFragment = new HomeTabsFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("type", 1);
         bundle.putString("slug", "root");
         bundle.putString("category", "root");
         categoryFragment.setArguments(bundle);
-
 
         HomeTabsFragment brandFragment = new HomeTabsFragment();
         Bundle bundle2 = new Bundle();
@@ -343,8 +336,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         });
 
 
-
-
         if (!CredentialManager.getToken().equals("")){
             GeneralApiHelper.getNotificationCount(CredentialManager.getToken(), "newsfeed", new ResponseListenerAuth<NotificationCount, String>() {
                 @Override
@@ -363,12 +354,13 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onAuthError(boolean logout) {
 
-
                 }
             });
         }
 
-
     }
+
+
+
 }
 

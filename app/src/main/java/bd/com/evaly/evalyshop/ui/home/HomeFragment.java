@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.gson.JsonObject;
@@ -23,6 +22,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
@@ -39,6 +39,7 @@ import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
@@ -114,7 +115,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         userDetails = new UserDetails(context);
         new InitializeActionBar(view.findViewById(R.id.header_logo), activity, "home");
 
-
         homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
         progressBar = view.findViewById(R.id.progressBar);
@@ -124,11 +124,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         productRecyclerView.setHasFixedSize(false);
         adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity,this);
         productRecyclerView.setAdapter(adapterProducts);
-
-       // productRecyclerView.getRecycledViewPool().setMaxRecycledViews(0, 1);
-
-        StaggeredGridLayoutManager mLayoutManager =
-                (StaggeredGridLayoutManager) productRecyclerView.getLayoutManager();
 
         productItemList.add(new HomeHeaderItem());
         adapterProducts.notifyItemInserted(0);
@@ -146,7 +141,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
-
         productRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -160,11 +154,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
 
-        checkReferral();
-
+        int spanCount = 2; // 3 columns
+        int spacing = (int) Utils.convertDpToPixel(10, Objects.requireNonNull(getContext())); // 50px
+        boolean includeEdge = true;
+        productRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
 
         currentPage = 1;
 
+        checkReferral();
         getProducts();
 
     }
@@ -248,8 +245,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onResume() {
         super.onResume();
-//        adapterProducts.updateFragmentInstance(this);
-
     }
 
 }
