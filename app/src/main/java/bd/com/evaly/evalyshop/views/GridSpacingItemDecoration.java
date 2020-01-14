@@ -47,7 +47,8 @@ public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
                 outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
 
             }
-        }
+
+    }
 
 }
 }

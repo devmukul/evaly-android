@@ -5,11 +5,15 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
@@ -49,6 +53,14 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
         if (itemList.get(i).getRating_text().equals("null"))
             myViewHolder.reviewText.setVisibility(View.GONE);
 
+        if (itemList.get(i).getProfileImage() != null){
+            Glide.with(context)
+                    .load(itemList.get(i).getProfileImage())
+                    .apply(new RequestOptions().override(200, 200))
+                    .error(R.drawable.ic_avatar_person)
+                    .into(myViewHolder.profilePicture);
+        }
+
         myViewHolder.ratingBar.setRating((float) itemList.get(i).getRating_value());
 
     }
@@ -60,9 +72,8 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView name, time, reviewText;
-
         RatingBar ratingBar;
-
+        ImageView profilePicture;
         View view;
         public MyViewHolder(final View itemView) {
             super(itemView);
@@ -70,6 +81,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
             time=itemView.findViewById(R.id.time);
             reviewText = itemView.findViewById(R.id.review_text);
             ratingBar = itemView.findViewById(R.id.ratingBar);
+            profilePicture = itemView.findViewById(R.id.profilePicNav);
 
             view = itemView;
         }

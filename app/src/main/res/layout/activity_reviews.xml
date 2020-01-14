@@ -17,9 +17,10 @@
         app:srcCompat="@drawable/ic_plus" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/stickyScrollView"
         android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fff">
+        android:layout_height="match_parent"
+        android:background="#fff">
 
 
         <LinearLayout

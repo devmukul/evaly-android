@@ -1,14 +1,38 @@
 package bd.com.evaly.evalyshop.models.reviews;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ReviewItem {
 
+
+    @SerializedName("id")
     private int id;
+
     private String sku;
+
+    @SerializedName("user_name")
     private String user_name;
+
+    @SerializedName("rating_value")
     private int rating_value;
+
+    @SerializedName("rating_text")
     private String rating_text;
+
+    @SerializedName("time")
     private String time;
+
+    @SerializedName("is_approved")
     private int is_approved;
+
+    @SerializedName("profile_image")
+    private String profileImage;
+
+    @SerializedName("phone")
+    private String phone;
+
+    @SerializedName("created_at")
+    private String createdAt;
 
     public ReviewItem(){
 
@@ -21,6 +45,31 @@ public class ReviewItem {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+
+    public void setProfileImage(String profileImage){
+        this.profileImage = profileImage;
+    }
+
+    public String getProfileImage(){
+        return profileImage;
+    }
+
+    public void setCreatedAt(String createdAt){
+        this.createdAt = createdAt;
+    }
+
+    public String getCreatedAt(){
+        return createdAt;
+    }
+
+    public void setPhone(String phone){
+        this.phone = phone;
+    }
+
+    public String getPhone(){
+        return phone;
     }
 
     public String getSku() {

@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.reviews;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,16 +19,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -43,48 +40,45 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.reviews.adapter.ReviewsAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
+import bd.com.evaly.evalyshop.ui.reviews.adapter.ReviewsAdapter;
+import bd.com.evaly.evalyshop.util.UrlUtils;
+import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;
-import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class ReviewsActivity extends AppCompatActivity {
 
-
-
     String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
 
-    String type= "shop";
+    String type = "shop";
     String item_value = "1";
-
     RecyclerView recyclerView;
     ReviewsAdapter adapter;
     ArrayList<ReviewItem> itemList;
     LinearLayout not;
     UserDetails userDetails;
-
     ProgressBar progressBar;
-
     FloatingActionButton floatingActionButton;
-
-
     TextView d_title;
     RatingBar d_rating_bar;
     TextView d_review_text;
     Button d_submit;
 
     RequestQueue rq;
+    int currentPage;
     private RatingReviews ratingReviews;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,37 +90,35 @@ public class ReviewsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         floatingActionButton = findViewById(R.id.floatingActionButton);
-
         progressBar = findViewById(R.id.progressBar);
-        recyclerView=findViewById(R.id.recyclerView);
-        not=findViewById(R.id.not);
-        LinearLayoutManager manager=new LinearLayoutManager(this);
+        recyclerView = findViewById(R.id.recyclerView);
+        not = findViewById(R.id.not);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
-        itemList=new ArrayList<>();
-        adapter=new ReviewsAdapter(itemList,this);
+        itemList = new ArrayList<>();
+        adapter = new ReviewsAdapter(itemList, this);
         recyclerView.setAdapter(adapter);
-        userDetails=new UserDetails(this);
+        userDetails = new UserDetails(this);
         rq = Volley.newRequestQueue(this);
 
+        currentPage = 1;
+
         ratingReviews = findViewById(R.id.rating_reviews);
+
         Intent data = getIntent();
 
-
-        if(data.hasExtra("ratingJson")) {
+        if (data.hasExtra("ratingJson")) {
 
             ratingJson = data.getStringExtra("ratingJson");
             item_value = data.getStringExtra("item_value");
             type = data.getStringExtra("type");
 
-
             if (type.equals("shop")) {
                 getShopRatings(item_value);
                 getShopReviews(item_value);
                 checkShopEligibility(item_value);
-            }
-            else
+            } else
                 getReviews(item_value);
-
         }
 
 
@@ -134,17 +126,27 @@ public class ReviewsActivity extends AppCompatActivity {
 
         floatingActionButton.setOnClickListener(v -> {
 
-            if(userDetails.getToken().equals("")){
+            if (userDetails.getToken().equals("")) {
                 Toast.makeText(ReviewsActivity.this, "You need to login first to create review.", Toast.LENGTH_LONG).show();
                 return;
             }
             addReviewDialog();
         });
+
+        NestedScrollView nestedSV = findViewById(R.id.stickyScrollView);
+
+        nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (v.getChildAt(v.getChildCount() - 1) != null) {
+                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                        scrollY > oldScrollY) {
+                    getShopReviews(item_value);
+                }
+            }
+        });
     }
 
 
-
-    public void loadRatingsToView(String ratingJsonz){
+    public void loadRatingsToView(String ratingJsonz) {
 
 
         try {
@@ -155,7 +157,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
             try {
                 avg_ratings = response.getDouble("avg_rating");
-            } catch (Exception e){
+            } catch (Exception e) {
                 avg_ratings = response.getDouble("avg_ratings");
             }
 
@@ -180,11 +182,11 @@ public class ReviewsActivity extends AppCompatActivity {
                     star_1
             };
 
-            ((TextView)findViewById(R.id.rating_average)).setText(avg_ratings+"");
-            ((TextView)findViewById(R.id.rating_counter)).setText(total_ratings+" ratings");
-            ((RatingBar)findViewById(R.id.ratingBar)).setRating((float) avg_ratings);
+            ((TextView) findViewById(R.id.rating_average)).setText(avg_ratings + "");
+            ((TextView) findViewById(R.id.rating_counter)).setText(total_ratings + " ratings");
+            ((RatingBar) findViewById(R.id.ratingBar)).setRating((float) avg_ratings);
 
-            if (total_ratings==0)
+            if (total_ratings == 0)
                 total_ratings = 1;
 
             ratingReviews.createRatingBars(total_ratings, BarLabels.STYPE1, colors, raters);
@@ -192,12 +194,10 @@ public class ReviewsActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
     }
 
 
-    public void addReviewDialog(){
+    public void addReviewDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
 
         LayoutInflater inflater = this.getLayoutInflater();
@@ -211,7 +211,7 @@ public class ReviewsActivity extends AppCompatActivity {
         d_review_text = dialogView.findViewById(R.id.review_text);
         Button d_submit = dialogView.findViewById(R.id.submit);
 
-        if(type.equals("shop"))
+        if (type.equals("shop"))
             d_title.setText("Rate the shop");
 
         alertDialog.getWindow()
@@ -225,17 +225,17 @@ public class ReviewsActivity extends AppCompatActivity {
 
         d_submit.setOnClickListener(v -> {
 
-            if (d_rating_bar.getRating() < 1){
+            if (d_rating_bar.getRating() < 1) {
                 Toast.makeText(ReviewsActivity.this, "Please set star rating.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (type.equals("shop")){
+            if (type.equals("shop")) {
                 postShopReview(
                         alertDialog,
                         item_value,
-                        userDetails.getFirstName()+" "+ userDetails.getLastName(),
-                        (int)d_rating_bar.getRating(),
+                        userDetails.getFirstName() + " " + userDetails.getLastName(),
+                        (int) d_rating_bar.getRating(),
                         d_review_text.getText().toString()
                 );
             } else {
@@ -264,16 +264,10 @@ public class ReviewsActivity extends AppCompatActivity {
     }
 
 
-
-
-    public void postReview(AlertDialog alertDialog, String sku, String user_name, String rating_value, String rating_text){
-
+    public void postReview(AlertDialog alertDialog, String sku, String user_name, String rating_value, String rating_text) {
 
         progressBar.setVisibility(View.VISIBLE);
-
-        String url="https://nsuer.club/evaly/reviews/?sku="+sku+"&phone="+userDetails.getPhone()+"&user_name="+user_name+"&rating_value="+rating_value+"&rating_text="+rating_text+"&type="+type;
-
-        Log.d("json", url);
+        String url = "https://nsuer.club/evaly/reviews/?sku=" + sku + "&phone=" + userDetails.getPhone() + "&user_name=" + user_name + "&rating_value=" + rating_value + "&rating_text=" + rating_text + "&type=" + type;
 
         JSONObject parameters = new JSONObject();
         try {
@@ -283,15 +277,9 @@ public class ReviewsActivity extends AppCompatActivity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, response -> {
             Log.d("notifications_response", response.toString());
             try {
-
-
                 alertDialog.dismiss();
-
                 Toast.makeText(ReviewsActivity.this, "Review submitted. It may take some time to show on the app.", Toast.LENGTH_LONG).show();
-
                 getProductRating(alertDialog);
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -307,26 +295,18 @@ public class ReviewsActivity extends AppCompatActivity {
     }
 
 
-
-
-
     public void getProductRating(AlertDialog alertDialog) {
 
-
-        String url="https://nsuer.club/evaly/reviews/?sku="+item_value+"&type="+type+"&isRating=true";
+        String url = "https://nsuer.club/evaly/reviews/?sku=" + item_value + "&type=" + type + "&isRating=true";
         Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
-
-
-                        ratingJson = response.toString();
-                        Intent intent = getIntent();
-                        intent.putExtra("ratingJson", ratingJson);
-                        finish();
-                        startActivity(getIntent());
-
-
-                }, error -> error.printStackTrace());
+                    ratingJson = response.toString();
+                    Intent intent = getIntent();
+                    intent.putExtra("ratingJson", ratingJson);
+                    finish();
+                    startActivity(getIntent());
+                }, Throwable::printStackTrace);
 
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -339,21 +319,11 @@ public class ReviewsActivity extends AppCompatActivity {
 
     }
 
-
-
-
-
-
-
-
-    public void getReviews(String sku){
+    public void getReviews(String sku) {
 
 
         progressBar.setVisibility(View.VISIBLE);
-
-        String url="https://nsuer.club/evaly/reviews/?sku="+sku+"&type="+type;
-
-        Log.d("json", url);
+        String url = "https://nsuer.club/evaly/reviews/?sku=" + sku + "&type=" + type;
 
         JSONObject parameters = new JSONObject();
         try {
@@ -364,11 +334,10 @@ public class ReviewsActivity extends AppCompatActivity {
             Log.d("notifications_response", response.toString());
             try {
 
-
                 progressBar.setVisibility(View.INVISIBLE);
 
                 JSONArray jsonArray = response.getJSONArray("reviews");
-                if(jsonArray.length()==0){
+                if (jsonArray.length() == 0) {
                     not.setVisibility(View.VISIBLE);
 
                     Glide.with(ReviewsActivity.this)
@@ -378,9 +347,9 @@ public class ReviewsActivity extends AppCompatActivity {
 
 
                     recyclerView.setVisibility(View.GONE);
-                }else{
+                } else {
                     not.setVisibility(View.GONE);
-                    for(int i=0;i<jsonArray.length();i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject ob = jsonArray.getJSONObject(i);
                         ReviewItem item = new ReviewItem();
 
@@ -416,150 +385,75 @@ public class ReviewsActivity extends AppCompatActivity {
     }
 
 
-
-
-    public void getShopReviews(String sku){
-
+    public void getShopReviews(String sku) {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        String url= UrlUtils.BASE_URL+"reviews/shops/"+sku+"/";
-
-        Log.d("json", url);
-
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("page", "1");
-            parameters.put("limit", "50");
-        } catch (Exception e) {
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
-            Log.d("notifications_response", response.toString());
-            try {
+        ReviewsApiHelper.getShopReviews(CredentialManager.getToken(), sku, currentPage, 20, new ResponseListenerAuth<CommonDataResponse<List<ReviewItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<ReviewItem>> response, int statusCode) {
 
                 progressBar.setVisibility(View.INVISIBLE);
 
-                JSONArray jsonArray = response.getJSONArray("data");
-                if(jsonArray.length()==0){
-                    not.setVisibility(View.VISIBLE);
+                List<ReviewItem> list = response.getData();
 
+                if (list.size() == 0 && currentPage == 1) {
+                    not.setVisibility(View.VISIBLE);
                     Glide.with(ReviewsActivity.this)
                             .load(R.drawable.ic_reviews_vector)
                             .apply(new RequestOptions().override(800, 800))
                             .into((ImageView) findViewById(R.id.noImage));
 
-
                     recyclerView.setVisibility(View.GONE);
-                }else{
+
+                } else {
+
+                    itemList.addAll(list);
+                    adapter.notifyItemRangeChanged(itemList.size() - list.size(), list.size());
+
                     not.setVisibility(View.GONE);
-                    for(int i=0;i<jsonArray.length();i++){
-                        JSONObject ob = jsonArray.getJSONObject(i);
-                        ReviewItem item = new ReviewItem();
 
-                        item.setId(ob.getInt("id"));
-                        item.setUser_name(ob.getString("user_name"));
-                        item.setRating_value(ob.getInt("rating_value"));
-                        item.setRating_text(ob.getString("rating_text"));
-                        item.setTime(ob.getString("time"));
-                        item.setIs_approved(ob.getInt("is_approved"));
-
-                        itemList.add(item);
-
-                        adapter.notifyItemInserted(itemList.size());
-                    }
+                    currentPage++;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+
             }
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
 
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(ReviewsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        getShopReviews(sku);
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-
-                return;
-
-            }}
-
-        }) {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
+            public void onFailed(String errorBody, int errorCode) {
 
-                return headers;
+                progressBar.setVisibility(View.GONE);
+
             }
-        };
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
     }
 
 
-
-    public void getShopRatings(String sku){
+    public void getShopRatings(String sku) {
 
 
         progressBar.setVisibility(View.VISIBLE);
 
-        String url= UrlUtils.BASE_URL+"reviews/summary/shops/"+sku+"/";
+        String url = UrlUtils.BASE_URL + "reviews/summary/shops/" + sku + "/";
 
         Log.d("json", url);
 
         JSONObject parameters = new JSONObject();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
-            Log.d("json ", response.toString());
             try {
                 JSONObject jsonObject = response.getJSONObject("data");
-
                 ratingJson = jsonObject.toString();
-
                 loadRatingsToView(ratingJson);
-
-
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                    AuthApiHelper.refreshToken(ReviewsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getShopReviews(sku);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }}
 
         }) {
             @Override
@@ -578,19 +472,13 @@ public class ReviewsActivity extends AppCompatActivity {
     }
 
 
-
-
-    public void postShopReview(AlertDialog alertDialog, String sku, String user_name, int rating_value, String rating_text){
+    public void postShopReview(AlertDialog alertDialog, String sku, String user_name, int rating_value, String rating_text) {
 
 
         ViewDialog progressDialog = new ViewDialog(this);
         progressDialog.showDialog();
 
-
-        String url= UrlUtils.BASE_URL+"add-review/"+sku+"/";
-
-
-        Log.d("json", url);
+        String url = UrlUtils.BASE_URL + "add-review/" + sku + "/";
 
         JSONObject parameters = new JSONObject();
         try {
@@ -607,13 +495,9 @@ public class ReviewsActivity extends AppCompatActivity {
             try {
 
                 progressDialog.hideDialog();
-
                 alertDialog.dismiss();
-
                 Toast.makeText(ReviewsActivity.this, "Review submitted. ", Toast.LENGTH_LONG).show();
-
                 getProductRating(alertDialog);
-
 
             } catch (Exception e) {
 
@@ -623,7 +507,6 @@ public class ReviewsActivity extends AppCompatActivity {
             }
         }, error -> {
             Log.e("onErrorResponse", error.toString());
-
 
             progressDialog.hideDialog();
 
@@ -639,8 +522,6 @@ public class ReviewsActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailed(int status) {
-
-
                             progressDialog.hideDialog();
                         }
                     });
@@ -649,8 +530,6 @@ public class ReviewsActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(ReviewsActivity.this, "Server error!", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
 
         }) {
@@ -660,63 +539,56 @@ public class ReviewsActivity extends AppCompatActivity {
                 headers.put("Authorization", CredentialManager.getToken());
                 return headers;
             }
-
         };
         rq.add(request);
     }
 
 
-
     public void checkShopEligibility(String sku) {
 
-        String url= UrlUtils.BASE_URL+"review-eligibility/"+sku+"/";
+        String url = UrlUtils.BASE_URL + "review-eligibility/" + sku + "/";
         Log.d("json rating", url);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 response -> {
-
-
-                    Log.d("json rating", response.toString());
-
-                    try{
-
+                    try {
                         boolean isEligible = response.getBoolean("success");
 
-                        if(isEligible)
+                        if (isEligible)
                             floatingActionButton.setVisibility(View.VISIBLE);
                         else
                             floatingActionButton.setVisibility(View.GONE);
-
-
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
 
-
                 }, error -> {
-                    error.printStackTrace();
+            error.printStackTrace();
 
-                    NetworkResponse response = error.networkResponse;
-                    if (response != null && response.data != null) {
-                        if (error.networkResponse.statusCode == 401){
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401) {
 
-                        AuthApiHelper.refreshToken(ReviewsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                checkShopEligibility(sku);
-                            }
+                    AuthApiHelper.refreshToken(ReviewsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            checkShopEligibility(sku);
+                        }
 
-                            @Override
-                            public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                            }
-                        });
+                        }
+                    });
 
-                        return;
+                    return;
 
-                    }}
+                } else
+                    floatingActionButton.setVisibility(View.GONE);
 
-                }) {
+            }
+
+        }) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -726,8 +598,6 @@ public class ReviewsActivity extends AppCompatActivity {
             }
         };
 
-
-
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -735,13 +605,6 @@ public class ReviewsActivity extends AppCompatActivity {
         request.setShouldCache(false);
         rq.getCache().clear();
         rq.add(request);
-
-
     }
-
-
-
-
-
 
 }
