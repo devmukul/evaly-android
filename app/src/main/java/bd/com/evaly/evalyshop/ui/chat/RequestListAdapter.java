@@ -1,14 +1,14 @@
 package bd.com.evaly.evalyshop.ui.chat;
 
 import android.app.Activity;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -47,7 +47,6 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
 
     public interface OnAcceptRejectListener {
         void onRequestAccept(RequestedUserModel jid, String name);
-
         void onRequestReject(RequestedUserModel jid, String name);
     }
 
@@ -56,7 +55,6 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         RequestedUserModel model = list.get(position);
 
         XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
-//        Logger.json(xmlToJson.toJson().toString());
         String name, imageUrl = null;
         try {
             JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
@@ -74,7 +72,6 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         if (imageUrl == null || imageUrl.trim().isEmpty()) {
             StringBuilder initials = new StringBuilder();
             for (String s : holder.tvName.getText().toString().split(" ")) {
-//            Logger.d(s);
                 if (!s.trim().isEmpty()) {
                     if (initials.length() < 2) {
                         initials.append(s.charAt(0));
@@ -119,23 +116,15 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
             super(itemView);
 
             ButterKnife.bind(this, itemView);
-//            Logger.d(chatItemList.size()+"     ");
-//            if (chatItemList.size() == ) {
-//                listener.onAllDataLoaded(list);
-//            }
 
-            llAccept.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onRequestAccept(list.get(getLayoutPosition()), nameList.get(getLayoutPosition()));
-                }
+            llAccept.setOnClickListener(view -> {
+                if (list.size()>0)
+                    listener.onRequestAccept(list.get(getLayoutPosition()), nameList.get(getLayoutPosition()))
             });
 
-            llReject.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onRequestReject(list.get(getLayoutPosition()), nameList.get(getLayoutPosition()));
-                }
+            llReject.setOnClickListener(view -> {
+                if (list.size() > 0)
+                    listener.onRequestReject(list.get(getLayoutPosition()), nameList.get(getLayoutPosition()))
             });
         }
     }
