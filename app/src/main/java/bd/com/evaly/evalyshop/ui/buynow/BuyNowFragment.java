@@ -336,7 +336,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         try {
             productPriceInt = (int) Math.round(Double.parseDouble(firstItem.getShopItemPrice()));
 
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+        }
 
         if (firstItem.getShopItemDiscountedPrice() != null)
             if (!(firstItem.getShopItemDiscountedPrice().equals("0.0") || firstItem.getShopItemDiscountedPrice().equals("0"))) {
@@ -354,7 +355,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         shop_item_id = firstItem.getShopItemId();
 
-        if (getContext() != null)
+        if (getContext() != null && this.isVisible())
             Glide.with(getContext())
                     .load(firstItem.getShopItemImage())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
