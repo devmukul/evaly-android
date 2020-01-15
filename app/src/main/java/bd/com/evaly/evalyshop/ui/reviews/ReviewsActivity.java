@@ -391,7 +391,6 @@ public class ReviewsActivity extends AppCompatActivity {
             public void onDataFetched(CommonDataResponse<List<ReviewItem>> response, int statusCode) {
 
                 progressBar.setVisibility(View.INVISIBLE);
-
                 List<ReviewItem> list = response.getData();
 
                 if (list.size() == 0 && currentPage == 1) {
@@ -402,24 +401,17 @@ public class ReviewsActivity extends AppCompatActivity {
                             .into((ImageView) findViewById(R.id.noImage));
 
                     recyclerView.setVisibility(View.GONE);
-
                 } else {
-
                     itemList.addAll(list);
                     adapter.notifyItemRangeChanged(itemList.size() - list.size(), list.size());
-
                     not.setVisibility(View.GONE);
-
                     currentPage++;
                 }
-
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 progressBar.setVisibility(View.GONE);
-
             }
 
             @Override
@@ -436,41 +428,31 @@ public class ReviewsActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        String url = UrlUtils.BASE_URL + "reviews/summary/shops/" + sku + "/";
-
-        Log.d("json", url);
-
-        JSONObject parameters = new JSONObject();
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
-            try {
-                JSONObject jsonObject = response.getJSONObject("data");
-                ratingJson = jsonObject.toString();
-                loadRatingsToView(ratingJson);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, error -> {
-
-        }) {
+        ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), sku, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-                return headers;
+                response = response.getAsJsonObject("data");
+                ratingJson = response.toString();
+                loadRatingsToView(ratingJson);
             }
-        };
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+
     }
 
 
     public void postShopReview(AlertDialog alertDialog, String sku, String user_name, int rating_value, String rating_text) {
-
 
         ViewDialog progressDialog = new ViewDialog(this);
         progressDialog.showDialog();
