@@ -663,7 +663,7 @@ public class ViewProductActivity extends BaseActivity {
                         int star_4 = response.getInt("star_4");
                         int star_3 = response.getInt("star_3");
                         int star_2 = response.getInt("star_2");
-                        int star_1 = response.getInt("star_2");
+                        int star_1 = response.getInt("star_1");
 
                         int colors[] = new int[]{
                                 Color.parseColor("#0e9d58"),

@@ -60,24 +60,21 @@ import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;
 
 public class ReviewsActivity extends AppCompatActivity {
 
-    String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
-
-    String type = "shop";
-    String item_value = "1";
-    RecyclerView recyclerView;
-    ReviewsAdapter adapter;
-    ArrayList<ReviewItem> itemList;
-    LinearLayout not;
-    UserDetails userDetails;
-    ProgressBar progressBar;
-    FloatingActionButton floatingActionButton;
-    TextView d_title;
-    RatingBar d_rating_bar;
-    TextView d_review_text;
-    Button d_submit;
-
-    RequestQueue rq;
-    int currentPage;
+    private String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
+    private String type = "shop";
+    private String item_value = "1";
+    private RecyclerView recyclerView;
+    private ReviewsAdapter adapter;
+    private ArrayList<ReviewItem> itemList;
+    private LinearLayout not;
+    private UserDetails userDetails;
+    private ProgressBar progressBar;
+    private FloatingActionButton floatingActionButton;
+    private TextView d_title;
+    private RatingBar d_rating_bar;
+    private TextView d_review_text;
+    private RequestQueue rq;
+    private int currentPage;
     private RatingReviews ratingReviews;
 
     @Override
@@ -165,7 +162,7 @@ public class ReviewsActivity extends AppCompatActivity {
             int star_4 = response.getInt("star_4");
             int star_3 = response.getInt("star_3");
             int star_2 = response.getInt("star_2");
-            int star_1 = response.getInt("star_2");
+            int star_1 = response.getInt("star_1");
 
             int colors[] = new int[]{
                     Color.parseColor("#0e9d58"),
