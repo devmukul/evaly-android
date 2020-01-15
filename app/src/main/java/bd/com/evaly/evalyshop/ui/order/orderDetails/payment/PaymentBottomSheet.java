@@ -186,9 +186,10 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         if (getContext() != null) {
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
             if (isVisible()) {
-                if (getActivity() != null)
+                if (getActivity() != null) {
                     ((OrderDetailsActivity) getActivity()).updatePage();
-                dismiss();
+                    dismiss();
+                }
             }
         }
     }

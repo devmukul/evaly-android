@@ -45,6 +45,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
@@ -60,6 +61,8 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedAdapter;
@@ -1055,7 +1058,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void getPosts(int page){
 
-
         loading = false;
         String url;
 
@@ -1074,105 +1076,66 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (page>1)
             bottomProgressBar.setVisibility(View.VISIBLE);
 
-        Log.d("json url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
-            Log.d("json response", response.toString());
 
-            loading = true;
-            progressContainer.setVisibility(View.GONE);
-            bottomProgressBar.setVisibility(View.INVISIBLE);
+        NewsfeedApiHelper.getNewsfeedPosts(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-            try {
-                JSONArray jsonArray = response.getJSONArray("posts");
-                if(jsonArray.length()==0 && page == 1){
+                loading = true;
+                progressContainer.setVisibility(View.GONE);
+                bottomProgressBar.setVisibility(View.INVISIBLE);
+
+                JsonArray jsonArray = response.getAsJsonArray("posts");
+                if(jsonArray.size()==0 && page == 1){
                     not.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                } else{
-                    not.setVisibility(View.GONE);
-                    for(int i=0;i<jsonArray.length();i++){
-                        JSONObject ob = jsonArray.getJSONObject(i);
+
+                } else {
+
+                    if (page==1)
+                        not.setVisibility(View.GONE);
+
+                    for(int i=0;i<jsonArray.size();i++){
+                        JsonObject ob = jsonArray.get(i).getAsJsonObject();
 
                         NewsfeedItem item = new NewsfeedItem();
 
-                        item.setAuthorUsername(ob.getString("username"));
-                        item.setAuthorFullName(ob.getString("author_full_name"));
-                        item.setAuthorImage(ob.getString("author_compressed_image"));
-                        item.setIsAdmin(ob.getInt("author_is_admin") != 0);
-                        item.setBody(ob.getString("body"));
-
-
-                        try {
-                            item.setAttachment(ob.getString("attachment"));
-                            item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
-
-                        } catch (Exception e){
-                            item.setAttachment("null");
-                            item.setAttachmentCompressed("null");
-                        }
-
-                        item.setCreatedAt(ob.getString("created_at"));
-                        item.setUpdatedAt(ob.getString("created_at"));
-                        item.setFavorited(ob.getInt("favorited") != 0);
-                        item.setFavoriteCount(ob.getInt("favorites_count"));
-                        item.setCommentsCount(ob.getInt("comments_count"));
-                        item.setSlug(ob.getString("slug"));
-                        item.setType(ob.getString("type"));
+                        item.setAuthorUsername(ob.get("username").getAsString());
+                        item.setAuthorFullName(ob.get("author_full_name").getAsString());
+                        item.setAuthorImage(ob.get("author_compressed_image").getAsString());
+                        item.setIsAdmin(ob.get("author_is_admin").getAsInt() != 0);
+                        item.setBody(ob.get("body").getAsString());
+                        item.setAttachment(ob.get("attachment").isJsonNull() ? "null" : ob.get("attachment").getAsString());
+                        item.setAttachmentCompressed(ob.get("attachment_compressed_url").isJsonNull() ? "null" : ob.get("attachment_compressed_url").getAsString());
+                        item.setCreatedAt(ob.get("created_at").getAsString());
+                        item.setUpdatedAt(ob.get("created_at").getAsString());
+                        item.setFavorited(ob.get("favorited").getAsInt() != 0);
+                        item.setFavoriteCount(ob.get("favorites_count").getAsInt());
+                        item.setCommentsCount(ob.get("comments_count").getAsInt());
+                        item.setSlug(ob.get("slug").getAsString());
+                        item.setType(ob.get("type").getAsString());
 
                         itemsList.add(item);
                         adapter.notifyItemInserted(itemsList.size());
 
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+
             }
-
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            NetworkResponse response = error.networkResponse;
-
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
-
-                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        getPosts(page);
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-
-                return;
-
-            }}
-
-            progressContainer.setVisibility(View.GONE);
-            bottomProgressBar.setVisibility(View.INVISIBLE);
-
-        }) {
-
 
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-
-                return headers;
+            public void onFailed(String errorBody, int errorCode) {
+                progressContainer.setVisibility(View.GONE);
+                bottomProgressBar.setVisibility(View.INVISIBLE);
             }
-        };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    getPosts(page);
+            }
+        });
+
     }
 
 

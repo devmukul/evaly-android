@@ -276,4 +276,10 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL + "review-eligibility/{shopSlug}/")
     Call<JsonObject> checkShopReviewEligibility(@Header("Authorization") String token, @Path("shopSlug") String slug);
 
+
+    // Newsfeed
+
+    @GET
+    Call<JsonObject> getNewsfeedPosts(@Header("Authorization") String token, @Url String url);
+
 }
