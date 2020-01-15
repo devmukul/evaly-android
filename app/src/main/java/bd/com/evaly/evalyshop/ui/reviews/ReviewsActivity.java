@@ -261,6 +261,167 @@ public class ReviewsActivity extends AppCompatActivity {
     }
 
 
+    public void getShopReviews(String sku) {
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        ReviewsApiHelper.getShopReviews(CredentialManager.getToken(), sku, currentPage, 20, new ResponseListenerAuth<CommonDataResponse<List<ReviewItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<ReviewItem>> response, int statusCode) {
+
+                progressBar.setVisibility(View.INVISIBLE);
+                List<ReviewItem> list = response.getData();
+
+                if (list.size() == 0 && currentPage == 1) {
+
+                    not.setVisibility(View.VISIBLE);
+                    Glide.with(ReviewsActivity.this)
+                            .load(R.drawable.ic_reviews_vector)
+                            .apply(new RequestOptions().override(800, 800))
+                            .into((ImageView) findViewById(R.id.noImage));
+
+                    recyclerView.setVisibility(View.GONE);
+
+                } else {
+                    itemList.addAll(list);
+                    adapter.notifyItemRangeChanged(itemList.size() - list.size(), list.size());
+
+                    if (currentPage == 1){
+                        recyclerView.setVisibility(View.VISIBLE);
+                        not.setVisibility(View.GONE);
+                    }
+
+                    currentPage++;
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    getShopReviews(sku);
+
+            }
+        });
+
+    }
+
+
+    public void getShopRatings(String sku) {
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), sku, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+                response = response.getAsJsonObject("data");
+                ratingJson = response.toString();
+                loadRatingsToView(ratingJson);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    getShopRatings(sku);
+
+            }
+        });
+    }
+
+
+    public void postShopReview(AlertDialog alertDialog, String sku, String user_name, int rating_value, String rating_text) {
+
+        ViewDialog progressDialog = new ViewDialog(this);
+        progressDialog.showDialog();
+
+
+        JsonObject parameters = new JsonObject();
+
+        parameters.addProperty("review_message", rating_text);
+        parameters.addProperty("rating", rating_value);
+
+        ReviewsApiHelper.postShopReview(CredentialManager.getToken(), sku, parameters, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                progressDialog.hideDialog();
+                alertDialog.dismiss();
+                Toast.makeText(ReviewsActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+                getShopRatings(sku);
+                currentPage = 1;
+
+                itemList.clear();
+                adapter.notifyDataSetChanged();
+                getShopReviews(sku);
+                checkShopEligibility(sku);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+                progressDialog.hideDialog();
+                alertDialog.dismiss();
+                Toast.makeText(ReviewsActivity.this, "Couldn't post review!", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    postShopReview(alertDialog, sku, user_name, rating_value, rating_text);
+
+            }
+        });
+
+    }
+
+
+    public void checkShopEligibility(String sku) {
+
+
+        ReviewsApiHelper.checkShopReviewEligibility(CredentialManager.getToken(), sku, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                boolean isEligible = response.get("success").getAsBoolean();
+
+                if (isEligible)
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                else
+                    floatingActionButton.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+                floatingActionButton.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    checkShopEligibility(sku);
+
+            }
+        });
+
+    }
+
+
+
+
+
+
+    // old codes for product reviews
+
     public void postReview(AlertDialog alertDialog, String sku, String user_name, String rating_value, String rating_text) {
 
         progressBar.setVisibility(View.VISIBLE);
@@ -378,184 +539,6 @@ public class ReviewsActivity extends AppCompatActivity {
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
-    }
-
-
-    public void getShopReviews(String sku) {
-
-        progressBar.setVisibility(View.VISIBLE);
-
-        ReviewsApiHelper.getShopReviews(CredentialManager.getToken(), sku, currentPage, 20, new ResponseListenerAuth<CommonDataResponse<List<ReviewItem>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<ReviewItem>> response, int statusCode) {
-
-                progressBar.setVisibility(View.INVISIBLE);
-                List<ReviewItem> list = response.getData();
-
-                if (list.size() == 0 && currentPage == 1) {
-
-                    not.setVisibility(View.VISIBLE);
-                    Glide.with(ReviewsActivity.this)
-                            .load(R.drawable.ic_reviews_vector)
-                            .apply(new RequestOptions().override(800, 800))
-                            .into((ImageView) findViewById(R.id.noImage));
-
-                    recyclerView.setVisibility(View.GONE);
-
-                } else {
-                    itemList.addAll(list);
-                    adapter.notifyItemRangeChanged(itemList.size() - list.size(), list.size());
-
-                    if (currentPage == 1){
-                        recyclerView.setVisibility(View.VISIBLE);
-                        not.setVisibility(View.GONE);
-                    }
-
-                    currentPage++;
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-    }
-
-
-    public void getShopRatings(String sku) {
-
-        progressBar.setVisibility(View.VISIBLE);
-
-        ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), sku, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                response = response.getAsJsonObject("data");
-                ratingJson = response.toString();
-                loadRatingsToView(ratingJson);
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
-
-
-    public void postShopReview(AlertDialog alertDialog, String sku, String user_name, int rating_value, String rating_text) {
-
-        ViewDialog progressDialog = new ViewDialog(this);
-        progressDialog.showDialog();
-
-
-        JsonObject parameters = new JsonObject();
-
-        parameters.addProperty("review_message", rating_text);
-        parameters.addProperty("rating", rating_value);
-
-        ReviewsApiHelper.postShopReview(CredentialManager.getToken(), sku, parameters, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-                progressDialog.hideDialog();
-                alertDialog.dismiss();
-                Toast.makeText(ReviewsActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
-                getShopRatings(sku);
-                currentPage = 1;
-
-                itemList.clear();
-                adapter.notifyDataSetChanged();
-                getShopReviews(sku);
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-
-    }
-
-
-    public void checkShopEligibility(String sku) {
-
-        String url = UrlUtils.BASE_URL + "review-eligibility/" + sku + "/";
-        Log.d("json rating", url);
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
-                response -> {
-                    try {
-                        boolean isEligible = response.getBoolean("success");
-
-                        if (isEligible)
-                            floatingActionButton.setVisibility(View.VISIBLE);
-                        else
-                            floatingActionButton.setVisibility(View.GONE);
-                    } catch (Exception e) {
-
-                    }
-
-                }, error -> {
-            error.printStackTrace();
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401) {
-
-                    AuthApiHelper.refreshToken(ReviewsActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            checkShopEligibility(sku);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                } else
-                    floatingActionButton.setVisibility(View.GONE);
-
-            }
-
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-
-                return headers;
-            }
-        };
-
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        request.setShouldCache(false);
-        rq.getCache().clear();
         rq.add(request);
     }
 

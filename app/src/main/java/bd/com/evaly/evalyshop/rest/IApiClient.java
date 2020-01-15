@@ -272,4 +272,8 @@ public interface IApiClient {
     @POST(UrlUtils.BASE_URL + "add-review/{shopSlug}/")
     Call<JsonObject> postShopReview(@Header("Authorization") String token, @Path("shopSlug") String slug, @Body JsonObject body);
 
+
+    @GET(UrlUtils.BASE_URL + "review-eligibility/{shopSlug}/")
+    Call<JsonObject> checkShopReviewEligibility(@Header("Authorization") String token, @Path("shopSlug") String slug);
+
 }
