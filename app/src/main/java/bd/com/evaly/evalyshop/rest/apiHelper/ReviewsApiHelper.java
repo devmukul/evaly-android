@@ -18,4 +18,8 @@ public class ReviewsApiHelper extends BaseApiHelper {
         getiApiClient().getShopReviews(token, slug).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void postShopReview(String token, String slug, JsonObject body, ResponseListenerAuth<JsonObject, String> listener){
+        getiApiClient().postShopReview(token, slug, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
 }

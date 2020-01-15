@@ -269,5 +269,7 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL+"reviews/shops/{slug}/")
     Call<CommonDataResponse<List<ReviewItem>>> getShopReviews(@Header("Authorization") String token, @Path("slug") String shopSlug, @Query("page") int page, @Query("limit") int limit);
 
+    @POST(UrlUtils.BASE_URL + "add-review/{shopSlug}/")
+    Call<JsonObject> postShopReview(@Header("Authorization") String token, @Path("shopSlug") String slug, @Body JsonObject body);
 
 }
