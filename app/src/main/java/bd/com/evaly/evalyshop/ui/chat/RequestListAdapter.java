@@ -119,12 +119,12 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
 
             llAccept.setOnClickListener(view -> {
                 if (list.size()>0)
-                    listener.onRequestAccept(list.get(getLayoutPosition()), nameList.get(getLayoutPosition()))
+                    listener.onRequestAccept(list.get(getLayoutPosition()), nameList.get(getLayoutPosition()));
             });
 
             llReject.setOnClickListener(view -> {
                 if (list.size() > 0)
-                    listener.onRequestReject(list.get(getLayoutPosition()), nameList.get(getLayoutPosition()))
+                    listener.onRequestReject(list.get(getLayoutPosition()), nameList.get(getLayoutPosition()));
             });
         }
     }

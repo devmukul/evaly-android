@@ -64,7 +64,8 @@
         android:paddingTop="10dp"
         android:paddingRight="15dp"
         android:paddingBottom="10dp"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:digits="1234567890."/>
 
     <TextView
         android:layout_width="match_parent"
