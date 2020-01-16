@@ -285,4 +285,7 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{selectedPostId}/comments/{commentId}/replies")
     Call<JsonObject> getNewsfeedReplies(@Header("Authorziation") String token, @Path("selectedPostId") String postId, @Path("commentId") String commentId, @Query("page") int page);
 
+    @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{postId}/comments")
+    Call<JsonObject> getNewsfeedComments(@Header("Authorization") String token, @Path("postId") String postId, @Query("page") int page);
+
 }
