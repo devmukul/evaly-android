@@ -13,6 +13,10 @@ public class NewsfeedApiHelper extends BaseApiHelper {
         getiApiClient().getNewsfeedPosts(token, url).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void getPostDetails(String token, String postId, ResponseListenerAuth<JsonObject, String> listener){
+        getiApiClient().getNewsfeedPostDetails(token, postId).enqueue(getResponseCallBackDefault(listener));
+    }
+
     public static void getReplies(String token, String postId, String commentId, int page, ResponseListenerAuth<JsonObject, String> listener){
         getiApiClient().getNewsfeedReplies(token, postId, commentId, page).enqueue(getResponseCallBackDefault(listener));
     }

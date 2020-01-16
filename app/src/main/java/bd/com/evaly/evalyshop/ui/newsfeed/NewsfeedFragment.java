@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -28,15 +27,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -48,21 +38,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
-
 import org.jivesoftware.smack.SmackException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
+import java.util.Objects;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
@@ -71,7 +56,6 @@ import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
@@ -100,7 +84,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private NewsfeedActivity activity;
     private UserDetails userDetails;
     private LinearLayout not, progressContainer;
-    private RequestQueue queue;
     // newfeed scroller
     private boolean loading = true;
     private int currentPage;
@@ -162,7 +145,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         context = getContext();
         activity = (NewsfeedActivity) getActivity();
-        queue = Volley.newRequestQueue(context);
         if (getArguments() != null) {
             type = getArguments().getString("type");
         }
@@ -187,7 +169,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         getPosts(currentPage);
 
         try {
-            ((NewsfeedActivity) getActivity()).getNotificationCount();
+            ((NewsfeedActivity) Objects.requireNonNull(getActivity())).getNotificationCount();
         } catch (Exception e) {
         }
 
@@ -216,12 +198,14 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyDialog.setContentView(R.layout.alert_replies);
 
         View bottomSheetInternalReply = replyDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        assert bottomSheetInternalReply != null;
         bottomSheetInternalReply.setPadding(0, 0, 0, 0);
         bottomSheetBehaviorReply = BottomSheetBehavior.from(bottomSheetInternalReply);
         bottomSheetBehaviorReply.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         ScreenUtils screenUtils = new ScreenUtils(context);
         LinearLayout dialogLayout = replyDialog.findViewById(R.id.container2);
+        assert dialogLayout != null;
         dialogLayout.setMinimumHeight(screenUtils.getHeight());
 
         bottomSheetBehaviorReply.setPeekHeight(screenUtils.getHeight());
@@ -347,6 +331,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         });
 
         LinearLayout dialogLayoutReply = commentDialog.findViewById(R.id.container2);
+        assert dialogLayoutReply != null;
         dialogLayoutReply.setMinimumHeight(screenUtils.getHeight());
 
         bottomSheetBehaviorComment.setPeekHeight(screenUtils.getHeight());
@@ -382,6 +367,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
         commentRecyclerView.setFocusable(false);
+        assert nestedScrollViewComment != null;
         nestedScrollViewComment.requestFocus();
 
 
@@ -452,13 +438,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     visibleItemCount = manager.getChildCount();
                     totalItemCount = manager.getItemCount();
                     pastVisiblesItems = manager.findFirstVisibleItemPosition();
-
-                    if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            getPosts(++currentPage);
-
-                        }
-                    }
+                    if (loading) if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        getPosts(++currentPage);
                 }
             }
         });
@@ -749,8 +730,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyInput.setEnabled(false);
         submitReply.setEnabled(false);
 
-        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + selectedPostID + "/comments/" + selectedCommentID + "/replies";
-
         JsonObject parameters = new JsonObject();
         JsonObject parametersPost = new JsonObject();
 
@@ -912,10 +891,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void loadPostDetails(String post_id) {
 
-
-        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + post_id;
-
-
         LinearLayout header = commentDialog.findViewById(R.id.header);
 
         skeletonCommentHeader = Skeleton.bind(header)
@@ -923,46 +898,34 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .color(R.color.ddd)
                 .show();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
+        NewsfeedApiHelper.getPostDetails(CredentialManager.getToken(), post_id, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                skeletonCommentHeader.hide();
 
-            skeletonCommentHeader.hide();
-
-            try {
-
-                JSONObject ob = response.getJSONObject("data");
-                JSONObject author = ob.getJSONObject("author");
-                String authorName = author.getString("full_name");
-                String authorImage = author.getString("compressed_image");
-                boolean isAdmin = author.getBoolean("is_admin");
-                String postText = ob.getString("body");
-                String date = ob.getString("created_at");
-                String postImageUrl = ob.getString("attachment");
+                JsonObject ob = response.get("data").getAsJsonObject();
+                JsonObject author = ob.getAsJsonObject("author");
+                String authorName = author.get("full_name").getAsString();
+                String authorImage = author.get("compressed_image").getAsString();
+                boolean isAdmin = author.get("is_admin").getAsBoolean();
+                String postText = ob.get("body").getAsString();
+                String date = ob.get("created_at").getAsString();
+                String postImageUrl = ob.get("attachment").getAsString();
 
                 initCommentHeader(authorName, authorImage, isAdmin, postText, date, postImageUrl);
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
 
-
-        }, error -> Log.e("onErrorResponse", error.toString())) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
+            public void onFailed(String errorBody, int errorCode) {
 
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-                headers.put("Content-Type", "application/json");
-
-                return headers;
             }
-        };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            @Override
+            public void onAuthError(boolean logout) {
 
-        queue.add(request);
+            }
+        });
+
     }
 
 
