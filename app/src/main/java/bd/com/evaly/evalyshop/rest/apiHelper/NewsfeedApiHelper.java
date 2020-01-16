@@ -29,4 +29,12 @@ public class NewsfeedApiHelper extends BaseApiHelper {
         getiApiClient().postNewsfeedReply(token, postId, commentId, body).enqueue(getResponseCallBackDefault(listener));
     }
 
+
+    public static void postLike(String token, String postSlug, boolean dislike, ResponseListenerAuth<JsonObject, String> listener){
+        if (!dislike)
+            getiApiClient().likeNewsfeedPost(token, postSlug).enqueue(getResponseCallBackDefault(listener));
+        else
+            getiApiClient().dislikeNewsfeedPost(token, postSlug).enqueue(getResponseCallBackDefault(listener));
+    }
+
 }

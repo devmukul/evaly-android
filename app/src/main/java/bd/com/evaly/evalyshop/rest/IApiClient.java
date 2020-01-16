@@ -288,13 +288,18 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{postId}/comments")
     Call<JsonObject> getNewsfeedComments(@Header("Authorization") String token, @Path("postId") String postId, @Query("page") int page);
 
-
     @POST(UrlUtils.BASE_URL_NEWSFEED + "posts/{selectedPostID}/comments")
     Call<JsonObject> postNewsfeedComment(@Header("Authorization") String token, @Path("selectedPostID") String selectedPostID, @Body JsonObject body);
 
-
-
     @POST(UrlUtils.BASE_URL_NEWSFEED + "posts/{selectedPostID}/comments/{selectedCommentID}/replies")
     Call<JsonObject> postNewsfeedReply(@Header("Authorization") String token, @Path("selectedPostID") String selectedPostID, @Path("selectedCommentID") String selectedCommentID, @Body JsonObject body);
+
+    @POST(UrlUtils.BASE_URL_NEWSFEED + "posts/{slug}/favorite")
+    Call<JsonObject> likeNewsfeedPost(@Header("Authorization") String token, @Path("slug") String postSlug);
+
+    @DELETE(UrlUtils.BASE_URL_NEWSFEED + "posts/{slug}/favorite")
+    Call<JsonObject> dislikeNewsfeedPost(@Header("Authorization") String token, @Path("slug") String postSlug);
+
+
 
 }

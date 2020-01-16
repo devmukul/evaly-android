@@ -1126,60 +1126,24 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void sendLike(String slug, boolean like) {
 
-        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + slug + "/favorite";
-
-        JSONObject parametersPost = new JSONObject();
-
-        Log.d("json url", url);
-
-        JsonObjectRequest request = new JsonObjectRequest((like ? Request.Method.DELETE : Request.Method.POST), url, parametersPost, response -> {
-            Log.d("json response", response.toString());
-            try {
-                if (response.has("data")) {
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, error -> {
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401) {
-
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            sendLike(slug, like);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }
-            }
-
-            Log.e("onErrorResponse", error.toString());
-            Toast.makeText(context, "Couldn't like the status.", Toast.LENGTH_SHORT).show();
-        }) {
+        NewsfeedApiHelper.postLike(CredentialManager.getToken(), slug, like, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-        };
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    sendLike(slug, like);
+
+            }
+        });
     }
 
 
