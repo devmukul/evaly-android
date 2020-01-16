@@ -587,12 +587,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", date));
 
+        assert authorNameView != null;
         authorNameView.setText(authorName);
 
 
         if (isAdmin) {
             int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.newsfeed_verified_icon);
-
             Drawable img = context.getResources().getDrawable(R.drawable.ic_evaly_verified_logo_filled);
             img.setBounds(0, 0, sizeInPixel, sizeInPixel);
             authorNameView.setCompoundDrawables(null, null, img, null);
@@ -642,6 +642,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (isJSONValid(postText)) {
             try {
                 JSONObject object = new JSONObject(postText);
+                assert linkPreview != null;
                 linkPreview.setLink(object.getString("url"), new ViewListener() {
                     @Override
                     public void onSuccess(boolean status) {
@@ -661,6 +662,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     tvMessage.setVisibility(View.VISIBLE);
                     tvMessage.setText(Html.fromHtml(body));
                 }
+                assert cardLink != null;
                 cardLink.setVisibility(View.VISIBLE);
 
             } catch (JSONException e) {
@@ -668,6 +670,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         } else {
             tvMessage.setVisibility(View.VISIBLE);
+            assert cardLink != null;
             cardLink.setVisibility(View.GONE);
             tvMessage.setText(Html.fromHtml(postText));
         }
@@ -675,8 +678,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-    public void loadReplies(String comment_id) {
-
+    private void loadReplies(String comment_id) {
 
         isReplyLoading = true;
 
@@ -686,83 +688,57 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
         if (currentReplyPage == 1) {
-            ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
+            replyDialog.findViewById(R.id.progressBarBottom).setVisibility(View.INVISIBLE);
             replyProgressContainer.setVisibility(View.VISIBLE);
         }
 
         if (currentReplyPage > 1)
-            ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.VISIBLE);
+            replyDialog.findViewById(R.id.progressBarBottom).setVisibility(View.VISIBLE);
 
         replyNot.setVisibility(View.GONE);
         NestedScrollView scrollView = replyDialog.findViewById(R.id.stickyScrollView);
 
-        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + selectedPostID + "/comments/" + comment_id + "/replies?page=" + currentReplyPage;
+        NewsfeedApiHelper.getReplies(CredentialManager.getToken(), selectedPostID, comment_id, currentReplyPage, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                assert scrollView != null;
+                scrollView.fling(0);
+                isReplyLoading = false;
+                replyDialog.findViewById(R.id.progressBarBottom).setVisibility(View.INVISIBLE);
+                replyProgressContainer.setVisibility(View.GONE);
 
-        Log.d("json url", url);
+                JsonArray jsonArray = response.getAsJsonArray("data").get(0).getAsJsonObject().getAsJsonArray("replies");
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
-            Log.d("json response", response.toString());
-
-            scrollView.fling(0);
-
-            isReplyLoading = false;
-
-            ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
-            replyProgressContainer.setVisibility(View.GONE);
-
-            try {
-
-                JSONArray jsonArray = response.getJSONArray("data").getJSONObject(0).getJSONArray("replies");
-
-                if (jsonArray.length() > 0)
+                if (jsonArray.size() > 0)
                     replyNot.setVisibility(View.GONE);
                 else {
                     replyNot.setVisibility(View.VISIBLE);
                     currentReplyPage++;
                 }
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.size(); i++) {
 
                     Gson gson = new Gson();
-                    RepliesItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), RepliesItem.class);
+                    RepliesItem item = gson.fromJson(jsonArray.get(i), RepliesItem.class);
 
                     if (!item.getBody().trim().equals("")) {
                         replyItems.add(item);
                         replyAdapter.notifyItemInserted(replyItems.size());
                     }
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
 
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            replyProgressContainer.setVisibility(View.GONE);
-            ((ProgressBar) replyDialog.findViewById(R.id.progressBarBottom)).setVisibility(View.INVISIBLE);
-            // Toast.makeText(context, "Couldn't load replies.", Toast.LENGTH_SHORT).show();
-
-
-        }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
+            public void onFailed(String errorBody, int errorCode) {
 
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-
-                headers.put("Content-Type", "application/json");
-                return headers;
             }
-        };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            @Override
+            public void onAuthError(boolean logout) {
 
-        queue.add(request);
+            }
+        });
+
     }
 
     public void createReply() {
