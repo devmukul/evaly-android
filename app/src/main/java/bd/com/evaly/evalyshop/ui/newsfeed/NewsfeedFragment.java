@@ -751,50 +751,37 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + selectedPostID + "/comments/" + selectedCommentID + "/replies";
 
-        JSONObject parameters = new JSONObject();
-        JSONObject parametersPost = new JSONObject();
-        try {
+        JsonObject parameters = new JsonObject();
+        JsonObject parametersPost = new JsonObject();
 
-            parameters.put("body", replyInput.getText().toString());
-            parametersPost.put("comment", parameters);
+        parameters.addProperty("body", replyInput.getText().toString());
+        parametersPost.add("comment", parameters);
 
-        } catch (Exception e) {
-        }
-
-        Log.d("json body", parametersPost.toString());
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost, response -> {
-            Log.d("json response", response.toString());
-            try {
+        NewsfeedApiHelper.postReply(CredentialManager.getToken(), selectedPostID, selectedCommentID, parametersPost, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
                 if (response.has("data")) {
                     reloadRecyclerReply();
                     replyInput.setText("");
                     replyInput.setEnabled(true);
                     submitReply.setEnabled(true);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+                } else
+                    Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
             }
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-            Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
-            commentInput.setEnabled(true);
-            submitComment.setEnabled(true);
-        }) {
+
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-                headers.put("Content-Type", "application/json");
-                return headers;
+            public void onFailed(String errorBody, int errorCode) {
+
             }
-        };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    createReply();
 
-        queue.add(request);
+            }
+        });
+
     }
 
     public void deletePost(String id, final String type) {
