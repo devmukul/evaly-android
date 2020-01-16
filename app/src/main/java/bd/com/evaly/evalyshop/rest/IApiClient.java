@@ -300,6 +300,9 @@ public interface IApiClient {
     @DELETE(UrlUtils.BASE_URL_NEWSFEED + "posts/{slug}/favorite")
     Call<JsonObject> dislikeNewsfeedPost(@Header("Authorization") String token, @Path("slug") String postSlug);
 
+    @DELETE
+    Call<JsonObject> deleteNewsfeedItem(@Header("Authorization") String token, @Url String url);
+
 
 
 }

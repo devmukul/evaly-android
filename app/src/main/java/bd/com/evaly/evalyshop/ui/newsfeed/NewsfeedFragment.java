@@ -799,53 +799,40 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         else
             url = UrlUtils.BASE_URL_NEWSFEED + "comments/" + id;
 
-        StringRequest request = new StringRequest(Request.Method.DELETE, url, response -> {
-
-            if (type.equals("post")) {
-
-                itemsList.clear();
-                adapter.notifyDataSetChanged();
-                currentPage = 1;
-                getPosts(currentPage);
-
-            } else if (type.equals("comment")) {
-
-                commentItems.clear();
-                commentAdapter.notifyDataSetChanged();
-
-                currentCommentPage = 1;
-
-                loadComments(selectedPostID);
-            } else {
-
-                replyItems.clear();
-                replyAdapter.notifyDataSetChanged();
-
-                currentReplyPage = 1;
-
-                loadReplies(selectedCommentID);
-            }
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-            Toast.makeText(context, "Couldn't delete post", Toast.LENGTH_SHORT).show();
-
-        }) {
+        NewsfeedApiHelper.deleteItem(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-                headers.put("Content-Type", "application/json");
-                return headers;
+            public void onDataFetched(JsonObject response, int statusCode) {
+                if (type.equals("post")) {
+                    itemsList.clear();
+                    adapter.notifyDataSetChanged();
+                    currentPage = 1;
+                    getPosts(currentPage);
+                } else if (type.equals("comment")) {
+                    commentItems.clear();
+                    commentAdapter.notifyDataSetChanged();
+                    currentCommentPage = 1;
+                    loadComments(selectedPostID);
+                } else {
+                    replyItems.clear();
+                    replyAdapter.notifyDataSetChanged();
+                    currentReplyPage = 1;
+                    loadReplies(selectedCommentID);
+                }
             }
-        };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
 
-        queue.add(request);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    deletePost(id, type);
+
+            }
+        });
+
     }
 
     public void loadComments(String post_id) {
