@@ -1090,73 +1090,37 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentInput.setEnabled(false);
         submitComment.setEnabled(false);
 
+        JsonObject parameters = new JsonObject();
+        JsonObject parametersPost = new JsonObject();
 
-        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + selectedPostID + "/comments";
+        parameters.addProperty("body", commentInput.getText().toString());
+        parametersPost.add("comment", parameters);
 
-        JSONObject parameters = new JSONObject();
-        JSONObject parametersPost = new JSONObject();
-        try {
-            parameters.put("body", commentInput.getText().toString());
-            parametersPost.put("comment", parameters);
-        } catch (Exception e) {
-        }
-
-        Log.d("json body", parametersPost.toString());
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parametersPost, response -> {
-            Log.d("json response", response.toString());
-            try {
+        NewsfeedApiHelper.postComment(CredentialManager.getToken(), selectedPostID, parametersPost, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
                 if (response.has("data")) {
                     reloadRecyclerComment();
                     commentInput.setText("");
                     commentInput.setEnabled(true);
                     submitComment.setEnabled(true);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, error -> {
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401) {
-
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            createComment();
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }
+                } else
+                    Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
             }
 
-            Log.e("onErrorResponse", error.toString());
-            Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
-            commentInput.setEnabled(true);
-            submitComment.setEnabled(true);
-        }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-                headers.put("Content-Type", "application/json");
-                return headers;
+            public void onFailed(String errorBody, int errorCode) {
+
             }
-        };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    createComment();
 
-        queue.add(request);
+            }
+        });
+
     }
 
 

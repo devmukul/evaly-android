@@ -21,6 +21,9 @@ public class NewsfeedApiHelper extends BaseApiHelper {
         getiApiClient().getNewsfeedComments(token, postId, page).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void postComment(String token, String postId, JsonObject body, ResponseListenerAuth<JsonObject, String> listener){
+        getiApiClient().postNewsfeedComment(token, postId, body).enqueue(getResponseCallBackDefault(listener));
+    }
 
     public static void postReply(String token, String postId, String commentId, JsonObject body, ResponseListenerAuth<JsonObject, String> listener){
         getiApiClient().postNewsfeedReply(token, postId, commentId, body).enqueue(getResponseCallBackDefault(listener));
