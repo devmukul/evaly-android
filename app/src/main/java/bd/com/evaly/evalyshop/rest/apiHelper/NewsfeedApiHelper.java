@@ -44,4 +44,12 @@ public class NewsfeedApiHelper extends BaseApiHelper {
         getiApiClient().deleteNewsfeedItem(token, url).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void actionPendingPost(String token, String postId, String type, JsonObject body, ResponseListenerAuth<JsonObject, String> listener){
+
+        if (type.equals("delete"))
+            getiApiClient().deletePendingNewsfeedPost(token, postId, body).enqueue(getResponseCallBackDefault(listener));
+        else
+            getiApiClient().approvePendingNewsfeedPost(token, postId, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
 }

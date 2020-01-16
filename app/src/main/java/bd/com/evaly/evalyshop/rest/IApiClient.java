@@ -306,6 +306,12 @@ public interface IApiClient {
     @DELETE
     Call<JsonObject> deleteNewsfeedItem(@Header("Authorization") String token, @Url String url);
 
+    @PUT(UrlUtils.BASE_URL_NEWSFEED + "posts/{postId}")
+    Call<JsonObject> approvePendingNewsfeedPost(@Header("Authorization") String token, @Path("postId") String postId, @Body JsonObject body);
+
+    @DELETE(UrlUtils.BASE_URL_NEWSFEED + "posts/{postId}")
+    Call<JsonObject> deletePendingNewsfeedPost(@Header("Authorization") String token, @Path("postId") String postId, @Body JsonObject body);
+
 
 
 }

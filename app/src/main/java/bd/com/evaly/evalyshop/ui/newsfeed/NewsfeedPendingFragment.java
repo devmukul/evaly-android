@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.newsfeed;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,30 +15,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.ethanhua.skeleton.SkeletonScreen;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -61,7 +47,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
     private int currentPage;
     private ProgressBar bottomProgressBar;
     private SwipeRefreshLayout swipeLayout;
-    private RequestQueue queue;
 
     public NewsfeedPendingFragment() {
         // Required empty public constructor
@@ -81,7 +66,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
         context = getContext();
         activity = (NewsfeedActivity) getActivity();
-        queue = Volley.newRequestQueue(context);
 
         if (getArguments() != null) {
             type = getArguments().getString("type");
@@ -180,168 +164,42 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
     public void action(String id, final String type, int position) {
 
-        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + id;
+        JsonObject parameter = new JsonObject();
+        JsonObject parameterPost = new JsonObject();
 
-        JSONObject parameter = new JSONObject();
-        JSONObject parameterPost = new JSONObject();
+        if (type.equals("reject"))
+            parameter.addProperty("status", "archieved");
+        else if (type.equals("approve"))
+            parameter.addProperty("status", "active");
 
-        try {
-
-            if (type.equals("reject"))
-                parameter.put("status", "archieved");
-            else if (type.equals("approve"))
-                parameter.put("status", "active");
-
-
-            parameterPost.put("post", parameter);
-
-
-        } catch (Exception e) {
-
-        }
-
+        parameterPost.add("post", parameter);
 
         itemsList.remove(position);
-
         adapter.notifyItemRemoved(position);
 
-        Log.d("json url", url);
-        Log.d("json payload", parameterPost.toString());
-
-        JsonObjectRequest request = new JsonObjectRequest((type.equals("delete")) ? Request.Method.DELETE : Request.Method.PUT, url, parameterPost, new Response.Listener<JSONObject>() {
+        NewsfeedApiHelper.actionPendingPost(CredentialManager.getToken(), id, type, parameterPost, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public void onResponse(JSONObject response) {
-
+            public void onDataFetched(JsonObject response, int statusCode) {
 
             }
 
-        }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401) {
-
-                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                action(id, type, position);
-                            }
-
-                            @Override
-                            public void onFailed(int status) {
-
-                            }
-                        });
-
-                        return;
-
-                    }
-                }
-
-                Log.e("onErrorResponse", error.toString());
-                // Toast.makeText(context, "Couldn't delete post", Toast.LENGTH_SHORT).show();
+            public void onFailed(String errorBody, int errorCode) {
 
             }
-        }) {
+
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-                headers.put("Content-Type", "application/json");
-                return headers;
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    action(id, type, position);
             }
-        };
-
-        RequestQueue queue = Volley.newRequestQueue(context);
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        queue.add(request);
-    }
-
-    public void loadPostDetails(String post_id) {
+        });
 
 
-        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + post_id;
-
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
-
-            skeletonCommentHeader.hide();
-
-            try {
-
-                JSONObject ob = response.getJSONObject("data");
-
-                JSONObject author = ob.getJSONObject("author");
-
-                String authorName = author.getString("full_name");
-                String authorImage = author.getString("compressed_image");
-                String postText = ob.getString("body");
-                String date = ob.getString("created_at");
-                String postImageUrl = ob.getString("attachment");
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401) {
-
-                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                loadPostDetails(post_id);
-                            }
-
-                            @Override
-                            public void onFailed(int status) {
-
-                            }
-                        });
-
-                        return;
-
-                    }
-                }
-
-                Log.e("onErrorResponse", error.toString());
-
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-                headers.put("Content-Type", "application/json");
-
-                return headers;
-            }
-        };
-
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        queue.add(request);
     }
 
 
-    public void getPosts(int page) {
-
+    private void getPosts(int page) {
 
         loading = false;
 
@@ -353,103 +211,67 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         if (page > 1)
             bottomProgressBar.setVisibility(View.VISIBLE);
 
-        Log.d("json url", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
-            Log.d("json response", response.toString());
 
-            loading = true;
-            progressContainer.setVisibility(View.GONE);
-            bottomProgressBar.setVisibility(View.INVISIBLE);
+        NewsfeedApiHelper.getNewsfeedPosts(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-            try {
-                JSONArray jsonArray = response.getJSONArray("posts");
-                if (jsonArray.length() == 0 && page == 1) {
+                loading = true;
+                progressContainer.setVisibility(View.GONE);
+                bottomProgressBar.setVisibility(View.INVISIBLE);
+
+                JsonArray jsonArray = response.getAsJsonArray("posts");
+                if (jsonArray.size() == 0 && page == 1) {
                     not.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
+
                 } else {
-                    not.setVisibility(View.GONE);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject ob = jsonArray.getJSONObject(i);
+
+                    if (page == 1)
+                        not.setVisibility(View.GONE);
+
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        JsonObject ob = jsonArray.get(i).getAsJsonObject();
 
                         NewsfeedItem item = new NewsfeedItem();
 
-                        item.setAuthorUsername(ob.getString("username"));
-                        item.setAuthorFullName(ob.getString("author_full_name"));
-                        item.setAuthorImage(ob.getString("author_compressed_image"));
-                        item.setIsAdmin(ob.getInt("author_is_admin") != 0);
-                        item.setBody(ob.getString("body"));
-
-
-                        try {
-                            item.setAttachment(ob.getString("attachment"));
-                            item.setAttachmentCompressed(ob.getString("attachment_compressed_url"));
-                        } catch (Exception e) {
-                            item.setAttachment(null);
-                            item.setAttachmentCompressed(null);
-                        }
-
-                        item.setCreatedAt(ob.getString("created_at"));
-                        item.setUpdatedAt(ob.getString("created_at"));
-                        item.setFavorited(ob.getInt("favorited") != 0);
-                        item.setFavoriteCount(ob.getInt("favorites_count"));
-                        item.setCommentsCount(ob.getInt("comments_count"));
-                        item.setSlug(ob.getString("slug"));
-                        item.setType(ob.getString("type"));
+                        item.setAuthorUsername(ob.get("username").getAsString());
+                        item.setAuthorFullName(ob.get("author_full_name").getAsString());
+                        item.setAuthorImage(ob.get("author_compressed_image").getAsString());
+                        item.setIsAdmin(ob.get("author_is_admin").getAsInt() != 0);
+                        item.setBody(ob.get("body").getAsString());
+                        item.setAttachment(ob.get("attachment").isJsonNull() ? "null" : ob.get("attachment").getAsString());
+                        item.setAttachmentCompressed(ob.get("attachment_compressed_url").isJsonNull() ? "null" : ob.get("attachment_compressed_url").getAsString());
+                        item.setCreatedAt(ob.get("created_at").getAsString());
+                        item.setUpdatedAt(ob.get("created_at").getAsString());
+                        item.setFavorited(ob.get("favorited").getAsInt() != 0);
+                        item.setFavoriteCount(ob.get("favorites_count").getAsInt());
+                        item.setCommentsCount(ob.get("comments_count").getAsInt());
+                        item.setSlug(ob.get("slug").getAsString());
+                        item.setType(ob.get("type").getAsString());
 
                         itemsList.add(item);
                         adapter.notifyItemInserted(itemsList.size());
 
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+
             }
-
-
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401) {
-
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            getPosts(page);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-
-                        }
-                    });
-
-                    return;
-
-                }
-            }
-
-            progressContainer.setVisibility(View.GONE);
-            bottomProgressBar.setVisibility(View.INVISIBLE);
-
-        }) {
-
 
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
-
-                return headers;
+            public void onFailed(String errorBody, int errorCode) {
+                progressContainer.setVisibility(View.GONE);
+                bottomProgressBar.setVisibility(View.INVISIBLE);
             }
-        };
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    getPosts(page);
+            }
+        });
+
+
     }
 
 
