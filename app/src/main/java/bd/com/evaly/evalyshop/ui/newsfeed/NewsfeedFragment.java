@@ -1,21 +1,9 @@
 package bd.com.evaly.evalyshop.ui.newsfeed;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import androidx.fragment.app.Fragment;
-import androidx.core.widget.NestedScrollView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -31,6 +19,16 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -44,6 +42,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -57,33 +57,34 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
-import bd.com.evaly.evalyshop.util.ImagePreview;
-import bd.com.evaly.evalyshop.ui.newsfeed.adapters.CommentAdapter;
-import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedAdapter;
-import bd.com.evaly.evalyshop.ui.newsfeed.adapters.ReplyAdapter;
-import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.newsfeed.FeedShareModel;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
+import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
+import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
+import bd.com.evaly.evalyshop.ui.newsfeed.adapters.CommentAdapter;
+import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedAdapter;
+import bd.com.evaly.evalyshop.ui.newsfeed.adapters.ReplyAdapter;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
@@ -119,7 +120,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ImageView submitComment;
     private ImageView uploadImage;
     private ImageView reloadComment;
-
 
 
     // reply bottom sheet items
@@ -162,7 +162,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         context = getContext();
         activity = (NewsfeedActivity) getActivity();
-        queue= Volley.newRequestQueue(context);
+        queue = Volley.newRequestQueue(context);
         if (getArguments() != null) {
             type = getArguments().getString("type");
         }
@@ -188,12 +188,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         try {
             ((NewsfeedActivity) getActivity()).getNotificationCount();
-        } catch (Exception e){
+        } catch (Exception e) {
         }
 
     }
 
-    public UserDetails getUserDetails(){
+    public UserDetails getUserDetails() {
         return userDetails;
     }
 
@@ -235,7 +235,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyAdapter = new ReplyAdapter(replyItems, context, this);
         replyRecyclerView = replyDialog.findViewById(R.id.recyclerView);
 
-        LinearLayoutManager managerReply=new LinearLayoutManager(context);
+        LinearLayoutManager managerReply = new LinearLayoutManager(context);
         replyRecyclerView.setLayoutManager(managerReply);
         replyRecyclerView.setAdapter(replyAdapter);
 
@@ -271,14 +271,13 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                             if (!isReplyLoading)
                                 loadReplies(selectedCommentID);
 
-                        } catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             Log.e("load more error", e.toString());
                         }
-                    } }
+                    }
+                }
             });
         }
-
 
 
         // create Reply
@@ -288,7 +287,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         submitReply = replyDialog.findViewById(R.id.submitComment);
         reloadReply = replyDialog.findViewById(R.id.refresh);
 
-        if (userDetails.getToken().equals("")){
+        if (userDetails.getToken().equals("")) {
 
             replyInput.setText("You need to login to post reply.");
             replyInput.setEnabled(false);
@@ -300,7 +299,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
 
-        uploadImage.setOnClickListener(view1 -> Toast.makeText(context,"Photo reply is disabled now.", Toast.LENGTH_SHORT).show());
+        uploadImage.setOnClickListener(view1 -> Toast.makeText(context, "Photo reply is disabled now.", Toast.LENGTH_SHORT).show());
         reloadReply.setOnClickListener(view1 -> reloadRecyclerReply());
 
         submitReply.setOnClickListener(new View.OnClickListener() {
@@ -359,7 +358,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentItems = new ArrayList<>();
         commentAdapter = new CommentAdapter(commentItems, context, this);
         commentRecyclerView = commentDialog.findViewById(R.id.recyclerView);
-        LinearLayoutManager managerComment=new LinearLayoutManager(context);
+        LinearLayoutManager managerComment = new LinearLayoutManager(context);
         commentRecyclerView.setLayoutManager(managerComment);
         commentRecyclerView.setAdapter(commentAdapter);
 
@@ -386,8 +385,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         nestedScrollViewComment.requestFocus();
 
 
-
-
         // create comment
 
         commentInput = commentDialog.findViewById(R.id.commentInput);
@@ -395,7 +392,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         submitComment = commentDialog.findViewById(R.id.submitComment);
         reloadComment = commentDialog.findViewById(R.id.refresh);
 
-        if (userDetails.getToken().equals("")){
+        if (userDetails.getToken().equals("")) {
 
             commentInput.setEnabled(false);
             commentInput.setText("You need to login to make comment.");
@@ -404,7 +401,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
 
-        uploadImage.setOnClickListener(view1 -> Toast.makeText(context,"Photo comment is disabled now.", Toast.LENGTH_SHORT).show());
+        uploadImage.setOnClickListener(view1 -> Toast.makeText(context, "Photo comment is disabled now.", Toast.LENGTH_SHORT).show());
         reloadComment.setOnClickListener(view1 -> reloadRecyclerComment());
 
         submitComment.setOnClickListener(view12 -> {
@@ -420,7 +417,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         });
 
         // pull to refresh
-        swipeLayout =  view.findViewById(R.id.swipe_container);
+        swipeLayout = view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
 
         try {
@@ -428,7 +425,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     android.R.color.holo_red_dark,
                     android.R.color.holo_blue_dark,
                     android.R.color.holo_orange_dark);
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -447,25 +444,22 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         currentPage = 1;
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if(dy > 0) //check for scroll down
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
                 {
                     visibleItemCount = manager.getChildCount();
                     totalItemCount = manager.getItemCount();
                     pastVisiblesItems = manager.findFirstVisibleItemPosition();
 
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                        {
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             getPosts(++currentPage);
 
                         }
-                    } }
+                    }
+                }
             }
         });
 
@@ -474,9 +468,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-    public void openReplyBottomSheet(String id, String authorName, String authorImage, boolean isAdmin, String postText, String date, Object postImage){
+    public void openReplyBottomSheet(String id, String authorName, String authorImage, boolean isAdmin, String postText, String date, Object postImage) {
 
-        if (replyDialog != null){
+        if (replyDialog != null) {
 
             currentReplyPage = 1;
             maxCountReply = -1;
@@ -490,7 +484,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 img.setBounds(0, 0, sizeInPixel, sizeInPixel);
                 authorNameView.setCompoundDrawables(null, null, img, null);
                 authorNameView.setCompoundDrawablePadding(15);
-            }else {
+            } else {
                 authorNameView.setCompoundDrawables(null, null, null, null);
             }
 
@@ -514,7 +508,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             ImageView postPic = replyDialog.findViewById(R.id.postImage);
 
-            if (postImage == null || postImage.equals("")){} else {
+            if (postImage == null || postImage.equals("")) {
+            } else {
                 Glide.with(context)
                         .load(postImage)
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -530,17 +525,16 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             loadReplies(selectedCommentID);
 
 
-        } else
-        {
+        } else {
             Toast.makeText(context, "Couldn't load replies", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    public void openCommentBottomSheet(String id, String authorName, String authorImage, boolean isAdmin, String postText, String date, String postImageUrl){
+    public void openCommentBottomSheet(String id, String authorName, String authorImage, boolean isAdmin, String postText, String date, String postImageUrl) {
 
 
-        if (commentDialog != null){
+        if (commentDialog != null) {
             currentCommentPage = 1;
             maxCountComment = -1;
             selectedPostID = id;
@@ -554,8 +548,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             if (authorName.equals("") && authorImage.equals("") && postText.equals("")) {
                 loadComments(selectedPostID, true);
                 loadPostDetails(selectedPostID);
-            }
-            else {
+            } else {
 
                 initCommentHeader(authorName, authorImage, isAdmin, postText, date, postImageUrl);
                 loadComments(selectedPostID, false);
@@ -564,8 +557,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             ((NestedScrollView) commentDialog.findViewById(R.id.stickyScrollView)).fullScroll(ScrollView.FOCUS_UP);
 
 
-        } else
-        {
+        } else {
             Toast.makeText(context, "Couldn't load comments", Toast.LENGTH_SHORT).show();
         }
 
@@ -587,7 +579,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         return true;
     }
 
-    public void initCommentHeader(String authorName, String authorImage, boolean isAdmin, String postText, String date, String postImageUrl){
+    public void initCommentHeader(String authorName, String authorImage, boolean isAdmin, String postText, String date, String postImageUrl) {
 
 
         TextView authorNameView = commentDialog.findViewById(R.id.user_name);
@@ -607,14 +599,14 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             authorNameView.setCompoundDrawablePadding(15);
             timeView.setText(Html.fromHtml("<b>Admin</b> · " + timeAgo));
 
-        } else  {
+        } else {
             authorNameView.setCompoundDrawables(null, null, null, null);
 
             timeView.setText(timeAgo);
         }
 
 
-        TextView tvMessage =  commentDialog.findViewById(R.id.text);
+        TextView tvMessage = commentDialog.findViewById(R.id.text);
         tvMessage.setText(postText);
         ImageView userPic = commentDialog.findViewById(R.id.picture);
         Glide.with(context)
@@ -628,7 +620,8 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         ImageView postPic = commentDialog.findViewById(R.id.postImage);
 
-        if (postImageUrl == null || postImageUrl.equals("")){} else {
+        if (postImageUrl == null || postImageUrl.equals("")) {
+        } else {
             Glide.with(context)
                     .load(postImageUrl)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -662,9 +655,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 });
 
                 String body = object.getString("body");
-                if (body == null || body.equalsIgnoreCase("")){
+                if (body == null || body.equalsIgnoreCase("")) {
                     tvMessage.setVisibility(View.GONE);
-                }else {
+                } else {
                     tvMessage.setVisibility(View.VISIBLE);
                     tvMessage.setText(Html.fromHtml(body));
                 }
@@ -682,12 +675,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-    public void loadReplies(String comment_id){
+    public void loadReplies(String comment_id) {
 
 
         isReplyLoading = true;
 
-        if (!commentDialog.isShowing()){
+        if (!commentDialog.isShowing()) {
             Toast.makeText(context, "Can't load comments. Restart the app", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -703,7 +696,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyNot.setVisibility(View.GONE);
         NestedScrollView scrollView = replyDialog.findViewById(R.id.stickyScrollView);
 
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments/"+ comment_id +"/replies?page="+ currentReplyPage;
+        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + selectedPostID + "/comments/" + comment_id + "/replies?page=" + currentReplyPage;
 
         Log.d("json url", url);
 
@@ -728,7 +721,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     currentReplyPage++;
                 }
 
-                for (int i=0; i < jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
 
                     Gson gson = new Gson();
                     RepliesItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), RepliesItem.class);
@@ -772,7 +765,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         queue.add(request);
     }
 
-    public void createReply(){
+    public void createReply() {
 
         if (replyDialog == null)
             return;
@@ -780,7 +773,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyInput.setEnabled(false);
         submitReply.setEnabled(false);
 
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments/"+selectedCommentID+"/replies";
+        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + selectedPostID + "/comments/" + selectedCommentID + "/replies";
 
         JSONObject parameters = new JSONObject();
         JSONObject parametersPost = new JSONObject();
@@ -828,7 +821,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         queue.add(request);
     }
 
-    public void deletePost(String id, final String type){
+    public void deletePost(String id, final String type) {
 
         if (replyDialog == null)
             return;
@@ -839,9 +832,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         String url;
 
         if (type.equals("post"))
-            url = UrlUtils.BASE_URL_NEWSFEED+"posts/"+id;
+            url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + id;
         else
-            url = UrlUtils.BASE_URL_NEWSFEED+"comments/"+id;
+            url = UrlUtils.BASE_URL_NEWSFEED + "comments/" + id;
 
         StringRequest request = new StringRequest(Request.Method.DELETE, url, response -> {
 
@@ -852,7 +845,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 currentPage = 1;
                 getPosts(currentPage);
 
-            } else if (type.equals("comment")){
+            } else if (type.equals("comment")) {
 
                 commentItems.clear();
                 commentAdapter.notifyDataSetChanged();
@@ -892,7 +885,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         queue.add(request);
     }
 
-    public void loadComments(String post_id, boolean fromRoute){
+    public void loadComments(String post_id, boolean fromRoute) {
 
         if (maxCountComment == commentItems.size()) {
 
@@ -904,7 +897,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         isCommentLoading = true;
         selectedPostID = post_id;
 
-        if (!commentDialog.isShowing()){
+        if (!commentDialog.isShowing()) {
             Toast.makeText(context, "Can't load comments. Restart the app", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -920,7 +913,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         replyNot.setVisibility(View.GONE);
 
         NestedScrollView scrollView = commentDialog.findViewById(R.id.stickyScrollView);
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id+"/comments?page="+currentCommentPage;
+        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + post_id + "/comments?page=" + currentCommentPage;
 
         currentCommentPage++;
 
@@ -950,7 +943,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                     currentCommentPage++;
                 }
 
-                for (int i=0; i < jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
 
                     Gson gson = new Gson();
                     CommentItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), CommentItem.class);
@@ -999,10 +992,10 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         queue.add(request);
     }
 
-    public void loadPostDetails(String post_id){
+    public void loadPostDetails(String post_id) {
 
 
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+post_id;
+        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + post_id;
 
 
         LinearLayout header = commentDialog.findViewById(R.id.header);
@@ -1055,25 +1048,24 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-
-    public void getPosts(int page){
+    public void getPosts(int page) {
 
         loading = false;
         String url;
 
         if (type.equals("public"))
-            url = UrlUtils.BASE_URL_NEWSFEED+"posts?page="+page;
-        else if(type.equals("pending"))
-            url = UrlUtils.BASE_URL_NEWSFEED+"posts?status=pending&page="+page;
+            url = UrlUtils.BASE_URL_NEWSFEED + "posts?page=" + page;
+        else if (type.equals("pending"))
+            url = UrlUtils.BASE_URL_NEWSFEED + "posts?status=pending&page=" + page;
         else if (type.equals("my"))
-            url = UrlUtils.BASE_URL_NEWSFEED+"posts/my-posts/?page="+page;
+            url = UrlUtils.BASE_URL_NEWSFEED + "posts/my-posts/?page=" + page;
         else
-            url = UrlUtils.BASE_URL_NEWSFEED+"posts?type="+type+"&page="+page;
+            url = UrlUtils.BASE_URL_NEWSFEED + "posts?type=" + type + "&page=" + page;
 
         if (page == 1)
             progressContainer.setVisibility(View.VISIBLE);
 
-        if (page>1)
+        if (page > 1)
             bottomProgressBar.setVisibility(View.VISIBLE);
 
 
@@ -1086,16 +1078,16 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 bottomProgressBar.setVisibility(View.INVISIBLE);
 
                 JsonArray jsonArray = response.getAsJsonArray("posts");
-                if(jsonArray.size()==0 && page == 1){
+                if (jsonArray.size() == 0 && page == 1) {
                     not.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
 
                 } else {
 
-                    if (page==1)
+                    if (page == 1)
                         not.setVisibility(View.GONE);
 
-                    for(int i=0;i<jsonArray.size();i++){
+                    for (int i = 0; i < jsonArray.size(); i++) {
                         JsonObject ob = jsonArray.get(i).getAsJsonObject();
 
                         NewsfeedItem item = new NewsfeedItem();
@@ -1139,7 +1131,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-    public void reloadRecyclerComment(){
+    public void reloadRecyclerComment() {
         currentCommentPage = 1;
         maxCountComment = -1;
         commentItems.clear();
@@ -1149,7 +1141,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-    public void reloadRecyclerReply(){
+    public void reloadRecyclerReply() {
         currentReplyPage = 1;
         maxCountReply = -1;
         replyItems.clear();
@@ -1159,7 +1151,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-    public void createComment(){
+    public void createComment() {
 
         if (commentDialog == null)
             return;
@@ -1168,7 +1160,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         submitComment.setEnabled(false);
 
 
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+selectedPostID+"/comments";
+        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + selectedPostID + "/comments";
 
         JSONObject parameters = new JSONObject();
         JSONObject parametersPost = new JSONObject();
@@ -1195,23 +1187,24 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        createComment();
-                    }
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            createComment();
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
             Log.e("onErrorResponse", error.toString());
             Toast.makeText(context, "Couldn't create comment", Toast.LENGTH_SHORT).show();
@@ -1227,7 +1220,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
-        
+
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -1236,10 +1229,9 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
+    public void sendLike(String slug, boolean like) {
 
-    public void sendLike(String slug, boolean like){
-
-        String url= UrlUtils.BASE_URL_NEWSFEED+"posts/"+slug+"/favorite";
+        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + slug + "/favorite";
 
         JSONObject parametersPost = new JSONObject();
 
@@ -1257,23 +1249,24 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        sendLike(slug, like);
-                    }
+                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            sendLike(slug, like);
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
             Log.e("onErrorResponse", error.toString());
             Toast.makeText(context, "Couldn't like the status.", Toast.LENGTH_SHORT).show();
@@ -1287,7 +1280,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return headers;
             }
         };
-        
+
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -1296,8 +1289,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         if (commentDialog != null)
             commentDialog.dismiss();
@@ -1317,6 +1309,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         bottomSheetDialog.setContentView(R.layout.share_with_contact_view);
 
         View bottomSheetInternal = bottomSheetDialog.findViewById(R.id.design_bottom_sheet);
+        assert bottomSheetInternal != null;
         bottomSheetInternal.setPadding(0, 0, 0, 0);
 
         new KeyboardUtil(getActivity(), bottomSheetInternal);
@@ -1347,73 +1340,73 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         LinearLayout llSend = bottomSheetDialog.findViewById(R.id.llSend);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        assert rvContacts != null;
         rvContacts.setLayoutManager(layoutManager);
         viewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
-        viewModel.rosterList.observe(this, new Observer<List<RosterTable>>() {
-            @Override
-            public void onChanged(@Nullable List<RosterTable> rosterTables) {
-                List<RosterTable> selectedRosterList = new ArrayList<>();
-                List<RosterTable> rosterList = rosterTables;
-                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(getActivity(), rosterList, (object, status) -> {
-                    RosterTable table = (RosterTable) object;
+        viewModel.rosterList.observe(this, rosterTables -> {
+            List<RosterTable> selectedRosterList = new ArrayList<>();
+            ContactShareAdapter contactShareAdapter = new ContactShareAdapter(getActivity(), rosterTables, (object, status) -> {
+                RosterTable table = (RosterTable) object;
 
-                    if (status && !selectedRosterList.contains(table)) {
-                        selectedRosterList.add(table);
-                    } else {
-                        if (selectedRosterList.contains(table)) {
-                            selectedRosterList.remove(table);
+                if (status && !selectedRosterList.contains(table)) {
+                    selectedRosterList.add(table);
+                } else {
+                    selectedRosterList.remove(table);
+                }
+
+                assert tvCount != null;
+                tvCount.setText(String.format(Locale.ENGLISH, "(%d) ", selectedRosterList.size()));
+            });
+
+            assert llSend != null;
+            llSend.setOnClickListener(view -> {
+                FeedShareModel feedShareModel = new FeedShareModel(model.getSlug(), model.getBody(), model.getAttachment(), model.getCommentsCount() + "", model.getFavoriteCount() + "", model.getAuthorFullName());
+
+                if (AppController.getmService().xmpp.isLoggedin()) {
+                    try {
+                        for (RosterTable rosterTable : selectedRosterList) {
+                            ChatItem chatItem = new ChatItem(new Gson().toJson(feedShareModel), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_FEED, true, "");
+                            AppController.getmService().xmpp.sendMessage(chatItem);
                         }
-                    }
-
-                    tvCount.setText("(" + selectedRosterList.size() + ") ");
-                });
-
-                llSend.setOnClickListener(view -> {
-                    FeedShareModel feedShareModel = new FeedShareModel(model.getSlug(),model.getBody(), model.getAttachment(), model.getCommentsCount()+"", model.getFavoriteCount()+"", model.getAuthorFullName());
-
-                    if (AppController.getmService().xmpp.isLoggedin()) {
-                        try {
-                            for (RosterTable rosterTable : selectedRosterList) {
-                                ChatItem chatItem = new ChatItem(new Gson().toJson(feedShareModel), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_FEED, true, "");
-                                AppController.getmService().xmpp.sendMessage(chatItem);
-                            }
-                            for (int i = 0; i<rosterList.size(); i++){
-                                rosterList.get(i).isSelected = false;
-                            }
-                            contactShareAdapter.notifyDataSetChanged();
-                            selectedRosterList.clear();
-                            tvCount.setText("(" + selectedRosterList.size() + ") ");
-                            Toast.makeText(getActivity(), "Sent!", Toast.LENGTH_LONG).show();
-                        } catch (SmackException e) {
-                            e.printStackTrace();
+                        for (int i = 0; i < rosterTables.size(); i++) {
+                            rosterTables.get(i).isSelected = false;
                         }
-                    } else {
-                        AppController.getmService().xmpp.connect();
+                        contactShareAdapter.notifyDataSetChanged();
+                        selectedRosterList.clear();
+                        assert tvCount != null;
+                        tvCount.setText(String.format(Locale.ENGLISH, "(%d) ", selectedRosterList.size()));
+                        Toast.makeText(getActivity(), "Sent!", Toast.LENGTH_LONG).show();
+                    } catch (SmackException e) {
+                        e.printStackTrace();
                     }
-                });
+                } else {
+                    AppController.getmService().xmpp.connect();
+                }
+            });
 
-                rvContacts.setAdapter(contactShareAdapter);
-                etSearch.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        rvContacts.getRecycledViewPool().clear();
-                        contactShareAdapter.getFilter().filter(charSequence);
-                    }
+            rvContacts.setAdapter(contactShareAdapter);
+            assert etSearch != null;
+            etSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    rvContacts.getRecycledViewPool().clear();
+                    contactShareAdapter.getFilter().filter(charSequence);
+                }
 
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        rvContacts.getRecycledViewPool().clear();
-                        contactShareAdapter.getFilter().filter(charSequence);
-                    }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    rvContacts.getRecycledViewPool().clear();
+                    contactShareAdapter.getFilter().filter(charSequence);
+                }
 
-                    @Override
-                    public void afterTextChanged(Editable editable) {
+                @Override
+                public void afterTextChanged(Editable editable) {
 
-                    }
-                });
-            }
+                }
+            });
         });
 
+        assert ivBack != null;
         ivBack.setOnClickListener(view -> bottomSheetDialog.dismiss());
 
         bottomSheetDialog.show();
