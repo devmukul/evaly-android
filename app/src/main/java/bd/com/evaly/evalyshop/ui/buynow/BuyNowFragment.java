@@ -444,7 +444,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                             startActivity(intent);
                         }
                     } else
-                        Toast.makeText(getContext(), "Couldn't place order.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -452,7 +452,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             public void onFailed(String errorBody, int errorCode) {
 
                 dialog.hideDialog();
+
                 Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override

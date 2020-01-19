@@ -135,7 +135,6 @@ public class CartFragment extends Fragment {
                     return true;
                 case R.id.action_delete:
 
-
                     if (adapter.getItemCount() == 0) {
                         Toast.makeText(context, "No item is available in cart to delete", Toast.LENGTH_SHORT).show();
                     } else {
@@ -344,7 +343,6 @@ public class CartFragment extends Fragment {
             }
         });
 
-
     }
 
 
@@ -381,7 +379,7 @@ public class CartFragment extends Fragment {
                             startActivity(intent);
                         }
                     } else {
-                        Toast.makeText(context, "Couldn't place order.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
