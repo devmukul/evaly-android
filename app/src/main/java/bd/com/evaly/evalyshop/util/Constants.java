@@ -96,8 +96,9 @@ public class Constants {
         list.add(new OrderIssueModel("product", "Product Issue"));
         list.add(new OrderIssueModel("refund", "Refund Issue"));
         list.add(new OrderIssueModel("payment", "Payment Issue"));
-        list.add(new OrderIssueModel("return", "Product return"));
         list.add(new OrderIssueModel("bank deposit", "Bank Deposit"));
+        list.add(new OrderIssueModel("bank payment", "Bank Payment"));
+        list.add(new OrderIssueModel("return", "Product return"));
         list.add(new OrderIssueModel("order cancel", "Request for order cancel"));
         list.add(new OrderIssueModel("others", "Others"));
         return list;
@@ -108,6 +109,7 @@ public class Constants {
 
         List<OrderIssueModel> list = new ArrayList<>();
         list.add(new OrderIssueModel("payment", "Payment Issue"));
+        list.add(new OrderIssueModel("bank payment", "Bank Payment"));
         return list;
     }
 

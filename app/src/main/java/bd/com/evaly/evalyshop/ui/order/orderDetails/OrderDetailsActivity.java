@@ -107,7 +107,6 @@ public class OrderDetailsActivity extends BaseActivity {
     TextView makePayment, payParially, full_or_partial;
     RelativeLayout shopInfo;
     TextView payViaGiftCard;
-    private TextView cancelBtn;
     BottomSheetBehavior sheetBehavior;
     LinearLayout layoutBottomSheet, campaignRuleHolder;
     View mViewBg;
@@ -116,6 +115,7 @@ public class OrderDetailsActivity extends BaseActivity {
     BottomSheetDialog bottomSheetDialog;
     Context context;
     String shopGroup = "";
+    private TextView cancelBtn;
     private NestedScrollView scrollView;
     private String imageUrl;
     private String orderStatus = "pending", paymentStatus = "unpaid";
@@ -215,7 +215,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
         payViaGiftCard = findViewById(R.id.payViaGiftCard);
         payViaGiftCard.setOnClickListener(v -> dialogGiftCardPayment());
-
 
 
     }
@@ -483,7 +482,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
     }
 
-    public void updatePage(){
+    public void updatePage() {
 
         scrollView.postDelayed(() -> scrollView.fullScroll(View.FOCUS_UP), 50);
 
@@ -709,7 +708,7 @@ public class OrderDetailsActivity extends BaseActivity {
                             tvCampaignRule.setText(Html.fromHtml(message));
 
 
-                            if (diffDays<1)
+                            if (diffDays < 1)
                                 campaignRuleHolder.setVisibility(View.GONE);
 
                         } else {
@@ -809,8 +808,7 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
 
-
-    public void cancelOrder(){
+    public void cancelOrder() {
 
         BottomSheetDialog dialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
 

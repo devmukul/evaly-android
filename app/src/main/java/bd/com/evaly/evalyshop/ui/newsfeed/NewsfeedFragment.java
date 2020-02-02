@@ -350,15 +350,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         NestedScrollView nestedScrollViewComment = commentDialog.findViewById(R.id.stickyScrollView);
 
         if (nestedScrollViewComment != null) {
-
             nestedScrollViewComment.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-
                 if (nestedScrollViewComment.getChildAt(0).getBottom()
                         <= (nestedScrollViewComment.getHeight() + nestedScrollViewComment.getScrollY())) {
                     try {
                         if (!isCommentLoading)
                             loadComments(selectedPostID);
-
                     } catch (Exception e) {
                         Log.e("load more error", e.toString());
                     }
