@@ -7,8 +7,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderListTabAdapter;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
@@ -17,6 +17,7 @@ public class OrderListActivity extends BaseActivity {
     UserDetails userDetails;
 
     String userAgent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,25 +28,24 @@ public class OrderListActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-
         TabLayout tabLayout = findViewById(R.id.tabs);
 
 
         ViewPager viewPager = findViewById(R.id.pager);
 
-        OrderListTabAdapter pager =  new OrderListTabAdapter(getSupportFragmentManager());
+        OrderListTabAdapter pager = new OrderListTabAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(pager);
 
 
-        pager.addFragment(OrderListFragment.getInstance("all"),"All");
-        pager.addFragment(OrderListFragment.getInstance("pending"),"Pending");
-        pager.addFragment(OrderListFragment.getInstance("confirmed"),"Confirmed");
-        pager.addFragment(OrderListFragment.getInstance("processing"),"Processing");
-        pager.addFragment(OrderListFragment.getInstance("picked"),"Picked");
-        pager.addFragment(OrderListFragment.getInstance("shipped"),"Shipped");
-        pager.addFragment(OrderListFragment.getInstance("delivered"),"Delivered");
-        pager.addFragment(OrderListFragment.getInstance("cancel"),"Cancelled");
+        pager.addFragment(OrderListFragment.getInstance("all"), "All");
+        pager.addFragment(OrderListFragment.getInstance("pending"), "Pending");
+        pager.addFragment(OrderListFragment.getInstance("confirmed"), "Confirmed");
+        pager.addFragment(OrderListFragment.getInstance("processing"), "Processing");
+        pager.addFragment(OrderListFragment.getInstance("picked"), "Picked");
+        pager.addFragment(OrderListFragment.getInstance("shipped"), "Shipped");
+        pager.addFragment(OrderListFragment.getInstance("delivered"), "Delivered");
+        pager.addFragment(OrderListFragment.getInstance("cancel"), "Cancelled");
 
         pager.notifyDataSetChanged();
 
@@ -75,11 +75,7 @@ public class OrderListActivity extends BaseActivity {
         });
 
 
-
-
-
     }
-
 
 
     @Override

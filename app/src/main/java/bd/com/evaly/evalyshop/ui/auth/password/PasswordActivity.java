@@ -10,11 +10,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
+
 import java.util.HashMap;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;

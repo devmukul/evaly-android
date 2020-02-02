@@ -37,16 +37,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.pref.ReferPref;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class InviteEarn extends AppCompatActivity {
 
-    TextView referText, message, statistics;
-    ViewDialog dialog;
-    NestedScrollView scrollView;
-    UserDetails userDetails;
-    Context context;
+    private TextView referText, message, statistics;
+    private ViewDialog dialog;
+    private NestedScrollView scrollView;
+    private UserDetails userDetails;
+    private Context context;
+    private ReferPref referPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,40 +65,36 @@ public class InviteEarn extends AppCompatActivity {
         scrollView = findViewById(R.id.scrollView);
 
         userDetails = new UserDetails(this);
+        referPref = new ReferPref(this);
         dialog = new ViewDialog(this);
         getReferralInfo();
 
-
-
         context = this;
 
-
-
-        message.setText(userDetails.getRefMessage());
-        referText.setText("EVALY-"+userDetails.getUserName());
-        statistics.setText(Html.fromHtml(userDetails.getRefStatistics()));
+        message.setText(referPref.getRefMessage());
+        referText.setText("EVALY-" + userDetails.getUserName());
+        statistics.setText(Html.fromHtml(referPref.getRefStatistics()));
 
         Button rate = findViewById(R.id.rate);
 
         rate.setOnClickListener(v -> addDialog());
 
 
-        if (userDetails.isRated())
+        if (referPref.isRated())
             rate.setVisibility(View.GONE);
-
 
 
         TextView copy = findViewById(R.id.copy);
 
         copy.setOnClickListener(v -> {
-            try{
+            try {
 
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("referral",referText.getText().toString().trim());
+                ClipData clip = ClipData.newPlainText("referral", referText.getText().toString().trim());
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(InviteEarn.this, "Invitation code copied.", Toast.LENGTH_SHORT).show();
 
-            } catch (Exception e){
+            } catch (Exception e) {
 
                 Toast.makeText(InviteEarn.this, "Can't copy invitation code.", Toast.LENGTH_SHORT).show();
 
@@ -105,29 +103,26 @@ public class InviteEarn extends AppCompatActivity {
     }
 
 
-
-
-
-    public void getReferralInfo(){
+    public void getReferralInfo() {
 
 
         // scrollView.setVisibility(View.GONE);
 
-        String url = "https://nsuer.club/evaly/referral/info.php?username="+userDetails.getUserName();
+        String url = "https://nsuer.club/evaly/referral/info.php?username=" + userDetails.getUserName();
         JSONObject parameters = new JSONObject();
 
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), response -> {
             //Log.d("onResponse", response.toString());
 
-            try{
+            try {
 
                 boolean isAvailable = response.getBoolean("isAvailable");
                 String messageString = response.getString("message");
                 String statisticsString = response.getString("statistics");
 
 
-                if (!isAvailable){
+                if (!isAvailable) {
 
                     Toast.makeText(InviteEarn.this, "Invite referral program is not available right now", Toast.LENGTH_LONG).show();
                     finish();
@@ -138,13 +133,13 @@ public class InviteEarn extends AppCompatActivity {
                 scrollView.setVisibility(View.VISIBLE);
 
 
-                userDetails.setRefMessage(messageString);
-                userDetails.setRefStatistics(statisticsString);
+                referPref.setRefMessage(messageString);
+                referPref.setRefStatistics(statisticsString);
                 message.setText(messageString);
                 statistics.setText(Html.fromHtml(statisticsString));
 
 
-            } catch (Exception e){
+            } catch (Exception e) {
 
             }
 
@@ -154,7 +149,6 @@ public class InviteEarn extends AppCompatActivity {
             dialog.hideDialog();
             Toast.makeText(InviteEarn.this, "Server error occurred, check your network settings.", Toast.LENGTH_LONG).show();
             finish();
-
 
 
         }) {
@@ -174,9 +168,7 @@ public class InviteEarn extends AppCompatActivity {
     }
 
 
-
-
-    public void addDialog(){
+    public void addDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
 
         LayoutInflater inflater = this.getLayoutInflater();
@@ -200,14 +192,14 @@ public class InviteEarn extends AppCompatActivity {
 
         d_submit.setOnClickListener(v -> {
 
-            if (d_rating_bar.getRating() < 1){
+            if (d_rating_bar.getRating() < 1) {
                 Toast.makeText(InviteEarn.this, "Please set star rating.", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (d_rating_bar.getRating() < 4){
+            } else if (d_rating_bar.getRating() < 4) {
 
 
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto","hm.tamim@evaly.com.bd", null));
+                        "mailto", "hm.tamim@evaly.com.bd", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Evaly App Feedback");
                 //emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
                 startActivity(Intent.createChooser(emailIntent, "Send email..."));
@@ -235,26 +227,18 @@ public class InviteEarn extends AppCompatActivity {
 
                 ratingUpdate();
 
-                userDetails.setRated(true);
+                referPref.setRated(true);
 
                 alertDialog.dismiss();
 
             }
 
 
-
-
-
-
-
-
         });
     }
 
 
-
-
-    public void ratingUpdate(){
+    public void ratingUpdate() {
 
 
         String url = "https://nsuer.club/evaly/referral/submit-rating.php";
@@ -264,7 +248,6 @@ public class InviteEarn extends AppCompatActivity {
 
         StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
             //Log.d("json", response);
-
 
 
         }, error -> Log.e("onErrorResponse", error.toString())) {

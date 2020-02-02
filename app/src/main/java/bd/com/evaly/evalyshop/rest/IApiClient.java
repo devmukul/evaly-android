@@ -225,7 +225,7 @@ public interface IApiClient {
     // referral
 
     @POST("https://nsuer.club/evaly/referral/submit-referral.php")
-    Call<JsonObject> checkReferral(@Body HashMap<String, String> body);
+    Call<JsonObject> checkReferral(@Query("device_id") String deviceId, @Query("referred_by") String referredBy, @Query("token") String token);
 
 
     // order apis

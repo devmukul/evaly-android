@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.pref.ReferPref;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -57,6 +58,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private ProgressBar progressBar;
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private ReferPref referPref;
 
 
     public HomeFragment() {
@@ -113,6 +115,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         userDetails = new UserDetails(context);
+        referPref = new ReferPref(context);
         new InitializeActionBar(view.findViewById(R.id.header_logo), activity, "home");
 
         homeSearch = view.findViewById(R.id.home_search);
@@ -208,12 +211,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void checkReferral() {
 
-        if (!userDetails.getRef().equals("")) {
+        referPref.setRef("EVALY-01751977045");
+
+        if (!referPref.getRef().equals("")) {
 
             HashMap<String, String> params = new HashMap<>();
 
             params.put("token", userDetails.getToken().trim());
-            params.put("referred_by", userDetails.getRef().trim());
+            params.put("referred_by", referPref.getRef().trim());
             params.put("device_id", Utils.getDeviceID(context).trim());
 
             GeneralApiHelper.checkReferral(params, new ResponseListenerAuth<JsonObject, String>() {
@@ -224,7 +229,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                     if (!message.equals("")) {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                        userDetails.setRef("");
+                        referPref.setRef("");
                     }
                 }
 

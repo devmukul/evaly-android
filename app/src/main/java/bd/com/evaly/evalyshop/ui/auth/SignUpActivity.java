@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
+import bd.com.evaly.evalyshop.data.pref.ReferPref;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
@@ -34,6 +35,7 @@ public class SignUpActivity extends BaseActivity {
     private LinearLayout signIn;
     private ImageView close;
     private UserDetails userDetails;
+    private ReferPref referPref;
 
 
     @Override
@@ -49,6 +51,7 @@ public class SignUpActivity extends BaseActivity {
         signIn = findViewById(R.id.sign_in);
         close = findViewById(R.id.close);
         userDetails = new UserDetails(this);
+        referPref = new ReferPref(this);
         TextView privacyText = findViewById(R.id.privacyText);
 
         privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/privacy-policy\">Privacy Policy</a> and <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> of Evaly."));
@@ -96,7 +99,7 @@ public class SignUpActivity extends BaseActivity {
         TextView ref = findViewById(R.id.referral);
         String refText = ref.getText().toString();
         if (!refText.equals(""))
-            userDetails.setRef(refText);
+            referPref.setRef(refText);
 
 
         AuthApiHelper.register(hashMap, new DataFetchingListener<retrofit2.Response<JsonObject>>() {

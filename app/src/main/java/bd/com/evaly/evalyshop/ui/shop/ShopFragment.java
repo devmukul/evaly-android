@@ -89,7 +89,7 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 public class ShopFragment extends Fragment implements ProductListener {
 
-    private String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug="", logo_image;
+    private String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug = "", logo_image;
     private String categorySlug = null;
     private ImageView logo;
     private TextView name, address, number, tvOffer, followText;
@@ -120,11 +120,38 @@ public class ShopFragment extends Fragment implements ProductListener {
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
+    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+        //On User Presence Changed
+        public void onPresenceChanged(PresenceModel presenceModel) {
+
+            // Logger.d(presenceModel.getUserStatus());
+        }
+
+        public void onConnected() {
+            Logger.d("===========");
+            xmppHandler = AppController.getmService().xmpp;
+            rosterList = xmppHandler.rosterList;
+            if (!owner_number.equals("")) {
+                try {
+                    Logger.d(owner_number);
+                    EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
+                            + Constants.XMPP_HOST);
+                    vCard = xmppHandler.getUserDetails(jid);
+                    Logger.d(new Gson().toJson(vCard));
+                } catch (XmppStringprepException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
     private LinearLayout noItem;
     private View dummyView;
     private View dummyViewTop;
 
-
+    public ShopFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public void buyNow(String productSlug) {
@@ -138,7 +165,7 @@ public class ShopFragment extends Fragment implements ProductListener {
     @Override
     public void onSuccess(int count) {
 
-        if (count == 0){
+        if (count == 0) {
             ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
             noItem.setVisibility(View.VISIBLE);
             try {
@@ -147,18 +174,13 @@ public class ShopFragment extends Fragment implements ProductListener {
                             .load(R.drawable.ic_emptycart)
                             .apply(new RequestOptions().override(600, 600))
                             .into(placeholder);
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
             progressBar.setVisibility(View.GONE);
         } else {
             noItem.setVisibility(View.GONE);
         }
     }
-
-
-    public ShopFragment() {
-        // Required empty public constructor
-    }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -171,11 +193,9 @@ public class ShopFragment extends Fragment implements ProductListener {
         return view;
     }
 
-
-    private void refreshFragment(){
+    private void refreshFragment() {
         NavHostFragment.findNavController(ShopFragment.this).navigate(R.id.shopFragment);
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -187,6 +207,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                 public void onRetry() {
                     refreshFragment();
                 }
+
                 @Override
                 public void onBackPress() {
                     if (getFragmentManager() != null)
@@ -195,7 +216,7 @@ public class ShopFragment extends Fragment implements ProductListener {
             });
 
 
-        new InitializeActionBar( view.findViewById(R.id.header_logo), mainActivity, "shop");
+        new InitializeActionBar(view.findViewById(R.id.header_logo), mainActivity, "shop");
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view12 -> {
             Intent intent = new Intent(context, GlobalSearchActivity.class);
@@ -262,9 +283,9 @@ public class ShopFragment extends Fragment implements ProductListener {
         });
 
 
-        if (getArguments() == null){
+        if (getArguments() == null) {
 
-            Toast.makeText(context,"Shop not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Shop not available", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -331,7 +352,6 @@ public class ShopFragment extends Fragment implements ProductListener {
 
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -364,8 +384,8 @@ public class ShopFragment extends Fragment implements ProductListener {
         disconnectXmpp();
     }
 
-    private void disconnectXmpp(){
-        if (xmppHandler != null){
+    private void disconnectXmpp() {
+        if (xmppHandler != null) {
             xmppHandler.disconnect();
         }
         getActivity().stopService(new Intent(getActivity(), XMPPService.class));
@@ -395,18 +415,16 @@ public class ShopFragment extends Fragment implements ProductListener {
         }, 100);
 
 
-
     }
-
 
     public void getShopProductCount() {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        if (currentPage==1)
+        if (currentPage == 1)
             dummyViewTop.setVisibility(View.VISIBLE);
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), slug , currentPage, 21, categorySlug, campaign_slug, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), slug, currentPage, 21, categorySlug, campaign_slug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
 
@@ -510,8 +528,8 @@ public class ShopFragment extends Fragment implements ProductListener {
 
                     });
 
-                    if (shopData.getMeta() != null){
-                        int cashbackRate =shopData.getMeta().get("cashback_rate").getAsInt();
+                    if (shopData.getMeta() != null) {
+                        int cashbackRate = shopData.getMeta().get("cashback_rate").getAsInt();
                         adapterProducts.setCashback_rate(cashbackRate);
                     }
 
@@ -527,8 +545,8 @@ public class ShopFragment extends Fragment implements ProductListener {
                 productRecyclerView.setVisibility(View.VISIBLE);
 
 
-                for (int i=0; i<shopItems.size(); i++){
-                    if (i==0)
+                for (int i = 0; i < shopItems.size(); i++) {
+                    if (i == 0)
                         currentPage++;
 
                     ItemsItem shopItem = shopItems.get(i);
@@ -564,8 +582,7 @@ public class ShopFragment extends Fragment implements ProductListener {
 
     }
 
-
-    private void setUpXmpp(){
+    private void setUpXmpp() {
 
         if (CredentialManager.getToken().equals("")) {
             startActivity(new Intent(getActivity(), SignInActivity.class));
@@ -618,6 +635,7 @@ public class ShopFragment extends Fragment implements ProductListener {
                                 else
                                     Toast.makeText(getContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                             }
+
                             @Override
                             public void onFailed(int status) {
                                 dialog.hideDialog();
@@ -631,7 +649,6 @@ public class ShopFragment extends Fragment implements ProductListener {
                 startXmppService();
         }
     }
-
 
     private String getContactFromRoster(String number) {
         String roasterModel = null;
@@ -674,8 +691,6 @@ public class ShopFragment extends Fragment implements ProductListener {
             }
         });
     }
-
-
 
     public void getSubCategories(int currentPage) {
 
@@ -731,40 +746,11 @@ public class ShopFragment extends Fragment implements ProductListener {
         });
     }
 
-
-
-    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-        //On User Presence Changed
-        public void onPresenceChanged(PresenceModel presenceModel) {
-
-            // Logger.d(presenceModel.getUserStatus());
-        }
-
-        public void onConnected() {
-            Logger.d("===========");
-            xmppHandler = AppController.getmService().xmpp;
-            rosterList = xmppHandler.rosterList;
-            if (!owner_number.equals("")) {
-                try {
-                    Logger.d(owner_number);
-                    EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
-                            + Constants.XMPP_HOST);
-                    vCard = xmppHandler.getUserDetails(jid);
-                    Logger.d(new Gson().toJson(vCard));
-                } catch (XmppStringprepException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
-
-
     private void addRosterByOther() {
 
-        if (CredentialManager.getUserData() !=  null) {
+        if (CredentialManager.getUserData() != null) {
 
-            if (CredentialManager.getUserData().getFirst_name()== null)
+            if (CredentialManager.getUserData().getFirst_name() == null)
                 CredentialManager.getUserData().setFirst_name("");
 
             HashMap<String, String> data = new HashMap<>();
