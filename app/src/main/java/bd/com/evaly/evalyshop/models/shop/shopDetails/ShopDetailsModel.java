@@ -2,6 +2,8 @@ package bd.com.evaly.evalyshop.models.shop.shopDetails;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ShopDetailsModel{
 
 	@SerializedName("data")
@@ -15,6 +17,9 @@ public class ShopDetailsModel{
 
 	@SerializedName("message")
 	private String message;
+
+	@SerializedName("shop_delivery_options")
+	private List<ShopDeliveryOption> shopDeliveryOptions;
 
 	public void setData(Data data){
 		this.data = data;
@@ -46,6 +51,14 @@ public class ShopDetailsModel{
 
 	public String getMessage(){
 		return message;
+	}
+
+	public List<ShopDeliveryOption> getShopDeliveryOptions() {
+		return shopDeliveryOptions;
+	}
+
+	public void setShopDeliveryOptions(List<ShopDeliveryOption> shopDeliveryOptions) {
+		this.shopDeliveryOptions = shopDeliveryOptions;
 	}
 
 	@Override

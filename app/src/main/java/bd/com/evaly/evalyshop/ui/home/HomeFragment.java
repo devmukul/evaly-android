@@ -211,8 +211,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void checkReferral() {
 
-        referPref.setRef("EVALY-01751977045");
-
         if (!referPref.getRef().equals("")) {
 
             HashMap<String, String> params = new HashMap<>();

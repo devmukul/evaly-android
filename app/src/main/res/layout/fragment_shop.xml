@@ -297,9 +297,9 @@
                                     android:layout_weight="0"
                                     android:background="@drawable/circle_bg_shop"
                                     android:clickable="false"
-                                    android:padding="13dp"
+                                    android:padding="14dp"
                                     android:tint="#0EAD75"
-                                    app:srcCompat="@drawable/ic_link" />
+                                    app:srcCompat="@drawable/ic_delivery" />
 
                                 <TextView
                                     android:id="@+id/textView3"
@@ -308,7 +308,7 @@
                                     android:layout_marginTop="5dp"
                                     android:layout_weight="0"
                                     android:clickable="false"
-                                    android:text="Link" />
+                                    android:text="Delivery" />
                             </LinearLayout>
 
 
