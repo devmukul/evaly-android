@@ -683,42 +683,38 @@ public class ShopFragment extends Fragment implements ProductListener {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
-                try {
-                    JsonArray jsonArray = response.getAsJsonArray("data");
 
-                    for (int i = 0; i < jsonArray.size(); i++) {
-                        JsonObject ob = jsonArray.get(i).getAsJsonObject();
-                        TabsItem tabsItem = new TabsItem();
-                        tabsItem.setTitle(ob.get("category_name").getAsString());
-                        tabsItem.setImage(ob.get("category_image").getAsString());
-                        tabsItem.setSlug(ob.get("category_slug").getAsString());
-                        tabsItem.setCategory(slug);
-                        itemList.add(tabsItem);
-                        adapter.notifyItemInserted(itemList.size());
-                    }
+                JsonArray jsonArray = response.getAsJsonArray("data");
 
-                    if (itemList.size() < 4) {
-
-                        GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
-                        recyclerView.setLayoutManager(mLayoutManager);
-                    }
-
-                    if (itemList.size() < 1)
-                        ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
-
-                    try {
-
-                        shimmer.stopShimmer();
-                    } catch (Exception e) {
-                    }
-
-                    shimmer.setVisibility(View.GONE);
-                    loading = true;
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(context, "Category load error", Toast.LENGTH_SHORT).show();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JsonObject ob = jsonArray.get(i).getAsJsonObject();
+                    TabsItem tabsItem = new TabsItem();
+                    tabsItem.setTitle(ob.get("category_name").getAsString());
+                    tabsItem.setImage((ob.get("category_image").isJsonNull()) ? "" : ob.get("category_image").getAsString());
+                    tabsItem.setSlug(ob.get("category_slug").getAsString());
+                    tabsItem.setCategory(slug);
+                    itemList.add(tabsItem);
+                    adapter.notifyItemInserted(itemList.size());
                 }
+
+                if (itemList.size() < 4) {
+
+                    GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
+                    recyclerView.setLayoutManager(mLayoutManager);
+                }
+
+                if (itemList.size() < 1)
+                    ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
+
+                try {
+
+                    shimmer.stopShimmer();
+                } catch (Exception e) {
+                }
+
+                shimmer.setVisibility(View.GONE);
+                loading = true;
+
             }
 
             @Override
