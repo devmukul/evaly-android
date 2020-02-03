@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,7 +11,6 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -36,7 +33,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
@@ -73,6 +69,7 @@ import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
 import bd.com.evaly.evalyshop.models.product.ProductShareModel;
 import bd.com.evaly.evalyshop.models.product.ProductVariants;
 import bd.com.evaly.evalyshop.models.product.Products;
+import bd.com.evaly.evalyshop.models.product.productDetails.AttributeValuesItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributesItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.Data;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
@@ -87,6 +84,8 @@ import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAdapter;
+import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ColorButtonAdapter;
+import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SizeButtonAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
@@ -307,7 +306,6 @@ public class ViewProductActivity extends BaseActivity {
 
     private void populateShopDetails(ProductDetailsModel productDetailsModel) {
 
-
         Data data = productDetailsModel.getData();
         productAttributesItemList = data.getAttributes();
         productVariantsItemList = data.getProductVariants();
@@ -324,7 +322,7 @@ public class ViewProductActivity extends BaseActivity {
         specificationsItemList.add(new ProductSpecificationsItem("Brand", firstProductVariantsItem.getBrandName(), 0));
         specificationsItemList.add(new ProductSpecificationsItem("Category", firstProductVariantsItem.getCategoryName(), 1));
 
-        for (int i = 0; i < productSpecificationsItemList.size(); i++){
+        for (int i = 0; i < productSpecificationsItemList.size(); i++) {
             if (!productSpecificationsItemList.get(i).getSpecificationName().equals(""))
                 specificationsItemList.add(productSpecificationsItemList.get(i));
         }
@@ -333,12 +331,56 @@ public class ViewProductActivity extends BaseActivity {
 
         shareURL = "https://evaly.com.bd/products/" + slug;
 
-        populateProductVariants(firstProductVariantsItem);
+        populateProductByVariant(firstProductVariantsItem);
+
+
+        for (int i = 0; i < productVariantsItemList.size(); i++) {
+
+            for (int j = 0; j < productVariantsItemList.get(i).getAttributeValues().size(); j++) {
+
+                int variantValue = productVariantsItemList.get(i).getAttributeValues().get(j);
+
+                for (int k = 0; k < productAttributesItemList.size(); k++) {
+                    for (int l = 0; l < productAttributesItemList.get(k).getAttributeValues().size(); l++) {
+
+                        Log.d("hmt", "called");
+
+                        AttributeValuesItem attributeValuesItem = productAttributesItemList.get(k).getAttributeValues().get(l);
+
+                        if (attributeValuesItem.getKey() == variantValue)
+                            attributeValuesItem.setColor_image(productVariantsItemList.get(i).getColorImage());
+                    }
+                }
+            }
+        }
+
+
+        if (productAttributesItemList.size() > 0) {
+
+            binding.variant1Title.setText(productAttributesItemList.get(0).getAttributeName());
+
+            if (productAttributesItemList.get(0).getAttributeName().equalsIgnoreCase("size"))
+                populateSizeOption(productAttributesItemList.get(0).getAttributeValues());
+            else
+                populateColorOption(productAttributesItemList.get(0).getAttributeValues());
+
+        }
+
+        if (productAttributesItemList.size() > 1) {
+
+            binding.variant2Title.setText(productAttributesItemList.get(1).getAttributeName());
+
+            if (productAttributesItemList.get(1).getAttributeName().equalsIgnoreCase("color"))
+                populateColorOption(productAttributesItemList.get(1).getAttributeValues());
+            else
+                populateSizeOption(productAttributesItemList.get(1).getAttributeValues());
+
+        }
 
     }
 
 
-    private void populateProductVariants(ProductVariantsItem item) {
+    private void populateProductByVariant(ProductVariantsItem item) {
 
         productJson = new Gson().toJson(item);
 
@@ -351,8 +393,7 @@ public class ViewProductActivity extends BaseActivity {
         if (item.getProductDescription().equals("")) {
             binding.descriptionRel.setVisibility(View.GONE);
             binding.descriptionView.setVisibility(View.GONE);
-        }
-        else
+        } else
             binding.tvDescription.setText(item.getProductDescription());
 
         binding.sku.setText(item.getSku().toUpperCase());
@@ -398,6 +439,74 @@ public class ViewProductActivity extends BaseActivity {
         wishListItem.setProductSlug(slug);
         wishListItem.setPrice(String.valueOf(price));
 
+    }
+
+
+    private void populateSizeOption(List<AttributeValuesItem> attribute_values) {
+        binding.variant1Holder.setVisibility(View.VISIBLE);
+        SizeButtonAdapter adapter = new SizeButtonAdapter(attribute_values, this, object -> {
+            AttributeValuesItem attributesValue = (AttributeValuesItem) object;
+            for (int i = 0; i < productVariantsItemList.size(); i++) {
+
+                ProductVariantsItem variantItem = productVariantsItemList.get(i);
+
+                for (int j = 0; j < variantItem.getAttributeValues().size(); j++) {
+
+                    int attrValue = variantItem.getAttributeValues().get(j);
+
+                    if (attrValue == attributesValue.getKey()) {
+                        populateSelectedSizeData(productVariantsItemList.get(i));
+                    }
+                }
+            }
+
+        });
+        binding.rvVariant1.setAdapter(adapter);
+    }
+
+
+    private void populateColorOption(List<AttributeValuesItem> attribute_values) {
+        binding.variant2Holder.setVisibility(View.VISIBLE);
+        ColorButtonAdapter adapter = new ColorButtonAdapter(attribute_values, this, object -> {
+            AttributeValuesItem attributesValue = (AttributeValuesItem) object;
+            for (int i = 0; i < productVariantsItemList.size(); i++) {
+
+                ProductVariantsItem variantItem = productVariantsItemList.get(i);
+
+                for (int j = 0; j < variantItem.getAttributeValues().size(); j++) {
+                    int attrValue = variantItem.getAttributeValues().get(j);
+                    if (attrValue == attributesValue.getKey()) {
+                        populateSelectedSizeData(productVariantsItemList.get(i));
+                    }
+                }
+            }
+
+        });
+        binding.rvVariant2.setAdapter(adapter);
+    }
+
+    private void populateSelectedSizeData(ProductVariantsItem productVariants) {
+//        Logger.d(productVariants.getVariant_id());
+//        collapsingToolbarLayout.setTitle(productVariants.getProduct_name());
+//        tvProductName.setText(productVariants.getProduct_name());
+//        tvProductDetails.setText(productVariants.getProduct_description());
+    }
+
+
+    private void populateSelectedColorData(ProductVariantsItem productVariants) {
+//        Logger.d(productVariants.getVariant_id());
+//        Logger.json(new Gson().toJson(productVariants));
+//        collapsingToolbarLayout.setTitle(productVariants.getProduct_name());
+//        tvProductName.setText(productVariants.getProduct_name());
+//        tvProductDetails.setText(productVariants.getProduct_description());
+//        if (productVariants.getMax_price() == null) {
+//            tvPrice.setVisibility(View.GONE);
+//        } else {
+//            tvPrice.setVisibility(View.VISIBLE);
+//            tvPrice.setText(String.format("৳ %s", Utils.formatePrice(Double.parseDouble(productVariants.getMax_price()))));
+//            price = productVariants.getMax_price();
+//        }
+//        loadImages(productVariants.getProduct_images());
     }
 
 
@@ -655,104 +764,6 @@ public class ViewProductActivity extends BaseActivity {
         } else {
             activity.getWindow().setStatusBarColor(Color.BLACK);
         }
-    }
-
-
-    public void addButtons(String caption, ArrayList<String> name, ArrayList<Integer> id) {
-        Log.d("buttons_called", caption + "   " + name.size());
-        TextView tv = new TextView(getApplicationContext());
-        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 3f);
-        textParams.setMargins(10, 10, 10, 10);
-        tv.setLayoutParams(textParams);
-        tv.setText(caption);
-        tv.setTextColor(Color.BLACK);
-        tv.setTextSize(16f);
-        LinearLayout layout2 = new LinearLayout(getApplicationContext());
-        LinearLayout.LayoutParams layParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layParams.setMargins(20, 20, 20, 20);
-        layout2.setLayoutParams(layParams);
-        layout2.setOrientation(LinearLayout.HORIZONTAL);
-        layout2.addView(tv);
-        LinearLayout layout3 = new LinearLayout(getApplicationContext());
-        layout3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        layout3.setOrientation(LinearLayout.VERTICAL);
-        for (int i = 0; i < name.size(); i++) {
-            Button button = new Button(getApplicationContext());
-            button.setText(name.get(i));
-            LinearLayout.LayoutParams buttonsParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-            buttonsParams.setMargins(10, 10, 10, 10);
-            button.setLayoutParams(buttonsParams);
-            button.setTypeface(null, Typeface.NORMAL);
-            button.setFocusable(true);
-            button.setTag(caption);
-            button.setId(id.get(i));
-            buttonIDs.add(id.get(i));
-            //button.setTag(id.get(i));
-            button.setBackgroundResource(R.drawable.variation_btn_default);
-
-            GradientDrawable drawable = (GradientDrawable) button.getBackground();
-            drawable.setColor(Color.parseColor("#eeeeee"));
-
-            //button.setBackgroundColor(Color.parseColor("#eeeeee"));
-            button.setStateListAnimator(null);
-            button.setFocusableInTouchMode(true);
-            button.setOnClickListener(v -> {
-
-                try {
-
-                    ProductVariants productVariants = productVariantsMap.get(button.getId());
-                    sliderImages.clear();
-                    sliderAdapter.notifyDataSetChanged();
-                    binding.sliderPager.setAdapter(null);
-
-                    for (int j = 0; j < productVariants.getImages().size(); j++) {
-                        sliderImages.add(productVariants.getImages().get(j));
-                        sliderAdapter.notifyDataSetChanged();
-                    }
-
-                    binding.sliderPager.setAdapter(sliderAdapter);
-
-                    sliderAdapter.notifyDataSetChanged();
-
-                    for (int k = 0; k < buttonIDs.size(); k++) {
-                        try {
-                            Button btn = findViewById(buttonIDs.get(k));
-                            if (btn.getTag().equals(button.getTag())) {
-                                GradientDrawable drawable1 = (GradientDrawable) btn.getBackground();
-                                drawable1.setColor(Color.parseColor("#eeeeee"));
-                            }
-                        } catch (Exception e) {
-
-                        }
-                    }
-                    GradientDrawable drawable1 = (GradientDrawable) button.getBackground();
-                    drawable1.setColor(Color.parseColor("#d1ecf2"));
-                    getAvailableShops(productVariants.getVariantID());
-
-                } catch (Exception e) {
-
-                    Crashlytics.logException(e);
-
-                    Toast.makeText(context, "Couldn't select the variant", Toast.LENGTH_SHORT).show();
-
-                }
-
-            });
-            button.setOnFocusChangeListener((v, hasFocus) -> {
-                if (hasFocus) {
-                    v.performClick();
-                }
-            });
-            if (!callFirst) {
-                button.performClick();
-                callFirst = true;
-            }
-            layout3.addView(button);
-            //buttonID++;
-        }
-        layout2.addView(layout3);
-        binding.variationParent.addView(layout2);
-        //variationParentLayout.addView(variationLayout);
     }
 
 

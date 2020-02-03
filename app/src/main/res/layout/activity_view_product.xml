@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
+            <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,17 +34,17 @@
                 app:expandedTitleTextAppearance="@style/CollapsingToolbarLayoutExpandedTextStyle"
                 app:scrimAnimationDuration="10"
                 app:expandedTitleMarginStart="20dp"
-                app:expandedTitleMarginBottom="15dp"
-                app:expandedTitleMarginTop="15dp"
+                app:expandedTitleMarginBottom="18dp"
                 app:statusBarScrim="@color/white"
                 app:title="GNGKGG"
-                app:titleEnabled="true">
+                app:titleEnabled="true"
+                app:maxLines="2">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
-                    android:paddingBottom="11dp"
+                    android:paddingBottom="15dp"
                     android:orientation="vertical">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -194,7 +194,7 @@
                 </androidx.appcompat.widget.Toolbar>
 
 
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+            </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -220,9 +220,8 @@
                     android:background="#fff"
                     android:orientation="vertical">
 
-
                     <LinearLayout
-                        android:id="@+id/color_rel"
+                        android:id="@+id/variant1Holder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="20dp"
@@ -234,16 +233,79 @@
                             android:layout_height="10dp"
                             android:background="@color/separator_light" />
 
-                        <LinearLayout
-                            android:id="@+id/variationParent"
+                        <TextView
+                            android:id="@+id/variant1Title"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="11dp"
+                            android:text="Variant 1"
+                            android:textColor="#555"
+                            android:textSize="16sp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginBottom="15dp"
+                            android:textStyle="bold" />
+
+
+                        <HorizontalScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="3dp"
-                            android:orientation="vertical">
+                            android:layout_height="wrap_content">
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvVariant1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:paddingLeft="20dp"
+                                tools:listitem="@layout/item_variation_image"
+                                android:layout_marginBottom="10dp"
+                                android:nestedScrollingEnabled="false"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                        </HorizontalScrollView>
 
-                        </LinearLayout>
+                    </LinearLayout>
 
+
+                    <LinearLayout
+                        android:id="@+id/variant2Holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp"
+                            android:background="@color/separator_light" />
+
+                        <TextView
+                            android:id="@+id/variant2Title"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="11dp"
+                            android:text="Variant 2"
+                            android:textColor="#555"
+                            android:textSize="16sp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginBottom="15dp"
+                            android:textStyle="bold" />
+
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvVariant2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingLeft="20dp"
+                            android:nestedScrollingEnabled="false"
+                            tools:listitem="@layout/item_variation_image"
+                            android:layout_marginBottom="10dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+                        </HorizontalScrollView>
 
                     </LinearLayout>
 

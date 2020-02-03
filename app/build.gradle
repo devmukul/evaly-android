@@ -140,4 +140,6 @@ dependencies {
     androidTestImplementation "android.arch.persistence.room:testing:$rootProject.roomVersion"
     implementation 'androidx.navigation:navigation-fragment:2.1.0'
     implementation 'androidx.navigation:navigation-ui:2.1.0'
+
+    implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
 }
