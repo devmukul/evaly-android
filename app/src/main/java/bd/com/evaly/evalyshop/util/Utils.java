@@ -50,6 +50,20 @@ public class Utils {
 
 
 
+    public static String formatePrice(double d) {
+        if (d == (int) d)
+            return String.format(Locale.ENGLISH, "%d", (int) d);
+        else
+            return String.format(Locale.ENGLISH, "%s", d);
+    }
+
+    public static String formatePrice(String s) {
+
+        double d = Double.parseDouble(s);
+
+        return formatePrice(d);
+    }
+
     public static float convertDpToPixel(float dp, Context context){
         return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }

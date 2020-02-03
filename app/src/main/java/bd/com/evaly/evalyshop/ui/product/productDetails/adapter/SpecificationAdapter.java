@@ -9,46 +9,47 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.models.product.productDetails.ProductSpecificationsItem;
 
-public class SpecificationAdapter extends RecyclerView.Adapter<SpecificationAdapter.MyViewHolder>{
+public class SpecificationAdapter extends RecyclerView.Adapter<SpecificationAdapter.MyViewHolder> {
 
     Context context;
-    ArrayList<String> title,value;
+    List<ProductSpecificationsItem> itemList;
 
-    public SpecificationAdapter(Context context, ArrayList<String> title, ArrayList<String> value) {
+    public SpecificationAdapter(Context context, List<ProductSpecificationsItem> itemList) {
         this.context = context;
-        this.title = title;
-        this.value = value;
+        this.itemList = itemList;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_specification,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_specification, viewGroup, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        myViewHolder.title.setText(title.get(i));
-        myViewHolder.value.setText(value.get(i));
+        myViewHolder.title.setText(itemList.get(i).getSpecificationName());
+        myViewHolder.value.setText(itemList.get(i).getSpecificationValue());
     }
 
     @Override
     public int getItemCount() {
-        return title.size();
+        return itemList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView title,value;
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView title, value;
         View view;
+
         public MyViewHolder(final View itemView) {
             super(itemView);
-            title=itemView.findViewById(R.id.spec_title);
-            value=itemView.findViewById(R.id.spec_value);
+            title = itemView.findViewById(R.id.spec_title);
+            value = itemView.findViewById(R.id.spec_value);
             view = itemView;
         }
     }
