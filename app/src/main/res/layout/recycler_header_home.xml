@@ -44,6 +44,8 @@
             android:layout_alignParentBottom="true"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
+            app:tabPaddingEnd="7dp"
+            app:tabPaddingStart="7dp"
             app:layout_constraintBottom_toBottomOf="@id/sliderPager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

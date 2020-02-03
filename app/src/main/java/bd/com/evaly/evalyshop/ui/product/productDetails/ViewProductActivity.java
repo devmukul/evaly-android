@@ -314,14 +314,21 @@ public class ViewProductActivity extends BaseActivity {
         List<ProductSpecificationsItem> productSpecificationsItemList = data.getProductSpecifications();
 
         showProductHolder();
-        binding.productName.setVisibility(View.VISIBLE);
+        //binding.productName.setVisibility(View.VISIBLE);
         binding.sliderPager.setVisibility(View.VISIBLE);
         binding.collapsingToolbar.setVisibility(View.VISIBLE);
 
         ProductVariantsItem firstProductVariantsItem = productVariantsItemList.get(0);
+
+        specificationsItemList.clear();
         specificationsItemList.add(new ProductSpecificationsItem("Brand", firstProductVariantsItem.getBrandName(), 0));
         specificationsItemList.add(new ProductSpecificationsItem("Category", firstProductVariantsItem.getCategoryName(), 1));
-        specificationsItemList.addAll(productSpecificationsItemList);
+
+        for (int i = 0; i < productSpecificationsItemList.size(); i++){
+            if (!productSpecificationsItemList.get(i).getSpecificationName().equals(""))
+                specificationsItemList.add(productSpecificationsItemList.get(i));
+        }
+
         specificationAdapter.notifyDataSetChanged();
 
         shareURL = "https://evaly.com.bd/products/" + slug;
@@ -341,8 +348,10 @@ public class ViewProductActivity extends BaseActivity {
         binding.productName.setText(name);
         binding.collapsingToolbar.setTitle(Html.fromHtml(name));
 
-        if (item.getProductDescription().equals(""))
+        if (item.getProductDescription().equals("")) {
             binding.descriptionRel.setVisibility(View.GONE);
+            binding.descriptionView.setVisibility(View.GONE);
+        }
         else
             binding.tvDescription.setText(item.getProductDescription());
 
@@ -351,6 +360,8 @@ public class ViewProductActivity extends BaseActivity {
         sliderImages.addAll(item.getProductImages());
         sliderAdapter.notifyDataSetChanged();
 
+        if (sliderImages.size() == 1)
+            binding.sliderIndicator.setVisibility(View.GONE);
 
         getAvailableShops(item.getVariantId());
         getRelatedProducts(item.getCategorySlug());
