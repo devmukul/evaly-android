@@ -21,17 +21,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
-import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,11 +37,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
@@ -63,6 +54,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.Executors;
 
@@ -73,6 +65,7 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
+import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
@@ -92,102 +85,77 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAda
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
-import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
-import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;
-import bd.com.evaly.evalyshop.views.SliderViewPager;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 
 public class ViewProductActivity extends BaseActivity {
 
-    ImageView back;
-    TextView productName, sku, description;
-    String slug = "", category = "", name = "", productImage = "";
-    int productPrice;
-    ArrayList<Products> products;
-    NestedScrollView nestedSV;
-    ArrayList<AvailableShop> availableShops;
-    RecyclerView recyclerView;
-    SliderViewPager sliderPager;
-    TabLayout sliderIndicator;
-    ArrayList<String> sliderImages;
-    ViewProductSliderAdapter sliderAdapter;
-    RadioGroup ll;
-    Map<String, String> map, shopMap;
-    LinearLayout colorRel;
-
-    CollapsingToolbarLayout collapsingToolbarLayout;
-    CoordinatorLayout coordinatorLayout;
-    AppBarLayout appBarLayout;
-
-
-    View specView, descriptionView;
-    RelativeLayout specRel, descriptionRel;
-
-    CartEntity cartItem;
-
-    LinearLayout productHolder;
-    LinearLayout stickyButtons;
-    TextView relatedTitle;
-
-    RoomWIthRxViewModel viewModel;
-
-    String productJson = "{}";
-
-    Context context;
-    WishList wishListItem;
-    boolean isAddedToWishList;
-    RatingReviews ratingReviews;
-    int raters[];
-    RecyclerView specList;
-    ArrayList<String> specTitle, specValue;
-    SpecificationAdapter specificationAdapter;
-    String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
-
-    TextView viewAllReviews;
-
-    boolean isShopLoading = false, callFirst = false;
-
-
-    String shareURL = "https://evaly.com.bd";
-    TreeMap<String, TreeMap<String, String>> varyingMap;
-    LinearLayout variationParentLayout;
-    int buttonID = 0;
-    String shopURL = "";
-    ArrayList<String> parameters, values;
-    RequestQueue rqShop;
-
-    RequestQueue rq;
-    Map<Integer, ProductVariants> productVariantsMap;
-    ArrayList<Integer> buttonIDs;
-
+    private String slug = "", category = "", name = "", productImage = "";
+    private int productPrice;
+    private ArrayList<Products> products;
+    private ArrayList<AvailableShop> availableShops;
+    private ArrayList<String> sliderImages;
+    private ViewProductSliderAdapter sliderAdapter;
+    private Map<String, String> map, shopMap;
+    private CartEntity cartItem;
+    private RoomWIthRxViewModel xmppViewModel;
+    private String productJson = "{}";
+    private Context context;
+    private WishList wishListItem;
+    private boolean isAddedToWishList;
+    private int raters[];
+    private ArrayList<String> specTitle, specValue;
+    private SpecificationAdapter specificationAdapter;
+    private String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
+    private boolean isShopLoading = false, callFirst = false;
+    private String shareURL = "https://evaly.com.bd";
+    private TreeMap<String, TreeMap<String, String>> varyingMap;
+    private String shopURL = "";
+    private ArrayList<String> parameters, values;
+    private RequestQueue rqShop;
+    private RequestQueue rq;
+    private Map<Integer, ProductVariants> productVariantsMap;
+    private ArrayList<Integer> buttonIDs;
     private BottomSheetDialog bottomSheetDialog;
     private BottomSheetDialog newsfeedShareDialog;
-
     private AppDatabase appDatabase;
     private WishListDao wishListDao;
     private CartDao cartDao;
+    private ActivityViewProductBinding binding;
+    private ViewProductViewModel viewModel;
+
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_product);
 
-        ratingReviews = findViewById(R.id.rating_reviews);
-        viewAllReviews = findViewById(R.id.viewAllReviews);
+        binding = ActivityViewProductBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
+
+        viewModel = ViewModelProviders.of(this).get(ViewProductViewModel.class);
+        xmppViewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
 
         context = this;
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.z_toolbar);
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setSupportActionBar(binding.zToolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setTitle("View Product");
 
         productPrice = getIntent().getIntExtra("product_price", -1);
@@ -199,17 +167,107 @@ public class ViewProductActivity extends BaseActivity {
         wishListDao = appDatabase.wishListDao();
         cartDao = appDatabase.cartDao();
 
-        TextView cartCount = findViewById(R.id.cartCount);
-        cartDao.getLiveCount().observe(this, integer -> cartCount.setText(integer.toString()));
+        cartDao.getLiveCount().observe(this, integer -> binding.cartCount.setText(integer.toString()));
 
 
-        viewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
+        wishListItem = new WishList();
+        cartItem = new CartEntity();
 
-        ImageView shareBtn = findViewById(R.id.share);
+        varyingMap = new TreeMap<>(Collections.reverseOrder());
+        parameters = new ArrayList<>();
+        values = new ArrayList<>();
+        shopMap = new HashMap<>();
+        productVariantsMap = new HashMap<>();
+        buttonIDs = new ArrayList<>();
 
-        shareBtn.setOnClickListener(v -> {
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        //make fully Android Transparent Status bar
+        setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
 
-            PopupMenu popup = new PopupMenu(context, shareBtn);
+        setLightStatusBar(this);
+
+
+        binding.specList.setLayoutManager(new LinearLayoutManager(this));
+        specTitle = new ArrayList<>();
+        specValue = new ArrayList<>();
+        specificationAdapter = new SpecificationAdapter(this, specTitle, specValue);
+        binding.specList.setAdapter(specificationAdapter);
+
+        products = new ArrayList<>();
+        availableShops = new ArrayList<>();
+        sliderImages = new ArrayList<>();
+        map = new TreeMap<>();
+
+        sliderAdapter = new ViewProductSliderAdapter(context, this, sliderImages, new ArrayList<>());
+        binding.sliderPager.setAdapter(sliderAdapter);
+        binding.sliderIndicator.setupWithViewPager(binding.sliderPager, true);
+
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            slug = extras.getString("product_slug");
+            name = extras.getString("product_name");
+            binding.productName.setVisibility(View.GONE);
+
+            if (name != null) {
+                binding.productName.setText(Html.fromHtml(name));
+                binding.collapsingToolbar.setTitle(Html.fromHtml(name));
+            }
+
+            binding.collapsingToolbar.setVisibility(View.INVISIBLE);
+            getProductData(slug);
+        }
+
+        binding.back.setOnClickListener(v -> onBackPressed());
+        hideProductHolder();
+
+        binding.cart.setOnClickListener(v -> {
+            Intent intent = new Intent(context, CartActivity.class);
+            context.startActivity(intent);
+        });
+
+
+        binding.addToWishlist.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+
+            if (isAddedToWishList) {
+
+                binding.addToWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
+                Executors.newSingleThreadExecutor().execute(() -> wishListDao.deleteBySlug(wishListItem.getProductSlug()));
+                Toast.makeText(context, "Removed from wish list", Toast.LENGTH_SHORT).show();
+                isAddedToWishList = false;
+
+            } else {
+
+                WishListEntity wishListEntity = new WishListEntity();
+                wishListEntity.setSlug(wishListItem.getProductSlug());
+                wishListEntity.setName(wishListItem.getName());
+                wishListEntity.setImage(wishListItem.getImage());
+                wishListEntity.setPrice(wishListItem.getPrice());
+                wishListEntity.setTime(calendar.getTimeInMillis());
+
+                Executors.newSingleThreadExecutor().execute(() -> wishListDao.insert(wishListEntity));
+                Toast.makeText(context, "Added to wish list", Toast.LENGTH_SHORT).show();
+                binding.addToWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
+                isAddedToWishList = true;
+            }
+        });
+
+
+        binding.addToCart.setOnClickListener(v -> {
+
+            binding.stickyScroll.postDelayed(() -> {
+                binding.appBar.setExpanded(false, true);
+                int scrollTo = ((View) binding.avlshop.getParent()).getTop() + binding.avlshop.getTop();
+                binding.stickyScroll.smoothScrollTo(0, scrollTo - binding.productName.getHeight());
+            }, 100);
+
+        });
+
+        binding.share.setOnClickListener(v -> {
+
+            PopupMenu popup = new PopupMenu(context, binding.share);
             popup.getMenuInflater().inflate(R.menu.share_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
@@ -242,143 +300,6 @@ public class ViewProductActivity extends BaseActivity {
                 return true;
             });
             popup.show();
-        });
-
-        wishListItem = new WishList();
-        cartItem = new CartEntity();
-
-        varyingMap = new TreeMap<>(Collections.reverseOrder());
-        parameters = new ArrayList<>();
-        values = new ArrayList<>();
-        shopMap = new HashMap<>();
-        productVariantsMap = new HashMap<>();
-        buttonIDs = new ArrayList<>();
-
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        //make fully Android Transparent Status bar
-        setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
-
-        setLightStatusBar(this);
-
-        appBarLayout = findViewById(R.id.appBar);
-        collapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
-        coordinatorLayout = findViewById(R.id.rootView);
-        variationParentLayout = findViewById(R.id.variationParent);
-
-        specList = findViewById(R.id.spec_list);
-        specList.setLayoutManager(new LinearLayoutManager(this));
-        specTitle = new ArrayList<>();
-        specValue = new ArrayList<>();
-        specificationAdapter = new SpecificationAdapter(this, specTitle, specValue);
-        specList.setAdapter(specificationAdapter);
-
-        // productImage=findViewById(R.id.image);
-        productName = findViewById(R.id.product_name);
-        recyclerView = findViewById(R.id.available);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        sku = findViewById(R.id.sku);
-        description = findViewById(R.id.specText);
-        nestedSV = findViewById(R.id.sticky_scroll);
-        sliderPager = findViewById(R.id.sliderPager);
-        sliderIndicator = findViewById(R.id.sliderIndicator);
-        colorRel = findViewById(R.id.color_rel);
-        back = findViewById(R.id.back);
-        specView = findViewById(R.id.spec_view);
-        specRel = findViewById(R.id.spec_rel);
-        descriptionRel = findViewById(R.id.description_rel);
-        descriptionView = findViewById(R.id.description_view);
-        products = new ArrayList<>();
-        availableShops = new ArrayList<>();
-        sliderImages = new ArrayList<>();
-        map = new TreeMap<>();
-
-        productHolder = findViewById(R.id.productInfo);
-        stickyButtons = findViewById(R.id.stickyButtons);
-        relatedTitle = findViewById(R.id.relatedTitle);
-
-
-        sliderAdapter = new ViewProductSliderAdapter(context, this, sliderImages, new ArrayList<>());
-        sliderPager.setAdapter(sliderAdapter);
-        sliderIndicator.setupWithViewPager(sliderPager, true);
-
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            slug = extras.getString("product_slug");
-            name = extras.getString("product_name");
-            productName.setVisibility(View.GONE);
-
-            if (name != null) {
-                productName.setText(Html.fromHtml(name));
-                collapsingToolbarLayout.setTitle(Html.fromHtml(name));
-            }
-
-
-            collapsingToolbarLayout.setVisibility(View.INVISIBLE);
-
-            getProductData(slug);
-        }
-
-        back.setOnClickListener(v -> onBackPressed());
-        hideProductHolder();
-
-
-
-        LinearLayout cartPage = findViewById(R.id.cart);
-        cartPage.setOnClickListener(v -> {
-
-            Intent intent = new Intent(context, CartActivity.class);
-            context.startActivity(intent);
-
-        });
-
-        final ImageView addToWishList = findViewById(R.id.addToWishlist);
-        addToWishList.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-
-            if (isAddedToWishList) {
-
-                addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
-
-                Executors.newSingleThreadExecutor().execute(() -> wishListDao.deleteBySlug(wishListItem.getProductSlug()));
-
-                Toast.makeText(context, "Removed from wish list", Toast.LENGTH_SHORT).show();
-                isAddedToWishList = false;
-
-            } else {
-
-
-                WishListEntity wishListEntity = new WishListEntity();
-                wishListEntity.setSlug(wishListItem.getProductSlug());
-                wishListEntity.setName(wishListItem.getName());
-                wishListEntity.setImage(wishListItem.getImage());
-                wishListEntity.setPrice(wishListItem.getPrice());
-                wishListEntity.setTime(calendar.getTimeInMillis());
-
-
-                Executors.newSingleThreadExecutor().execute(() -> wishListDao.insert(wishListEntity));
-
-                Toast.makeText(context, "Added to wish list", Toast.LENGTH_SHORT).show();
-                addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
-
-                isAddedToWishList = true;
-
-            }
-
-        });
-
-        TextView addToCart = findViewById(R.id.addToCart);
-        addToCart.setOnClickListener(v -> {
-
-            nestedSV.postDelayed(() -> {
-                appBarLayout.setExpanded(false, true);
-                TextView availableShopTitle = findViewById(R.id.avlshop);
-                int scrollTo = ((View) availableShopTitle.getParent()).getTop() + availableShopTitle.getTop();
-                nestedSV.smoothScrollTo(0, scrollTo - productName.getHeight());
-            }, 100);
-
         });
     }
 
@@ -486,7 +407,6 @@ public class ViewProductActivity extends BaseActivity {
         });
     }
 
-
     private void shareWithContacts() {
         bottomSheetDialog = new BottomSheetDialog(ViewProductActivity.this, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.share_with_contact_view);
@@ -524,8 +444,8 @@ public class ViewProductActivity extends BaseActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(ViewProductActivity.this);
         rvContacts.setLayoutManager(layoutManager);
         runOnUiThread(() -> {
-            viewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
-            viewModel.rosterList.observe(this, rosterTables -> {
+            xmppViewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
+            xmppViewModel.rosterList.observe(this, rosterTables -> {
                 List<RosterTable> selectedRosterList = new ArrayList<>();
                 List<RosterTable> rosterList = rosterTables;
                 ContactShareAdapter contactShareAdapter = new ContactShareAdapter(ViewProductActivity.this, rosterList, new ContactShareAdapter.OnUserSelectedListener() {
@@ -548,7 +468,7 @@ public class ViewProductActivity extends BaseActivity {
                 llSend.setOnClickListener(view -> {
                     ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
 
-                    if (AppController.getmService() !=null) {
+                    if (AppController.getmService() != null) {
                         if (AppController.getmService().xmpp.isLoggedin()) {
                             try {
                                 for (RosterTable rosterTable : selectedRosterList) {
@@ -600,34 +520,17 @@ public class ViewProductActivity extends BaseActivity {
     }
 
     public void hideProductHolder() {
-
-        productHolder.setVisibility(View.GONE);
-        relatedTitle.setVisibility(View.GONE);
-        ((ProgressBar) findViewById(R.id.progressBar)).setBackgroundColor(Color.parseColor("#ffffff"));
-        stickyButtons.setVisibility(View.GONE);
-
+        binding.productInfo.setVisibility(View.GONE);
+        binding.relatedTitle.setVisibility(View.GONE);
+        binding.progressBar.setBackgroundColor(Color.parseColor("#ffffff"));
+        binding.stickyButtons.setVisibility(View.GONE);
     }
 
     public void showProductHolder() {
-
-        productHolder.setVisibility(View.VISIBLE);
-        relatedTitle.setVisibility(View.VISIBLE);
-        stickyButtons.setVisibility(View.VISIBLE);
-        ((ProgressBar) findViewById(R.id.progressBar)).setBackgroundColor(Color.parseColor("#fafafa"));
-
-    }
-
-
-    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
-
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
+        binding.productInfo.setVisibility(View.VISIBLE);
+        binding.relatedTitle.setVisibility(View.VISIBLE);
+        binding.stickyButtons.setVisibility(View.VISIBLE);
+        binding.progressBar.setBackgroundColor(Color.parseColor("#fafafa"));
     }
 
     private void setLightStatusBar(Activity activity) {
@@ -640,96 +543,15 @@ public class ViewProductActivity extends BaseActivity {
         }
     }
 
-
-    public void getProductRating(final String sku) {
-
-        String url = "https://nsuer.club/evaly/reviews/?sku=" + sku + "&type=product&isRating=true";
-        Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
-                response -> {
-                    Log.d("json varying", response.toString());
-                    try {
-
-
-                        ratingJson = response.toString();
-
-                        viewAllReviews.setClickable(true);
-
-                        ratingReviews = findViewById(R.id.rating_reviews);
-
-                        int total_ratings = response.getInt("total_ratings");
-                        double avg_ratings = response.getDouble("avg_ratings");
-                        int star_5 = response.getInt("star_5");
-                        int star_4 = response.getInt("star_4");
-                        int star_3 = response.getInt("star_3");
-                        int star_2 = response.getInt("star_2");
-                        int star_1 = response.getInt("star_1");
-
-                        int colors[] = new int[]{
-                                Color.parseColor("#0e9d58"),
-                                Color.parseColor("#0e9d58"),
-                                Color.parseColor("#a6ba5d"),
-                                Color.parseColor("#ef7e14"),
-                                Color.parseColor("#d36259")};
-
-                        int raters[] = new int[]{
-                                star_5,
-                                star_4,
-                                star_3,
-                                star_2,
-                                star_1
-                        };
-
-
-                        ((TextView) findViewById(R.id.rating_average)).setText(avg_ratings + "");
-                        ((TextView) findViewById(R.id.rating_counter)).setText(total_ratings + " ratings");
-                        ((RatingBar) findViewById(R.id.ratingBar)).setRating((float) avg_ratings);
-
-
-                        if (total_ratings == 0)
-                            total_ratings = 1;
-
-
-                        ratingReviews.createRatingBars(total_ratings, BarLabels.STYPE1, colors, raters);
-
-
-                        viewAllReviews.setOnClickListener(v -> {
-
-                            Intent intent = new Intent(context, ReviewsActivity.class);
-                            intent.putExtra("ratingJson", ratingJson);
-                            intent.putExtra("type", "product");
-                            intent.putExtra("item_value", sku);
-                            startActivity(intent);
-
-
-                        });
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }, error -> error.printStackTrace());
-        // RequestQueue rq = Volley.newRequestQueue(context);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        request.setShouldCache(false);
-        rq.getCache().clear();
-        rq.add(request);
-
-
-    }
-
-
     public void getProductData(String slug) {
+
         String url = UrlUtils.BASE_URL + "public/products/" + slug + "/";
-        Log.d("json", url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
                 responseMain -> {
-                    productName.setVisibility(View.VISIBLE);
-                    collapsingToolbarLayout.setVisibility(View.VISIBLE);
+                    binding.productName.setVisibility(View.VISIBLE);
+                    binding.collapsingToolbar.setVisibility(View.VISIBLE);
                     try {
-                        Log.d("product_details", responseMain.toString());
+
                         JSONObject response = responseMain.getJSONObject("data");
                         JSONArray product_variants = response.getJSONArray("product_variants");
 
@@ -748,8 +570,8 @@ public class ViewProductActivity extends BaseActivity {
 
                         for (int i = 0; i < product_variants.length(); i++) {
                             name = product_variants.getJSONObject(0).getString("product_name");
-                            productName.setText(name);
-                            collapsingToolbarLayout.setTitle(Html.fromHtml(name));
+                            binding.productName.setText(name);
+                            binding.collapsingToolbar.setTitle(Html.fromHtml(name));
 
                             if (response.getJSONArray("attributes").length() == 0) {
                                 JSONArray variantArr = product_variants.getJSONObject(i).getJSONArray("product_images");
@@ -757,12 +579,10 @@ public class ViewProductActivity extends BaseActivity {
                                     sliderImages.add(variantArr.getString(j));
                                     sliderAdapter.notifyDataSetChanged();
                                 }
-
                                 if (variantArr.length() == 1)
-                                    sliderIndicator.setVisibility(View.GONE);
+                                    binding.sliderIndicator.setVisibility(View.GONE);
 
                                 getAvailableShops(product_variants.getJSONObject(i).getInt("variant_id"));
-
 
                             } else {
                                 JSONArray variantArr = product_variants.getJSONObject(i).getJSONArray("product_images");
@@ -803,117 +623,105 @@ public class ViewProductActivity extends BaseActivity {
                                 attributeKeysArr.add(attributeValues.getJSONObject(j).getInt("key"));
                             }
                             addButtons(caption, attributeValuesArr, attributeKeysArr);
-                            colorRel.setVisibility(View.VISIBLE);
+                            binding.colorRel.setVisibility(View.VISIBLE);
                         }
 
 
-                        if (product_variants.length() == 0){
+                        if (product_variants.length() == 0) {
                             Toast.makeText(this, "Product is not found!", Toast.LENGTH_SHORT).show();
                             finish();
                         }
 
 
-                            JSONObject firstVariant = product_variants.getJSONObject(0);
+                        JSONObject firstVariant = product_variants.getJSONObject(0);
 
 
-
-                            productName.setText(Html.fromHtml(firstVariant.getString("product_name")));
-                            if (firstVariant.getString("product_description").equals("")) {
-                                descriptionView.setVisibility(View.GONE);
-                                descriptionRel.setVisibility(View.GONE);
-                            } else {
-                                description.setText(firstVariant.getString("product_description"));
-                            }
-
-
-                            JSONArray productSpecifications = response.getJSONArray("product_specifications");
+                        binding.productName.setText(Html.fromHtml(firstVariant.getString("product_name")));
+                        if (firstVariant.getString("product_description").equals("")) {
+                            binding.descriptionView.setVisibility(View.GONE);
+                            binding.descriptionRel.setVisibility(View.GONE);
+                        } else {
+                            binding.tvDescription.setText(firstVariant.getString("product_description"));
+                        }
 
 
-                            for (int i = 0; i < productSpecifications.length(); i++) {
-                                specTitle.add(productSpecifications.getJSONObject(i).getString("specification_name"));
-                                specValue.add(productSpecifications.getJSONObject(i).getString("specification_value"));
-                                specificationAdapter.notifyItemInserted(specTitle.size());
-                            }
+                        JSONArray productSpecifications = response.getJSONArray("product_specifications");
 
 
-                            if (specValue.size() < 2) {
-                                specView.setVisibility(View.GONE);
-                                specRel.setVisibility(View.GONE);
-                            }
+                        for (int i = 0; i < productSpecifications.length(); i++) {
+                            specTitle.add(productSpecifications.getJSONObject(i).getString("specification_name"));
+                            specValue.add(productSpecifications.getJSONObject(i).getString("specification_value"));
+                            specificationAdapter.notifyItemInserted(specTitle.size());
+                        }
 
 
-                            Log.d("json product", responseMain.toString());
+                        if (specValue.size() < 2) {
+                            binding.specView.setVisibility(View.GONE);
+                            binding.specRel.setVisibility(View.GONE);
+                        }
 
-
-                            getProductRating(slug);
-
-                            Executors.newSingleThreadExecutor().execute(() -> {
-                                int c = wishListDao.checkExists(slug);
-                                runOnUiThread(() -> {
-                                    if (c>0) {
-                                        ImageView addToWishList = findViewById(R.id.addToWishlist);
-                                        addToWishList.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
-                                        isAddedToWishList = true;
-                                    }
-                                });
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            int c = wishListDao.checkExists(slug);
+                            runOnUiThread(() -> {
+                                if (c > 0) {
+                                    binding.addToWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_color));
+                                    isAddedToWishList = true;
+                                }
                             });
+                        });
+
+                        productJson = firstVariant.toString();
+
+                        showProductHolder();
+
+                        // for cart order
+                        cartItem.setName(firstVariant.getString("product_name"));
+                        cartItem.setImage(firstVariant.getString("color_image"));
+                        cartItem.setSlug(slug);
+
+                        // for wishlist
+
+                        int price = 0;
+                        try {
+                            price = (int) Math.round(firstVariant.getDouble("min_price"));
+                        } catch (Exception ignored) {
+
+                        }
+
+                        wishListItem.setId("0");
+                        wishListItem.setName(firstVariant.getString("product_name"));
+                        //wishListItem.setImage(firstVariant.getString("thumbnail"));
+                        wishListItem.setImage(firstVariant.getJSONArray("product_images").getString(0));
+                        wishListItem.setProductSlug(slug);
+                        wishListItem.setPrice(String.valueOf(price));
 
 
-                            productJson = firstVariant.toString();
+                        binding.collapsingToolbar.setTitle(firstVariant.getString("product_name"));
 
-                            showProductHolder();
-
-
-                            // for cart order
-                            cartItem.setName(firstVariant.getString("product_name"));
-                            cartItem.setImage(firstVariant.getString("color_image"));
-                            cartItem.setSlug(slug);
-
-                            // for wishlist
-
-                            int price = 0;
-                            try {
-                                price = (int) Math.round(firstVariant.getDouble("min_price"));
-                            } catch (Exception ignored) {
-
-                            }
-
-                            wishListItem.setId("0");
-                            wishListItem.setName(firstVariant.getString("product_name"));
-                            //wishListItem.setImage(firstVariant.getString("thumbnail"));
-                            wishListItem.setImage(firstVariant.getJSONArray("product_images").getString(0));
-                            wishListItem.setProductSlug(slug);
-                            wishListItem.setPrice(String.valueOf(price));
+                        binding.sku.setText(firstVariant.getString("sku"));
 
 
-                            collapsingToolbarLayout.setTitle(firstVariant.getString("product_name"));
+                        binding.sliderPager.setVisibility(View.VISIBLE);
 
-                            sku.setText(firstVariant.getString("sku"));
+                        shareURL = "https://evaly.com.bd/products/" + slug;
 
+                        ProductGrid productGrid = new ProductGrid(context, binding.products, firstVariant.getString("category_slug"), findViewById(R.id.progressBar));
 
-                            sliderPager.setVisibility(View.VISIBLE);
+                        if (binding.stickyScroll != null) {
+                            productGrid.setScrollView(binding.stickyScroll);
+                            binding.stickyScroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+                                @Override
+                                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                                        try {
+                                            binding.progressBar.setVisibility(View.VISIBLE);
+                                            productGrid.loadNextPage();
+                                        } catch (Exception e) {
 
-                            shareURL = "https://evaly.com.bd/products/" + slug;
-
-                            ProductGrid productGrid = new ProductGrid(context, findViewById(R.id.products), firstVariant.getString("category_slug"), findViewById(R.id.progressBar));
-
-
-                            if (nestedSV != null) {
-                                productGrid.setScrollView(nestedSV);
-
-                                nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                                    @Override
-                                    public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                                        if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                                            try {
-                                                ((ProgressBar) findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-                                                productGrid.loadNextPage();
-                                            } catch (Exception e) {
-
-                                            }
                                         }
                                     }
-                                });
+                                }
+                            });
 
 
                         }
@@ -976,14 +784,14 @@ public class ViewProductActivity extends BaseActivity {
                     ProductVariants productVariants = productVariantsMap.get(button.getId());
                     sliderImages.clear();
                     sliderAdapter.notifyDataSetChanged();
-                    sliderPager.setAdapter(null);
+                    binding.sliderPager.setAdapter(null);
 
                     for (int j = 0; j < productVariants.getImages().size(); j++) {
                         sliderImages.add(productVariants.getImages().get(j));
                         sliderAdapter.notifyDataSetChanged();
                     }
 
-                    sliderPager.setAdapter(sliderAdapter);
+                    binding.sliderPager.setAdapter(sliderAdapter);
 
                     sliderAdapter.notifyDataSetChanged();
 
@@ -1024,7 +832,7 @@ public class ViewProductActivity extends BaseActivity {
             //buttonID++;
         }
         layout2.addView(layout3);
-        variationParentLayout.addView(layout2);
+        binding.variationParent.addView(layout2);
         //variationParentLayout.addView(variationLayout);
     }
 
@@ -1036,10 +844,10 @@ public class ViewProductActivity extends BaseActivity {
             rqShop.cancelAll(this);
         }
 
-        (findViewById(R.id.progressBarShop)).setVisibility(View.VISIBLE);
+        binding.progressBarShop.setVisibility(View.VISIBLE);
 
         availableShops.clear();
-        recyclerView.setAdapter(null);
+        binding.availableShops.setAdapter(null);
 
         isShopLoading = true;
 
@@ -1050,13 +858,11 @@ public class ViewProductActivity extends BaseActivity {
 
                     Logger.json(String.valueOf(response));
                     isShopLoading = false;
-                    //adapter.notifyItemRangeRemoved(0, availableShops.size());
                     availableShops.clear();
-                    AvailableShopAdapter adapterm = new AvailableShopAdapter(context, findViewById(R.id.rootView), availableShops, cartDao, cartItem);
-                    //recyclerView.setAdapter(null);
-                    recyclerView.setAdapter(adapterm);
+                    AvailableShopAdapter adapterm = new AvailableShopAdapter(context, binding.rootView, availableShops, cartDao, cartItem);
+                    binding.availableShops.setAdapter(adapterm);
                     ArrayList<String> shopname = new ArrayList<>();
-                    ((ProgressBar) findViewById(R.id.progressBarShop)).setVisibility(View.GONE);
+                    binding.progressBarShop.setVisibility(View.GONE);
                     try {
                         JSONArray jsonArray = response.getJSONArray("data");
                         for (int ii = 0; ii < jsonArray.length(); ii++) {
@@ -1084,9 +890,9 @@ public class ViewProductActivity extends BaseActivity {
                                     item.setShopSlug(ob.getString("shop_slug"));
 
                                     if (ob.getString("discounted_price").equals("null"))
-                                        item.setPrice(String.valueOf((int)Math.round(ob.getDouble("price"))));
+                                        item.setPrice(String.valueOf((int) Math.round(ob.getDouble("price"))));
                                     else
-                                        item.setPrice(String.valueOf((int)Math.round(ob.getDouble("discounted_price"))));
+                                        item.setPrice(String.valueOf((int) Math.round(ob.getDouble("discounted_price"))));
 
                                     item.setSlug(slug);
                                     item.setProductId(ob.getString("shop_item_id"));
@@ -1100,7 +906,7 @@ public class ViewProductActivity extends BaseActivity {
                                     item.setAddress(ob.getString("shop_address"));
                                     item.setShopJson(ob.toString());
                                     item.setStock(true);
-                                    item.setMaximumPrice(String.valueOf((int)Math.round(ob.getDouble("price"))));
+                                    item.setMaximumPrice(String.valueOf((int) Math.round(ob.getDouble("price"))));
                                     availableShops.add(item);
                                     adapterm.notifyItemInserted(availableShops.size());
                                 }
@@ -1115,8 +921,7 @@ public class ViewProductActivity extends BaseActivity {
                         }
 
                         if (availableShops.size() < 1) {
-                            LinearLayout empty = findViewById(R.id.empty);
-                            empty.setVisibility(View.VISIBLE);
+                            binding.empty.setVisibility(View.VISIBLE);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

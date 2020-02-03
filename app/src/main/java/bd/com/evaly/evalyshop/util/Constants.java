@@ -48,7 +48,6 @@ public class Constants {
     public static final String INTENT_KEY_UPDATE_USER_ERR = "updateusererror";
     public static final String INTENT_KEY_CHANGE_PASS_FAILED = "updateusererror";
 
-
     //Presence States (Strings)
     public static final String PRESENCE_MODE_AVAILABLE = "Online";
     public static final String PRESENCE_MODE_AWAY = "Away";
@@ -85,7 +84,6 @@ public class Constants {
     public static final String TYPE_TEXT = "text";
     public static final String TYPE_PRODUCT = "product";
     public static final String TYPE_FEED = "feed";
-
     public static final String EVALY_LOGO = "https://s3-ap-southeast-1.amazonaws.com/media.evaly.com.bd/media/2019-08-04_090235.843922android-icon-200x200.png";
 
     public static List<OrderIssueModel> getDelivaryIssueList() {
@@ -96,14 +94,12 @@ public class Constants {
         list.add(new OrderIssueModel("product", "Product Issue"));
         list.add(new OrderIssueModel("refund", "Refund Issue"));
         list.add(new OrderIssueModel("payment", "Payment Issue"));
-        list.add(new OrderIssueModel("bank deposit", "Bank Deposit"));
         list.add(new OrderIssueModel("bank payment", "Bank Payment"));
         list.add(new OrderIssueModel("return", "Product return"));
         list.add(new OrderIssueModel("order cancel", "Request for order cancel"));
         list.add(new OrderIssueModel("others", "Others"));
         return list;
     }
-
 
     public static List<OrderIssueModel> getIssueListPending() {
 
