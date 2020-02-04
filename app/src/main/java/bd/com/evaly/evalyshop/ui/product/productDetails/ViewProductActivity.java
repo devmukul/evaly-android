@@ -343,9 +343,6 @@ public class ViewProductActivity extends BaseActivity {
                 int variantValue = productVariantsItemList.get(i).getAttributeValues().get(j);
                 for (int k = 0; k < productAttributesItemList.size(); k++) {
                     for (int l = 0; l < productAttributesItemList.get(k).getAttributeValues().size(); l++) {
-
-                        Log.d("hmt", "called");
-
                         AttributeValuesItem attributeValuesItem = productAttributesItemList.get(k).getAttributeValues().get(l);
 
                         if (attributeValuesItem.getKey() == variantValue)
@@ -374,8 +371,6 @@ public class ViewProductActivity extends BaseActivity {
 
 
     private void populateProductByVariant(ProductVariantsItem item) {
-
-
 
         productJson = new Gson().toJson(item);
 
@@ -439,14 +434,23 @@ public class ViewProductActivity extends BaseActivity {
         binding.variant1Holder.setVisibility(View.VISIBLE);
 
         if (attribute_values.size() > 0) {
-            attribute_values.get(0).setSelected(true);
-            variantKey1 = attribute_values.get(0).getKey();
+            for (int i=0; i< attribute_values.size(); i++){
+                if (productAttributesItemList.size() > 1) {
+                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) || attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
+                        attribute_values.get(i).setSelected(true);
+                        variantKey1 = attribute_values.get(i).getKey();
+                    }
+                }
+                else {
+                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
+                        attribute_values.get(i).setSelected(true);
+                        variantKey1 = attribute_values.get(i).getKey();
+                    }
+                }
+            }
         }
 
         SizeButtonAdapter adapter = new SizeButtonAdapter(attribute_values, this, object -> {
-
-            Log.d("hmt var1", variantKey1+"");
-            Log.d("hmt var2", variantKey2+"");
 
             AttributeValuesItem attributesValue = (AttributeValuesItem) object;
 
@@ -488,18 +492,25 @@ public class ViewProductActivity extends BaseActivity {
         binding.variant2Holder.setVisibility(View.VISIBLE);
 
         if (attribute_values.size() > 0) {
-            attribute_values.get(0).setSelected(true);
-            variantKey2 = attribute_values.get(0).getKey();
+            for (int i=0; i< attribute_values.size(); i++){
+                if (productAttributesItemList.size() > 1) {
+                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) || attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
+                        attribute_values.get(i).setSelected(true);
+                        variantKey2 = attribute_values.get(i).getKey();
+                    }
+                }
+                else {
+                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
+                        attribute_values.get(i).setSelected(true);
+                        variantKey2 = attribute_values.get(i).getKey();
+                    }
+                }
+            }
         }
 
         ColorButtonAdapter adapter = new ColorButtonAdapter(attribute_values, this, object -> {
 
             AttributeValuesItem attributesValue = (AttributeValuesItem) object;
-
-            Log.d("hmt var1", variantKey1+"");
-            Log.d("hmt var2", variantKey2+"");
-            Log.d("hmt selected var", attributesValue.getKey()+"");
-
 
             if (productAttributesItemList.size() == 1) {
                 for (int i = 0; i < productVariantsItemList.size(); i++) {
@@ -520,13 +531,7 @@ public class ViewProductActivity extends BaseActivity {
                     int key2 = variantItem.getAttributeValues().get(1);
 
                     if ((key1 == attributesValue.getKey() && key2 == variantKey1) || (key2 == attributesValue.getKey() && key1 == variantKey1)) {
-
-
-                        Log.d("hmt selected var final", productVariantsItemList.get(i).getVariantId()+"");
-
                         populateProductByVariant(productVariantsItemList.get(i));
-
-
 
                         variantKey2 = attributesValue.getKey();
                         break;
@@ -537,30 +542,6 @@ public class ViewProductActivity extends BaseActivity {
             }
         });
         binding.rvVariant2.setAdapter(adapter);
-    }
-
-    private void populateSelectedSizeData(ProductVariantsItem productVariants) {
-//        Logger.d(productVariants.getVariant_id());
-//        collapsingToolbarLayout.setTitle(productVariants.getProduct_name());
-//        tvProductName.setText(productVariants.getProduct_name());
-//        tvProductDetails.setText(productVariants.getProduct_description());
-    }
-
-
-    private void populateSelectedColorData(ProductVariantsItem productVariants) {
-//        Logger.d(productVariants.getVariant_id());
-//        Logger.json(new Gson().toJson(productVariants));
-//        collapsingToolbarLayout.setTitle(productVariants.getProduct_name());
-//        tvProductName.setText(productVariants.getProduct_name());
-//        tvProductDetails.setText(productVariants.getProduct_description());
-//        if (productVariants.getMax_price() == null) {
-//            tvPrice.setVisibility(View.GONE);
-//        } else {
-//            tvPrice.setVisibility(View.VISIBLE);
-//            tvPrice.setText(String.format("৳ %s", Utils.formatePrice(Double.parseDouble(productVariants.getMax_price()))));
-//            price = productVariants.getMax_price();
-//        }
-//        loadImages(productVariants.getProduct_images());
     }
 
 
