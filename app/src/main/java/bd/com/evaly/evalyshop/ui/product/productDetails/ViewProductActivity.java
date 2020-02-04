@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,24 +27,15 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.jivesoftware.smack.SmackException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,14 +52,16 @@ import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
 import bd.com.evaly.evalyshop.models.product.ProductShareModel;
-import bd.com.evaly.evalyshop.models.product.ProductVariants;
 import bd.com.evaly.evalyshop.models.product.Products;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributeValuesItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributesItem;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.Data;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductSpecificationsItem;
@@ -78,6 +70,7 @@ import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
@@ -90,7 +83,6 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSlide
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
@@ -107,20 +99,11 @@ public class ViewProductActivity extends BaseActivity {
     private Map<String, String> map, shopMap;
     private CartEntity cartItem;
     private RoomWIthRxViewModel xmppViewModel;
-    private String productJson = "{}";
     private Context context;
     private WishList wishListItem;
     private boolean isAddedToWishList;
-    private ArrayList<String> specTitle, specValue;
     private SpecificationAdapter specificationAdapter;
-    private boolean isShopLoading = false, callFirst = false;
     private String shareURL = "https://evaly.com.bd";
-    private TreeMap<String, TreeMap<String, String>> varyingMap;
-    private String shopURL = "";
-    private ArrayList<String> parameters, values;
-    private RequestQueue rq;
-    private Map<Integer, ProductVariants> productVariantsMap;
-    private ArrayList<Integer> buttonIDs;
     private BottomSheetDialog bottomSheetDialog;
     private BottomSheetDialog newsfeedShareDialog;
     private AppDatabase appDatabase;
@@ -131,6 +114,7 @@ public class ViewProductActivity extends BaseActivity {
     private List<ProductSpecificationsItem> specificationsItemList = new ArrayList<>();
     private List<AttributesItem> productAttributesItemList;
     private List<ProductVariantsItem> productVariantsItemList;
+    private boolean isShopLoading = false;
 
     private int variantKey1 = 0, variantKey2 = 0;
 
@@ -167,8 +151,6 @@ public class ViewProductActivity extends BaseActivity {
         productPrice = getIntent().getIntExtra("product_price", -1);
         productImage = getIntent().getStringExtra("product_image");
 
-        rq = Volley.newRequestQueue(context);
-
         appDatabase = AppDatabase.getInstance(this);
         wishListDao = appDatabase.wishListDao();
         cartDao = appDatabase.cartDao();
@@ -178,12 +160,7 @@ public class ViewProductActivity extends BaseActivity {
         wishListItem = new WishList();
         cartItem = new CartEntity();
 
-        varyingMap = new TreeMap<>(Collections.reverseOrder());
-        parameters = new ArrayList<>();
-        values = new ArrayList<>();
         shopMap = new HashMap<>();
-        productVariantsMap = new HashMap<>();
-        buttonIDs = new ArrayList<>();
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         //make fully Android Transparent Status bar
@@ -193,8 +170,7 @@ public class ViewProductActivity extends BaseActivity {
         setLightStatusBar(this);
 
         binding.specList.setLayoutManager(new LinearLayoutManager(this));
-        specTitle = new ArrayList<>();
-        specValue = new ArrayList<>();
+
         specificationAdapter = new SpecificationAdapter(this, specificationsItemList);
         binding.specList.setAdapter(specificationAdapter);
 
@@ -314,6 +290,13 @@ public class ViewProductActivity extends BaseActivity {
         List<ProductSpecificationsItem> productSpecificationsItemList = data.getProductSpecifications();
 
         showProductHolder();
+
+        if (productVariantsItemList.size() == 0) {
+            Toast.makeText(context, "Product is not available!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         //binding.productName.setVisibility(View.VISIBLE);
         binding.sliderPager.setVisibility(View.VISIBLE);
         binding.collapsingToolbar.setVisibility(View.VISIBLE);
@@ -372,7 +355,6 @@ public class ViewProductActivity extends BaseActivity {
 
     private void populateProductByVariant(ProductVariantsItem item) {
 
-        productJson = new Gson().toJson(item);
 
         name = item.getProductName();
         binding.productName.setText(name);
@@ -805,103 +787,35 @@ public class ViewProductActivity extends BaseActivity {
 
     public void getAvailableShops(int variationID) {
 
-
         binding.progressBarShop.setVisibility(View.VISIBLE);
 
         availableShops.clear();
         binding.availableShops.setAdapter(null);
-
         isShopLoading = true;
 
-        shopURL = UrlUtils.BASE_URL + "public/product/shops/" + variationID + "/";
+        ProductApiHelper.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
+                AvailableShopAdapter adapterm = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
+                binding.availableShops.setAdapter(adapterm);
+                binding.progressBarShop.setVisibility(View.GONE);
 
+                if (response.getData().size() < 1) {
+                    binding.empty.setVisibility(View.VISIBLE);
+                }
+            }
 
-        Log.d("json_shop", shopURL);
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, shopURL, new JSONObject(),
-                response -> {
+            }
 
-//                    Logger.json(String.valueOf(response));
-                    isShopLoading = false;
-                    availableShops.clear();
-                    AvailableShopAdapter adapterm = new AvailableShopAdapter(context, binding.rootView, availableShops, cartDao, cartItem);
-                    binding.availableShops.setAdapter(adapterm);
-                    ArrayList<String> shopname = new ArrayList<>();
-                    binding.progressBarShop.setVisibility(View.GONE);
-                    try {
-                        JSONArray jsonArray = response.getJSONArray("data");
-                        for (int ii = 0; ii < jsonArray.length(); ii++) {
-                            try {
-                                JSONObject ob = jsonArray.getJSONObject(ii);
-                                String phone = "";
-                                try {
-                                    phone = ob.getString("contact_number");
-                                } catch (Exception e) {
-                                    phone = "Not Given";
-                                }
-                                boolean duplicateShop = false;
-                                for (int j = 0; j < shopname.size(); j++) {
-                                    if (shopname.get(j).equals(ob.getString("shop_name"))) {
-                                        duplicateShop = true;
-                                        break;
-                                    }
-                                }
-                                if (!duplicateShop) {
-                                    Log.d("check_shop", ob.toString());
-                                    AvailableShop item = new AvailableShop();
-                                    shopname.add(ob.getString("shop_name"));
-                                    item.setName(ob.getString("shop_name"));
-                                    item.setLogo(ob.getString("shop_image"));
-                                    item.setShopSlug(ob.getString("shop_slug"));
+            @Override
+            public void onAuthError(boolean logout) {
 
-                                    if (ob.getString("discounted_price").equals("null"))
-                                        item.setPrice(String.valueOf((int) Math.round(ob.getDouble("price"))));
-                                    else
-                                        item.setPrice(String.valueOf((int) Math.round(ob.getDouble("discounted_price"))));
+            }
+        });
 
-                                    item.setSlug(slug);
-                                    item.setProductId(ob.getString("shop_item_id"));
-
-                                    if (!ob.getString("discount_value").equals("null"))
-                                        item.setDiscountValue(Math.round(ob.getDouble("discount_value")));
-                                    else
-                                        item.setDiscountValue(0.0);
-
-                                    item.setPhone(phone);
-                                    item.setAddress(ob.getString("shop_address"));
-                                    item.setShopJson(ob.toString());
-                                    item.setStock(true);
-                                    item.setMaximumPrice(String.valueOf((int) Math.round(ob.getDouble("price"))));
-                                    availableShops.add(item);
-                                    adapterm.notifyItemInserted(availableShops.size());
-                                }
-
-                            } catch (Exception e) {
-
-                                Log.e("json expection", e.toString());
-
-                                continue;
-
-                            }
-                        }
-
-                        if (availableShops.size() < 1) {
-                            binding.empty.setVisibility(View.VISIBLE);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }, error -> error.printStackTrace());
-
-
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        request.setShouldCache(false);
-        request.setTag(this);
-        rq.getCache().clear();
-        rq.add(request);
     }
 
 

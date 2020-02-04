@@ -9,6 +9,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.IApiClient;
@@ -113,6 +114,18 @@ public class ProductApiHelper extends BaseApiHelper {
     public static void getProductDetails(String productSlug, ResponseListenerAuth<ProductDetailsModel, String> listener) {
 
         getiApiClient().getProductDetails(productSlug).enqueue(getResponseCallBackDefault(listener));
+
+    }
+
+    public static void getAvailableShops(int variantID, ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String> listener) {
+
+        getiApiClient().getAvailableShop(variantID).enqueue(getResponseCallBackDefault(listener));
+
+    }
+
+    public static void getNearestAvailableShops(int variantId, double longitude, double latitude, ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String> listener) {
+
+        getiApiClient().getNearestAvailableShop(variantId, longitude, latitude).enqueue(getResponseCallBackDefault(listener));
 
     }
 

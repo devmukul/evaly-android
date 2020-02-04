@@ -21,6 +21,7 @@ import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
@@ -134,6 +135,12 @@ public interface IApiClient {
 
     @GET(UrlUtils.BASE_URL+"/public/shops/{shopSlug}/items/{shopItem}/variants")
     Call<CommonDataResponse<List<ShopItem>>> getProductVariants(@Path("shopSlug") String shopSlug, @Path("shopItem") String shopItem);
+
+    @GET(UrlUtils.BASE_URL + "public/product/shops/{variantId}/")
+    Call<CommonDataResponse<List<AvailableShopModel>>> getAvailableShop(@Path("variantId") int variantId);
+
+    @GET(UrlUtils.BASE_URL + "public/product/shops/{variantId}/nearest/")
+    Call<CommonDataResponse<List<AvailableShopModel>>> getNearestAvailableShop(@Path("variantId") int variantId, @Query("long") double longitude, @Query("lat") double latitude);
 
     // with token
 

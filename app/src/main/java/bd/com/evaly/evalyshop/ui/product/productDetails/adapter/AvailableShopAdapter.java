@@ -4,11 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,15 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -39,21 +31,34 @@ import java.util.concurrent.Executors;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.util.Utils;
 
 public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdapter.MyViewHolder> {
 
-    ArrayList<AvailableShop> availableShops;
+    List<AvailableShopModel> availableShops;
     Context context;
     CartEntity cartItem;
     View view;
     Set<AvailableShop> set;
+    View.OnClickListener storeClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            int i = Integer.parseInt(v.getTag().toString());
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra("type", 3);
+            intent.putExtra("shop_slug", availableShops.get(i).getShopSlug());
+            intent.putExtra("shop_name", availableShops.get(i).getShopName());
+            intent.putExtra("category", availableShops.get(i).getShopSlug());
+            context.startActivity(intent);
+        }
+    };
     private CartDao cartDao;
 
-    public AvailableShopAdapter(Context context, View view, ArrayList<AvailableShop> availableShops, CartDao cartDao, CartEntity cartItem) {
+    public AvailableShopAdapter(Context context, View view, List<AvailableShopModel> availableShops, CartDao cartDao, CartEntity cartItem) {
         this.availableShops = availableShops;
         this.context = context;
         this.cartDao = cartDao;
@@ -68,37 +73,23 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         return new MyViewHolder(view);
     }
 
-    View.OnClickListener storeClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            int i = Integer.parseInt(v.getTag().toString());
-            Intent intent = new Intent(context, MainActivity.class);
-            intent.putExtra("type", 3);
-            intent.putExtra("shop_slug", availableShops.get(i).getShopSlug());
-            intent.putExtra("shop_name", availableShops.get(i).getName());
-            intent.putExtra("category", availableShops.get(i).getSlug());
-            context.startActivity(intent);
-        }
-    };
-
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        myViewHolder.shopName.setText(availableShops.get(i).getName());
+        myViewHolder.shopName.setText(availableShops.get(i).getShopName());
 
-        if (availableShops.get(i).getAddress().equals("xxx"))
+        if (availableShops.get(i).getShopAddress().equals("xxx"))
             myViewHolder.address.setText("Dhaka, Bangladesh");
         else
-            myViewHolder.address.setText(availableShops.get(i).getAddress());
+            myViewHolder.address.setText(availableShops.get(i).getShopAddress());
 
-        if (!availableShops.get(i).getStock()) {
+        if (availableShops.get(i).getInStock() == 0) {
             myViewHolder.buyBtn.setText("Out of Stock");
             myViewHolder.buyBtn.setEnabled(false);
         }
 
         try {
-            String actualPrice = Integer.toString((int) Math.round(Double.parseDouble(availableShops.get(i).getMaximumPrice())));
-            String discountPrice = Integer.toString((int) Math.round(Double.parseDouble(availableShops.get(i).getPrice())));
+            String actualPrice = Integer.toString((int) Math.round(availableShops.get(i).getPrice()));
+            String discountPrice = Integer.toString((int) Math.round(availableShops.get(i).getDiscountedPrice()));
 
             if (availableShops.get(i).getDiscountValue() == 0) {
 
@@ -125,23 +116,9 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         }
 
         Glide.with(context)
-                .load(availableShops.get(i).getLogo())
+                .load(availableShops.get(i).getShopImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(300, 200))
-                .listener(new RequestListener<Drawable>() {
-                              @Override
-                              public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                  return false;
-                              }
-
-                              @Override
-                              public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                  Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
-                                  myViewHolder.shopImage.setImageBitmap(bitmap);
-                                  return true;
-                              }
-                          }
-                )
                 .into(myViewHolder.shopImage);
 
 
@@ -158,35 +135,38 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
             } else {
 
-                cartItem.setSlug(availableShops.get(i).getSlug());
-                cartItem.setProductID(availableShops.get(i).getProductId());
+                cartItem.setSlug(availableShops.get(i).getShopSlug());
+                cartItem.setProductID(String.valueOf(availableShops.get(i).getShopItemId()));
 
                 if (availableShops.get(i).getDiscountValue() == 0) {
-                    if (availableShops.get(i).getMaximumPriceInt() < 1) {
+                    if (availableShops.get(i).getPrice() < 1) {
                         Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
                         return;
                     }
                     try {
-                        cartItem.setPriceRound(availableShops.get(i).getMaximumPrice());
+                        cartItem.setPriceRound(String.valueOf(availableShops.get(i).getPrice()));
+
                     } catch (Exception e) {
+                        e.printStackTrace();
                         cartItem.setPrice("0");
                     }
                 } else {
 
-                    if (availableShops.get(i).getPriceInt() < 1) {
+                    if (availableShops.get(i).getDiscountedPrice() < 1) {
                         Toast.makeText(context, "Can't add this product to cart.", Toast.LENGTH_LONG).show();
                         return;
                     }
                     try {
-                        cartItem.setPrice(availableShops.get(i).getPrice());
+                        cartItem.setPriceRound(String.valueOf(availableShops.get(i).getDiscountedPrice()));
                     } catch (Exception e) {
+                        e.printStackTrace();
                         cartItem.setPrice("0");
                     }
                 }
 
                 cartItem.setQuantity(1);
                 cartItem.setSelected(true);
-                cartItem.setShopJson(availableShops.get(i).getShopJson());
+                cartItem.setShopJson(new Gson().toJson(availableShops.get(i)));
                 cartItem.setShopSlug(availableShops.get(i).getShopSlug());
 
                 Executors.newSingleThreadExecutor().execute(() -> {
@@ -226,7 +206,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
         myViewHolder.call.setOnClickListener(v -> {
 
-            final String phone = availableShops.get(i).getPhone();
+            final String phone = availableShops.get(i).getContactNumber();
 
             final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
 
@@ -252,10 +232,10 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         myViewHolder.location.setOnClickListener(v -> {
 
             final String location;
-            if (availableShops.get(i).getAddress().equals("xxx"))
+            if (availableShops.get(i).getShopAddress().equals("xxx"))
                 location = "Dhaka, Bangladesh";
             else
-                location = availableShops.get(i).getAddress();
+                location = availableShops.get(i).getShopAddress();
 
             final Snackbar snackBar = Snackbar.make(view, location + "", Snackbar.LENGTH_LONG);
             snackBar.setAction("Copy", v13 -> {
