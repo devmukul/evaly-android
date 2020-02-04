@@ -2,9 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <data>
-
         <variable
             name="viewModel"
             type="bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductViewModel" />
@@ -249,7 +247,8 @@
 
                         <HorizontalScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:scrollbars="none">
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rvVariant1"
@@ -294,7 +293,8 @@
 
                         <HorizontalScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:scrollbars="none">
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rvVariant2"
@@ -452,17 +452,51 @@
                         android:paddingRight="10dp"
                         android:paddingBottom="0dp">
 
-                        <TextView
-                            android:id="@+id/avlshop"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="3dp"
-                            android:layout_marginBottom="15dp"
-                            android:text="Available at shop "
-                            android:textColor="#555"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:paddingEnd="10dp">
+
+                            <TextView
+                                android:id="@+id/avlshop"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="3dp"
+                                android:layout_marginBottom="15dp"
+                                android:layout_weight="1"
+                                android:text="Available at shop"
+                                android:textColor="#555"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:id="@+id/availableShopsTypeHolder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:background="@drawable/input_brd_round"
+                                android:gravity="center_vertical"
+                                android:paddingStart="10dp"
+                                android:paddingTop="4dp"
+                                android:paddingEnd="1dp"
+                                android:paddingBottom="4dp"
+                                android:clickable="true">
+
+                                <TextView
+                                    android:id="@+id/tvShopType"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="All"
+                                    android:textColor="#444"/>
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="14dp"
+                                    app:srcCompat="@drawable/ic_sort_down" />
+                            </LinearLayout>
+
+                        </LinearLayout>
 
 
                         <ProgressBar
@@ -511,6 +545,7 @@
                                 app:srcCompat="@drawable/ic_sad_cart" />
 
                             <TextView
+                                android:id="@+id/tvNoShop"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0"

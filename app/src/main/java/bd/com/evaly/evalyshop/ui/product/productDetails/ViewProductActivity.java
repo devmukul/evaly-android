@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -106,7 +107,6 @@ public class ViewProductActivity extends BaseActivity {
     private String shareURL = "https://evaly.com.bd";
     private BottomSheetDialog bottomSheetDialog;
     private BottomSheetDialog newsfeedShareDialog;
-    private AppDatabase appDatabase;
     private WishListDao wishListDao;
     private CartDao cartDao;
     private ActivityViewProductBinding binding;
@@ -115,8 +115,8 @@ public class ViewProductActivity extends BaseActivity {
     private List<AttributesItem> productAttributesItemList;
     private List<ProductVariantsItem> productVariantsItemList;
     private boolean isShopLoading = false;
-
     private int variantKey1 = 0, variantKey2 = 0;
+    private int shopItemId = 0;
 
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
@@ -151,7 +151,7 @@ public class ViewProductActivity extends BaseActivity {
         productPrice = getIntent().getIntExtra("product_price", -1);
         productImage = getIntent().getStringExtra("product_image");
 
-        appDatabase = AppDatabase.getInstance(this);
+        AppDatabase appDatabase = AppDatabase.getInstance(this);
         wishListDao = appDatabase.wishListDao();
         cartDao = appDatabase.cartDao();
 
@@ -280,6 +280,25 @@ public class ViewProductActivity extends BaseActivity {
             });
             popup.show();
         });
+
+
+
+        binding.availableShopsTypeHolder.setOnClickListener(v -> {
+            String[] type = new String[]{"All", "Nearest"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setItems(type, (dialog, which) -> {
+
+                if (type[which].equals("all"))
+                    getAvailableShops(shopItemId);
+                else
+                    getNearestAvailableShops(shopItemId, 1, 4);
+
+                binding.tvShopType.setText(type[which]);
+
+            });
+            builder.show();
+
+        });
     }
 
     private void populateShopDetails(ProductDetailsModel productDetailsModel) {
@@ -375,6 +394,8 @@ public class ViewProductActivity extends BaseActivity {
 
         if (sliderImages.size() == 1)
             binding.sliderIndicator.setVisibility(View.GONE);
+
+        shopItemId = item.getVariantId();
 
         getAvailableShops(item.getVariantId());
         getRelatedProducts(item.getCategorySlug());
@@ -541,6 +562,84 @@ public class ViewProductActivity extends BaseActivity {
             });
 
         }
+    }
+
+
+
+    public void getAvailableShops(int variationID) {
+
+        binding.progressBarShop.setVisibility(View.VISIBLE);
+
+        availableShops.clear();
+        binding.availableShops.setAdapter(null);
+        isShopLoading = true;
+
+        ProductApiHelper.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
+
+                isShopLoading = false;
+
+                AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
+                binding.availableShops.setAdapter(adapter);
+                binding.progressBarShop.setVisibility(View.GONE);
+
+                if (response.getData().size() < 1) {
+                    binding.empty.setVisibility(View.VISIBLE);
+                    binding.tvNoShop.setText("This product is currently \nnot available at any shop");
+
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+    }
+
+
+    public void getNearestAvailableShops(int variationID, double longitude, double latitude) {
+
+        binding.progressBarShop.setVisibility(View.VISIBLE);
+
+        availableShops.clear();
+        binding.availableShops.setAdapter(null);
+        isShopLoading = true;
+
+        ProductApiHelper.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
+
+                isShopLoading = false;
+
+                AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
+                binding.availableShops.setAdapter(adapter);
+                binding.progressBarShop.setVisibility(View.GONE);
+
+                if (response.getData().size() < 1) {
+                    binding.empty.setVisibility(View.VISIBLE);
+                    binding.tvNoShop.setText("This product is currently \nnot available at any nearest shop");
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
     }
 
 
@@ -785,38 +884,7 @@ public class ViewProductActivity extends BaseActivity {
     }
 
 
-    public void getAvailableShops(int variationID) {
 
-        binding.progressBarShop.setVisibility(View.VISIBLE);
-
-        availableShops.clear();
-        binding.availableShops.setAdapter(null);
-        isShopLoading = true;
-
-        ProductApiHelper.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
-                AvailableShopAdapter adapterm = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
-                binding.availableShops.setAdapter(adapterm);
-                binding.progressBarShop.setVisibility(View.GONE);
-
-                if (response.getData().size() < 1) {
-                    binding.empty.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-    }
 
 
 }
