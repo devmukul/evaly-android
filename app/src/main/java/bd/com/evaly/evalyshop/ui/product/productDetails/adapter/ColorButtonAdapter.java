@@ -51,6 +51,8 @@ public class ColorButtonAdapter extends RecyclerView.Adapter<ColorButtonAdapter.
         else
             holder.holder.setBackground(context.getResources().getDrawable(R.drawable.variation_brd));
 
+        holder.text.setText(value.getValue());
+
     }
 
     @Override

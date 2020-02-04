@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -42,9 +42,9 @@ public class SizeButtonAdapter extends RecyclerView.Adapter<SizeButtonAdapter.Si
 
         holder.tvSize.setText(value.getValue());
         if (value.isSelected()) {
-            holder.cardSize.setCardBackgroundColor(context.getResources().getColor(R.color.color4));
+            holder.cardSize.setBackground(context.getResources().getDrawable(R.drawable.bg_variation_size_selected));
         } else {
-            holder.cardSize.setCardBackgroundColor(context.getResources().getColor(R.color.gray_border));
+            holder.cardSize.setBackground(context.getResources().getDrawable(R.drawable.bg_variation_size_default));
         }
     }
 
@@ -57,7 +57,7 @@ public class SizeButtonAdapter extends RecyclerView.Adapter<SizeButtonAdapter.Si
         @BindView(R.id.tvSize)
         TextView tvSize;
         @BindView(R.id.cardSize)
-        CardView cardSize;
+        LinearLayout cardSize;
 
         public SizeViewHolder(@NonNull View itemView) {
             super(itemView);

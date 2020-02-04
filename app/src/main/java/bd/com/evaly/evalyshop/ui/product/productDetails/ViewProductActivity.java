@@ -357,22 +357,19 @@ public class ViewProductActivity extends BaseActivity {
 
         if (productAttributesItemList.size() > 0) {
 
-            binding.variant1Title.setText(productAttributesItemList.get(0).getAttributeName());
 
-            if (productAttributesItemList.get(0).getAttributeName().equalsIgnoreCase("size"))
+            if (productAttributesItemList.get(0).getAttributeName().equalsIgnoreCase("Size"))
                 populateSizeOption(productAttributesItemList.get(0).getAttributeValues());
-            else
+            else if (productAttributesItemList.get(0).getAttributeName().equalsIgnoreCase("Color"))
                 populateColorOption(productAttributesItemList.get(0).getAttributeValues());
 
         }
 
         if (productAttributesItemList.size() > 1) {
 
-            binding.variant2Title.setText(productAttributesItemList.get(1).getAttributeName());
-
-            if (productAttributesItemList.get(1).getAttributeName().equalsIgnoreCase("color"))
+            if (productAttributesItemList.get(1).getAttributeName().equalsIgnoreCase("Color"))
                 populateColorOption(productAttributesItemList.get(1).getAttributeValues());
-            else
+            else if (productAttributesItemList.get(1).getAttributeName().equalsIgnoreCase("Size"))
                 populateSizeOption(productAttributesItemList.get(1).getAttributeValues());
 
         }
@@ -476,7 +473,7 @@ public class ViewProductActivity extends BaseActivity {
                 for (int j = 0; j < variantItem.getAttributeValues().size(); j++) {
                     int attrValue = variantItem.getAttributeValues().get(j);
                     if (attrValue == attributesValue.getKey()) {
-                        populateSelectedSizeData(productVariantsItemList.get(i));
+                        populateSelectedColorData(productVariantsItemList.get(i));
                     }
                 }
             }

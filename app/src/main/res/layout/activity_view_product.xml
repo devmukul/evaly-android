@@ -32,8 +32,8 @@
                 app:contentScrim="@color/white"
                 app:expandedTitleGravity="bottom|left"
                 app:expandedTitleMarginBottom="15dp"
-                app:expandedTitleMarginStart="20dp"
                 app:expandedTitleMarginEnd="20dp"
+                app:expandedTitleMarginStart="20dp"
                 app:expandedTitleMarginTop="0dp"
                 app:expandedTitleTextAppearance="@style/CollapsingToolbarLayoutExpandedTextStyle"
                 app:layout_scrollFlags="enterAlwaysCollapsed|scroll|exitUntilCollapsed"
@@ -119,8 +119,8 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:visibility="invisible"
-                        android:background="@drawable/half_dp_bg_lighter" />
+                        android:background="@drawable/half_dp_bg_lighter"
+                        android:visibility="invisible" />
 
                     <TextView
                         android:id="@+id/product_name"
@@ -131,12 +131,12 @@
                         android:layout_marginRight="20dp"
                         android:layout_marginBottom="0dp"
                         android:layout_weight="0"
+                        android:maxLines="2"
                         android:textColor="#fff"
                         android:textIsSelectable="true"
                         android:textSize="18sp"
                         android:textStyle="normal"
                         android:visibility="invisible"
-                        android:maxLines="2"
                         tools:text="Product name" />
 
                 </LinearLayout>
@@ -242,7 +242,7 @@
                             android:layout_marginLeft="20dp"
                             android:layout_marginTop="11dp"
                             android:layout_marginBottom="15dp"
-                            android:text="Variant 1"
+                            android:text="Size"
                             android:textColor="#555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -256,7 +256,7 @@
                                 android:id="@+id/rvVariant1"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
+                                android:layout_marginBottom="15dp"
                                 android:nestedScrollingEnabled="false"
                                 android:orientation="horizontal"
                                 android:paddingLeft="20dp"
@@ -287,7 +287,7 @@
                             android:layout_marginLeft="20dp"
                             android:layout_marginTop="11dp"
                             android:layout_marginBottom="15dp"
-                            android:text="Variant 2"
+                            android:text="Color"
                             android:textColor="#555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
