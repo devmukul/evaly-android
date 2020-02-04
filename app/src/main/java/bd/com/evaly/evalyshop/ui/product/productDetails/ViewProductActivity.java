@@ -211,7 +211,7 @@ public class ViewProductActivity extends BaseActivity {
         if (extras != null) {
             slug = extras.getString("product_slug");
             name = extras.getString("product_name");
-            binding.productName.setVisibility(View.GONE);
+            // binding.productName.setVisibility(View.GONE);
 
             if (name != null) {
                 binding.productName.setText(Html.fromHtml(name));

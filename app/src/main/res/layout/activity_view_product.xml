@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductViewModel" />
@@ -25,26 +26,27 @@
                 android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags="enterAlwaysCollapsed|scroll|exitUntilCollapsed"
                 android:fitsSystemWindows="true"
+                android:padding="0dp"
                 app:collapsedTitleTextAppearance="@style/CollapsingToolbarLayoutCollapsedTextStyle"
                 app:contentScrim="@color/white"
                 app:expandedTitleGravity="bottom|left"
-                android:padding="0dp"
-                app:expandedTitleTextAppearance="@style/CollapsingToolbarLayoutExpandedTextStyle"
-                app:scrimAnimationDuration="10"
+                app:expandedTitleMarginBottom="15dp"
                 app:expandedTitleMarginStart="20dp"
-                app:expandedTitleMarginBottom="18dp"
+                app:expandedTitleMarginEnd="20dp"
+                app:expandedTitleMarginTop="0dp"
+                app:expandedTitleTextAppearance="@style/CollapsingToolbarLayoutExpandedTextStyle"
+                app:layout_scrollFlags="enterAlwaysCollapsed|scroll|exitUntilCollapsed"
+                app:maxLines="2"
+                app:scrimAnimationDuration="10"
                 app:statusBarScrim="@color/white"
                 app:title="GNGKGG"
-                app:titleEnabled="true"
-                app:maxLines="2">
+                app:titleEnabled="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
-                    android:paddingBottom="15dp"
                     android:orientation="vertical">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -114,28 +116,28 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-                    <TextView
-                        android:visibility="gone"
-                        android:id="@+id/product_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_weight="1"
-                        android:textColor="#000"
-                        android:textIsSelectable="true"
-                        android:textSize="18sp"
-                        android:textStyle="normal"
-                        tools:text="Product name" />
-
-
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@drawable/half_dp_bg_lighter"/>
+                        android:visibility="invisible"
+                        android:background="@drawable/half_dp_bg_lighter" />
+
+                    <TextView
+                        android:id="@+id/product_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="-14sp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_weight="0"
+                        android:textColor="#fff"
+                        android:textIsSelectable="true"
+                        android:textSize="18sp"
+                        android:textStyle="normal"
+                        android:visibility="invisible"
+                        android:maxLines="2"
+                        tools:text="Product name" />
 
                 </LinearLayout>
 
@@ -173,10 +175,10 @@
                     <LinearLayout
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:background="@drawable/bg_toolbar_product_details"
-                        android:gravity="center"
+                        android:layout_gravity="end"
                         android:layout_marginLeft="10dp"
-                        android:layout_gravity="end">
+                        android:background="@drawable/bg_toolbar_product_details"
+                        android:gravity="center">
 
                         <ImageView
                             android:id="@+id/share"
@@ -201,8 +203,8 @@
             android:id="@+id/sticky_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="55dp"
             android:layout_marginTop="0dp"
+            android:layout_marginBottom="55dp"
             android:background="#fff"
             android:paddingTop="0dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -237,28 +239,29 @@
                             android:id="@+id/variant1Title"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
                             android:layout_marginTop="11dp"
+                            android:layout_marginBottom="15dp"
                             android:text="Variant 1"
                             android:textColor="#555"
                             android:textSize="16sp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginBottom="15dp"
                             android:textStyle="bold" />
 
 
                         <HorizontalScrollView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
+
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rvVariant1"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:paddingLeft="20dp"
-                                tools:listitem="@layout/item_variation_image"
                                 android:layout_marginBottom="10dp"
                                 android:nestedScrollingEnabled="false"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                                android:orientation="horizontal"
+                                android:paddingLeft="20dp"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                tools:listitem="@layout/item_variation_image" />
                         </HorizontalScrollView>
 
                     </LinearLayout>
@@ -281,12 +284,12 @@
                             android:id="@+id/variant2Title"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
                             android:layout_marginTop="11dp"
+                            android:layout_marginBottom="15dp"
                             android:text="Variant 2"
                             android:textColor="#555"
                             android:textSize="16sp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginBottom="15dp"
                             android:textStyle="bold" />
 
 
@@ -294,16 +297,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvVariant2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingLeft="20dp"
-                            android:nestedScrollingEnabled="false"
-                            tools:listitem="@layout/item_variation_image"
-                            android:layout_marginBottom="10dp"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvVariant2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:nestedScrollingEnabled="false"
+                                android:orientation="horizontal"
+                                android:paddingLeft="20dp"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                tools:listitem="@layout/item_variation_image" />
 
                         </HorizontalScrollView>
 
