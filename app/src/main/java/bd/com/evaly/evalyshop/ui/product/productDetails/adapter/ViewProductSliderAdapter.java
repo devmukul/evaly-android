@@ -24,18 +24,21 @@ import bd.com.evaly.evalyshop.util.ImagePreview;
 
 public class ViewProductSliderAdapter extends PagerAdapter {
 
-    private Context context;
-    private List<String> img,url;
-    private int type = 1;
     FragmentTransaction ft;
     AppCompatActivity activity;
+    private Context context;
+    private List<String> img;
+    private int type = 1;
 
-    public ViewProductSliderAdapter(Context context, AppCompatActivity activity, List<String> img, List<String> url) {
+    public ViewProductSliderAdapter(Context context, AppCompatActivity activity, List<String> img) {
         this.context = context;
         this.img = img;
-        this.url=url;
         this.activity = activity;
         ft = activity.getSupportFragmentManager().beginTransaction();
+    }
+
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 
     @Override
@@ -74,7 +77,7 @@ public class ViewProductSliderAdapter extends PagerAdapter {
                 intent.putExtra("image", imgURL);
                 //Toast.makeText(context, imgURL, Toast.LENGTH_SHORT).show();
                 context.startActivity(intent);
-            } catch (Exception e){
+            } catch (Exception e) {
                 Toast.makeText(context, "High resolution image not available.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -88,5 +91,6 @@ public class ViewProductSliderAdapter extends PagerAdapter {
         View view = (View) object;
         viewPager.removeView(view);
     }
+
 
 }

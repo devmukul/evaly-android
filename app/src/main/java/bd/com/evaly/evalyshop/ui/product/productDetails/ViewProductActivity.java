@@ -203,7 +203,7 @@ public class ViewProductActivity extends BaseActivity {
         sliderImages = new ArrayList<>();
         map = new TreeMap<>();
 
-        sliderAdapter = new ViewProductSliderAdapter(context, this, sliderImages, new ArrayList<>());
+        sliderAdapter = new ViewProductSliderAdapter(context, this, sliderImages);
         binding.sliderPager.setAdapter(sliderAdapter);
         binding.sliderIndicator.setupWithViewPager(binding.sliderPager, true);
 
@@ -385,6 +385,7 @@ public class ViewProductActivity extends BaseActivity {
             binding.tvDescription.setText(item.getProductDescription());
 
         binding.sku.setText(item.getSku().toUpperCase());
+
 
         sliderImages.clear();
         sliderImages.addAll(item.getProductImages());
