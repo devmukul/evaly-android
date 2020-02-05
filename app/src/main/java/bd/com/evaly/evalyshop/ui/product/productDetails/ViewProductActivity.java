@@ -124,7 +124,9 @@ public class ViewProductActivity extends BaseActivity {
     private boolean isShopLoading = false;
     private int variantKey1 = 0, variantKey2 = 0;
     private int shopItemId = 0;
-
+    private boolean gps_enabled = false;
+    private boolean network_enabled = false;
+    private LocationManager lm;
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
 
@@ -137,9 +139,6 @@ public class ViewProductActivity extends BaseActivity {
         }
         win.setAttributes(winParams);
     }
-
-    private boolean gps_enabled = false;
-    private boolean network_enabled = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -318,7 +317,8 @@ public class ViewProductActivity extends BaseActivity {
 
     private void loadNearestShopByLocation() {
 
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (lm == null)
+            lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         try {
             gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -335,7 +335,6 @@ public class ViewProductActivity extends BaseActivity {
             return;
         }
 
-
         binding.availableShops.setAdapter(null);
         binding.progressBarShop.setVisibility(View.VISIBLE);
         binding.empty.setVisibility(View.GONE);
@@ -344,13 +343,15 @@ public class ViewProductActivity extends BaseActivity {
         locationUtils.getLocation(this, new LocationUtils.LocationResult() {
             @Override
             public void gotLocation(Location location) {
-                if (location != null) {
-                    runOnUiThread(() -> binding.tvShopType.setText("Nearest"));
-                    runOnUiThread(() -> getNearestAvailableShops(shopItemId, location.getLongitude(), location.getLatitude()));
-                } else {
-                    Toast.makeText(context, "Couldn't find location, please try again later", Toast.LENGTH_SHORT).show();
-                    runOnUiThread(() -> getAvailableShops(shopItemId));
-                }
+                runOnUiThread(() -> {
+                    if (location != null) {
+                        binding.tvShopType.setText("Nearest");
+                        getNearestAvailableShops(shopItemId, location.getLongitude(), location.getLatitude());
+                    } else {
+                        Toast.makeText(context, "Couldn't find location, please try again later", Toast.LENGTH_SHORT).show();
+                        getAvailableShops(shopItemId);
+                    }
+                });
             }
         });
 
