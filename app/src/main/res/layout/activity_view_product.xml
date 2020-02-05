@@ -2,7 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="viewModel"
             type="bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductViewModel" />
@@ -476,19 +478,19 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
                                 android:background="@drawable/input_brd_round"
+                                android:clickable="true"
                                 android:gravity="center_vertical"
                                 android:paddingStart="10dp"
                                 android:paddingTop="4dp"
                                 android:paddingEnd="1dp"
-                                android:paddingBottom="4dp"
-                                android:clickable="true">
+                                android:paddingBottom="4dp">
 
                                 <TextView
                                     android:id="@+id/tvShopType"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="All"
-                                    android:textColor="#444"/>
+                                    android:textColor="#444" />
 
                                 <ImageView
                                     android:layout_width="wrap_content"
@@ -502,10 +504,10 @@
                         <ProgressBar
                             android:id="@+id/progressBarShop"
                             android:layout_width="150dp"
-                            android:layout_height="110dp"
+                            android:layout_height="130dp"
                             android:layout_weight="0"
                             android:paddingTop="40dp"
-                            android:paddingBottom="40dp" />
+                            android:paddingBottom="60dp" />
 
                         <LinearLayout
                             android:id="@+id/shopScroller"

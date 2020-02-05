@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -137,6 +138,9 @@ public class ViewProductActivity extends BaseActivity {
         win.setAttributes(winParams);
     }
 
+    private boolean gps_enabled = false;
+    private boolean network_enabled = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -245,7 +249,7 @@ public class ViewProductActivity extends BaseActivity {
             binding.stickyScroll.postDelayed(() -> {
                 binding.appBar.setExpanded(false, true);
                 int scrollTo = ((View) binding.avlshop.getParent()).getTop() + binding.avlshop.getTop();
-                binding.stickyScroll.smoothScrollTo(0, scrollTo - binding.productName.getHeight());
+                binding.stickyScroll.smoothScrollTo(0, scrollTo);
             }, 100);
 
         });
@@ -293,21 +297,18 @@ public class ViewProductActivity extends BaseActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setItems(type, (dialog, which) -> {
 
-                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                    loadNearestShopByLocation();
-                else
-                    ActivityCompat.requestPermissions(this, new String[]{
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION},
-                        1212);
-
-                if (type[which].equals("all"))
+                if (type[which].equals("All")) {
                     getAvailableShops(shopItemId);
-                else
-                    getNearestAvailableShops(shopItemId, 1, 4);
-
-                binding.tvShopType.setText(type[which]);
+                } else {
+                    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                            ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                        loadNearestShopByLocation();
+                    else
+                        ActivityCompat.requestPermissions(this, new String[]{
+                                        Manifest.permission.ACCESS_FINE_LOCATION,
+                                        Manifest.permission.ACCESS_COARSE_LOCATION},
+                                1212);
+                }
 
             });
             builder.show();
@@ -315,19 +316,58 @@ public class ViewProductActivity extends BaseActivity {
         });
     }
 
-
     private void loadNearestShopByLocation() {
+
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ignored) {
+        }
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ignored) {
+        }
+
+        if (!gps_enabled && !network_enabled) {
+            buildAlertMessageNoGps(this);
+            return;
+        }
+
+
+        binding.availableShops.setAdapter(null);
+        binding.progressBarShop.setVisibility(View.VISIBLE);
+        binding.empty.setVisibility(View.GONE);
 
         LocationUtils locationUtils = new LocationUtils();
         locationUtils.getLocation(this, new LocationUtils.LocationResult() {
             @Override
             public void gotLocation(Location location) {
-                Toast.makeText(context, "long: " + location.getLongitude() + "lat: " + location.getLatitude(), Toast.LENGTH_SHORT).show();
-                getNearestAvailableShops(shopItemId, location.getLongitude(), location.getLatitude());
+                if (location != null) {
+                    runOnUiThread(() -> binding.tvShopType.setText("Nearest"));
+                    runOnUiThread(() -> getNearestAvailableShops(shopItemId, location.getLongitude(), location.getLatitude()));
+                } else {
+                    Toast.makeText(context, "Couldn't find location, please try again later", Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> getAvailableShops(shopItemId));
+                }
             }
         });
 
     }
+
+    private void buildAlertMessageNoGps(Context context) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setMessage("To see nearest shops, please turn on device location")
+                .setTitle("Enable Location")
+                .setCancelable(false)
+                .setPositiveButton("Go to Settings", (dialog, id) -> context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                .setNegativeButton("No", (dialog, id) -> dialog.cancel());
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -519,12 +559,8 @@ public class ViewProductActivity extends BaseActivity {
                         variantKey1 = attributesValue.getKey();
                         break;
                     }
-
                 }
-
             }
-
-
         });
         binding.rvVariant1.setAdapter(adapter);
     }
@@ -605,10 +641,12 @@ public class ViewProductActivity extends BaseActivity {
     public void getAvailableShops(int variationID) {
 
         binding.progressBarShop.setVisibility(View.VISIBLE);
-
         availableShops.clear();
         binding.availableShops.setAdapter(null);
         isShopLoading = true;
+        binding.empty.setVisibility(View.GONE);
+
+        binding.tvShopType.setText("All");
 
         ProductApiHelper.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
             @Override
@@ -623,7 +661,6 @@ public class ViewProductActivity extends BaseActivity {
                 if (response.getData().size() < 1) {
                     binding.empty.setVisibility(View.VISIBLE);
                     binding.tvNoShop.setText("This product is currently \nnot available at any shop");
-
                 }
             }
 
@@ -644,6 +681,7 @@ public class ViewProductActivity extends BaseActivity {
     public void getNearestAvailableShops(int variationID, double longitude, double latitude) {
 
         binding.progressBarShop.setVisibility(View.VISIBLE);
+        binding.empty.setVisibility(View.GONE);
 
         availableShops.clear();
         binding.availableShops.setAdapter(null);
@@ -661,7 +699,7 @@ public class ViewProductActivity extends BaseActivity {
 
                 if (response.getData().size() < 1) {
                     binding.empty.setVisibility(View.VISIBLE);
-                    binding.tvNoShop.setText("This product is currently \nnot available at any nearest shop");
+                    binding.tvNoShop.setText("This product is currently not \navailable at any nearest shop");
                 }
             }
 
