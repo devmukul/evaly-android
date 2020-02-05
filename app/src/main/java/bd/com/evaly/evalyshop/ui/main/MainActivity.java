@@ -252,15 +252,12 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        FirebaseMessaging.getInstance().subscribeToTopic("all_user");
         String email = CredentialManager.getUserName();
         String strNew = email.replaceAll("[^A-Za-z0-9]", "");
 
-        try {
-            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        FirebaseMessaging.getInstance().subscribeToTopic("all_user");
+        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful()));
+        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful()));
 
 
         if (userDetails.getToken().equals("")) {
