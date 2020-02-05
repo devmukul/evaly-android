@@ -10,17 +10,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.models.shop.shopDetails.DeliveryOption;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDeliveryOption;
 
 public class DeliveryOptionAdapter extends RecyclerView.Adapter<DeliveryOptionAdapter.DeliveryOptionViewHolder> {
 
-    private List<DeliveryOption> list;
+    private ArrayList<ShopDeliveryOption> list;
     private Context context;
 
-    public DeliveryOptionAdapter(List<DeliveryOption> list, Context context) {
+    public DeliveryOptionAdapter(ArrayList<ShopDeliveryOption> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -33,8 +33,8 @@ public class DeliveryOptionAdapter extends RecyclerView.Adapter<DeliveryOptionAd
 
     @Override
     public void onBindViewHolder(@NonNull DeliveryOptionViewHolder holder, int position) {
-        holder.tvDeliveryOption.setText(list.get(position).getName());
-        holder.tvDeliveryOptionDesc.setText(list.get(position).getDescription());
+        holder.tvDeliveryOption.setText(list.get(position).getDeliveryOption().getName());
+        holder.tvDeliveryOptionDesc.setText(list.get(position).getDeliveryOption().getDescription());
     }
 
     @Override

@@ -2,7 +2,9 @@ package bd.com.evaly.evalyshop.models.shop.shopDetails;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DeliveryOption{
+import java.io.Serializable;
+
+public class DeliveryOption implements Serializable {
 
 	@SerializedName("name")
 	private String name;

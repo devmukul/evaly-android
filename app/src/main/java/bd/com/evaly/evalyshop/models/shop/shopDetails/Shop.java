@@ -34,7 +34,7 @@ public class Shop{
 	private String contactNumber;
 
 	@SerializedName("shop_delivery_options")
-	private List<Object> shopDeliveryOptions;
+	private List<ShopDeliveryOption> shopDeliveryOptions;
 
 	@SerializedName("approved")
 	private boolean approved;
@@ -129,11 +129,11 @@ public class Shop{
 		return contactNumber;
 	}
 
-	public void setShopDeliveryOptions(List<Object> shopDeliveryOptions){
+	public void setShopDeliveryOptions(List<ShopDeliveryOption> shopDeliveryOptions){
 		this.shopDeliveryOptions = shopDeliveryOptions;
 	}
 
-	public List<Object> getShopDeliveryOptions(){
+	public List<ShopDeliveryOption> getShopDeliveryOptions(){
 		return shopDeliveryOptions;
 	}
 

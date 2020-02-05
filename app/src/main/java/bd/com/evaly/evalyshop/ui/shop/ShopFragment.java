@@ -77,6 +77,7 @@ import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
+import bd.com.evaly.evalyshop.ui.shop.delivery.DeliveryBottomSheetFragment;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -496,18 +497,25 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
                     link.setOnClickListener(v -> {
-                        String phone = "https://evaly.com.bd/shops/" + shopDetails.getSlug();
-                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-                        snackBar.setAction("Copy", v13 -> {
-                            try {
-                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/" + shopDetails.getSlug());
-                                clipboard.setPrimaryClip(clip);
-                            } catch (Exception ignored) {
-                            }
-                            snackBar.dismiss();
-                        });
-                        snackBar.show();
+
+                        DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopDetails.getShopDeliveryOptions());
+
+                        assert getFragmentManager() != null;
+                        deliveryBottomSheetFragment.show(getFragmentManager(), "delivery option");
+
+
+//                        String phone = "https://evaly.com.bd/shops/" + shopDetails.getSlug();
+//                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+//                        snackBar.setAction("Copy", v13 -> {
+//                            try {
+//                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+//                                ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/" + shopDetails.getSlug());
+//                                clipboard.setPrimaryClip(clip);
+//                            } catch (Exception ignored) {
+//                            }
+//                            snackBar.dismiss();
+//                        });
+//                        snackBar.show();
 
                     });
 
