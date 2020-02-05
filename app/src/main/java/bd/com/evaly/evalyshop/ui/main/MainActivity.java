@@ -256,8 +256,10 @@ public class MainActivity extends BaseActivity {
         String strNew = email.replaceAll("[^A-Za-z0-9]", "");
 
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
-        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful()));
-        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful()));
+
+        if (!CredentialManager.getToken().equals(""))
+            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_" + strNew));
+        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " "+ Constants.BUILD + "_all_user"));
 
 
         if (userDetails.getToken().equals("")) {

@@ -1,9 +1,12 @@
 package bd.com.evaly.evalyshop.ui.product.productDetails;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,6 +26,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -84,6 +89,7 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSlide
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
+import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
@@ -282,11 +288,19 @@ public class ViewProductActivity extends BaseActivity {
         });
 
 
-
         binding.availableShopsTypeHolder.setOnClickListener(v -> {
             String[] type = new String[]{"All", "Nearest"};
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setItems(type, (dialog, which) -> {
+
+                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                    loadNearestShopByLocation();
+                else
+                    ActivityCompat.requestPermissions(this, new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION},
+                        1212);
 
                 if (type[which].equals("all"))
                     getAvailableShops(shopItemId);
@@ -299,6 +313,31 @@ public class ViewProductActivity extends BaseActivity {
             builder.show();
 
         });
+    }
+
+
+    private void loadNearestShopByLocation() {
+
+        LocationUtils locationUtils = new LocationUtils();
+        locationUtils.getLocation(this, new LocationUtils.LocationResult() {
+            @Override
+            public void gotLocation(Location location) {
+                Toast.makeText(context, "long: " + location.getLongitude() + "lat: " + location.getLatitude(), Toast.LENGTH_SHORT).show();
+                getNearestAvailableShops(shopItemId, location.getLongitude(), location.getLatitude());
+            }
+        });
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1212:
+                loadNearestShopByLocation();
+                break;
+            case 0:
+                break;
+        }
     }
 
     private void populateShopDetails(ProductDetailsModel productDetailsModel) {
@@ -438,14 +477,13 @@ public class ViewProductActivity extends BaseActivity {
         binding.variant1Holder.setVisibility(View.VISIBLE);
 
         if (attribute_values.size() > 0) {
-            for (int i=0; i< attribute_values.size(); i++){
+            for (int i = 0; i < attribute_values.size(); i++) {
                 if (productAttributesItemList.size() > 1) {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) || attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
                         attribute_values.get(i).setSelected(true);
                         variantKey1 = attribute_values.get(i).getKey();
                     }
-                }
-                else {
+                } else {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
                         attribute_values.get(i).setSelected(true);
                         variantKey1 = attribute_values.get(i).getKey();
@@ -468,7 +506,7 @@ public class ViewProductActivity extends BaseActivity {
                         }
                     }
                 }
-            } else if (productAttributesItemList.size() == 2){
+            } else if (productAttributesItemList.size() == 2) {
 
                 for (int i = 0; i < productVariantsItemList.size(); i++) {
                     ProductVariantsItem variantItem = productVariantsItemList.get(i);
@@ -496,14 +534,13 @@ public class ViewProductActivity extends BaseActivity {
         binding.variant2Holder.setVisibility(View.VISIBLE);
 
         if (attribute_values.size() > 0) {
-            for (int i=0; i< attribute_values.size(); i++){
+            for (int i = 0; i < attribute_values.size(); i++) {
                 if (productAttributesItemList.size() > 1) {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) || attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
                         attribute_values.get(i).setSelected(true);
                         variantKey2 = attribute_values.get(i).getKey();
                     }
-                }
-                else {
+                } else {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
                         attribute_values.get(i).setSelected(true);
                         variantKey2 = attribute_values.get(i).getKey();
@@ -526,7 +563,7 @@ public class ViewProductActivity extends BaseActivity {
                         }
                     }
                 }
-            } else if (productAttributesItemList.size() == 2){
+            } else if (productAttributesItemList.size() == 2) {
 
                 for (int i = 0; i < productVariantsItemList.size(); i++) {
                     ProductVariantsItem variantItem = productVariantsItemList.get(i);
@@ -563,7 +600,6 @@ public class ViewProductActivity extends BaseActivity {
 
         }
     }
-
 
 
     public void getAvailableShops(int variationID) {
@@ -882,9 +918,6 @@ public class ViewProductActivity extends BaseActivity {
             activity.getWindow().setStatusBarColor(Color.BLACK);
         }
     }
-
-
-
 
 
 }
