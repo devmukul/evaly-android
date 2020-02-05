@@ -244,13 +244,12 @@ public class ViewProductActivity extends BaseActivity {
 
 
         binding.addToCart.setOnClickListener(v -> {
-
             binding.stickyScroll.postDelayed(() -> {
-                binding.appBar.setExpanded(false, true);
-                int scrollTo = ((View) binding.avlshop.getParent()).getTop() + binding.avlshop.getTop();
-                binding.stickyScroll.smoothScrollTo(0, scrollTo);
-            }, 100);
 
+                binding.appBar.setExpanded(false, true);
+                binding.stickyScroll.smoothScrollTo(0, getRelativeTop(binding.stickyScroll, binding.avlshop) - 50);
+
+            }, 100);
         });
 
         binding.share.setOnClickListener(v -> {
@@ -313,6 +312,11 @@ public class ViewProductActivity extends BaseActivity {
             builder.show();
 
         });
+    }
+
+    public int getRelativeTop(View rootView, View childView) {
+        if(childView.getParent() == rootView) return childView.getTop();
+        else return childView.getTop() + getRelativeTop(rootView, (View) childView.getParent());
     }
 
     private void loadNearestShopByLocation() {
