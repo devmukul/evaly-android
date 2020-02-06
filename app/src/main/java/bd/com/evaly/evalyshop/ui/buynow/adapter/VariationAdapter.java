@@ -54,12 +54,13 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
             myViewHolder.text.setText(Html.fromHtml(String.format("%s: <b>%s</b>", model.get(0).getName(), model.get(0).getValue())));
 
 
-        Glide.with(context)
-                .load(itemsList.get(i).getShopItemImage())
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_image_placeholder)
-                .apply(new RequestOptions().override(200, 200))
-                .into(myViewHolder.image);
+        if (context != null)
+            Glide.with(context.getApplicationContext())
+                    .load(itemsList.get(i).getShopItemImage())
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .placeholder(R.drawable.ic_image_placeholder)
+                    .apply(new RequestOptions().override(200, 200))
+                    .into(myViewHolder.image);
 
         if (itemsList.get(i).isSelected())
             myViewHolder.holder.setBackground(context.getResources().getDrawable(R.drawable.variation_brd_selected));

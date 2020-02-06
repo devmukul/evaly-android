@@ -36,6 +36,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
@@ -355,7 +356,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         shop_item_id = firstItem.getShopItemId();
 
-        if (getContext() != null && this.isVisible())
+        if (getContext() != null && this.isVisible() && !Objects.requireNonNull(getActivity()).isDestroyed())
             Glide.with(getContext())
                     .load(firstItem.getShopItemImage())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -431,8 +432,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                             return;
                         } else {
                             Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                            if (BuyNowFragment.this.isVisible())
-                                BuyNowFragment.this.dismiss();
+
+                            dismissDialog();
                         }
 
                         JsonArray data = response.getAsJsonArray("data");
@@ -468,5 +469,15 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
     }
 
+    private void dismissDialog() {
+        if (this.isVisible())
+            dismiss();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Glide.with(Objects.requireNonNull(getActivity())).pauseRequests();
+    }
 
 }
