@@ -135,7 +135,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     AttributesItem attributesItem = itemsList.get(i).getAttributes().get(0);
                     String varName = attributesItem.getName();
                     String varValue = attributesItem.getValue();
-                    variationTitle.setText(varName + ": " + varValue);
+                    //variationTitle.setText(varName + ": " + varValue);
                     loadProductById(position);
                 }
             } else
@@ -368,7 +368,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             AttributesItem attributesItem = firstItem.getAttributes().get(0);
             String varName = attributesItem.getName();
             String varValue = attributesItem.getValue();
-            variationTitle.setText(varName + ": " + varValue);
+           // variationTitle.setText(varName + ": " + varValue);
         } else
             variationHolder.setVisibility(View.GONE);
 

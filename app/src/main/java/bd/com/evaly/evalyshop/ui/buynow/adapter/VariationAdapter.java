@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.buynow.adapter;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,12 +47,11 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
 
         List<AttributesItem> model = itemsList.get(i).getAttributes();
 
-
         if (model.size() > 1)
-            myViewHolder.text.setText(String.format("%s, %s", model.get(0).getValue(), model.get(1).getValue()));
+            myViewHolder.text.setText(Html.fromHtml(String.format("%s: <b>%s</b><br>%s: <b>%s</b>", model.get(0).getName(), model.get(0).getValue(), model.get(1).getName(), model.get(1).getValue())));
 
         else if (model.size() > 0)
-            myViewHolder.text.setText(model.get(0).getValue());
+            myViewHolder.text.setText(Html.fromHtml(String.format("%s: <b>%s</b>", model.get(0).getName(), model.get(0).getValue())));
 
 
         Glide.with(context)
