@@ -48,10 +48,10 @@ public class SignInActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+        setContentView(R.layout.activity_sign_in_new);
 
 
-        signUp = findViewById(R.id.signup);
+        signUp = findViewById(R.id.sign_up);
         close = findViewById(R.id.closeBtn);
         phoneNumber = findViewById(R.id.phone_number);
         password = findViewById(R.id.password);
