@@ -74,6 +74,7 @@ import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.StickyScrollView;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
@@ -251,18 +252,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         NestedScrollView nestedScrollViewReply = replyDialog.findViewById(R.id.stickyScrollView);
 
         if (nestedScrollViewReply != null) {
-            nestedScrollViewReply.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    if (nestedScrollViewReply.getChildAt(0).getBottom()
-                            <= (nestedScrollViewReply.getHeight() + nestedScrollViewReply.getScrollY())) {
-                        try {
-                            if (!isReplyLoading)
-                                loadReplies(selectedCommentID);
+            nestedScrollViewReply.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                if (nestedScrollViewReply.getChildAt(0).getBottom()
+                        <= (nestedScrollViewReply.getHeight() + nestedScrollViewReply.getScrollY())) {
+                    try {
+                        if (!isReplyLoading)
+                            loadReplies(selectedCommentID);
 
-                        } catch (Exception e) {
-                            Log.e("load more error", e.toString());
-                        }
+                    } catch (Exception e) {
+                        Log.e("load more error", e.toString());
                     }
                 }
             });
@@ -291,18 +289,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         uploadImage.setOnClickListener(view1 -> Toast.makeText(context, "Photo reply is disabled now.", Toast.LENGTH_SHORT).show());
         reloadReply.setOnClickListener(view1 -> reloadRecyclerReply());
 
-        submitReply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        submitReply.setOnClickListener(view13 -> {
 
-                if (selectedPostID.equals(""))
-                    Toast.makeText(context, "Couldn't post reply. Try again later.", Toast.LENGTH_SHORT).show();
-                else if (replyInput.getText().toString().trim().equals(""))
-                    Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
-                else
-                    createReply();
+            if (selectedPostID.equals(""))
+                Toast.makeText(context, "Couldn't post reply. Try again later.", Toast.LENGTH_SHORT).show();
+            else if (replyInput.getText().toString().trim().equals(""))
+                Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
+            else
+                createReply();
 
-            }
         });
 
         // comment bottom sheet
@@ -352,10 +347,11 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         commentRecyclerView.setLayoutManager(managerComment);
         commentRecyclerView.setAdapter(commentAdapter);
 
-        NestedScrollView nestedScrollViewComment = commentDialog.findViewById(R.id.stickyScrollView);
+        StickyScrollView nestedScrollViewComment = commentDialog.findViewById(R.id.stickyScrollView);
 
         if (nestedScrollViewComment != null) {
             nestedScrollViewComment.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+
                 if (nestedScrollViewComment.getChildAt(0).getBottom()
                         <= (nestedScrollViewComment.getHeight() + nestedScrollViewComment.getScrollY())) {
                     try {
@@ -844,13 +840,16 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         NestedScrollView scrollView = commentDialog.findViewById(R.id.stickyScrollView);
 
+
         NewsfeedApiHelper.getComments(CredentialManager.getToken(), post_id, currentCommentPage, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
+
+                isCommentLoading = false;
+
                 assert scrollView != null;
                 scrollView.fling(0);
-                isCommentLoading = false;
                 commentProgressContainer.setVisibility(View.GONE);
                 commentDialog.findViewById(R.id.progressBarBottom).setVisibility(View.INVISIBLE);
 
@@ -858,11 +857,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                 JsonArray jsonArray = response.getAsJsonArray("data");
 
-                if (jsonArray.size() > 0)
+                if (jsonArray.size() > 0) {
                     commentNot.setVisibility(View.GONE);
+                    currentCommentPage++;
+                }
                 else {
                     commentNot.setVisibility(View.VISIBLE);
-                    currentCommentPage++;
                 }
 
                 for (int i = 0; i < jsonArray.size(); i++) {
