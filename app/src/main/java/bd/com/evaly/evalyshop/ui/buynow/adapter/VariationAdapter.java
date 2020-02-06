@@ -16,20 +16,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 
-public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyViewHolder>{
+public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyViewHolder> {
 
     private ArrayList<ShopItem> itemsList;
     private Context context;
     private ClickListenerVariation clickListenerVariation;
-
-    public interface ClickListenerVariation {
-
-        void selectVariation(int position);
-    }
 
     public VariationAdapter(ArrayList<ShopItem> itemsList, Context context, ClickListenerVariation clickListenerVariation) {
         this.itemsList = itemsList;
@@ -40,16 +37,21 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_variation_image,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_variation_image, viewGroup, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
+        List<AttributesItem> model = itemsList.get(i).getAttributes();
 
-        if (itemsList.get(i).getAttributes().size() > 0)
-            myViewHolder.text.setText(itemsList.get(i).getAttributes().get(0).getValue());
+
+        if (model.size() > 1)
+            myViewHolder.text.setText(String.format("%s, %s", model.get(0).getValue(), model.get(1).getValue()));
+
+        else if (model.size() > 0)
+            myViewHolder.text.setText(model.get(0).getValue());
 
 
         Glide.with(context)
@@ -79,14 +81,18 @@ public class VariationAdapter extends RecyclerView.Adapter<VariationAdapter.MyVi
         return itemsList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public interface ClickListenerVariation {
+
+        void selectVariation(int position);
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView image;
         RelativeLayout holder;
         TextView text;
-
-
         View view;
+
         public MyViewHolder(final View itemView) {
             super(itemView);
 
