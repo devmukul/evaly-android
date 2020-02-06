@@ -41,14 +41,14 @@ public class SignUpActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_signup_new);
 
 
         firstName = findViewById(R.id.f_name);
         lastName = findViewById(R.id.l_name);
         phoneNumber = findViewById(R.id.number);
         signUp = findViewById(R.id.sign_up);
-        signIn = findViewById(R.id.sign_in);
+        signIn = findViewById(R.id.signinHolder);
         close = findViewById(R.id.close);
         userDetails = new UserDetails(this);
         referPref = new ReferPref(this);
