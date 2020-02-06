@@ -860,8 +860,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 if (jsonArray.size() > 0) {
                     commentNot.setVisibility(View.GONE);
                     currentCommentPage++;
-                }
-                else {
+                } else {
                     commentNot.setVisibility(View.VISIBLE);
                 }
 
@@ -905,6 +904,12 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onDataFetched(JsonObject response, int statusCode) {
                 skeletonCommentHeader.hide();
 
+                if (response == null) {
+                    Toast.makeText(context, "Post is not available", Toast.LENGTH_SHORT).show();
+                    if (commentDialog.isShowing())
+                        commentDialog.dismiss();
+                    return;
+                }
                 JsonObject ob = response.get("data").getAsJsonObject();
                 JsonObject author = ob.getAsJsonObject("author");
                 String authorName = author.get("full_name").getAsString();
