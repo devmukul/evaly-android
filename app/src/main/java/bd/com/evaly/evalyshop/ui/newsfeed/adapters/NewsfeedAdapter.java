@@ -4,12 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,6 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -30,10 +30,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment;
-import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
@@ -112,7 +112,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                     myViewHolder.statusView.setVisibility(View.VISIBLE);
                     myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(body, 180, "... <b>Show more</b>")));
                 }
-
 
 
                 myViewHolder.cardLink.setVisibility(View.VISIBLE);
@@ -223,42 +222,36 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
             else
                 popup.getMenuInflater().inflate(R.menu.newsfeed_menu_user, popup.getMenu());
 
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.action_share:
-                            Intent in = new Intent(Intent.ACTION_SEND);
-                            in.setType("text/plain");
-                            in.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
-                            in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/" + itemsList.get(i).getSlug());
-                            context.startActivity(Intent.createChooser(in, "Share Post"));
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.action_share:
+                        Intent in = new Intent(Intent.ACTION_SEND);
+                        in.setType("text/plain");
+                        in.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
+                        in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/" + itemsList.get(i).getSlug());
+                        context.startActivity(Intent.createChooser(in, "Share Post"));
+                        break;
+                    case R.id.action_delete:
+                        if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
                             break;
-                        case R.id.action_delete:
-                            if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
-                                break;
-                            new AlertDialog.Builder(context)
-                                    .setMessage("Are you sure you want to delete?")
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(itemsList.get(i).getSlug(), "post"))
-                                    .setNegativeButton("NO", null).show();
-                            break;
-                        case R.id.action_edit:
-                            NewsfeedActivity activity = (NewsfeedActivity) context;
-                            activity.openEditBottomSheet(itemsList.get(i));
-                    }
-
-                    return true;
+                        new AlertDialog.Builder(context)
+                                .setMessage("Are you sure you want to delete?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(itemsList.get(i).getSlug(), "post"))
+                                .setNegativeButton("NO", null).show();
+                        break;
+                    case R.id.action_edit:
+                        NewsfeedActivity activity = (NewsfeedActivity) context;
+                        activity.openEditBottomSheet(itemsList.get(i));
                 }
+
+                return true;
             });
 
             popup.show();
         });
 
 
-    }
-
-    public interface NewsFeedShareListener<T> {
-        void onSharePost(T object);
     }
 
     private String wordBeautify(int count, boolean like) {
@@ -288,6 +281,25 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    public boolean isJSONValid(String test) {
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+            // edited, to include @Arthur's comment
+            // e.g. in case JSONArray is valid as well...
+            try {
+                new JSONArray(test);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public interface NewsFeedShareListener<T> {
+        void onSharePost(T object);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -322,21 +334,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
             view = itemView;
         }
-    }
-
-    public boolean isJSONValid(String test) {
-        try {
-            new JSONObject(test);
-        } catch (JSONException ex) {
-            // edited, to include @Arthur's comment
-            // e.g. in case JSONArray is valid as well...
-            try {
-                new JSONArray(test);
-            } catch (JSONException ex1) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

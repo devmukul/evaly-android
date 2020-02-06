@@ -22,14 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.Author;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
+import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.util.Utils;
 
 
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHolder>{
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHolder> {
 
     ArrayList<CommentItem> itemsList;
     Context context;
@@ -45,7 +45,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     @NonNull
     @Override
     public CommentAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_comment,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_comment, viewGroup, false);
         return new CommentAdapter.MyViewHolder(view);
     }
 
@@ -60,8 +60,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         if (author.getFullName() == null)
             author.setFullName("");
 
-        if (repliesList.size() > 0){
-            if (repliesList.size() == 1){
+        if (repliesList.size() > 0) {
+            if (repliesList.size() == 1) {
                 myViewHolder.replyMoreCount.setVisibility(View.GONE);
                 myViewHolder.replyHolder.setVisibility(View.VISIBLE);
             } else {
@@ -71,7 +71,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                 if (repliesList.size() == 2)
                     myViewHolder.replyMoreCount.setText("Show previous 1 more reply");
                 else {
-                    String smText = "Show previous " +(repliesList.size()-1)+ " more replies";
+                    String smText = "Show previous " + (repliesList.size() - 1) + " more replies";
                     myViewHolder.replyMoreCount.setText(smText);
                 }
 
@@ -86,7 +86,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                 img.setBounds(0, 0, sizeInPixel, sizeInPixel);
                 myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
                 myViewHolder.userNameView.setCompoundDrawablePadding(15);
-            }else {
+            } else {
                 myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
             }
 
@@ -114,7 +114,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         myViewHolder.userNameView.setText(author.getFullName());
 
-        if (author.getFullName().trim().replaceAll("\\s+","").equals(""))
+        if (author.getFullName().trim().replaceAll("\\s+", "").equals(""))
             myViewHolder.userNameView.setText("User");
 
 
@@ -130,9 +130,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         }
 
 
-        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", commentItem.getCreatedAt())));
-        myViewHolder.statusView.setText(Html.fromHtml(commentItem.getBody()));
+        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", commentItem.getCreatedAt())));
+        // myViewHolder.statusView.setText(Html.fromHtml(commentItem.getBody()));
 
+
+        myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(commentItem.getBody(), 180, "... <b>Show more</b>")));
+
+        myViewHolder.statusView.setOnClickListener(view -> {
+
+            if (myViewHolder.statusView.getText().toString().contains("Show more"))
+                myViewHolder.statusView.setText(itemsList.get(i).getBody());
+            else
+                myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
+
+        });
 
         Glide.with(context)
                 .load(author.getCompressedImage())
@@ -161,12 +172,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             }
         }
 
-        View.OnClickListener openReply = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fragment.openReplyBottomSheet(String.valueOf(commentItem.getId()), author.getFullName(),  author.getCompressedImage(), author.getIsAdmin(), commentItem.getBody(), commentItem.getCreatedAt(), commentItem.getAttachement());
-            }
-        };
+        View.OnClickListener openReply = view -> fragment.openReplyBottomSheet(String.valueOf(commentItem.getId()), author.getFullName(), author.getCompressedImage(), author.getIsAdmin(), commentItem.getBody(), commentItem.getCreatedAt(), commentItem.getAttachement());
 
         myViewHolder.replyCountView.setOnClickListener(openReply);
         myViewHolder.replyIcon.setOnClickListener(openReply);
@@ -177,20 +183,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         myViewHolder.view.setLongClickable(true);
 
         myViewHolder.view.setOnLongClickListener(
-                new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
+                view -> {
 
-                        if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
-                            return false;
-
-                        new AlertDialog.Builder(context)
-                                .setMessage("Are you sure you want to delete?")
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(commentItem.getId()+"", "comment"))
-                                .setNegativeButton("NO", null).show();
+                    if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
                         return false;
-                    }
+
+                    new AlertDialog.Builder(context)
+                            .setMessage("Are you sure you want to delete?")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(commentItem.getId() + "", "comment"))
+                            .setNegativeButton("NO", null).show();
+                    return false;
                 }
         );
 
@@ -207,11 +210,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         return position;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView userNameView, timeView, statusView, likeCountView, replyCountView, reply1Name, reply1Text, replyMoreCount;
         ImageView userImage, likeIcon, replyIcon, menuIcon, postImage, reply1Image;
         LinearLayout replyHolder;
         View view;
+
         public MyViewHolder(final View itemView) {
             super(itemView);
 
