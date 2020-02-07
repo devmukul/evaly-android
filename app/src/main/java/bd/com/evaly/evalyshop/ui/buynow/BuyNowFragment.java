@@ -470,8 +470,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     }
 
     private void dismissDialog() {
-        if (this.isVisible())
-            dismiss();
+        if (getActivity() != null) {
+            if (this.isVisible() && !getActivity().isDestroyed() && !getActivity().isFinishing())
+                dismiss();
+        }
     }
 
     @Override

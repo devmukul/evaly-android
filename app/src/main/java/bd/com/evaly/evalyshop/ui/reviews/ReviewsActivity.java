@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
@@ -260,6 +261,12 @@ public class ReviewsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Glide.with(this).pauseRequests();
+    }
+
 
     public void getShopReviews(String sku) {
 
@@ -275,7 +282,7 @@ public class ReviewsActivity extends AppCompatActivity {
                 if (list.size() == 0 && currentPage == 1) {
 
                     not.setVisibility(View.VISIBLE);
-                    Glide.with(ReviewsActivity.this)
+                    Glide.with(getApplicationContext())
                             .load(R.drawable.ic_reviews_vector)
                             .apply(new RequestOptions().override(800, 800))
                             .into((ImageView) findViewById(R.id.noImage));
