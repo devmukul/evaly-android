@@ -519,9 +519,10 @@ public class ViewProductActivity extends BaseActivity {
 
 
     private void populateSizeOption(List<AttributeValuesItem> attribute_values) {
-        binding.variant1Holder.setVisibility(View.VISIBLE);
 
-        if (attribute_values.size() > 0) {
+        if (attribute_values.size() > 0 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
+            binding.variant1Holder.setVisibility(View.VISIBLE);
+
             for (int i = 0; i < attribute_values.size(); i++) {
                 if (productAttributesItemList.size() > 1) {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) || attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
@@ -556,13 +557,15 @@ public class ViewProductActivity extends BaseActivity {
                 for (int i = 0; i < productVariantsItemList.size(); i++) {
                     ProductVariantsItem variantItem = productVariantsItemList.get(i);
 
-                    int key1 = variantItem.getAttributeValues().get(0);
-                    int key2 = variantItem.getAttributeValues().get(1);
+                    if (variantItem.getAttributeValues().size() > 1) {
+                        int key1 = variantItem.getAttributeValues().get(0);
+                        int key2 = variantItem.getAttributeValues().get(1);
 
-                    if ((key1 == attributesValue.getKey() && key2 == variantKey2) || (key2 == attributesValue.getKey() && key1 == variantKey2)) {
-                        populateProductByVariant(productVariantsItemList.get(i));
-                        variantKey1 = attributesValue.getKey();
-                        break;
+                        if ((key1 == attributesValue.getKey() && key2 == variantKey2) || (key2 == attributesValue.getKey() && key1 == variantKey2)) {
+                            populateProductByVariant(productVariantsItemList.get(i));
+                            variantKey1 = attributesValue.getKey();
+                            break;
+                        }
                     }
                 }
             }
@@ -572,9 +575,11 @@ public class ViewProductActivity extends BaseActivity {
 
 
     private void populateColorOption(List<AttributeValuesItem> attribute_values) {
-        binding.variant2Holder.setVisibility(View.VISIBLE);
 
-        if (attribute_values.size() > 0) {
+
+        if (attribute_values.size() > 0 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
+            binding.variant2Holder.setVisibility(View.VISIBLE);
+
             for (int i = 0; i < attribute_values.size(); i++) {
                 if (productAttributesItemList.size() > 1) {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) || attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
@@ -609,14 +614,16 @@ public class ViewProductActivity extends BaseActivity {
                 for (int i = 0; i < productVariantsItemList.size(); i++) {
                     ProductVariantsItem variantItem = productVariantsItemList.get(i);
 
-                    int key1 = variantItem.getAttributeValues().get(0);
-                    int key2 = variantItem.getAttributeValues().get(1);
+                    if (variantItem.getAttributeValues().size() > 1) {
+                        int key1 = variantItem.getAttributeValues().get(0);
+                        int key2 = variantItem.getAttributeValues().get(1);
 
-                    if ((key1 == attributesValue.getKey() && key2 == variantKey1) || (key2 == attributesValue.getKey() && key1 == variantKey1)) {
-                        populateProductByVariant(productVariantsItemList.get(i));
+                        if ((key1 == attributesValue.getKey() && key2 == variantKey1) || (key2 == attributesValue.getKey() && key1 == variantKey1)) {
+                            populateProductByVariant(productVariantsItemList.get(i));
 
-                        variantKey2 = attributesValue.getKey();
-                        break;
+                            variantKey2 = attributesValue.getKey();
+                            break;
+                        }
                     }
 
                 }
