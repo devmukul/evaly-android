@@ -256,9 +256,9 @@ public class PayViaBkashActivity extends BaseActivity {
         webView.setWebChromeClient(new WebChromeClient());
 
         if (BuildConfig.DEBUG)
-            webView.loadUrl("https://beta.evaly.com.bd/bkash_payment?invoice_no=" + context_reference + "&amount=" + amount + "&token=" + userDetails.getToken());
+            webView.loadUrl("https://beta.evaly.com.bd/bkash_payment?invoice_no=" + context_reference + "&amount=" + amount + "&token=" + CredentialManager.getTokenNoBearer());
         else
-            webView.loadUrl("https://evaly.com.bd/bkash_payment?invoice_no=" + context_reference + "&amount=" + amount + "&token=" + userDetails.getToken());
+            webView.loadUrl("https://evaly.com.bd/bkash_payment?invoice_no=" + context_reference + "&amount=" + amount + "&token=" + CredentialManager.getTokenNoBearer());
 
 //            webView.loadUrl("file:///android_asset/bkash_dev.html");
 

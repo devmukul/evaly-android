@@ -263,8 +263,8 @@ public class ReviewsActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        Glide.with(getApplicationContext()).pauseRequests();
         super.onDestroy();
-        Glide.with(this).pauseRequests();
     }
 
 
