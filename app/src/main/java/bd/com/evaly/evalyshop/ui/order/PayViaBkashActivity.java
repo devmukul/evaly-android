@@ -15,6 +15,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
@@ -254,11 +255,14 @@ public class PayViaBkashActivity extends BaseActivity {
 
         webView.setWebChromeClient(new WebChromeClient());
 
-        // webView.loadUrl("https://evaly.com.bd/bkash_payment?invoice_no="+context_reference+"&amount="+amount+"&token="+userDetails.getToken());
+        if (BuildConfig.DEBUG)
+            webView.loadUrl("https://beta.evaly.com.bd/bkash_payment?invoice_no=" + context_reference + "&amount=" + amount + "&token=" + userDetails.getToken());
+        else
+            webView.loadUrl("https://evaly.com.bd/bkash_payment?invoice_no=" + context_reference + "&amount=" + amount + "&token=" + userDetails.getToken());
 
 //            webView.loadUrl("file:///android_asset/bkash_dev.html");
 
-            webView.loadUrl("file:///android_asset/bkash.html");
+//            webView.loadUrl("file:///android_asset/bkash.html");
     }
 
     @Override
