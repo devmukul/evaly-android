@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -218,9 +217,9 @@ public class PayViaBkashActivity extends BaseActivity {
                 super.onPageFinished(webView, url);
                 //Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
 
-                webView.evaluateJavascript(javascript, s -> {
-                    Log.d("LogName", s); // Prints: {"var1":"variable1","var2":"variable2"}
-                });
+//                webView.evaluateJavascript(javascript, s -> {
+//                    Log.d("LogName", s); // Prints: {"var1":"variable1","var2":"variable2"}
+//                });
 
 
                 if (!redirect) {

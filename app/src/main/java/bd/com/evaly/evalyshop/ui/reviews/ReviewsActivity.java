@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -42,18 +41,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
 import bd.com.evaly.evalyshop.ui.reviews.adapter.ReviewsAdapter;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
@@ -263,7 +258,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        Glide.with(getApplicationContext()).pauseRequests();
+        // Glide.with(getApplicationContext()).pauseRequests();
         super.onDestroy();
     }
 
@@ -282,10 +277,12 @@ public class ReviewsActivity extends AppCompatActivity {
                 if (list.size() == 0 && currentPage == 1) {
 
                     not.setVisibility(View.VISIBLE);
-                    Glide.with(getApplicationContext())
-                            .load(R.drawable.ic_reviews_vector)
-                            .apply(new RequestOptions().override(800, 800))
-                            .into((ImageView) findViewById(R.id.noImage));
+
+                    if (!isFinishing() && !isDestroyed())
+                        Glide.with(getApplicationContext())
+                                .load(R.drawable.ic_reviews_vector)
+                                .apply(new RequestOptions().override(800, 800))
+                                .into((ImageView) findViewById(R.id.noImage));
 
                     recyclerView.setVisibility(View.GONE);
 

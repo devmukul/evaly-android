@@ -1070,7 +1070,7 @@ public class GlobalSearchActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
 
-        Glide.with(getApplicationContext()).pauseRequests();
+        // Glide.with(getApplicationContext()).pauseRequests();
         super.onDestroy();
     }
 }

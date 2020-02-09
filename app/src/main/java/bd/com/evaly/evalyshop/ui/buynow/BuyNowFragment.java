@@ -479,8 +479,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     @Override
     public void onDestroy() {
 
-        if (getActivity() != null)
-            Glide.with(getActivity().getApplicationContext()).pauseRequests();
+//        if (getActivity() != null)
+//            Glide.with(getActivity().getApplicationContext()).pauseRequests();
 
         super.onDestroy();
     }
