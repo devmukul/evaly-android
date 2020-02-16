@@ -32,13 +32,12 @@
                 android:background="#fff"
                 android:orientation="vertical">
 
-
                 <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="190dp"
                     android:layout_marginBottom="50dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -65,6 +64,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
+                    android:layout_marginTop="150dp"
                     android:visibility="gone">
 
                     <ImageView

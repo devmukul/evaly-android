@@ -524,7 +524,7 @@ public class ViewProductActivity extends BaseActivity {
             binding.variant1Holder.setVisibility(View.VISIBLE);
 
             for (int i = 0; i < attribute_values.size(); i++) {
-                if (productAttributesItemList.size() > 1) {
+                if (productAttributesItemList.size() > 1 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) || attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
                         attribute_values.get(i).setSelected(true);
                         variantKey1 = attribute_values.get(i).getKey();
@@ -581,7 +581,7 @@ public class ViewProductActivity extends BaseActivity {
             binding.variant2Holder.setVisibility(View.VISIBLE);
 
             for (int i = 0; i < attribute_values.size(); i++) {
-                if (productAttributesItemList.size() > 1) {
+                if (productAttributesItemList.size() > 1 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) || attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
                         attribute_values.get(i).setSelected(true);
                         variantKey2 = attribute_values.get(i).getKey();
