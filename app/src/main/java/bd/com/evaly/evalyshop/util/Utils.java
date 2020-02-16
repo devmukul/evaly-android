@@ -49,7 +49,6 @@ public class Utils {
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
 
-
     public static String formatePrice(double d) {
         if (d == (int) d)
             return String.format(Locale.ENGLISH, "%d", (int) d);
@@ -64,11 +63,11 @@ public class Utils {
         return formatePrice(d);
     }
 
-    public static float convertDpToPixel(float dp, Context context){
+    public static float convertDpToPixel(float dp, Context context) {
         return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
-    public static float convertPixelsToDp(float px, Context context){
+    public static float convertPixelsToDp(float px, Context context) {
         return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
@@ -430,6 +429,65 @@ public class Utils {
             Log.e("formattedDateFromString", "Exception in formateDateFromstring(): " + e.getMessage());
         }
         return parsed;
+
+    }
+
+
+    public static Date getCampaignDate(String inputDate) {
+
+        String inputFormat;
+
+        if (inputDate.contains("."))
+            inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        else
+            inputFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+        Date parsed = null;
+
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+        df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
+
+        try {
+            parsed = df_input.parse(inputDate);
+        } catch (Exception e) {
+            Log.e("formattedDateFromString", "Exception in formateDateFromstring(): " + e.getMessage());
+        }
+        return parsed;
+
+    }
+
+
+    public static String getFormatedCampaignDate(String inputFormat, String outputFormat, String inputDate) {
+        if (inputFormat.equals("")) { // if inputFormat = "", set a default input format.
+            if (inputDate.contains("."))
+                inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+            else
+                inputFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        }
+        if (outputFormat.equals("")) {
+            outputFormat = "EEEE d',' MMMM  yyyy"; // if inputFormat = "", set a default output format.
+        }
+        Date parsed = null;
+        String outputDate = "";
+
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+        df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
+
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.ENGLISH);
+        df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+
+
+        // You can set a different Locale, This example set a locale of Country Mexico.
+        //SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, new Locale("es", "MX"));
+        //SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, new Locale("es", "MX"));
+
+        try {
+            parsed = df_input.parse(inputDate);
+            outputDate = df_output.format(parsed);
+        } catch (Exception e) {
+            Log.e("formattedDateFromString", "Exception in formateDateFromstring(): " + e.getMessage());
+        }
+        return outputDate;
 
     }
 

@@ -10,21 +10,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.listener.CampaignListener;
+import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
+import bd.com.evaly.evalyshop.util.Utils;
 
-public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHolder>{
+public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHolder> {
 
     private List<CampaignItem> itemList;
     private Context context;
     private CampaignListener listener;
 
 
-
-    public CampaignAdapter(Context context, List<CampaignItem> items, CampaignListener listener){
+    public CampaignAdapter(Context context, List<CampaignItem> items, CampaignListener listener) {
         this.context = context;
         this.itemList = items;
         this.listener = listener;
@@ -39,9 +43,37 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull CampaignAdapter.ViewHolder holder, int position) {
 
-        holder.tvTitle.setText(itemList.get(position).getName());
+        CampaignItem model = itemList.get(position);
 
-        holder.itemView.setOnClickListener(view -> listener.onItemClick(itemList.get(position)));
+        holder.tvTitle.setText(model.getName());
+        holder.itemView.setOnClickListener(view -> listener.onItemClick(model));
+
+        Glide.with(holder.itemView.getContext())
+                .load(model.getBannerImage())
+                .skipMemoryCache(true)
+                .into(holder.ivCover);
+
+
+
+
+        Date startDate = Utils.getCampaignDate( model.getStartDate());
+
+        Date endDate = Utils.getCampaignDate( model.getEndDate());
+
+        Date currentDate = Calendar.getInstance().getTime();
+
+
+        if (currentDate.after(startDate) && currentDate.before(endDate)) {
+            holder.tvStatus.setText("Live Now");
+            holder.tvStatus.setBackground(context.getResources().getDrawable(R.drawable.btn_live_now_red));
+        } else if (currentDate.after(endDate)){
+            holder.tvStatus.setText("Expired");
+            holder.tvStatus.setBackground(context.getResources().getDrawable(R.drawable.btn_campaign_expired));
+        } else {
+            holder.tvStatus.setText("Live on " + Utils.getFormatedCampaignDate("", "d MMM hh:mm aa", model.getStartDate()));
+            holder.tvStatus.setBackground(context.getResources().getDrawable(R.drawable.btn_pending_bg));
+        }
+
 
     }
 
@@ -53,7 +85,8 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
-        ImageView imageView;
+        ImageView ivCover;
+        TextView tvStatus;
         View itemView;
 
         public ViewHolder(@NonNull View itemView) {
@@ -62,7 +95,8 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
             this.itemView = itemView;
 
             tvTitle = itemView.findViewById(R.id.tvTitle);
-            imageView = itemView.findViewById(R.id.image);
+            ivCover = itemView.findViewById(R.id.ivCover);
+            tvStatus = itemView.findViewById(R.id.tvStatus);
 
         }
     }

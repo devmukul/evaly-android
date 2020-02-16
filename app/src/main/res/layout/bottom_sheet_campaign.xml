@@ -16,7 +16,7 @@
         app:cardCornerRadius="5dp"
         app:cardPreventCornerOverlap="true">
 
-        <androidx.core.widget.NestedScrollView
+        <bd.com.evaly.evalyshop.views.StickyScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -30,13 +30,19 @@
             app:behavior_hideable="true"
             app:behavior_peekHeight="56dp">
 
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:tag="sticky"
+                android:paddingBottom="10dp"
+                android:background="#ffff">
             <View
                 android:layout_width="70dp"
                 android:layout_height="4dp"
                 android:background="@drawable/bottomsheet_top_brd"
                 android:layout_gravity="center"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginBottom="5dp"/>
 
             <TextView
@@ -48,6 +54,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginBottom="10dp"
                 android:textStyle="bold"/>
+            </LinearLayout>
 
 
             <ProgressBar
@@ -65,12 +72,11 @@
                 android:layout_weight="0"
                 android:orientation="vertical"
                 tools:listitem="@layout/item_campaign"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="7"
-                app:spanCount="2"
                 android:nestedScrollingEnabled="false"
                 android:paddingBottom="25dp"
-                android:paddingTop="15dp"
+                android:paddingTop="5dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:clipToPadding="false"
@@ -108,7 +114,7 @@
 
 
         </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+        </bd.com.evaly.evalyshop.views.StickyScrollView>
     </androidx.cardview.widget.CardView>
 
 </layout>
