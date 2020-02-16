@@ -1,35 +1,29 @@
 package bd.com.evaly.evalyshop.ui.campaign;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.BottomSheetCampaignBinding;
+import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignAdapter;
 
-public class CampaignBottomSheetFragment extends BottomSheetDialogFragment implements CampaignBottomSheetNavigator{
+public class CampaignBottomSheetFragment extends Fragment implements CampaignBottomSheetNavigator {
 
-    private BottomSheetCampaignBinding binding;
+    private FragmentCampaignBinding binding;
     private CampaignBottomSheetViewModel viewModel;
     private View mRootView;
     private List<CampaignItem> items = new ArrayList<>();
@@ -47,7 +41,7 @@ public class CampaignBottomSheetFragment extends BottomSheetDialogFragment imple
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.bottom_sheet_campaign, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_campaign, container, false);
         binding.setViewModel(viewModel);
         mRootView = binding.getRoot();
         return mRootView;
@@ -58,31 +52,40 @@ public class CampaignBottomSheetFragment extends BottomSheetDialogFragment imple
         super.onCreate(savedInstanceState);
 
         //bottom sheet round corners can be obtained but the while background appears to remove that we need to add this.
-        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+        // setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme);
 
         viewModel = ViewModelProviders.of(this).get(CampaignBottomSheetViewModel.class);
         viewModel.setNavigator(this);
+
+
     }
 
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
+
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        binding.toolbar.setNavigationOnClickListener(view1 -> {
+            if (getActivity() != null)
+                getActivity().onBackPressed();
+        });
+
         viewModel.loadCampaigns();
         initRecycler();
     }
 
 
-   private void initRecycler(){
+    private void initRecycler() {
 
         adapter = new CampaignAdapter(getContext(), items, item -> {
             Intent ni = new Intent(getContext(), CampaignShopActivity.class);
             ni.putExtra("title", item.getName());
             ni.putExtra("slug", item.getSlug());
             getContext().startActivity(ni);
-
-            if (CampaignBottomSheetFragment.this.isVisible())
-                CampaignBottomSheetFragment.this.dismiss();
+//
+//            if (CampaignBottomSheetFragment.this.isVisible())
+//                CampaignBottomSheetFragment.this.dismiss();
 
         });
         binding.recyclerView.setAdapter(adapter);
@@ -90,18 +93,18 @@ public class CampaignBottomSheetFragment extends BottomSheetDialogFragment imple
     }
 
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BottomSheetDialog bottomSheetDialog=(BottomSheetDialog)super.onCreateDialog(savedInstanceState);
-        bottomSheetDialog.setOnShowListener(dialog -> {
-            BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
-            FrameLayout bottomSheet =  dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-            BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
-            BottomSheetBehavior.from(bottomSheet).setHideable(true);
-        });
-        return bottomSheetDialog;
-    }
+//    @Override
+//    public Dialog onCreateDialog(Bundle savedInstanceState) {
+//        BottomSheetDialog bottomSheetDialog=(BottomSheetDialog)super.onCreateDialog(savedInstanceState);
+//        bottomSheetDialog.setOnShowListener(dialog -> {
+//            BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
+//            FrameLayout bottomSheet =  dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+//            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+//            BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
+//            BottomSheetBehavior.from(bottomSheet).setHideable(true);
+//        });
+//        return bottomSheetDialog;
+//    }
 
 
     @Override
@@ -116,11 +119,11 @@ public class CampaignBottomSheetFragment extends BottomSheetDialogFragment imple
     }
 
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-
-    }
+//    @Override
+//    public void onDismiss(DialogInterface dialog) {
+//        super.onDismiss(dialog);
+//
+//    }
 
 
     @Override
@@ -128,7 +131,7 @@ public class CampaignBottomSheetFragment extends BottomSheetDialogFragment imple
 
         binding.progressBar.setVisibility(View.GONE);
 
-        if (list.size()==0) {
+        if (list.size() == 0) {
             binding.recyclerView.setVisibility(View.GONE);
             binding.layoutNot.setVisibility(View.VISIBLE);
         } else {

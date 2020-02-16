@@ -59,4 +59,10 @@
         android:label="fragment_cart"
         tools:layout="@layout/fragment_cart" />
 
+    <fragment
+        android:id="@+id/campaignFragment"
+        android:name="bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetFragment"
+        android:label="fragment_campaign"
+        tools:layout="@layout/bottom_sheet_campaign"/>
+
 </navigation>

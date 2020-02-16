@@ -125,7 +125,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         productItemList = new ArrayList<>();
         productRecyclerView = view.findViewById(R.id.products);
         productRecyclerView.setHasFixedSize(false);
-        adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity,this);
+        adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity,this, NavHostFragment.findNavController(this));
         productRecyclerView.setAdapter(adapterProducts);
 
         productItemList.add(new HomeHeaderItem());

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.ViewPager;
@@ -46,7 +47,6 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
-import bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
@@ -57,16 +57,32 @@ import retrofit2.Response;
 public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
+    private NavController navController;
     private Context context;
     private List<ProductItem> productsList;
+    View.OnClickListener itemViewListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int position = (int) view.getTag(); // get item for position
+
+            Intent intent = new Intent(context, ViewProductActivity.class);
+            intent.putExtra("product_slug", productsList.get(position).getSlug());
+            intent.putExtra("product_name", productsList.get(position).getName());
+            intent.putExtra("product_price", productsList.get(position).getMaxPrice());
+            if (productsList.get(position).getImageUrls().size() > 0)
+                intent.putExtra("product_image", productsList.get(position).getImageUrls().get(0));
+            context.startActivity(intent);
+        }
+    };
     private Fragment fragmentInstance;
     private AppCompatActivity activityInstance;
 
-    public HomeProductGridAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance) {
+    public HomeProductGridAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
         this.context = context;
         productsList = a;
         this.fragmentInstance = fragmentInstance;
         this.activityInstance = activityInstance;
+        this.navController = navController;
     }
 
     @Override
@@ -75,28 +91,12 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_HEADER) {
             View v = inflater.inflate(R.layout.recycler_header_home, parent, false);
-            return  new VHHeader(v);
+            return new VHHeader(v);
         } else {
             View v = inflater.inflate(R.layout.item_home_product_grid, parent, false);
             return new VHItem(v);
         }
     }
-
-    View.OnClickListener itemViewListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            int position = (int) view.getTag(); // get item for position
-
-            Intent intent=new Intent(context, ViewProductActivity.class);
-            intent.putExtra("product_slug",productsList.get(position).getSlug());
-            intent.putExtra("product_name",productsList.get(position).getName());
-            intent.putExtra("product_price",productsList.get(position).getMaxPrice());
-            if (productsList.get(position).getImageUrls().size()>0)
-                intent.putExtra("product_image", productsList.get(position).getImageUrls().get(0));
-            context.startActivity(intent);
-        }
-    };
-
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderz, int position) {
@@ -106,14 +106,14 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 //            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
 //            layoutParams.setFullSpan(true);
 
-        } else if (holderz instanceof VHItem){
+        } else if (holderz instanceof VHItem) {
 
             VHItem holder = (VHItem) holderz;
 
 
             ProductItem model = productsList.get(position);
 
-            if(model.getName().contains("-")){
+            if (model.getName().contains("-")) {
                 String str = model.getName();
                 str = str.trim();
                 String regex = "-[a-zA-Z0-9]+$";
@@ -121,13 +121,12 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
                 final Matcher matcher = pattern.matcher(str);
 
-                if(matcher.find()){
+                if (matcher.find()) {
                     String output = str.replaceAll(regex, "");
                     holder.textViewAndroid.setText(Html.fromHtml(output));
-                }
-                else
+                } else
                     holder.textViewAndroid.setText(Html.fromHtml(model.getName()));
-            }else
+            } else
                 holder.textViewAndroid.setText(Html.fromHtml(model.getName()));
 
             if (context != null)
@@ -141,12 +140,12 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         .into(holder.imageViewAndroid);
 
 
-            if((model.getMinPriceD()==0) || (model.getMaxPriceD()==0))
+            if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0))
                 holder.price.setText("Call For Price");
 
-            else if(model.getMinDiscountedPriceD() != 0){
+            else if (model.getMinDiscountedPriceD() != 0) {
 
-                if (model.getMinDiscountedPriceD() < model.getMinPriceD()){
+                if (model.getMinDiscountedPriceD() < model.getMinPriceD()) {
                     holder.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
                     holder.priceDiscount.setVisibility(View.VISIBLE);
                     holder.priceDiscount.setPaintFlags(holder.priceDiscount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -164,7 +163,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
             holder.buyNow.setVisibility(View.GONE);
 
-            if ((model.getMinPriceD()==0) || (model.getMaxPriceD()==0)){
+            if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
                 holder.buyNow.setVisibility(View.GONE);
             }
         }
@@ -173,38 +172,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public int getItemCount() {
         return productsList.size();
-    }
-
-    class VHHeader extends RecyclerView.ViewHolder{
-
-        View view;
-
-        private VHHeader(View itemView) {
-            super(itemView);
-            view = itemView;
-            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-            layoutParams.setFullSpan(true);
-            initHeader(view);
-        }
-    }
-
-    class VHItem extends RecyclerView.ViewHolder{
-        TextView textViewAndroid,price,priceDiscount,buyNow,tvCashback;
-        ImageView imageViewAndroid;
-        View itemView;
-        CardView cardView;
-
-        public VHItem(final View itemView) {
-            super(itemView);
-            textViewAndroid=itemView.findViewById(R.id.title);
-            price=itemView.findViewById(R.id.price);
-            imageViewAndroid=itemView.findViewById(R.id.image);
-            priceDiscount = itemView.findViewById(R.id.priceDiscount);
-            buyNow = itemView.findViewById(R.id.buy_now);
-            tvCashback = itemView.findViewById(R.id.tvCashback);
-            cardView = itemView.findViewById(R.id.cardView);
-            this.itemView = itemView;
-        }
     }
 
     private boolean isPositionHeader(int position) {
@@ -218,22 +185,20 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return TYPE_ITEM;
     }
 
-    public void setFilter(ArrayList<ProductItem> ar){
-        productsList=new ArrayList<>();
+    public void setFilter(ArrayList<ProductItem> ar) {
+        productsList = new ArrayList<>();
         productsList.addAll(ar);
         notifyDataSetChanged();
     }
 
-
-
-    private void initHeader(View view){
+    private void initHeader(View view) {
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSmoothScrollingEnabled(true);
 
         LinearLayout voucher = view.findViewById(R.id.voucher);
-        
+
         final ViewPager viewPager = view.findViewById(R.id.pager);
         HomeTabPagerAdapter pager = new HomeTabPagerAdapter(fragmentInstance.getFragmentManager());
 
@@ -242,7 +207,8 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         try {
             shimmer.setVisibility(View.VISIBLE);
             shimmer.startShimmer();
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+        }
 
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(pager);
@@ -257,9 +223,12 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         });
 
         voucher.setOnClickListener(v -> {
-            CampaignBottomSheetFragment campaignBottomSheetFragment = CampaignBottomSheetFragment.newInstance();
-            if (fragmentInstance.getFragmentManager() != null)
-                campaignBottomSheetFragment.show(fragmentInstance.getFragmentManager(), "Campaign BottomSheet");
+//            CampaignBottomSheetFragment campaignBottomSheetFragment = CampaignBottomSheetFragment.newInstance();
+//            if (fragmentInstance.getFragmentManager() != null)
+//                campaignBottomSheetFragment.show(fragmentInstance.getFragmentManager(), "Campaign BottomSheet");
+
+            navController.navigate(R.id.campaignFragment);
+
         });
 
         LinearLayout wholesale = view.findViewById(R.id.evaly_wholesale);
@@ -336,7 +305,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         });
 
 
-        if (!CredentialManager.getToken().equals("")){
+        if (!CredentialManager.getToken().equals("")) {
             GeneralApiHelper.getNotificationCount(CredentialManager.getToken(), "newsfeed", new ResponseListenerAuth<NotificationCount, String>() {
                 @Override
                 public void onDataFetched(NotificationCount response, int statusCode) {
@@ -360,6 +329,37 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     }
 
+    class VHHeader extends RecyclerView.ViewHolder {
+
+        View view;
+
+        private VHHeader(View itemView) {
+            super(itemView);
+            view = itemView;
+            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+            layoutParams.setFullSpan(true);
+            initHeader(view);
+        }
+    }
+
+    class VHItem extends RecyclerView.ViewHolder {
+        TextView textViewAndroid, price, priceDiscount, buyNow, tvCashback;
+        ImageView imageViewAndroid;
+        View itemView;
+        CardView cardView;
+
+        public VHItem(final View itemView) {
+            super(itemView);
+            textViewAndroid = itemView.findViewById(R.id.title);
+            price = itemView.findViewById(R.id.price);
+            imageViewAndroid = itemView.findViewById(R.id.image);
+            priceDiscount = itemView.findViewById(R.id.priceDiscount);
+            buyNow = itemView.findViewById(R.id.buy_now);
+            tvCashback = itemView.findViewById(R.id.tvCashback);
+            cardView = itemView.findViewById(R.id.cardView);
+            this.itemView = itemView;
+        }
+    }
 
 
 }
