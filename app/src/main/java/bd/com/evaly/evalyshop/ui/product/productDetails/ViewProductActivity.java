@@ -315,7 +315,7 @@ public class ViewProductActivity extends BaseActivity {
     }
 
     public int getRelativeTop(View rootView, View childView) {
-        if(childView.getParent() == rootView) return childView.getTop();
+        if (childView.getParent() == rootView) return childView.getTop();
         else return childView.getTop() + getRelativeTop(rootView, (View) childView.getParent());
     }
 
@@ -378,7 +378,11 @@ public class ViewProductActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1212:
-                loadNearestShopByLocation();
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    loadNearestShopByLocation();
+                } else {
+                    Toast.makeText(context, "Location permission is required to see nearby shops. Go to app settings and allow location permission of Evaly app. ", Toast.LENGTH_LONG).show();
+                }
                 break;
             case 0:
                 break;
