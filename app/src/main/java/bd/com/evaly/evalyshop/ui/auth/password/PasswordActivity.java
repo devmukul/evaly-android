@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
@@ -92,7 +91,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             Logger.d("LOGIN");
             xmppHandler.changePassword(etPassword.getText().toString());
             xmppHandler.disconnect();
-            Snackbar.make(pin1Et, "Password set Successfully, Please login!", Snackbar.LENGTH_LONG).show();
+            Toast.makeText(PasswordActivity.this, "Password set Successfully, Please login!", Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(() -> AppController.logout(PasswordActivity.this), 2000);
         }
 
@@ -140,7 +139,8 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
         public void onPasswordChanged() {
             dialog.hideDialog();
-            Snackbar.make(pin1Et, "Password set Successfully, Please login!", Snackbar.LENGTH_LONG).show();
+
+            Toast.makeText(PasswordActivity.this, "Password set Successfully, Please login!", Toast.LENGTH_SHORT).show();
             xmppHandler.disconnect();
             AppController.logout(PasswordActivity.this);
 
@@ -345,7 +345,8 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     @Override
     public void onOTPEmpty() {
         dialog.hideDialog();
-        Snackbar.make(pin1Et, "Please input your otp", Snackbar.LENGTH_LONG).show();
+
+        Toast.makeText(PasswordActivity.this, "Please input your OTP verification code", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -363,7 +364,9 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     @Override
     public void onPasswordMismatch() {
         dialog.hideDialog();
-        Snackbar.make(pin1Et, "Password mismatch", Snackbar.LENGTH_LONG).show();
+
+        Toast.makeText(PasswordActivity.this, "Confirmed password is not matched!", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -377,7 +380,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     @Override
     public void onShortPassword() {
         dialog.hideDialog();
-        etPassword.setError("At least 8 characters!");
+        etPassword.setError("Password must have at least 8 characters!");
     }
 
     @Override
@@ -389,6 +392,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     @Override
     public void onPasswordSetFailed(String msg) {
         dialog.hideDialog();
-        Snackbar.make(pin1Et, msg, Snackbar.LENGTH_LONG).show();
+        Toast.makeText(PasswordActivity.this, msg, Toast.LENGTH_SHORT).show();
+
     }
 }

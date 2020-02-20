@@ -132,7 +132,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.auth.password.PasswordActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.user.UserDashboardActivity"
             android:label="@string/title_activity_user_profile"

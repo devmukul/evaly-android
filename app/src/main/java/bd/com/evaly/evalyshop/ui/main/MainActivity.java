@@ -287,7 +287,8 @@ public class MainActivity extends BaseActivity {
             });
 
 
-        } else {
+        } else
+            {
 
             FirebaseMessaging.getInstance().subscribeToTopic("USER." + userDetails.getUserName());
 
