@@ -904,23 +904,25 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onDataFetched(JsonObject response, int statusCode) {
                 skeletonCommentHeader.hide();
 
-                if (response != null && !response.get("data").isJsonNull()) {
-                    JsonObject ob = response.get("data").getAsJsonObject();
-                    JsonObject author = ob.getAsJsonObject("author");
-                    String authorName = author.get("full_name").getAsString();
-                    String authorImage = author.get("compressed_image").getAsString();
-                    boolean isAdmin = author.get("is_admin").getAsBoolean();
-                    String postText = ob.get("body").getAsString();
-                    String date = ob.get("created_at").getAsString();
-                    String postImageUrl = ob.get("attachment").getAsString();
+                if (response != null) {
+                    if (!response.get("data").isJsonNull()) {
+                        JsonObject ob = response.get("data").getAsJsonObject();
+                        JsonObject author = ob.getAsJsonObject("author");
+                        String authorName = author.get("full_name").getAsString();
+                        String authorImage = author.get("compressed_image").getAsString();
+                        boolean isAdmin = author.get("is_admin").getAsBoolean();
+                        String postText = ob.get("body").getAsString();
+                        String date = ob.get("created_at").getAsString();
+                        String postImageUrl = ob.get("attachment").getAsString();
 
-                    initCommentHeader(authorName, authorImage, isAdmin, postText, date, postImageUrl);
+                        initCommentHeader(authorName, authorImage, isAdmin, postText, date, postImageUrl);
 
-                } else {
-                    Toast.makeText(context, "Post is not available", Toast.LENGTH_SHORT).show();
-                    if (commentDialog.isShowing())
-                        commentDialog.dismiss();
-                    return;
+                    } else {
+                        Toast.makeText(context, "Post is not available", Toast.LENGTH_SHORT).show();
+                        if (commentDialog.isShowing())
+                            commentDialog.dismiss();
+                        return;
+                    }
                 }
 
 
