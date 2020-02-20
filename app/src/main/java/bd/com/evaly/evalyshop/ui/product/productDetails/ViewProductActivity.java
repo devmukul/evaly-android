@@ -528,11 +528,16 @@ public class ViewProductActivity extends BaseActivity {
             binding.variant1Holder.setVisibility(View.VISIBLE);
 
             for (int i = 0; i < attribute_values.size(); i++) {
-                if (productAttributesItemList.size() > 1 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
-                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) || attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
+                if (productAttributesItemList.size() > 1 &&
+                        productVariantsItemList.get(0).getAttributeValues().size() > 1) {
+
+                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) ||
+                            attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
+
                         attribute_values.get(i).setSelected(true);
                         variantKey1 = attribute_values.get(i).getKey();
                     }
+
                 } else {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
                         attribute_values.get(i).setSelected(true);
@@ -549,10 +554,13 @@ public class ViewProductActivity extends BaseActivity {
             if (productAttributesItemList.size() == 1) {
                 for (int i = 0; i < productVariantsItemList.size(); i++) {
                     ProductVariantsItem variantItem = productVariantsItemList.get(i);
+
                     for (int j = 0; j < variantItem.getAttributeValues().size(); j++) {
+
                         int attrValue = variantItem.getAttributeValues().get(j);
                         if (attrValue == attributesValue.getKey()) {
                             populateProductByVariant(productVariantsItemList.get(i));
+
                         }
                     }
                 }
@@ -565,10 +573,13 @@ public class ViewProductActivity extends BaseActivity {
                         int key1 = variantItem.getAttributeValues().get(0);
                         int key2 = variantItem.getAttributeValues().get(1);
 
-                        if ((key1 == attributesValue.getKey() && key2 == variantKey2) || (key2 == attributesValue.getKey() && key1 == variantKey2)) {
+                        if ((key1 == attributesValue.getKey() && key2 == variantKey2) ||
+                                (key2 == attributesValue.getKey() && key1 == variantKey2)) {
+
                             populateProductByVariant(productVariantsItemList.get(i));
                             variantKey1 = attributesValue.getKey();
                             break;
+
                         }
                     }
                 }
@@ -585,11 +596,15 @@ public class ViewProductActivity extends BaseActivity {
             binding.variant2Holder.setVisibility(View.VISIBLE);
 
             for (int i = 0; i < attribute_values.size(); i++) {
-                if (productAttributesItemList.size() > 1 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
-                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) || attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
+                if (productAttributesItemList.size() > 1 && productVariantsItemList.get(0).getAttributeValues().size() > 1) {
+
+                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) ||
+                            attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
+
                         attribute_values.get(i).setSelected(true);
                         variantKey2 = attribute_values.get(i).getKey();
                     }
+
                 } else {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
                         attribute_values.get(i).setSelected(true);
