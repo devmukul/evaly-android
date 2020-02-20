@@ -44,7 +44,7 @@ public class BaseActivity extends AppCompatActivity {
 
 
             try {
-                if (!(Build.MANUFACTURER.toLowerCase().contains("meizu")))
+                if (!(Build.MANUFACTURER.toLowerCase().contains("meizu")) && Build.MODEL.contains("RNE-L22"))
                         configuration.densityDpi = ((int) getResources().getDisplayMetrics().xdpi);
 
             } catch (Exception e){
