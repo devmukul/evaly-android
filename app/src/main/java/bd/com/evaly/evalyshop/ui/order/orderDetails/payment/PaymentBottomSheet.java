@@ -209,10 +209,13 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             if (url.equals(""))
                 Toast.makeText(getContext(), "Unable to make payment!", Toast.LENGTH_SHORT).show();
             else {
-                dismiss();
-                Intent intent = new Intent(getActivity(), PayViaCard.class);
-                intent.putExtra("url", url);
-                Objects.requireNonNull(getActivity()).startActivityForResult(intent, 10002);
+                if (isVisible())
+                    dismiss();
+                if (getActivity() != null) {
+                    Intent intent = new Intent(getActivity(), PayViaCard.class);
+                    intent.putExtra("url", url);
+                    getActivity().startActivityForResult(intent, 10002);
+                }
             }
         }
     }

@@ -62,13 +62,13 @@ public class PaymentBottomSheetViewModel extends ViewModel {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
-                if (!response.get("payment_gateway_url").isJsonNull()) {
+                if (response != null && !response.get("payment_gateway_url").isJsonNull()) {
                     String purl = response.get("payment_gateway_url").getAsString();
                     navigator.payViaCard(purl);
-                } else {
-
+                } else
                     navigator.payViaCard("");
-                }
+
+
             }
 
             @Override
