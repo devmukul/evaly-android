@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="24dp"
-                android:text="Messages" />
+                android:text="@string/messages" />
 
             <LinearLayout
                 android:id="@+id/llRequest"

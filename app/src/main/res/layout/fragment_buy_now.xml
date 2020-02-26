@@ -64,7 +64,7 @@
                         android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:paddingRight="15dp"
-                        android:text="Seller: Unknown"
+                        android:text="@string/seller_unknown"
                         android:textColor="#555"
                         android:textSize="14sp" />
 
@@ -272,7 +272,7 @@
                     android:layout_marginTop="20dp"
                     android:background="@drawable/black_btn"
                     android:stateListAnimator="@null"
-                    android:text="ADD TO CART"
+                    android:text="@string/add_to_cart"
                     android:textColor="#fff"
                     android:layout_weight="1"
                     android:layout_marginRight="7dp"/>
@@ -284,7 +284,7 @@
                     android:layout_marginTop="20dp"
                     android:background="@drawable/buy_now_btn"
                     android:stateListAnimator="@null"
-                    android:text="CHECK OUT"
+                    android:text="@string/check_out"
                     android:textColor="#fff"
                     android:layout_weight="1"
                     android:layout_marginLeft="7dp"/>

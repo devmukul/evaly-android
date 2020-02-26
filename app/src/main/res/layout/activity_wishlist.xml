@@ -49,7 +49,7 @@
                 android:minHeight="200dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="You haven't added anything to wish list."
+                android:text="@string/you_haven_t_added_anything_to_wish_list"
                 android:textAlignment="center"
                 android:textColor="#66778e"
                 android:textSize="18sp" />

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
-        android:text="Rate the product"
+        android:text="@string/rate_the_product"
         android:textColor="#333"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
-        android:text="Write a review (optional)"
+        android:text="@string/write_a_review_optional"
         android:textColor="#555"
         android:textSize="15sp" />
 
@@ -69,7 +69,7 @@
         android:fontFamily="sans-serif"
         android:padding="15dp"
         android:stateListAnimator="@null"
-        android:text="Submit Review"
+        android:text="@string/submit_review"
         android:textAllCaps="false"
         android:textColor="#fff"
         android:textSize="16sp" />

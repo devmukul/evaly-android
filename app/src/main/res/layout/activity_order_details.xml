@@ -38,7 +38,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:text="INVOICE NO"
+                        android:text="@string/invoice_no"
                         android:textAllCaps="true"
                         android:textColor="#333"
                         android:textSize="18sp" />
@@ -112,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
-                    android:text="ORDER STATUS"
+                    android:text="@string/order_status"
                     android:textAllCaps="true"
                     android:textColor="#333"
                     android:textSize="18sp" />
@@ -173,7 +173,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Product"
+                        android:text="@string/product"
                         android:textAlignment="center"
                         android:textColor="#333" />
 
@@ -182,7 +182,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Rate &amp; Qty"
+                        android:text="@string/rate_amp_qty"
                         android:textAlignment="center"
                         android:textColor="#333" />
 
@@ -191,7 +191,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Amount"
+                        android:text="@string/amount"
                         android:textAlignment="center"
                         android:textColor="#333" />
                 </LinearLayout>
@@ -260,7 +260,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="Payment Methods"
+                            android:text="@string/payment_methods"
                             android:textColor="#333"
                             android:textSize="16sp" />
 
@@ -269,7 +269,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="#ec4958"
-                            android:text="Evaly Pay"
+                            android:text="@string/evaly_pay"
                             android:textStyle="bold"
                             android:layout_marginRight="25dp" />
 
@@ -278,7 +278,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Balance: "
+                            android:text="@string/balance_colon"
                             android:textColor="#444"/>
 
                         <TextView
@@ -292,7 +292,7 @@
                             android:paddingTop="8dp"
                             android:paddingRight="10dp"
                             android:paddingBottom="8dp"
-                            android:text="Make Payment"
+                            android:text="@string/make_payment"
                             android:textAlignment="center"
                             android:textColor="#fff" />
 
@@ -323,7 +323,7 @@
                             android:paddingTop="8dp"
                             android:paddingRight="10dp"
                             android:paddingBottom="8dp"
-                            android:text="Pay via Gift Card"
+                            android:text="@string/pay_via_gift_card"
                             android:textAlignment="center"
                             android:textColor="#333"
                             android:visibility="visible" />
@@ -355,7 +355,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Total"
+                                android:text="@string/total"
                                 android:textColor="#333"
                                 android:textStyle="bold" />
 
@@ -380,7 +380,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Paid"
+                                android:text="@string/paid"
                                 android:textColor="#333"
                                 android:textStyle="bold" />
 
@@ -406,7 +406,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Due"
+                                android:text="@string/due"
                                 android:textColor="#333"
                                 android:textStyle="bold" />
 
@@ -614,7 +614,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Report Issue"
+                        android:text="@string/report_issue"
                         android:gravity="center"
                         android:background="@drawable/red_rounded_bg"
                         android:textColor="@color/white"
@@ -629,7 +629,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Existing Issues"
+                        android:text="@string/existing_issues"
                         android:gravity="center"
                         android:textColor="@color/white"
                         android:background="@drawable/green_rounded_bg"

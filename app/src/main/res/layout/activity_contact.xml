@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginBottom="1dp"
-                    android:text="Contact us"
+                    android:text="@string/contact_us"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="#000"
                     android:textSize="22sp" />
@@ -111,7 +111,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="Call"
+                        android:text="@string/call"
                         android:textAlignment="center"
                         android:textColor="#444"
                         android:textSize="13sp" />
@@ -140,7 +140,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="Support"
+                        android:text="@string/support"
                         android:textAlignment="center"
                         android:textColor="#444"
                         android:textSize="13sp" />
@@ -169,7 +169,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="Maps"
+                        android:text="@string/maps"
                         android:textAlignment="center"
                         android:textColor="#444"
                         android:textSize="13sp" />
@@ -202,7 +202,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="Facebook"
+                        android:text="@string/facebook"
                         android:textAlignment="center"
                         android:textColor="#444"
                         android:textSize="13sp" />
@@ -253,7 +253,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Address"
+                        android:text="@string/address"
                         android:textAlignment="center"
                         android:textColor="#666"
                         android:textSize="14sp" />
@@ -262,7 +262,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="House 8 (1st Floor), Road 14 \nDhanmondi, Dhaka-1209"
+                        android:text="@string/evaly_address"
                         android:textAlignment="viewStart"
                         android:textColor="#333"
                         android:textIsSelectable="true"
@@ -294,13 +294,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Email"
+                        android:text="@string/email"
                         android:textAlignment="center"
                         android:textColor="#666"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/number1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -338,7 +337,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Customer Care"
+                        android:text="@string/customer_care"
                         android:textAlignment="center"
                         android:textColor="#666"
                         android:textSize="14sp" />

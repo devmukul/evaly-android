@@ -50,7 +50,7 @@
                     android:id="@+id/textView45"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Evaly Balance"
+                    android:text="@string/evaly_balance"
                     android:textColor="#666"
                     android:textSize="16sp" />
 
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginBottom="15dp"
-            android:text="Recent Transactions"
+            android:text="@string/recent_transactions"
             android:textSize="20sp"
             android:textStyle="bold" />
 

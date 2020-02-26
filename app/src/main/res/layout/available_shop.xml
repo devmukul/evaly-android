@@ -211,7 +211,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:stateListAnimator="@null"
-                android:text="Add to Cart"
+                android:text="@string/add_to_cart"
                 android:textAllCaps="false"
                 android:textColor="#fff"
                 android:textSize="16sp"

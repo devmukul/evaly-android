@@ -29,7 +29,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
-            android:text="Invite your friends &amp; earn money"
+            android:text="@string/invite_your_friends_amp_earn_money"
             android:textColor="#555"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -52,7 +52,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
-            android:text="Your Invitation Code"
+            android:text="@string/your_invitation_code"
             android:textColor="#444"
             android:textSize="16sp" />
 
@@ -152,7 +152,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/dashed_brd"
-            android:text="Rate Evaly App" />
+            android:text="@string/rate_evaly_app" />
 
 
     </LinearLayout>

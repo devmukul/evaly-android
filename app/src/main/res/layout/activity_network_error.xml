@@ -20,7 +20,7 @@
         android:id="@+id/textView16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ooops!"
+        android:text="@string/ooops"
         android:textAlignment="center"
         android:textColor="#666"
         android:textSize="30sp" />
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:lineSpacingExtra="3sp"
-        android:text="No internet connection found. \nPlease check your network settings."
+        android:text="@string/no_internet_connection_found_nplease_check_your_network_settings"
         android:textAlignment="center"
         android:textColor="#888"
         android:textSize="16sp" />
@@ -45,6 +45,6 @@
         android:background="@drawable/retry_btn"
         android:paddingLeft="100dp"
         android:paddingRight="100dp"
-        android:text="Retry"
+        android:text="@string/retry"
         android:textColor="#fff" />
 </LinearLayout>

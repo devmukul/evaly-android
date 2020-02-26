@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_weight="2"
-            android:text="Checkout Information"
+            android:text="@string/checkout_information"
             android:textColor="#444"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -83,7 +83,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Contact Number"
+            android:text="@string/contact_number"
             android:textColor="#444"
             android:textSize="15sp" />
 
@@ -95,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="@drawable/input_brd"
-        android:hint="Enter your number"
+        android:hint="@string/enter_your_number"
         android:imeOptions="actionDone"
         android:inputType="number"
         android:maxLength="11"
@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="Delivery Address"
+            android:text="@string/delivery_address"
             android:textColor="#444"
             android:textSize="15sp" />
 
@@ -131,7 +131,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_weight="1"
-        android:hint="Add New Address"
+        android:hint="@string/add_new_address"
         android:textColor="#666"
         android:textColorHint="#666"
         android:visibility="gone" />
@@ -191,7 +191,7 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="0"
             android:paddingLeft="5dp"
-            android:text="I agree to the Terms &amp; Conditions and Purchasing Policy of Evaly."
+            android:text="@string/i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"
             android:textColor="#444"
             android:textSize="13sp" />
 
@@ -220,7 +220,7 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="0"
             android:paddingLeft="5dp"
-            android:text="Delivery of the products will be completed within approximately 15 working days after payment."
+            android:text="@string/delivery_of_the_products_will_be_completed_within_approximately_15_working_days_after_payment"
             android:textColor="#666"
             android:textSize="13sp" />
 
@@ -233,7 +233,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/black_btn"
         android:stateListAnimator="@null"
-        android:text="PLACE ORDER"
+        android:text="@string/place_order"
         android:textColor="#fff" />
 
 </LinearLayout>

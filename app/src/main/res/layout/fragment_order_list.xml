@@ -59,7 +59,7 @@
                 android:minHeight="180dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="No orders found"
+                android:text="@string/no_orders_found"
                 android:textAlignment="center"
                 android:textColor="#66778e"
                 android:textSize="18sp" />

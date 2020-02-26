@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
-        android:text="Rate Evaly on Playstore"
+        android:text="@string/rate_evaly_on_playstore"
         android:textColor="#333"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -44,7 +44,7 @@
         android:fontFamily="sans-serif"
         android:padding="15dp"
         android:stateListAnimator="@null"
-        android:text="Rate now"
+        android:text="@string/rate_now"
         android:textAllCaps="false"
         android:textColor="#fff"
         android:textSize="16sp" />

@@ -323,5 +323,4 @@ public interface IApiClient {
     Call<JsonObject> deletePendingNewsfeedPost(@Header("Authorization") String token, @Path("postId") String postId, @Body JsonObject body);
 
 
-
 }

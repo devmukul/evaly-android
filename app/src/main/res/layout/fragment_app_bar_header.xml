@@ -146,7 +146,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="What would you like to buy?" />
+                android:text="@string/what_would_you_like_to_buy" />
         </LinearLayout>
     </LinearLayout>
 

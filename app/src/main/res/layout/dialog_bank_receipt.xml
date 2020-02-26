@@ -14,7 +14,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"
-        android:text="Upload Bank Receipt"
+        android:text="@string/upload_bank_receipt"
         android:textColor="#333"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -28,7 +28,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/input_brd"
-        android:hint="Amount"
+        android:hint="@string/amount"
         android:inputType="textMultiLine|text"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
             android:layout_marginBottom="8dp"
             android:backgroundTint="@color/colorAccent"
             android:stateListAnimator="@null"
-            android:text="Submit"
+            android:text="@string/submit"
             android:textColor="#fff" />
 
         <Button
@@ -70,7 +70,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:background="@android:color/transparent"
-            android:text="Cancel" />
+            android:text="@string/cancel" />
 
     </RelativeLayout>
 

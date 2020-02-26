@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_weight="0"
-            android:text="All"
+            android:text="@string/all"
             android:textSize="16sp" />
 
         <LinearLayout
@@ -104,10 +104,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:text="Total: "
+                    android:text="@string/total"
                     android:textAlignment="textEnd"
                     android:textColor="#333"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:layout_marginRight="5dp"/>
 
                 <TextView
                     android:id="@+id/totalPrice"
@@ -145,7 +146,7 @@
             android:paddingTop="10dp"
             android:paddingRight="15dp"
             android:paddingBottom="10dp"
-            android:text="Check Out"
+            android:text="@string/check_out"
             android:textAllCaps="true"
             android:textColor="#fff"
             android:textSize="16sp" />

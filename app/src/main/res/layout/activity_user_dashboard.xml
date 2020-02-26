@@ -61,7 +61,7 @@
                 android:paddingTop="5dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="5dp"
-                android:text="Check Balance"
+                android:text="@string/check_balance"
                 android:textColor="#fff"
                 android:textSize="14sp" />
 
@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
-                android:text="Orders"
+                android:text="@string/orders"
                 android:textColor="#333"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
-                android:text="Notifications"
+                android:text="@string/notifications"
                 android:textColor="#333"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -197,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
-                android:text="Transaction History"
+                android:text="@string/transaction_history"
                 android:textColor="#333"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -227,7 +227,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
-                android:text="Edit Personal Info"
+                android:text="@string/edit_personal_info"
                 android:textColor="#333"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -257,7 +257,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
-                android:text="Change Password"
+                android:text="@string/change_password"
                 android:textColor="#333"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -291,7 +291,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
-                android:text="Messages"
+                android:text="@string/messages"
                 android:textColor="#333"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -326,7 +326,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
-                android:text="Address"
+                android:text="@string/address"
                 android:textColor="#333"
                 android:textSize="18sp" />
 

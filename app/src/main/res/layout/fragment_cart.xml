@@ -13,7 +13,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:title="Shopping Cart"/>
+            app:title="@string/shopping_cart"/>
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroller"
@@ -115,7 +115,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:text="Total: "
+                        android:text="@string/total"
+                        android:layout_marginRight="5dp"
                         android:textAlignment="textEnd"
                         android:textColor="#333"
                         android:textSize="16sp" />
@@ -138,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:layout_weight="0"
-                    android:text="FREE SHIPPING"
+                    android:text="@string/free_shipping"
                     android:textColor="#555"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -155,7 +156,7 @@
                 android:paddingTop="10dp"
                 android:paddingRight="15dp"
                 android:paddingBottom="10dp"
-                android:text="Check Out"
+                android:text="@string/check_out"
                 android:textAllCaps="true"
                 android:textColor="#fff"
                 android:textSize="16sp" />

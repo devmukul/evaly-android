@@ -332,7 +332,7 @@
                             android:id="@+id/vouchers"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
-                            android:text="SKU"
+                            android:text="@string/sku"
                             android:textColor="#555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -376,7 +376,7 @@
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
-                            android:text="Description"
+                            android:text="@string/description"
                             android:textColor="#555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -423,7 +423,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
                             android:layout_marginBottom="8dp"
-                            android:text="Specifications"
+                            android:text="@string/specifications"
                             android:textColor="#555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -467,7 +467,7 @@
                                 android:layout_marginTop="3dp"
                                 android:layout_marginBottom="15dp"
                                 android:layout_weight="1"
-                                android:text="Available at shop"
+                                android:text="@string/available_at_shop"
                                 android:textColor="#555"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -579,7 +579,7 @@
                     android:paddingTop="5dp"
                     android:paddingRight="15dp"
                     android:paddingBottom="15dp"
-                    android:text="Explore More Products"
+                    android:text="@string/explore_more_products"
                     android:textColor="#555"
                     android:textSize="18sp"
                     android:textStyle="bold" />

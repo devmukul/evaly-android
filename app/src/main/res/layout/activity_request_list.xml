@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_weight="0"
-            android:text="No invitation requests yet"
+            android:text="@string/no_invitation_requests_yet"
             android:textAlignment="center"
             android:textColor="#666"
             android:textSize="18sp" />

@@ -50,7 +50,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="25dp"
-                android:text="Reviews"
+                android:text="@string/reviews"
                 android:textColor="#444"
                 android:textSize="16sp"
                 android:textStyle="bold" />

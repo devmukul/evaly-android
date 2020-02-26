@@ -92,7 +92,7 @@
                     android:paddingTop="10dp"
                     android:paddingRight="15dp"
                     android:paddingBottom="18dp"
-                    android:text="Products"
+                    android:text="@string/products"
                     android:textColor="#555"
                     android:textSize="18sp"
                     android:textStyle="bold" />

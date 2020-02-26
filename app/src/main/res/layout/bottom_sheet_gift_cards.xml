@@ -39,7 +39,7 @@
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
                 android:tag="sticky"
-                android:text="Gift Card"
+                android:text="@string/gift_card"
                 android:textAlignment="textStart"
                 android:textColor="#000"
                 android:textSize="18sp"
@@ -59,7 +59,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="15dp"
-                    android:text="Price:"
+                    android:text="@string/price_colon"
                     android:textColor="#666"
                     android:textSize="14sp" />
 
@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingLeft="15dp"
-                    android:text="Value:"
+                    android:text="@string/value_colon"
                     android:textAlignment="textEnd"
                     android:textColor="#666"
                     android:textSize="14sp" />
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
-                android:text="Phone Number"
+                android:text="@string/phone_number"
                 android:textColor="#666"
                 android:textSize="14sp" />
 
@@ -130,7 +130,7 @@
                 android:layout_marginRight="15dp"
                 android:background="@drawable/input_brd"
                 android:ems="10"
-                android:hint="Gift card will be sent to this number"
+                android:hint="@string/gift_card_will_be_sent_to_this_number"
                 android:inputType="number"
                 android:maxLength="11"
                 android:maxLines="1"
@@ -156,7 +156,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="Quantity"
+                        android:text="@string/quantity"
                         android:textColor="#555"
                         android:textSize="14sp" />
 
@@ -222,7 +222,7 @@
                         android:id="@+id/total_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Total Price"
+                        android:text="@string/total_price"
                         android:textAlignment="textEnd"
                         android:textColor="#666"
                         android:textSize="14sp" />
@@ -268,7 +268,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_weight="0"
                     android:paddingLeft="5dp"
-                    android:text="I agree to the Terms &amp; Conditions and Purchasing Policy of Evaly."
+                    android:text="@string/i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"
                     android:textColor="#333"
                     android:textSize="14sp" />
 
@@ -285,7 +285,7 @@
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/black_ripple_bg"
                 android:stateListAnimator="@null"
-                android:text="BUY"
+                android:text="@string/buy"
                 android:textColor="#fff" />
 
         </LinearLayout>
