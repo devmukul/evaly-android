@@ -75,7 +75,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="From"
+                    android:text="@string/from"
                     android:textColor="#555" />
 
                 <TextView
@@ -96,7 +96,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="To"
+                    android:text="@string/to"
                     android:textColor="#555" />
 
                 <TextView
@@ -148,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:text="Price: "
+                android:text="@string/price"
                 android:textColor="#666"
                 android:textSize="16sp" />
 
@@ -179,7 +179,7 @@
                 android:background="@drawable/gift_buy_btn"
                 android:clickable="false"
                 android:stateListAnimator="@null"
-                android:text="PAY"
+                android:text="@string/pay"
                 android:textColor="#fff"
                 android:textSize="15sp" />
         </LinearLayout>

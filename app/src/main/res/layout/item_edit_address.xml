@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
-        android:text="Edit address"
+        android:text="@string/edit_address"
         android:textColor="#333"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:background="@drawable/input_bg"
-        android:hint="Enter Address Here"
+        android:hint="@string/enter_address_here"
         android:padding="15dp"
         android:textColor="#000"
         android:textSize="16sp" />
@@ -37,7 +37,7 @@
         android:fontFamily="sans-serif"
         android:padding="15dp"
         android:stateListAnimator="@null"
-        android:text="Update Address"
+        android:text="@string/update_address"
         android:textAllCaps="false"
         android:textColor="#fff"
         android:textSize="16sp" />

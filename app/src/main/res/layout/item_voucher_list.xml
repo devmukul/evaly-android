@@ -72,7 +72,7 @@
                 android:backgroundTint="#f57224"
                 android:clickable="false"
                 android:stateListAnimator="@null"
-                android:text="BUY"
+                android:text="@string/buy"
                 android:textColor="#fff"
                 android:textSize="16sp" />
         </LinearLayout>

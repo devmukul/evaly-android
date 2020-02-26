@@ -8,32 +8,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:paddingTop="10dp"
-        android:paddingBottom="5dp"
-        android:orientation="horizontal">
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp">
+
         <TextView
             android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Ilias Ahmed"
-            android:textStyle="bold"
-            android:layout_weight="1"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12 July, 2019"
-            />
+            android:text="12 July, 2019" />
     </LinearLayout>
+
     <TextView
         android:id="@+id/tvReply"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="loren ipsum loren ipsum loren ipsum loren ipsum loren ipsum loren ipsumloren ipsum"
+        android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingLeft="10dp"/>
+        android:text="loren ipsum loren ipsum loren ipsum loren ipsum loren ipsum loren ipsumloren ipsum" />
 
 </LinearLayout>

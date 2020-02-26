@@ -97,7 +97,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Order Date" />
+                            android:text="@string/order_date" />
 
                         <TextView
                             android:id="@+id/orderDate"
@@ -116,7 +116,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Applicable Date" />
+                            android:text="@string/applicable_date" />
 
                         <TextView
                             android:id="@+id/applicableDate"
@@ -188,7 +188,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Total price" />
+                                android:text="@string/total_price" />
 
                             <TextView
                                 android:id="@+id/total_price"
@@ -208,7 +208,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Total paid" />
+                                android:text="@string/total_price" />
 
                             <TextView
                                 android:id="@+id/total_paid"
@@ -238,7 +238,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:text="Payment status:"
+                    android:text="@string/payment_status"
                     android:textColor="#333"
                     android:textSize="16sp" />
 
@@ -258,7 +258,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
                     android:backgroundTint="@color/colorAccent"
-                    android:text="Pay"
+                    android:text="@string/pay"
                     android:textColor="#fff" />
             </LinearLayout>
 

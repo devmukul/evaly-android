@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true">
 
 
-    <include layout="@layout/fragment_app_bar_header"/>
+    <include layout="@layout/fragment_app_bar_header" />
 
 
     <androidx.core.widget.NestedScrollView
@@ -32,8 +32,7 @@
                 android:background="#fff"
                 android:orientation="vertical">
 
-                <include
-                    layout="@layout/skeleton_tablayout_header"/>
+                <include layout="@layout/skeleton_tablayout_header" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_layout_sub_cat"
@@ -41,11 +40,11 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
                     android:background="#fff"
+                    android:visibility="gone"
                     app:tabPaddingBottom="5dp"
                     app:tabSelectedTextColor="@color/black"
                     app:tabTextAppearance="@style/home_tab_text"
-                    app:tabTextColor="@color/c777"
-                    android:visibility="gone">
+                    app:tabTextColor="@color/c777">
 
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"

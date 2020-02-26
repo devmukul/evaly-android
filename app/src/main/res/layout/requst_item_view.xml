@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:gravity="center"
     android:foreground="?selectableItemBackground"
+    android:gravity="center"
     android:orientation="vertical">
 
     <LinearLayout
@@ -20,6 +19,7 @@
         <FrameLayout
             android:layout_width="60dp"
             android:layout_height="60dp">
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/ivProfileImage"
                 android:layout_width="match_parent"
@@ -30,13 +30,13 @@
                 android:id="@+id/tvShortName"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="IA"
                 android:background="@drawable/circle_green"
                 android:backgroundTint="@color/colorAccentBlue"
+                android:gravity="center"
+                android:text="IA"
                 android:textColor="@color/white"
                 android:textSize="28dp"
-                android:visibility="visible"
-                android:gravity="center"/>
+                android:visibility="visible" />
         </FrameLayout>
 
         <LinearLayout
@@ -59,14 +59,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
+                    android:ellipsize="end"
+                    android:maxLength="100"
+                    android:maxLines="1"
                     android:text="Ilias Ahmed"
                     android:textColor="#333"
                     android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:maxLines="1"
-                    android:maxLength="100"
-                    android:ellipsize="end"
-                    />
+                    android:textStyle="bold" />
 
 
             </LinearLayout>
@@ -75,14 +74,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/tvBody"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:layout_marginBottom="2dp"
-                    android:maxLines="1"
+                    android:layout_weight="2"
                     android:ellipsize="end"
+                    android:maxLines="1"
                     android:paddingRight="10dp"
                     android:text="Wants to connect with you" />
 
@@ -90,68 +90,73 @@
                     android:id="@+id/tvUnreadCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
+                    android:background="@drawable/round_green"
                     android:gravity="center"
                     android:minWidth="22dp"
-                    android:background="@drawable/round_green"
                     android:paddingLeft="5dp"
-                    android:visibility="gone"
+                    android:paddingRight="5dp"
                     android:text=""
                     android:textColor="@color/white"
-                    android:paddingRight="5dp" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
                 <LinearLayout
                     android:id="@+id/llAccept"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="7dp"
-                    android:gravity="center"
                     android:layout_marginRight="10dp"
+                    android:layout_weight="1"
                     android:background="@drawable/round_box_less"
-                    android:orientation="horizontal">
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="7dp">
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:tint="@color/green"
-                        android:padding="1dp"
                         android:layout_marginRight="5dp"
-                        android:src="@drawable/ic_confirm"/>
+                        android:padding="1dp"
+                        android:src="@drawable/ic_confirm"
+                        android:tint="@color/green" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#555"
-                        android:text="Accept"/>
+                        android:text="Accept"
+                        android:textColor="#555" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llReject"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="7dp"
-                    android:gravity="center"
                     android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
                     android:background="@drawable/round_box_less"
-                    android:orientation="horizontal">
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="7dp">
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
+                        android:layout_marginRight="5dp"
                         android:padding="1dp"
                         android:src="@drawable/ic_cancel_black_24dp"
-                        android:layout_marginRight="5dp"
-                        android:tint="@color/red_app"/>
+                        android:tint="@color/red_app" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#555"
-                        android:text="Reject"/>
+                        android:text="Reject"
+                        android:textColor="#555" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -161,5 +166,5 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/gray_border"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </LinearLayout>

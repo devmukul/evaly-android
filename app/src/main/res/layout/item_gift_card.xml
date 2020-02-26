@@ -73,7 +73,7 @@
                 android:background="@drawable/gift_buy_btn"
                 android:clickable="false"
                 android:stateListAnimator="@null"
-                android:text="BUY"
+                android:text="@string/buy"
                 android:textColor="#fff"
                 android:textSize="15sp" />
         </LinearLayout>

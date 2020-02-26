@@ -27,7 +27,7 @@
                 android:textSize="16sp"
                 android:textColor="#000"
                 android:inputType="number"
-                android:hint="Minimum Price"
+                android:hint="@string/minimum_price"
                 android:id="@+id/minimum"
                 android:background="@drawable/input_brd"
                 android:padding="10dp"
@@ -40,7 +40,7 @@
                 android:textSize="16sp"
                 android:textColor="#000"
                 android:inputType="number"
-                android:hint="Maximum Price"
+                android:hint="@string/maximum_price"
                 android:id="@+id/maximum"
 
                 android:background="@drawable/input_brd"
@@ -67,7 +67,7 @@
         android:layout_weight="0"
         android:background="@color/colorAccent"
         android:padding="15dp"
-        android:text="Apply Filters"
+        android:text="@string/apply_filters"
         android:textAlignment="center"
         android:textColor="#fff" />
 

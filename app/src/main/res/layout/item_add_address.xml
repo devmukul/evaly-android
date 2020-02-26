@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
-        android:text="Add new address"
+        android:text="@string/add_new_address"
         android:textColor="#333"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -27,7 +27,7 @@
         android:layout_marginTop="5dp"
         android:background="@drawable/input_bg"
         android:fontFamily="sans-serif"
-        android:hint="Enter Address Here"
+        android:hint="@string/enter_address_here"
         android:padding="15dp"
         android:textColor="#000"
         android:textSize="16sp" />
@@ -41,7 +41,7 @@
         android:fontFamily="sans-serif"
         android:padding="15dp"
         android:stateListAnimator="@null"
-        android:text="Add Address"
+        android:text="@string/add_address"
         android:textAllCaps="false"
         android:textColor="#fff"
         android:textSize="16sp" />
@@ -60,7 +60,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginBottom="15dp"
             android:layout_weight="0"
-            android:text="Format:"
+            android:text="@string/example_colon"
             android:textColor="#333"
             android:textStyle="bold" />
 
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="15dp"
-            android:text="Flat no, House no, Road, Block/Sector/Village, Area/Union, District"
+            android:text="@string/flat_no_house_no_road_block_sector_village_area_union_district"
             android:textColor="#333" />
     </LinearLayout>
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
 
-    android:id="@+id/cardView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:cardBackgroundColor="@color/transparent"
@@ -22,8 +22,8 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/transparent">
+            android:background="@color/transparent"
+            android:orientation="vertical">
 
 
             <LinearLayout
@@ -124,6 +124,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@null"
+                            android:focusable="false"
                             android:gravity="center"
                             android:imeOptions="actionDone"
                             android:inputType="number"
@@ -131,8 +132,7 @@
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:text="1"
-                            android:textSize="18sp"
-                            android:focusable="false"/>
+                            android:textSize="18sp" />
 
                         <ImageView
                             android:id="@+id/plus"
@@ -230,11 +230,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    tools:listitem="@layout/item_variation_image"
                     android:orientation="horizontal"
                     android:paddingLeft="15dp"
                     android:paddingTop="15dp"
-                    android:paddingBottom="20dp">
+                    android:paddingBottom="20dp"
+                    tools:listitem="@layout/item_variation_image">
 
                 </androidx.recyclerview.widget.RecyclerView>
 
@@ -251,8 +251,7 @@
                 layout="@layout/bottom_sheet_checkout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
-
+                android:visibility="gone" />
 
 
             <LinearLayout
@@ -264,41 +263,35 @@
                 android:paddingBottom="20dp">
 
 
-
                 <Button
                     android:id="@+id/add_to_cart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_weight="1"
                     android:background="@drawable/black_btn"
                     android:stateListAnimator="@null"
                     android:text="@string/add_to_cart"
-                    android:textColor="#fff"
-                    android:layout_weight="1"
-                    android:layout_marginRight="7dp"/>
+                    android:textColor="#fff" />
 
                 <Button
                     android:id="@+id/buy_now"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
                     android:layout_marginTop="20dp"
+                    android:layout_weight="1"
                     android:background="@drawable/buy_now_btn"
                     android:stateListAnimator="@null"
                     android:text="@string/check_out"
-                    android:textColor="#fff"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="7dp"/>
+                    android:textColor="#fff" />
 
 
             </LinearLayout>
 
 
-
-
-
         </LinearLayout>
-
-
 
 
     </bd.com.evaly.evalyshop.views.StickyScrollView>

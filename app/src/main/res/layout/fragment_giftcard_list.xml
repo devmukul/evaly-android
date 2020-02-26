@@ -62,7 +62,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="30dp"
-            android:text="No gift cards available at this moment"
+            android:text="@string/no_gift_cards_available_at_this_moment"
             android:textAlignment="center"
             android:textSize="17sp"
             android:layout_marginBottom="80dp"/>

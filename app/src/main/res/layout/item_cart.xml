@@ -45,7 +45,7 @@
             android:maxLines="1"
             android:paddingLeft="5dp"
             android:paddingRight="15dp"
-            android:text="Seller: Unknown"
+            android:text="@string/seller_unknown"
             android:textColor="#555"
             android:textSize="14sp" />
 

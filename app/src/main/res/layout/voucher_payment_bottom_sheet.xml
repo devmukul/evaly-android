@@ -20,7 +20,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
-        android:text="Amount "
+        android:text="@string/amount"
         android:textColor="#666"
         android:textSize="16sp" />
 
@@ -32,13 +32,13 @@
         android:layout_marginRight="15dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/input_brd"
-        android:hint="Amount"
+        android:hint="@string/amount"
+        android:imeOptions="actionDone"
         android:inputType="number"
         android:paddingLeft="15dp"
         android:paddingTop="10dp"
         android:paddingRight="15dp"
-        android:paddingBottom="10dp"
-        android:imeOptions="actionDone"/>
+        android:paddingBottom="10dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -46,7 +46,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
-        android:text="Choose Payment Method:"
+        android:text="@string/choose_payment_method"
         android:textColor="#666"
         android:textSize="16sp" />
 
@@ -106,7 +106,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
             android:layout_weight="0"
-            android:text="Bank"
+            android:text="@string/bank"
             android:textAlignment="center"
             android:textColor="#666"
             android:textStyle="bold" />
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_weight="0"
-            android:text="Gateway"
+            android:text="@string/bkash"
             android:textAlignment="center"
             android:textColor="#666"
             android:textStyle="bold"

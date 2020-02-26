@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <include layout="@layout/fragment_app_bar_header"/>
+    <include layout="@layout/fragment_app_bar_header" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/stickyScrollView"
@@ -400,7 +400,7 @@
                     android:background="#fafafa"
                     android:paddingLeft="90dp"
                     android:paddingRight="90dp"
-                    app:srcCompat="@drawable/ic_emptycart_new"/>
+                    app:srcCompat="@drawable/ic_emptycart_new" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -470,7 +470,7 @@
             <View
                 android:id="@+id/dummyViewTop"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp" />
 
 
             <ProgressBar
@@ -485,12 +485,11 @@
                 android:paddingBottom="15dp" />
 
 
-
             <View
                 android:id="@+id/dummyView"
                 android:layout_width="match_parent"
                 android:layout_height="600dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
 
         </LinearLayout>

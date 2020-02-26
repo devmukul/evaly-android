@@ -62,7 +62,7 @@
                 android:layout_height="45dp"
                 android:layout_weight="1"
                 android:layout_margin="10dp"
-                android:hint="Name"
+                android:hint="@string/name"
                 android:singleLine="true"
                 android:paddingLeft="16dp"
                 android:background="@drawable/input_brd_round"/>
@@ -81,18 +81,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <EditText
                 android:id="@+id/etContactNumber"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
-                android:layout_weight="1"
-                android:singleLine="true"
                 android:layout_margin="10dp"
-                android:maxLength="11"
+                android:layout_weight="1"
+                android:background="@drawable/input_brd_round"
+                android:hint="@string/contact_number"
                 android:inputType="phone"
-                android:hint="Contact Number"
+                android:maxLength="11"
                 android:paddingLeft="16dp"
-                android:background="@drawable/input_brd_round"/>
+                android:singleLine="true" />
+
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
@@ -111,7 +113,7 @@
             android:layout_marginLeft="10dp"
             android:textColor="@color/white"
             android:background="@drawable/input_btn_bg"
-            android:text="Invite"
+            android:text="@string/invite"
             android:layout_marginBottom="25dp"
             android:layout_marginTop="10dp"
             android:stateListAnimator="@null"/>

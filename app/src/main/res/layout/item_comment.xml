@@ -98,7 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
-                    android:text="Reply"
+                    android:text="@string/reply"
                     android:textColor="#555"
                     android:textSize="14sp" />
 

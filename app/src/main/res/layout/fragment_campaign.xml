@@ -2,7 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="viewModel"
             type="bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetViewModel" />
@@ -18,7 +20,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:title="Campaigns"/>
+            app:title="Campaigns" />
 
 
         <bd.com.evaly.evalyshop.views.StickyScrollView
@@ -62,9 +64,9 @@
                     android:id="@+id/layoutNot"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="150dp"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:layout_marginTop="150dp"
                     android:visibility="gone">
 
                     <ImageView
