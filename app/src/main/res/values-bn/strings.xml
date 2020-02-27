@@ -8,7 +8,7 @@
     <string name="need_help">এই অর্ডার নিয়ে সাহায্য প্রয়োজন?</string>
     <string name="evaly_wallet">ইভ্যালি ওয়ালেট</string>
     <string name="cashback">ক্যাশব্যাক</string>
-    <string name="what_would_you_like_to_buy">এখানে প্রোডাক্ট, শপ, ব্র্যান্ড সার্চ করুন...</string>
+    <string name="what_would_you_like_to_buy">এখানে অনুসন্ধান করুন...</string>
     <string name="you_haven_t_received_any_notification">আপনি কোন নোটিফিকেশন পাননি</string>
     <string name="all">সব</string>
     <string name="check_out">চেক আউট</string>
@@ -170,9 +170,9 @@
     <string name="no_orders_found">কোন অর্ডার নেই</string>
     <string name="location">অবস্থান</string>
     <string name="delivery">ডেলিভারি</string>
-    <string name="categories">ক্যাটাগরি</string>
+    <string name="categories">বিভাগ</string>
     <string name="all_products">সব প্রোডাক্ট</string>
-    <string name="wish_list">ইচ্ছেতালিকা</string>
+    <string name="wish_list">ইচ্ছা তালিকা</string>
     <string name="invite">ইনভাইট করুন</string>
     <string name="invited">ইনভাইট করা হয়েছে</string>
     <string name="name">নাম</string>
@@ -200,4 +200,12 @@
     <string name="share_to_newsfeed">নিউজফীডে শেয়ার করুন</string>
     <string name="no_gift_cards_available_at_this_moment">এখন কোনো গিফট কার্ড নেই</string>
     <string name="total_colon">মোট:</string>
+    <string name="newsfeed">নিউজফিড</string>
+    <string name="gift_cards">" গিফট কার্ড"</string>
+    <string name="recent_products">সাম্প্রতিক পণ্য</string>
+    <string name="brands">ব্র্যান্ড</string>
+    <string name="shops">দোকান</string>
+    <string name="home">হোম</string>
+    <string name="cart">কার্ট</string>
+    <string name="dashboard">ড্যাশবোর্ড</string>
 </resources>

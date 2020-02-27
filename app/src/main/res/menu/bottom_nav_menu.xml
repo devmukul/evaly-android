@@ -3,23 +3,23 @@
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_home"
-        android:title="Home"/>
+        android:title="@string/home"/>
 
     <item
         android:enabled="true"
         android:id="@+id/wishListFragment"
         android:icon="@drawable/ic_favorite"
-        android:title="Wish List"/>
+        android:title="@string/wish_list"/>
 
     <item
         android:id="@+id/cartFragment"
         android:icon="@drawable/ic_cart"
-        android:title="Cart"/>
+        android:title="@string/cart"/>
 
 
     <item
         android:id="@+id/userDashboardActivity"
         android:icon="@drawable/ic_user_nav_menu"
-        android:title="Dashboard"/>
+        android:title="@string/dashboard"/>
 
 </menu>

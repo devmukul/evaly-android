@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0"
-                android:text="Newsfeed" />
+                android:text="@string/newsfeed" />
         </LinearLayout>
 
         <LinearLayout
@@ -132,7 +132,7 @@
                 android:layout_weight="0"
                 android:clickable="false"
                 android:gravity="center"
-                android:text="Gift Cards" />
+                android:text="@string/gift_cards" />
         </LinearLayout>
 
 
@@ -160,7 +160,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="0"
                 android:clickable="false"
-                android:text="Campaigns"
+                android:text="@string/campaigns"
                 android:textAlignment="center" />
         </LinearLayout>
 
@@ -189,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0"
-                android:text="Orders" />
+                android:text="@string/orders" />
         </LinearLayout>
 
 
@@ -250,7 +250,7 @@
         android:paddingTop="10dp"
         android:paddingRight="15dp"
         android:paddingBottom="15dp"
-        android:text="Recent Products"
+        android:text="@string/recent_products"
         android:textColor="#555"
         android:textSize="18sp"
         android:textStyle="bold"

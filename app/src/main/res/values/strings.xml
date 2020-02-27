@@ -41,7 +41,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="inbox">Inbox</string>
     <string name="conversations">Conversations</string>
     <string name="default_notification_channel_id" translatable="false">notification_ch_1</string>
-    <string name="submit">Submit</string>
     <string name="mark_as_read">Mark as Read</string>
     <string name="no_products_found_in_this_shop">No products found in this shop.</string>
     <string name="invite_friends_to_start_messaging">Invite friends to start messaging</string>
@@ -58,30 +57,22 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="current_password">Current Password</string>
     <string name="new_password">New Password</string>
     <string name="confirm_new_password">Confirm New Password</string>
-    <string name="change_password">Change Password</string>
     <string name="write_your_message_here">Write your message here...</string>
     <string name="online">Online</string>
-    <string name="messages">Messages</string>
     <string name="contact_us">Contact us</string>
-    <string name="call">Call</string>
     <string name="support">Support</string>
     <string name="maps">Maps</string>
     <string name="facebook">Facebook</string>
-    <string name="address">Address</string>
     <string name="evaly_address">House 8 (1st Floor), Road 14 \nDhanmondi, Dhaka-1209</string>
     <string name="email">Email</string>
     <string name="customer_care">Customer Care</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="first_name">First Name</string>
-    <string name="last_name">Last Name</string>
     <string name="contact_number">Contact Number</string>
     <string name="delivery_address">Delivery Address</string>
     <string name="email_address">Email Address</string>
-    <string name="delivery_address">Delivery Address</string>
     <string name="update_profile">Update Profile</string>
     <string name="phone_number">Phone Number</string>
-    <string name="reset_password">Reset Password</string>
     <string name="invite_your_friends_amp_earn_money"><![CDATA[Invite your friends & earn money]]></string>
     <string name="your_invitation_code">Your Invitation Code</string>
     <string name="rate_evaly_app">Rate Evaly App</string>
@@ -109,23 +100,15 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="confirm_password">Confirm Password</string>
     <string name="set_password">Set Password</string>
     <string name="no_invitation_requests_yet">No invitation requests yet</string>
-    <string name="reviews">Reviews</string>
-    <string name="phone_number">Phone Number</string>
     <string name="forgot_your_password">Forgot your password?</string>
-    <string name="sign_in">Sign In</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="sign_up">Sign Up</string>
-    <string name="phone_number">Phone Number</string>
-    <string name="first_name">First Name</string>
-    <string name="last_name">Last Name</string>
-    <string name="phone_number">Phone Number</string>
     <string name="invitation_code">Invitation Code</string>
     <string name="leave_empty_if_you_don_t_have_invitation_code">Leave empty if you don\'t have Invitation Code.</string>
     <string name="i_agree_to_the_privacy_policy_and_terms_amp_conditions_of_evaly"><![CDATA[I agree to the Privacy Policy and Terms & Conditions of Evaly.]]></string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_in">Sign In</string>
     <string name="recent_transactions">Recent Transactions</string>
-    <string name="evaly_balance">Evaly Balance</string>
     <string name="check_balance">Check Balance</string>
     <string name="notifications">Notifications</string>
     <string name="transaction_history">Transaction History</string>
@@ -143,15 +126,11 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="status_text">Status text...</string>
     <string name="write_your_comment">Write your comment...</string>
     <string name="create_a_status">Create a status</string>
-    <string name="write_your_thoughts_here">Write your thoughts here...</string>
     <string name="add_photo">Add Photo</string>
-    <string name="share">SHARE</string>
     <string name="use_gift_card">Use Gift Card</string>
     <string name="gift_card_code">Gift card code</string>
     <string name="enter_gift_card_code">Enter gift card code</string>
-    <string name="amount">Amount</string>
     <string name="enter_amount">Enter amount</string>
-    <string name="make_payment">Make Payment</string>
     <string name="rate_evaly_on_playstore">Rate Evaly on Playstore</string>
     <string name="rate_now">Rate now</string>
     <string name="reply_to_the_comment">Reply to the comment...</string>
@@ -175,17 +154,11 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="other_reason">Other reason</string>
     <string name="cancel_order">Cancel Order</string>
     <string name="checkout_information">Checkout Information</string>
-    <string name="contact_number">Contact Number</string>
     <string name="enter_your_number">Enter your number</string>
-    <string name="delivery_address">Delivery Address</string>
     <string name="add_new_address">Add New Address</string>
-    <string name="i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"><![CDATA[I agree to the Terms & Conditions and Purchasing Policy of Evaly.]]></string>
     <string name="delivery_of_the_products_will_be_completed_within_approximately_15_working_days_after_payment">Delivery of the products will be completed within approximately 15 working days after payment.</string>
     <string name="place_order">PLACE ORDER</string>
     <string name="delivery_options">Delivery Options</string>
-    <string name="amount_bdt">Amount (BDT)</string>
-    <string name="amount">Amount</string>
-    <string name="partial_pay">Partial Pay</string>
     <string name="bkash">bKash</string>
     <string name="gateway">Gateway</string>
     <string name="bank">Bank</string>
@@ -194,18 +167,14 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="no_email_added">No email added</string>
     <string name="redeem">REDEEM</string>
     <string name="gift_card">Gift Card</string>
-    <string name="price">Price</string>
     <string name="price_colon">Price:</string>
     <string name="value_colon">Value:</string>
-    <string name="phone_number">Phone Number</string>
     <string name="gift_card_will_be_sent_to_this_number">Gift card will be sent to this number</string>
     <string name="quantity">Quantity</string>
     <string name="total_price">Total Price</string>
     <string name="i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"><![CDATA[I agree to the Terms & Conditions and Purchasing Policy of Evaly.]]></string>
-    <string name="buy">BUY</string>
     <string name="partial_pay">Partial Pay</string>
     <string name="evaly_balance">Evaly Balance</string>
-    <string name="choose_payment_method">Choose Payment Method:</string>
     <string name="upload_bank_receipt">Upload Bank Receipt</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
@@ -222,7 +191,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="seller_unknown">Seller: Unknown</string>
     <string name="shopping_cart">Shopping Cart</string>
     <string name="free_shipping">FREE SHIPPING</string>
-    <string name="check_out">Check Out</string>
     <string name="search_categories">Search categories</string>
     <string name="show_more">SHOW MORE</string>
     <string name="no_post_yet">No post yet</string>
@@ -237,8 +205,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="invite">Invite</string>
     <string name="invited">Invited</string>
     <string name="name">Name</string>
-    <string name="contact_number">Contact Number</string>
-    <string name="invite">Invite</string>
     <string name="comment">Comment</string>
     <string name="enter_address_here">Enter Address Here</string>
     <string name="add_address">Add Address</string>
@@ -258,7 +224,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="order_date">Order Date</string>
     <string name="applicable_date">Applicable Date</string>
     <string name="amount_bdt">Amount (BDT)</string>
-    <string name="amount">Amount</string>
     <string name="choose_payment_method">Choose Payment Method:</string>
     <string name="minimum_price">Minimum Price</string>
     <string name="maximum_price">Maximum Price</string>
@@ -270,6 +235,15 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="write_your_thoughts_here">Write your thoughts here...</string>
     <string name="share">SHARE</string>
     <string name="no_gift_cards_available_at_this_moment">No gift cards available at this moment</string>
+    <string name="newsfeed">Newsfeed</string>
+    <string name="gift_cards">Gift Cards</string>
+    <string name="recent_products">Recent Products</string>
+    <string name="orders">Orders</string>
+    <string name="brands">Brands</string>
+    <string name="shops">Shops</string>
+    <string name="home">Home</string>
+    <string name="cart">Cart</string>
+    <string name="dashboard">Dashboard</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="search_categories">
@@ -329,6 +303,5 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Want to buy from another seller</item>
         <item>Other reason</item>
     </string-array>
-    <string name="orders">Orders</string>
 
 </resources>
