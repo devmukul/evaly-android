@@ -1,26 +1,22 @@
 <resources>
-    <string name="app_name">Evaly</string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="app_name" translatable="false">Evaly</string>
+    <string name="title_activity_home" translatable="false">HomeActivity</string>
 
 
-    <string name="facebook_app_id">701695696956139</string>
-    <string name="fb_login_protocol_scheme">fb701695696956139</string>
-
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_shop">ShopActivity</string>
-    <string name="title_activity_browse_product">Browse Product Activity</string>
-    <string name="title_activity_view_product">ViewProductActivity</string>
+    <string name="facebook_app_id" translatable="false">701695696956139</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb701695696956139</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <string name="title_activity_shop" translatable="false">ShopActivity</string>
+    <string name="title_activity_browse_product" translatable="false">Browse Product Activity</string>
+    <string name="title_activity_view_product" translatable="false">ViewProductActivity</string>
 
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="rating_and_reviews"><![CDATA[Rating & Reviews]]></string>
 
-    <string name="rating_and_reviews">Rating &amp; Reviews</string>
-
-    <string name="title_activity_user_profile">UserProfile</string>
-
-    <string name="contact">
+    <string name="title_activity_user_profile" translatable="false">UserProfile</string>
+    <string name="contact" translatable="false">
 
         E-valy.com ltd.\n
 
@@ -30,28 +26,21 @@
         Contact no: +8801927111666, +88029125760, +88029125713
 
     </string>
-
-    <string name="about">
+    <string name="about" translatable="false">
         E-valy is an e-commerce site which will be capable of providing every kind of goods and products from every sector to every consumer located in Bangladesh. The world’s market place will be only finger-tips away for any customer in possession of a smartphone/computer and an internet connection. They will be able to purchase everything; from a safety-pin to an apartment building from our website. We have gathered the brightest minds of Bangladesh and given them the platform to perform to their fullest extent. All the data-mining and optimization has been done in-house and no outsourcing from any organization has taken place. We are utilizing 100% Bangladeshi personnel and resources and keeping the flow of cash within our borders.
 
 It is a platform where people can purchase all kinds of goods from a single website. From a pencil to a book to a dress to a cell phone to cars to lands; everything is available in this website. It is built by a team of developers who have the sharpest minds in this sector and they are dedicated to only Droplet Limited. We hire no outsourcing outlets and that ensures the security of all our users. There is absolutely no chance of any information being leaked thanks to our dedicated team who are working all the time to ensure that our website is the most secure e-commerce platform. What separates us from other platforms of such sorts is the diversity of our product range and the security that we provide to our users. It is absolutely cutting-edge and state-of-the-art and we can guarantee that no other platform has this much diversity in its product range. Our website is going to be so convenient and user-friendly for our customers that, they would rather order from our website than to go to the shop which is 100 meters away from his/her home. That is the kind of target eValy.com.bd has set for itself. And once we achieve our targets in Bangladesh, we will start expanding towards other countries and present ourselves in a much broader and global scale and encompass the entire world with our website in a short amount of time.
     </string>
 
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="reset_password">Reset Password</string>
-
     <string name="required">Required</string>
     <string name="something_wrong">Something went wrong, please try again!</string>
-
-
     <string name="create_post">Create post</string>
-
     <string name="inbox">Inbox</string>
     <string name="conversations">Conversations</string>
-    <string name="default_notification_channel_id">notification_ch_1</string>
+    <string name="default_notification_channel_id" translatable="false">notification_ch_1</string>
     <string name="submit">Submit</string>
     <string name="mark_as_read">Mark as Read</string>
     <string name="no_products_found_in_this_shop">No products found in this shop.</string>
@@ -59,7 +48,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="report_details">Report Details</string>
     <string name="need_help">Need help with this order?</string>
     <string name="evaly_wallet">Evaly Wallet</string>
-    <string name="taka">৳</string>
+    <string name="taka" translatable="false">৳</string>
     <string name="cashback">Cashback</string>
     <string name="what_would_you_like_to_buy">What would you like to buy?</string>
     <string name="you_haven_t_received_any_notification">You haven\'t received any notification.</string>
@@ -205,7 +194,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="no_email_added">No email added</string>
     <string name="redeem">REDEEM</string>
     <string name="gift_card">Gift Card</string>
-    <string name="price">Price:</string>
+    <string name="price">Price</string>
     <string name="price_colon">Price:</string>
     <string name="value_colon">Value:</string>
     <string name="phone_number">Phone Number</string>
@@ -253,7 +242,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="comment">Comment</string>
     <string name="enter_address_here">Enter Address Here</string>
     <string name="add_address">Add Address</string>
-    <string name="flat_no_house_no_road_block_sector_village_area_union_district">Flat no, House no, Road, Block/Sector/Village, Area/Union, District</string>
+    <string name="flat_no_house_no_road_block_sector_village_area_union_district" translatable="false">Flat no, House no, Road, Block/Sector/Village, Area/Union, District</string>
     <string name="example_colon">Example:</string>
     <string name="reply">Reply</string>
     <string name="edit_address">Edit Address</string>
