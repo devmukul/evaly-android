@@ -64,7 +64,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="what_would_you_like_to_buy">What would you like to buy?</string>
     <string name="you_haven_t_received_any_notification">You haven\'t received any notification.</string>
     <string name="all">All</string>
-    <string name="total">Total:</string>
+    <string name="total_colon">Total:</string>
     <string name="check_out">Check Out</string>
     <string name="current_password">Current Password</string>
     <string name="new_password">New Password</string>
@@ -138,7 +138,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="recent_transactions">Recent Transactions</string>
     <string name="evaly_balance">Evaly Balance</string>
     <string name="check_balance">Check Balance</string>
-    <string name="orders">Orders</string>
     <string name="notifications">Notifications</string>
     <string name="transaction_history">Transaction History</string>
     <string name="edit_personal_info">Edit Personal Info</string>
@@ -341,5 +340,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Want to buy from another seller</item>
         <item>Other reason</item>
     </string-array>
+    <string name="orders">Orders</string>
 
 </resources>
