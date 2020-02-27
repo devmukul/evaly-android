@@ -438,11 +438,14 @@ public class OrderDetailsActivity extends BaseActivity {
         payload.put("gift_code", giftCode);
         payload.put("amount", amount);
 
+        ViewDialog dialog2 = new ViewDialog(this);
+        dialog2.showDialog();;
+
         GiftCardApiHelper.payWithGiftCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
-                dialog.hideDialog();
+                dialog2.hideDialog();
 
                 Toast.makeText(OrderDetailsActivity.this, response.get("message").getAsString(), Toast.LENGTH_LONG).show();
 
@@ -460,6 +463,7 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 Toast.makeText(OrderDetailsActivity.this, "Payment unsuccessful!", Toast.LENGTH_LONG).show();
+                dialog2.hideDialog();
             }
 
             @Override
@@ -468,7 +472,6 @@ public class OrderDetailsActivity extends BaseActivity {
                     AppController.logout(OrderDetailsActivity.this);
                 else
                     makePaymentViaGiftCard(giftCode, invoice, amount);
-
             }
         });
     }
