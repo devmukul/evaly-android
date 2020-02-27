@@ -79,7 +79,7 @@ public class ReviewsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reviews);
 
         getSupportActionBar().setElevation(4f);
-        getSupportActionBar().setTitle("Reviews & Ratings");
+        getSupportActionBar().setTitle(R.string.rating_and_reviews);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         floatingActionButton = findViewById(R.id.floatingActionButton);

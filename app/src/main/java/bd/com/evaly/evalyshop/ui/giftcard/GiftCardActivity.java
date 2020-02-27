@@ -38,7 +38,7 @@ public class GiftCardActivity extends AppCompatActivity {
 
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Gift Cards");
+        getSupportActionBar().setTitle(R.string.gift_cards);
 
         userDetails = new UserDetails(this);
 

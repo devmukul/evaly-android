@@ -132,17 +132,17 @@ public class SubTabsFragment extends Fragment {
 
             if (!(slug.equals("root") && type == 1)) {
                 if (type == 1) {
-                    search.setHint("Search categories");
+                    search.setHint(R.string.search_categories);
                     showMore.setVisibility(View.GONE);
                     getSubCategories();
                 } else if (type == 2) {
-                    search.setHint("Search brands");
+                    search.setHint(R.string.search_brands);
                     getBrandsOfCategory(1);
-                    showMore.setText("Show More");
+                    showMore.setText(R.string.show_more);
                 } else if (type == 3) {
-                    search.setHint("Search shops");
+                    search.setHint(R.string.search_shops);
                     getShopsOfCategory(1);
-                    showMore.setText("Show More");
+                    showMore.setText(R.string.show_more);
                 }
             }
             final Handler handler = new Handler();

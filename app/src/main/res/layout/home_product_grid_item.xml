@@ -110,7 +110,7 @@
             android:paddingTop="7dp"
             android:paddingRight="10dp"
             android:paddingBottom="8dp"
-            android:text="Buy Now"
+            android:text="@string/buy_now"
             android:textAlignment="center"
             android:textColor="#444"
             android:textStyle="normal"

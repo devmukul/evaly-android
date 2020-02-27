@@ -6,50 +6,50 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
-            android:title="Home" />
+            android:title="@string/home" />
         <item
             android:id="@+id/nav_account"
             android:icon="@drawable/ic_user"
-            android:title="Dashboard" />
+            android:title="@string/dashboard" />
         <item
             android:id="@+id/nav_orders"
             android:icon="@drawable/ic_order_thin"
-            android:title="Orders"/>
+            android:title="@string/orders"/>
         <item
             android:id="@+id/nav_messages"
             android:icon="@drawable/ic_chat_small"
-            android:title="Messages"/>
+            android:title="@string/messages"/>
 
         <item
             android:id="@+id/nav_cart"
             android:icon="@drawable/ic_cart"
-            android:title="Cart" />
+            android:title="@string/cart" />
 
         <item
             android:id="@+id/nav_wishlist"
             android:icon="@drawable/ic_favorite"
-            android:title="WishList"/>
+            android:title="@string/wish_list"/>
 
 
         <item android:id="@+id/nav_followed_shops"
                 android:icon="@drawable/ic_menu_store"
-                android:title="Followed Shops"/>
+                android:title="@string/favorite_shops"/>
 
         <item
             android:id="@+id/nav_voucher"
             android:icon="@drawable/ic_menu_voucher"
-            android:title="Vouchers"/>
+            android:title="@string/vouchers"/>
 
         <item
             android:id="@+id/nav_invite_ref"
             android:icon="@drawable/ic_referral"
-            android:title="Invite &amp; Earn"/>
+            android:title="@string/invite_earn"/>
 
 
         <item
             android:id="@+id/nav_contact"
             android:icon="@drawable/ic_phone_thin"
-            android:title="Contact"/>
+            android:title="@string/contact_us_short"/>
 
         <!--<item-->
             <!--android:id="@+id/nav_about"-->

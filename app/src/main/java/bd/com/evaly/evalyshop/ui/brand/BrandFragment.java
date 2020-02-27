@@ -123,7 +123,7 @@ public class BrandFragment extends Fragment {
         categorySlug = getArguments().getString("category");
 
         if (categorySlug.equals("root"))
-            categoryString = "All Categories";
+            categoryString = getString(R.string.all_categories);
 
         else {
             categoryString = categorySlug.replace('-', ' ');

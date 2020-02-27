@@ -51,7 +51,7 @@ public class NotificationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actiivity_notification);
         getSupportActionBar().setElevation(4f);
-        getSupportActionBar().setTitle("Notifications");
+        getSupportActionBar().setTitle(R.string.notifications);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 

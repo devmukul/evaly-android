@@ -103,7 +103,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Newsfeed");
+        getSupportActionBar().setTitle(R.string.newsfeed);
         context = this;
         userDetails = new UserDetails(context);
 

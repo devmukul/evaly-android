@@ -450,7 +450,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="Bill From"
+                            android:text="@string/bill_from"
                             android:textColor="#333" />
 
                         <ImageView
@@ -520,7 +520,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="Bill To"
+                            android:text="@string/bill_to"
                             android:textColor="#333" />
 
                         <ImageView

@@ -230,7 +230,7 @@ public class BrowseProductFragment extends Fragment {
                     bundle.putString("json", res.toString());
                     fragment.setArguments(bundle);
 
-                    pager.addFragment(fragment, "Sub Categories");
+                    pager.addFragment(fragment, getString(R.string.sub_categories));
                     pager.notifyDataSetChanged();
                 }
 
@@ -262,7 +262,7 @@ public class BrowseProductFragment extends Fragment {
             bundle.putString("category", category);
             bundle.putString("json", "");
             fragment.setArguments(bundle);
-            pager.addFragment(fragment, "Brands");
+            pager.addFragment(fragment, getString(R.string.brands));
             pager.notifyDataSetChanged();
         }
 
@@ -274,7 +274,7 @@ public class BrowseProductFragment extends Fragment {
             bundle.putString("category", category);
             bundle.putString("json", "");
             fragment.setArguments(bundle);
-            pager.addFragment(fragment, "Shops");
+            pager.addFragment(fragment, getString(R.string.shops));
             pager.notifyDataSetChanged();
         }
     }

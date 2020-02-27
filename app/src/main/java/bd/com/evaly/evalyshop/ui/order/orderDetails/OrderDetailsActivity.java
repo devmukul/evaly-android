@@ -127,7 +127,7 @@ public class OrderDetailsActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle("Order Details");
+        getSupportActionBar().setTitle(R.string.order_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = this;
@@ -191,7 +191,7 @@ public class OrderDetailsActivity extends BaseActivity {
             getOrderDetails();
         }
 
-        balance.setText(Html.fromHtml("Balance: <b>৳ " + userDetails.getBalance() + "</b>"));
+        balance.setText(Html.fromHtml(getString(R.string.balance)+": <b>৳ " + userDetails.getBalance() + "</b>"));
 
         getOrderHistory();
 
