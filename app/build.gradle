@@ -9,8 +9,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 151
-        versionName "1.181"
+        versionCode 152
+        versionName "1.182"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
