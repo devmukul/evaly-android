@@ -33,6 +33,14 @@ public class CredentialManager {
         return MyPreference.with(AppController.getmContext()).getString(ConstantUtils.REFRESH_TOKEN, "");
     }
 
+    public static void setLanguage(String lang){
+        MyPreference.with(AppController.mContext).addString("language", lang).save();
+    }
+
+    public static String getLanguage(){
+        return MyPreference.with(AppController.getmContext()).getString("language", "en");
+    }
+
     public static void saveUserName(String userName){
         MyPreference.with(AppController.mContext).addString(ConstantUtils.USERNAME, userName).save();
     }

@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.menu.MenuBuilder;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +24,7 @@ import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
@@ -62,13 +64,11 @@ public class UserDashboardActivity extends BaseActivity {
     String from = "";
     ViewDialog alert;
     boolean isFromSignup;
-
+    XMPPEventReceiver xmppEventReceiver;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
-    XMPPEventReceiver xmppEventReceiver;
 
-//    private SessionManager sessionManager;
-
+    //    private SessionManager sessionManager;
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
 
@@ -82,7 +82,7 @@ public class UserDashboardActivity extends BaseActivity {
         //Event Listeners
         public void onLoggedIn() {
 
-            if (xmppHandler == null){
+            if (xmppHandler == null) {
                 xmppHandler = AppController.getmService().xmpp;
             }
 
@@ -107,7 +107,8 @@ public class UserDashboardActivity extends BaseActivity {
 //                    alert.showDialog();
                     try {
                         xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
-                    } catch (Exception ignored){}
+                    } catch (Exception ignored) {
+                    }
                 }
             }
 //            xmppHandler.disconnect();
@@ -122,8 +123,9 @@ public class UserDashboardActivity extends BaseActivity {
             xmppHandler.login();
 
         }
-//
-        public void onSignupFailed(String error){
+
+        //
+        public void onSignupFailed(String error) {
             Logger.d(error);
             if (error.contains("User already exist")) {
                 alert.showDialog();
@@ -165,12 +167,11 @@ public class UserDashboardActivity extends BaseActivity {
         ButterKnife.bind(this);
         context = this;
 
-        getSupportActionBar().setTitle("Dashboard");
+        getSupportActionBar().setTitle(getString(R.string.dashboard));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(4f);
 
-        if(CredentialManager.getToken().equals(""))
-        {
+        if (CredentialManager.getToken().equals("")) {
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
@@ -253,11 +254,48 @@ public class UserDashboardActivity extends BaseActivity {
             startActivity(intent);
         });
 
-
         LinearLayout changePassword = findViewById(R.id.changePassword);
         changePassword.setOnClickListener(view -> {
             Intent intent = new Intent(context, ChangePasswordActivity.class);
             startActivity(intent);
+        });
+
+        LinearLayout changeLanguage = findViewById(R.id.changeLanguage);
+        changeLanguage.setOnClickListener(view -> {
+
+            AlertDialog.Builder adb = new AlertDialog.Builder(this);
+            CharSequence[] items = new CharSequence[]{"English", "বাংলা"};
+
+            int selectedPos = 0;
+            if (CredentialManager.getLanguage().equalsIgnoreCase("bn"))
+                selectedPos = 1;
+
+            adb.setSingleChoiceItems(items, selectedPos, (d, n) -> {
+                Locale myLocale;
+                if (n == 1) {
+                    CredentialManager.setLanguage("BN");
+                    myLocale = new Locale("BN");
+                }
+                else {
+                    CredentialManager.setLanguage("EN");
+                    myLocale = new Locale("EN");
+                }
+
+                Locale.setDefault(myLocale);
+                android.content.res.Configuration config = new android.content.res.Configuration();
+                config.locale = myLocale;
+                getBaseContext().getResources().updateConfiguration(config,
+                        getBaseContext().getResources().getDisplayMetrics());
+
+                startActivity(new Intent(UserDashboardActivity.this, MainActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                finish();
+
+            });
+            adb.setNegativeButton(R.string.cancel, null);
+            adb.setTitle(R.string.select_language);
+            adb.show();
         });
 
 
@@ -267,6 +305,9 @@ public class UserDashboardActivity extends BaseActivity {
             BalanceFragment balanceFragment = BalanceFragment.newInstance();
 
             balanceFragment.show(getSupportFragmentManager(), "balance");
+
+
+
 
 
         });
@@ -348,7 +389,7 @@ public class UserDashboardActivity extends BaseActivity {
             super.onBackPressed();
     }
 
-    private void disconnectXmpp(){
+    private void disconnectXmpp() {
         XMPPHandler.disconnect();
         stopService(new Intent(UserDashboardActivity.this, XMPPService.class));
     }
@@ -375,15 +416,16 @@ public class UserDashboardActivity extends BaseActivity {
 
                 Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
                 Token.logout(UserDashboardActivity.this, new DataFetchingListener<JSONObject>() {
-                        @Override
-                        public void onDataFetched(JSONObject response) {
-                            Toast.makeText(context, "Successfully logged out...", Toast.LENGTH_SHORT).show();
-                            AppController.logout(UserDashboardActivity.this);
-                        }
-                        @Override
-                        public void onFailed(int status) {
+                    @Override
+                    public void onDataFetched(JSONObject response) {
+                        Toast.makeText(context, "Successfully logged out...", Toast.LENGTH_SHORT).show();
+                        AppController.logout(UserDashboardActivity.this);
+                    }
 
-                        }
+                    @Override
+                    public void onFailed(int status) {
+
+                    }
                 });
 
                 return true;

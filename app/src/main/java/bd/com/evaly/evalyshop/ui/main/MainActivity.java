@@ -121,8 +121,8 @@ public class MainActivity extends BaseActivity {
             Logger.d(msg);
             if (!msg.contains("already logged in")) {
 
-                if (xmppHandler == null){
-                    if (AppController.getmService() != null){
+                if (xmppHandler == null) {
+                    if (AppController.getmService() != null) {
                         if (AppController.getmService().xmpp != null)
                             xmppHandler = AppController.getmService().xmpp;
                     }
@@ -168,7 +168,8 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        changeLanguage("BN");
+        if (CredentialManager.getLanguage().equalsIgnoreCase("bn"))
+            changeLanguage("BN");
 
         setContentView(R.layout.activity_main);
 
@@ -193,7 +194,7 @@ public class MainActivity extends BaseActivity {
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
-                    if (item.getItemId() == R.id.userDashboardActivity){
+                    if (item.getItemId() == R.id.userDashboardActivity) {
                         if (userDetails.getToken().equals(""))
                             startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         else
@@ -201,7 +202,7 @@ public class MainActivity extends BaseActivity {
 
                         return false;
                     } else
-                    return onNavDestinationSelected(item, navController);
+                        return onNavDestinationSelected(item, navController);
                 });
 
 
@@ -275,7 +276,7 @@ public class MainActivity extends BaseActivity {
 
         if (!CredentialManager.getToken().equals(""))
             FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_" + strNew));
-        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " "+ Constants.BUILD + "_all_user"));
+        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_all_user"));
 
 
         if (userDetails.getToken().equals("")) {
@@ -303,8 +304,7 @@ public class MainActivity extends BaseActivity {
             });
 
 
-        } else
-            {
+        } else {
 
             FirebaseMessaging.getInstance().subscribeToTopic("USER." + userDetails.getUserName());
 
@@ -352,9 +352,6 @@ public class MainActivity extends BaseActivity {
                 return true;
             });
         }
-
-
-
 
 
         Intent data = getIntent();
@@ -424,7 +421,7 @@ public class MainActivity extends BaseActivity {
         startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
     }
 
-    private void disconnectXmpp(){
+    private void disconnectXmpp() {
         XMPPHandler.disconnect();
         stopService(new Intent(MainActivity.this, XMPPService.class));
     }
@@ -439,7 +436,7 @@ public class MainActivity extends BaseActivity {
         }
 
         if (navController.getCurrentDestination() != null) {
-            if (navController.getCurrentDestination().getId() == R.id.homeFragment){
+            if (navController.getCurrentDestination().getId() == R.id.homeFragment) {
                 if (isLaunchActivity)
                     exitDialog.show();
                 else
@@ -485,7 +482,7 @@ public class MainActivity extends BaseActivity {
         int size = menu.size();
         for (int i = 0; i < size; i++) {
             final MenuItem item = menu.getItem(i);
-            if(item.hasSubMenu()) {
+            if (item.hasSubMenu()) {
                 // Un check sub menu items
                 unCheckAllMenuItems(item.getSubMenu());
             } else {
@@ -559,27 +556,27 @@ public class MainActivity extends BaseActivity {
         return builder;
     }
 
-    private void checkUpdate(){
+    private void checkUpdate() {
 
         int versionCode = BuildConfig.VERSION_CODE;
 
         AuthApiHelper.checkUpdate(new DataFetchingListener<Response<JsonObject>>() {
             @Override
             public void onDataFetched(Response<JsonObject> response) {
-                if (response.code() == 200 || response.code() == 201){
+                if (response.code() == 200 || response.code() == 201) {
                     try {
                         String version = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("version").getAsString();
                         boolean isForce = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("force").getAsBoolean();
                         int v = Integer.parseInt(version);
 
-                        if (versionCode < v && isForce){
+                        if (versionCode < v && isForce) {
                             userDetails.clearAll();
                             MyPreference.with(MainActivity.this).clearAll();
                             update(false);
                         } else if (versionCode < v)
                             update(true);
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

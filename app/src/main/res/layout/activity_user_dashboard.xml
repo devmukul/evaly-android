@@ -108,6 +108,39 @@
             android:background="#f6f6f6" />
 
         <LinearLayout
+            android:id="@+id/llMessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingTop="15dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="15dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="22dp"
+                android:layout_weight="0"
+                android:paddingLeft="1dp"
+                android:paddingTop="3dp"
+                android:paddingRight="1dp"
+                android:tint="#333"
+                app:srcCompat="@drawable/ic_messages" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="0"
+                android:text="@string/messages"
+                android:textColor="#333"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/notification"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -262,7 +295,7 @@
 
 
         <LinearLayout
-            android:id="@+id/llMessage"
+            android:id="@+id/changeLanguage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
@@ -276,20 +309,17 @@
 
             <ImageView
                 android:layout_width="20dp"
-                android:layout_height="22dp"
+                android:layout_height="20dp"
                 android:layout_weight="0"
-                android:paddingLeft="1dp"
-                android:paddingTop="3dp"
-                android:paddingRight="1dp"
                 android:tint="#333"
-                app:srcCompat="@drawable/ic_chat_small" />
+                app:srcCompat="@drawable/ic_globe_earth" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
-                android:text="@string/messages"
+                android:text="@string/change_language"
                 android:textColor="#333"
                 android:textSize="18sp" />
         </LinearLayout>

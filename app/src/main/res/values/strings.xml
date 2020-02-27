@@ -244,6 +244,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="home">Home</string>
     <string name="cart">Cart</string>
     <string name="dashboard">Dashboard</string>
+    <string name="change_language">Change Language</string>
+    <string name="select_language">Select Language</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="search_categories">

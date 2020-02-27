@@ -47,7 +47,7 @@
     <string name="amount">মূল্য ও পরিমাণ</string>
     <string name="payment_methods">পেমেন্ট মেথড</string>
     <string name="evaly_pay">ইভ্যালি পে</string>
-    <string name="balance_colon">ব্যালান্স:</string>
+    <string name="balance_colon">ব্যালেন্স:</string>
     <string name="paid">মূল্য পরিশোধিত</string>
     <string name="due">মূল্য অপরিশোধিত</string>
     <string name="make_payment">পেমেন্ট করুন</string>
@@ -71,12 +71,12 @@
     <string name="i_agree_to_the_privacy_policy_and_terms_amp_conditions_of_evaly">আমি ইভ্যালি গোপনীয়তা নীতি এবং শর্তাবলীর সাথে সম্মত</string>
     <string name="already_have_an_account">ইতিমধ্যে আপনার একাউন্ট আছে?</string>
     <string name="recent_transactions">সাম্প্রতিক লেনদেন</string>
-    <string name="evaly_balance">ইভ্যালি ব্যালান্স</string>
-    <string name="check_balance">ব্যালান্স দেখুন</string>
+    <string name="evaly_balance">ইভ্যালি ব্যালেন্স</string>
+    <string name="check_balance">ব্যালেন্স দেখুন</string>
     <string name="orders">অর্ডার</string>
     <string name="notifications">নোটিফিকেশন</string>
     <string name="transaction_history">লেনদেনের হিস্ট্রি</string>
-    <string name="edit_personal_info">ব্যক্তিগত তথ্য সম্পাদনা করুন</string>
+    <string name="edit_personal_info">ব্যক্তিগত তথ্য পরিবর্তন</string>
     <string name="sku">SKU</string>
     <string name="description">বিবরণ</string>
     <string name="specifications">সবিস্তার বিবরণী</string>
@@ -109,9 +109,9 @@
     <string name="write_a_review_optional">একটি পর্যালোচনা লিখুন</string>
     <string name="submit_review">পর্যালোচনা জমা দিন</string>
     <string name="add_to_cart">কার্টে যোগ করুন</string>
-    <string name="balance">ব্যালান্স</string>
-    <string name="holding_balance">হোল্ডিং ব্যালান্স</string>
-    <string name="gift_card_balance">গিফট কার্ড ব্যালান্স</string>
+    <string name="balance">ব্যালেন্স</string>
+    <string name="holding_balance">হোল্ডিং ব্যালেন্স</string>
+    <string name="gift_card_balance">গিফট কার্ড ব্যালেন্স</string>
     <string name="claim">ক্লেইম করুন</string>
     <string name="campaigns">ক্যাম্পেইন</string>
     <string name="no_campaign_is_available_right_now">এখন কোন ক্যাম্পেইন নেই</string>
