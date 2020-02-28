@@ -210,6 +210,7 @@ public class BrowseProductFragment extends Fragment {
 
     public void getSubCategories() {
 
+
         shimmer.startShimmer();
         shimmer.setVisibility(View.VISIBLE);
         tabLayoutSub.setVisibility(View.GONE);
@@ -218,6 +219,10 @@ public class BrowseProductFragment extends Fragment {
 
             @Override
             public void onDataFetched(JsonArray res, int statusCode) {
+
+
+                if (getContext() == null)
+                    return;
 
                 int length = res.size();
 
@@ -253,6 +258,10 @@ public class BrowseProductFragment extends Fragment {
     }
 
     public void loadOtherTabs() {
+
+
+        if (getContext() == null)
+            return;
 
         {
             SubTabsFragment fragment = new SubTabsFragment();
