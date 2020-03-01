@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -56,7 +58,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
@@ -165,7 +166,6 @@ public class OrderDetailsActivity extends BaseActivity {
         orderDetailsProductAdapter = new OrderDetailsProductAdapter(this, orderDetailsProducts);
         orderList.setAdapter(orderDetailsProductAdapter);
 
-
         scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY == 0)
                 getSupportActionBar().setElevation(0);
@@ -187,11 +187,9 @@ public class OrderDetailsActivity extends BaseActivity {
             Log.d("order_id", invoice_no);
 
             orderNumber.setText("#" + invoice_no);
-
             getOrderDetails();
         }
-
-        balance.setText(Html.fromHtml(getString(R.string.balance)+": <b>৳ " + userDetails.getBalance() + "</b>"));
+        balance.setText(Html.fromHtml(getString(R.string.balance) + ": <b>৳ " + userDetails.getBalance() + "</b>"));
 
         getOrderHistory();
 
@@ -199,19 +197,15 @@ public class OrderDetailsActivity extends BaseActivity {
         indicator.setStepCount(6);
 
         dialog = new ViewDialog(this);
-
         dialog.showDialog();
-        makePayment = findViewById(R.id.makePayment);
 
+        makePayment = findViewById(R.id.makePayment);
         payParially = findViewById(R.id.payPartially);
 
         makePayment.setOnClickListener(v -> {
-
             PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
-
         });
-
 
         payViaGiftCard = findViewById(R.id.payViaGiftCard);
         payViaGiftCard.setOnClickListener(v -> dialogGiftCardPayment());
@@ -244,7 +238,6 @@ public class OrderDetailsActivity extends BaseActivity {
             list = Constants.getIssueListPending();
         else
             list = Constants.getDelivaryIssueList();
-
 
         for (int i = 0; i < list.size(); i++) {
             options.add(list.get(i).getDescription());
@@ -279,7 +272,6 @@ public class OrderDetailsActivity extends BaseActivity {
             submitIssue(model, bottomSheetDialog);
             imageUrl = "";
         });
-
 
         View bottomSheetInternal = bottomSheetDialog.findViewById(R.id.design_bottom_sheet);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
@@ -350,17 +342,13 @@ public class OrderDetailsActivity extends BaseActivity {
 
     }
 
-
     private void openSelector() {
-
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, 1001);
-
     }
-
 
     private void openImageSelector() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
@@ -439,25 +427,21 @@ public class OrderDetailsActivity extends BaseActivity {
         payload.put("amount", amount);
 
         ViewDialog dialog2 = new ViewDialog(this);
-        dialog2.showDialog();;
+        dialog2.showDialog();
 
         GiftCardApiHelper.payWithGiftCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
                 dialog2.hideDialog();
-
                 Toast.makeText(OrderDetailsActivity.this, response.get("message").getAsString(), Toast.LENGTH_LONG).show();
-
                 if (response.has("success")) {
-
                     final Handler handler = new Handler();
                     handler.postDelayed(() -> {
                         finish();
                         startActivity(getIntent());
                     }, 1000);
                 }
-
             }
 
             @Override
@@ -488,7 +472,6 @@ public class OrderDetailsActivity extends BaseActivity {
     public void updatePage() {
 
         scrollView.postDelayed(() -> scrollView.fullScroll(View.FOCUS_UP), 50);
-
         getOrderHistory();
         Balance.update(this, balance);
         getOrderDetails();
@@ -505,9 +488,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
                 if (response.get("gift_card_balance").getAsDouble() < 1)
                     payViaGiftCard.setVisibility(View.GONE);
-
-                balance.setText(Html.fromHtml("Balance: <b>৳ " + response.get("balance").getAsString() + "</b>"));
-
+                balance.setText(Html.fromHtml(getString(R.string.balance) + ": <b>৳ " + response.get("balance").getAsString() + "</b>"));
             }
 
             @Override
@@ -525,11 +506,9 @@ public class OrderDetailsActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 10002) {
-
             if (resultCode == Activity.RESULT_OK) {
                 getOrderDetails();
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -544,7 +523,6 @@ public class OrderDetailsActivity extends BaseActivity {
             Log.d("json image uri", imagePath);
 
             try {
-
                 try {
 
                     Uri resultUri = data.getData();
@@ -613,6 +591,7 @@ public class OrderDetailsActivity extends BaseActivity {
     public void getOrderDetails() {
 
         OrderApiHelper.getOrderDetails(CredentialManager.getToken(), invoice_no, new ResponseListenerAuth<OrderDetailsModel, String>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataFetched(OrderDetailsModel response, int statusCode) {
 
@@ -690,11 +669,11 @@ public class OrderDetailsActivity extends BaseActivity {
                             SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
                             df_input.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-                            Calendar start = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"), Locale.ENGLISH);
-                            Calendar end = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"), Locale.ENGLISH);
+                            Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
+                            Calendar end = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
 
-                            end.set(Calendar.HOUR_OF_DAY, 0);
-                            start.set(Calendar.HOUR_OF_DAY, 0);
+//                            end.set(Calendar.HOUR_OF_DAY, 0);
+//                            start.set(Calendar.HOUR_OF_DAY, 0);
 
                             try {
                                 end.setTime(df_input.parse(cashback_date));
@@ -702,23 +681,20 @@ public class OrderDetailsActivity extends BaseActivity {
                                 Log.e("timze", e.toString());
                             }
 
-                            long startTime = start.getTimeInMillis();
-                            long diffTime = end.getTimeInMillis() - startTime;
+//                            long startTime = start.getTimeInMillis();
+//                            long diffTime = end.getTimeInMillis() - startTime;
+//                            long diffDays = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
 
-                            long diffDays = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
+                            int diffDays = Utils.daysBetween(start, end);
 
                             String message = "Payments with <font color=\"#c53030\">" + payMethod + "</font> will be rewarded by <b>" + cashback_percentage + "%</b> cashback balance within <b>" + diffDays + " days</b>.";
                             tvCampaignRule.setText(Html.fromHtml(message));
 
-
                             if (diffDays < 1)
                                 campaignRuleHolder.setVisibility(View.GONE);
-
                         } else {
-
                             String message = "Payments with <font color=\"#c53030\">" + payMethod + "</font> will be rewarded by <b>" + cashback_percentage + "%</b> cashback balance instantly.";
                             tvCampaignRule.setText(Html.fromHtml(message));
-
                         }
                     }
                 }
