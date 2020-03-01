@@ -57,11 +57,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedPager;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedPager;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
@@ -72,6 +72,7 @@ import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
 public class NewsfeedActivity extends AppCompatActivity {
 
+    TextView ui_hot;
     private ViewPager viewPager;
     private NewsfeedPager pager;
     private TabLayout tabLayout;
@@ -82,19 +83,16 @@ public class NewsfeedActivity extends AppCompatActivity {
     private UserDetails userDetails;
     private String postType = "CEO";
     private String postBody = "";
-    private String postSlug= "";
-
+    private String postSlug = "";
     private int hot_number;
-    TextView ui_hot;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getPackageManager().hasSystemFeature("android.software.webview") && Utils.isPackageExisted("com.google.android.webview", this)) {
+        if (getPackageManager().hasSystemFeature("android.software.webview") && Utils.isPackageExisted("com.google.android.webview", this)) {
 
-        }else {
+        } else {
             Toast.makeText(this, "Please install WebView from Google Play Store", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -134,13 +132,12 @@ public class NewsfeedActivity extends AppCompatActivity {
             }
         });
 
-
         createPostDialog = new BottomSheetDialog(NewsfeedActivity.this, R.style.BottomSheetDialogTheme);
         createPostDialog.setContentView(R.layout.alert_create_post);
-        
+
         View bottomSheetInternal = createPostDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         bottomSheetInternal.setPadding(0, 0, 0, 0);
-        
+
         new KeyboardUtil(NewsfeedActivity.this, bottomSheetInternal);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -181,7 +178,6 @@ public class NewsfeedActivity extends AppCompatActivity {
         share.setOnClickListener(view -> {
 
             postBody = text.getText().toString();
-
             int typePosition = typeSpinner.getSelectedItemPosition();
             if (typePosition == 0)
                 postType = "ceo";
@@ -206,9 +202,8 @@ public class NewsfeedActivity extends AppCompatActivity {
                         .setNegativeButton("NO", null).show();
             }
         });
-        
-        createBtn.setOnClickListener(view -> {
 
+        createBtn.setOnClickListener(view -> {
             selectedImage = "";
             postType = "CEO";
             postBody = "";
@@ -217,49 +212,45 @@ public class NewsfeedActivity extends AppCompatActivity {
             spinnerHolder.setVisibility(View.VISIBLE);
             postImageHolder.setVisibility(View.GONE);
             text.setText("");
-            addPhotoText.setText("Add Photo");
+            addPhotoText.setText(R.string.add_photo);
 
             createPostDialog.show();
 
         });
 
-
         cancelPostImage.setOnClickListener(view -> {
 
             selectedImage = "";
             postImageHolder.setVisibility(View.GONE);
-            addPhotoText.setText("Add Photo");
+            addPhotoText.setText(R.string.add_photo);
 
         });
 
         if (userDetails.getToken().equals(""))
             createBtn.setVisibility(View.GONE);
 
-
         NewsfeedFragment publicFragment = NewsfeedFragment.newInstance("public");
-        pager.addFragment(publicFragment,"ALL");
+        pager.addFragment(publicFragment, getString(R.string.all));
 
 
         NewsfeedFragment announcementFragment = NewsfeedFragment.newInstance("announcement");
-        pager.addFragment(announcementFragment,"ANNOUNCEMENT");
+        pager.addFragment(announcementFragment, getString(R.string.announcement_cap));
 
         NewsfeedFragment ceoFragment = NewsfeedFragment.newInstance("ceo");
-        pager.addFragment(ceoFragment,"CEO");
+        pager.addFragment(ceoFragment, getString(R.string.ceo_cap));
 
 
-        if (!userDetails.getToken().equals("")){
+        if (!userDetails.getToken().equals("")) {
 
             NewsfeedFragment myFragment = NewsfeedFragment.newInstance("my");
-            pager.addFragment(myFragment,"MY POSTS");
+            pager.addFragment(myFragment, getString(R.string.my_post));
         }
 
         if (userDetails.getGroups().contains("EvalyEmployee")) {
             NewsfeedPendingFragment pendingFragment = NewsfeedPendingFragment.newInstance("pending");
-            pager.addFragment(pendingFragment,"Pending");
+            pager.addFragment(pendingFragment, getString(R.string.pending));
         }
-
         pager.notifyDataSetChanged();
-
     }
 
 
@@ -281,24 +272,19 @@ public class NewsfeedActivity extends AppCompatActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.badge_newsfeed_menu, menu);
         final View menu_hotlist = menu.findItem(R.id.menu_messages).getActionView();
-        ui_hot = (TextView) menu_hotlist.findViewById(R.id.hotlist_hot);
+        ui_hot = menu_hotlist.findViewById(R.id.hotlist_hot);
 
         ui_hot.setVisibility(View.INVISIBLE);
-
         menu_hotlist.setOnClickListener(viw -> startActivityForResult(new Intent(NewsfeedActivity.this, NewsfeedNotification.class), 1));
-
 
         if (userDetails.getToken().equals(""))
             return false;
         else
             return true;
-
     }
 
 
-
-    public void openEditBottomSheet(NewsfeedItem item){
-
+    public void openEditBottomSheet(NewsfeedItem item) {
 
         postType = "CEO";
         postBody = item.getBody();
@@ -317,12 +303,11 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         spinnerHolder.setVisibility(View.GONE);
 
-
         text.setText(item.getBody());
 
         Log.d("json img url", item.getAttachment());
 
-        if (!item.getAttachment().equals("null")){
+        if (!item.getAttachment().equals("null")) {
 
             selectedImage = item.getAttachment();
             postImage.setVisibility(View.VISIBLE);
@@ -353,15 +338,15 @@ public class NewsfeedActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
 
         getNotificationCount();
         super.onResume();
     }
 
-    public void getNotificationCount(){
+    public void getNotificationCount() {
 
-        String url = UrlUtils.BASE_URL_NEWSFEED+"notifications_count/";
+        String url = UrlUtils.BASE_URL_NEWSFEED + "notifications_count/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -383,23 +368,24 @@ public class NewsfeedActivity extends AppCompatActivity {
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        getNotificationCount();
-                    }
+                    AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            getNotificationCount();
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
+                    return;
 
-            }}
+                }
+            }
 
         }) {
             @Override
@@ -428,11 +414,10 @@ public class NewsfeedActivity extends AppCompatActivity {
             else
                 ui_hot.setText(Integer.toString(new_hot_number));
         }
-
     }
 
 
-    public void createPost(){
+    public void createPost() {
 
         if (postBody.equals("") || postBody == null) {
             Toast.makeText(context, "Please write something!", Toast.LENGTH_SHORT).show();
@@ -443,10 +428,10 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         String url;
 
-        url = UrlUtils.BASE_URL_NEWSFEED+"posts";
+        url = UrlUtils.BASE_URL_NEWSFEED + "posts";
 
         if (!postSlug.equals(""))
-            url = UrlUtils.BASE_URL_NEWSFEED+"posts/"+postSlug;
+            url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + postSlug;
 
         JSONObject parameters = new JSONObject();
         JSONObject parametersPost = new JSONObject();
@@ -479,7 +464,6 @@ public class NewsfeedActivity extends AppCompatActivity {
             createBtn.setEnabled(true);
             try {
 
-
                 if (!userDetails.getGroups().contains("EvalyEmployee"))
                     Toast.makeText(context, "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
 
@@ -498,23 +482,23 @@ public class NewsfeedActivity extends AppCompatActivity {
 
             NetworkResponse response = error.networkResponse;
             if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401){
+                if (error.networkResponse.statusCode == 401) {
 
-                AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                    @Override
-                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                        createPost();
-                    }
+                    AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                        @Override
+                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                            createPost();
+                        }
 
-                    @Override
-                    public void onFailed(int status) {
+                        @Override
+                        public void onFailed(int status) {
 
-                    }
-                });
+                        }
+                    });
 
-                return;
-
-            }}
+                    return;
+                }
+            }
 
             Toast.makeText(context, "Couldn't create status", Toast.LENGTH_SHORT).show();
             createBtn.setEnabled(true);
@@ -529,7 +513,7 @@ public class NewsfeedActivity extends AppCompatActivity {
             }
         };
 
-        RequestQueue queue= Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(context);
 
         request.setRetryPolicy(new DefaultRetryPolicy(50000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -546,7 +530,6 @@ public class NewsfeedActivity extends AppCompatActivity {
             createPostDialog.findViewById(R.id.postImageHolder).setVisibility(View.VISIBLE);
 
             ((TextView) createPostDialog.findViewById(R.id.add_photo_text)).setText("Change Photo");
-
 
             Glide.with(this)
                     .asBitmap()
@@ -571,22 +554,17 @@ public class NewsfeedActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     8000);
         } else {
-
             openSelector();
-
         }
-
     }
 
 
     private void openSelector() {
-
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, 1001);
-
     }
 
     @Override
@@ -596,10 +574,8 @@ public class NewsfeedActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 openSelector();
             else {
-
                 Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 
@@ -608,33 +584,23 @@ public class NewsfeedActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
-
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-
-                NewsfeedFragment newsfeedFragment = (NewsfeedFragment) pager.getCurrentFragment();
-
-                String type = data.getStringExtra("type");
-                String status_id = data.getStringExtra("status_id");
-                String comment_id = data.getStringExtra("comment_id");
-                newsfeedFragment.openCommentBottomSheet(status_id,"","", false,"","","");
-
+            NewsfeedFragment newsfeedFragment = (NewsfeedFragment) pager.getCurrentFragment();
+            String type = data.getStringExtra("type");
+            String status_id = data.getStringExtra("status_id");
+            String comment_id = data.getStringExtra("comment_id");
+            newsfeedFragment.openCommentBottomSheet(status_id, "", "", false, "", "", "");
         }
 
         if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-
             Uri selectedImage = data.getData();
             String imagePath = RealPathUtil.getRealPath(context, selectedImage);
             Log.d("json image uri", imagePath);
-
             try {
-
                 String destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
 
                 try {
-
                     File cImage = compressImage(data.getData(), Bitmap.CompressFormat.JPEG, 70, destinationDirectoryPath);
-
                     Bitmap bitmap = BitmapFactory.decodeFile(destinationDirectoryPath);
 
                     if (selectedImage != null && createPostDialog.isShowing()) {
@@ -691,7 +657,7 @@ public class NewsfeedActivity extends AppCompatActivity {
                 "Uploading image...", true);
 
         RequestQueue rQueue;
-        String url= UrlUtils.BASE_URL+"image/upload";
+        String url = UrlUtils.BASE_URL + "image/upload";
 
         Logger.d(url);
 
@@ -700,7 +666,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
                     dialog.dismiss();
 
-                    Log.d("json image" ,new String(response.data));
+                    Log.d("json image", new String(response.data));
 
 
                     try {
@@ -708,7 +674,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
                         Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
 
-                        if(jsonObject.getBoolean("success")) {
+                        if (jsonObject.getBoolean("success")) {
                             String image = jsonObject.getJSONObject("data").getString("url");
                             selectedImage = image;
                             setPostPic();
@@ -723,23 +689,24 @@ public class NewsfeedActivity extends AppCompatActivity {
 
                     NetworkResponse response = error.networkResponse;
                     if (response != null && response.data != null) {
-                        if (error.networkResponse.statusCode == 401){
+                        if (error.networkResponse.statusCode == 401) {
 
-                                AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                                    @Override
-                                    public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                        uploadProfilePicture(bitmap);
-                                    }
+                            AuthApiHelper.refreshToken(NewsfeedActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                                @Override
+                                public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                    uploadProfilePicture(bitmap);
+                                }
 
-                                    @Override
-                            public void onFailed(int status) {
+                                @Override
+                                public void onFailed(int status) {
 
-                            }
-                        });
+                                }
+                            });
 
-                        return;
+                            return;
 
-                    }}
+                        }
+                    }
 
                     dialog.dismiss();
                     Log.e("json error", error.toString());
@@ -758,10 +725,7 @@ public class NewsfeedActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-
                 headers.put("Authorization", CredentialManager.getToken());
-
-
                 return headers;
             }
 
@@ -776,7 +740,6 @@ public class NewsfeedActivity extends AppCompatActivity {
                 return params;
             }
         };
-
 
         volleyMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
                 0,

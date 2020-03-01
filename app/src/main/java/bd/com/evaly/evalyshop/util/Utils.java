@@ -415,10 +415,11 @@ public class Utils {
         Date parsed = null;
         String outputDate = "";
 
-        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat);
+
         df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
 
-        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.ENGLISH);
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat);
         df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
 
 
@@ -445,7 +446,7 @@ public class Utils {
         Date parsed = null;
         String outputDate = "";
 
-        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
         df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
 
 
@@ -470,7 +471,7 @@ public class Utils {
 
         Date parsed = null;
 
-        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
         df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
 
         try {
@@ -496,10 +497,10 @@ public class Utils {
         Date parsed = null;
         String outputDate = "";
 
-        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
         df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
 
-        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.ENGLISH);
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
         df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
 
 
@@ -528,10 +529,12 @@ public class Utils {
         Date parsed = null;
         long outputDate = 0;
 
-        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+
+
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
         df_input.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
 
-        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.ENGLISH);
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
         df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
 
 
@@ -560,10 +563,10 @@ public class Utils {
         Date parsed = null;
         long outputDate = 0;
 
-        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
         df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
 
-        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.ENGLISH);
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
         df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
 
 
@@ -661,7 +664,7 @@ public class Utils {
 
             Date tdate = new Date(time);
 
-            SimpleDateFormat jdf = new SimpleDateFormat("MMM dd 'at' h:mm a", Locale.ENGLISH);
+            SimpleDateFormat jdf = new SimpleDateFormat("MMM dd 'at' h:mm a", Locale.getDefault());
             jdf.setTimeZone(TimeZone.getTimeZone("GMT-6"));
 
             timeAgo = jdf.format(tdate);
@@ -699,7 +702,7 @@ public class Utils {
 
             Date tdate = new Date(time);
 
-            SimpleDateFormat jdf = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
+            SimpleDateFormat jdf = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
             jdf.setTimeZone(TimeZone.getTimeZone("GMT-6"));
 
             timeAgo = jdf.format(tdate);
@@ -715,7 +718,7 @@ public class Utils {
 
         Date tdate = new Date(timestamp * 1000);
 
-        SimpleDateFormat jdf = new SimpleDateFormat("MMM dd 'at' h:mm a", Locale.ENGLISH);
+        SimpleDateFormat jdf = new SimpleDateFormat("MMM dd 'at' h:mm a", Locale.getDefault());
 
 
         String timeAgo = jdf.format(tdate);

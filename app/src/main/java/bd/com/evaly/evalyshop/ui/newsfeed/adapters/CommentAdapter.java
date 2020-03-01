@@ -56,7 +56,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         Author author = commentItem.getAuthor();
         List<RepliesItem> repliesList = commentItem.getReplies();
 
-
         if (author.getFullName() == null)
             author.setFullName("");
 
@@ -69,12 +68,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                 myViewHolder.replyHolder.setVisibility(View.VISIBLE);
 
                 if (repliesList.size() == 2)
-                    myViewHolder.replyMoreCount.setText("Show previous 1 more reply");
+                    myViewHolder.replyMoreCount.setText(R.string.show_prev_1_reply);
                 else {
-                    String smText = "Show previous " + (repliesList.size() - 1) + " more replies";
+                    String smText = context.getResources().getString(R.string.show_previous) + (repliesList.size() - 1) + " " + context.getString(R.string.more_replies);
                     myViewHolder.replyMoreCount.setText(smText);
                 }
-
             }
 
             myViewHolder.reply1Name.setText(repliesList.get(0).getAuthor().getFullName());
@@ -89,7 +87,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             } else {
                 myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
             }
-
 
             myViewHolder.reply1Text.setText(repliesList.get(0).getBody());
 
@@ -108,15 +105,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
             myViewHolder.replyMoreCount.setVisibility(View.GONE);
             myViewHolder.replyHolder.setVisibility(View.GONE);
-
         }
-
 
         myViewHolder.userNameView.setText(author.getFullName());
 
         if (author.getFullName().trim().replaceAll("\\s+", "").equals(""))
             myViewHolder.userNameView.setText("User");
-
 
         if (author.getIsAdmin()) {
             int sizeInPixel = context.getResources().getDimensionPixelSize(R.dimen.newsfeed_verified_icon);
@@ -133,7 +127,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", commentItem.getCreatedAt())));
         // myViewHolder.statusView.setText(Html.fromHtml(commentItem.getBody()));
 
-
         myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(commentItem.getBody(), 180, "... <b>Show more</b>")));
 
         myViewHolder.statusView.setOnClickListener(view -> {
@@ -142,7 +135,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                 myViewHolder.statusView.setText(itemsList.get(i).getBody());
             else
                 myViewHolder.statusView.setText(Html.fromHtml(Utils.truncateText(itemsList.get(i).getBody(), 180, "... <b>Show more</b>")));
-
         });
 
         Glide.with(context)
@@ -154,9 +146,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                 .apply(new RequestOptions().override(100, 100))
                 .into(myViewHolder.userImage);
 
-
         Object postImageURL = commentItem.getAttachement();
-
 
         if (postImageURL != null) {
             if (postImageURL.equals("null")) {

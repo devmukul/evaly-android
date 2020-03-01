@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -62,7 +61,7 @@ public class NewsfeedNotification extends AppCompatActivity {
 
 
         getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle("Newsfeed Notifications");
+        getSupportActionBar().setTitle(R.string.newsfeed_notifications);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         queue = Volley.newRequestQueue(this);
@@ -81,7 +80,6 @@ public class NewsfeedNotification extends AppCompatActivity {
 
         getNotifications();
 
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -94,13 +92,11 @@ public class NewsfeedNotification extends AppCompatActivity {
                     if (loading) {
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             getNotifications();
-
                         }
                     }
                 }
             }
         });
-
 
     }
 
@@ -189,18 +185,15 @@ public class NewsfeedNotification extends AppCompatActivity {
 
                         }
                     });
-
                     return;
-
                 }
             }
 
             progressContainer.setVisibility(View.GONE);
-
             progressBar.setVisibility(View.GONE);
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", CredentialManager.getToken());
                 return headers;

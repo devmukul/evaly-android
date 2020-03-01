@@ -136,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_weight="0"
-                android:text="Like"
+                android:text="@string/like"
                 android:textStyle="normal" />
 
         </LinearLayout>
@@ -163,7 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:text="Comment"
+                android:text="@string/comment"
                 android:textStyle="normal" />
 
         </LinearLayout>
@@ -189,7 +189,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:text="Share"
+                android:text="@string/share"
                 android:textStyle="normal" />
 
         </LinearLayout>

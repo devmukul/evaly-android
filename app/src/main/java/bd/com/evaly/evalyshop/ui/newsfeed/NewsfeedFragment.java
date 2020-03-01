@@ -276,7 +276,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         if (userDetails.getToken().equals("")) {
 
-            replyInput.setText("You need to login to post reply.");
+            replyInput.setText(R.string.you_need_to_login_to_create_reply);
             replyInput.setEnabled(false);
             submitReply.setEnabled(false);
 
@@ -286,15 +286,15 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
 
-        uploadImage.setOnClickListener(view1 -> Toast.makeText(context, "Photo reply is disabled now.", Toast.LENGTH_SHORT).show());
+        uploadImage.setOnClickListener(view1 -> Toast.makeText(context, R.string.photo_reply_is_disabled_now, Toast.LENGTH_SHORT).show());
         reloadReply.setOnClickListener(view1 -> reloadRecyclerReply());
 
         submitReply.setOnClickListener(view13 -> {
 
             if (selectedPostID.equals(""))
-                Toast.makeText(context, "Couldn't post reply. Try again later.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.post_error_message, Toast.LENGTH_SHORT).show();
             else if (replyInput.getText().toString().trim().equals(""))
-                Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.wirte_something_message, Toast.LENGTH_SHORT).show();
             else
                 createReply();
 
@@ -379,21 +379,21 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (userDetails.getToken().equals("")) {
 
             commentInput.setEnabled(false);
-            commentInput.setText("You need to login to make comment.");
+            commentInput.setText(R.string.login_to_comment);
             submitComment.setEnabled(false);
 
         }
 
 
-        uploadImage.setOnClickListener(view1 -> Toast.makeText(context, "Photo comment is disabled now.", Toast.LENGTH_SHORT).show());
+        uploadImage.setOnClickListener(view1 -> Toast.makeText(context, R.string.photo_comment_disabled, Toast.LENGTH_SHORT).show());
         reloadComment.setOnClickListener(view1 -> reloadRecyclerComment());
 
         submitComment.setOnClickListener(view12 -> {
 
             if (selectedPostID.equals(""))
-                Toast.makeText(context, "Couldn't create comment. Try again later.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.comment_create_error_message, Toast.LENGTH_SHORT).show();
             else if (commentInput.getText().toString().trim().equals(""))
-                Toast.makeText(context, "Write something first before submitting", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.write_before_submitting_message, Toast.LENGTH_SHORT).show();
             else {
                 commentNot.setVisibility(View.GONE);
                 createComment();
@@ -505,7 +505,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
         } else {
-            Toast.makeText(context, "Couldn't load replies", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.reply_load_error_message, Toast.LENGTH_SHORT).show();
         }
 
     }

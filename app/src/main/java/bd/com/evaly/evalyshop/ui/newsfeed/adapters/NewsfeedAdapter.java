@@ -69,9 +69,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         if (itemsList.get(i).getAuthorFullName().trim().equals(""))
             myViewHolder.userNameView.setText("User");
 
-
         String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", itemsList.get(i).getCreatedAt()));
-
 
         if (itemsList.get(i).getIsAdmin()) {
 
@@ -134,9 +132,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         }
 
-
         myViewHolder.llShareHolder.setOnClickListener(view -> listener.onSharePost(itemsList.get(i)));
-
         myViewHolder.commentCountView.setText(wordBeautify(itemsList.get(i).getCommentsCount(), false));
 
         Glide.with(context)
@@ -183,7 +179,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
         myViewHolder.likeHolder.setOnClickListener(v -> {
 
             if (fragment.getUserDetails().getToken().equals("")) {
-                Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.you_need_to_login_first, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -205,7 +201,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
             }
         });
-
 
         View.OnClickListener commentOpener = view -> fragment.openCommentBottomSheet(itemsList.get(i).getSlug(), itemsList.get(i).getAuthorFullName(), itemsList.get(i).getAuthorImage(), itemsList.get(i).getIsAdmin(), itemsList.get(i).getBody(), itemsList.get(i).getCreatedAt(), itemsList.get(i).getAttachment());
 
@@ -244,33 +239,29 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                         NewsfeedActivity activity = (NewsfeedActivity) context;
                         activity.openEditBottomSheet(itemsList.get(i));
                 }
-
                 return true;
             });
 
             popup.show();
         });
-
-
     }
 
     private String wordBeautify(int count, boolean like) {
 
         if (count == 0)
             if (like)
-                return "Like";
+                return context.getResources().getString(R.string.like);
             else
-                return "Comment";
+                return context.getResources().getString(R.string.comment);
         else if (count == 1)
             if (like)
-                return "1 Like";
+                return "1 " + context.getResources().getString(R.string.like);
             else
-                return "1 Comment";
+                return "1 " + context.getResources().getString(R.string.comment);
         else if (like)
-            return count + " Likes";
+            return count + " " + context.getResources().getString(R.string.likes);
         else
-            return count + " Comments";
-
+            return count + " " + context.getResources().getString(R.string.comments);
     }
 
     @Override

@@ -21,7 +21,6 @@
     // rounded bottom sheet fragment
 
 
-
     <style name="BottomSheetDarker" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/round_border_bottom_sheet_darker</item>
         <item name="android:statusBarColor">@color/eee</item>
@@ -115,15 +114,10 @@
     </style>
 
 
-
-
-
-
     <style name="WideDialog" parent="android:Theme.Material.Light.Dialog.NoActionBar">
         <item name="android:windowMinWidthMajor">95%</item>
         <item name="android:windowMinWidthMinor">95%</item>
     </style>
-
 
 
     <style name="WideDialogComments" parent="android:Theme.Material.Light.Dialog">
