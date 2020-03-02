@@ -49,6 +49,7 @@ import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
+import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 import bd.com.evaly.evalyshop.ui.shop.delivery.DeliveryBottomSheetFragment;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -56,7 +57,7 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
-public class ShopProductHeader extends RecyclerView.ViewHolder implements ProductListener {
+public class ShopProductHeader extends RecyclerView.ViewHolder  {
 
     View view;
     private Fragment fragmentInstance;
@@ -99,14 +100,16 @@ public class ShopProductHeader extends RecyclerView.ViewHolder implements Produc
     private List<String> rosterList;
     private LinearLayout noItem;
     private View dummyViewTop;
+    private ShopViewModel viewModel;
 
-    public ShopProductHeader(View itemView, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HashMap<String, String> data) {
+    public ShopProductHeader(View itemView, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HashMap<String, String> data, ShopViewModel viewModel) {
         super(itemView);
         this.context = context;
         this.fragmentInstance = fragmentInstance;
         this.activityInstance = activityInstance;
         this.navController = navController;
         this.data = data;
+        this.viewModel = viewModel;
 
         this.slug = data.get("slug");
         this.title = data.get("title");
@@ -212,7 +215,7 @@ public class ShopProductHeader extends RecyclerView.ViewHolder implements Produc
             name.setText(shop_name);
 
             if (logo.getDrawable() == null)
-                if (getContext() != null)
+                if (context != null)
                     Glide.with(context)
                             .load(shopDetails.getLogoImage())
                             .skipMemoryCache(true)
@@ -225,7 +228,7 @@ public class ShopProductHeader extends RecyclerView.ViewHolder implements Produc
                     try {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
                         intent.setData(Uri.parse("tel:" + shopDetails.getContactNumber()));
-                        startActivity(intent);
+                        activityInstance.startActivity(intent);
                     } catch (Exception ignored) {
                     }
                     snackBar.dismiss();
@@ -281,13 +284,13 @@ public class ShopProductHeader extends RecyclerView.ViewHolder implements Produc
                 intent.putExtra("ratingJson", ratingJson);
                 intent.putExtra("type", "shop");
                 intent.putExtra("item_value", shop_id);
-                startActivity(intent);
+                activityInstance.startActivity(intent);
             });
 
 
             llInbox.setOnClickListener(v -> {
 
-                setUpXmpp();
+                viewModel.setOnChatClickLiveData(true);
 
             });
 
@@ -307,51 +310,6 @@ public class ShopProductHeader extends RecyclerView.ViewHolder implements Produc
     }
 
 
-    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-        //On User Presence Changed
-        public void onPresenceChanged(PresenceModel presenceModel) {
-
-            // Logger.d(presenceModel.getUserStatus());
-        }
-
-        public void onConnected() {
-            Logger.d("===========");
-            xmppHandler = AppController.getmService().xmpp;
-            rosterList = xmppHandler.rosterList;
-            if (!owner_number.equals("")) {
-                try {
-                    Logger.d(owner_number);
-                    EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
-                            + Constants.XMPP_HOST);
-                    vCard = xmppHandler.getUserDetails(jid);
-                    Logger.d(new Gson().toJson(vCard));
-                } catch (XmppStringprepException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
-
-    @Override
-    public void onSuccess(int count) {
-
-        if (count == 0) {
-            ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
-            noItem.setVisibility(View.VISIBLE);
-            try {
-                if (context != null)
-                    Glide.with(context)
-                            .load(R.drawable.ic_emptycart)
-                            .apply(new RequestOptions().override(600, 600))
-                            .into(placeholder);
-            } catch (Exception ignored) {
-            }
-            progressBar.setVisibility(View.GONE);
-        } else {
-            noItem.setVisibility(View.GONE);
-        }
-    }
 
 
 }

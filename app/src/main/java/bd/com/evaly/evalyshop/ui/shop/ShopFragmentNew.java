@@ -1,11 +1,8 @@
 package bd.com.evaly.evalyshop.ui.shop;
 
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +29,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -45,7 +43,6 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
@@ -75,10 +72,8 @@ import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
-import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
-import bd.com.evaly.evalyshop.ui.shop.delivery.DeliveryBottomSheetFragment;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -127,7 +122,57 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
     private View dummyView;
     private View dummyViewTop;
 
-    public ShopFragment() {
+    private ShopViewModel viewModel;
+
+
+    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+        //On User Presence Changed
+        public void onPresenceChanged(PresenceModel presenceModel) {
+
+            // Logger.d(presenceModel.getUserStatus());
+        }
+
+        public void onConnected() {
+            Logger.d("===========");
+            xmppHandler = AppController.getmService().xmpp;
+            rosterList = xmppHandler.rosterList;
+            if (!owner_number.equals("")) {
+                try {
+                    Logger.d(owner_number);
+                    EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
+                            + Constants.XMPP_HOST);
+                    vCard = xmppHandler.getUserDetails(jid);
+                    Logger.d(new Gson().toJson(vCard));
+                } catch (XmppStringprepException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    @Override
+    public void onSuccess(int count) {
+
+        if (count == 0) {
+            ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
+            noItem.setVisibility(View.VISIBLE);
+            try {
+                if (context != null)
+                    Glide.with(context)
+                            .load(R.drawable.ic_emptycart)
+                            .apply(new RequestOptions().override(600, 600))
+                            .into(placeholder);
+            } catch (Exception ignored) {
+            }
+            progressBar.setVisibility(View.GONE);
+        } else {
+            noItem.setVisibility(View.GONE);
+        }
+    }
+
+
+    public ShopFragmentNew() {
         // Required empty public constructor
     }
 
@@ -141,12 +186,22 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_shop, container, false);
+
+        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
+
         context = getContext();
         mainActivity = (MainActivity) getActivity();
         if (!CredentialManager.getToken().equals(""))
             Executors.newSingleThreadExecutor().execute(() -> startXmppService());
+
 
         return view;
     }
@@ -181,8 +236,6 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
             intent.putExtra("type", 1);
             startActivity(intent);
         });
-
-
 
 
 
@@ -228,23 +281,14 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
 
         getShopProductCount();
 
-        nestedSV = view.findViewById(R.id.stickyScrollView);
 
-        nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                getShopProductCount();
+        viewModel.getOnChatClickLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean)
+                    setUpXmpp();
             }
         });
-
-        reset = view.findViewById(R.id.resetBtn);
-
-        reset.setVisibility(View.GONE);
-
-        reset.setOnClickListener(view1 -> {
-            showProductsByCategory("All Products", null, 0);
-            reset.setVisibility(View.GONE);
-        });
-
 
     }
 
