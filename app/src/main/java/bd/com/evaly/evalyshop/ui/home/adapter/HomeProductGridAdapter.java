@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.models.HomeHeaderItem;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 

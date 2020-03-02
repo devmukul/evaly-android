@@ -32,7 +32,7 @@ import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.ui.home.adapter.HomeHeaderItem;
+import bd.com.evaly.evalyshop.models.HomeHeaderItem;
 import bd.com.evaly.evalyshop.ui.home.adapter.HomeProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;

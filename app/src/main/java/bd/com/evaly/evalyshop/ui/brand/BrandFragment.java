@@ -2,13 +2,8 @@ package bd.com.evaly.evalyshop.ui.brand;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,16 +17,21 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
-import bd.com.evaly.evalyshop.listener.ProductListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.HomeHeaderItem;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.ui.brand.adapter.BrandProductAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
@@ -39,6 +39,7 @@ import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 public class BrandFragment extends Fragment {
 
@@ -54,6 +55,11 @@ public class BrandFragment extends Fragment {
     private ImageView placeHolder;
     private ProgressBar progressBar;
     private View dummyView;
+    private List<ProductItem> itemListProduct;
+    private BrandProductAdapter adapterProduct;
+    private RecyclerView recyclerView;
+    private int currentPage = 1;
+    private boolean isLoading = false;
 
     public BrandFragment() {
         // Required empty public constructor
@@ -73,7 +79,7 @@ public class BrandFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_brand, container, false);
+        view = inflater.inflate(R.layout.fragment_brand_new, container, false);
 
         context = getContext();
         mainActivity = (MainActivity) getActivity();
@@ -99,17 +105,7 @@ public class BrandFragment extends Fragment {
                 }
             });
 
-
         new InitializeActionBar(view.findViewById(R.id.header_logo), mainActivity, "brand");
-
-        progressBar = view.findViewById(R.id.progressBar);
-        dummyView = view.findViewById(R.id.dummyView);
-        name = view.findViewById(R.id.name);
-        categoryName = view.findViewById(R.id.categoryName);
-        address = view.findViewById(R.id.address);
-        number = view.findViewById(R.id.number);
-        logo = view.findViewById(R.id.logo);
-        placeHolder = view.findViewById(R.id.placeholder_image);
 
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view1 -> {
@@ -133,53 +129,83 @@ public class BrandFragment extends Fragment {
 
         imgUrl = getArguments().getString("image_url");
 
-        name.setText(title);
-        categoryName.setText(categoryString);
-
-        if (getContext() != null)
-            Glide.with(getContext())
-                    .load(imgUrl)
-                    .listener(new RequestListener<Drawable>() {
-                                  @Override
-                                  public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                      return false;
-                                  }
-
-                                  @Override
-                                  public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                      Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
-                                      logo.setImageBitmap(bitmap);
-                                      return true;
-                                  }
-                              }
-                    )
-                    .into(logo);
-
-        nestedSV = view.findViewById(R.id.stickyScrollView);
-        if (nestedSV != null) {
-
-            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    try {
-                        productGrid.loadNextBrandProducts();
-                    } catch (Exception e) {
-                        Log.e("scroll error", e.toString());
-                    }
-                }
-            });
-        }
 
 
-        productGrid = new ProductGrid(mainActivity, view.findViewById(R.id.products), slug, categorySlug, "", 2, progressBar);
-        productGrid.setScrollView(nestedSV);
-        productGrid.setListener(new ProductListener() {
+        dummyView = view.findViewById(R.id.dummyView);
+        recyclerView = view.findViewById(R.id.products);
+        progressBar = view.findViewById(R.id.progressBar);
+        itemListProduct = new ArrayList<>();
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("slug", slug);
+        data.put("title", title);
+        data.put("categorySlug", categorySlug);
+        data.put("categoryString", categoryString);
+
+        adapterProduct = new BrandProductAdapter(getContext(), itemListProduct, mainActivity, this, NavHostFragment.findNavController(this), data);
+        recyclerView.setAdapter(adapterProduct);
+
+        itemListProduct.add(new HomeHeaderItem());
+        adapterProduct.notifyItemInserted(0);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onSuccess(int count) {
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy < 0) {
+                    if (isLoading)
+                        progressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!isLoading)
+                        getProducts();
+                }
+            }
+        });
+
+        int spanCount = 2; // 3 columns
+        int spacing = (int) Utils.convertDpToPixel(10, Objects.requireNonNull(getContext())); // 50px
+        boolean includeEdge = true;
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
+
+        getProducts();
+
+
+    }
+
+
+    private void getProducts() {
+
+        isLoading = true;
+
+        if (currentPage > 1)
+            progressBar.setVisibility(View.VISIBLE);
+        else
+            progressBar.setVisibility(View.GONE);
+
+        ProductApiHelper.getCategoryBrandProducts(currentPage, null, slug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
+
+                List<ProductItem> data = response.getData();
+
+                itemListProduct.addAll(data);
+                adapterProduct.notifyItemRangeInserted(itemListProduct.size() - data.size(), data.size());
+                isLoading = false;
+                progressBar.setVisibility(View.GONE);
+
+                if (response.getCount() > 10)
+                    currentPage++;
 
                 dummyView.setVisibility(View.GONE);
 
-                if (count == 0) {
+                if (response.getCount() == 0) {
                     LinearLayout noItem = view.findViewById(R.id.noItem);
                     noItem.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
@@ -187,7 +213,12 @@ public class BrandFragment extends Fragment {
             }
 
             @Override
-            public void buyNow(String product_slug) {
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
 
             }
         });

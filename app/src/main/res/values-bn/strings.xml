@@ -244,7 +244,7 @@
     <string name="like">লাইক</string>
     <string name="you_need_to_login_first">প্রথমে আপনাকে লগইন করতে হবে</string>
     <string name="likes">লাইক</string>
-    <string name="show_prev_1_reply">আগের আরো ১ টি রেপ্লায় দেখুন</string>
+    <string name="show_prev_1_reply">আগের আরো ১ টি রিপ্লে দেখুন</string>
     <string name="show_previous">"আগের আরো "</string>
-    <string name="more_replies">টি রেপ্লায় দেখুন</string>
+    <string name="more_replies">টি রিপ্লে দেখুন</string>
 </resources>
