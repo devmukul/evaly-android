@@ -25,6 +25,10 @@ public class NewsfeedApiHelper extends BaseApiHelper {
         getiApiClient().getNewsfeedReplies(token, postId, commentId, page).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void getRepliesList(String token, String postId, int commentId, int page, ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String> listener) {
+        getiApiClient().getNewsfeedReplies(token, postId, commentId, page).enqueue(getResponseCallBackDefault(listener));
+    }
+
     public static void getComments(String token, String postId,  int page, ResponseListenerAuth<JsonObject, String> listener){
         getiApiClient().getNewsfeedComments(token, postId, page).enqueue(getResponseCallBackDefault(listener));
     }
