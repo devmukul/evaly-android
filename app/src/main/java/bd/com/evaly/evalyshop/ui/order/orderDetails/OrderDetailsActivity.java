@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.ui.order.orderDetails;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -436,11 +436,14 @@ public class OrderDetailsActivity extends BaseActivity {
                 dialog2.hideDialog();
                 Toast.makeText(OrderDetailsActivity.this, response.get("message").getAsString(), Toast.LENGTH_LONG).show();
                 if (response.has("success")) {
-                    final Handler handler = new Handler();
-                    handler.postDelayed(() -> {
-                        finish();
-                        startActivity(getIntent());
-                    }, 1000);
+
+                    giftCardSuccessDialog();
+
+//                    final Handler handler = new Handler();
+//                    handler.postDelayed(() -> {
+//                        finish();
+//                        startActivity(getIntent());
+//                    }, 1000);
                 }
             }
 
@@ -458,6 +461,25 @@ public class OrderDetailsActivity extends BaseActivity {
                     makePaymentViaGiftCard(giftCode, invoice, amount);
             }
         });
+    }
+
+
+    private void giftCardSuccessDialog() {
+
+        new AlertDialog.Builder(context)
+                .setMessage("Thank you for your payment. We are updating your order and you will be notified soon. If your order is not updated, please contact us.")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                        startActivity(getIntent());
+                    }
+                })
+                .show();
+
+
     }
 
 
