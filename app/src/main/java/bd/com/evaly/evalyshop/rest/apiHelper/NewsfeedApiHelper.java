@@ -2,7 +2,11 @@ package bd.com.evaly.evalyshop.rest.apiHelper;
 
 import com.google.gson.JsonObject;
 
+import java.util.List;
+
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 
 public class NewsfeedApiHelper extends BaseApiHelper {
 
@@ -23,6 +27,11 @@ public class NewsfeedApiHelper extends BaseApiHelper {
 
     public static void getComments(String token, String postId,  int page, ResponseListenerAuth<JsonObject, String> listener){
         getiApiClient().getNewsfeedComments(token, postId, page).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
+    public static void getCommentList(String token, String postId, int page, ResponseListenerAuth<CommonDataResponse<List<CommentItem>>, String> listener) {
+        getiApiClient().getNewsfeedCommentsList(token, postId, page).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void postComment(String token, String postId, JsonObject body, ResponseListenerAuth<JsonObject, String> listener){
