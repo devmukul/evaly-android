@@ -7,6 +7,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
+import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 
 public class NewsfeedApiHelper extends BaseApiHelper {
 
@@ -15,6 +16,14 @@ public class NewsfeedApiHelper extends BaseApiHelper {
             token = null;
 
         getiApiClient().getNewsfeedPosts(token, url).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
+    public static void getNewsfeedPostsList(String token, String url, ResponseListenerAuth<CommonDataResponse<List<NewsfeedPost>>, String> listener) {
+        if (token.equals(""))
+            token = null;
+
+        getiApiClient().getNewsfeedPostsList(token, url).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getPostDetails(String token, String postId, ResponseListenerAuth<JsonObject, String> listener){

@@ -23,6 +23,10 @@ public class CommonDataResponse<T> {
     private T data;
 
 
+    @SerializedName("posts")
+    @Expose
+    private T posts;
+
     @SerializedName("meta")
     @Expose
     private JsonObject meta;
@@ -49,6 +53,14 @@ public class CommonDataResponse<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public T getPosts() {
+        return posts;
+    }
+
+    public void setPosts(T posts) {
+        this.posts = posts;
     }
 
     public Boolean getSuccess() {

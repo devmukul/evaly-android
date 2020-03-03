@@ -17,6 +17,7 @@ import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
+import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
@@ -293,6 +294,11 @@ public interface IApiClient {
 
     @GET
     Call<JsonObject> getNewsfeedPosts(@Header("Authorization") String token, @Url String url);
+
+
+    @GET
+    Call<CommonDataResponse<List<NewsfeedPost>>> getNewsfeedPostsList(@Header("Authorization") String token,
+                                                                  @Url String url);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{post_id}")
     Call<JsonObject> getNewsfeedPostDetails(@Header("Authorization") String token, @Path("post_id") String postId);
