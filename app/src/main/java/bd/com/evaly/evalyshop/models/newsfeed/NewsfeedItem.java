@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.models.newsfeed;
 
-import java.util.ArrayList;
-
 public class NewsfeedItem {
 
     private String authorUsername, authorFullName, authoeBio, authorImage, authorBio, body, createdAt, description, slug, title, updatedAt, tags, attachment, attachmentCompressed, type, authorImageCompressed;

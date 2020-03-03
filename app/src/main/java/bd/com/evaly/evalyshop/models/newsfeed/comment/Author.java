@@ -30,7 +30,7 @@ public class Author{
 	}
 
 	public String getCompressedImage(){
-		return compressedImage;
+		return compressedImage.replace("\n", "");
 	}
 
 	public void setFullName(String fullName){

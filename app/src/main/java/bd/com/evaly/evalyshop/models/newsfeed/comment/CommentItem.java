@@ -1,9 +1,14 @@
 package bd.com.evaly.evalyshop.models.newsfeed.comment;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+
 import com.google.gson.annotations.SerializedName;
 
-public class CommentItem{
+import java.io.Serializable;
+import java.util.List;
+
+public class CommentItem implements Serializable {
 
 	@SerializedName("attachment_compressed_url")
 	private Object attachmentCompressedUrl;
@@ -91,6 +96,27 @@ public class CommentItem{
 
 	public String getBody(){
 		return body;
+	}
+
+	public static DiffUtil.ItemCallback<CommentItem> DIFF_CALLBACK = new DiffUtil.ItemCallback<CommentItem>() {
+		@Override
+		public boolean areItemsTheSame(@NonNull CommentItem oldItem, @NonNull CommentItem newItem) {
+			return oldItem.id == newItem.id;
+		}
+
+		@Override
+		public boolean areContentsTheSame(@NonNull CommentItem oldItem, @NonNull CommentItem newItem) {
+			return oldItem.equals(newItem);
+		}
+	};
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+
+		CommentItem article = (CommentItem) obj;
+		return article.id == this.id;
 	}
 
 	@Override

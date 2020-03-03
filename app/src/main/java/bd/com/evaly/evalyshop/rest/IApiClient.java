@@ -14,6 +14,7 @@ import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
+import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
@@ -304,6 +305,12 @@ public interface IApiClient {
                                                                    @Path("selectedPostId") String postId,
                                                                    @Path("commentId") int commentId,
                                                                    @Query("page") int page);
+
+    @Multipart
+    @POST(UrlUtils.IMAGE_UPLOAD)
+    Call<CommonDataResponse<ImageDataModel>> imageUploadNew(@Header("Authorization") String token,
+                                                            @Header("Content_Type") String contentType,
+                                                            @Part MultipartBody.Part image);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{postId}/comments")
     Call<JsonObject> getNewsfeedComments(@Header("Authorization") String token, @Path("postId") String postId, @Query("page") int page);

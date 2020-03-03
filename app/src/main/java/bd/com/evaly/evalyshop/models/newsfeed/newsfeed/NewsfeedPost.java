@@ -1,8 +1,13 @@
 package bd.com.evaly.evalyshop.models.newsfeed.newsfeed;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+
 import com.google.gson.annotations.SerializedName;
 
-public class NewsfeedPost{
+import java.io.Serializable;
+
+public class NewsfeedPost implements Serializable {
 
 	@SerializedName("author_compressed_image")
 	private String authorCompressedImage;
@@ -60,7 +65,7 @@ public class NewsfeedPost{
 	}
 
 	public String getAuthorCompressedImage(){
-		return authorCompressedImage;
+		return authorCompressedImage.replace("\n", "");
 	}
 
 	public void setFavoritesCount(int favoritesCount){
@@ -116,7 +121,7 @@ public class NewsfeedPost{
 	}
 
 	public String getAttachmentCompressedUrl(){
-		return attachmentCompressedUrl;
+		return attachmentCompressedUrl.replace("\n", "");
 	}
 
 	public void setAttachment(String attachment){
@@ -191,27 +196,48 @@ public class NewsfeedPost{
 		return username;
 	}
 
+	public static DiffUtil.ItemCallback<NewsfeedPost> DIFF_CALLBACK = new DiffUtil.ItemCallback<NewsfeedPost>() {
+		@Override
+		public boolean areItemsTheSame(@NonNull NewsfeedPost oldItem, @NonNull NewsfeedPost newItem) {
+            return oldItem.getId() == newItem.getId();
+		}
+
+		@Override
+		public boolean areContentsTheSame(@NonNull NewsfeedPost oldItem, @NonNull NewsfeedPost newItem) {
+            return true;
+		}
+	};
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+
+		NewsfeedPost article = (NewsfeedPost) obj;
+		return article.slug.equals(this.slug);
+	}
+
 	@Override
  	public String toString(){
-		return 
-			"NewsfeedPost{" + 
-			"author_compressed_image = '" + authorCompressedImage + '\'' + 
-			",favorites_count = '" + favoritesCount + '\'' + 
-			",created_at = '" + createdAt + '\'' + 
-			",author_full_name = '" + authorFullName + '\'' + 
-			",body = '" + body + '\'' + 
-			",type = '" + type + '\'' + 
-			",author_image = '" + authorImage + '\'' + 
-			",attachment_compressed_url = '" + attachmentCompressedUrl + '\'' + 
-			",attachment = '" + attachment + '\'' + 
-			",comments_count = '" + commentsCount + '\'' + 
-			",author_is_admin = '" + authorIsAdmin + '\'' + 
-			",id = '" + id + '\'' + 
-			",author_id = '" + authorId + '\'' + 
-			",slug = '" + slug + '\'' + 
-			",status = '" + status + '\'' + 
-			",favorited = '" + favorited + '\'' + 
-			",username = '" + username + '\'' + 
+		return
+			"NewsfeedPost{" +
+			"author_compressed_image = '" + authorCompressedImage + '\'' +
+			",favorites_count = '" + favoritesCount + '\'' +
+			",created_at = '" + createdAt + '\'' +
+			",author_full_name = '" + authorFullName + '\'' +
+			",body = '" + body + '\'' +
+			",type = '" + type + '\'' +
+			",author_image = '" + authorImage + '\'' +
+			",attachment_compressed_url = '" + attachmentCompressedUrl + '\'' +
+			",attachment = '" + attachment + '\'' +
+			",comments_count = '" + commentsCount + '\'' +
+			",author_is_admin = '" + authorIsAdmin + '\'' +
+			",id = '" + id + '\'' +
+			",author_id = '" + authorId + '\'' +
+			",slug = '" + slug + '\'' +
+			",status = '" + status + '\'' +
+			",favorited = '" + favorited + '\'' +
+			",username = '" + username + '\'' +
 			"}";
 		}
 }
