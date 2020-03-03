@@ -51,7 +51,7 @@ public class NewsfeedPostDataSource extends PageKeyedDataSource<Integer, Newsfee
         else
             url = UrlUtils.BASE_URL_NEWSFEED + "posts?type=" + type + "&page=" + currentPage;
 
-        NewsfeedApiHelper.getNewsfeedPosts(CredentialManager.getToken(), url, new ResponseListenerAuth<CommonDataResponse<List<NewsfeedPost>>, String>() {
+        NewsfeedApiHelper.getNewsfeedPostsList(CredentialManager.getToken(), url, new ResponseListenerAuth<CommonDataResponse<List<NewsfeedPost>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<NewsfeedPost>> response, int statusCode) {
                 callback.onResult(response.getPosts(), null, 2);
