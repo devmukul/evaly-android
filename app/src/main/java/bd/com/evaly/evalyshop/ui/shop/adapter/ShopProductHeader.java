@@ -13,7 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -21,16 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
-import com.orhanobut.logger.Logger;
-
-import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,26 +29,16 @@ import java.util.List;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.listener.ProductListener;
-import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.Data;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
-import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
-import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
-import bd.com.evaly.evalyshop.ui.shop.delivery.DeliveryBottomSheetFragment;
-import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
-public class ShopProductHeader extends RecyclerView.ViewHolder  {
+public class ShopProductHeader extends RecyclerView.ViewHolder {
 
     View view;
     private Fragment fragmentInstance;
@@ -67,22 +48,15 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
     private String slug = "", title = "", categoryString = "", imgUrl = "", categorySlug = "";
     private ImageView logo;
     private TextView name, categoryName, address, number;
-    private NestedScrollView nestedSV;
-    private ShopCategoryAdapter adapter;
-    private MainActivity mainActivity;
-    private ProductGrid productGrid;
-    private ImageView placeHolder;
+    private ShopCategoryAdapter adapterShopCategory;
     private ProgressBar progressBar;
     private View dummyView;
     private HashMap<String, String> data;
     private String groups = "", owner_number = "", shop_name = "", campaign_slug = "", logo_image;
-    private TextView  tvOffer, followText;
+    private TextView tvOffer, followText;
     private ShimmerFrameLayout shimmer;
-    private RecyclerView recyclerView;
-    private ArrayList<TabsItem> itemList;
-    private List<ProductItem> productItemList;
-    private ProductGridAdapter adapterProducts;
-    private RecyclerView productRecyclerView;
+    private RecyclerView recyclerViewCategory;
+    private ArrayList<TabsItem> itemListCategory;
     private LinearLayout callButton, location, link, reviews, llInbox, followBtn;
     private TextView categoryTitle;
     private TextView reset;
@@ -94,27 +68,30 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
     private UserDetails userDetails;
     private int subCount = 0;
     private ViewDialog dialog;
-    private VCard vCard;
-    private AppController mChatApp = AppController.getInstance();
-    private XMPPHandler xmppHandler;
     private List<String> rosterList;
     private LinearLayout noItem;
     private View dummyViewTop;
     private ShopViewModel viewModel;
+    private ShopDetailsModel shopDetails;
 
-    public ShopProductHeader(View itemView, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HashMap<String, String> data, ShopViewModel viewModel) {
+    public ShopProductHeader(View itemView, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HashMap<String, String> data, ShopDetailsModel shopDetails, ShopViewModel viewModel) {
         super(itemView);
         this.context = context;
         this.fragmentInstance = fragmentInstance;
         this.activityInstance = activityInstance;
         this.navController = navController;
         this.data = data;
+        this.shopDetails = shopDetails;
         this.viewModel = viewModel;
 
-        this.slug = data.get("slug");
-        this.title = data.get("title");
-        this.categoryString = data.get("categoryString");
-        this.categorySlug = data.get("categorySlug");
+
+        Shop shop = shopDetails.getData().getShop();
+
+        this.slug = shop.getSlug();
+        this.title = shop.getName();
+
+//        this.categoryString = data.get("categoryString");
+//        this.categorySlug = data.get("categorySlug");
 
         view = itemView;
         StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
@@ -146,14 +123,11 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
         progressBar = view.findViewById(R.id.progressBar);
         categoryTitle = view.findViewById(R.id.categoryTitle);
         followBtn = view.findViewById(R.id.follow_btn);
+        recyclerViewCategory = view.findViewById(R.id.categoriesRecycler);
 
         userDetails = new UserDetails(context);
 
         rosterList = new ArrayList<>();
-
-        if (xmppHandler != null) {
-            rosterList = xmppHandler.rosterList;
-        }
 
         try {
             shimmer.startShimmer();
@@ -162,29 +136,28 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
         }
 
 
-
-        itemList = new ArrayList<>();
+        itemListCategory = new ArrayList<>();
 
         // type 4 means shop's category
 
-        adapter = new ShopCategoryAdapter(context, itemList, viewModel);
-        recyclerView.setAdapter(adapter);
+        adapterShopCategory = new ShopCategoryAdapter(context, itemListCategory, viewModel);
+        recyclerViewCategory.setAdapter(adapterShopCategory);
 
-        recyclerView = view.findViewById(R.id.categoriesRecycler);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerViewCategory = view.findViewById(R.id.categoriesRecycler);
+        recyclerViewCategory.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dx > 0) //check for scroll down
                 {
                     GridLayoutManager mLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
                     visibleItemCount = mLayoutManager.getChildCount();
-                    totalItemCount = itemList.size();
+                    totalItemCount = itemListCategory.size();
                     pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
 
                     if (loading) {
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             loading = false;
-                            getSubCategories(++currentPage);
+                            viewModel.loadShopCategories(slug, ++currentPage, campaign_slug);
                         }
                     }
                 }
@@ -192,15 +165,15 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
         });
 
 
-        Shop shopDetails = itemList.get(0);
-
+        Data shopData = shopDetails.getData();
+        Shop shopInfo = shopData.getShop();
 
         if (currentPage == 1 && categorySlug == null) {
 
-            shop_name = shopDetails.getName();
-            owner_number = shopDetails.getOwnerName();
+            shop_name = shopInfo.getName();
+            owner_number = shopInfo.getOwnerName();
             subCount = shopData.getSubscriberCount();
-            logo_image = shopDetails.getLogoImage();
+            logo_image = shopInfo.getLogoImage();
 
             if (shopData.isSubscribed())
                 followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
@@ -209,24 +182,24 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
 
             // click listeners
 
-            followBtn.setOnClickListener(v -> subscribe());
+            //  followBtn.setOnClickListener(v -> subscribe());
 
             name.setText(shop_name);
 
             if (logo.getDrawable() == null)
                 if (context != null)
                     Glide.with(context)
-                            .load(shopDetails.getLogoImage())
+                            .load(shopInfo.getLogoImage())
                             .skipMemoryCache(true)
                             .into(logo);
 
             callButton.setOnClickListener(v -> {
-                String phone = shopDetails.getContactNumber();
+                String phone = shopInfo.getContactNumber();
                 final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
                 snackBar.setAction("Call", v12 -> {
                     try {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + shopDetails.getContactNumber()));
+                        intent.setData(Uri.parse("tel:" + shopInfo.getContactNumber()));
                         activityInstance.startActivity(intent);
                     } catch (Exception ignored) {
                     }
@@ -237,12 +210,12 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
 
 
             location.setOnClickListener(v -> {
-                String phone = shopDetails.getAddress();
+                String phone = shopInfo.getAddress();
                 final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
                 snackBar.setAction("Copy", v1 -> {
                     try {
                         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("address", shopDetails.getAddress());
+                        ClipData clip = ClipData.newPlainText("address", shopInfo.getAddress());
                         clipboard.setPrimaryClip(clip);
                     } catch (Exception ignored) {
                     }
@@ -255,24 +228,24 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
 
             link.setOnClickListener(v -> {
 
-                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopDetails.getShopDeliveryOptions());
-
-                assert getFragmentManager() != null;
-                deliveryBottomSheetFragment.show(getFragmentManager(), "delivery option");
-
-
-//                        String phone = "https://evaly.com.bd/shops/" + shopDetails.getSlug();
-//                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-//                        snackBar.setAction("Copy", v13 -> {
-//                            try {
-//                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-//                                ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/" + shopDetails.getSlug());
-//                                clipboard.setPrimaryClip(clip);
-//                            } catch (Exception ignored) {
-//                            }
-//                            snackBar.dismiss();
-//                        });
-//                        snackBar.show();
+//                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopDetails.getShopDeliveryOptions());
+//
+//                assert getFragmentManager() != null;
+//                deliveryBottomSheetFragment.show(getFragmentManager(), "delivery option");
+//
+//
+////                        String phone = "https://evaly.com.bd/shops/" + shopDetails.getSlug();
+////                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+////                        snackBar.setAction("Copy", v13 -> {
+////                            try {
+////                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+////                                ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/" + shopDetails.getSlug());
+////                                clipboard.setPrimaryClip(clip);
+////                            } catch (Exception ignored) {
+////                            }
+////                            snackBar.dismiss();
+////                        });
+////                        snackBar.show();
 
             });
 
@@ -293,22 +266,40 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
 
             });
 
-            if (shopData.getMeta() != null) {
-                int cashbackRate = shopData.getMeta().get("cashback_rate").getAsInt();
-                adapterProducts.setCashback_rate(cashbackRate);
-            }
-
-            if (shopItems.size() == 0) {
-                noItem.setVisibility(View.VISIBLE);
-                categoryTitle.setVisibility(View.GONE);
-            }
-
 
         }
+
+
+        viewModel.getShopCategoryListLiveData().observe(fragmentInstance.getViewLifecycleOwner(), itemListCategory -> loadSubCategories(itemListCategory));
 
     }
 
 
+    public void loadSubCategories(List<TabsItem> categoryList) {
+
+        if (categoryList.size() < 4) {
+
+            GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
+            recyclerViewCategory.setLayoutManager(mLayoutManager);
+        }
+
+        if (itemListCategory.size() < 1)
+            ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
+
+        try {
+
+            shimmer.stopShimmer();
+        } catch (Exception e) {
+        }
+
+        shimmer.setVisibility(View.GONE);
+        loading = true;
+
+        itemListCategory.addAll(categoryList);
+        adapterShopCategory.notifyItemRangeInserted(itemListCategory.size() - categoryList.size(), itemListCategory.size());
+
+
+    }
 
 
 }

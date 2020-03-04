@@ -31,7 +31,9 @@ import java.util.regex.Pattern;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.HomeHeaderItem;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 
 public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -42,8 +44,6 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private NavController navController;
     private Context context;
     private List<ProductItem> productsList;
-    private HashMap<String, String> data;
-
     View.OnClickListener itemViewListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -58,14 +58,28 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             context.startActivity(intent);
         }
     };
+    private HashMap<String, String> data;
+    private ShopViewModel viewModel;
+    private ShopDetailsModel shopDetails;
+    private int cashback_rate = 0;
 
-    public ShopProductAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HashMap<String, String> data) {
+
+    public ShopProductAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HashMap<String, String> data, ShopViewModel viewModel) {
         this.context = context;
         productsList = a;
         this.fragmentInstance = fragmentInstance;
         this.activityInstance = activityInstance;
         this.navController = navController;
         this.data = data;
+        this.viewModel = viewModel;
+    }
+
+    public void setCashbackRate(int cashback_rate) {
+        this.cashback_rate = cashback_rate;
+    }
+
+    public void setShopDetails(ShopDetailsModel shopDetails) {
+        this.shopDetails = shopDetails;
     }
 
     @Override
@@ -74,7 +88,7 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_HEADER) {
             View v = inflater.inflate(R.layout.recycler_header_shops, parent, false);
-            return new ShopProductHeader(v, context, activityInstance, fragmentInstance, navController, data);
+            return new ShopProductHeader(v, context, activityInstance, fragmentInstance, navController, data, shopDetails, viewModel);
         } else {
             View v = inflater.inflate(R.layout.item_home_product_grid, parent, false);
             return new VHItem(v);
@@ -138,11 +152,31 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             holder.itemView.setTag(position);
             holder.itemView.setOnClickListener(itemViewListener);
 
-            holder.buyNow.setVisibility(View.GONE);
+            if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
+                holder.buyNow.setVisibility(View.GONE);
+            }
+
+
+            if (cashback_rate == 0)
+                holder.tvCashback.setVisibility(View.GONE);
+            else {
+                holder.tvCashback.setVisibility(View.VISIBLE);
+                holder.tvCashback.bringToFront();
+                holder.tvCashback.setText(String.format(Locale.ENGLISH, "%d%% Cashback", cashback_rate));
+            }
+
+
+            holder.buyNow.setTag(position);
+            holder.buyNow.setVisibility(View.VISIBLE);
+            holder.buyNow.setOnClickListener(v -> {
+                viewModel.setBuyNowLiveData(model.getSlug());
+            });
+
 
             if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
                 holder.buyNow.setVisibility(View.GONE);
             }
+
         }
     }
 

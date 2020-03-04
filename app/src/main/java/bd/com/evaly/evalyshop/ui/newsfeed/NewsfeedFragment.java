@@ -657,7 +657,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-    private void loadReplies(String comment_id) {
+    private void loadReplies(int comment_id) {
 
         isReplyLoading = true;
 

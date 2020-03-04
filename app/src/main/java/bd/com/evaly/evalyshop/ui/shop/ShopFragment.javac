@@ -1,8 +1,10 @@
 package bd.com.evaly.evalyshop.ui.shop;
 
-
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -29,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -43,6 +45,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
@@ -72,8 +75,10 @@ import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
+import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
+import bd.com.evaly.evalyshop.ui.shop.delivery.DeliveryBottomSheetFragment;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -84,7 +89,7 @@ import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 
-public class ShopFragmentNew extends Fragment implements ProductListener {
+public class ShopFragment extends Fragment implements ProductListener {
 
     private String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug = "", logo_image;
     private String categorySlug = null;
@@ -118,12 +123,7 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
 
-    private LinearLayout noItem;
-    private View dummyView;
-    private View dummyViewTop;
-
     private ShopViewModel viewModel;
-
 
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
@@ -150,29 +150,11 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
             }
         }
     };
+    private LinearLayout noItem;
+    private View dummyView;
+    private View dummyViewTop;
 
-    @Override
-    public void onSuccess(int count) {
-
-        if (count == 0) {
-            ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
-            noItem.setVisibility(View.VISIBLE);
-            try {
-                if (context != null)
-                    Glide.with(context)
-                            .load(R.drawable.ic_emptycart)
-                            .apply(new RequestOptions().override(600, 600))
-                            .into(placeholder);
-            } catch (Exception ignored) {
-            }
-            progressBar.setVisibility(View.GONE);
-        } else {
-            noItem.setVisibility(View.GONE);
-        }
-    }
-
-
-    public ShopFragmentNew() {
+    public ShopFragment() {
         // Required empty public constructor
     }
 
@@ -186,28 +168,39 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onSuccess(int count) {
 
+        if (count == 0) {
+            ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
+            noItem.setVisibility(View.VISIBLE);
+            try {
+                if (getContext() != null)
+                    Glide.with(context)
+                            .load(R.drawable.ic_emptycart)
+                            .apply(new RequestOptions().override(600, 600))
+                            .into(placeholder);
+            } catch (Exception ignored) {
+            }
+            progressBar.setVisibility(View.GONE);
+        } else {
+            noItem.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_shop, container, false);
-
-        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
-
         context = getContext();
         mainActivity = (MainActivity) getActivity();
+        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
         if (!CredentialManager.getToken().equals(""))
             Executors.newSingleThreadExecutor().execute(() -> startXmppService());
-
 
         return view;
     }
 
     private void refreshFragment() {
-        NavHostFragment.findNavController(ShopFragmentNew.this).navigate(R.id.shopFragment);
+        NavHostFragment.findNavController(ShopFragment.this).navigate(R.id.shopFragment);
     }
 
     @Override
@@ -224,7 +217,7 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
                 @Override
                 public void onBackPress() {
                     if (getFragmentManager() != null)
-                        NavHostFragment.findNavController(ShopFragmentNew.this).navigate(R.id.homeFragment);
+                        NavHostFragment.findNavController(ShopFragment.this).navigate(R.id.homeFragment);
                 }
             });
 
@@ -237,6 +230,63 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
             startActivity(intent);
         });
 
+
+        dummyViewTop = view.findViewById(R.id.dummyViewTop);
+        dummyView = view.findViewById(R.id.dummyView);
+        noItem = view.findViewById(R.id.noItem);
+        dialog = new ViewDialog(getActivity());
+        name = view.findViewById(R.id.name);
+        tvOffer = view.findViewById(R.id.tvOffer);
+        address = view.findViewById(R.id.address);
+        number = view.findViewById(R.id.number);
+        logo = view.findViewById(R.id.logo);
+        shimmer = view.findViewById(R.id.shimmer);
+        callButton = view.findViewById(R.id.call_button);
+        location = view.findViewById(R.id.location);
+        link = view.findViewById(R.id.link);
+        reviews = view.findViewById(R.id.reviews);
+        llInbox = view.findViewById(R.id.llInbox);
+        followText = view.findViewById(R.id.follow_text);
+
+        placeholder = view.findViewById(R.id.placeholder_image);
+        progressBar = view.findViewById(R.id.progressBar);
+        categoryTitle = view.findViewById(R.id.categoryTitle);
+        followBtn = view.findViewById(R.id.follow_btn);
+
+        userDetails = new UserDetails(context);
+
+        rosterList = new ArrayList<>();
+
+        if (xmppHandler != null) {
+            rosterList = xmppHandler.rosterList;
+        }
+
+        try {
+            shimmer.startShimmer();
+        } catch (Exception e) {
+
+        }
+
+        recyclerView = view.findViewById(R.id.categoriesRecycler);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dx > 0) //check for scroll down
+                {
+                    GridLayoutManager mLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+                    visibleItemCount = mLayoutManager.getChildCount();
+                    totalItemCount = itemList.size();
+                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            loading = false;
+                            getSubCategories(++currentPage);
+                        }
+                    }
+                }
+            }
+        });
 
 
         if (getArguments() == null) {
@@ -260,6 +310,12 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
                         .into(logo);
         }
 
+        itemList = new ArrayList<>();
+
+        // type 4 means shop's category
+
+        adapter = new ShopCategoryAdapter(context, itemList, viewModel);
+        recyclerView.setAdapter(adapter);
 
         slug = getArguments().getString("shop_slug");
 
@@ -276,19 +332,29 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
         adapterProducts.setShopSlug(slug);
         productRecyclerView.setAdapter(adapterProducts);
 
+
         getProductRating(slug);
         getSubCategories(currentPage);
 
         getShopProductCount();
 
+        nestedSV = view.findViewById(R.id.stickyScrollView);
 
-        viewModel.getOnChatClickLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean)
-                    setUpXmpp();
+        nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                getShopProductCount();
             }
         });
+
+        reset = view.findViewById(R.id.resetBtn);
+
+        reset.setVisibility(View.GONE);
+
+        reset.setOnClickListener(view1 -> {
+            showProductsByCategory("All Products", null, 0);
+            reset.setVisibility(View.GONE);
+        });
+
 
     }
 
@@ -376,6 +442,117 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
                 Shop shopDetails = shopData.getShop();
 
                 List<ItemsItem> shopItems = shopData.getItems();
+
+                if (currentPage == 1 && categorySlug == null) {
+
+                    shop_name = shopDetails.getName();
+                    owner_number = shopDetails.getOwnerName();
+                    subCount = shopData.getSubscriberCount();
+                    logo_image = shopDetails.getLogoImage();
+
+                    if (shopData.isSubscribed())
+                        followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
+                    else
+                        followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subCount));
+
+                    // click listeners
+
+                    followBtn.setOnClickListener(v -> subscribe());
+
+                    name.setText(shop_name);
+
+                    if (logo.getDrawable() == null)
+                        if (getContext() != null)
+                            Glide.with(context)
+                                    .load(shopDetails.getLogoImage())
+                                    .skipMemoryCache(true)
+                                    .into(logo);
+
+                    callButton.setOnClickListener(v -> {
+                        String phone = shopDetails.getContactNumber();
+                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+                        snackBar.setAction("Call", v12 -> {
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_DIAL);
+                                intent.setData(Uri.parse("tel:" + shopDetails.getContactNumber()));
+                                startActivity(intent);
+                            } catch (Exception ignored) {
+                            }
+                            snackBar.dismiss();
+                        });
+                        snackBar.show();
+                    });
+
+
+                    location.setOnClickListener(v -> {
+                        String phone = shopDetails.getAddress();
+                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+                        snackBar.setAction("Copy", v1 -> {
+                            try {
+                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("address", shopDetails.getAddress());
+                                clipboard.setPrimaryClip(clip);
+                            } catch (Exception ignored) {
+                            }
+
+                            snackBar.dismiss();
+                        });
+                        snackBar.show();
+                    });
+
+
+                    link.setOnClickListener(v -> {
+
+                        DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopDetails.getShopDeliveryOptions());
+
+                        assert getFragmentManager() != null;
+                        deliveryBottomSheetFragment.show(getFragmentManager(), "delivery option");
+
+
+//                        String phone = "https://evaly.com.bd/shops/" + shopDetails.getSlug();
+//                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+//                        snackBar.setAction("Copy", v13 -> {
+//                            try {
+//                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+//                                ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/" + shopDetails.getSlug());
+//                                clipboard.setPrimaryClip(clip);
+//                            } catch (Exception ignored) {
+//                            }
+//                            snackBar.dismiss();
+//                        });
+//                        snackBar.show();
+
+                    });
+
+
+                    reviews.setOnClickListener(v -> {
+                        String shop_id = slug;
+                        Intent intent = new Intent(context, ReviewsActivity.class);
+                        intent.putExtra("ratingJson", ratingJson);
+                        intent.putExtra("type", "shop");
+                        intent.putExtra("item_value", shop_id);
+                        startActivity(intent);
+                    });
+
+
+                    llInbox.setOnClickListener(v -> {
+
+                        setUpXmpp();
+
+                    });
+
+                    if (shopData.getMeta() != null) {
+                        int cashbackRate = shopData.getMeta().get("cashback_rate").getAsInt();
+                        adapterProducts.setCashback_rate(cashbackRate);
+                    }
+
+                    if (shopItems.size() == 0) {
+                        noItem.setVisibility(View.VISIBLE);
+                        categoryTitle.setVisibility(View.GONE);
+                    }
+
+
+                }
 
                 progressBar.setVisibility(View.INVISIBLE);
                 productRecyclerView.setVisibility(View.VISIBLE);
@@ -691,4 +868,3 @@ public class ShopFragmentNew extends Fragment implements ProductListener {
     }
 
 }
-

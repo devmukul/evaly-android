@@ -58,12 +58,12 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
-import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
+import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
+import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
 import bd.com.evaly.evalyshop.models.product.ProductShareModel;
 import bd.com.evaly.evalyshop.models.product.Products;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributeValuesItem;
@@ -76,7 +76,7 @@ import bd.com.evaly.evalyshop.models.product.productDetails.ProductVariantsItem;
 import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
@@ -810,46 +810,40 @@ public class ViewProductActivity extends BaseActivity {
     }
 
     private void createPost(String postBody) {
-        CreatePostModel createPostModel = new CreatePostModel("", "public", postBody, null);
-        HashMap<String, CreatePostModel> data = new HashMap<>();
-        data.put("post", createPostModel);
+        CreatePostModel createPostModel = new CreatePostModel();
+        Post post = new Post();
+        post.setBody(postBody);
+        post.setType("public");
+        createPostModel.setPost(post);
 
         ViewDialog dialog = new ViewDialog(this);
-        AuthApiHelper.createPost(data, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+        dialog.showDialog();
+
+        NewsfeedApiHelper.post(CredentialManager.getToken(), createPostModel, null, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+            public void onDataFetched(JsonObject response, int statusCode) {
 
-                dialog.showDialog();
-                if (response.code() == 200 || response.code() == 201) {
-//                    createPostDialog.dismiss();
-                    dialog.hideDialog();
-                    newsfeedShareDialog.cancel();
-                    Toast.makeText(getApplicationContext(), "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
-
-                } else if (response.code() == 401) {
-                    AuthApiHelper.refreshToken(ViewProductActivity.this, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            createPost(postBody);
-                        }
-
-                        @Override
-                        public void onFailed(int status) {
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    dialog.hideDialog();
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                }
+                dialog.hideDialog();
+                newsfeedShareDialog.cancel();
+                Toast.makeText(getApplicationContext(), "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onFailed(int status) {
+            public void onFailed(String errorBody, int errorCode) {
+
                 dialog.hideDialog();
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    createPost(postBody);
             }
         });
+
+
     }
 
     private void shareWithContacts() {
