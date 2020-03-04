@@ -65,6 +65,7 @@ public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, Recycler
         } else {
             NewsfeedItemBinding binding = NewsfeedItemBinding.inflate(layoutInflater, viewGroup, false);
             return new ItemViewHolder(binding);
+
         }
     }
 
