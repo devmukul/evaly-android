@@ -8,11 +8,13 @@
 
     <include layout="@layout/fragment_app_bar_header" />
 
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/products"
@@ -24,7 +26,13 @@
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:spanCount="2" />
 
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+    <include
+        android:id="@+id/shimmer"
+        layout="@layout/skeleton_shop"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

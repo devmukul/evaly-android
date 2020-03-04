@@ -20,6 +20,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonPrimitive;
@@ -84,6 +85,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ShimmerFrameLayout shimmerFrameLayout;
 
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         public void onPresenceChanged(PresenceModel presenceModel) {
@@ -196,6 +198,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         productRecyclerView = view.findViewById(R.id.products);
 
+        shimmerFrameLayout = view.findViewById(R.id.shimmer);
+        shimmerFrameLayout.startShimmer();
         progressBar = view.findViewById(R.id.progressBar);
         noItem = view.findViewById(R.id.noItem);
         categoryTitle = view.findViewById(R.id.categoryTitle);
@@ -339,6 +343,11 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         Data shopData = response.getData();
         Shop shopDetails = shopData.getShop();
+
+        if (currentPage == 1){
+            shimmerFrameLayout.stopShimmer();
+            shimmerFrameLayout.setVisibility(View.GONE);
+        }
 
         if (currentPage == 1 && productItemList.size() != 1) {
             productItemList.add(new HomeHeaderItem());
@@ -555,6 +564,10 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         viewModel.setCategorySlug(null);
         productItemList.clear();
         adapterProducts.notifyDataSetChanged();
+
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmer();
+
         viewModel.setCurrentPage(1);
         viewModel.loadShopProducts();
 
