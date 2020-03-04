@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -86,6 +87,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private List<String> rosterList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ShimmerFrameLayout shimmerFrameLayout;
+    private FrameLayout shimmerHolder;
 
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         public void onPresenceChanged(PresenceModel presenceModel) {
@@ -199,6 +201,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         productRecyclerView = view.findViewById(R.id.products);
 
         shimmerFrameLayout = view.findViewById(R.id.shimmer);
+        shimmerHolder = view.findViewById(R.id.shimmerHolder);
         shimmerFrameLayout.startShimmer();
         progressBar = view.findViewById(R.id.progressBar);
         noItem = view.findViewById(R.id.noItem);
@@ -347,6 +350,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (currentPage == 1){
             shimmerFrameLayout.stopShimmer();
             shimmerFrameLayout.setVisibility(View.GONE);
+            shimmerHolder.setVisibility(View.GONE);
         }
 
         if (currentPage == 1 && productItemList.size() != 1) {
@@ -566,6 +570,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         adapterProducts.notifyDataSetChanged();
 
         shimmerFrameLayout.setVisibility(View.VISIBLE);
+        shimmerHolder.setVisibility(View.VISIBLE);
         shimmerFrameLayout.startShimmer();
 
         viewModel.setCurrentPage(1);

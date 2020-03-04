@@ -19,7 +19,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/products"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="#fafafa"
             android:clipToPadding="false"
             android:paddingBottom="60dp"
@@ -30,6 +30,7 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <FrameLayout
+        android:id="@+id/shimmerHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="120dp"
