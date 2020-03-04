@@ -1,6 +1,10 @@
 package bd.com.evaly.evalyshop.rest;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
+
+import org.jivesoftware.smack.util.TLSUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -21,6 +25,7 @@ import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
@@ -34,7 +39,11 @@ public class ApiClient {
                     .addConverterFactory(StringConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addConverterFactory(ScalarsConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .client(getUnsafeOkHttpClient()).build();
+
+
+            Log.d("hmt", "retrofit instance");
         }
 
         return retrofit;
@@ -89,7 +98,7 @@ public class ApiClient {
                 return chain.proceed(request);
             });
 
-           // httpClient.addInterceptor(new TokenInterceptor());
+            // httpClient.addInterceptor(new TokenInterceptor());
 
             // Install the all-trusting trust manager
             final SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -101,9 +110,11 @@ public class ApiClient {
 
             OkHttpClient okHttpClient = new OkHttpClient();
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+
+
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             okHttpClient = okHttpClient.newBuilder()
-                    .sslSocketFactory(sslSocketFactory)
+                    .sslSocketFactory(sslSocketFactory, new TLSUtils.AcceptAllTrustManager())
                     .connectTimeout(1, TimeUnit.MINUTES)
                     .readTimeout(2, TimeUnit.MINUTES)
                     .writeTimeout(2, TimeUnit.MINUTES)
