@@ -38,5 +38,4 @@
         android:paddingBottom="15dp"
         android:visibility="gone" />
 
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

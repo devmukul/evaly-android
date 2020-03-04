@@ -26,9 +26,57 @@ public class ShopViewModel extends ViewModel {
     private MutableLiveData<JsonObject> ratingSummary = new MutableLiveData<>();
     private MutableLiveData<ShopDetailsModel> shopDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<TabsItem>> shopCategoryListLiveData = new MutableLiveData<>();
-
     private MutableLiveData<String> buyNowLiveData = new MutableLiveData<>();
+    private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
+    private String categorySlug;
+    private String campaignSlug;
+    private String shopSlug;
+    private int currentPage = 1;
+    private int categoryCurrentPage = 1;
 
+    public int getCategoryCurrentPage() {
+        return categoryCurrentPage;
+    }
+
+    public void setCategoryCurrentPage(int categoryCurrentPage) {
+        this.categoryCurrentPage = categoryCurrentPage;
+    }
+
+    public String getCategorySlug() {
+        return categorySlug;
+    }
+
+    public void setCategorySlug(String categorySlug) {
+        this.categorySlug = categorySlug;
+    }
+
+    public String getCampaignSlug() {
+        return campaignSlug;
+    }
+
+    public void setCampaignSlug(String campaignSlug) {
+        this.campaignSlug = campaignSlug;
+    }
+
+    public String getShopSlug() {
+        return shopSlug;
+    }
+
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public LiveData<JsonObject> getRatingSummary() {
+        return ratingSummary;
+    }
 
     public LiveData<Boolean> getOnChatClickLiveData() {
         return onChatClickLiveData;
@@ -38,10 +86,10 @@ public class ShopViewModel extends ViewModel {
         this.onChatClickLiveData.setValue(action);
     }
 
-    public void subscribe(String slug, boolean subscribe) {
+    public void subscribe(boolean subscribe) {
 
 
-        GeneralApiHelper.subscribeToShop(CredentialManager.getToken(), slug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
+        GeneralApiHelper.subscribeToShop(CredentialManager.getToken(), shopSlug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -56,7 +104,7 @@ public class ShopViewModel extends ViewModel {
             public void onAuthError(boolean logout) {
 
                 if (!logout)
-                    subscribe(slug, subscribe);
+                    subscribe(subscribe);
 
             }
         });
@@ -64,9 +112,9 @@ public class ShopViewModel extends ViewModel {
     }
 
 
-    public void getRating(final String sku) {
+    public void loadRatings() {
 
-        ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), sku, new ResponseListenerAuth<JsonObject, String>() {
+        ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), shopSlug, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -86,12 +134,14 @@ public class ShopViewModel extends ViewModel {
         });
     }
 
-    public void loadShopProdructs(String slug, int currentPage, String categorySlug, String campaignSlug) {
+    public void loadShopProducts() {
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), slug, currentPage, 21, categorySlug, campaignSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetailsLiveData.setValue(response);
+                if (response.getCount() > 0)
+                    currentPage++;
             }
 
             @Override
@@ -108,9 +158,9 @@ public class ShopViewModel extends ViewModel {
     }
 
 
-    public void loadShopCategories(String slug, int currentPage, String campaign_slug) {
+    public void loadShopCategories() {
 
-        ProductApiHelper.getCategoriesOfShop(slug, campaign_slug, currentPage, new ResponseListenerAuth<JsonObject, String>() {
+        ProductApiHelper.getCategoriesOfShop(shopSlug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -124,11 +174,13 @@ public class ShopViewModel extends ViewModel {
                     tabsItem.setTitle(ob.get("category_name").getAsString());
                     tabsItem.setImage((ob.get("category_image").isJsonNull()) ? "" : ob.get("category_image").getAsString());
                     tabsItem.setSlug(ob.get("category_slug").getAsString());
-                    tabsItem.setCategory(slug);
+                    tabsItem.setCategory(shopSlug);
                     itemList.add(tabsItem);
                 }
 
                 shopCategoryListLiveData.setValue(itemList);
+
+                categoryCurrentPage++;
             }
 
             @Override
@@ -144,7 +196,7 @@ public class ShopViewModel extends ViewModel {
 
     }
 
-    public MutableLiveData<Boolean> getOnFollowCliclLiveData() {
+    public LiveData<Boolean> getOnFollowCliclLiveData() {
         return onFollowCliclLiveData;
     }
 
@@ -166,5 +218,13 @@ public class ShopViewModel extends ViewModel {
 
     public void setBuyNowLiveData(String slug) {
         this.buyNowLiveData.setValue(slug);
+    }
+
+    public LiveData<TabsItem> getSelectedCategoryLiveData() {
+        return selectedCategoryLiveData;
+    }
+
+    public void setSelectedCategoryLiveData(TabsItem selectedCategoryLiveData) {
+        this.selectedCategoryLiveData.setValue(selectedCategoryLiveData);
     }
 }

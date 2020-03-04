@@ -10,7 +10,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -29,12 +31,14 @@ import java.util.List;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Data;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
+import bd.com.evaly.evalyshop.ui.shop.delivery.DeliveryBottomSheetFragment;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -84,7 +88,6 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
         this.shopDetails = shopDetails;
         this.viewModel = viewModel;
 
-
         Shop shop = shopDetails.getData().getShop();
 
         this.slug = shop.getSlug();
@@ -124,8 +127,10 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
         categoryTitle = view.findViewById(R.id.categoryTitle);
         followBtn = view.findViewById(R.id.follow_btn);
         recyclerViewCategory = view.findViewById(R.id.categoriesRecycler);
+        reset = view.findViewById(R.id.resetBtn);
 
         categoryTitle.setVisibility(View.VISIBLE);
+        reset.setVisibility(View.INVISIBLE);
 
         userDetails = new UserDetails(context);
 
@@ -136,7 +141,6 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
         } catch (Exception e) {
 
         }
-
 
         itemListCategory = new ArrayList<>();
 
@@ -159,7 +163,8 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
                     if (loading) {
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             loading = false;
-                            viewModel.loadShopCategories(slug, ++currentPage, campaign_slug);
+                            viewModel.loadShopCategories();
+                            currentPage++;
                         }
                     }
                 }
@@ -183,7 +188,24 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
 
         // click listeners
 
-        //  followBtn.setOnClickListener(v -> subscribe());
+        followBtn.setOnClickListener(v -> {
+
+            if (CredentialManager.getToken().equals("")) {
+                Toast.makeText(context, "You need to login first to follow a shop", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            boolean subscribe = true;
+
+            if (followText.getText().toString().contains("Unfollow")) {
+                subscribe = false;
+                followText.setText("Follow (" + (--subCount) + ")");
+            } else
+                followText.setText("Unfollow (" + (++subCount) + ")");
+
+            viewModel.subscribe(subscribe);
+
+        });
 
         name.setText(shop_name);
 
@@ -226,28 +248,20 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
             snackBar.show();
         });
 
+        reset.setOnClickListener(v -> {
+
+            viewModel.setCategorySlug(null);
+            viewModel.setCurrentPage(1);
+            viewModel.loadShopProducts();
+
+            reset.setVisibility(View.GONE);
+
+        });
+
 
         link.setOnClickListener(v -> {
-
-//                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopDetails.getShopDeliveryOptions());
-//
-//                assert getFragmentManager() != null;
-//                deliveryBottomSheetFragment.show(getFragmentManager(), "delivery option");
-//
-//
-////                        String phone = "https://evaly.com.bd/shops/" + shopDetails.getSlug();
-////                        final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-////                        snackBar.setAction("Copy", v13 -> {
-////                            try {
-////                                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-////                                ClipData clip = ClipData.newPlainText("Link", "https://evaly.com.bd/shops/" + shopDetails.getSlug());
-////                                clipboard.setPrimaryClip(clip);
-////                            } catch (Exception ignored) {
-////                            }
-////                            snackBar.dismiss();
-////                        });
-////                        snackBar.show();
-
+                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopDetails.getShopDeliveryOptions());
+                deliveryBottomSheetFragment.show(fragmentInstance.getParentFragmentManager(), "delivery option");
         });
 
 
@@ -262,38 +276,48 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
 
 
         llInbox.setOnClickListener(v -> {
-
             viewModel.setOnChatClickLiveData(true);
+        });
+
+
+        viewModel.getShopCategoryListLiveData().observe(fragmentInstance.getViewLifecycleOwner(), categoryList ->{
+            if (currentPage == 1 && categoryList.size() < 1)
+                ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
+            else if (currentPage == 1 && categoryList.size() < 4) {
+                GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
+                recyclerViewCategory.setLayoutManager(mLayoutManager);
+            } else
+                currentPage++;
+
+            shimmer.stopShimmer();
+            shimmer.setVisibility(View.GONE);
+            loading = true;
+
+            itemListCategory.addAll(categoryList);
+            adapterShopCategory.notifyItemRangeInserted(itemListCategory.size() - categoryList.size(), itemListCategory.size());
+        });
+
+
+        viewModel.getRatingSummary().observe(fragmentInstance.getViewLifecycleOwner(), response -> {
+
+            response = response.getAsJsonObject("data");
+            ratingJson = response.toString();
+            double avg = response.get("avg_rating").getAsDouble();
+            RatingBar ratingBar = view.findViewById(R.id.ratingBar);
+            TextView ratingsCount = view.findViewById(R.id.ratings_count);
+            int tratings = response.get("total_ratings").getAsInt();
+            ratingsCount.setText("(" + tratings + ")");
+            ratingBar.setRating((float) avg);
 
         });
 
 
-        viewModel.getShopCategoryListLiveData().observe(fragmentInstance.getViewLifecycleOwner(), itemListCategory -> loadSubCategories(itemListCategory));
 
-        viewModel.loadShopCategories(slug, currentPage, campaign_slug);
-
-    }
-
-
-    public void loadSubCategories(List<TabsItem> categoryList) {
-
-        if (currentPage == 1 && categoryList.size() < 1)
-            ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
-        else if (currentPage == 1 && categoryList.size() < 4) {
-            GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
-            recyclerViewCategory.setLayoutManager(mLayoutManager);
-        } else {
-            currentPage++;
-        }
-
-        shimmer.stopShimmer();
-        shimmer.setVisibility(View.GONE);
-        loading = true;
-
-        itemListCategory.addAll(categoryList);
-        adapterShopCategory.notifyItemRangeInserted(itemListCategory.size() - categoryList.size(), itemListCategory.size());
+        viewModel.loadShopCategories();
+        viewModel.loadRatings();
 
     }
+
 
 
 }

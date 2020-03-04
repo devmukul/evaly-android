@@ -25,15 +25,16 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 
-public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapter.MyViewHolder>{
+public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapter.MyViewHolder> {
 
-    Context context;
-    ArrayList<TabsItem> itemlist;
-    int type;
-    ShopViewModel shopViewModel;
+    private Context context;
+    private ArrayList<TabsItem> itemlist;
+    private int type;
+    private ShopViewModel shopViewModel;
 
-    public ShopCategoryAdapter(Context ctx, ArrayList<TabsItem> item, ShopViewModel shopViewModel){
-        context=ctx;
+
+    public ShopCategoryAdapter(Context ctx, ArrayList<TabsItem> item, ShopViewModel shopViewModel) {
+        context = ctx;
         itemlist = item;
         this.shopViewModel = shopViewModel;
     }
@@ -46,7 +47,7 @@ public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapte
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.shop_category_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shop_category_item, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -61,9 +62,10 @@ public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapte
                               public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                   return false;
                               }
+
                               @Override
                               public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                  Bitmap bitmap = changeColor(((BitmapDrawable)resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
+                                  Bitmap bitmap = changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
                                   holder.iv.setImageBitmap(bitmap);
                                   return true;
                               }
@@ -72,34 +74,16 @@ public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapte
                 .placeholder(R.drawable.ic_placeholder_small)
                 .into(holder.iv);
 
-       // holder.view.setOnClickListener(view -> shopFragment.showProductsByCategory(itemlist.get(position).getTitle(), itemlist.get(position).getSlug(),position));
+        holder.view.setOnClickListener(view -> shopViewModel.setSelectedCategoryLiveData(itemlist.get(position)));
 
-    }
-
-
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-
-        TextView tv;
-        ImageView iv;
-        View view;
-
-
-        public MyViewHolder(final View itemView) {
-            super(itemView);
-            tv=itemView.findViewById(R.id.text);
-            iv= itemView.findViewById(R.id.image);
-            view = itemView;
-
-        }
     }
 
     private double colorDistance(int a, int b) {
         return Math.sqrt(Math.pow(Color.red(a) - Color.red(b), 2) + Math.pow(Color.blue(a) - Color.blue(b), 2) + Math.pow(Color.green(a) - Color.green(b), 2));
     }
 
-
-    public Bitmap changeColor(Bitmap src,int fromColor, int targetColor) {
-        if(src == null) {
+    public Bitmap changeColor(Bitmap src, int fromColor, int targetColor) {
+        if (src == null) {
             return null;
         }
         // Source image size
@@ -109,9 +93,9 @@ public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapte
         //get pixels
         src.getPixels(pixels, 0, width, 0, 0, width, height);
 
-        for(int x = 0; x < pixels.length; ++x) {
+        for (int x = 0; x < pixels.length; ++x) {
 
-            if(colorDistance(pixels[x], fromColor) < 10)
+            if (colorDistance(pixels[x], fromColor) < 10)
                 pixels[x] = targetColor;
 
         }
@@ -121,6 +105,22 @@ public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapte
         result.setPixels(pixels, 0, width, 0, 0, width, height);
 
         return result;
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+
+        TextView tv;
+        ImageView iv;
+        View view;
+
+
+        public MyViewHolder(final View itemView) {
+            super(itemView);
+            tv = itemView.findViewById(R.id.text);
+            iv = itemView.findViewById(R.id.image);
+            view = itemView;
+
+        }
     }
 
 

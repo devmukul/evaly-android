@@ -4,14 +4,12 @@ package bd.com.evaly.evalyshop.ui.shop;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +20,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
@@ -42,8 +40,6 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
-import bd.com.evaly.evalyshop.listener.ProductListener;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.HomeHeaderItem;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
@@ -54,7 +50,6 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
@@ -73,11 +68,10 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 
-public class ShopFragment extends Fragment implements ProductListener {
+public class ShopFragment extends Fragment {
 
     private String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug = "", logo_image;
     private String categorySlug = null;
-
     private List<ProductItem> productItemList;
     private ShopProductAdapter adapterProducts;
     private RecyclerView productRecyclerView;
@@ -96,17 +90,11 @@ public class ShopFragment extends Fragment implements ProductListener {
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
-
-
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-        //On User Presence Changed
         public void onPresenceChanged(PresenceModel presenceModel) {
-
-            // Logger.d(presenceModel.getUserStatus());
         }
 
         public void onConnected() {
-            Logger.d("===========");
             xmppHandler = AppController.getmService().xmpp;
             rosterList = xmppHandler.rosterList;
             if (!owner_number.equals("")) {
@@ -128,39 +116,12 @@ public class ShopFragment extends Fragment implements ProductListener {
     private View dummyViewTop;
     private ShopViewModel viewModel;
     private ProgressBar progressBar;
+    private int totalCount = 0;
 
     public ShopFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onSuccess(int count) {
-
-//        if (count == 0) {
-//            ((TextView) view.findViewById(R.id.categoryTitle)).setText(" ");
-//            noItem.setVisibility(View.VISIBLE);
-//            try {
-//                if (context != null)
-//                    Glide.with(context)
-//                            .load(R.drawable.ic_emptycart)
-//                            .apply(new RequestOptions().override(600, 600))
-//                            .into(placeholder);
-//            } catch (Exception ignored) {
-//            }
-//            progressBar.setVisibility(View.GONE);
-//        } else {
-//            noItem.setVisibility(View.GONE);
-//        }
-    }
-
-    @Override
-    public void buyNow(String productSlug) {
-
-        BuyNowFragment addPhotoBottomDialogFragment =
-                BuyNowFragment.newInstance(slug, productSlug);
-        addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
-                "BuyNow");
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -200,7 +161,6 @@ public class ShopFragment extends Fragment implements ProductListener {
 
                 @Override
                 public void onBackPress() {
-                    if (getFragmentManager() != null)
                         NavHostFragment.findNavController(ShopFragment.this).navigate(R.id.homeFragment);
                 }
             });
@@ -229,6 +189,11 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
         slug = getArguments().getString("shop_slug");
+
+
+        viewModel.setCampaignSlug(campaign_slug);
+        viewModel.setCategorySlug(categorySlug);
+        viewModel.setShopSlug(slug);
 
         productRecyclerView = view.findViewById(R.id.products);
 
@@ -259,8 +224,11 @@ public class ShopFragment extends Fragment implements ProductListener {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!isLoading)
-                        viewModel.loadShopProdructs(slug, currentPage, categorySlug, campaign_slug);
+                    if (!isLoading) {
+                        if (currentPage > 1)
+                            progressBar.setVisibility(View.VISIBLE);
+                        viewModel.loadShopProducts();
+                    }
                 }
             }
         });
@@ -270,19 +238,46 @@ public class ShopFragment extends Fragment implements ProductListener {
         boolean includeEdge = true;
         productRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
 
-
         viewModel.getOnChatClickLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean)
                 setUpXmpp();
         });
 
         viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> {
-            Log.d("hmt", "loaded");
-
             loadShopDetails(shopDetailsModel);
         });
 
-        viewModel.loadShopProdructs(slug, currentPage, categorySlug, campaign_slug);
+        viewModel.loadShopProducts();
+
+        viewModel.getBuyNowLiveData().observe(getViewLifecycleOwner(), s -> {
+            if (getActivity() != null) {
+                BuyNowFragment addPhotoBottomDialogFragment =
+                        BuyNowFragment.newInstance(slug, s);
+                addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
+                        "BuyNow");
+            }
+        });
+
+        viewModel.getSelectedCategoryLiveData().observe(getViewLifecycleOwner(), tabsItem -> {
+
+            categorySlug = tabsItem.getSlug();
+            viewModel.setCategorySlug(categorySlug);
+            viewModel.setCurrentPage(1);
+
+
+            productItemList.clear();
+            productItemList.add(new HomeHeaderItem());
+            adapterProducts.notifyDataSetChanged();
+            currentPage = 1;
+
+            viewModel.loadShopProducts();
+
+            AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
+            appBarLayout.setExpanded(false, true);
+            TextView tv = view.findViewById(R.id.catTitle);
+            int scrollTo = ((View) tv.getParent()).getTop() + tv.getTop() + 30;
+
+        });
 
     }
 
@@ -293,8 +288,6 @@ public class ShopFragment extends Fragment implements ProductListener {
     }
 
     private void startXmppService() {
-
-        //Start XMPP Service (if not running already)
         if (getContext() != null && getActivity() != null) {
             if (!XMPPService.isServiceRunning) {
                 Intent intent = new Intent(getActivity(), XMPPService.class);
@@ -319,49 +312,34 @@ public class ShopFragment extends Fragment implements ProductListener {
     }
 
     private void disconnectXmpp() {
-        if (xmppHandler != null) {
+        if (xmppHandler != null)
             xmppHandler.disconnect();
-        }
-        getActivity().stopService(new Intent(getActivity(), XMPPService.class));
+        Objects.requireNonNull(getActivity()).stopService(new Intent(getActivity(), XMPPService.class));
     }
 
 
     public void loadShopDetails(ShopDetailsModel response) {
-
 
         adapterProducts.setShopDetails(response);
 
         Data shopData = response.getData();
         Shop shopDetails = shopData.getShop();
 
-
-        if (currentPage == 1) {
+        if (currentPage == 1 && productItemList.size() != 1) {
             productItemList.add(new HomeHeaderItem());
             adapterProducts.notifyItemInserted(0);
             shop_name = shopDetails.getName();
             owner_number = shopDetails.getOwnerName();
-
         }
 
         progressBar.setVisibility(View.INVISIBLE);
 
-//        if (currentPage == 1)
-//        dummyViewTop.setVisibility(View.VISIBLE);
-//
-//        dummyView.setVisibility(View.GONE);
-//        dummyViewTop.setVisibility(View.GONE);
-
-
-        if (shopData.getMeta() != null && currentPage == 1) {
-            int cashbackRate = shopData.getMeta().get("cashback_rate").getAsInt();
-            adapterProducts.setCashbackRate(cashbackRate);
-        }
+        if (shopData.getMeta() != null && currentPage == 1)
+            adapterProducts.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
 
         List<ItemsItem> shopItems = shopData.getItems();
 
-        //  progressBar.setVisibility(View.INVISIBLE);
         productRecyclerView.setVisibility(View.VISIBLE);
-
 
         for (int i = 0; i < shopItems.size(); i++) {
             if (i == 0)
@@ -378,14 +356,14 @@ public class ShopFragment extends Fragment implements ProductListener {
             item.setMinDiscountedPrice(String.valueOf(shopItem.getDiscountedPrice()));
 
             productItemList.add(item);
-
             adapterProducts.notifyItemInserted(productItemList.size());
 
-            Log.d("hmt", "added");
         }
 
         if (currentPage == 1 & shopItems.size() == 0) {
-            noItem.setVisibility(View.VISIBLE);
+         //   noItem.setVisibility(View.VISIBLE);
+        } else{
+            noItem.setVisibility(View.GONE);
         }
 
 
@@ -477,44 +455,9 @@ public class ShopFragment extends Fragment implements ProductListener {
         return roasterModel;
     }
 
-    public void getProductRating(final String sku) {
-
-        ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), sku, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-                try {
-                    response = response.getAsJsonObject("data");
-                    ratingJson = response.toString();
-                    double avg = response.get("avg_rating").getAsDouble();
-                    RatingBar ratingBar = view.findViewById(R.id.ratingBar);
-                    TextView ratingsCount = view.findViewById(R.id.ratings_count);
-                    int tratings = response.get("total_ratings").getAsInt();
-                    ratingsCount.setText("(" + tratings + ")");
-                    ratingBar.setRating((float) avg);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
-
-
     private void addRosterByOther() {
 
-
         if (CredentialManager.getUserData() != null) {
-
             ViewDialog dialog = new ViewDialog(getActivity());
             dialog.showDialog();
 
