@@ -23,7 +23,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
+import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;

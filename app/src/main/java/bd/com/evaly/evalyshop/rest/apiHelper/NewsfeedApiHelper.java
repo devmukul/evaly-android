@@ -6,8 +6,12 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
+import bd.com.evaly.evalyshop.models.notification.NotificationCount;
+import bd.com.evaly.evalyshop.models.notification.NotificationItem;
 
 public class NewsfeedApiHelper extends BaseApiHelper {
 
@@ -51,7 +55,7 @@ public class NewsfeedApiHelper extends BaseApiHelper {
         getiApiClient().postNewsfeedComment(token, postId, body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void postReply(String token, String postId, String commentId, JsonObject body, ResponseListenerAuth<JsonObject, String> listener){
+    public static void postReply(String token, String postId, int commentId, JsonObject body, ResponseListenerAuth<JsonObject, String> listener){
         getiApiClient().postNewsfeedReply(token, postId, commentId, body).enqueue(getResponseCallBackDefault(listener));
     }
 
@@ -73,5 +77,27 @@ public class NewsfeedApiHelper extends BaseApiHelper {
         else
             getiApiClient().approvePendingNewsfeedPost(token, postId, body).enqueue(getResponseCallBackDefault(listener));
     }
+
+    public static void getNewsfeedNotification(String token, int page, ResponseListenerAuth<CommonResultResponse<List<NotificationItem>>, String> listener) {
+        getiApiClient().getNewsfeedNotification(token, page).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void markNotificationAsRead(String token, ResponseListenerAuth<JsonObject, String> listener) {
+        getiApiClient().markNewsfeedNotificationAsRead(token).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getNotificationCount(String token, ResponseListenerAuth<NotificationCount, String> listener) {
+        getiApiClient().getNewsfeedNotificationCount(token).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void post(String token, CreatePostModel body, String postSlug, ResponseListenerAuth<JsonObject, String> listener) {
+
+        if (postSlug == null)
+            getiApiClient().createNewsfeedPost(token, body).enqueue(getResponseCallBackDefault(listener));
+        else
+            getiApiClient().editNewsfeedPost(token, body, postSlug).enqueue(getResponseCallBackDefault(listener));
+
+    }
+
 
 }

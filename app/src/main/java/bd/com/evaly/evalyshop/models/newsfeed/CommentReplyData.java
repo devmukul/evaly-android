@@ -4,7 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-import bd.com.evaly.econnect.models.newsfeed.comment.CommentItem;
+import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
+
 
 public class CommentReplyData implements Serializable {
 

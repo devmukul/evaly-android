@@ -162,7 +162,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             }
         }
 
-        View.OnClickListener openReply = view -> fragment.openReplyBottomSheet(String.valueOf(commentItem.getId()), author.getFullName(), author.getCompressedImage(), author.getIsAdmin(), commentItem.getBody(), commentItem.getCreatedAt(), commentItem.getAttachement());
+        View.OnClickListener openReply = view -> fragment.openReplyBottomSheet(commentItem.getId(), author.getFullName(), author.getCompressedImage(), author.getIsAdmin(), commentItem.getBody(), commentItem.getCreatedAt(), commentItem.getAttachement());
 
         myViewHolder.replyCountView.setOnClickListener(openReply);
         myViewHolder.replyIcon.setOnClickListener(openReply);

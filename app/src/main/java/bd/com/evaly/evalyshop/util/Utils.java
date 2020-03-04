@@ -20,6 +20,9 @@ import androidx.core.content.ContextCompat;
 import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smackx.chatstates.ChatState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -47,6 +50,21 @@ public class Utils {
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
+
+    public static boolean isJSONValid(String test) {
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+            // edited, to include @Arthur's comment
+            // e.g. in case JSONArray is valid as well...
+            try {
+                new JSONArray(test);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static int daysBetween(Calendar day1, Calendar day2){
         Calendar dayOne = (Calendar) day1.clone(),

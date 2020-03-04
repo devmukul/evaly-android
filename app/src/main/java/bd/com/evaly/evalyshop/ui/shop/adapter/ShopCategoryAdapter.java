@@ -22,20 +22,20 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.shop.ShopFragment;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
+import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 
 public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapter.MyViewHolder>{
 
     Context context;
     ArrayList<TabsItem> itemlist;
     int type;
-    ShopFragment shopFragment;
+    ShopViewModel shopViewModel;
 
-    public ShopCategoryAdapter(Context ctx, ArrayList<TabsItem> item, ShopFragment shopFragment){
+    public ShopCategoryAdapter(Context ctx, ArrayList<TabsItem> item, ShopViewModel shopViewModel){
         context=ctx;
         itemlist = item;
-        this.shopFragment = shopFragment;
+        this.shopViewModel = shopViewModel;
     }
 
 
@@ -72,7 +72,7 @@ public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapte
                 .placeholder(R.drawable.ic_placeholder_small)
                 .into(holder.iv);
 
-        holder.view.setOnClickListener(view -> shopFragment.showProductsByCategory(itemlist.get(position).getTitle(), itemlist.get(position).getSlug(),position));
+       // holder.view.setOnClickListener(view -> shopFragment.showProductsByCategory(itemlist.get(position).getTitle(), itemlist.get(position).getSlug(),position));
 
     }
 
@@ -92,11 +92,6 @@ public class ShopCategoryAdapter extends RecyclerView.Adapter<ShopCategoryAdapte
 
         }
     }
-
-
-
-
-
 
     private double colorDistance(int a, int b) {
         return Math.sqrt(Math.pow(Color.red(a) - Color.red(b), 2) + Math.pow(Color.blue(a) - Color.blue(b), 2) + Math.pow(Color.green(a) - Color.green(b), 2));

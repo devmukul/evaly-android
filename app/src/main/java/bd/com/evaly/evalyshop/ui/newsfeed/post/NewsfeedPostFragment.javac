@@ -32,19 +32,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import bd.com.evaly.econnect.R;
-import bd.com.evaly.econnect.controller.AppController;
-import bd.com.evaly.econnect.databinding.NewsfeedTabsFragmentBinding;
-import bd.com.evaly.econnect.manager.CredentialManager;
-import bd.com.evaly.econnect.models.db.RosterTable;
-import bd.com.evaly.econnect.models.network.NetworkState;
-import bd.com.evaly.econnect.models.newsfeed.FeedShareModel;
-import bd.com.evaly.econnect.models.newsfeed.newsfeed.NewsfeedPost;
-import bd.com.evaly.econnect.models.xmpp.ChatItem;
-import bd.com.evaly.econnect.ui.chat.invite.ContactShareAdapter;
-import bd.com.evaly.econnect.ui.chat.viewmodel.RoomWIthRxViewModel;
-import bd.com.evaly.econnect.util.Constants;
-import bd.com.evaly.econnect.util.KeyboardUtil;
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.db.RosterTable;
+import bd.com.evaly.evalyshop.models.network.NetworkState;
+import bd.com.evaly.evalyshop.models.newsfeed.FeedShareModel;
+import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
+import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
+import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
+import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
+import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.KeyboardUtil;
+
 
 public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 

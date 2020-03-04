@@ -128,7 +128,7 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
         dummyViewTop = view.findViewById(R.id.dummyViewTop);
         dummyView = view.findViewById(R.id.dummyView);
         noItem = view.findViewById(R.id.noItem);
-        dialog = new ViewDialog(activityInstance));
+        dialog = new ViewDialog(activityInstance);
         name = view.findViewById(R.id.name);
         tvOffer = view.findViewById(R.id.tvOffer);
         address = view.findViewById(R.id.address);
@@ -167,7 +167,7 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
 
         // type 4 means shop's category
 
-        adapter = new ShopCategoryAdapter(context, itemList, fragmentInstance);
+        adapter = new ShopCategoryAdapter(context, itemList, viewModel);
         recyclerView.setAdapter(adapter);
 
         recyclerView = view.findViewById(R.id.categoriesRecycler);
@@ -192,9 +192,8 @@ public class ShopProductHeader extends RecyclerView.ViewHolder  {
         });
 
 
-        Shop shopDetails = itemList.get();
+        Shop shopDetails = itemList.get(0);
 
-        List<ItemsItem> shopItems = shopData.getItems();
 
         if (currentPage == 1 && categorySlug == null) {
 

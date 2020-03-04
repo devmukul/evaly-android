@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.CommentBottomSheetFragmentBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
@@ -94,7 +95,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
 
         initCommentHeader(newsfeedPostModel);
 
-        adapter = new CommentAdapter(itemList, getContext(), getParentFragmentManager(), newsfeedPostModel.getSlug());
+        adapter = new CommentAdapter(itemList, getContext(), getFragmentManager(), newsfeedPostModel.getSlug());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.recyclerView.setLayoutManager(layoutManager);

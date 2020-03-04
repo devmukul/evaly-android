@@ -1,15 +1,11 @@
 package bd.com.evaly.evalyshop.ui.shop;
 
-import android.widget.RatingBar;
-import android.widget.TextView;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonObject;
 
-import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
@@ -48,7 +44,7 @@ public class ShopViewModel extends ViewModel {
             public void onAuthError(boolean logout) {
 
                 if (!logout)
-                    subscribe();
+                    subscribe(slug, subscribe);
 
             }
         });

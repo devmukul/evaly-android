@@ -15,10 +15,11 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
-import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
+import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
+import bd.com.evaly.evalyshop.models.notification.NotificationItem;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
@@ -304,7 +305,7 @@ public interface IApiClient {
     Call<JsonObject> getNewsfeedPostDetails(@Header("Authorization") String token, @Path("post_id") String postId);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{selectedPostId}/comments/{commentId}/replies")
-    Call<JsonObject> getNewsfeedReplies(@Header("Authorization") String token, @Path("selectedPostId") String postId, @Path("commentId") String commentId, @Query("page") int page);
+    Call<JsonObject> getNewsfeedReplies(@Header("Authorization") String token, @Path("selectedPostId") String postId, @Path("commentId") int commentId, @Query("page") int page);
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "posts/{selectedPostId}/comments/{commentId}/replies")
     Call<CommonDataResponse<List<CommentItem>>> getNewsfeedRepliesList(@Header("Authorization") String token,
@@ -330,7 +331,7 @@ public interface IApiClient {
     Call<JsonObject> postNewsfeedComment(@Header("Authorization") String token, @Path("selectedPostID") String selectedPostID, @Body JsonObject body);
 
     @POST(UrlUtils.BASE_URL_NEWSFEED + "posts/{selectedPostID}/comments/{selectedCommentID}/replies")
-    Call<JsonObject> postNewsfeedReply(@Header("Authorization") String token, @Path("selectedPostID") String selectedPostID, @Path("selectedCommentID") String selectedCommentID, @Body JsonObject body);
+    Call<JsonObject> postNewsfeedReply(@Header("Authorization") String token, @Path("selectedPostID") String selectedPostID, @Path("selectedCommentID") int selectedCommentID, @Body JsonObject body);
 
     @POST(UrlUtils.BASE_URL_NEWSFEED + "posts/{slug}/favorite")
     Call<JsonObject> likeNewsfeedPost(@Header("Authorization") String token, @Path("slug") String postSlug);
@@ -347,5 +348,24 @@ public interface IApiClient {
     @DELETE(UrlUtils.BASE_URL_NEWSFEED + "posts/{postId}")
     Call<JsonObject> deletePendingNewsfeedPost(@Header("Authorization") String token, @Path("postId") String postId, @Body JsonObject body);
 
+    @POST(UrlUtils.BASE_URL_NEWSFEED + "posts")
+    Call<JsonObject> createNewsfeedPost(@Header("Authorization") String token,
+                                        @Body CreatePostModel body);
 
+    @POST(UrlUtils.BASE_URL_NEWSFEED + "posts/{postSlug}")
+    Call<JsonObject> editNewsfeedPost(@Header("Authorization") String token,
+                                      @Body CreatePostModel body,
+                                      @Path(("postSlug")) String postSlug);
+
+    // newsfeed notifation
+
+    @GET(UrlUtils.BASE_URL_NEWSFEED + "notifications")
+    Call<CommonResultResponse<List<NotificationItem>>> getNewsfeedNotification(@Header("Authorization") String token,
+                                                                               @Query("page") int page);
+
+    @GET(UrlUtils.BASE_URL_NEWSFEED + "update-notifications/")
+    Call<JsonObject> markNewsfeedNotificationAsRead(@Header("Authorization") String token);
+
+    @GET(UrlUtils.BASE_URL_NEWSFEED + "notifications_count/")
+    Call<NotificationCount> getNewsfeedNotificationCount(@Header("Authorization") String token);
 }

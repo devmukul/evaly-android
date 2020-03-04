@@ -115,7 +115,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private boolean isCommentLoading = false;
     private BottomSheetBehavior bottomSheetBehaviorReply;
     private BottomSheetDialog replyDialog;
-    private String selectedCommentID = "";
+    private int selectedCommentID;
     private RecyclerView replyRecyclerView;
     private ReplyAdapter replyAdapter;
     private ArrayList<RepliesItem> replyItems;
@@ -171,7 +171,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         currentPage = 1;
         swipeLayout.setRefreshing(false);
         selectedPostID = "";
-        selectedCommentID = "";
+        selectedCommentID = 0;
         getPosts(currentPage);
 
         try {
@@ -236,7 +236,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
 
                     currentReplyPage = 1;
-                    selectedCommentID = "";
+                    selectedCommentID = 0;
                     replyItems.clear();
                     replyAdapter.notifyDataSetChanged();
                     replyDialog.hide();
@@ -447,7 +447,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-    public void openReplyBottomSheet(String id, String authorName, String authorImage, boolean isAdmin, String postText, String date, Object postImage) {
+    public void openReplyBottomSheet(int id, String authorName, String authorImage, boolean isAdmin, String postText, String date, Object postImage) {
 
         if (replyDialog != null) {
 

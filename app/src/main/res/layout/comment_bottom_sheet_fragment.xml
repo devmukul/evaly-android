@@ -17,7 +17,7 @@
             android:background="#fff"
             android:orientation="vertical">
 
-            <bd.com.evaly.econnect.views.StickyScrollView
+            <bd.com.evaly.evalyshop.views.StickyScrollView
                 android:id="@+id/stickyScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -247,7 +247,7 @@
 
                 </LinearLayout>
 
-            </bd.com.evaly.econnect.views.StickyScrollView>
+            </bd.com.evaly.evalyshop.views.StickyScrollView>
 
 
             <LinearLayout

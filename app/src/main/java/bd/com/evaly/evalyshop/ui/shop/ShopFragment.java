@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -121,6 +122,9 @@ public class ShopFragment extends Fragment implements ProductListener {
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
+
+    private ShopViewModel viewModel;
+
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
 
         //On User Presence Changed
@@ -188,6 +192,7 @@ public class ShopFragment extends Fragment implements ProductListener {
         view = inflater.inflate(R.layout.fragment_shop, container, false);
         context = getContext();
         mainActivity = (MainActivity) getActivity();
+        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
         if (!CredentialManager.getToken().equals(""))
             Executors.newSingleThreadExecutor().execute(() -> startXmppService());
 
@@ -309,7 +314,7 @@ public class ShopFragment extends Fragment implements ProductListener {
 
         // type 4 means shop's category
 
-        adapter = new ShopCategoryAdapter(context, itemList, this);
+        adapter = new ShopCategoryAdapter(context, itemList, viewModel);
         recyclerView.setAdapter(adapter);
 
         slug = getArguments().getString("shop_slug");

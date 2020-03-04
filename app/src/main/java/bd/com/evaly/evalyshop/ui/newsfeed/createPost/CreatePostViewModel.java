@@ -13,8 +13,9 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.ResponseViewModel;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
-import bd.com.evaly.evalyshop.models.newsfeed.CreatePostModel;
+import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
+import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 
 public class CreatePostViewModel extends ViewModel {
