@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
@@ -59,7 +59,6 @@ import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopProductAdapter;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
@@ -68,9 +67,9 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 
-public class ShopFragment extends Fragment {
+public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
-    private String slug = "", title = "", groups = "", owner_number = "", shop_name = "", campaign_slug = "", logo_image;
+    private String slug = "", title = "", owner_number = "", shop_name = "", campaign_slug = "", logo_image;
     private String categorySlug = null;
     private List<ProductItem> productItemList;
     private ShopProductAdapter adapterProducts;
@@ -79,17 +78,13 @@ public class ShopFragment extends Fragment {
     private Context context;
     private MainActivity mainActivity;
     private int currentPage = 1;
-    private boolean loading = true;
-    private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private boolean isLoading = false;
-    private ImageView placeholder;
-    private String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
-    private UserDetails userDetails;
-    private int subCount = 0;
     private VCard vCard;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         public void onPresenceChanged(PresenceModel presenceModel) {
         }
@@ -152,6 +147,9 @@ public class ShopFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         if (!Utils.isNetworkAvailable(context))
             new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
@@ -374,7 +372,6 @@ public class ShopFragment extends Fragment {
 
             productItemList.add(item);
             adapterProducts.notifyItemInserted(productItemList.size());
-
         }
 
         if (clickFromCategory) {
@@ -549,46 +546,18 @@ public class ShopFragment extends Fragment {
             });
         }
     }
-//
-//
-//    public void subscribe() {
-//
-//        if (userDetails.getToken().equals("")) {
-//            Toast.makeText(context, "You need to login first to follow a shop", Toast.LENGTH_LONG).show();
-//            return;
-//        }
-//
-//        boolean subscribe = true;
-//
-//        if (followText.getText().toString().contains("Unfollow")) {
-//            subscribe = false;
-//            followText.setText("Follow (" + (--subCount) + ")");
-//        } else
-//            followText.setText("Unfollow (" + (++subCount) + ")");
-//
-//
-//        GeneralApiHelper.subscribeToShop(CredentialManager.getToken(), slug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
-//            @Override
-//            public void onDataFetched(JsonObject response, int statusCode) {
-//
-//            }
-//
-//            @Override
-//            public void onFailed(String errorBody, int errorCode) {
-//
-//            }
-//
-//            @Override
-//            public void onAuthError(boolean logout) {
-//
-//                if (!logout)
-//                    subscribe();
-//
-//            }
-//        });
-//
-//
-//    }
 
+    @Override
+    public void onRefresh() {
+
+        swipeRefreshLayout.setRefreshing(false);
+        currentPage = 1;
+        viewModel.setCategorySlug(null);
+        productItemList.clear();
+        adapterProducts.notifyDataSetChanged();
+        viewModel.setCurrentPage(1);
+        viewModel.loadShopProducts();
+
+    }
 }
 

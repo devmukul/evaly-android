@@ -7,17 +7,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,25 +32,17 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.brand.adapter.BrandProductAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
-import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
-import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
-public class BrandFragment extends Fragment {
+public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private String slug = "", title = "", categoryString = "", imgUrl = "", categorySlug = "";
-    private ImageView logo;
-    private TextView name, categoryName, address, number;
-    private NestedScrollView nestedSV;
-    private ShopCategoryAdapter adapter;
     private View view;
     private Context context;
     private MainActivity mainActivity;
-    private ProductGrid productGrid;
-    private ImageView placeHolder;
     private ProgressBar progressBar;
     private View dummyView;
     private List<ProductItem> itemListProduct;
@@ -60,9 +50,9 @@ public class BrandFragment extends Fragment {
     private RecyclerView recyclerView;
     private int currentPage = 1;
     private boolean isLoading = false;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public BrandFragment() {
-        // Required empty public constructor
 
     }
 
@@ -90,6 +80,10 @@ public class BrandFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         if (!Utils.isNetworkAvailable(context))
             new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
@@ -130,7 +124,6 @@ public class BrandFragment extends Fragment {
         imgUrl = getArguments().getString("image_url");
 
 
-
         dummyView = view.findViewById(R.id.dummyView);
         recyclerView = view.findViewById(R.id.products);
         progressBar = view.findViewById(R.id.progressBar);
@@ -141,6 +134,7 @@ public class BrandFragment extends Fragment {
         data.put("title", title);
         data.put("categorySlug", categorySlug);
         data.put("categoryString", categoryString);
+        data.put("imgUrl", imgUrl);
 
         adapterProduct = new BrandProductAdapter(getContext(), itemListProduct, mainActivity, this, NavHostFragment.findNavController(this), data);
         recyclerView.setAdapter(adapterProduct);
@@ -226,4 +220,15 @@ public class BrandFragment extends Fragment {
     }
 
 
+    @Override
+    public void onRefresh() {
+
+        swipeRefreshLayout.setRefreshing(false);
+        currentPage = 1;
+        itemListProduct.clear();
+        itemListProduct.add(new HomeHeaderItem());
+        adapterProduct.notifyDataSetChanged();
+        getProducts();
+
+    }
 }

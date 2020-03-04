@@ -52,6 +52,7 @@ public class BrandProductHeader extends RecyclerView.ViewHolder {
 
         this.slug = data.get("slug");
         this.title = data.get("title");
+        this.imgUrl = data.get("imgUrl");
         this.categoryString = data.get("categoryString");
         this.categorySlug = data.get("categorySlug");
 
