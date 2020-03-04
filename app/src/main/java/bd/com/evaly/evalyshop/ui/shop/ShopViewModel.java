@@ -22,7 +22,8 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 public class ShopViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> onChatClickLiveData = new MutableLiveData<>();
-    private MutableLiveData<Boolean> onFollowCliclLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> onFollowClickLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> onResetLiveData = new MutableLiveData<>();
     private MutableLiveData<JsonObject> ratingSummary = new MutableLiveData<>();
     private MutableLiveData<ShopDetailsModel> shopDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<TabsItem>> shopCategoryListLiveData = new MutableLiveData<>();
@@ -196,12 +197,12 @@ public class ShopViewModel extends ViewModel {
 
     }
 
-    public LiveData<Boolean> getOnFollowCliclLiveData() {
-        return onFollowCliclLiveData;
+    public LiveData<Boolean> getOnFollowClickLiveData() {
+        return onFollowClickLiveData;
     }
 
-    public void setOnFollowCliclLiveData(boolean onFollowCliclLiveData) {
-        this.onFollowCliclLiveData.setValue(onFollowCliclLiveData);
+    public void setOnFollowClickLiveData(boolean onFollowClickLiveData) {
+        this.onFollowClickLiveData.setValue(onFollowClickLiveData);
     }
 
     public LiveData<ShopDetailsModel> getShopDetailsLiveData() {
@@ -226,5 +227,13 @@ public class ShopViewModel extends ViewModel {
 
     public void setSelectedCategoryLiveData(TabsItem selectedCategoryLiveData) {
         this.selectedCategoryLiveData.setValue(selectedCategoryLiveData);
+    }
+
+    public MutableLiveData<Boolean> getOnResetLiveData() {
+        return onResetLiveData;
+    }
+
+    public void setOnResetLiveData(boolean onResetLiveData) {
+        this.onResetLiveData.setValue(onResetLiveData);
     }
 }

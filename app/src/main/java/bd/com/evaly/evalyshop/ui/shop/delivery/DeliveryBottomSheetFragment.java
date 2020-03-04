@@ -33,7 +33,12 @@ public class DeliveryBottomSheetFragment extends BottomSheetDialogFragment {
         DeliveryBottomSheetFragment fragment = new DeliveryBottomSheetFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable("list", new ArrayList(deliveryOptionList));
+
+        if (deliveryOptionList != null)
+            bundle.putSerializable("list", new ArrayList(deliveryOptionList));
+        else
+            bundle.putSerializable("list", new ArrayList());
+
         fragment.setArguments(bundle);
         return fragment;
 
@@ -81,10 +86,10 @@ public class DeliveryBottomSheetFragment extends BottomSheetDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BottomSheetDialog bottomSheetDialog=(BottomSheetDialog)super.onCreateDialog(savedInstanceState);
+        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         bottomSheetDialog.setOnShowListener(dialog -> {
             BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
-            FrameLayout bottomSheet =  dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            FrameLayout bottomSheet = dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
             BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
             BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
             BottomSheetBehavior.from(bottomSheet).setHideable(true);

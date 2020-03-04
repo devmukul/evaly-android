@@ -110,6 +110,7 @@ public class ShopFragment extends Fragment {
             }
         }
     };
+    private boolean clickFromCategory = false;
     private LinearLayout noItem;
     private TextView categoryTitle;
     private View dummyView;
@@ -161,7 +162,7 @@ public class ShopFragment extends Fragment {
 
                 @Override
                 public void onBackPress() {
-                        NavHostFragment.findNavController(ShopFragment.this).navigate(R.id.homeFragment);
+                    NavHostFragment.findNavController(ShopFragment.this).navigate(R.id.homeFragment);
                 }
             });
 
@@ -260,10 +261,11 @@ public class ShopFragment extends Fragment {
 
         viewModel.getSelectedCategoryLiveData().observe(getViewLifecycleOwner(), tabsItem -> {
 
+            clickFromCategory = true;
+
             categorySlug = tabsItem.getSlug();
             viewModel.setCategorySlug(categorySlug);
             viewModel.setCurrentPage(1);
-
 
             productItemList.clear();
             productItemList.add(new HomeHeaderItem());
@@ -277,6 +279,21 @@ public class ShopFragment extends Fragment {
             TextView tv = view.findViewById(R.id.catTitle);
             int scrollTo = ((View) tv.getParent()).getTop() + tv.getTop() + 30;
 
+        });
+
+        viewModel.getOnResetLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean) {
+
+                viewModel.setCategorySlug(null);
+                viewModel.setCurrentPage(1);
+
+                productItemList.clear();
+                productItemList.add(new HomeHeaderItem());
+                adapterProducts.notifyDataSetChanged();
+                currentPage = 1;
+
+                viewModel.loadShopProducts();
+            }
         });
 
     }
@@ -360,9 +377,14 @@ public class ShopFragment extends Fragment {
 
         }
 
+        if (clickFromCategory) {
+            productRecyclerView.scrollToPosition(1);
+            clickFromCategory = false;
+        }
+
         if (currentPage == 1 & shopItems.size() == 0) {
-         //   noItem.setVisibility(View.VISIBLE);
-        } else{
+            //   noItem.setVisibility(View.VISIBLE);
+        } else {
             noItem.setVisibility(View.GONE);
         }
 

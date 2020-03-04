@@ -171,10 +171,8 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
             }
         });
 
-
         Data shopData = shopDetails.getData();
         Shop shopInfo = shopData.getShop();
-
 
         shop_name = shopInfo.getName();
         owner_number = shopInfo.getOwnerName();
@@ -194,7 +192,6 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
                 Toast.makeText(context, "You need to login first to follow a shop", Toast.LENGTH_LONG).show();
                 return;
             }
-
             boolean subscribe = true;
 
             if (followText.getText().toString().contains("Unfollow")) {
@@ -204,7 +201,6 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
                 followText.setText("Unfollow (" + (++subCount) + ")");
 
             viewModel.subscribe(subscribe);
-
         });
 
         name.setText(shop_name);
@@ -231,7 +227,6 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
             snackBar.show();
         });
 
-
         location.setOnClickListener(v -> {
             String phone = shopInfo.getAddress();
             final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
@@ -249,21 +244,15 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
         });
 
         reset.setOnClickListener(v -> {
-
-            viewModel.setCategorySlug(null);
-            viewModel.setCurrentPage(1);
-            viewModel.loadShopProducts();
-
+            viewModel.setOnResetLiveData(true);
+            categoryTitle.setText(R.string.all_products);
             reset.setVisibility(View.GONE);
-
         });
-
 
         link.setOnClickListener(v -> {
-                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopDetails.getShopDeliveryOptions());
-                deliveryBottomSheetFragment.show(fragmentInstance.getParentFragmentManager(), "delivery option");
+            DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopDetails.getShopDeliveryOptions());
+            deliveryBottomSheetFragment.show(fragmentInstance.getParentFragmentManager(), "delivery option");
         });
-
 
         reviews.setOnClickListener(v -> {
             String shop_id = slug;
@@ -274,13 +263,11 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
             activityInstance.startActivity(intent);
         });
 
-
         llInbox.setOnClickListener(v -> {
             viewModel.setOnChatClickLiveData(true);
         });
 
-
-        viewModel.getShopCategoryListLiveData().observe(fragmentInstance.getViewLifecycleOwner(), categoryList ->{
+        viewModel.getShopCategoryListLiveData().observe(fragmentInstance.getViewLifecycleOwner(), categoryList -> {
             if (currentPage == 1 && categoryList.size() < 1)
                 ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
             else if (currentPage == 1 && categoryList.size() < 4) {
@@ -299,7 +286,6 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
 
 
         viewModel.getRatingSummary().observe(fragmentInstance.getViewLifecycleOwner(), response -> {
-
             response = response.getAsJsonObject("data");
             ratingJson = response.toString();
             double avg = response.get("avg_rating").getAsDouble();
@@ -308,16 +294,17 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
             int tratings = response.get("total_ratings").getAsInt();
             ratingsCount.setText("(" + tratings + ")");
             ratingBar.setRating((float) avg);
-
         });
 
-
+        viewModel.getSelectedCategoryLiveData().observe(fragmentInstance.getViewLifecycleOwner(), tabsItem -> {
+            categoryTitle.setText(tabsItem.getTitle());
+            reset.setVisibility(View.VISIBLE);
+        });
 
         viewModel.loadShopCategories();
         viewModel.loadRatings();
 
     }
-
 
 
 }
