@@ -92,12 +92,12 @@ public class ShopFragment extends Fragment implements ProductListener {
     private String ratingJson = "{\"total_ratings\":0,\"avg_ratings\":\"0.0\",\"star_5\":0,\"star_4\":0,\"star_3\":0,\"star_2\":0,\"star_1\":0}";
     private UserDetails userDetails;
     private int subCount = 0;
-    private ViewDialog dialog;
     private VCard vCard;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
-    private LinearLayout noItem;
+
+
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         //On User Presence Changed
         public void onPresenceChanged(PresenceModel presenceModel) {
@@ -122,6 +122,7 @@ public class ShopFragment extends Fragment implements ProductListener {
             }
         }
     };
+    private LinearLayout noItem;
     private TextView categoryTitle;
     private View dummyView;
     private View dummyViewTop;
@@ -329,20 +330,26 @@ public class ShopFragment extends Fragment implements ProductListener {
 
 
         adapterProducts.setShopDetails(response);
-        productItemList.add(new HomeHeaderItem());
-        adapterProducts.notifyItemInserted(0);
 
-        //  progressBar.setVisibility(View.VISIBLE);
+        Data shopData = response.getData();
+        Shop shopDetails = shopData.getShop();
+
+
+        if (currentPage == 1) {
+            productItemList.add(new HomeHeaderItem());
+            adapterProducts.notifyItemInserted(0);
+            shop_name = shopDetails.getName();
+            owner_number = shopDetails.getOwnerName();
+
+        }
+
+        progressBar.setVisibility(View.INVISIBLE);
 
 //        if (currentPage == 1)
 //        dummyViewTop.setVisibility(View.VISIBLE);
 //
 //        dummyView.setVisibility(View.GONE);
 //        dummyViewTop.setVisibility(View.GONE);
-
-        Data shopData = response.getData();
-        Shop shopDetails = shopData.getShop();
-
 
 
         if (shopData.getMeta() != null && currentPage == 1) {
@@ -375,18 +382,19 @@ public class ShopFragment extends Fragment implements ProductListener {
             adapterProducts.notifyItemInserted(productItemList.size());
 
             Log.d("hmt", "added");
-
         }
 
-        if (shopItems.size() == 0) {
-//            noItem.setVisibility(View.VISIBLE);
-            categoryTitle.setVisibility(View.GONE);
+        if (currentPage == 1 & shopItems.size() == 0) {
+            noItem.setVisibility(View.VISIBLE);
         }
 
 
     }
 
     private void setUpXmpp() {
+
+        ViewDialog dialog = new ViewDialog(getActivity());
+        dialog.showDialog();
 
         if (CredentialManager.getToken().equals("")) {
             startActivity(new Intent(getActivity(), SignInActivity.class));
@@ -421,7 +429,9 @@ public class ShopFragment extends Fragment implements ProductListener {
                             e.printStackTrace();
                         }
                     } else {
-                        dialog.showDialog();
+
+                        dialog.hideDialog();
+
                         HashMap<String, String> data1 = new HashMap<>();
                         data1.put("localuser", CredentialManager.getUserName());
                         data1.put("localserver", Constants.XMPP_HOST);
@@ -434,6 +444,9 @@ public class ShopFragment extends Fragment implements ProductListener {
                         AuthApiHelper.addRoster(data1, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
                             @Override
                             public void onDataFetched(retrofit2.Response<JsonPrimitive> response1) {
+
+                                dialog.hideDialog();
+
                                 if (response1.code() == 200 || response1.code() == 201)
                                     addRosterByOther();
                                 else
@@ -499,7 +512,11 @@ public class ShopFragment extends Fragment implements ProductListener {
 
     private void addRosterByOther() {
 
+
         if (CredentialManager.getUserData() != null) {
+
+            ViewDialog dialog = new ViewDialog(getActivity());
+            dialog.showDialog();
 
             if (CredentialManager.getUserData().getFirst_name() == null)
                 CredentialManager.getUserData().setFirst_name("");
@@ -515,6 +532,7 @@ public class ShopFragment extends Fragment implements ProductListener {
             AuthApiHelper.addRoster(data, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
                 @Override
                 public void onDataFetched(retrofit2.Response<JsonPrimitive> response) {
+                    dialog.hideDialog();
                     try {
                         EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
                                 + Constants.XMPP_HOST);
@@ -559,6 +577,8 @@ public class ShopFragment extends Fragment implements ProductListener {
 
                 @Override
                 public void onFailed(int status) {
+
+                    dialog.hideDialog();
 
                 }
             });

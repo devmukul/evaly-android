@@ -369,6 +369,7 @@
                 layout="@layout/shimmer_shop_category"
                 android:layout_weight="0" />
 
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/categoriesRecycler"
                 android:layout_width="match_parent"

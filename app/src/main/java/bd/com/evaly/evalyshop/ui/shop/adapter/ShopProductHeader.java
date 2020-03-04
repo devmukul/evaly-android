@@ -125,6 +125,8 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
         followBtn = view.findViewById(R.id.follow_btn);
         recyclerViewCategory = view.findViewById(R.id.categoriesRecycler);
 
+        categoryTitle.setVisibility(View.VISIBLE);
+
         userDetails = new UserDetails(context);
 
         rosterList = new ArrayList<>();
@@ -168,65 +170,64 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
         Data shopData = shopDetails.getData();
         Shop shopInfo = shopData.getShop();
 
-        if (currentPage == 1 && categorySlug == null) {
 
-            shop_name = shopInfo.getName();
-            owner_number = shopInfo.getOwnerName();
-            subCount = shopData.getSubscriberCount();
-            logo_image = shopInfo.getLogoImage();
+        shop_name = shopInfo.getName();
+        owner_number = shopInfo.getOwnerName();
+        subCount = shopData.getSubscriberCount();
+        logo_image = shopInfo.getLogoImage();
 
-            if (shopData.isSubscribed())
-                followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
-            else
-                followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subCount));
+        if (shopData.isSubscribed())
+            followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
+        else
+            followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subCount));
 
-            // click listeners
+        // click listeners
 
-            //  followBtn.setOnClickListener(v -> subscribe());
+        //  followBtn.setOnClickListener(v -> subscribe());
 
-            name.setText(shop_name);
+        name.setText(shop_name);
 
-            if (logo.getDrawable() == null)
-                if (context != null)
-                    Glide.with(context)
-                            .load(shopInfo.getLogoImage())
-                            .skipMemoryCache(true)
-                            .into(logo);
+        if (logo.getDrawable() == null)
+            if (context != null)
+                Glide.with(context)
+                        .load(shopInfo.getLogoImage())
+                        .skipMemoryCache(true)
+                        .into(logo);
 
-            callButton.setOnClickListener(v -> {
-                String phone = shopInfo.getContactNumber();
-                final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-                snackBar.setAction("Call", v12 -> {
-                    try {
-                        Intent intent = new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + shopInfo.getContactNumber()));
-                        activityInstance.startActivity(intent);
-                    } catch (Exception ignored) {
-                    }
-                    snackBar.dismiss();
-                });
-                snackBar.show();
+        callButton.setOnClickListener(v -> {
+            String phone = shopInfo.getContactNumber();
+            final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+            snackBar.setAction("Call", v12 -> {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + shopInfo.getContactNumber()));
+                    activityInstance.startActivity(intent);
+                } catch (Exception ignored) {
+                }
+                snackBar.dismiss();
             });
+            snackBar.show();
+        });
 
 
-            location.setOnClickListener(v -> {
-                String phone = shopInfo.getAddress();
-                final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
-                snackBar.setAction("Copy", v1 -> {
-                    try {
-                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("address", shopInfo.getAddress());
-                        clipboard.setPrimaryClip(clip);
-                    } catch (Exception ignored) {
-                    }
+        location.setOnClickListener(v -> {
+            String phone = shopInfo.getAddress();
+            final Snackbar snackBar = Snackbar.make(view, phone + "", Snackbar.LENGTH_LONG);
+            snackBar.setAction("Copy", v1 -> {
+                try {
+                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("address", shopInfo.getAddress());
+                    clipboard.setPrimaryClip(clip);
+                } catch (Exception ignored) {
+                }
 
-                    snackBar.dismiss();
-                });
-                snackBar.show();
+                snackBar.dismiss();
             });
+            snackBar.show();
+        });
 
 
-            link.setOnClickListener(v -> {
+        link.setOnClickListener(v -> {
 
 //                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopDetails.getShopDeliveryOptions());
 //
@@ -247,57 +248,50 @@ public class ShopProductHeader extends RecyclerView.ViewHolder {
 ////                        });
 ////                        snackBar.show();
 
-            });
+        });
 
 
-            reviews.setOnClickListener(v -> {
-                String shop_id = slug;
-                Intent intent = new Intent(context, ReviewsActivity.class);
-                intent.putExtra("ratingJson", ratingJson);
-                intent.putExtra("type", "shop");
-                intent.putExtra("item_value", shop_id);
-                activityInstance.startActivity(intent);
-            });
+        reviews.setOnClickListener(v -> {
+            String shop_id = slug;
+            Intent intent = new Intent(context, ReviewsActivity.class);
+            intent.putExtra("ratingJson", ratingJson);
+            intent.putExtra("type", "shop");
+            intent.putExtra("item_value", shop_id);
+            activityInstance.startActivity(intent);
+        });
 
 
-            llInbox.setOnClickListener(v -> {
+        llInbox.setOnClickListener(v -> {
 
-                viewModel.setOnChatClickLiveData(true);
+            viewModel.setOnChatClickLiveData(true);
 
-            });
-
-
-        }
+        });
 
 
         viewModel.getShopCategoryListLiveData().observe(fragmentInstance.getViewLifecycleOwner(), itemListCategory -> loadSubCategories(itemListCategory));
+
+        viewModel.loadShopCategories(slug, currentPage, campaign_slug);
 
     }
 
 
     public void loadSubCategories(List<TabsItem> categoryList) {
 
-        if (categoryList.size() < 4) {
-
+        if (currentPage == 1 && categoryList.size() < 1)
+            ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
+        else if (currentPage == 1 && categoryList.size() < 4) {
             GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false);
             recyclerViewCategory.setLayoutManager(mLayoutManager);
+        } else {
+            currentPage++;
         }
 
-        if (itemListCategory.size() < 1)
-            ((TextView) view.findViewById(R.id.catTitle)).setText(" ");
-
-        try {
-
-            shimmer.stopShimmer();
-        } catch (Exception e) {
-        }
-
+        shimmer.stopShimmer();
         shimmer.setVisibility(View.GONE);
         loading = true;
 
         itemListCategory.addAll(categoryList);
         adapterShopCategory.notifyItemRangeInserted(itemListCategory.size() - categoryList.size(), itemListCategory.size());
-
 
     }
 

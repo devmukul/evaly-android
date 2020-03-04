@@ -349,6 +349,7 @@
 
     <include layout="@layout/shimmer_shop_category" />
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/categoriesRecycler"
         android:layout_width="match_parent"
@@ -362,5 +363,50 @@
         android:scrollbars="horizontal"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:background="#fafafa"
+        android:orientation="horizontal"
+        android:paddingTop="5dp">
+
+        <TextView
+            android:id="@+id/categoryTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#fafafa"
+            android:paddingLeft="15dp"
+            android:paddingTop="5dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp"
+            android:text="@string/all_products"
+            android:textColor="#555"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/resetBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_weight="0"
+            android:background="@drawable/border_box_thin"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_close_small"
+            android:drawablePadding="3dp"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:text="Reset"
+            android:textColor="#333"
+            android:textSize="15sp" />
+    </LinearLayout>
+
 
 </LinearLayout>
