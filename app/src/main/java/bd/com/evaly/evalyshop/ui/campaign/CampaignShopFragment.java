@@ -5,13 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
@@ -25,28 +23,18 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
+import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignShopAdapter;
 import bd.com.evaly.evalyshop.util.ImagePreview;
-import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.views.StickyScrollView;
 
 public class CampaignShopFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private TabsAdapter adapter;
+    private CampaignShopAdapter adapter;
     private ArrayList<TabsItem> itemList;
-    private ProgressBar progressBar;
     private int page = 1;
-    private StickyScrollView nestedSV;
-    private RecyclerView recyclerView;
-    private ViewDialog dialog;
     private boolean isLoading = false;
-    private String title = "19.19 Shops";
-    private String slug = "evaly1919";
-    private String image;
+    private String title = "";
+    private String slug = "";
+    private String image = "";
     private FragmentCampaignShopBinding binding;
 
     public CampaignShopFragment() {
@@ -96,7 +84,7 @@ public class CampaignShopFragment extends Fragment {
         });
 
         itemList = new ArrayList<>();
-        adapter = new TabsAdapter(getContext(), (MainActivity) getActivity(), itemList, 3, NavHostFragment.findNavController(this));
+        adapter = new CampaignShopAdapter(getContext(), itemList,  NavHostFragment.findNavController(this));
 
         binding.recyclerView.setAdapter(adapter);
 

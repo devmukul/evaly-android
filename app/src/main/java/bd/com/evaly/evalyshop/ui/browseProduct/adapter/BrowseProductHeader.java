@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
     private LinearLayout lin;
     private ShimmerFrameLayout shimmer;
     private ShimmerFrameLayout shimmerTabs;
+    private FrameLayout shimmerHolder;
     private boolean isShimmerShowed = false;
     private String category = "root";
 
@@ -73,6 +75,7 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
         shimmer = view.findViewById(R.id.shimmer);
         shimmer.startShimmer();
         shimmerTabs = view.findViewById(R.id.shimmerTabs);
+        shimmerHolder = view.findViewById(R.id.shimmerHolder);
         shimmerTabs.startShimmer();
 
         viewPager.setOffscreenPageLimit(1);
@@ -180,17 +183,16 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
 
     public void hideShimmer() {
 
-
-        shimmerTabs.setVisibility(View.GONE);
-
-        shimmer.animate().alpha(0.0f)
+        shimmerHolder.animate().alpha(0.0f)
+                .setDuration(100)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
+
+                        shimmerTabs.setVisibility(View.GONE);
                         shimmer.stopShimmer();
                         shimmerTabs.stopShimmer();
-
                         shimmer.setVisibility(View.GONE);
                     }
                 });

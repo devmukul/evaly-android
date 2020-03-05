@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
@@ -46,16 +46,29 @@
                 android:text="Shops" />
 
         </com.google.android.material.tabs.TabLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
 
-    <bd.com.evaly.evalyshop.views.WrapContentHeightViewPager
-        android:id="@+id/pager_sub"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0" />
+        android:layout_height="wrap_content">
 
-    <include layout="@layout/shimmer_tabs" />
+        <bd.com.evaly.evalyshop.views.WrapContentHeightViewPager
+            android:id="@+id/pager_sub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0" />
+
+        <FrameLayout
+            android:id="@+id/shimmerHolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fafafa">
+
+            <include layout="@layout/shimmer_tabs" />
+
+        </FrameLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
