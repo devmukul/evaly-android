@@ -29,7 +29,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ProgressBarBinding;
 import bd.com.evaly.evalyshop.models.HomeHeaderItem;
+import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
@@ -37,12 +39,15 @@ public class BrandProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
+    private static final int TYPE_PROGRESS = 2;
     private Fragment fragmentInstance;
     private AppCompatActivity activityInstance;
     private NavController navController;
     private Context context;
     private List<ProductItem> productsList;
     private HashMap<String, String> data;
+
+    private NetworkState networkState;
 
     View.OnClickListener itemViewListener = new View.OnClickListener() {
         @Override
@@ -72,7 +77,11 @@ public class BrandProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        if (viewType == TYPE_HEADER) {
+
+        if (viewType == TYPE_PROGRESS) {
+            ProgressBarBinding binding = ProgressBarBinding.inflate(inflater, parent, false);
+            return new ProgressViewHolder(binding);
+        } else if (viewType == TYPE_HEADER) {
             View v = inflater.inflate(R.layout.recycler_header_brands, parent, false);
             return new BrandProductHeader(v, context, activityInstance, fragmentInstance, navController, data);
         } else {
@@ -159,8 +168,36 @@ public class BrandProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public int getItemViewType(int position) {
         if (isPositionHeader(position))
             return TYPE_HEADER;
-        return TYPE_ITEM;
+        else if (hasExtraRow() && position == getItemCount() - 1)
+            return TYPE_PROGRESS;
+        else
+            return TYPE_ITEM;
     }
+
+    public void setNetworkState(NetworkState newNetworkState) {
+        NetworkState previousState = this.networkState;
+        boolean previousExtraRow = hasExtraRow();
+        this.networkState = newNetworkState;
+        boolean newExtraRow = hasExtraRow();
+        if (previousExtraRow != newExtraRow) {
+            if (previousExtraRow) {
+                notifyItemRemoved(getItemCount());
+            } else {
+                notifyItemInserted(getItemCount());
+            }
+        } else if (newExtraRow && previousState != newNetworkState) {
+            notifyItemChanged(getItemCount() - 1);
+        }
+    }
+
+    private boolean hasExtraRow() {
+        if (networkState != null && networkState != NetworkState.LOADED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public void setFilter(ArrayList<ProductItem> ar) {
         productsList = new ArrayList<>();
@@ -185,6 +222,31 @@ public class BrandProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             tvCashback = itemView.findViewById(R.id.tvCashback);
             cardView = itemView.findViewById(R.id.cardView);
             this.itemView = itemView;
+        }
+    }
+
+    public class ProgressViewHolder extends RecyclerView.ViewHolder {
+
+        ProgressBarBinding binding;
+
+        ProgressViewHolder(ProgressBarBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        void bindView(NetworkState networkState) {
+            if (networkState != null && networkState.getStatus() == NetworkState.Status.RUNNING) {
+                binding.progressBar.setVisibility(View.VISIBLE);
+            } else {
+                binding.progressBar.setVisibility(View.GONE);
+            }
+
+            if (networkState != null && networkState.getStatus() == NetworkState.Status.FAILED) {
+                binding.errorMsg.setVisibility(View.VISIBLE);
+                binding.errorMsg.setText("Can't load! Check internet connection");
+            } else {
+                binding.errorMsg.setVisibility(View.GONE);
+            }
         }
     }
 
