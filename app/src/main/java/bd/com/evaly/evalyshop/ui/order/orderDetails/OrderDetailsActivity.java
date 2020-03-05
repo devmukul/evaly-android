@@ -3,7 +3,6 @@ package bd.com.evaly.evalyshop.ui.order.orderDetails;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -386,8 +385,11 @@ public class OrderDetailsActivity extends BaseActivity {
         Button d_submit = dialogView.findViewById(R.id.submit);
         final EditText amount = dialogView.findViewById(R.id.amount);
         final EditText code = dialogView.findViewById(R.id.code);
+        ImageView closeBtn = dialogView.findViewById(R.id.closeBtn);
 
         amount.setText((int) due_amount + "");
+
+        closeBtn.setOnClickListener(view -> alertDialog.dismiss());
 
         alertDialog.getWindow()
                 .setLayout(
@@ -413,6 +415,8 @@ public class OrderDetailsActivity extends BaseActivity {
             }
 
             makePaymentViaGiftCard(code.getText().toString(), invoice_no, String.valueOf((int) partial_amount));
+
+            alertDialog.dismiss();
 
         });
     }
@@ -467,15 +471,12 @@ public class OrderDetailsActivity extends BaseActivity {
     private void giftCardSuccessDialog() {
 
         new AlertDialog.Builder(context)
+                .setCancelable(false)
                 .setMessage("Thank you for your payment. We are updating your order and you will be notified soon. If your order is not updated, please contact us.")
 
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        startActivity(getIntent());
-                    }
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    finish();
+                    startActivity(getIntent());
                 })
                 .show();
 
@@ -901,7 +902,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
     public void deliveryConfirmationDialog() {
-
 
         AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailsActivity.this);
         builder.setTitle("Did you receive the product?");
