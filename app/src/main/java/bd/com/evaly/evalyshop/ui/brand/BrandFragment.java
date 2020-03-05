@@ -248,14 +248,18 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onRefresh() {
 
         swipeRefreshLayout.setRefreshing(false);
+
+
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        shimmerHolder.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmer();
+        shimmerHolder.setAlpha(1);
+
         currentPage = 1;
         itemListProduct.clear();
         itemListProduct.add(new HomeHeaderItem());
         adapterProduct.notifyDataSetChanged();
 
-        shimmerFrameLayout.setVisibility(View.VISIBLE);
-        shimmerHolder.setVisibility(View.VISIBLE);
-        shimmerFrameLayout.startShimmer();
 
         getProducts();
 
