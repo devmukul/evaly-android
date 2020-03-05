@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -41,7 +42,7 @@ import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
-public class BrowseProductFragment extends Fragment {
+public class BrowseProductFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener  {
 
     private MainActivity activity;
     private TabLayout tabLayoutSub;
@@ -62,6 +63,7 @@ public class BrowseProductFragment extends Fragment {
     private Context context;
     private int currentPage = 1;
     private boolean isLoading = false;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public BrowseProductFragment() {
         // Required empty public constructor
@@ -71,6 +73,9 @@ public class BrowseProductFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_browse_product_new, container, false);
+
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         activity = (MainActivity) getActivity();
         context = getContext();
@@ -217,5 +222,21 @@ public class BrowseProductFragment extends Fragment {
 
     }
 
+
+    @Override
+    public void onRefresh() {
+
+        swipeRefreshLayout.setRefreshing(false);
+        currentPage = 1;
+        itemListProduct.clear();
+
+        itemListProduct.add(new HomeHeaderItem());
+        adapterProduct.notifyItemInserted(0);
+
+        adapterProduct.notifyDataSetChanged();
+
+        getProducts();
+
+    }
 
 }
