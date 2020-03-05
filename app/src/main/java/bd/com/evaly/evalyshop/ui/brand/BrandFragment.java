@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -16,6 +17,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +54,8 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private int currentPage = 1;
     private boolean isLoading = false;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ShimmerFrameLayout shimmerFrameLayout;
+    private FrameLayout shimmerHolder;
 
     public BrandFragment() {
 
@@ -127,6 +132,11 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         dummyView = view.findViewById(R.id.dummyView);
         recyclerView = view.findViewById(R.id.products);
         progressBar = view.findViewById(R.id.progressBar);
+
+        shimmerFrameLayout = view.findViewById(R.id.shimmer);
+        shimmerHolder = view.findViewById(R.id.shimmerHolder);
+        shimmerFrameLayout.startShimmer();
+
         itemListProduct = new ArrayList<>();
 
         HashMap<String, String> data = new HashMap<>();
@@ -192,10 +202,8 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 itemListProduct.addAll(data);
                 adapterProduct.notifyItemRangeInserted(itemListProduct.size() - data.size(), data.size());
                 isLoading = false;
-                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.INVISIBLE);
 
-                if (response.getCount() > 10)
-                    currentPage++;
 
                 dummyView.setVisibility(View.GONE);
 
@@ -204,6 +212,16 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     noItem.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
+
+                if (currentPage == 1){
+                    shimmerFrameLayout.stopShimmer();
+                    shimmerFrameLayout.setVisibility(View.GONE);
+                    shimmerHolder.setVisibility(View.GONE);
+                }
+
+
+                if (response.getCount() > 10)
+                    currentPage++;
             }
 
             @Override
@@ -228,6 +246,11 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         itemListProduct.clear();
         itemListProduct.add(new HomeHeaderItem());
         adapterProduct.notifyDataSetChanged();
+
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        shimmerHolder.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmer();
+
         getProducts();
 
     }

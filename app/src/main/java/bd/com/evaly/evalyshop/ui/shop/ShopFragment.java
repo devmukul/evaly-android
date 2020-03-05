@@ -347,11 +347,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Data shopData = response.getData();
         Shop shopDetails = shopData.getShop();
 
-        if (currentPage == 1){
-            shimmerFrameLayout.stopShimmer();
-            shimmerFrameLayout.setVisibility(View.GONE);
-            shimmerHolder.setVisibility(View.GONE);
-        }
+
 
         if (currentPage == 1 && productItemList.size() != 1) {
             productItemList.add(new HomeHeaderItem());
@@ -396,6 +392,12 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             //   noItem.setVisibility(View.VISIBLE);
         } else {
             noItem.setVisibility(View.GONE);
+        }
+
+        if (currentPage == 2){
+            shimmerFrameLayout.stopShimmer();
+            shimmerFrameLayout.setVisibility(View.GONE);
+            shimmerHolder.setVisibility(View.GONE);
         }
 
 
