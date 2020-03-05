@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.ui.brand;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -204,19 +206,23 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 isLoading = false;
                 progressBar.setVisibility(View.INVISIBLE);
 
-
-                dummyView.setVisibility(View.GONE);
-
                 if (response.getCount() == 0) {
                     LinearLayout noItem = view.findViewById(R.id.noItem);
-                    noItem.setVisibility(View.VISIBLE);
+                    // noItem.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
 
                 if (currentPage == 1){
-                    shimmerFrameLayout.stopShimmer();
-                    shimmerFrameLayout.setVisibility(View.GONE);
-                    shimmerHolder.setVisibility(View.GONE);
+                    shimmerHolder.animate().alpha(0.0f)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    super.onAnimationEnd(animation);
+                                    shimmerFrameLayout.stopShimmer();
+                                    shimmerFrameLayout.setVisibility(View.GONE);
+                                    shimmerHolder.setVisibility(View.GONE);
+                                }
+                            });
                 }
 
 

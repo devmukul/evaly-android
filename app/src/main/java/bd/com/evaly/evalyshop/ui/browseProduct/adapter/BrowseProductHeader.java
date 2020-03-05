@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.ui.browseProduct.adapter;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -178,14 +180,22 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
 
     public void hideShimmer() {
 
-        try {
-            shimmer.stopShimmer();
-            shimmerTabs.stopShimmer();
-        } catch (Exception ignored) {
-        }
 
-        shimmer.setVisibility(View.GONE);
         shimmerTabs.setVisibility(View.GONE);
+
+        shimmer.animate().alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        shimmer.stopShimmer();
+                        shimmerTabs.stopShimmer();
+
+                        shimmer.setVisibility(View.GONE);
+                    }
+                });
+
+
         isShimmerShowed = true;
     }
 }

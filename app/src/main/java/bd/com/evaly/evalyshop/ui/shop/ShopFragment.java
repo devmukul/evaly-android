@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.ui.shop;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -69,7 +71,7 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 
-public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private String slug = "", title = "", owner_number = "", shop_name = "", campaign_slug = "", logo_image;
     private String categorySlug = null;
@@ -85,10 +87,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private ShimmerFrameLayout shimmerFrameLayout;
-    private FrameLayout shimmerHolder;
-
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         public void onPresenceChanged(PresenceModel presenceModel) {
         }
@@ -109,6 +107,9 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         }
     };
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ShimmerFrameLayout shimmerFrameLayout;
+    private FrameLayout shimmerHolder;
     private boolean clickFromCategory = false;
     private LinearLayout noItem;
     private TextView categoryTitle;
@@ -348,7 +349,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Shop shopDetails = shopData.getShop();
 
 
-
         if (currentPage == 1 && productItemList.size() != 1) {
             productItemList.add(new HomeHeaderItem());
             adapterProducts.notifyItemInserted(0);
@@ -394,10 +394,18 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             noItem.setVisibility(View.GONE);
         }
 
-        if (currentPage == 2){
-            shimmerFrameLayout.stopShimmer();
-            shimmerFrameLayout.setVisibility(View.GONE);
-            shimmerHolder.setVisibility(View.GONE);
+        if (currentPage == 2) {
+
+            shimmerHolder.animate().alpha(0.0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            shimmerFrameLayout.stopShimmer();
+                            shimmerFrameLayout.setVisibility(View.GONE);
+                            shimmerHolder.setVisibility(View.GONE);
+                        }
+                    });
         }
 
 

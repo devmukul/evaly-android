@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.ui.home;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -241,11 +243,16 @@ public class HomeTabsFragment extends Fragment {
     }
 
     public void stopShimmer() {
-        try {
-            shimmer.stopShimmer();
-        } catch (Exception e) {
-        }
-        shimmer.setVisibility(View.GONE);
+
+        shimmer.animate().alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        shimmer.stopShimmer();
+                        shimmer.setVisibility(View.GONE);
+                    }
+                });
     }
 
     public void getSubCategories() {
