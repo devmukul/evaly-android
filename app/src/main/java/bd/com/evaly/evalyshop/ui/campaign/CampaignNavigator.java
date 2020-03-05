@@ -4,7 +4,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 
-public interface CampaignBottomSheetNavigator {
+public interface CampaignNavigator {
     void onListLoaded(List<CampaignItem> list);
     void onListFailed(String errorBody, int errorCode);
 }

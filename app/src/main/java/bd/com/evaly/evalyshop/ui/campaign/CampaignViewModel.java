@@ -9,11 +9,11 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 
-public class CampaignBottomSheetViewModel extends ViewModel {
+public class CampaignViewModel extends ViewModel {
 
-    private CampaignBottomSheetNavigator navigator;
+    private CampaignNavigator navigator;
 
-    public void setNavigator(CampaignBottomSheetNavigator navigator) {
+    public void setNavigator(CampaignNavigator navigator) {
         this.navigator = navigator;
     }
 

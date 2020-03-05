@@ -61,8 +61,12 @@
 
     <fragment
         android:id="@+id/campaignFragment"
-        android:name="bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetFragment"
+        android:name="bd.com.evaly.evalyshop.ui.campaign.CampaignFragment"
         android:label="fragment_campaign"
         tools:layout="@layout/bottom_sheet_campaign"/>
+    <fragment
+        android:id="@+id/campaignShopFragment"
+        android:name="bd.com.evaly.evalyshop.ui.campaign.CampaignShopFragment"
+        android:label="CampaignShopFragment" />
 
 </navigation>

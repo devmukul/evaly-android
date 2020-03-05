@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.campaign;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +22,17 @@ import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignAdapter;
 
-public class CampaignBottomSheetFragment extends Fragment implements CampaignBottomSheetNavigator {
+public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     private FragmentCampaignBinding binding;
-    private CampaignBottomSheetViewModel viewModel;
+    private CampaignViewModel viewModel;
     private View mRootView;
-    private List<CampaignItem> items = new ArrayList<>();
+    private List<CampaignItem> items;
     private CampaignAdapter adapter;
+    private NavController navController;
 
-    public static CampaignBottomSheetFragment newInstance() {
-        final CampaignBottomSheetFragment fragment = new CampaignBottomSheetFragment();
+    public static CampaignFragment newInstance() {
+        final CampaignFragment fragment = new CampaignFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -44,6 +46,7 @@ public class CampaignBottomSheetFragment extends Fragment implements CampaignBot
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_campaign, container, false);
         binding.setViewModel(viewModel);
         mRootView = binding.getRoot();
+        navController = NavHostFragment.findNavController(this);
         return mRootView;
     }
 
@@ -54,9 +57,8 @@ public class CampaignBottomSheetFragment extends Fragment implements CampaignBot
         //bottom sheet round corners can be obtained but the while background appears to remove that we need to add this.
         // setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme);
 
-        viewModel = ViewModelProviders.of(this).get(CampaignBottomSheetViewModel.class);
+        viewModel = new ViewModelProvider(this).get(CampaignViewModel.class);
         viewModel.setNavigator(this);
-
 
     }
 
@@ -78,33 +80,20 @@ public class CampaignBottomSheetFragment extends Fragment implements CampaignBot
 
     private void initRecycler() {
 
+        items = new ArrayList<>();
+
         adapter = new CampaignAdapter(getContext(), items, item -> {
-            Intent ni = new Intent(getContext(), CampaignShopActivity.class);
-            ni.putExtra("title", item.getName());
-            ni.putExtra("slug", item.getSlug());
-            getContext().startActivity(ni);
-//
-//            if (CampaignBottomSheetFragment.this.isVisible())
-//                CampaignBottomSheetFragment.this.dismiss();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("title", item.getName());
+            bundle.putString("slug", item.getSlug());
+            bundle.putString("image", item.getBannerImage());
+            navController.navigate(R.id.campaignShopFragment, bundle);
 
         });
         binding.recyclerView.setAdapter(adapter);
 
     }
-
-
-//    @Override
-//    public Dialog onCreateDialog(Bundle savedInstanceState) {
-//        BottomSheetDialog bottomSheetDialog=(BottomSheetDialog)super.onCreateDialog(savedInstanceState);
-//        bottomSheetDialog.setOnShowListener(dialog -> {
-//            BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
-//            FrameLayout bottomSheet =  dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-//            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-//            BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
-//            BottomSheetBehavior.from(bottomSheet).setHideable(true);
-//        });
-//        return bottomSheetDialog;
-//    }
 
 
     @Override
@@ -117,13 +106,6 @@ public class CampaignBottomSheetFragment extends Fragment implements CampaignBot
     public void onDetach() {
         super.onDetach();
     }
-
-
-//    @Override
-//    public void onDismiss(DialogInterface dialog) {
-//        super.onDismiss(dialog);
-//
-//    }
 
 
     @Override

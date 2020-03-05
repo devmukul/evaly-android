@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="bd.com.evaly.evalyshop.ui.campaign.CampaignBottomSheetViewModel" />
+            type="bd.com.evaly.evalyshop.ui.campaign.CampaignViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
