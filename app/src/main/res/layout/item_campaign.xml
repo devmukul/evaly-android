@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    android:layout_marginBottom="15dp"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="0dp">
+    android:layout_marginBottom="15dp">
 
-    <RelativeLayout
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/immgeCropper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_campaign_box">
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/image_holder"
@@ -28,40 +31,47 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="H,2.93478:1"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/image_holder"
-            android:paddingLeft="15dp"
-            android:paddingTop="10dp"
-            android:paddingRight="15dp"
-            android:paddingBottom="10dp"
-            android:text="Bata for valentine Dhamaka 80% Cashback"
-            android:textColor="#444"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvTitle"
-            android:layout_marginLeft="15dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/btn_pending_bg"
-            android:paddingLeft="8dp"
-            android:paddingTop="3dp"
-            android:paddingRight="8dp"
-            android:paddingBottom="3dp"
-            android:text="Live Now"
-            android:textColor="#fff" />
+    </androidx.cardview.widget.CardView>
 
 
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/immgeCropper"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp"
+        android:text="Bata for valentine Dhamaka 80% Cashback"
+        android:textColor="#444"
+        android:textSize="16sp" />
 
-</androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTitle"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/btn_pending_bg"
+        android:paddingLeft="8dp"
+        android:paddingTop="3dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="3dp"
+        android:text="Live Now"
+        android:textColor="#fff" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_below="@id/tvStatus"
+        android:background="#fafafa" />
+
+</RelativeLayout>
+

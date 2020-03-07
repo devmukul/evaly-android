@@ -20,7 +20,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:title="@string/campaigns" />
+            app:title="@string/campaigns"
+            android:background="#fff"/>
 
 
         <bd.com.evaly.evalyshop.views.StickyScrollView
@@ -50,9 +51,7 @@
                     android:clipToPadding="false"
                     android:nestedScrollingEnabled="false"
                     android:orientation="vertical"
-                    android:paddingLeft="10dp"
                     android:paddingTop="5dp"
-                    android:paddingRight="10dp"
                     android:paddingBottom="25dp"
                     android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
