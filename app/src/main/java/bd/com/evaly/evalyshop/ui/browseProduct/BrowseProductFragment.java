@@ -88,6 +88,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
 
         recyclerView = view.findViewById(R.id.products);
         progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
         itemListProduct = new ArrayList<>();
         adapterProduct = new BrowseProductAdapter(getContext(), itemListProduct, activity, this, NavHostFragment.findNavController(this), slug);
         recyclerView.setAdapter(adapterProduct);

@@ -205,6 +205,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         shimmerHolder = view.findViewById(R.id.shimmerHolder);
         shimmerFrameLayout.startShimmer();
         progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
+
         noItem = view.findViewById(R.id.noItem);
         categoryTitle = view.findViewById(R.id.categoryTitle);
 

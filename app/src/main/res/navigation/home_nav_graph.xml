@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_homeFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_campaignFragment"
+            app:destination="@id/campaignFragment" />
     </fragment>
     <fragment
         android:id="@+id/browseProductFragment"
@@ -63,7 +66,11 @@
         android:id="@+id/campaignFragment"
         android:name="bd.com.evaly.evalyshop.ui.campaign.CampaignFragment"
         android:label="fragment_campaign"
-        tools:layout="@layout/bottom_sheet_campaign"/>
+        tools:layout="@layout/bottom_sheet_campaign">
+        <action
+            android:id="@+id/action_campaignFragment_to_campaignShopFragment"
+            app:destination="@id/campaignShopFragment" />
+    </fragment>
     <fragment
         android:id="@+id/campaignShopFragment"
         android:name="bd.com.evaly.evalyshop.ui.campaign.CampaignShopFragment"

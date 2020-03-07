@@ -107,10 +107,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 @Override
                 public void onBackPress() {
-
-                    if (getFragmentManager() != null)
                         NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
-
                 }
             });
 

@@ -70,6 +70,8 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
         filter.setVisibility(View.GONE);
         viewPager = view.findViewById(R.id.pager_sub);
 
+        viewPager.bringToFront();
+
         pager = new HomeTabPagerAdapter(fragmentInstance.getFragmentManager());
 
         shimmer = view.findViewById(R.id.shimmer);

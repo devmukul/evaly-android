@@ -338,13 +338,13 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:background="@drawable/white_to_grey_gradient"
-        android:paddingLeft="15dp"
+        android:paddingLeft="20dp"
         android:paddingTop="15dp"
         android:paddingRight="15dp"
         android:paddingBottom="12dp"
         android:text="@string/categories"
         android:textColor="#555"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <include layout="@layout/shimmer_shop_category" />
@@ -379,13 +379,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#fafafa"
-            android:paddingLeft="15dp"
+            android:paddingLeft="20dp"
             android:paddingTop="5dp"
             android:paddingRight="15dp"
             android:paddingBottom="15dp"
             android:text="@string/all_products"
             android:textColor="#555"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
