@@ -2,7 +2,9 @@ package bd.com.evaly.evalyshop.models.campaign;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CampaignItem {
+import java.io.Serializable;
+
+public class CampaignItem implements Serializable {
 
     @SerializedName("end_date")
     private String endDate;

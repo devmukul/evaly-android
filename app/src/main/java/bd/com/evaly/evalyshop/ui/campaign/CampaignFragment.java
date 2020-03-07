@@ -85,9 +85,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         adapter = new CampaignAdapter(getContext(), items, item -> {
 
             Bundle bundle = new Bundle();
-            bundle.putString("title", item.getName());
-            bundle.putString("slug", item.getSlug());
-            bundle.putString("image", item.getBannerImage());
+            bundle.putSerializable("model", item);
             navController.navigate(R.id.campaignShopFragment, bundle);
 
         });

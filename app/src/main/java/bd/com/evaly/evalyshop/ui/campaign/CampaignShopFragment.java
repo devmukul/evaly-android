@@ -14,17 +14,21 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignShopBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignShopAdapter;
 import bd.com.evaly.evalyshop.util.ImagePreview;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class CampaignShopFragment extends Fragment {
 
@@ -32,10 +36,9 @@ public class CampaignShopFragment extends Fragment {
     private ArrayList<TabsItem> itemList;
     private int page = 1;
     private boolean isLoading = false;
-    private String title = "";
-    private String slug = "";
-    private String image = "";
+    private CampaignItem model;
     private FragmentCampaignShopBinding binding;
+
 
     public CampaignShopFragment() {
         // Required empty public constructor
@@ -45,10 +48,7 @@ public class CampaignShopFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            title = getArguments().getString("title");
-            slug = getArguments().getString("slug");
-            image = getArguments().getString("image");
-
+            model = (CampaignItem) getArguments().getSerializable("model");
         }
     }
 
@@ -71,20 +71,35 @@ public class CampaignShopFragment extends Fragment {
                 getActivity().onBackPressed();
         });
 
-        binding.toolbar.setTitle(title);
+        binding.toolbar.setTitle(model.getName());
+
+        Date startDate = Utils.getCampaignDate(model.getStartDate());
+        Date endDate = Utils.getCampaignDate(model.getEndDate());
+        Date currentDate = Calendar.getInstance().getTime();
+
+        if (currentDate.after(startDate) && currentDate.before(endDate)) {
+            binding.tvStatus.setText("Live Now");
+            binding.tvStatus.setBackground(getResources().getDrawable(R.drawable.btn_live_now_red));
+        } else if (currentDate.after(endDate)) {
+            binding.tvStatus.setText("Expired");
+            binding.tvStatus.setBackground(getResources().getDrawable(R.drawable.btn_campaign_expired));
+        } else {
+            binding.tvStatus.setText("Live on " + Utils.getFormatedCampaignDate("", "d MMM hh:mm aa", model.getStartDate()));
+            binding.tvStatus.setBackground(getResources().getDrawable(R.drawable.btn_pending_bg));
+        }
 
         Glide.with(view)
-                .load(image)
+                .load(model.getBannerImage())
                 .into(binding.image);
 
         binding.headerLogo.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ImagePreview.class);
-            intent.putExtra("image", image);
+            intent.putExtra("image", model.getBannerImage());
             startActivity(intent);
         });
 
         itemList = new ArrayList<>();
-        adapter = new CampaignShopAdapter(getContext(), itemList,  NavHostFragment.findNavController(this));
+        adapter = new CampaignShopAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
 
         binding.recyclerView.setAdapter(adapter);
 
@@ -96,7 +111,7 @@ public class CampaignShopFragment extends Fragment {
 
         binding.progressBar.setVisibility(View.VISIBLE);
 
-        CampaignApiHelper.getCampaignShops(slug, p, new ResponseListenerAuth<CommonDataResponse<List<CampaignShopItem>>, String>() {
+        CampaignApiHelper.getCampaignShops(model.getSlug(), p, new ResponseListenerAuth<CommonDataResponse<List<CampaignShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignShopItem>> response, int statusCode) {
 
@@ -112,7 +127,7 @@ public class CampaignShopFragment extends Fragment {
                     tabsItem.setImage(list.get(i).getShopImage());
                     tabsItem.setSlug(list.get(i).getSlug());
                     tabsItem.setCategory("root");
-                    tabsItem.setCampaignSlug(slug);
+                    tabsItem.setCampaignSlug(model.getSlug());
                     itemList.add(tabsItem);
                     adapter.notifyItemInserted(itemList.size());
                 }
