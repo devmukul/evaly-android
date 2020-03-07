@@ -162,6 +162,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
             });
 
 
+
 //        if (nestedSV != null) {
 //
 //            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {

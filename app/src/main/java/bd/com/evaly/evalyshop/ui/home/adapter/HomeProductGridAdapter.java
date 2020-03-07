@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -27,19 +28,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ProgressBarBinding;
 import bd.com.evaly.evalyshop.models.HomeHeaderItem;
+import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
 public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
-
+    private static final int TYPE_PROGRESS = 2;
     private Fragment fragmentInstance;
     private AppCompatActivity activityInstance;
     private NavController navController;
     private Context context;
     private List<ProductItem> productsList;
+
     View.OnClickListener itemViewListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -54,6 +58,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             context.startActivity(intent);
         }
     };
+    private NetworkState networkState;
 
     public HomeProductGridAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
         this.context = context;
@@ -67,7 +72,10 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        if (viewType == TYPE_HEADER) {
+        if (viewType == TYPE_PROGRESS) {
+            ProgressBarBinding binding = ProgressBarBinding.inflate(inflater, parent, false);
+            return new ProgressViewHolder(binding);
+        } else if (viewType == TYPE_HEADER) {
             View v = inflater.inflate(R.layout.recycler_header_home, parent, false);
             return new HomePageRecyclerHeader(v, context, activityInstance, fragmentInstance, navController);
         } else {
@@ -77,12 +85,10 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holderz, int position) {
-        if (holderz instanceof HomePageRecyclerHeader) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderz, int position) {
 
-//            VHHeader holder = (VHHeader) holderz;
-//            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
-//            layoutParams.setFullSpan(true);
+
+        if (holderz instanceof HomePageRecyclerHeader || holderz instanceof ProgressViewHolder) {
 
         } else if (holderz instanceof VHItem) {
 
@@ -147,7 +153,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return productsList.size();
+        return productsList.size() - 1;
     }
 
     private boolean isPositionHeader(int position) {
@@ -156,10 +162,38 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemViewType(int position) {
-        if (isPositionHeader(position))
+        if (hasExtraRow() && position == getItemCount() - 1)
+            return TYPE_PROGRESS;
+        else if (isPositionHeader(position))
             return TYPE_HEADER;
-        return TYPE_ITEM;
+        else
+            return TYPE_ITEM;
     }
+
+    public void setNetworkState(NetworkState newNetworkState) {
+        NetworkState previousState = this.networkState;
+        boolean previousExtraRow = hasExtraRow();
+        this.networkState = newNetworkState;
+        boolean newExtraRow = hasExtraRow();
+        if (previousExtraRow != newExtraRow) {
+            if (previousExtraRow) {
+                notifyItemRemoved(getItemCount());
+            } else {
+                notifyItemInserted(getItemCount());
+            }
+        } else if (newExtraRow && previousState != newNetworkState) {
+            notifyItemChanged(getItemCount() - 1);
+        }
+    }
+
+    private boolean hasExtraRow() {
+        if (networkState != null && networkState != NetworkState.LOADED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public void setFilter(ArrayList<ProductItem> ar) {
         productsList = new ArrayList<>();
@@ -187,6 +221,30 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
+    public class ProgressViewHolder extends RecyclerView.ViewHolder {
+
+        ProgressBarBinding binding;
+
+        ProgressViewHolder(ProgressBarBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        void bindView(NetworkState networkState) {
+            if (networkState != null && networkState.getStatus() == NetworkState.Status.RUNNING) {
+                binding.progressBar.setVisibility(View.VISIBLE);
+            } else {
+                binding.progressBar.setVisibility(View.GONE);
+            }
+
+            if (networkState != null && networkState.getStatus() == NetworkState.Status.FAILED) {
+                binding.errorMsg.setVisibility(View.VISIBLE);
+                binding.errorMsg.setText("Can't load! Check internet connection");
+            } else {
+                binding.errorMsg.setVisibility(View.GONE);
+            }
+        }
+    }
 
 }
 

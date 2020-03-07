@@ -46,7 +46,6 @@ public class BrandProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Context context;
     private List<ProductItem> productsList;
     private HashMap<String, String> data;
-
     private NetworkState networkState;
 
     View.OnClickListener itemViewListener = new View.OnClickListener() {

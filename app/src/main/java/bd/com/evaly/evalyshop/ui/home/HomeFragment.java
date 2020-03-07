@@ -29,6 +29,7 @@ import bd.com.evaly.evalyshop.data.pref.ReferPref;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
@@ -174,14 +175,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         isLoading = true;
 
-        if (currentPage>1)
-            progressBar.setVisibility(View.VISIBLE);
-        else
-            progressBar.setVisibility(View.GONE);
+//        if (currentPage>1)
+//            progressBar.setVisibility(View.VISIBLE);
+//        else
+//            progressBar.setVisibility(View.GONE);
+
+        adapterProducts.setNetworkState(NetworkState.LOADING);
 
         ProductApiHelper.getCategoryBrandProducts(currentPage, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
+
+                adapterProducts.setNetworkState(NetworkState.LOADED);
 
                 List<ProductItem> data = response.getData();
 
