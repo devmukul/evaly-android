@@ -40,7 +40,7 @@ public class ProductApiHelper extends BaseApiHelper {
             if (category.equals("root"))
                 category = null;
 
-        getiApiClient().getCategoryBrandProducts(page, category, brands).enqueue(getResponseCallBackDefault(listener));
+        getiApiClient().getCategoryBrandProducts(page, category, brands, 48).enqueue(getResponseCallBackDefault(listener));
     }
 
 

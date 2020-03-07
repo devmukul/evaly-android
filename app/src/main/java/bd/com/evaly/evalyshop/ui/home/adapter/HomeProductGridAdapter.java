@@ -16,6 +16,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -153,7 +154,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return productsList.size() - 1;
+        return productsList.size();
     }
 
     private boolean isPositionHeader(int position) {
@@ -162,9 +163,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemViewType(int position) {
-        if (hasExtraRow() && position == getItemCount() - 1)
-            return TYPE_PROGRESS;
-        else if (isPositionHeader(position))
+        if (position == 0)
             return TYPE_HEADER;
         else
             return TYPE_ITEM;
@@ -228,6 +227,11 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         ProgressViewHolder(ProgressBarBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+
+
+            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
+            layoutParams.setFullSpan(true);
+
         }
 
         void bindView(NetworkState networkState) {

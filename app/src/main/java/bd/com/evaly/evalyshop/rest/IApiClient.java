@@ -129,7 +129,7 @@ public interface IApiClient {
     // product APIs
 
     @GET(UrlUtils.PUBLIC_PRODUCTS)
-    Call<CommonResultResponse<List<ProductItem>>> getCategoryBrandProducts(@Query("page") int page, @Query("category") String category, @Query("brand") String brand);
+    Call<CommonResultResponse<List<ProductItem>>> getCategoryBrandProducts(@Query("page") int page, @Query("category") String category, @Query("brand") String brand, @Query("limit") int limit);
 
     @GET(UrlUtils.BASE_URL+"public/shops/items/{shopSlug}/")
     Call<JsonObject> getShopProducts(@Path("shopSlug") String shopSlug, @Query("page") int page, @Query("limit") int limit, @Query("category_slug") String categorySlug);

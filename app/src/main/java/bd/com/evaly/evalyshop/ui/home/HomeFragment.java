@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.gson.JsonObject;
@@ -29,11 +30,10 @@ import bd.com.evaly.evalyshop.data.pref.ReferPref;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
-import bd.com.evaly.evalyshop.models.network.NetworkState;
+import bd.com.evaly.evalyshop.models.HomeHeaderItem;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.models.HomeHeaderItem;
 import bd.com.evaly.evalyshop.ui.home.adapter.HomeProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
@@ -43,8 +43,9 @@ import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
-public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private MainActivity activity;
     private View view;
     private UserDetails userDetails;
@@ -58,7 +59,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private LinearLayout homeSearch;
     private ProgressBar progressBar;
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private ReferPref referPref;
 
 
@@ -126,19 +126,22 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         productItemList = new ArrayList<>();
         productRecyclerView = view.findViewById(R.id.products);
         productRecyclerView.setHasFixedSize(false);
-        adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity,this, NavHostFragment.findNavController(this));
+
+        StaggeredGridLayoutManager mLayoutManager;
+        mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        productRecyclerView.setLayoutManager(mLayoutManager);
+
+        adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity, this, NavHostFragment.findNavController(this));
         productRecyclerView.setAdapter(adapterProducts);
+
 
         productItemList.add(new HomeHeaderItem());
         adapterProducts.notifyItemInserted(0);
 
-        productRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        productRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if(dy < 0) //check for scroll down
-                {
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy < 0) {
                     if (isLoading)
                         progressBar.setVisibility(View.INVISIBLE);
                 }
@@ -147,12 +150,34 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         productRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
+                {
+                    visibleItemCount = mLayoutManager.getChildCount();
+                    totalItemCount = mLayoutManager.getItemCount();
+                    int[] firstVisibleItems = null;
+                    firstVisibleItems = mLayoutManager.findFirstVisibleItemPositions(null);
+                    if (firstVisibleItems != null && firstVisibleItems.length > 0) {
+                        pastVisiblesItems = firstVisibleItems[0];
+                    }
+
+                    if (!isLoading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            getProducts();
+                        }
+                    }
+                }
+            }
+
+            @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!isLoading)
-                        getProducts();
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (currentPage > 1)
+                        progressBar.setVisibility(View.VISIBLE);
+                    else
+                        progressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -175,23 +200,15 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         isLoading = true;
 
-//        if (currentPage>1)
-//            progressBar.setVisibility(View.VISIBLE);
-//        else
-//            progressBar.setVisibility(View.GONE);
-
-        adapterProducts.setNetworkState(NetworkState.LOADING);
 
         ProductApiHelper.getCategoryBrandProducts(currentPage, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
 
-                adapterProducts.setNetworkState(NetworkState.LOADED);
-
                 List<ProductItem> data = response.getData();
 
                 productItemList.addAll(data);
-                adapterProducts.notifyItemRangeInserted(productItemList.size()-data.size(),  data.size());
+                adapterProducts.notifyItemRangeInserted(productItemList.size() - data.size(), data.size());
                 isLoading = false;
                 progressBar.setVisibility(View.GONE);
 
@@ -211,7 +228,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
     }
-
 
 
     private void checkReferral() {
