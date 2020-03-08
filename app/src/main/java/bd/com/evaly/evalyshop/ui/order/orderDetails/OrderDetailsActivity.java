@@ -140,8 +140,8 @@ public class OrderDetailsActivity extends BaseActivity {
         shopName = findViewById(R.id.billfromName);
         shopAddress = findViewById(R.id.billfromAddress);
         shopnumber = findViewById(R.id.billfromPhone);
-        username = findViewById(R.id.billtoName);
-        userAddress = findViewById(R.id.billtoAddress);
+        username = findViewById(R.id.billtoName1);
+        userAddress = findViewById(R.id.billtoAddress1);
         userNumber = findViewById(R.id.billtoPhone);
         totalPriceTextView = findViewById(R.id.total_price);
         paidAmountTextView = findViewById(R.id.paid_amount);

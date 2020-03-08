@@ -9,9 +9,6 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,7 +18,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -29,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
+import bd.com.evaly.evalyshop.databinding.FragmentHomeCategoryBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -45,8 +41,6 @@ import bd.com.evaly.evalyshop.util.CategoryUtils;
 
 public class HomeTabsFragment extends Fragment {
 
-    public ShimmerFrameLayout shimmer;
-    private RecyclerView recyclerView;
     private TabsAdapter adapter;
     private Context context;
     private RootCategoriesAdapter adapter2;
@@ -54,14 +48,11 @@ public class HomeTabsFragment extends Fragment {
     private int type = 1;
     private String slug = "root";
     private String category;
-    private EditText search;
-    private Button showMore;
-    private View view;
     private boolean isEmpty = false;
     private int brandCounter = 1, shopCounter = 1;
-    private ProgressBar progressBar2;
     private List<CategoryEntity> categoryItems;
     private OnDoneListener onDoneListener;
+    private FragmentHomeCategoryBinding binding;
 
     public HomeTabsFragment() {
         // Required empty public constructor
@@ -73,34 +64,26 @@ public class HomeTabsFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_home_category, container, false);
+
+        binding = FragmentHomeCategoryBinding.inflate(inflater, container, false);
+
         context = getContext();
-        shimmer = view.findViewById(R.id.shimmer);
 
         Bundle bundle = getArguments();
-
         category = bundle.getString("category");
         type = bundle.getInt("type");
         slug = bundle.getString("slug");
 
-        try {
-            shimmer.startShimmer();
-        } catch (Exception e) {
+        binding.shimmer.shimmer.startShimmer();
 
-        }
-
-        return view;
+        return binding.getRoot();
     }
 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        showMore = view.findViewById(R.id.showMoreBtnTabs);
-        search = view.findViewById(R.id.searchBtnTabs);
-        recyclerView = view.findViewById(R.id.recycle);
-        progressBar2 = view.findViewById(R.id.progressBar2);
-        recyclerView.setNestedScrollingEnabled(false);
+
 
         itemList = new ArrayList<>();
         adapter = new TabsAdapter(context, (MainActivity) getActivity(), itemList, type);
@@ -113,10 +96,9 @@ public class HomeTabsFragment extends Fragment {
 
             CategoryUtils categoryUtils = new CategoryUtils(context);
 
-
             adapter2 = new RootCategoriesAdapter(context, categoryItems, NavHostFragment.findNavController(this));
-            recyclerView.setAdapter(adapter2);
-            recyclerView.setItemAnimator(new MyDefaultItemAnimator());
+            binding.recyclerView.setAdapter(adapter2);
+            binding.recyclerView.setItemAnimator(new MyDefaultItemAnimator());
             adapter2.notifyDataSetChanged();
 
             Calendar calendar = Calendar.getInstance();
@@ -125,7 +107,6 @@ public class HomeTabsFragment extends Fragment {
                 categoryUtils.updateFromApi(new DataFetchingListener<List<CategoryEntity>>() {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
-
 
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
@@ -167,16 +148,15 @@ public class HomeTabsFragment extends Fragment {
                 //skeletonScreen.hide();
             }
 
-            search.setHint("Search categories");
-            showMore.setVisibility(View.GONE);
-            search.setVisibility(View.VISIBLE);
+            binding.searchBtnTabs.setHint("Search categories");
+            binding.showMoreBtnTabs.setVisibility(View.GONE);
+            binding.searchBtnTabs.setVisibility(View.VISIBLE);
         } else {
-            recyclerView.setAdapter(adapter);
-
+            binding.recyclerView.setAdapter(adapter);
         }
 
-        showMore.setOnClickListener(v -> {
-            progressBar2.setVisibility(View.VISIBLE);
+        binding.showMoreBtnTabs.setOnClickListener(v -> {
+            binding.progressBar2.setVisibility(View.VISIBLE);
 
             if (type == 2) {
                 getBrandsOfCategory(++brandCounter);
@@ -185,7 +165,7 @@ public class HomeTabsFragment extends Fragment {
             }
         });
 
-        search.setOnClickListener(v -> {
+        binding.searchBtnTabs.setOnClickListener(v -> {
             if (type == 1) {
                 Intent intent = new Intent(context, SearchCategory.class);
                 intent.putExtra("type", type);
@@ -203,18 +183,18 @@ public class HomeTabsFragment extends Fragment {
     public void loadData() {
         if (!(slug.equals("root") && type == 1)) {
             if (type == 1) {
-                search.setHint("Search categories");
+                binding.searchBtnTabs.setHint("Search categories");
                 //search.setVisibility(View.GONE);
-                showMore.setVisibility(View.GONE);
+                binding.showMoreBtnTabs.setVisibility(View.GONE);
                 getSubCategories();
             } else if (type == 2) {
-                search.setHint("Search brands");
+                binding.searchBtnTabs.setHint("Search brands");
                 getBrandsOfCategory(1);
-                showMore.setText("Show More");
+                binding.showMoreBtnTabs.setText("Show More");
             } else if (type == 3) {
-                search.setHint("Search shops");
+                binding.searchBtnTabs.setHint("Search shops");
                 getShopsOfCategory(1);
-                showMore.setText("Show More");
+                binding.showMoreBtnTabs.setText("Show More");
             }
         }
 
@@ -223,20 +203,18 @@ public class HomeTabsFragment extends Fragment {
             @Override
             public void run() {
                 if (!(slug.equals("root") && type == 1)) {
-                    if (adapter.getItemCount() < 1 || recyclerView.getHeight() < 100) {
+                    if (adapter.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
                         adapter.notifyDataSetChanged();
                         handler.postDelayed(this, 1000);
                     }
                 } else {
-                    if (adapter2.getItemCount() < 1 || recyclerView.getHeight() < 100) {
+                    if (adapter2.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
 
                         if (onDoneListener != null)
                             onDoneListener.onDone();
-
                         adapter2.notifyDataSetChanged();
                         handler.postDelayed(this, 1000);
                     }
-
                 }
             }
         }, 1000);
@@ -244,13 +222,13 @@ public class HomeTabsFragment extends Fragment {
 
     public void stopShimmer() {
 
-        shimmer.animate().alpha(0.0f)
+        binding.shimmer.shimmer.animate().alpha(0.0f)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        shimmer.stopShimmer();
-                        shimmer.setVisibility(View.GONE);
+                        binding.shimmer.shimmer.stopShimmer();
+                        binding.shimmer.shimmer.setVisibility(View.GONE);
                     }
                 });
     }
@@ -267,7 +245,7 @@ public class HomeTabsFragment extends Fragment {
                     onDoneListener.onDone();
 
 
-                progressBar2.setVisibility(View.GONE);
+                binding.progressBar2.setVisibility(View.GONE);
 
                 try {
 
@@ -288,7 +266,7 @@ public class HomeTabsFragment extends Fragment {
 
             @Override
             public void onFailed(String body, int errorCode) {
-                progressBar2.setVisibility(View.GONE);
+                binding.progressBar2.setVisibility(View.GONE);
             }
 
             @Override
@@ -309,7 +287,7 @@ public class HomeTabsFragment extends Fragment {
                 if (onDoneListener != null)
                     onDoneListener.onDone();
 
-                progressBar2.setVisibility(View.GONE);
+                binding.progressBar2.setVisibility(View.GONE);
                 try {
 
                     JsonArray jsonArray = res.getAsJsonArray("results");
@@ -336,7 +314,7 @@ public class HomeTabsFragment extends Fragment {
 
             @Override
             public void onFailed(String body, int errorCode) {
-                progressBar2.setVisibility(View.GONE);
+                binding.progressBar2.setVisibility(View.GONE);
             }
 
             @Override
@@ -354,7 +332,7 @@ public class HomeTabsFragment extends Fragment {
 
                 if (onDoneListener != null)
                     onDoneListener.onDone();
-                progressBar2.setVisibility(View.GONE);
+                binding.progressBar2.setVisibility(View.GONE);
                 try {
 
                     JsonArray jsonArray = res.getAsJsonArray("data");
@@ -387,7 +365,7 @@ public class HomeTabsFragment extends Fragment {
 
             @Override
             public void onFailed(String body, int errorCode) {
-                progressBar2.setVisibility(View.GONE);
+                binding.progressBar2.setVisibility(View.GONE);
             }
 
             @Override
@@ -395,6 +373,12 @@ public class HomeTabsFragment extends Fragment {
 
             }
         });
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
 
     }
 
@@ -408,12 +392,6 @@ public class HomeTabsFragment extends Fragment {
                 onDoneListener.onDone();
         }
 
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        view = null;
     }
 
 }

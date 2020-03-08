@@ -7,12 +7,12 @@
     android:background="#fafafa"
     android:orientation="vertical">
 
-
-    <include layout="@layout/shimmer_tabs" />
-
+    <include
+        android:id="@+id/shimmer"
+        layout="@layout/shimmer_tabs" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycle"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fafafa"

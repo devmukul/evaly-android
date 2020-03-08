@@ -1,13 +1,10 @@
 package bd.com.evaly.evalyshop.ui.home;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +24,7 @@ import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.pref.ReferPref;
+import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -37,7 +35,6 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.home.adapter.HomeProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -47,19 +44,15 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private MainActivity activity;
-    private View view;
     private UserDetails userDetails;
     private Context context;
-    private SwipeRefreshLayout swipeLayout;
     private int currentPage = 1;
     private List<ProductItem> productItemList;
     private HomeProductGridAdapter adapterProducts;
-    private RecyclerView productRecyclerView;
     private boolean isLoading = false;
-    private LinearLayout homeSearch;
-    private ProgressBar progressBar;
     private boolean loading = true;
     private ReferPref referPref;
+    private FragmentHomeBinding binding;
 
 
     public HomeFragment() {
@@ -72,20 +65,20 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        swipeLayout.setRefreshing(false);
+        binding.swipeRefresh.setRefreshing(false);
         refreshFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
+
         activity = (MainActivity) getActivity();
         context = getContext();
 
-        swipeLayout = view.findViewById(R.id.swipe_refresh);
-        swipeLayout.setOnRefreshListener(this);
-
-        return view;
+        binding.swipeRefresh.setOnRefreshListener(this);
+        return binding.getRoot();
     }
 
 
@@ -107,7 +100,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 @Override
                 public void onBackPress() {
-                        NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
+                    NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
                 }
             });
 
@@ -115,37 +108,33 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         userDetails = new UserDetails(context);
         referPref = new ReferPref(context);
         new InitializeActionBar(view.findViewById(R.id.header_logo), activity, "home");
-
-        homeSearch = view.findViewById(R.id.home_search);
-        homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
-        progressBar = view.findViewById(R.id.progressBar);
+//
+//        FragmentAppBarHeaderBinding headerBinding = binding.header;
+//
+//        headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
 
         productItemList = new ArrayList<>();
-        productRecyclerView = view.findViewById(R.id.products);
-        productRecyclerView.setHasFixedSize(false);
-
         StaggeredGridLayoutManager mLayoutManager;
         mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        productRecyclerView.setLayoutManager(mLayoutManager);
+        binding.recyclerView.setLayoutManager(mLayoutManager);
 
         adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity, this, NavHostFragment.findNavController(this));
-        productRecyclerView.setAdapter(adapterProducts);
-
+        binding.recyclerView.setAdapter(adapterProducts);
 
         productItemList.add(new HomeHeaderItem());
         adapterProducts.notifyItemInserted(0);
 
-        productRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy < 0) {
                     if (isLoading)
-                        progressBar.setVisibility(View.INVISIBLE);
+                        binding.progressBar.setVisibility(View.INVISIBLE);
                 }
             }
         });
 
-        productRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) //check for scroll down
@@ -172,9 +161,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (currentPage > 1)
-                        progressBar.setVisibility(View.VISIBLE);
+                        binding.progressBar.setVisibility(View.VISIBLE);
                     else
-                        progressBar.setVisibility(View.GONE);
+                        binding.progressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -183,7 +172,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         int spanCount = 2; // 3 columns
         int spacing = (int) Utils.convertDpToPixel(10, Objects.requireNonNull(getContext())); // 50px
         boolean includeEdge = true;
-        productRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
+        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
 
         currentPage = 1;
 
@@ -207,7 +196,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 productItemList.addAll(data);
                 adapterProducts.notifyItemRangeInserted(productItemList.size() - data.size(), data.size());
                 isLoading = false;
-                progressBar.setVisibility(View.GONE);
+                binding.progressBar.setVisibility(View.GONE);
 
                 if (response.getCount() > 10)
                     currentPage++;
@@ -271,7 +260,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        view = null;
     }
 
 

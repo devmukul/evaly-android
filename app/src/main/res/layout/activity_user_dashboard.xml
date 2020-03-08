@@ -153,7 +153,6 @@
             android:paddingBottom="15dp">
 
             <ImageView
-                android:id="@+id/imageView3"
                 android:layout_width="22dp"
                 android:layout_height="21dp"
                 android:layout_weight="0"
@@ -161,7 +160,6 @@
                 app:srcCompat="@drawable/ic_notification" />
 
             <TextView
-                android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"

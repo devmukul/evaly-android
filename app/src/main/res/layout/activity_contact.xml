@@ -320,9 +320,7 @@
                 android:layout_marginTop="5dp"
                 android:padding="10dp">
 
-
                 <ImageView
-                    android:id="@+id/call2"
                     android:layout_width="20dp"
                     android:layout_height="18dp"
                     android:layout_marginRight="10dp"

@@ -516,7 +516,7 @@
                         android:layout_weight="1">
 
                         <TextView
-                            android:id="@+id/bill"
+                            android:id="@+id/bill1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
@@ -524,47 +524,47 @@
                             android:textColor="#333" />
 
                         <ImageView
-                            android:id="@+id/storeImg"
+                            android:id="@+id/storeImg1"
                             android:layout_width="22dp"
                             android:layout_height="16dp"
-                            android:layout_below="@+id/bill"
+                            android:layout_below="@+id/bill1"
                             android:layout_marginTop="3dp"
                             android:layout_marginRight="3dp"
                             android:tint="#666"
                             app:srcCompat="@drawable/ic_user" />
 
                         <TextView
-                            android:id="@+id/billtoName"
+                            android:id="@+id/billtoName1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/bill"
+                            android:layout_below="@+id/bill1"
                             android:layout_marginBottom="5dp"
-                            android:layout_toRightOf="@+id/storeImg" />
+                            android:layout_toRightOf="@+id/storeImg1" />
 
                         <ImageView
-                            android:id="@+id/marker1"
+                            android:id="@+id/marker2"
                             android:layout_width="22dp"
                             android:layout_height="16dp"
-                            android:layout_below="@+id/billtoName"
+                            android:layout_below="@+id/billtoName1"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
                             android:tint="#555"
                             app:srcCompat="@drawable/ic_marker" />
 
                         <TextView
-                            android:id="@+id/billtoAddress"
+                            android:id="@+id/billtoAddress1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/billtoName"
+                            android:layout_below="@+id/billtoName1"
                             android:layout_marginBottom="5dp"
-                            android:layout_toRightOf="@+id/marker1"
+                            android:layout_toRightOf="@+id/marker2"
                             android:paddingRight="10dp" />
 
                         <ImageView
-                            android:id="@+id/phone1"
+                            android:id="@+id/phone2"
                             android:layout_width="22dp"
                             android:layout_height="16dp"
-                            android:layout_below="@+id/billtoAddress"
+                            android:layout_below="@+id/billtoAddress1"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
                             android:tint="#555"
@@ -574,8 +574,8 @@
                             android:id="@+id/billtoPhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/billtoAddress"
-                            android:layout_toRightOf="@+id/phone1"
+                            android:layout_below="@+id/billtoAddress1"
+                            android:layout_toRightOf="@+id/phone2"
                             android:autoLink="phone" />
                     </RelativeLayout>
 
