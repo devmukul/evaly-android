@@ -42,7 +42,7 @@ import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
-public class BrowseProductFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener  {
+public class BrowseProductFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private MainActivity activity;
     private TabLayout tabLayoutSub;
@@ -64,6 +64,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     private int currentPage = 1;
     private boolean isLoading = false;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private View view;
 
     public BrowseProductFragment() {
         // Required empty public constructor
@@ -72,7 +73,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_browse_product_new, container, false);
+        view = inflater.inflate(R.layout.fragment_browse_product_new, container, false);
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -163,7 +164,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
             });
 
 
-
 //        if (nestedSV != null) {
 //
 //            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -239,6 +239,12 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
 
         getProducts();
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        view = null;
     }
 
 }

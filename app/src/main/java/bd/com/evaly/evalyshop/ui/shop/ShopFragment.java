@@ -334,6 +334,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onDestroyView() {
         super.onDestroyView();
         disconnectXmpp();
+        view = null;
     }
 
     private void disconnectXmpp() {
@@ -590,5 +591,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         viewModel.loadShopProducts();
 
     }
+
+
 }
 

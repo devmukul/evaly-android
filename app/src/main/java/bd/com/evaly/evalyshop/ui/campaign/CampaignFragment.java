@@ -131,4 +131,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         binding.progressBar.setVisibility(View.INVISIBLE);
 
     }
+
+
 }
+

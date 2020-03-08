@@ -4,11 +4,11 @@ apply plugin: 'io.fabric'
 apply plugin: "androidx.navigation.safeargs"
 android {
 
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 156
         versionName "1.186"
         multiDexEnabled true
@@ -51,6 +51,9 @@ android {
 }
 
 dependencies {
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'se.emilsjolander:StickyScrollViewItems:1.0.0'

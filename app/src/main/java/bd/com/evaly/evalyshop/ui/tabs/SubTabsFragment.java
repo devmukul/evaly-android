@@ -363,4 +363,11 @@ public class SubTabsFragment extends Fragment {
 
     }
 
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        view = null;
+    }
 }

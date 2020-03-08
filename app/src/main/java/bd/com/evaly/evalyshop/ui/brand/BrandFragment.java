@@ -264,4 +264,10 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         getProducts();
 
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        view = null;
+    }
 }

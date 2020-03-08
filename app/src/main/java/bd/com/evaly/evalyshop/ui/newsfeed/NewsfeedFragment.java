@@ -1231,4 +1231,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         bottomSheetDialog.show();
     }
 
+
+
 }
