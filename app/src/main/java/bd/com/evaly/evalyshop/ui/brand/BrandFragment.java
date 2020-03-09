@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -36,6 +37,7 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.brand.adapter.BrandProductAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
@@ -106,7 +108,11 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
             });
 
-        new InitializeActionBar(view.findViewById(R.id.header_logo), mainActivity, "brand");
+
+
+        MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
+
+        new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "brand", mainViewModel);
 
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view1 -> {

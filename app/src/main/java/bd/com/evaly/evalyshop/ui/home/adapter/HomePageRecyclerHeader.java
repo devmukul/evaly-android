@@ -37,6 +37,7 @@ import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
+import bd.com.evaly.evalyshop.views.WrapContentHeightViewPager;
 import retrofit2.Response;
 
 public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
@@ -46,6 +47,7 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
     private AppCompatActivity activityInstance;
     private NavController navController;
     private Context context;
+    private WrapContentHeightViewPager viewPager;
 
     public HomePageRecyclerHeader(View itemView, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
         super(itemView);
@@ -59,9 +61,15 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
         layoutParams.setFullSpan(true);
         initHeader(view);
-
     }
 
+
+    public void destroyView() {
+        fragmentInstance = null;
+        activityInstance = null;
+        viewPager.setAdapter(null);
+        view = null;
+    }
 
     private void initHeader(View view) {
 
@@ -71,8 +79,8 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
         LinearLayout voucher = view.findViewById(R.id.voucher);
 
-        final ViewPager viewPager = view.findViewById(R.id.pager);
-        HomeTabPagerAdapter pager = new HomeTabPagerAdapter(fragmentInstance.getFragmentManager());
+        viewPager = view.findViewById(R.id.pager);
+        HomeTabPagerAdapter pager = new HomeTabPagerAdapter(fragmentInstance.getParentFragmentManager());
 
         ShimmerFrameLayout shimmer = view.findViewById(R.id.shimmer);
 

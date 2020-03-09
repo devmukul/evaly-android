@@ -169,6 +169,11 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return TYPE_ITEM;
     }
 
+    @Override
+    public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+    }
+
     public void setNetworkState(NetworkState newNetworkState) {
         NetworkState previousState = this.networkState;
         boolean previousExtraRow = hasExtraRow();

@@ -89,7 +89,6 @@ public class ShopViewModel extends ViewModel {
 
     public void subscribe(boolean subscribe) {
 
-
         GeneralApiHelper.subscribeToShop(CredentialManager.getToken(), shopSlug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
@@ -103,10 +102,8 @@ public class ShopViewModel extends ViewModel {
 
             @Override
             public void onAuthError(boolean logout) {
-
                 if (!logout)
                     subscribe(subscribe);
-
             }
         });
 
@@ -148,7 +145,6 @@ public class ShopViewModel extends ViewModel {
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
-
             }
 
             @Override
@@ -166,7 +162,6 @@ public class ShopViewModel extends ViewModel {
             public void onDataFetched(JsonObject response, int statusCode) {
 
                 List<TabsItem> itemList = new ArrayList<>();
-
                 JsonArray jsonArray = response.getAsJsonArray("data");
 
                 for (int i = 0; i < jsonArray.size(); i++) {
@@ -178,9 +173,7 @@ public class ShopViewModel extends ViewModel {
                     tabsItem.setCategory(shopSlug);
                     itemList.add(tabsItem);
                 }
-
                 shopCategoryListLiveData.setValue(itemList);
-
                 categoryCurrentPage++;
             }
 

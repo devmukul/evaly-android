@@ -1,10 +1,10 @@
 package bd.com.evaly.evalyshop.views;
 
 import android.content.Context;
-
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.viewpager.widget.ViewPager;
 
 public class WrapContentHeightViewPager extends ViewPager {
 
@@ -19,7 +19,7 @@ public class WrapContentHeightViewPager extends ViewPager {
      * Constructor
      *
      * @param context the context
-     * @param attrs the attribute set
+     * @param attrs   the attribute set
      */
     public WrapContentHeightViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -38,13 +38,11 @@ public class WrapContentHeightViewPager extends ViewPager {
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
 
 
-        if(heightMeasureSpec < 1400)
+        if (heightMeasureSpec < 1400)
             heightMeasureSpec = 1400;
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
-
-
 
 
     // with animation
@@ -119,8 +117,6 @@ public class WrapContentHeightViewPager extends ViewPager {
 //
 
 
-
-
     private int measureHeight(int measureSpec, View view) {
         int result = 0;
         int specMode = MeasureSpec.getMode(measureSpec);
@@ -154,6 +150,14 @@ public class WrapContentHeightViewPager extends ViewPager {
         return view.getMeasuredHeight();
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        mCurrentView = null;
+        super.onDetachedFromWindow();
+    }
 
+    public void destroyView() {
+        mCurrentView = null;
+    }
 
 }

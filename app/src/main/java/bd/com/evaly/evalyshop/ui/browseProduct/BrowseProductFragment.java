@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -36,6 +37,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.browseProduct.adapter.BrowseProductAdapter;
 import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
@@ -144,7 +146,9 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        new InitializeActionBar(view.findViewById(R.id.header_logo), activity, "browse");
+        MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
+
+        new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "browse", mainViewModel);
 
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));

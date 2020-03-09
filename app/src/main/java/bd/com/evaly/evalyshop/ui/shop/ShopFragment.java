@@ -58,6 +58,7 @@ import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopProductAdapter;
@@ -170,7 +171,11 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             });
 
 
-        new InitializeActionBar(view.findViewById(R.id.header_logo), mainActivity, "shop");
+
+
+        MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
+        new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
+
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view12 -> {
             Intent intent = new Intent(context, GlobalSearchActivity.class);

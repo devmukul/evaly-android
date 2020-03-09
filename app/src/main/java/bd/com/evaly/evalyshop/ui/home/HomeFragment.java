@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -34,6 +35,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.home.adapter.HomeProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -107,15 +109,17 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         userDetails = new UserDetails(context);
         referPref = new ReferPref(context);
-        new InitializeActionBar(view.findViewById(R.id.header_logo), activity, "home");
+
+        MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
+
+        new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "home", mainViewModel);
 //
 //        FragmentAppBarHeaderBinding headerBinding = binding.header;
 //
 //        headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
 
         productItemList = new ArrayList<>();
-        StaggeredGridLayoutManager mLayoutManager;
-        mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(mLayoutManager);
 
         adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity, this, NavHostFragment.findNavController(this));
@@ -128,7 +132,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy < 0) {
-                    if (isLoading)
+                    if (isLoading && binding != null)
                         binding.progressBar.setVisibility(View.INVISIBLE);
                 }
             }
@@ -159,7 +163,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE && binding != null) {
                     if (currentPage > 1)
                         binding.progressBar.setVisibility(View.VISIBLE);
                     else
@@ -185,11 +189,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void getProducts() {
 
         isLoading = true;
-
-
         ProductApiHelper.getCategoryBrandProducts(currentPage, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
+
+                if (binding == null)
+                    return;
 
                 List<ProductItem> data = response.getData();
 
@@ -221,7 +226,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (!referPref.getRef().equals("")) {
 
             HashMap<String, String> params = new HashMap<>();
-
             params.put("token", userDetails.getToken().trim());
             params.put("referred_by", referPref.getRef().trim());
             params.put("device_id", Utils.getDeviceID(context).trim());
@@ -259,6 +263,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onDestroyView() {
+        productItemList.clear();
+        adapterProducts.notifyDataSetChanged();
+        binding.recyclerView.setAdapter(null);
+        binding = null;
         super.onDestroyView();
     }
 

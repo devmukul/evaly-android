@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.home;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,7 +41,6 @@ import bd.com.evaly.evalyshop.util.CategoryUtils;
 public class HomeTabsFragment extends Fragment {
 
     private TabsAdapter adapter;
-    private Context context;
     private RootCategoriesAdapter adapter2;
     private ArrayList<TabsItem> itemList;
     private int type = 1;
@@ -66,9 +64,6 @@ public class HomeTabsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = FragmentHomeCategoryBinding.inflate(inflater, container, false);
-
-        context = getContext();
-
         Bundle bundle = getArguments();
         category = bundle.getString("category");
         type = bundle.getInt("type");
@@ -86,7 +81,7 @@ public class HomeTabsFragment extends Fragment {
 
 
         itemList = new ArrayList<>();
-        adapter = new TabsAdapter(context, (MainActivity) getActivity(), itemList, type);
+        adapter = new TabsAdapter(getContext(), (MainActivity) getActivity(), itemList, type);
 
         // check if showing offline homepage vector categories
 
@@ -94,9 +89,9 @@ public class HomeTabsFragment extends Fragment {
 
         if (slug.equals("root") && type == 1) {
 
-            CategoryUtils categoryUtils = new CategoryUtils(context);
+            CategoryUtils categoryUtils = new CategoryUtils(getContext());
 
-            adapter2 = new RootCategoriesAdapter(context, categoryItems, NavHostFragment.findNavController(this));
+            adapter2 = new RootCategoriesAdapter(getContext(), categoryItems, NavHostFragment.findNavController(this));
             binding.recyclerView.setAdapter(adapter2);
             binding.recyclerView.setItemAnimator(new MyDefaultItemAnimator());
             adapter2.notifyDataSetChanged();
@@ -167,13 +162,13 @@ public class HomeTabsFragment extends Fragment {
 
         binding.searchBtnTabs.setOnClickListener(v -> {
             if (type == 1) {
-                Intent intent = new Intent(context, SearchCategory.class);
+                Intent intent = new Intent(getContext(), SearchCategory.class);
                 intent.putExtra("type", type);
-                context.startActivity(intent);
+                getContext().startActivity(intent);
             } else {
-                Intent intent = new Intent(context, GlobalSearchActivity.class);
+                Intent intent = new Intent(getContext(), GlobalSearchActivity.class);
                 intent.putExtra("type", type);
-                context.startActivity(intent);
+                getContext().startActivity(intent);
             }
         });
 
@@ -240,11 +235,8 @@ public class HomeTabsFragment extends Fragment {
             @Override
             public void onDataFetched(JsonArray response, int statusCode) {
 
-
                 if (onDoneListener != null)
                     onDoneListener.onDone();
-
-
                 binding.progressBar2.setVisibility(View.GONE);
 
                 try {
@@ -307,7 +299,7 @@ public class HomeTabsFragment extends Fragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(context, "Brand loading error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Brand loading error", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -358,9 +350,8 @@ public class HomeTabsFragment extends Fragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(context, "ShopDetails error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "ShopDetails error", Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override
@@ -378,8 +369,15 @@ public class HomeTabsFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        itemList.clear();
+        categoryItems.clear();
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
+        if (adapter2 != null)
+            adapter2.notifyDataSetChanged();
 
+        binding.recyclerView.setAdapter(null);
+        super.onDestroyView();
     }
 
     public class MyDefaultItemAnimator extends DefaultItemAnimator {

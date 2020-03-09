@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 public class MainViewModel extends ViewModel {
 
-    private MutableLiveData<Boolean> drawerOnClick;
-    private MutableLiveData<Boolean> backOnClick;
+    private MutableLiveData<Boolean> drawerOnClick = new MutableLiveData<>();
+    private MutableLiveData<Boolean> backOnClick = new MutableLiveData<>();
 
 
     public LiveData<Boolean> getDrawerOnClick() {
