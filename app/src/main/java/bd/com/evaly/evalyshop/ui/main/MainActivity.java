@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,8 +24,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -32,8 +33,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
@@ -48,6 +47,7 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
+import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
@@ -75,19 +75,17 @@ import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
 public class MainActivity extends BaseActivity {
 
-    public DrawerLayout drawer;
     public boolean isLaunchActivity = true;
-    AlertDialog exitDialog;
-    AlertDialog.Builder exitDialogBuilder;
-    private BottomNavigationView bottomNavigationView;
-    private NavigationView navigationView, navigationView2;
+    private AlertDialog exitDialog;
+    private AlertDialog.Builder exitDialogBuilder;
     private UserDetails userDetails;
-    private View headerView;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private NavController navController;
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+    private ActivityMainBinding binding;
+    private MainViewModel viewModel;
 
+    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         @Override
         public void onConnected() {
             if (AppController.getmService() != null) {
@@ -97,21 +95,15 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        //Event Listeners
         public void onLoggedIn() {
-
             if (xmppHandler != null) {
                 CredentialManager.saveUserRegistered(true);
                 if (xmppHandler.isLoggedin()) {
                     VCard vCard = xmppHandler.mVcard;
-                    if (CredentialManager.getUserData() != null) {
-                        if (vCard != null) {
-                            if (vCard.getFirstName() == null || vCard.getLastName() == null) {
-                                Logger.d("========");
-                                xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                            }
-                            disconnectXmpp();
-                        }
+                    if (CredentialManager.getUserData() != null) if (vCard != null) {
+                        if (vCard.getFirstName() == null || vCard.getLastName() == null)
+                            xmppHandler.updateUserInfo(CredentialManager.getUserData());
+                        disconnectXmpp();
                     }
                 }
             }
@@ -122,14 +114,12 @@ public class MainActivity extends BaseActivity {
             if (!msg.contains("already logged in")) {
 
                 if (xmppHandler == null) {
-                    if (AppController.getmService() != null) {
+                    if (AppController.getmService() != null)
                         if (AppController.getmService().xmpp != null)
                             xmppHandler = AppController.getmService().xmpp;
-                    }
                 } else {
-                    if (xmppHandler.isConnected()) {
+                    if (xmppHandler.isConnected())
                         xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
-                    }
                 }
 
             } else {
@@ -139,8 +129,6 @@ public class MainActivity extends BaseActivity {
         }
 
         public void onSignupSuccess() {
-            Logger.d("Signup success");
-
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
             xmppHandler.login();
             disconnectXmpp();
@@ -171,42 +159,35 @@ public class MainActivity extends BaseActivity {
         if (CredentialManager.getLanguage().equalsIgnoreCase("bn"))
             changeLanguage("BN");
 
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
-        drawer = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        navigationView = findViewById(R.id.nav_view);
-        navigationView2 = findViewById(R.id.nav_view2);
-        headerView = navigationView.getHeaderView(0);
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        TextView userNameNavHeader = headerView.findViewById(R.id.userNameNavHeader);
-        TextView phoneNavHeader = headerView.findViewById(R.id.phone);
+        TextView userNameNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.userNameNavHeader);
+        TextView phoneNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.phone);
         userDetails = new UserDetails(this);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
-
         });
 
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
                     if (item.getItemId() == R.id.userDashboardActivity) {
                         if (userDetails.getToken().equals(""))
                             startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         else
                             startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
-
                         return false;
                     } else
                         return onNavDestinationSelected(item, navController);
                 });
 
-
-        // check for update
 
         checkUpdate();
 
@@ -215,10 +196,8 @@ public class MainActivity extends BaseActivity {
         CartDao cartDao = appDatabase.cartDao();
 
 
-        BottomNavigationItemView itemView = bottomNavigationView.findViewById(R.id.wishListFragment);
-        BottomNavigationItemView itemView2 = bottomNavigationView.findViewById(R.id.cartFragment);
-
-        View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
+        BottomNavigationItemView itemView = binding.bottomNavigationView.findViewById(R.id.wishListFragment);
+        View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
         TextView wishListCount = wishListBadge.findViewById(R.id.notification);
         itemView.addView(wishListBadge);
 
@@ -228,13 +207,12 @@ public class MainActivity extends BaseActivity {
                 wishListBadge.setVisibility(View.GONE);
             else
                 wishListBadge.setVisibility(View.VISIBLE);
-
         });
 
-        View cartBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, bottomNavigationView, false);
+        BottomNavigationItemView itemView2 = binding.bottomNavigationView.findViewById(R.id.cartFragment);
+        View cartBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
         TextView cartCount = cartBadge.findViewById(R.id.notification);
         itemView2.addView(cartBadge);
-
 
         cartDao.getLiveCount().observe(this, integer -> {
             cartCount.setText(String.format(Locale.ENGLISH, "%d", integer));
@@ -245,8 +223,8 @@ public class MainActivity extends BaseActivity {
         });
 
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         if (!isConnected(MainActivity.this)) {
@@ -254,18 +232,12 @@ public class MainActivity extends BaseActivity {
         }
 
         if (!CredentialManager.getToken().equals("")) {
-            if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals("")) {
+            if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals(""))
                 AppController.logout(MainActivity.this);
-            } else {
-                if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered()) {
-                    Logger.d("===========");
-                    if (AppController.getInstance().isNetworkConnected()) {
-                        AsyncTask.execute(() -> {
-                            Logger.d("START_SERVICE");
-                            startXmppService();
-                        });
-                    }
-                }
+            else {
+                if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered())
+                    if (AppController.getInstance().isNetworkConnected())
+                        AsyncTask.execute(() -> startXmppService());
             }
         }
 
@@ -280,8 +252,8 @@ public class MainActivity extends BaseActivity {
 
 
         if (userDetails.getToken().equals("")) {
-            drawer.removeView(navigationView);
-            navigationView2.setNavigationItemSelectedListener(menuItem -> {
+            binding.drawerLayout.removeView(binding.navView);
+            binding.navView2.setNavigationItemSelectedListener(menuItem -> {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_wishlist:
                         navController.navigate(R.id.wishListFragment);
@@ -298,8 +270,7 @@ public class MainActivity extends BaseActivity {
                         this.overridePendingTransition(0, 0);
                         break;
                 }
-
-                new Handler().postDelayed(() -> drawer.closeDrawer(GravityCompat.START), 150);
+                new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
                 return true;
             });
 
@@ -310,8 +281,8 @@ public class MainActivity extends BaseActivity {
 
             userNameNavHeader.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
             phoneNavHeader.setText(userDetails.getUserName());
-            drawer.removeView(navigationView2);
-            navigationView.setNavigationItemSelectedListener(menuItem -> {
+            binding.drawerLayout.removeView(binding.navView2);
+            binding.navView.setNavigationItemSelectedListener(menuItem -> {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_wishlist:
                         navController.navigate(R.id.wishListFragment);
@@ -346,13 +317,21 @@ public class MainActivity extends BaseActivity {
                         inf.putExtra("title", "Followed ShopDetails");
                         inf.putExtra("slug", "shop-subscriptions");
                         startActivity(inf);
-
                 }
-                new Handler().postDelayed(() -> drawer.closeDrawer(GravityCompat.START), 150);
+                new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
                 return true;
             });
         }
 
+
+        viewModel.getBackOnClick().observe(this, aBoolean -> {
+            if (aBoolean)
+                onBackPressed();
+        });
+        viewModel.getDrawerOnClick().observe(this, aBoolean -> {
+            if (aBoolean)
+                binding.drawerLayout.openDrawer(Gravity.START);
+        });
 
         Intent data = getIntent();
 
@@ -409,7 +388,6 @@ public class MainActivity extends BaseActivity {
                 })
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
-
     }
 
     public UserDetails getUserDetails() {
@@ -428,8 +406,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-
-
         if (!isLaunchActivity) {
             finish();
             super.onBackPressed();
@@ -444,8 +420,6 @@ public class MainActivity extends BaseActivity {
             } else
                 super.onBackPressed();
         }
-
-
     }
 
     @Override
@@ -453,16 +427,14 @@ public class MainActivity extends BaseActivity {
         super.onResume();
 
         mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-        if (bottomNavigationView != null) {
-            Menu menu = bottomNavigationView.getMenu();
+        if (binding.bottomNavigationView != null) {
+            Menu menu = binding.bottomNavigationView.getMenu();
             MenuItem item = menu.getItem(0);
             item.setChecked(true);
         }
 
         if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()) {
-
-            ImageView profilePicNav = headerView.findViewById(R.id.profilePicNav);
-
+            ImageView profilePicNav = binding.navView.getHeaderView(0).findViewById(R.id.profilePicNav);
             if (!userDetails.getProfilePictureSM().equals("null")) {
                 Glide.with(this)
                         .asBitmap()
