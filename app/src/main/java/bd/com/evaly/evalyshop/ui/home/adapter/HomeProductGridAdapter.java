@@ -88,8 +88,9 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderz, int position) {
 
+        if (holderz instanceof HomePageRecyclerHeader) {
 
-        if (holderz instanceof HomePageRecyclerHeader || holderz instanceof ProgressViewHolder) {
+        } else if (holderz instanceof ProgressViewHolder) {
 
         } else if (holderz instanceof VHItem) {
 
@@ -151,6 +152,9 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }
         }
     }
+
+
+
 
     @Override
     public int getItemCount() {

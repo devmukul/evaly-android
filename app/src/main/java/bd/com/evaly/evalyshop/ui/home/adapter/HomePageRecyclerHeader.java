@@ -48,6 +48,7 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
     private NavController navController;
     private Context context;
     private WrapContentHeightViewPager viewPager;
+    private boolean binded;
 
     public HomePageRecyclerHeader(View itemView, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
         super(itemView);
@@ -60,7 +61,9 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         view = itemView;
         StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
         layoutParams.setFullSpan(true);
-        initHeader(view);
+
+        initHeader(itemView);
+
     }
 
 
@@ -72,6 +75,8 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
     }
 
     private void initHeader(View view) {
+
+        binded = true;
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -207,5 +212,13 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
             });
         }
 
+    }
+
+    public boolean isBinded() {
+        return binded;
+    }
+
+    public void setBinded(boolean binded) {
+        this.binded = binded;
     }
 }

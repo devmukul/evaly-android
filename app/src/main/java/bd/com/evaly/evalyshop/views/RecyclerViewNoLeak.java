@@ -27,5 +27,8 @@ public class RecyclerViewNoLeak extends RecyclerView {
             setAdapter(null);
         }
     }
+
+
+
 }
 
