@@ -62,6 +62,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     private BrowseProductAdapter adapterProduct;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private ProgressBar progressBar1;
     private Context context;
     private int currentPage = 1;
     private boolean isLoading = false;
@@ -91,6 +92,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
 
         recyclerView = view.findViewById(R.id.products);
         progressBar = view.findViewById(R.id.progressBar);
+        progressBar1 = view.findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.GONE);
         itemListProduct = new ArrayList<>();
         adapterProduct = new BrowseProductAdapter(getContext(), itemListProduct, activity, this, NavHostFragment.findNavController(this), slug);
@@ -188,10 +190,16 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
 
         isLoading = true;
 
-        if (currentPage > 1)
-            progressBar.setVisibility(View.VISIBLE);
-        else
+        if (currentPage == 1) {
+            progressBar1.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
+        } else if (currentPage > 1) {
+            progressBar1.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar1.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        }
 
         ProductApiHelper.getCategoryBrandProducts(currentPage, slug, null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
