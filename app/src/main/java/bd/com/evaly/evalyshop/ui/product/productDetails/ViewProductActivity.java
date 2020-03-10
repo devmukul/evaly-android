@@ -29,7 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -58,6 +57,7 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
+import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -656,16 +656,28 @@ public class ViewProductActivity extends BaseActivity {
     private void getRelatedProducts(String categorySlug) {
 
         ProductGrid productGrid = new ProductGrid(context, binding.products, categorySlug, binding.progressBar);
-        if (binding.stickyScroll != null) {
-            productGrid.setScrollView(binding.stickyScroll);
-            binding.stickyScroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    binding.progressBar.setVisibility(View.VISIBLE);
-                    productGrid.loadNextPage();
-                }
-            });
 
-        }
+        productGrid.setListener(new ProductListener() {
+            @Override
+            public void onSuccess(int count) {
+                binding.progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void buyNow(String product_slug) {
+
+            }
+        });
+//        if (binding.stickyScroll != null) {
+//            productGrid.setScrollView(binding.stickyScroll);
+//            binding.stickyScroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+//                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+//                    binding.progressBar.setVisibility(View.VISIBLE);
+//                    productGrid.loadNextPage();
+//                }
+//            });
+//
+//        }
     }
 
 

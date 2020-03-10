@@ -64,7 +64,7 @@ public class ViewProductSliderAdapter extends PagerAdapter {
                 .asBitmap()
                 .load(img.get(position))
                 .skipMemoryCache(true)
-                .placeholder(R.drawable.ic_image_placeholder)
+                .placeholder(R.drawable.ic_evaly_placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(900, 900))
                 .into(imageView);
