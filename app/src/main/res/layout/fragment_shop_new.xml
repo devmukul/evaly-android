@@ -7,7 +7,9 @@
     android:background="@color/fff"
     android:fitsSystemWindows="true">
 
-    <include layout="@layout/fragment_app_bar_header" />
+    <include
+        android:id="@+id/app_bar_layout"
+        layout="@layout/fragment_app_bar_header" />
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
