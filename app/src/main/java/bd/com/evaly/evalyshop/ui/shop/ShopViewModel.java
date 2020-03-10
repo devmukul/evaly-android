@@ -87,6 +87,46 @@ public class ShopViewModel extends ViewModel {
         this.onChatClickLiveData.setValue(action);
     }
 
+    public LiveData<Boolean> getOnFollowClickLiveData() {
+        return onFollowClickLiveData;
+    }
+
+    public void setOnFollowClickLiveData(boolean onFollowClickLiveData) {
+        this.onFollowClickLiveData.setValue(onFollowClickLiveData);
+    }
+
+    public LiveData<ShopDetailsModel> getShopDetailsLiveData() {
+        return shopDetailsLiveData;
+    }
+
+    public LiveData<List<TabsItem>> getShopCategoryListLiveData() {
+        return shopCategoryListLiveData;
+    }
+
+    public LiveData<String> getBuyNowLiveData() {
+        return buyNowLiveData;
+    }
+
+    public void setBuyNowLiveData(String slug) {
+        this.buyNowLiveData.setValue(slug);
+    }
+
+    public LiveData<TabsItem> getSelectedCategoryLiveData() {
+        return selectedCategoryLiveData;
+    }
+
+    public void setSelectedCategoryLiveData(TabsItem selectedCategoryLiveData) {
+        this.selectedCategoryLiveData.setValue(selectedCategoryLiveData);
+    }
+
+    public MutableLiveData<Boolean> getOnResetLiveData() {
+        return onResetLiveData;
+    }
+
+    public void setOnResetLiveData(boolean onResetLiveData) {
+        this.onResetLiveData.setValue(onResetLiveData);
+    }
+
     public void subscribe(boolean subscribe) {
 
         GeneralApiHelper.subscribeToShop(CredentialManager.getToken(), shopSlug, subscribe, new ResponseListenerAuth<JsonObject, String>() {
@@ -115,9 +155,7 @@ public class ShopViewModel extends ViewModel {
         ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), shopSlug, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
                 ratingSummary.setValue(response);
-
             }
 
             @Override
@@ -127,6 +165,8 @@ public class ShopViewModel extends ViewModel {
 
             @Override
             public void onAuthError(boolean logout) {
+                if (!logout)
+                    loadRatings();
 
             }
         });
@@ -149,6 +189,8 @@ public class ShopViewModel extends ViewModel {
 
             @Override
             public void onAuthError(boolean logout) {
+                if (!logout)
+                    loadShopProducts();
 
             }
         });
@@ -190,43 +232,5 @@ public class ShopViewModel extends ViewModel {
 
     }
 
-    public LiveData<Boolean> getOnFollowClickLiveData() {
-        return onFollowClickLiveData;
-    }
 
-    public void setOnFollowClickLiveData(boolean onFollowClickLiveData) {
-        this.onFollowClickLiveData.setValue(onFollowClickLiveData);
-    }
-
-    public LiveData<ShopDetailsModel> getShopDetailsLiveData() {
-        return shopDetailsLiveData;
-    }
-
-    public LiveData<List<TabsItem>> getShopCategoryListLiveData() {
-        return shopCategoryListLiveData;
-    }
-
-    public LiveData<String> getBuyNowLiveData() {
-        return buyNowLiveData;
-    }
-
-    public void setBuyNowLiveData(String slug) {
-        this.buyNowLiveData.setValue(slug);
-    }
-
-    public LiveData<TabsItem> getSelectedCategoryLiveData() {
-        return selectedCategoryLiveData;
-    }
-
-    public void setSelectedCategoryLiveData(TabsItem selectedCategoryLiveData) {
-        this.selectedCategoryLiveData.setValue(selectedCategoryLiveData);
-    }
-
-    public MutableLiveData<Boolean> getOnResetLiveData() {
-        return onResetLiveData;
-    }
-
-    public void setOnResetLiveData(boolean onResetLiveData) {
-        this.onResetLiveData.setValue(onResetLiveData);
-    }
 }
