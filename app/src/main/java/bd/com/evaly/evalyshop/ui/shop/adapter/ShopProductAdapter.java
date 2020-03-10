@@ -47,8 +47,6 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private NavController navController;
     private Context context;
     private List<ProductItem> productsList;
-    private NetworkState networkState;
-
     View.OnClickListener itemViewListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -63,6 +61,7 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             context.startActivity(intent);
         }
     };
+    private NetworkState networkState;
     private HashMap<String, String> data;
     private ShopViewModel viewModel;
     private ShopDetailsModel shopDetails;
@@ -162,7 +161,7 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         .apply(new RequestOptions().override(260, 260))
                         .load(model.getImageUrls().get(0))
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .placeholder(R.drawable.ic_placeholder_small)
+                        .placeholder(R.drawable.ic_evaly_placeholder)
                         .into(holder.imageViewAndroid);
 
 

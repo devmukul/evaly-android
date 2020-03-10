@@ -112,7 +112,7 @@ public class BrowseProductAdapter extends RecyclerView.Adapter<RecyclerView.View
                         .apply(new RequestOptions().override(260, 260))
                         .load(model.getImageUrls().get(0))
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .placeholder(R.drawable.ic_placeholder_small)
+                        .placeholder(R.drawable.ic_evaly_placeholder)
                         .into(holder.imageViewAndroid);
 
 
