@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -51,15 +53,12 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
         Glide.with(holder.itemView.getContext())
                 .load(model.getBannerImage())
                 .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .apply(new RequestOptions().override(3000, 900))
                 .into(holder.ivCover);
 
-
-
-
         Date startDate = Utils.getCampaignDate( model.getStartDate());
-
         Date endDate = Utils.getCampaignDate( model.getEndDate());
-
         Date currentDate = Calendar.getInstance().getTime();
 
 

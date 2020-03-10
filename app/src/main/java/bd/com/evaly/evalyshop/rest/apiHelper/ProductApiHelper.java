@@ -6,8 +6,8 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
@@ -18,7 +18,7 @@ import retrofit2.Call;
 public class ProductApiHelper extends BaseApiHelper {
 
 
-    public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, ResponseListenerAuth<JsonObject, String> listener){
+    public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, ResponseListenerAuth<JsonObject, String> listener) {
 
         if (categorySlug.equals(""))
             categorySlug = null;
@@ -40,7 +40,11 @@ public class ProductApiHelper extends BaseApiHelper {
             if (category.equals("root"))
                 category = null;
 
-        getiApiClient().getCategoryBrandProducts(page, category, brands, 48).enqueue(getResponseCallBackDefault(listener));
+        int limit = 48;
+        if (page == 1)
+            limit = 21;
+
+        getiApiClient().getCategoryBrandProducts(page, category, brands, limit).enqueue(getResponseCallBackDefault(listener));
     }
 
 
@@ -67,9 +71,9 @@ public class ProductApiHelper extends BaseApiHelper {
         Call<JsonObject> call;
 
         if (category.equals("root"))
-            call = iApiClient.getBrandsCategories(null,page,limit);
+            call = iApiClient.getBrandsCategories(null, page, limit);
         else
-            call = iApiClient.getBrandsCategories(category,page,limit);
+            call = iApiClient.getBrandsCategories(category, page, limit);
 
         call.enqueue(getResponseCallBackDefault(listener));
     }
@@ -81,9 +85,9 @@ public class ProductApiHelper extends BaseApiHelper {
         Call<JsonObject> call;
 
         if (category.equals("root"))
-            call = iApiClient.getShopsOfCategories(page,limit);
+            call = iApiClient.getShopsOfCategories(page, limit);
         else
-            call = iApiClient.getShopsOfCategories(category,page,limit);
+            call = iApiClient.getShopsOfCategories(category, page, limit);
 
         call.enqueue(getResponseCallBackDefault(listener));
     }
@@ -95,13 +99,12 @@ public class ProductApiHelper extends BaseApiHelper {
         Call<JsonObject> call;
 
         if (campaign.equals(""))
-            call = iApiClient.getCategoriesofShop(shopSlug,page);
+            call = iApiClient.getCategoriesofShop(shopSlug, page);
         else
-            call = iApiClient.getCategoriesOfCampaignShop(campaign,shopSlug,page);
+            call = iApiClient.getCategoriesOfCampaignShop(campaign, shopSlug, page);
 
         call.enqueue(getResponseCallBackDefault(listener));
     }
-
 
 
     public static void getProductVariants(String shopSlug, String shopItem, ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String> listener) {
@@ -128,7 +131,6 @@ public class ProductApiHelper extends BaseApiHelper {
         getiApiClient().getNearestAvailableShop(variantId, longitude, latitude).enqueue(getResponseCallBackDefault(listener));
 
     }
-
 
 
 }

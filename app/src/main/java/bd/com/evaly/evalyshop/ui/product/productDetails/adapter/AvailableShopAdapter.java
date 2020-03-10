@@ -135,7 +135,6 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
             } else {
 
-                cartItem.setSlug(availableShops.get(i).getShopSlug());
                 cartItem.setProductID(String.valueOf(availableShops.get(i).getShopItemId()));
 
                 if (availableShops.get(i).getDiscountValue() == 0) {
