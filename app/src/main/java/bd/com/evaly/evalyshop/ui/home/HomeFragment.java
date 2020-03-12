@@ -266,8 +266,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onDestroyView() {
-        productItemList.clear();
-        adapterProducts.notifyDataSetChanged();
+//        productItemList.clear();
+//        adapterProducts.notifyDataSetChanged();
         binding.recyclerView.setAdapter(null);
         binding = null;
         super.onDestroyView();

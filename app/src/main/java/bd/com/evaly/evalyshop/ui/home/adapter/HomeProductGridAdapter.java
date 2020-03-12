@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -30,7 +29,6 @@ import java.util.regex.Pattern;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ProgressBarBinding;
-import bd.com.evaly.evalyshop.models.HomeHeaderItem;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
@@ -153,16 +151,9 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-
-
-
     @Override
     public int getItemCount() {
         return productsList.size();
-    }
-
-    private boolean isPositionHeader(int position) {
-        return productsList.get(position) instanceof HomeHeaderItem;
     }
 
     @Override
@@ -173,10 +164,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return TYPE_ITEM;
     }
 
-    @Override
-    public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-    }
 
     public void setNetworkState(NetworkState newNetworkState) {
         NetworkState previousState = this.networkState;
@@ -201,14 +188,6 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return false;
         }
     }
-
-
-    public void setFilter(ArrayList<ProductItem> ar) {
-        productsList = new ArrayList<>();
-        productsList.addAll(ar);
-        notifyDataSetChanged();
-    }
-
 
     class VHItem extends RecyclerView.ViewHolder {
         TextView textViewAndroid, price, priceDiscount, buyNow, tvCashback;

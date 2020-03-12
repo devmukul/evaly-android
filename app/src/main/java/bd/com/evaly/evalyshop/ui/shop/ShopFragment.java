@@ -317,6 +317,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        binding.products.setAdapter(null);
         disconnectXmpp();
     }
 

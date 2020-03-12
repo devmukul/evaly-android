@@ -274,6 +274,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        recyclerView.setAdapter(null);
         view = null;
     }
 }
