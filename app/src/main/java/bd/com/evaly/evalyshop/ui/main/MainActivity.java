@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +25,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -183,6 +186,22 @@ public class MainActivity extends BaseActivity {
                             startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         else
                             startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
+                        return false;
+                    } else if (item.getItemId() == R.id.homeFragment) {
+
+
+
+                        navController.popBackStack(R.id.home_nav_graph, true);
+
+                        Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+
+                        int backStackEntryCount = navHostFragment.getChildFragmentManager().getBackStackEntryCount();
+
+                        Log.d("hmtz", backStackEntryCount+"");
+
+
+                        navController.navigate(R.id.homeFragment);
+
                         return false;
                     } else
                         return onNavDestinationSelected(item, navController);
