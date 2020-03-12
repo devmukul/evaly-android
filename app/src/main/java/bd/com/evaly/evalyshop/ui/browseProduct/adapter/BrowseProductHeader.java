@@ -158,7 +158,7 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
     private void loadOtherTabs() {
 
 
-        if (context == null)
+        if (context == null || view == null || pager == null)
             return;
         {
             SubTabsFragment fragment = new SubTabsFragment();
