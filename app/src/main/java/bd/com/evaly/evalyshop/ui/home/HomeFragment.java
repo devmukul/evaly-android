@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.pref.ReferPref;
+import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -37,6 +39,7 @@ import bd.com.evaly.evalyshop.ui.home.adapter.HomeProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -113,10 +116,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "home", mainViewModel);
-//
-//        FragmentAppBarHeaderBinding headerBinding = binding.header;
-//
-//        headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
+
+        FragmentAppBarHeaderBinding headerBinding = binding.header;
+
+        headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
 
         productItemList = new ArrayList<>();
         StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);

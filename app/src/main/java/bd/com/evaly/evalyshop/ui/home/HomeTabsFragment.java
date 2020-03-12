@@ -369,14 +369,14 @@ public class HomeTabsFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        itemList.clear();
-        categoryItems.clear();
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
-        if (adapter2 != null)
-            adapter2.notifyDataSetChanged();
-
-        binding.recyclerView.setAdapter(null);
+//        itemList.clear();
+//        categoryItems.clear();
+//        if (adapter != null)
+//            adapter.notifyDataSetChanged();
+//        if (adapter2 != null)
+//            adapter2.notifyDataSetChanged();
+//
+//        binding.recyclerView.setAdapter(null);
         super.onDestroyView();
     }
 

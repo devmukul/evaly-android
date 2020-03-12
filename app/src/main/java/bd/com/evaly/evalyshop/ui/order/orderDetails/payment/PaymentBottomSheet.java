@@ -128,6 +128,12 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         });
 
         binding.bkash.setOnClickListener(v -> {
+
+            if (!binding.amountPay.getText().toString().matches("\\d+.\\d+")) {
+                Toast.makeText(getContext(), "Please enter amount in english number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             double amountToPay = total_amount - paid_amount;
 
             if (binding.amountPay.getText().toString().trim().equals("")) {

@@ -128,7 +128,6 @@ public class UserDashboardActivity extends BaseActivity {
         public void onSignupFailed(String error) {
             Logger.d(error);
             if (error.contains("User already exist")) {
-                alert.showDialog();
                 HashMap<String, String> data = new HashMap<>();
                 data.put("user", CredentialManager.getUserName());
                 data.put("host", Constants.XMPP_HOST);

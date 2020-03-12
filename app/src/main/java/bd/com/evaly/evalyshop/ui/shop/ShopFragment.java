@@ -80,11 +80,17 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private Context context;
     private MainActivity mainActivity;
     private int currentPage = 1;
+    private int totalCount = 0;
     private boolean isLoading = false;
     private VCard vCard;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
+    private boolean clickFromCategory = false;
+    private ShopViewModel viewModel;
+    private ProgressBar progressBar;
+    private FragmentShopNewBinding binding;
+
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         public void onPresenceChanged(PresenceModel presenceModel) {
         }
@@ -105,11 +111,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         }
     };
-    private boolean clickFromCategory = false;
-    private ShopViewModel viewModel;
-    private ProgressBar progressBar;
-    private int totalCount = 0;
-    private FragmentShopNewBinding binding;
 
     public ShopFragment() {
         // Required empty public constructor
@@ -218,7 +219,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!isLoading) {
+                    if (!isLoading && totalCount > productItemList.size()) {
                         if (currentPage > 1)
                             progressBar.setVisibility(View.VISIBLE);
                         viewModel.loadShopProducts();
@@ -333,6 +334,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Data shopData = response.getData();
         Shop shopDetails = shopData.getShop();
 
+        totalCount = response.getCount();
 
         if (currentPage == 1 && productItemList.size() != 1) {
             productItemList.add(new HomeHeaderItem());

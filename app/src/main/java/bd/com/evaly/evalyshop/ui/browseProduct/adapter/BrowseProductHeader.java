@@ -131,8 +131,10 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
                     bundle.putString("json", res.toString());
                     fragment.setArguments(bundle);
 
-                    pager.addFragment(fragment, context.getResources().getString(R.string.sub_categories));
-                    pager.notifyDataSetChanged();
+                    if (pager != null) {
+                        pager.addFragment(fragment, context.getResources().getString(R.string.sub_categories));
+                        pager.notifyDataSetChanged();
+                    }
                 }
 
                 hideShimmer();
