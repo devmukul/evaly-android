@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ProgressBarBinding;
+import bd.com.evaly.evalyshop.databinding.RecyclerHeaderHomeBinding;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
@@ -75,8 +76,8 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ProgressBarBinding binding = ProgressBarBinding.inflate(inflater, parent, false);
             return new ProgressViewHolder(binding);
         } else if (viewType == TYPE_HEADER) {
-            View v = inflater.inflate(R.layout.recycler_header_home, parent, false);
-            return new HomePageRecyclerHeader(v, context, activityInstance, fragmentInstance, navController);
+            RecyclerHeaderHomeBinding binding = RecyclerHeaderHomeBinding.inflate(inflater, parent, false);
+            return new HomePageRecyclerHeader(binding, context, activityInstance, fragmentInstance, navController);
         } else {
             View v = inflater.inflate(R.layout.item_home_product_grid, parent, false);
             return new VHItem(v);

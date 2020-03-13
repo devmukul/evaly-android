@@ -72,7 +72,6 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getItemPosition(Object object) {
 
-
        // onDoneListener.onDone();
 
         if (mFragmentList.contains(object))

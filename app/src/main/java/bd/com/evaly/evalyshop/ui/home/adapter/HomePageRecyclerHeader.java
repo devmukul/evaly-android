@@ -5,16 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.viewpager.widget.ViewPager;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -24,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.RecyclerHeaderHomeBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -37,32 +35,30 @@ import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
-import bd.com.evaly.evalyshop.views.WrapContentHeightViewPager;
 import retrofit2.Response;
 
 public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
-    View view;
     private Fragment fragmentInstance;
     private AppCompatActivity activityInstance;
     private NavController navController;
     private Context context;
-    private WrapContentHeightViewPager viewPager;
-    private boolean binded;
+    private RecyclerHeaderHomeBinding binding;
 
-    public HomePageRecyclerHeader(View itemView, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
-        super(itemView);
+
+    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
+        super(binding.getRoot());
 
         this.context = context;
         this.fragmentInstance = fragmentInstance;
         this.activityInstance = activityInstance;
         this.navController = navController;
+        this.binding = binding;
 
-        view = itemView;
-        StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+        StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         layoutParams.setFullSpan(true);
 
-        initHeader(itemView);
+        initHeader(binding);
 
     }
 
@@ -70,69 +66,43 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
     public void destroyView() {
         fragmentInstance = null;
         activityInstance = null;
-        viewPager.setAdapter(null);
-        view = null;
+        binding.viewPager.setAdapter(null);
     }
 
-    private void initHeader(View view) {
+    private void initHeader(RecyclerHeaderHomeBinding binding) {
 
-        binded = true;
+        binding.tabLayout.setTabMode(binding.tabLayout.MODE_FIXED);
+        binding.tabLayout.setSmoothScrollingEnabled(true);
 
-        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
-        tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        tabLayout.setSmoothScrollingEnabled(true);
-
-        LinearLayout voucher = view.findViewById(R.id.voucher);
-
-        viewPager = view.findViewById(R.id.pager);
         HomeTabPagerAdapter pager = new HomeTabPagerAdapter(fragmentInstance.getParentFragmentManager());
 
-        ShimmerFrameLayout shimmer = view.findViewById(R.id.shimmer);
+        binding.shimmer.shimmer.setVisibility(View.VISIBLE);
+        binding.shimmer.shimmer.startShimmer();
 
-        try {
-            shimmer.setVisibility(View.VISIBLE);
-            shimmer.startShimmer();
-        } catch (Exception ignored) {
-        }
+        binding.tabLayout.setupWithViewPager(binding.viewPager);
+        binding.viewPager.setAdapter(pager);
+        binding.tabLayout.setupWithViewPager(binding.viewPager);
+        binding.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabLayout));
+        binding.viewPager.setOffscreenPageLimit(2);
 
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.setAdapter(pager);
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        viewPager.setOffscreenPageLimit(1);
-
-        LinearLayout evalyStore = view.findViewById(R.id.evaly_store);
-        evalyStore.setOnClickListener(v -> {
+        binding.evalyStore.setOnClickListener(v -> {
             Intent ni = new Intent(context, GiftCardActivity.class);
             context.startActivity(ni);
         });
 
-        voucher.setOnClickListener(v -> {
-//            CampaignBottomSheetFragment campaignBottomSheetFragment = CampaignBottomSheetFragment.newInstance();
-//            if (fragmentInstance.getFragmentManager() != null)
-//                campaignBottomSheetFragment.show(fragmentInstance.getFragmentManager(), "Campaign BottomSheet");
+        binding.voucher.setOnClickListener(v -> navController.navigate(R.id.campaignFragment));
 
-            navController.navigate(R.id.campaignFragment);
+        binding.evalyWholesale.setOnClickListener(v -> context.startActivity(new Intent(context, NewsfeedActivity.class)));
 
-        });
 
-        LinearLayout wholesale = view.findViewById(R.id.evaly_wholesale);
-        wholesale.setOnClickListener(v -> context.startActivity(new Intent(context, NewsfeedActivity.class)));
-
-        LinearLayout orders = view.findViewById(R.id.orders);
-        orders.setOnClickListener(v -> {
-
-            if (CredentialManager.getToken().equals("")) {
+        binding.orders.setOnClickListener(v -> {
+            if (CredentialManager.getToken().equals(""))
                 context.startActivity(new Intent(context, SignInActivity.class));
-            } else {
+            else
                 context.startActivity(new Intent(context, OrderListActivity.class));
-            }
         });
-
 
         // slider
-        ViewPager sliderPager = view.findViewById(R.id.sliderPager);
-        TabLayout sliderIndicator = view.findViewById(R.id.sliderIndicator);
 
         HomeTabsFragment categoryFragment = new HomeTabsFragment();
         Bundle bundle = new Bundle();
@@ -148,7 +118,7 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         bundle2.putString("category", "root");
         brandFragment.setArguments(bundle2);
 
-        OnDoneListener onDoneListener = () -> shimmer.setVisibility(View.GONE);
+        OnDoneListener onDoneListener = () -> binding.shimmer.shimmer.setVisibility(View.GONE);
 
         brandFragment.setOnDoneListener(onDoneListener);
         categoryFragment.setOnDoneListener(onDoneListener);
@@ -168,8 +138,8 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
         Handler handler = new Handler();
         handler.postDelayed(() -> {
-            shimmer.stopShimmer();
-            shimmer.setVisibility(View.GONE);
+            binding.shimmer.shimmer.stopShimmer();
+            binding.shimmer.shimmer.setVisibility(View.GONE);
         }, 1500);
 
         AuthApiHelper.getBanners(new DataFetchingListener<Response<JsonObject>>() {
@@ -178,8 +148,8 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
                 if (response.code() == 200 || response.code() == 201) {
                     ArrayList<BannerItem> sliderImages = new Gson().fromJson(response.body().get("results"), new TypeToken<List<BannerItem>>() {
                     }.getType());
-                    sliderPager.setAdapter(new SliderAdapter(context, activityInstance, sliderImages));
-                    sliderIndicator.setupWithViewPager(sliderPager, true);
+                    binding.sliderPager.setAdapter(new SliderAdapter(context, activityInstance, sliderImages));
+                    binding.sliderIndicator.setupWithViewPager(binding.sliderPager, true);
                 }
             }
 
@@ -195,9 +165,9 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
                 @Override
                 public void onDataFetched(NotificationCount response, int statusCode) {
                     if (response.getCount() > 0)
-                        view.findViewById(R.id.newsfeedIndicator).setVisibility(View.VISIBLE);
+                        binding.newsfeedIndicator.setVisibility(View.VISIBLE);
                     else
-                        view.findViewById(R.id.newsfeedIndicator).setVisibility(View.GONE);
+                        binding.newsfeedIndicator.setVisibility(View.GONE);
                 }
 
                 @Override
@@ -211,14 +181,6 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
                 }
             });
         }
-
     }
 
-    public boolean isBinded() {
-        return binded;
-    }
-
-    public void setBinded(boolean binded) {
-        this.binded = binded;
-    }
 }
