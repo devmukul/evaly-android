@@ -28,8 +28,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.RecyclerHeaderBrowseProductBinding;
 import bd.com.evaly.evalyshop.models.HomeHeaderItem;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
 public class BrowseProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -42,6 +44,7 @@ public class BrowseProductAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Context context;
     private List<ProductItem> productsList;
     private String category;
+    private HomeTabPagerAdapter pager;
 
     View.OnClickListener itemViewListener = new View.OnClickListener() {
         @Override
@@ -58,13 +61,14 @@ public class BrowseProductAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     };
 
-    public BrowseProductAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, String category) {
+    public BrowseProductAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, String category, HomeTabPagerAdapter pager) {
         this.context = context;
         productsList = a;
         this.fragmentInstance = fragmentInstance;
         this.activityInstance = activityInstance;
         this.navController = navController;
         this.category = category;
+        this.pager = pager;
     }
 
     @Override
@@ -73,7 +77,8 @@ public class BrowseProductAdapter extends RecyclerView.Adapter<RecyclerView.View
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_HEADER) {
             View v = inflater.inflate(R.layout.recycler_header_browse_product, parent, false);
-            return new BrowseProductHeader(v, context, activityInstance, fragmentInstance, navController, category);
+            RecyclerHeaderBrowseProductBinding binding = RecyclerHeaderBrowseProductBinding.inflate(inflater, parent, false);
+            return new BrowseProductHeader(binding, context, category, pager);
         } else {
             View v = inflater.inflate(R.layout.item_home_product_grid, parent, false);
             return new VHItem(v);

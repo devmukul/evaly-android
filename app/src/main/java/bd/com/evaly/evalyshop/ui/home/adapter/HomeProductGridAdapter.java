@@ -43,6 +43,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private NavController navController;
     private Context context;
     private List<ProductItem> productsList;
+    private HomeTabPagerAdapter pager;
 
     View.OnClickListener itemViewListener = new View.OnClickListener() {
         @Override
@@ -60,12 +61,13 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     };
     private NetworkState networkState;
 
-    public HomeProductGridAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
+    public HomeProductGridAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HomeTabPagerAdapter pager) {
         this.context = context;
         productsList = a;
         this.fragmentInstance = fragmentInstance;
         this.activityInstance = activityInstance;
         this.navController = navController;
+        this.pager = pager;
     }
 
     @Override
@@ -77,7 +79,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return new ProgressViewHolder(binding);
         } else if (viewType == TYPE_HEADER) {
             RecyclerHeaderHomeBinding binding = RecyclerHeaderHomeBinding.inflate(inflater, parent, false);
-            return new HomePageRecyclerHeader(binding, context, activityInstance, fragmentInstance, navController);
+            return new HomePageRecyclerHeader(binding, context, activityInstance, navController, pager);
         } else {
             View v = inflater.inflate(R.layout.item_home_product_grid, parent, false);
             return new VHItem(v);

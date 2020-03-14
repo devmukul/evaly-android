@@ -18,10 +18,11 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
     private int mCurrentPosition = -1;
+    private FragmentManager manager;
 
     public HomeTabPagerAdapter(FragmentManager manager) {
-
         super(manager);
+        this.manager = manager;
     }
 
     public void addFragment(Fragment fragment, String title) {
@@ -80,5 +81,17 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
             return POSITION_NONE;
     }
 
+
+    public void clear() {
+//        FragmentTransaction transaction = manager.beginTransaction();
+//        for (Fragment fragment : mFragmentList) {
+//            transaction.remove(fragment);
+//        }
+//        mFragmentList.clear();
+//        transaction.commitAllowingStateLoss();
+
+        mFragmentList.clear();
+        mFragmentTitleList.clear();
+    }
 
 }

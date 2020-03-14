@@ -68,6 +68,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     private boolean isLoading = false;
     private SwipeRefreshLayout swipeRefreshLayout;
     private View view;
+    private HomeTabPagerAdapter tabPagerAdapter;
 
     public BrowseProductFragment() {
         // Required empty public constructor
@@ -95,7 +96,9 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         progressBar1 = view.findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.GONE);
         itemListProduct = new ArrayList<>();
-        adapterProduct = new BrowseProductAdapter(getContext(), itemListProduct, activity, this, NavHostFragment.findNavController(this), slug);
+
+        tabPagerAdapter = new HomeTabPagerAdapter(getChildFragmentManager());
+        adapterProduct = new BrowseProductAdapter(getContext(), itemListProduct, activity, this, NavHostFragment.findNavController(this), slug, tabPagerAdapter);
         recyclerView.setAdapter(adapterProduct);
 
         itemListProduct.add(new HomeHeaderItem());
@@ -257,7 +260,11 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     public void onDestroyView() {
         super.onDestroyView();
         recyclerView.setAdapter(null);
+        tabPagerAdapter.clear();
+        tabPagerAdapter.notifyDataSetChanged();
+        tabPagerAdapter = null;
         view = null;
+
     }
 
 }

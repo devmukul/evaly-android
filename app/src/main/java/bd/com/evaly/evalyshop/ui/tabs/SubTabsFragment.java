@@ -135,6 +135,9 @@ public class SubTabsFragment extends Fragment {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if (binding == null)
+                        return;
+
                     if (!(slug.equals("root") && type == 1)) {
                         if (adapter.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
                             adapter.notifyDataSetChanged();
@@ -150,6 +153,8 @@ public class SubTabsFragment extends Fragment {
 
 
     public void stopShimmer() {
+        if (binding == null)
+            return;
 
         binding.shimmer.shimmer.stopShimmer();
         binding.shimmer.shimmer.setVisibility(View.GONE);
@@ -166,6 +171,9 @@ public class SubTabsFragment extends Fragment {
     }
 
     public void loadJsonToView(String json, int type) {
+
+        if (binding == null)
+            return;
 
         if (slug != null) {
 
@@ -221,6 +229,9 @@ public class SubTabsFragment extends Fragment {
             @Override
             public void onDataFetched(JsonArray res, int statusCode) {
 
+                if (binding == null)
+                    return;
+
                 binding.progressBar2.setVisibility(View.GONE);
 
                 try {
@@ -259,6 +270,9 @@ public class SubTabsFragment extends Fragment {
         ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
+
+                if (binding == null)
+                    return;
 
                 binding.progressBar2.setVisibility(View.GONE);
                 try {
@@ -304,6 +318,9 @@ public class SubTabsFragment extends Fragment {
         ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
+
+                if (binding == null)
+                    return;
 
                 binding.progressBar2.setVisibility(View.GONE);
                 try {
@@ -353,5 +370,6 @@ public class SubTabsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        binding = null;
     }
 }

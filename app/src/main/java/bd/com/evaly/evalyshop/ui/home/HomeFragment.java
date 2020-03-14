@@ -36,6 +36,7 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.home.adapter.HomeProductGridAdapter;
+import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
@@ -58,6 +59,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private boolean loading = true;
     private ReferPref referPref;
     private FragmentHomeBinding binding;
+    private HomeTabPagerAdapter tabPagerAdapter;
 
 
     public HomeFragment() {
@@ -125,7 +127,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(mLayoutManager);
 
-        adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity, this, NavHostFragment.findNavController(this));
+        tabPagerAdapter = new HomeTabPagerAdapter(getChildFragmentManager());
+
+        adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity, this, NavHostFragment.findNavController(this), tabPagerAdapter);
         binding.recyclerView.setAdapter(adapterProducts);
 
         productItemList.add(new HomeHeaderItem());
@@ -269,6 +273,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 //        productItemList.clear();
 //        adapterProducts.notifyDataSetChanged();
         binding.recyclerView.setAdapter(null);
+        tabPagerAdapter.clear();
+        tabPagerAdapter.notifyDataSetChanged();
+        tabPagerAdapter = null;
+        adapterProducts = null;
         binding = null;
         super.onDestroyView();
     }

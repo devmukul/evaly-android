@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -39,21 +38,21 @@ import retrofit2.Response;
 
 public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
-    private Fragment fragmentInstance;
     private AppCompatActivity activityInstance;
     private NavController navController;
     private Context context;
     private RecyclerHeaderHomeBinding binding;
+    private HomeTabPagerAdapter pager;
 
 
-    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
+    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance,  NavController navController, HomeTabPagerAdapter pager) {
         super(binding.getRoot());
 
         this.context = context;
-        this.fragmentInstance = fragmentInstance;
         this.activityInstance = activityInstance;
         this.navController = navController;
         this.binding = binding;
+        this.pager = pager;
 
         StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         layoutParams.setFullSpan(true);
@@ -62,19 +61,11 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
     }
 
-
-    public void destroyView() {
-        fragmentInstance = null;
-        activityInstance = null;
-        binding.viewPager.setAdapter(null);
-    }
-
     private void initHeader(RecyclerHeaderHomeBinding binding) {
 
-        binding.tabLayout.setTabMode(binding.tabLayout.MODE_FIXED);
+        binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
         binding.tabLayout.setSmoothScrollingEnabled(true);
 
-        HomeTabPagerAdapter pager = new HomeTabPagerAdapter(fragmentInstance.getParentFragmentManager());
 
         binding.shimmer.shimmer.setVisibility(View.VISIBLE);
         binding.shimmer.shimmer.startShimmer();
@@ -101,6 +92,8 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
             else
                 context.startActivity(new Intent(context, OrderListActivity.class));
         });
+
+        pager.clear();
 
         // slider
 

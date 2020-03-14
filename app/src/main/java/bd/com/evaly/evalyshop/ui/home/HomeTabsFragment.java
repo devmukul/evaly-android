@@ -197,6 +197,9 @@ public class HomeTabsFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (binding== null)
+                    return;
+
                 if (!(slug.equals("root") && type == 1)) {
                     if (adapter.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
                         adapter.notifyDataSetChanged();
@@ -217,11 +220,16 @@ public class HomeTabsFragment extends Fragment {
 
     public void stopShimmer() {
 
+        if (binding == null)
+            return;
+
         binding.shimmer.shimmer.animate().alpha(0.0f)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
+                        if (binding == null)
+                            return;
                         binding.shimmer.shimmer.stopShimmer();
                         binding.shimmer.shimmer.setVisibility(View.GONE);
                     }
@@ -234,6 +242,8 @@ public class HomeTabsFragment extends Fragment {
 
             @Override
             public void onDataFetched(JsonArray response, int statusCode) {
+                if (binding == null)
+                    return;
 
                 if (onDoneListener != null)
                     onDoneListener.onDone();
@@ -275,6 +285,8 @@ public class HomeTabsFragment extends Fragment {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
 
+                if (binding== null)
+                    return;
 
                 if (onDoneListener != null)
                     onDoneListener.onDone();
@@ -380,4 +392,9 @@ public class HomeTabsFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

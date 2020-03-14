@@ -7,22 +7,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.viewpager.widget.ViewPager;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.RecyclerHeaderBrowseProductBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
@@ -30,67 +23,44 @@ import bd.com.evaly.evalyshop.ui.tabs.SubTabsFragment;
 
 public class BrowseProductHeader extends RecyclerView.ViewHolder {
 
-    View view;
-    private Fragment fragmentInstance;
-    private AppCompatActivity activityInstance;
-    private NavController navController;
     private Context context;
-    private TabLayout tabLayoutSub;
-    private HomeTabPagerAdapter pager;
-    private ViewPager viewPager;
-    private LinearLayout lin;
-    private ShimmerFrameLayout shimmer;
-    private ShimmerFrameLayout shimmerTabs;
-    private FrameLayout shimmerHolder;
     private boolean isShimmerShowed = false;
     private String category = "root";
+    private RecyclerHeaderBrowseProductBinding binding;
+    private HomeTabPagerAdapter pager;
 
-    public BrowseProductHeader(View itemView, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, String category) {
-        super(itemView);
+    public BrowseProductHeader(RecyclerHeaderBrowseProductBinding binding, Context context,  String category, HomeTabPagerAdapter pager) {
+        super(binding.getRoot());
         this.context = context;
-        this.fragmentInstance = fragmentInstance;
-        this.activityInstance = activityInstance;
-        this.navController = navController;
         this.category = category;
+        this.binding = binding;
+        this.pager = pager;
 
-        view = itemView;
-        StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+        StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         layoutParams.setFullSpan(true);
-        initHeader(view);
+        initHeader();
 
-
-        Log.d("hmt", "loading other tabs");
     }
 
-    private void initHeader(View view) {
+    private void initHeader() {
 
-        tabLayoutSub = view.findViewById(R.id.tab_layout_sub_cat);
+        binding.filterBtn.setVisibility(View.GONE);
+        binding.viewPager.bringToFront();
 
-        TextView filter = view.findViewById(R.id.filterBtn);
-        filter.setVisibility(View.GONE);
-        viewPager = view.findViewById(R.id.pager_sub);
+        binding.shimmer.shimmer.startShimmer();
+        binding.shimmerTabs.shimmerTabs.startShimmer();
 
-        viewPager.bringToFront();
+        binding.viewPager.setOffscreenPageLimit(2);
+        binding.viewPager.setAdapter(pager);
+        binding.tabLayoutSubCat.setupWithViewPager(binding.viewPager);
 
-        pager = new HomeTabPagerAdapter(fragmentInstance.getFragmentManager());
-
-        shimmer = view.findViewById(R.id.shimmer);
-        shimmer.startShimmer();
-        shimmerTabs = view.findViewById(R.id.shimmerTabs);
-        shimmerHolder = view.findViewById(R.id.shimmerHolder);
-        shimmerTabs.startShimmer();
-
-        viewPager.setOffscreenPageLimit(1);
-        viewPager.setAdapter(pager);
-        tabLayoutSub.setupWithViewPager(viewPager);
-
-        tabLayoutSub.setTabMode(TabLayout.MODE_FIXED);
-        tabLayoutSub.setSmoothScrollingEnabled(true);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutSub));
-        tabLayoutSub.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        binding.tabLayoutSubCat.setTabMode(TabLayout.MODE_FIXED);
+        binding.tabLayoutSubCat.setSmoothScrollingEnabled(true);
+        binding.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabLayoutSubCat));
+        binding.tabLayoutSubCat.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
+                binding.viewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
@@ -108,9 +78,9 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
 
     public void getSubCategories() {
 
-        shimmer.startShimmer();
-        shimmer.setVisibility(View.VISIBLE);
-        tabLayoutSub.setVisibility(View.GONE);
+        binding.shimmer.shimmer.startShimmer();
+        binding.shimmer.shimmer.setVisibility(View.VISIBLE);
+        binding.tabLayoutSubCat.setVisibility(View.GONE);
 
         ProductApiHelper.getSubCategories(category, new ResponseListenerAuth<JsonArray, String>() {
 
@@ -132,13 +102,14 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
                     fragment.setArguments(bundle);
 
                     if (pager != null) {
+                        pager.clear();
                         pager.addFragment(fragment, context.getResources().getString(R.string.sub_categories));
                         pager.notifyDataSetChanged();
                     }
                 }
 
                 hideShimmer();
-                tabLayoutSub.setVisibility(View.VISIBLE);
+                binding.tabLayoutSubCat.setVisibility(View.VISIBLE);
                 loadOtherTabs();
             }
 
@@ -158,7 +129,7 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
     private void loadOtherTabs() {
 
 
-        if (context == null || view == null || pager == null)
+        if (context == null || binding == null || pager == null)
             return;
         {
             SubTabsFragment fragment = new SubTabsFragment();
@@ -187,17 +158,16 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
 
     public void hideShimmer() {
 
-        shimmerHolder.animate().alpha(0.0f)
+        binding.shimmerHolder.animate().alpha(0.0f)
                 .setDuration(100)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-
-                        shimmerTabs.setVisibility(View.GONE);
-                        shimmer.stopShimmer();
-                        shimmerTabs.stopShimmer();
-                        shimmer.setVisibility(View.GONE);
+                        binding.shimmerTabs.shimmerTabs.setVisibility(View.GONE);
+                        binding.shimmer.shimmer.stopShimmer();
+                        binding.shimmerTabs.shimmerTabs.stopShimmer();
+                        binding.shimmer.shimmer.setVisibility(View.GONE);
                     }
                 });
 

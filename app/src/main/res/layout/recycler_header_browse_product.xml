@@ -14,7 +14,9 @@
         android:background="#fff"
         android:orientation="vertical">
 
-        <include layout="@layout/skeleton_tablayout_header" />
+        <include
+            android:id="@+id/shimmerTabs"
+            layout="@layout/skeleton_tablayout_header" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout_sub_cat"
@@ -28,22 +30,6 @@
             app:tabTextAppearance="@style/home_tab_text"
             app:tabTextColor="@color/c777">
 
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sub Categories" />
-
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Brands" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Shops" />
 
         </com.google.android.material.tabs.TabLayout>
     </RelativeLayout>
@@ -54,7 +40,7 @@
         android:layout_height="wrap_content">
 
         <bd.com.evaly.evalyshop.views.WrapContentHeightViewPager
-            android:id="@+id/pager_sub"
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0" />
@@ -65,7 +51,9 @@
             android:layout_height="wrap_content"
             android:background="#fafafa">
 
-            <include layout="@layout/shimmer_tabs" />
+            <include
+                android:id="@+id/shimmer"
+                layout="@layout/shimmer_tabs" />
 
         </FrameLayout>
     </RelativeLayout>
