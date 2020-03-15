@@ -218,7 +218,8 @@
     <bd.com.evaly.evalyshop.views.WrapContentHeightViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"/>
 
     <include
         android:id="@+id/shimmer"

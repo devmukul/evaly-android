@@ -45,14 +45,13 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
     private HomeTabPagerAdapter pager;
 
 
-    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance,  NavController navController, HomeTabPagerAdapter pager) {
+    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance,  NavController navController) {
         super(binding.getRoot());
 
         this.context = context;
         this.activityInstance = activityInstance;
         this.navController = navController;
         this.binding = binding;
-        this.pager = pager;
 
         StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         layoutParams.setFullSpan(true);
@@ -62,6 +61,9 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
     }
 
     private void initHeader(RecyclerHeaderHomeBinding binding) {
+
+
+        pager = new HomeTabPagerAdapter(activityInstance.getSupportFragmentManager());
 
         binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
         binding.tabLayout.setSmoothScrollingEnabled(true);
