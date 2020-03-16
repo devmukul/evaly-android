@@ -97,7 +97,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         progressBar.setVisibility(View.GONE);
         itemListProduct = new ArrayList<>();
 
-        tabPagerAdapter = new HomeTabPagerAdapter(getChildFragmentManager());
+        tabPagerAdapter = new HomeTabPagerAdapter(getParentFragmentManager(), 0);
         adapterProduct = new BrowseProductAdapter(getContext(), itemListProduct, activity, this, NavHostFragment.findNavController(this), slug, tabPagerAdapter);
         recyclerView.setAdapter(adapterProduct);
 
@@ -259,11 +259,11 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        recyclerView.setAdapter(null);
-        tabPagerAdapter.clear();
-        tabPagerAdapter.notifyDataSetChanged();
-        tabPagerAdapter = null;
-        view = null;
+//        recyclerView.setAdapter(null);
+//        tabPagerAdapter.clear();
+//        tabPagerAdapter.notifyDataSetChanged();
+//        tabPagerAdapter = null;
+  //      view = null;
 
     }
 

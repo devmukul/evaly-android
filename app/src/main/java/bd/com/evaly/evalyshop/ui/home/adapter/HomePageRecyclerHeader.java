@@ -47,7 +47,7 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
     private HomeTabPagerAdapter pager;
 
 
-    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
+    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HomeTabPagerAdapter pager) {
         super(binding.getRoot());
 
         this.context = context;
@@ -55,6 +55,7 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         this.fragmentInstance = fragmentInstance;
         this.navController = navController;
         this.binding = binding;
+        this.pager = pager;
 
         StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         layoutParams.setFullSpan(true);
@@ -66,20 +67,33 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
     private void initHeader(RecyclerHeaderHomeBinding binding) {
 
-        pager = new HomeTabPagerAdapter(fragmentInstance.getChildFragmentManager());
-
-        binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        binding.tabLayout.setSmoothScrollingEnabled(true);
+        // pager = new HomeTabPagerAdapter(fragmentInstance.getFragmentManager());
 
 
         binding.shimmer.shimmer.setVisibility(View.VISIBLE);
         binding.shimmer.shimmer.startShimmer();
 
-        binding.tabLayout.setupWithViewPager(binding.viewPager);
+        binding.viewPager.setOffscreenPageLimit(2);
         binding.viewPager.setAdapter(pager);
         binding.tabLayout.setupWithViewPager(binding.viewPager);
+
+        binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        binding.tabLayout.setSmoothScrollingEnabled(true);
         binding.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabLayout));
-        binding.viewPager.setOffscreenPageLimit(2);
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                binding.viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
 
         binding.evalyStore.setOnClickListener(v -> {
             Intent ni = new Intent(context, GiftCardActivity.class);
@@ -98,7 +112,6 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
                 context.startActivity(new Intent(context, OrderListActivity.class));
         });
 
-        // pager.clear();
 
         // slider
 
@@ -128,10 +141,13 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         bundle3.putString("category", "root");
         shopFragment.setArguments(bundle3);
 
-        pager.addFragment(categoryFragment, context.getResources().getString(R.string.categories));
-        pager.addFragment(brandFragment, context.getResources().getString(R.string.brands));
-        pager.addFragment(shopFragment, context.getResources().getString(R.string.shops));
-        pager.notifyDataSetChanged();
+        if (pager != null) {
+            pager.clear();
+            pager.addFragment(categoryFragment, context.getResources().getString(R.string.categories));
+            pager.addFragment(brandFragment, context.getResources().getString(R.string.brands));
+            pager.addFragment(shopFragment, context.getResources().getString(R.string.shops));
+            pager.notifyDataSetChanged();
+        }
 
 
         Handler handler = new Handler();

@@ -4,6 +4,7 @@ package bd.com.evaly.evalyshop.ui.home.adapter;
 import android.util.Log;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -20,21 +21,33 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
     private int mCurrentPosition = -1;
     private FragmentManager manager;
 
-    public HomeTabPagerAdapter(FragmentManager manager) {
-        super(manager);
-        this.manager = manager;
+    public HomeTabPagerAdapter(@NonNull FragmentManager fm, int behavior) {
+        super(fm, behavior);
     }
+
+//    @Override
+//    public Object instantiateItemObject(ViewGroup container, int position) {
+//        return null;
+//    }
+
+//    @Override
+//    public void destroyItemObject(ViewGroup container, int position, Object object) {
+//        if (position >= mFragmentList.size())
+//            return;
+//        mFragmentList.remove(position);
+//    }
+
 
     public void addFragment(Fragment fragment, String title) {
 
-        Log.i("PosTab",""+title);
+        Log.i("PosTab", "" + title);
         mFragmentList.add(fragment);
         mFragmentTitleList.add(title);
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        Log.i("PosTab",""+position);
+        Log.i("PosTab", "" + position);
 
 
         return mFragmentTitleList.get(position);
@@ -48,8 +61,7 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
             Fragment fragment = (Fragment) object;
             WrapContentHeightViewPager pager = (WrapContentHeightViewPager) container;
 
-
-            if (fragment != null && fragment.getView() != null) {
+            if (fragment.getView() != null) {
                 mCurrentPosition = position;
                 pager.measureCurrentView(fragment.getView());
 
@@ -59,7 +71,7 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Log.i("PosTabItem",""+position);
+        Log.i("PosTabItem", "" + position);
         return mFragmentList.get(position);
     }
 
@@ -69,11 +81,10 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
     }
 
 
-
     @Override
     public int getItemPosition(Object object) {
 
-       // onDoneListener.onDone();
+        // onDoneListener.onDone();
 
         if (mFragmentList.contains(object))
             return mFragmentList.indexOf(object);
@@ -93,5 +104,6 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter {
         mFragmentList.clear();
         mFragmentTitleList.clear();
     }
+
 
 }

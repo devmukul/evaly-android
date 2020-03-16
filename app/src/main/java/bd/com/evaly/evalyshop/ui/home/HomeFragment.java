@@ -127,8 +127,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(mLayoutManager);
 
+        tabPagerAdapter = new HomeTabPagerAdapter(getParentFragmentManager(), 0);
 
-        adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity, this, NavHostFragment.findNavController(this));
+        adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity, this, NavHostFragment.findNavController(this), tabPagerAdapter);
         binding.recyclerView.setAdapter(adapterProducts);
 
         productItemList.add(new HomeHeaderItem());
@@ -271,9 +272,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onDestroyView() {
 //        productItemList.clear();
 //        adapterProducts.notifyDataSetChanged();
-        binding.recyclerView.setAdapter(null);
-        adapterProducts = null;
-        binding = null;
+      //  binding.recyclerView.setAdapter(null);
+      //  adapterProducts = null;
+       // binding = null;
         super.onDestroyView();
     }
 

@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ProgressBarBinding;
 import bd.com.evaly.evalyshop.databinding.RecyclerHeaderHomeBinding;
+import bd.com.evaly.evalyshop.models.HomeHeaderItem;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
@@ -61,12 +62,13 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     };
     private NetworkState networkState;
 
-    public HomeProductGridAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
+    public HomeProductGridAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HomeTabPagerAdapter pager) {
         this.context = context;
         productsList = a;
         this.fragmentInstance = fragmentInstance;
         this.activityInstance = activityInstance;
         this.navController = navController;
+        this.pager = pager;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return new ProgressViewHolder(binding);
         } else if (viewType == TYPE_HEADER) {
             RecyclerHeaderHomeBinding binding = RecyclerHeaderHomeBinding.inflate(inflater, parent, false);
-            return new HomePageRecyclerHeader(binding, context, activityInstance, fragmentInstance, navController);
+            return new HomePageRecyclerHeader(binding, context, activityInstance, fragmentInstance, navController, pager);
         } else {
             View v = inflater.inflate(R.layout.item_home_product_grid, parent, false);
             return new VHItem(v);
@@ -153,17 +155,20 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return productsList.size();
+    private boolean isPositionHeader(int position) {
+        return productsList.get(position) instanceof HomeHeaderItem;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0)
+        if (isPositionHeader(position))
             return TYPE_HEADER;
-        else
-            return TYPE_ITEM;
+        return TYPE_ITEM;
+    }
+
+    @Override
+    public int getItemCount() {
+        return productsList.size();
     }
 
 
