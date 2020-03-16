@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -69,14 +69,14 @@
                     android:id="@+id/indicator"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:stpi_doneIconDrawable="@drawable/ic_tick"
+                    android:layout_marginTop="15dp"
                     app:stpi_circleColor="#ddd"
                     app:stpi_circleRadius="10dp"
                     app:stpi_circleStrokeWidth="2dp"
+                    app:stpi_doneIconDrawable="@drawable/ic_tick"
                     app:stpi_indicatorColor="#4cb81a"
-                    app:stpi_labels="@array/orderTrackingStepLabels"
                     app:stpi_labelMarginTop="7dp"
+                    app:stpi_labels="@array/orderTrackingStepLabels"
                     app:stpi_lineColor="#ddd"
                     app:stpi_lineDoneColor="#4cb81a"
                     app:stpi_stepCount="6" />
@@ -85,15 +85,15 @@
                     android:id="@+id/indicatorCancelled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="15dp"
                     android:visibility="gone"
                     app:stpi_circleColor="#ddd"
                     app:stpi_circleRadius="10dp"
                     app:stpi_circleStrokeWidth="2dp"
                     app:stpi_doneIconDrawable="@drawable/ic_close_smallest"
                     app:stpi_indicatorColor="#e51614"
-                    app:stpi_labels="@array/orderTrackingStepLabels"
                     app:stpi_labelMarginTop="7dp"
+                    app:stpi_labels="@array/orderTrackingStepLabels"
                     app:stpi_lineColor="#ddd"
                     app:stpi_lineDoneColor="#e51614"
                     app:stpi_stepCount="6" />
@@ -102,20 +102,20 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="35dp"
-                    android:layout_marginBottom="15dp">
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal">
 
                     <TextView
-                    android:id="@+id/textView24"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="1"
-                    android:text="@string/order_status"
-                    android:textAllCaps="true"
-                    android:textColor="#333"
-                    android:textSize="18sp" />
+                        android:id="@+id/textView24"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="1"
+                        android:text="@string/order_status"
+                        android:textAllCaps="true"
+                        android:textColor="#333"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/cancelBtn"
@@ -134,7 +134,6 @@
                         android:visibility="gone" />
 
                 </LinearLayout>
-
 
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -204,13 +203,12 @@
                 </androidx.recyclerview.widget.RecyclerView>
 
 
-
                 <LinearLayout
-                    android:visibility="gone"
                     android:id="@+id/campaignRuleHolder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
 
                     <View
@@ -223,12 +221,12 @@
                         android:id="@+id/tvCampaignRule"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=""
-                        android:paddingTop="15dp"
                         android:paddingLeft="20dp"
+                        android:paddingTop="15dp"
                         android:paddingRight="20dp"
                         android:paddingBottom="5dp"
-                        android:textColor="#444"/>
+                        android:text=""
+                        android:textColor="#444" />
 
                 </LinearLayout>
 
@@ -268,10 +266,10 @@
                             android:id="@+id/payment_method"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="#ec4958"
+                            android:layout_marginRight="25dp"
                             android:text="@string/evaly_pay"
-                            android:textStyle="bold"
-                            android:layout_marginRight="25dp" />
+                            android:textColor="#ec4958"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/balance"
@@ -279,7 +277,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="@string/balance_colon"
-                            android:textColor="#444"/>
+                            android:textColor="#444" />
 
                         <TextView
                             android:id="@+id/makePayment"
@@ -297,7 +295,6 @@
                             android:textColor="#fff" />
 
                         <TextView
-                            android:visibility="gone"
                             android:id="@+id/payPartially"
                             android:layout_width="135dp"
                             android:layout_height="wrap_content"
@@ -310,7 +307,8 @@
                             android:paddingBottom="8dp"
                             android:text="Pay Partially"
                             android:textAlignment="center"
-                            android:textColor="#333" />
+                            android:textColor="#333"
+                            android:visibility="gone" />
 
                         <TextView
                             android:id="@+id/payViaGiftCard"
@@ -346,10 +344,10 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="5dp">
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -371,10 +369,10 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_marginTop="10dp"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp">
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -396,10 +394,10 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_marginTop="10dp"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp">
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/textView46"
@@ -439,11 +437,11 @@
                     android:paddingBottom="25dp">
 
                     <RelativeLayout
+                        android:id="@+id/shop_info"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginRight="10dp"
-                        android:layout_weight="1"
-                        android:id="@+id/shop_info">
+                        android:layout_weight="1">
 
                         <TextView
                             android:id="@+id/bill"
@@ -591,21 +589,21 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/need_help"
-                    android:textColor="#333"
-                    android:textStyle="normal"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="10dp"
                     android:paddingLeft="20dp"
-                    android:textSize="16sp"/>
+                    android:text="@string/need_help"
+                    android:textColor="#333"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
                     android:layout_marginBottom="20dp"
                     android:orientation="horizontal">
 
@@ -613,31 +611,31 @@
                         android:id="@+id/tvReport"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/report_issue"
-                        android:gravity="center"
-                        android:background="@drawable/red_rounded_bg"
-                        android:textColor="@color/white"
                         android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/red_rounded_bg"
+                        android:gravity="center"
                         android:paddingLeft="10dp"
                         android:paddingTop="8dp"
                         android:paddingRight="10dp"
-                        android:paddingBottom="8dp"/>
+                        android:paddingBottom="8dp"
+                        android:text="@string/report_issue"
+                        android:textColor="@color/white" />
 
                     <TextView
                         android:id="@+id/tvViewIssue"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/existing_issues"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:background="@drawable/green_rounded_bg"
                         android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/green_rounded_bg"
+                        android:gravity="center"
                         android:paddingLeft="10dp"
                         android:paddingTop="8dp"
                         android:paddingRight="10dp"
-                        android:paddingBottom="8dp"/>
+                        android:paddingBottom="8dp"
+                        android:text="@string/existing_issues"
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
 

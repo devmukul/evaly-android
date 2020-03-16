@@ -368,4 +368,8 @@ public interface IApiClient {
 
     @GET(UrlUtils.BASE_URL_NEWSFEED + "notifications_count/")
     Call<NotificationCount> getNewsfeedNotificationCount(@Header("Authorization") String token);
+
+    // refund
+    @POST(UrlUtils.BASE_URL+"/orders/request-refund")
+    Call<CommonDataResponse<String>> postRequestRefund(@Header("Authorization") String token, @Body HashMap<String, String> body);
 }

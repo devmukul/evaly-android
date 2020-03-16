@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
@@ -58,6 +59,10 @@ public class OrderApiHelper extends BaseApiHelper {
         hashMap.put("user_note", userNote);
 
         getiApiClient().cancelOrder(token, invoiceNo, hashMap).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void requestRefund(String token, HashMap<String, String> body, ResponseListenerAuth<CommonDataResponse<String>, String> listener){
+        getiApiClient().postRequestRefund(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
 }

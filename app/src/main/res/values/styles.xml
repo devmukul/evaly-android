@@ -34,6 +34,12 @@
         <item name="android:navigationBarColor">@color/white</item>
     </style>
 
+    <style name="TransparentBottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:statusBarColor">@color/eee</item>
+        <item name="android:navigationBarColor">@color/white</item>
+    </style>
+
     <style name="BottomSheetDialogDarker" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">true</item>
         <item name="bottomSheetStyle">@style/BottomSheetDarker</item>
@@ -42,6 +48,11 @@
     <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">true</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>
+    </style>
+
+    <style name="TransparentBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="bottomSheetStyle">@style/TransparentBottomSheet</item>
     </style>
 
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />

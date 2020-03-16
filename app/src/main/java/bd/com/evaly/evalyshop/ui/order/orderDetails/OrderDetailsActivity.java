@@ -14,6 +14,8 @@ import android.text.Html;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +80,7 @@ import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.payment.PaymentBottomSheet;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
@@ -90,35 +93,73 @@ import butterknife.OnClick;
 
 public class OrderDetailsActivity extends BaseActivity {
 
-    private static final int SCROLL_DIRECTION_UP = -1;
-    String shopSlug = "";
-    String invoice_no = "";
-    double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
-    UserDetails userDetails;
-    StepperIndicator indicator;
-    TextView shopName, shopAddress, shopnumber, username, userAddress, userNumber, totalPriceTextView, paidAmountTextView, duePriceTextView, tvCampaignRule;
-    TextView orderNumber, orderDate, paymentMethods, balance;
-    RecyclerView recyclerView, orderList;
-    ArrayList<OrderStatus> orderStatuses;
-    OrderStatusAdapter adapter;
-    ArrayList<OrderDetailsProducts> orderDetailsProducts;
-    OrderDetailsProductAdapter orderDetailsProductAdapter;
-    ViewDialog dialog;
-    TextView makePayment, payParially, full_or_partial;
-    RelativeLayout shopInfo;
-    TextView payViaGiftCard;
-    BottomSheetBehavior sheetBehavior;
-    LinearLayout layoutBottomSheet, campaignRuleHolder;
-    View mViewBg;
-    TextView amountToPayView, evalyPayText;
-    ImageView bkash, cards, evalyPay;
-    BottomSheetDialog bottomSheetDialog;
-    Context context;
-    String shopGroup = "";
+    private double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
+    private String shopSlug = "";
+    private String invoice_no = "";
+    private String orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
+    private UserDetails userDetails;
+    private StepperIndicator indicator;
+    private TextView shopName, shopAddress, shopnumber, username, userAddress, userNumber, totalPriceTextView, paidAmountTextView, duePriceTextView, tvCampaignRule;
+    private TextView orderNumber, orderDate, paymentMethods, balance;
+    private RecyclerView recyclerView, orderList;
+    private ArrayList<OrderStatus> orderStatuses;
+    private OrderStatusAdapter adapter;
+    private ArrayList<OrderDetailsProducts> orderDetailsProducts;
+    private OrderDetailsProductAdapter orderDetailsProductAdapter;
+    private ViewDialog dialog;
+    private TextView makePayment, payParially, full_or_partial;
+    private RelativeLayout shopInfo;
+    private TextView payViaGiftCard;
+    private LinearLayout layoutBottomSheet, campaignRuleHolder;
+    private BottomSheetDialog bottomSheetDialog;
+    private Context context;
     private TextView cancelBtn;
     private NestedScrollView scrollView;
     private String imageUrl;
-    private String orderStatus = "pending", paymentStatus = "unpaid";
+    private MenuItem cancelMenuItem;
+    private MenuItem refundMenuItem;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.order_details_menu, menu);
+
+        cancelMenuItem = menu.findItem(R.id.action_cancel);
+        refundMenuItem = menu.findItem(R.id.action_refund);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_cancel:
+                cancelOrder();
+                break;
+            case R.id.action_refund:
+                requestRefund();
+                break;
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
+
+    private void requestRefund() {
+
+        if (invoice_no.equals("") || orderStatus.equals("") || paymentMethod.equals("") || paymentStatus.equals("")) {
+            Toast.makeText(getApplicationContext(), "Can't request refund, reload the page", Toast.LENGTH_SHORT).show();
+        } else {
+            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoice_no, orderStatus, paymentMethod, paymentStatus);
+            refundBottomSheet.show(getSupportFragmentManager(), "Refund");
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -598,18 +639,17 @@ public class OrderDetailsActivity extends BaseActivity {
         }
     }
 
+    private void inflateMenu() {
+        if (Utils.canRefundRequest(paymentStatus, orderStatus, paymentMethod))
+            refundMenuItem.setVisible(true);
+        else
+            refundMenuItem.setVisible(false);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        if (orderStatus.equals("pending") && paid_amount < 1)
+            cancelMenuItem.setVisible(true);
+        else
+            cancelMenuItem.setVisible(false);
     }
-
 
     public void getOrderDetails() {
 
@@ -621,6 +661,11 @@ public class OrderDetailsActivity extends BaseActivity {
                 dialog.hideDialog();
 
                 orderStatus = response.getOrderStatus().toLowerCase();
+                paymentMethod = response.getPaymentMethod();
+                paymentStatus = response.getPaymentStatus();
+
+                inflateMenu();
+
 
                 if (orderStatus.equals("pending")) {
                     indicator.setCurrentStep(1);
@@ -756,10 +801,10 @@ public class OrderDetailsActivity extends BaseActivity {
                     payViaGiftCard.setVisibility(View.GONE);
                 }
 
-                if (orderStatus.equals("pending") && paid_amount < 1) {
-                    cancelBtn.setVisibility(View.VISIBLE);
-                    cancelBtn.setOnClickListener(view -> cancelOrder());
-                }
+//                if (orderStatus.equals("pending") && paid_amount < 1) {
+//                    cancelBtn.setVisibility(View.VISIBLE);
+//                    cancelBtn.setOnClickListener(view -> cancelOrder());
+//                }
 
                 orderDetailsProducts.clear();
                 orderDetailsProductAdapter.notifyDataSetChanged();

@@ -51,6 +51,43 @@ public class Utils {
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
+
+    public static boolean canRefundRequest(String payment_status, String order_status, String payment_method) {
+
+        if (payment_status.contains("refund requested")) {
+            return false;
+        }
+        if (order_status.contains("shipped") || order_status.contains("delivered")) {
+            return false;
+        }
+        if (payment_status.contains("unpaid")) {
+            return false;
+        }
+        if (payment_method.contains("bkash")) {
+            return true;
+        }
+        if (payment_method.contains("card")) {
+            return true;
+        }
+        if (payment_method.contains("bank")) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean canRefundToCard(String payment_method) {
+        if (payment_method.contains("bkash")) {
+            return false;
+        }
+        if (payment_method.contains("bank")) {
+            return false;
+        }
+        if (payment_method.contains("card")) {
+            return true;
+        }
+        return false;
+    }
+
     public static boolean isJSONValid(String test) {
         try {
             new JSONObject(test);
@@ -66,7 +103,7 @@ public class Utils {
         return true;
     }
 
-    public static int daysBetween(Calendar day1, Calendar day2){
+    public static int daysBetween(Calendar day1, Calendar day2) {
         Calendar dayOne = (Calendar) day1.clone(),
                 dayTwo = (Calendar) day2.clone();
 
@@ -89,7 +126,7 @@ public class Utils {
                 extraDays += dayOne.getActualMaximum(Calendar.DAY_OF_YEAR);
             }
 
-            return extraDays - dayTwo.get(Calendar.DAY_OF_YEAR) + dayOneOriginalYearDays ;
+            return extraDays - dayTwo.get(Calendar.DAY_OF_YEAR) + dayOneOriginalYearDays;
         }
     }
 
@@ -546,7 +583,6 @@ public class Utils {
         }
         Date parsed = null;
         long outputDate = 0;
-
 
 
         SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
