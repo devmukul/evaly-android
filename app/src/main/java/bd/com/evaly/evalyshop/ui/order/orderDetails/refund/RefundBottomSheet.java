@@ -28,6 +28,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class RefundBottomSheet extends BottomSheetDialogFragment {
 
@@ -36,6 +37,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     private String order_status;
     private String payment_method;
     private String payment_status;
+    private ViewDialog dialog;
 
     public static RefundBottomSheet newInstance(String invoiceNo, String orderStatus, String paymentMethod, String paymentStatus) {
 
@@ -69,6 +71,8 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        dialog = new ViewDialog(getActivity());
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), R.layout.item_spinner_default);
 
@@ -121,7 +125,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 if (bkashNumber.equals("")) {
                     Toast.makeText(getContext(), "Please enter bKash number.", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (!Utils.isValidNumber(bkashNumber)){
+                } else if (!Utils.isValidNumber(bkashNumber)) {
                     Toast.makeText(getContext(), "Please enter valid bKash number.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -169,10 +173,13 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
     private void requestRefund(HashMap<String, String> body) {
 
+        dialog.showDialog();
+
         OrderApiHelper.requestRefund(CredentialManager.getToken(), body, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 if (getContext() != null) {
+                    dialog.hideDialog();
                     Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
                     if (response.getSuccess())
                         onSuccess();
@@ -182,8 +189,10 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
-                if (getContext() != null)
+                if (getContext() != null) {
+                    dialog.hideDialog();
                     Toast.makeText(getContext(), "Couldn't request refund, try again later", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override

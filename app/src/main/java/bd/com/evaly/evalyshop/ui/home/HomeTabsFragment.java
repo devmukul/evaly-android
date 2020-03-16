@@ -394,9 +394,4 @@ public class HomeTabsFragment extends Fragment {
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-       // binding = null;
-    }
 }

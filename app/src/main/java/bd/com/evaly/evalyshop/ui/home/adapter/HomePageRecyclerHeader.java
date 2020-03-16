@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -39,17 +40,19 @@ import retrofit2.Response;
 public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
     private AppCompatActivity activityInstance;
+    private Fragment fragmentInstance;
     private NavController navController;
     private Context context;
     private RecyclerHeaderHomeBinding binding;
     private HomeTabPagerAdapter pager;
 
 
-    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance,  NavController navController) {
+    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
         super(binding.getRoot());
 
         this.context = context;
         this.activityInstance = activityInstance;
+        this.fragmentInstance = fragmentInstance;
         this.navController = navController;
         this.binding = binding;
 
@@ -58,12 +61,12 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
         initHeader(binding);
 
+
     }
 
     private void initHeader(RecyclerHeaderHomeBinding binding) {
 
-
-        pager = new HomeTabPagerAdapter(activityInstance.getSupportFragmentManager());
+        pager = new HomeTabPagerAdapter(fragmentInstance.getChildFragmentManager());
 
         binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
         binding.tabLayout.setSmoothScrollingEnabled(true);
@@ -95,7 +98,7 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
                 context.startActivity(new Intent(context, OrderListActivity.class));
         });
 
-        pager.clear();
+        // pager.clear();
 
         // slider
 

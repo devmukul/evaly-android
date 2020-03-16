@@ -78,7 +78,7 @@ public class HomeProductGridAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return new ProgressViewHolder(binding);
         } else if (viewType == TYPE_HEADER) {
             RecyclerHeaderHomeBinding binding = RecyclerHeaderHomeBinding.inflate(inflater, parent, false);
-            return new HomePageRecyclerHeader(binding, context, activityInstance, navController);
+            return new HomePageRecyclerHeader(binding, context, activityInstance, fragmentInstance, navController);
         } else {
             View v = inflater.inflate(R.layout.item_home_product_grid, parent, false);
             return new VHItem(v);

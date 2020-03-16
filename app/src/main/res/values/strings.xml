@@ -218,7 +218,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="buy_now">Buy Now</string>
-    <string name="payment_status">Payment status</string>
+    <string name="payment_status">Payment Status</string>
     <string name="order_date">Order Date</string>
     <string name="applicable_date">Applicable Date</string>
     <string name="amount_bdt">Amount (BDT)</string>
