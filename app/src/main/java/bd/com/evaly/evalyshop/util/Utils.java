@@ -54,7 +54,7 @@ public class Utils {
 
     public static boolean canRefundRequest(String payment_status, String order_status, String payment_method) {
 
-        if (payment_status.contains("refund requested")) {
+        if (payment_status.contains("refund_requested")) {
             return false;
         }
         if (order_status.contains("shipped") || order_status.contains("delivered")) {

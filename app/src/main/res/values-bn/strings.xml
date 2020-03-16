@@ -188,7 +188,7 @@
     <string name="to">যার জন্য</string>
     <string name="pending">পেন্ডিং</string>
     <string name="buy_now">এখনই কিনুন</string>
-    <string name="payment_status">পেমেন্টের অবস্থা:</string>
+    <string name="payment_status">পেমেন্টের অবস্থা</string>
     <string name="order_date">অর্ডারের তারিখ</string>
     <string name="applicable_date">প্রযোজ্য তারিখ</string>
     <string name="minimum_price">সর্বনিম্ন মূল্য</string>

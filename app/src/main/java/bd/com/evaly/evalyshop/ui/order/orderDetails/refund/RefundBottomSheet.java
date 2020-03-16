@@ -76,7 +76,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         spinnerAdapter.add("bKash");
         spinnerAdapter.add("Bank");
 
-        if (payment_method.equalsIgnoreCase("card"))
+        if (Utils.canRefundToCard(payment_method))
             spinnerAdapter.add("Debit/Credit Card");
 
         binding.spRefundOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -110,7 +110,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             int selectedPosition = binding.spRefundOption.getSelectedItemPosition();
 
             HashMap<String, String> body = new HashMap<>();
-            body.put("invoice_no", invoice_no);
+            body.put("invoice_no", invoice_no.toUpperCase());
 
             if (selectedPosition == 0) {
                 body.put("refund_type", "Balance");

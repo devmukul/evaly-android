@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -99,7 +100,7 @@ public class OrderDetailsActivity extends BaseActivity {
     private String orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
     private UserDetails userDetails;
     private StepperIndicator indicator;
-    private TextView shopName, shopAddress, shopnumber, username, userAddress, userNumber, totalPriceTextView, paidAmountTextView, duePriceTextView, tvCampaignRule;
+    private TextView tvPaymentStatus, shopName, shopAddress, shopnumber, username, userAddress, userNumber, totalPriceTextView, paidAmountTextView, duePriceTextView, tvCampaignRule;
     private TextView orderNumber, orderDate, paymentMethods, balance;
     private RecyclerView recyclerView, orderList;
     private ArrayList<OrderStatus> orderStatuses;
@@ -173,6 +174,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
         context = this;
 
+        tvPaymentStatus = findViewById(R.id.paymentStatus);
         cancelBtn = findViewById(R.id.cancelBtn);
         campaignRuleHolder = findViewById(R.id.campaignRuleHolder);
         tvCampaignRule = findViewById(R.id.tvCampaignRule);
@@ -664,7 +666,30 @@ public class OrderDetailsActivity extends BaseActivity {
                 paymentMethod = response.getPaymentMethod();
                 paymentStatus = response.getPaymentStatus();
 
-                inflateMenu();
+
+
+                if (paymentStatus.toLowerCase().equals("refund_requested"))
+                    tvPaymentStatus.setText("Refund Requested");
+                else
+                    tvPaymentStatus.setText(Utils.toFirstCharUpperAll(paymentStatus));
+
+
+                if (paymentStatus.toLowerCase().equals("paid")) {
+                    tvPaymentStatus.setBackgroundColor(Color.parseColor("#33d274"));
+                    tvPaymentStatus.setTextColor(Color.parseColor("#ffffff"));
+                } else if (paymentStatus.toLowerCase().equals("unpaid")) {
+                    tvPaymentStatus.setBackgroundColor(Color.parseColor("#f0ac4e"));
+                    tvPaymentStatus.setTextColor(Color.parseColor("#ffffff"));
+                } else if (paymentStatus.toLowerCase().equals("partial")) {
+                    tvPaymentStatus.setBackgroundColor(Color.parseColor("#009688"));
+                    tvPaymentStatus.setTextColor(Color.parseColor("#ffffff"));
+                } else if (paymentStatus.toLowerCase().equals("refunded")) {
+                    tvPaymentStatus.setTextColor(Color.parseColor("#333333"));
+                    tvPaymentStatus.setBackgroundColor(Color.parseColor("#eeeeee"));
+                } else if (paymentStatus.toLowerCase().equals("refund_requested")) {
+                    tvPaymentStatus.setBackgroundColor(Color.parseColor("#c45da8"));
+                    tvPaymentStatus.setTextColor(Color.parseColor("#ffffff"));
+                }
 
 
                 if (orderStatus.equals("pending")) {
@@ -805,6 +830,9 @@ public class OrderDetailsActivity extends BaseActivity {
 //                    cancelBtn.setVisibility(View.VISIBLE);
 //                    cancelBtn.setOnClickListener(view -> cancelOrder());
 //                }
+
+
+                inflateMenu();
 
                 orderDetailsProducts.clear();
                 orderDetailsProductAdapter.notifyDataSetChanged();
