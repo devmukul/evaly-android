@@ -10,7 +10,6 @@ import android.view.ViewTreeObserver;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,12 +77,7 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
         fragmentInstance.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
-            if (viewList.size() == 0 ||
-                    event == Lifecycle.Event.ON_CREATE ||
-                    event == Lifecycle.Event.ON_RESUME ||
-                    event == Lifecycle.Event.ON_START ||
-                    event == Lifecycle.Event.ON_PAUSE ||
-                    event == Lifecycle.Event.ON_DESTROY)
+            if (viewList.size() == 0)
                 return;
 
             for (int i = 0; i < listenerList.size(); i++) {

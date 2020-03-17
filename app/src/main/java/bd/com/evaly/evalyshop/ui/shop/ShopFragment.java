@@ -45,6 +45,7 @@ import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.HomeHeaderItem;
+import bd.com.evaly.evalyshop.models.ProgressHeaderItem;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Data;
@@ -90,6 +91,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private ShopViewModel viewModel;
     private ProgressBar progressBar;
     private FragmentShopNewBinding binding;
+    private boolean progressBarShowing = false;
 
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         public void onPresenceChanged(PresenceModel presenceModel) {
@@ -239,6 +241,13 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
         viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> {
+
+            if (progressBarShowing){
+                productItemList.remove(productItemList.size()-1);
+                adapterProducts.notifyItemRemoved(productItemList.size());
+                progressBarShowing = false;
+            }
+
             loadShopDetails(shopDetailsModel);
         });
 
@@ -263,7 +272,10 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             productItemList.clear();
             productItemList.add(new HomeHeaderItem());
+            productItemList.add(new ProgressHeaderItem());
             adapterProducts.notifyDataSetChanged();
+            progressBarShowing = true;
+
             currentPage = 1;
 
             viewModel.loadShopProducts();

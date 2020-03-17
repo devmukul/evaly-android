@@ -16,6 +16,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -31,6 +32,7 @@ import java.util.regex.Pattern;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ProgressBarBinding;
 import bd.com.evaly.evalyshop.models.HomeHeaderItem;
+import bd.com.evaly.evalyshop.models.ProgressHeaderItem;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
@@ -67,7 +69,6 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private ShopDetailsModel shopDetails;
     private int cashback_rate = 0;
 
-
     public ShopProductAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HashMap<String, String> data, ShopViewModel viewModel) {
         this.context = context;
         productsList = a;
@@ -102,7 +103,6 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return new VHItem(v);
         }
     }
-
 
     public void setNetworkState(NetworkState newNetworkState) {
         NetworkState previousState = this.networkState;
@@ -190,7 +190,6 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 holder.buyNow.setVisibility(View.GONE);
             }
 
-
             if (cashback_rate == 0)
                 holder.tvCashback.setVisibility(View.GONE);
             else {
@@ -199,18 +198,15 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 holder.tvCashback.setText(String.format(Locale.ENGLISH, "%d%% Cashback", cashback_rate));
             }
 
-
             holder.buyNow.setTag(position);
             holder.buyNow.setVisibility(View.VISIBLE);
             holder.buyNow.setOnClickListener(v -> {
                 viewModel.setBuyNowLiveData(model.getSlug());
             });
 
-
             if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
                 holder.buyNow.setVisibility(View.GONE);
             }
-
         }
     }
 
@@ -223,11 +219,15 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return productsList.get(position) instanceof HomeHeaderItem;
     }
 
+    private boolean isPositionProgress(int position) {
+        return productsList.get(position) instanceof ProgressHeaderItem;
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (isPositionHeader(position))
             return TYPE_HEADER;
-        else if (hasExtraRow() && position == getItemCount() - 1)
+        else if (isPositionProgress(position))
             return TYPE_PROGRESS;
         else
             return TYPE_ITEM;
@@ -266,22 +266,11 @@ public class ShopProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ProgressViewHolder(ProgressBarBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+
+            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
+            layoutParams.setFullSpan(true);
         }
 
-        void bindView(NetworkState networkState) {
-            if (networkState != null && networkState.getStatus() == NetworkState.Status.RUNNING) {
-                binding.progressBar.setVisibility(View.VISIBLE);
-            } else {
-                binding.progressBar.setVisibility(View.GONE);
-            }
-
-            if (networkState != null && networkState.getStatus() == NetworkState.Status.FAILED) {
-                binding.errorMsg.setVisibility(View.VISIBLE);
-                binding.errorMsg.setText("Can't load! Check internet connection");
-            } else {
-                binding.errorMsg.setVisibility(View.GONE);
-            }
-        }
     }
 
 
