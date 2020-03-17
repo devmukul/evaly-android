@@ -20,6 +20,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.tabs.SubTabsFragment;
+import bd.com.evaly.evalyshop.views.WrapContentViewPager.ViewPagerEdgeEffect;
 
 public class BrowseProductHeader extends RecyclerView.ViewHolder {
 
@@ -53,6 +54,8 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
         binding.viewPager.setOffscreenPageLimit(2);
         binding.viewPager.setAdapter(pager);
         binding.tabLayoutSubCat.setupWithViewPager(binding.viewPager);
+
+        ViewPagerEdgeEffect.fixViewPager(context, binding.viewPager);
 
         binding.tabLayoutSubCat.setTabMode(TabLayout.MODE_FIXED);
         binding.tabLayoutSubCat.setSmoothScrollingEnabled(true);

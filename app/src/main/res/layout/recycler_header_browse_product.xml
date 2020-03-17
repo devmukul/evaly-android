@@ -37,13 +37,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants">
 
         <bd.com.evaly.evalyshop.views.WrapContentHeightViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0" />
+            android:clipToPadding="false"/>
 
         <FrameLayout
             android:id="@+id/shimmerHolder"
