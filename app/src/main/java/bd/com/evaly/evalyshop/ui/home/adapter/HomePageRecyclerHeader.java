@@ -10,6 +10,7 @@ import android.view.ViewTreeObserver;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
@@ -77,7 +78,12 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
         fragmentInstance.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
-            if (viewList.size() == 0)
+            if (viewList.size() == 0 ||
+                    event == Lifecycle.Event.ON_CREATE ||
+                    event == Lifecycle.Event.ON_RESUME ||
+                    event == Lifecycle.Event.ON_START ||
+                    event == Lifecycle.Event.ON_PAUSE ||
+                    event == Lifecycle.Event.ON_DESTROY)
                 return;
 
             for (int i = 0; i < listenerList.size(); i++) {
@@ -85,8 +91,11 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
                 if (view != null)
                     view.getViewTreeObserver().removeOnGlobalLayoutListener(listenerList.get(i));
             }
-            binding.viewPager.setAdapter(null);
-            pager = null;
+
+            viewList.clear();
+            listenerList.clear();
+//            binding.viewPager.setAdapter(null);
+//            pager = null;
         });
 
         binding.shimmer.shimmer.setVisibility(View.VISIBLE);
@@ -129,17 +138,22 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
                 if (v == null) {
                     new Handler().postDelayed(() -> {
-                        View vv = pager.getViewAtPosition(position);
-                        if (vv != null)
-                            vv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                @Override
-                                public void onGlobalLayout() {
-                                    updateChildHeight(vv);
-                                    viewList.put(position, vv);
-                                    listenerList.put(position, this);
-                                }
-                            });
+
+                        try {
+                            View vv = pager.getViewAtPosition(position);
+                            if (vv != null)
+                                vv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                    @Override
+                                    public void onGlobalLayout() {
+                                        updateChildHeight(vv);
+                                        viewList.put(position, vv);
+                                        listenerList.put(position, this);
+                                    }
+                                });
+
+                        } catch (Exception ignored) { }
                     }, 1000);
+
 
                 } else
                     v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

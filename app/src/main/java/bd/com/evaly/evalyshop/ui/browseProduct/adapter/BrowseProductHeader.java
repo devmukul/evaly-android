@@ -67,8 +67,11 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
                 if (view != null)
                     view.getViewTreeObserver().removeOnGlobalLayoutListener(listenerList.get(i));
             }
-            binding.viewPager.setAdapter(null);
-            pager = null;
+
+            viewList.clear();
+            listenerList.clear();
+//            binding.viewPager.setAdapter(null);
+//            pager = null;
         });
 
 
@@ -114,16 +117,19 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
 
                 if (v == null) {
                     new Handler().postDelayed(() -> {
-                        View vv = pager.getViewAtPosition(position);
-                        if (vv != null)
-                            vv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                @Override
-                                public void onGlobalLayout() {
-                                    updateChildHeight(vv);
-                                    viewList.put(position, vv);
-                                    listenerList.put(position, this);
-                                }
-                            });
+                        try {
+                            View vv = pager.getViewAtPosition(position);
+                            if (vv != null)
+                                vv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                    @Override
+                                    public void onGlobalLayout() {
+                                        updateChildHeight(vv);
+                                        viewList.put(position, vv);
+                                        listenerList.put(position, this);
+                                    }
+                                });
+                        } catch (Exception ignored) {
+                        }
                     }, 1000);
 
                 } else

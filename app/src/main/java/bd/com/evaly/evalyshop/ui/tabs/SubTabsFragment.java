@@ -388,6 +388,8 @@ public class SubTabsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        binding = null;
+        adapter = null;
+        binding.recyclerView.setAdapter(null);
+        binding = null;
     }
 }

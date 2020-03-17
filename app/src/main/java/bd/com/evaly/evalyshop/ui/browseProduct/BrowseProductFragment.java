@@ -98,8 +98,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         adapterProduct = new BrowseProductAdapter(getContext(), itemListProduct, activity, this, NavHostFragment.findNavController(this), slug);
         recyclerView.setAdapter(adapterProduct);
 
-        itemListProduct.add(new HomeHeaderItem());
-        adapterProduct.notifyItemInserted(0);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -127,8 +125,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         boolean includeEdge = true;
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
 
-        getProducts();
-
         return view;
 
     }
@@ -153,25 +149,9 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
 
                 @Override
                 public void onBackPress() {
-                    if (getFragmentManager() != null)
                         NavHostFragment.findNavController(BrowseProductFragment.this).navigate(R.id.homeFragment);
                 }
             });
-
-
-//        if (nestedSV != null) {
-//
-//            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-//                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                    try {
-//                        progressBar.setVisibility(View.VISIBLE);
-//                        productGrid.loadNextPage();
-//                    } catch (Exception e) {
-//                        Log.e("load more product", e.toString());
-//                    }
-//                }
-//            });
-//        }
     }
 
 
@@ -197,7 +177,9 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
                 List<ProductItem> data = response.getData();
 
                 itemListProduct.addAll(data);
+
                 adapterProduct.notifyItemRangeInserted(itemListProduct.size() - data.size(), data.size());
+
                 isLoading = false;
                 progressBar.setVisibility(View.GONE);
 
@@ -218,14 +200,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
 
     }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
-
-
     @Override
     public void onRefresh() {
 
@@ -234,8 +208,19 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         itemListProduct.clear();
 
         itemListProduct.add(new HomeHeaderItem());
-        adapterProduct.notifyItemInserted(0);
+        adapterProduct.notifyDataSetChanged();
 
+        getProducts();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        currentPage = 1;
+        itemListProduct.clear();
+
+        itemListProduct.add(new HomeHeaderItem());
         adapterProduct.notifyDataSetChanged();
 
         getProducts();

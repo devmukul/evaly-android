@@ -125,7 +125,6 @@ public class HomeTabsFragment extends Fragment {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
 
-
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
                                 categoryItems.addAll(response);
