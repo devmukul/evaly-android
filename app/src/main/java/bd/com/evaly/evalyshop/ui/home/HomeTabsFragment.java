@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -192,29 +193,29 @@ public class HomeTabsFragment extends Fragment {
             }
         }
 
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (binding== null)
-//                    return;
-//
-//                if (!(slug.equals("root") && type == 1)) {
-//                    if (adapter.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
-//                        adapter.notifyDataSetChanged();
-//                        handler.postDelayed(this, 1000);
-//                    }
-//                } else {
-//                    if (adapter2.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
-//
-//                        if (onDoneListener != null)
-//                            onDoneListener.onDone();
-//                        adapter2.notifyDataSetChanged();
-//                        handler.postDelayed(this, 1000);
-//                    }
-//                }
-//            }
-//        }, 1000);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (binding== null)
+                    return;
+
+                if (!(slug.equals("root") && type == 1)) {
+                    if (adapter.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
+                        adapter.notifyDataSetChanged();
+                        handler.postDelayed(this, 1000);
+                    }
+                } else {
+                    if (adapter2.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
+
+                        if (onDoneListener != null)
+                            onDoneListener.onDone();
+                        adapter2.notifyDataSetChanged();
+                        handler.postDelayed(this, 1000);
+                    }
+                }
+            }
+        }, 1000);
     }
 
     public void stopShimmer() {

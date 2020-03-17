@@ -2,44 +2,111 @@ package bd.com.evaly.evalyshop.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import bd.com.evaly.evalyshop.listener.ObjectAtPositionInterface;
 
 public class WrapContentHeightViewPager extends ViewPager {
 
-    private View mCurrentView;
-    private Boolean mAnimStarted = false;
+    private static final String TAG = WrapContentHeightViewPager.class.getSimpleName();
+    private int height = 0;
+    private int decorHeight = 0;
+    private int widthMeasuredSpec;
+
+    private boolean animateHeight;
+    private int rightHeight;
+    private int leftHeight;
+    private int scrollingPosition = -1;
 
     public WrapContentHeightViewPager(Context context) {
         super(context);
+        init();
     }
 
-    /**
-     * Constructor
-     *
-     * @param context the context
-     * @param attrs   the attribute set
-     */
     public WrapContentHeightViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
+    }
+
+    private void init() {
+        addOnPageChangeListener(new OnPageChangeListener() {
+
+            public int state;
+
+            @Override
+            public void onPageScrolled(int position, float offset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                if (state == SCROLL_STATE_IDLE) {
+                    height = 0; // measure the selected page in-case it's a change without scrolling
+                    Log.d(TAG, "onPageSelected:" + position);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                this.state = state;
+            }
+        });
     }
 
     @Override
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mCurrentView == null) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            return;
+    public void setAdapter(PagerAdapter adapter) {
+        if(!(adapter instanceof ObjectAtPositionInterface)) {
+            throw new IllegalArgumentException("WrapContentViewPage requires that PagerAdapter will implement ObjectAtPositionInterface");
         }
-        int height = 0;
-        mCurrentView.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-        int h = mCurrentView.getMeasuredHeight();
-        if (h > height) height = h;
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        height = 0; // so we measure the new content in onMeasure
+        super.setAdapter(adapter);
+    }
+
+    /**
+     * Allows to redraw the view size to wrap the content of the bigger child.
+     *
+     * @param widthMeasureSpec  with measured
+     * @param heightMeasureSpec height measured
+     */
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        widthMeasuredSpec = widthMeasureSpec;
+        int mode = MeasureSpec.getMode(heightMeasureSpec);
+
+        if (mode == MeasureSpec.UNSPECIFIED || mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY) {
+
+            if(height == 0) {
+            }
+                decorHeight = 0;
+
+                for (int i = 0; i < getChildCount(); i++) {
+                    View child = getChildAt(i);
+                    LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                    if(lp != null && lp.isDecor) {
+                        int vgrav = lp.gravity & Gravity.VERTICAL_GRAVITY_MASK;
+                        boolean consumeVertical = vgrav == Gravity.TOP || vgrav == Gravity.BOTTOM;
+                        if(consumeVertical) {
+                            decorHeight += child.getMeasuredHeight() ;
+                        }
+                    }
+                }
+
+                int position = getCurrentItem();
+                View child = getViewAtPosition(position);
+                if (child != null) {
+                    height = measureViewHeight(child);
+                }
 
 
-        if (heightMeasureSpec < 1400)
-            heightMeasureSpec = 1400;
+            int totalHeight = height + decorHeight + getPaddingBottom() + getPaddingTop();
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(totalHeight, MeasureSpec.EXACTLY);
+        }
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -47,141 +114,68 @@ public class WrapContentHeightViewPager extends ViewPager {
 
 
 
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        int mode = MeasureSpec.getMode(heightMeasureSpec);
-//        // Unspecified means that the ViewPager is in a ScrollView WRAP_CONTENT.
-//        // At Most means that the ViewPager is not in a ScrollView WRAP_CONTENT.
-//        if (mode == MeasureSpec.UNSPECIFIED || mode == MeasureSpec.AT_MOST) {
-//            // super has to be called in the beginning so the child views can be initialized.
-//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//            int height = 0;
-//            for (int i = 0; i < getChildCount(); i++) {
-//                View child = getChildAt(i);
-//                child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-//                int h = child.getMeasuredHeight();
-//                if (h > height) height = h;
-//            }
-//            heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-//        }
-//        // super has to be called again so the new specs are treated as exact measurements
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//    }
-
-
-    // with animation
-
-
-//
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//
-//        if (mCurrentView == null) {
-//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//            return;
-//        }
-//
-//        if(!mAnimStarted) {
-//            int height = 0;
-//        mCurrentView.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-//        int newHeight = mCurrentView.getMeasuredHeight();
-//        if (newHeight > height) height = newHeight;
-//        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-//
-//            if (getLayoutParams().height != 0 && heightMeasureSpec != newHeight && heightMeasureSpec > newHeight) {
-//                final int targetHeight = height;
-//                final int currentHeight = getLayoutParams().height;
-//                final int heightChange = targetHeight - currentHeight;
-//
-//                Animation a = new Animation() {
-//                    @Override
-//                    protected void applyTransformation(float interpolatedTime, Transformation t) {
-//                        if (interpolatedTime >= 1) {
-//                            getLayoutParams().height = targetHeight;
-//                        } else {
-//                            int stepHeight = (int) (heightChange * interpolatedTime);
-//                            getLayoutParams().height = currentHeight + stepHeight;
-//                        }
-//                        requestLayout();
-//                    }
-//
-//                    @Override
-//                    public boolean willChangeBounds() {
-//                        return true;
-//                    }
-//                };
-//
-//                a.setAnimationListener(new Animation.AnimationListener() {
-//                    @Override
-//                    public void onAnimationStart(Animation animation) {
-//                        mAnimStarted = true;
-//                    }
-//
-//                    @Override
-//                    public void onAnimationEnd(Animation animation) {
-//                        mAnimStarted = false;
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animation animation) {
-//                    }
-//                });
-//
-//                a.setDuration(300);
-//                startAnimation(a);
-//                mAnimStarted = true;
-//            } else {
-//                heightMeasureSpec = newHeight;
-//            }
-//        }
-//
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//    }
-//
-//
-
-
-    private int measureHeight(int measureSpec, View view) {
-        int result = 0;
-        int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize = MeasureSpec.getSize(measureSpec);
-
-        if (specMode == MeasureSpec.EXACTLY) {
-            result = specSize;
-        } else {
-            // set the height from the base view if available
-            if (view != null) {
-                result = view.getMeasuredHeight();
-            }
-            if (specMode == MeasureSpec.AT_MOST) {
-                result = Math.min(result, specSize);
+    @Override
+    public void onPageScrolled(int position, float offset, int positionOffsetPixels) {
+        super.onPageScrolled(position, offset, positionOffsetPixels);
+        // cache scrolled view heights
+        if (scrollingPosition != position) {
+            scrollingPosition = position;
+            // scrolled position is always the left scrolled page
+            View leftView = getViewAtPosition(position);
+            View rightView = getViewAtPosition(position + 1);
+            if (leftView != null && rightView != null) {
+                leftHeight = measureViewHeight(leftView);
+                rightHeight = measureViewHeight(rightView);
+                animateHeight = true;
+                Log.d(TAG, "onPageScrolled heights left:" + leftHeight + " right:" + rightHeight);
+            } else {
+                animateHeight = false;
             }
         }
-        return result;
+        if (animateHeight) {
+            int newHeight = (int) (leftHeight * (1 - offset) + rightHeight * (offset));
+            if (height != newHeight) {
+                Log.d(TAG, "onPageScrolled height change:" + newHeight);
+                height = newHeight;
+                requestLayout();
+                invalidate();
+            }
+        }
     }
 
 
-    public void measureCurrentView(View currentView) {
-        mCurrentView = currentView;
-        requestLayout();
-    }
 
-    public int measureFragment(View view) {
-        if (view == null)
-            return 0;
-
-        view.measure(0, 0);
+    public int measureViewHeight(View view) {
+        view.measure(getChildMeasureSpec(widthMeasuredSpec, getPaddingLeft() + getPaddingRight(), view.getLayoutParams().width), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
         return view.getMeasuredHeight();
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        mCurrentView = null;
-        super.onDetachedFromWindow();
+    public void updateView(View view){
+        height = measureViewHeight(view);
+        measure(widthMeasuredSpec, height);
+        requestLayout();
+        invalidate();
     }
 
-    public void destroyView() {
-        mCurrentView = null;
+
+    public void refreshHeight(){
+        requestLayout();
+        invalidate();
     }
+    protected View getViewAtPosition(int position) {
+        if(getAdapter() != null) {
+            Object objectAtPosition = ((ObjectAtPositionInterface) getAdapter()).getObjectAtPosition(position);
+            if (objectAtPosition != null) {
+                for (int i = 0; i < getChildCount(); i++) {
+                    View child = getChildAt(i);
+                    if (child != null && getAdapter().isViewFromObject(child, objectAtPosition)) {
+                        return child;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 
 }

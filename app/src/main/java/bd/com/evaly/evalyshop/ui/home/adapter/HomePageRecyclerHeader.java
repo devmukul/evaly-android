@@ -62,7 +62,6 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
         initHeader(binding);
 
-
     }
 
     private void initHeader(RecyclerHeaderHomeBinding binding) {
@@ -101,9 +100,7 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         });
 
         binding.voucher.setOnClickListener(v -> navController.navigate(R.id.campaignFragment));
-
         binding.evalyWholesale.setOnClickListener(v -> context.startActivity(new Intent(context, NewsfeedActivity.class)));
-
 
         binding.orders.setOnClickListener(v -> {
             if (CredentialManager.getToken().equals(""))
@@ -111,7 +108,6 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
             else
                 context.startActivity(new Intent(context, OrderListActivity.class));
         });
-
 
         // slider
 
@@ -144,9 +140,15 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         if (pager != null) {
             pager.clear();
             pager.addFragment(categoryFragment, context.getResources().getString(R.string.categories));
+
+
             pager.addFragment(brandFragment, context.getResources().getString(R.string.brands));
             pager.addFragment(shopFragment, context.getResources().getString(R.string.shops));
             pager.notifyDataSetChanged();
+
+            binding.viewPager.post(() -> binding.viewPager.setMinimumHeight(2000));
+
+
         }
 
 
