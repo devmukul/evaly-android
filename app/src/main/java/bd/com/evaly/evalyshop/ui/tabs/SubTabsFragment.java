@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeCategoryBinding;
+import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
@@ -40,13 +41,21 @@ public class SubTabsFragment extends Fragment {
     private String category;
     private int brandCounter = 1, shopCounter = 1;
     private String json = "[]";
-
+    private OnDoneListener onDoneListener;
     private FragmentHomeCategoryBinding binding;
 
     public SubTabsFragment() {
         // Required empty public constructor
     }
 
+    public SubTabsFragment(OnDoneListener onDoneListener) {
+        // Required empty public constructor
+        this.onDoneListener = onDoneListener;
+    }
+
+    public void setOnDoneListener(OnDoneListener onDoneListener) {
+        this.onDoneListener = onDoneListener;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -221,7 +230,6 @@ public class SubTabsFragment extends Fragment {
         }
     }
 
-
     public void getSubCategories() {
 
         ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<JsonArray, String>() {
@@ -246,7 +254,10 @@ public class SubTabsFragment extends Fragment {
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
+
                     }
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -290,7 +301,9 @@ public class SubTabsFragment extends Fragment {
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
+
                     }
+
 
                     stopShimmer();
 
@@ -342,13 +355,18 @@ public class SubTabsFragment extends Fragment {
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
+
+
                     }
 
+
+                    if (onDoneListener != null)
+                        onDoneListener.onDone();
                     stopShimmer();
 
                 } catch (Exception e) {
 
-                    Toast.makeText(context, "ShopDetails error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Shop Loading Error", Toast.LENGTH_SHORT).show();
                 }
 
             }

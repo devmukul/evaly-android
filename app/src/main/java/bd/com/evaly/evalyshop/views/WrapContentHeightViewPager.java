@@ -23,6 +23,8 @@ public class WrapContentHeightViewPager extends ViewPager {
     private int leftHeight;
     private int scrollingPosition = -1;
 
+    private boolean isFirst = true;
+
     public WrapContentHeightViewPager(Context context) {
         super(context);
         init();
@@ -39,7 +41,8 @@ public class WrapContentHeightViewPager extends ViewPager {
             public int state;
 
             @Override
-            public void onPageScrolled(int position, float offset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float offset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -58,7 +61,7 @@ public class WrapContentHeightViewPager extends ViewPager {
 
     @Override
     public void setAdapter(PagerAdapter adapter) {
-        if(!(adapter instanceof ObjectAtPositionInterface)) {
+        if (!(adapter instanceof ObjectAtPositionInterface)) {
             throw new IllegalArgumentException("WrapContentViewPage requires that PagerAdapter will implement ObjectAtPositionInterface");
         }
         height = 0; // so we measure the new content in onMeasure
@@ -73,26 +76,33 @@ public class WrapContentHeightViewPager extends ViewPager {
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         widthMeasuredSpec = widthMeasureSpec;
         int mode = MeasureSpec.getMode(heightMeasureSpec);
 
-        if (mode == MeasureSpec.UNSPECIFIED || mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY) {
 
-            if(height == 0) {
-            }
+        int pos = getCurrentItem();
+
+
+//        if (getAdapter() != null &&  getAdapter().getCount() == 2)) {
+//            pos = 0;
+//        }
+
+        if (mode == MeasureSpec.UNSPECIFIED || mode == MeasureSpec.AT_MOST) {
+
+            if (height == 0 || pos == 0) {
+
                 decorHeight = 0;
 
                 for (int i = 0; i < getChildCount(); i++) {
                     View child = getChildAt(i);
                     LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                    if(lp != null && lp.isDecor) {
+                    if (lp != null && lp.isDecor) {
                         int vgrav = lp.gravity & Gravity.VERTICAL_GRAVITY_MASK;
                         boolean consumeVertical = vgrav == Gravity.TOP || vgrav == Gravity.BOTTOM;
-                        if(consumeVertical) {
-                            decorHeight += child.getMeasuredHeight() ;
+                        if (consumeVertical) {
+                            decorHeight += child.getMeasuredHeight();
                         }
                     }
                 }
@@ -103,6 +113,7 @@ public class WrapContentHeightViewPager extends ViewPager {
                     height = measureViewHeight(child);
                 }
 
+            }
 
             int totalHeight = height + decorHeight + getPaddingBottom() + getPaddingTop();
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(totalHeight, MeasureSpec.EXACTLY);
@@ -112,11 +123,10 @@ public class WrapContentHeightViewPager extends ViewPager {
     }
 
 
-
-
     @Override
     public void onPageScrolled(int position, float offset, int positionOffsetPixels) {
         super.onPageScrolled(position, offset, positionOffsetPixels);
+
         // cache scrolled view heights
         if (scrollingPosition != position) {
             scrollingPosition = position;
@@ -144,13 +154,14 @@ public class WrapContentHeightViewPager extends ViewPager {
     }
 
 
-
     public int measureViewHeight(View view) {
+
+
         view.measure(getChildMeasureSpec(widthMeasuredSpec, getPaddingLeft() + getPaddingRight(), view.getLayoutParams().width), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
         return view.getMeasuredHeight();
     }
 
-    public void updateView(View view){
+    public void updateView(View view) {
         height = measureViewHeight(view);
         measure(widthMeasuredSpec, height);
         requestLayout();
@@ -158,12 +169,16 @@ public class WrapContentHeightViewPager extends ViewPager {
     }
 
 
-    public void refreshHeight(){
+    public void refreshHeight() {
         requestLayout();
         invalidate();
     }
+
     protected View getViewAtPosition(int position) {
-        if(getAdapter() != null) {
+
+        isFirst = false;
+
+        if (getAdapter() != null) {
             Object objectAtPosition = ((ObjectAtPositionInterface) getAdapter()).getObjectAtPosition(position);
             if (objectAtPosition != null) {
                 for (int i = 0; i < getChildCount(); i++) {

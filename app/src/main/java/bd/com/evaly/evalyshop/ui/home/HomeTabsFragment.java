@@ -197,7 +197,7 @@ public class HomeTabsFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (binding== null)
+                if (binding == null)
                     return;
 
                 if (!(slug.equals("root") && type == 1)) {
@@ -285,7 +285,7 @@ public class HomeTabsFragment extends Fragment {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
 
-                if (binding== null)
+                if (binding == null)
                     return;
 
                 if (onDoneListener != null)

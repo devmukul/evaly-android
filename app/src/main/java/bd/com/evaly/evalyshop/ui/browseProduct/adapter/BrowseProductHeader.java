@@ -102,9 +102,8 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
                     fragment.setArguments(bundle);
 
                     if (pager != null) {
-                        pager.clear();
+                        // pager.clear();
                         pager.addFragment(fragment, context.getResources().getString(R.string.sub_categories));
-                        pager.notifyDataSetChanged();
                     }
                 }
 
@@ -140,7 +139,7 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
             bundle.putString("json", "");
             fragment.setArguments(bundle);
             pager.addFragment(fragment, context.getResources().getString(R.string.brands));
-            pager.notifyDataSetChanged();
+
         }
 
         {
@@ -152,8 +151,11 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
             bundle.putString("json", "");
             fragment.setArguments(bundle);
             pager.addFragment(fragment, context.getResources().getString(R.string.shops));
-            pager.notifyDataSetChanged();
+
         }
+
+        pager.notifyDataSetChanged();
+
     }
 
     public void hideShimmer() {

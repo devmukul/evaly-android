@@ -140,17 +140,11 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         if (pager != null) {
             pager.clear();
             pager.addFragment(categoryFragment, context.getResources().getString(R.string.categories));
-
-
             pager.addFragment(brandFragment, context.getResources().getString(R.string.brands));
             pager.addFragment(shopFragment, context.getResources().getString(R.string.shops));
             pager.notifyDataSetChanged();
 
-            binding.viewPager.post(() -> binding.viewPager.setMinimumHeight(2000));
-
-
         }
-
 
         Handler handler = new Handler();
         handler.postDelayed(() -> {

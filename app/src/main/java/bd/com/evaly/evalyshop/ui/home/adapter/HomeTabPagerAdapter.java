@@ -1,6 +1,9 @@
 package bd.com.evaly.evalyshop.ui.home.adapter;
 
 
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -22,17 +25,11 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter implements Ob
         super(fm, behavior);
     }
 
-//    @Override
-//    public Object instantiateItemObject(ViewGroup container, int position) {
-//        return null;
-//    }
-
-//    @Override
-//    public void destroyItemObject(ViewGroup container, int position, Object object) {
-//        if (position >= mFragmentList.size())
-//            return;
-//        mFragmentList.remove(position);
-//    }
+    public void destroyItemObject(ViewGroup container, int position, Object object) {
+        if (position >= mFragmentList.size())
+            return;
+        mFragmentList.remove(position);
+    }
 
 
     public void addFragment(Fragment fragment, String title) {
@@ -74,9 +71,6 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter implements Ob
 
     @Override
     public int getItemPosition(Object object) {
-
-        // onDoneListener.onDone();
-
         if (mFragmentList.contains(object))
             return mFragmentList.indexOf(object);
         else
@@ -99,8 +93,16 @@ public class HomeTabPagerAdapter extends FragmentStatePagerAdapter implements Ob
 
     @Override
     public Object getObjectAtPosition(int position) {
-        if (position >= mFragmentList.size())
+        if (mFragmentList.size() == 0)
             return null;
-        return mFragmentList.get(position);
+        else if (position >= mFragmentList.size())
+            return mFragmentList.get(position-1);
+        else
+            return mFragmentList.get(position);
+    }
+
+
+    public View getViewAtPosition(int position){
+        return mFragmentList.get(position).getView();
     }
 }
