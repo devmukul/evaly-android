@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -88,6 +89,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
     private void refreshFragment() {
+        NavHostFragment.findNavController(HomeFragment.this).popBackStack(R.id.home_nav_graph, true);
         NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
     }
 
@@ -267,12 +269,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onDestroyView() {
-//        productItemList.clear();
-//        adapterProducts.notifyDataSetChanged();
-      //  binding.recyclerView.setAdapter(null);
-      //  adapterProducts = null;
-       // binding = null;
         super.onDestroyView();
+
+        FragmentManager fm = getChildFragmentManager();
+        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+        }
+
+        productItemList.clear();
+        adapterProducts.notifyDataSetChanged();
+        binding.recyclerView.setAdapter(null);
+        adapterProducts = null;
+        binding = null;
     }
 
 

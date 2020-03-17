@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.browseProduct;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -246,12 +245,8 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        recyclerView.setAdapter(null);
-//        tabPagerAdapter.clear();
-//        tabPagerAdapter.notifyDataSetChanged();
-//        tabPagerAdapter = null;
-  //      view = null;
-
+        recyclerView.setAdapter(null);
+        view = null;
     }
 
 }

@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleEventObserver;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -21,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
@@ -49,6 +52,8 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
     private Context context;
     private RecyclerHeaderHomeBinding binding;
     private FragmentTabPagerAdapter pager;
+    private HashMap<Integer, ViewTreeObserver.OnGlobalLayoutListener> listenerList = new HashMap<>();
+    private HashMap<Integer, View> viewList = new HashMap<>();
 
 
     public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
@@ -71,6 +76,18 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
         pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
+        fragmentInstance.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+            if (viewList.size() == 0)
+                return;
+
+            for (int i = 0; i < listenerList.size(); i++) {
+                View view = viewList.get(i);
+                if (view != null)
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(listenerList.get(i));
+            }
+            binding.viewPager.setAdapter(null);
+            pager = null;
+        });
 
         binding.shimmer.shimmer.setVisibility(View.VISIBLE);
         binding.shimmer.shimmer.startShimmer();
@@ -109,10 +126,33 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
                 super.onPageSelected(position);
 
                 View v = pager.getViewAtPosition(position);
-                v.getViewTreeObserver().addOnGlobalLayoutListener(() -> updateChildHeight(v));
 
+                if (v == null) {
+                    new Handler().postDelayed(() -> {
+                        View vv = pager.getViewAtPosition(position);
+                        if (vv != null)
+                            vv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                @Override
+                                public void onGlobalLayout() {
+                                    updateChildHeight(vv);
+                                    viewList.put(position, vv);
+                                    listenerList.put(position, this);
+                                }
+                            });
+                    }, 1000);
+
+                } else
+                    v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            updateChildHeight(v);
+                            viewList.put(position, v);
+                            listenerList.put(position, this);
+                        }
+                    });
             }
         });
+
 
         binding.evalyStore.setOnClickListener(v -> {
             Intent ni = new Intent(context, GiftCardActivity.class);

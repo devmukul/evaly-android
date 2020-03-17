@@ -44,4 +44,13 @@ public class FragmentTabPagerAdapter extends FragmentStateAdapter {
         return mFragmentList.get(position).getView();
     }
 
+    public Fragment getFragmentAtPosition(int position){
+        return mFragmentList.get(position);
+    }
+
+    public void clear(){
+        mFragmentList.clear();
+        mFragmentTitleList.clear();
+        notifyDataSetChanged();
+    }
 }

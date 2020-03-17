@@ -5,11 +5,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleEventObserver;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -17,6 +20,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.JsonArray;
+
+import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.RecyclerHeaderBrowseProductBinding;
@@ -33,6 +38,8 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
     private RecyclerHeaderBrowseProductBinding binding;
     private FragmentTabPagerAdapter pager;
     private Fragment fragmentInstance;
+    private HashMap<Integer, ViewTreeObserver.OnGlobalLayoutListener> listenerList = new HashMap<>();
+    private HashMap<Integer, View> viewList = new HashMap<>();
 
     public BrowseProductHeader(RecyclerHeaderBrowseProductBinding binding, Context context, Fragment fragmentInstance, String category) {
         super(binding.getRoot());
@@ -50,6 +57,19 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
     private void initHeader() {
 
         pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
+
+        fragmentInstance.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+            if (viewList.size() == 0)
+                return;
+
+            for (int i = 0; i < listenerList.size(); i++) {
+                View view = viewList.get(i);
+                if (view != null)
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(listenerList.get(i));
+            }
+            binding.viewPager.setAdapter(null);
+            pager = null;
+        });
 
 
         binding.filterBtn.setVisibility(View.GONE);
@@ -91,9 +111,32 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
                 super.onPageSelected(position);
 
                 View v = pager.getViewAtPosition(position);
-                v.getViewTreeObserver().addOnGlobalLayoutListener(() -> updateChildHeight(v));
 
+                if (v == null) {
+                    new Handler().postDelayed(() -> {
+                        View vv = pager.getViewAtPosition(position);
+                        if (vv != null)
+                            vv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                @Override
+                                public void onGlobalLayout() {
+                                    updateChildHeight(vv);
+                                    viewList.put(position, vv);
+                                    listenerList.put(position, this);
+                                }
+                            });
+                    }, 1000);
+
+                } else
+                    v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            updateChildHeight(v);
+                            viewList.put(position, v);
+                            listenerList.put(position, this);
+                        }
+                    });
             }
+
         });
 
         getSubCategories();

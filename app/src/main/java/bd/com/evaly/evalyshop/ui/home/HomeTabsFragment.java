@@ -395,4 +395,14 @@ public class HomeTabsFragment extends Fragment {
 
     }
 
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding.recyclerView.setAdapter(null);
+        itemList.clear();
+        adapter = null;
+        adapter2 = null;
+        binding = null;
+    }
 }
