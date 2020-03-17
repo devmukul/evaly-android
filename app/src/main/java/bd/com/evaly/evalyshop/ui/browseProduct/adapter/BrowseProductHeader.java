@@ -7,20 +7,23 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.JsonArray;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.RecyclerHeaderBrowseProductBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
+import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.tabs.SubTabsFragment;
-import bd.com.evaly.evalyshop.views.WrapContentViewPager.ViewPagerEdgeEffect;
 
 public class BrowseProductHeader extends RecyclerView.ViewHolder {
 
@@ -28,14 +31,15 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
     private boolean isShimmerShowed = false;
     private String category = "root";
     private RecyclerHeaderBrowseProductBinding binding;
-    private HomeTabPagerAdapter pager;
+    private FragmentTabPagerAdapter pager;
+    private Fragment fragmentInstance;
 
-    public BrowseProductHeader(RecyclerHeaderBrowseProductBinding binding, Context context,  String category, HomeTabPagerAdapter pager) {
+    public BrowseProductHeader(RecyclerHeaderBrowseProductBinding binding, Context context, Fragment fragmentInstance, String category) {
         super(binding.getRoot());
         this.context = context;
         this.category = category;
         this.binding = binding;
-        this.pager = pager;
+        this.fragmentInstance = fragmentInstance;
 
         StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         layoutParams.setFullSpan(true);
@@ -45,33 +49,50 @@ public class BrowseProductHeader extends RecyclerView.ViewHolder {
 
     private void initHeader() {
 
+        pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
+
+
         binding.filterBtn.setVisibility(View.GONE);
         binding.viewPager.bringToFront();
 
         binding.shimmer.shimmer.startShimmer();
         binding.shimmerTabs.shimmerTabs.startShimmer();
 
-        binding.viewPager.setOffscreenPageLimit(2);
+        binding.viewPager.setOffscreenPageLimit(1);
         binding.viewPager.setAdapter(pager);
-        binding.tabLayoutSubCat.setupWithViewPager(binding.viewPager);
-
-        ViewPagerEdgeEffect.fixViewPager(context, binding.viewPager);
-
         binding.tabLayoutSubCat.setTabMode(TabLayout.MODE_FIXED);
         binding.tabLayoutSubCat.setSmoothScrollingEnabled(true);
-        binding.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabLayoutSubCat));
-        binding.tabLayoutSubCat.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                binding.viewPager.setCurrentItem(tab.getPosition());
+
+        new TabLayoutMediator(binding.tabLayoutSubCat, binding.viewPager,
+                (tab, position) -> tab.setText(pager.getTitle(position))
+        ).attach();
+
+        binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+
+            private void updateChildHeight(View v) {
+
+                ViewGroup.LayoutParams params = binding.viewPager.getLayoutParams();
+
+                binding.viewPager.post(() -> {
+                    int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(v.getWidth(), View.MeasureSpec.EXACTLY);
+                    int hMeasureSpec = View.MeasureSpec.makeMeasureSpec(v.getHeight(), View.MeasureSpec.UNSPECIFIED);
+                    v.measure(wMeasureSpec, hMeasureSpec);
+
+                    params.height = v.getMeasuredHeight();
+
+                    if (v.getMeasuredHeight() != binding.viewPager.getHeight()) {
+                        binding.viewPager.setLayoutParams(params);
+                    }
+                });
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+                View v = pager.getViewAtPosition(position);
+                v.getViewTreeObserver().addOnGlobalLayoutListener(() -> updateChildHeight(v));
+
             }
         });
 

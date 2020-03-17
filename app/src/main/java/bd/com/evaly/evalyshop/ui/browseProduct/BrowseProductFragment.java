@@ -68,7 +68,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     private boolean isLoading = false;
     private SwipeRefreshLayout swipeRefreshLayout;
     private View view;
-    private HomeTabPagerAdapter tabPagerAdapter;
 
     public BrowseProductFragment() {
         // Required empty public constructor
@@ -97,8 +96,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         progressBar.setVisibility(View.GONE);
         itemListProduct = new ArrayList<>();
 
-        tabPagerAdapter = new HomeTabPagerAdapter(getParentFragmentManager(), 0);
-        adapterProduct = new BrowseProductAdapter(getContext(), itemListProduct, activity, this, NavHostFragment.findNavController(this), slug, tabPagerAdapter);
+        adapterProduct = new BrowseProductAdapter(getContext(), itemListProduct, activity, this, NavHostFragment.findNavController(this), slug);
         recyclerView.setAdapter(adapterProduct);
 
         itemListProduct.add(new HomeHeaderItem());
@@ -136,17 +134,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
 
     }
 
-    private void refreshFragment() {
-        if (getFragmentManager() != null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                getFragmentManager().beginTransaction().detach(this).commitNow();
-                getFragmentManager().beginTransaction().attach(this).commitNow();
-            } else {
-                getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-            }
-    }
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -162,7 +149,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
             new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
                 @Override
                 public void onRetry() {
-                    refreshFragment();
+                    NavHostFragment.findNavController(BrowseProductFragment.this).navigate(R.id.browseProductFragment);
                 }
 
                 @Override

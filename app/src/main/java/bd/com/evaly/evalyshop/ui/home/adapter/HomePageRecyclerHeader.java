@@ -5,14 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -30,6 +33,7 @@ import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
+import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
@@ -44,10 +48,10 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
     private NavController navController;
     private Context context;
     private RecyclerHeaderHomeBinding binding;
-    private HomeTabPagerAdapter pager;
+    private FragmentTabPagerAdapter pager;
 
 
-    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HomeTabPagerAdapter pager) {
+    public HomePageRecyclerHeader(RecyclerHeaderHomeBinding binding, Context context, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController) {
         super(binding.getRoot());
 
         this.context = context;
@@ -55,7 +59,6 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         this.fragmentInstance = fragmentInstance;
         this.navController = navController;
         this.binding = binding;
-        this.pager = pager;
 
         StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         layoutParams.setFullSpan(true);
@@ -66,31 +69,48 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
     private void initHeader(RecyclerHeaderHomeBinding binding) {
 
-        // pager = new HomeTabPagerAdapter(fragmentInstance.getFragmentManager());
+        pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
 
         binding.shimmer.shimmer.setVisibility(View.VISIBLE);
         binding.shimmer.shimmer.startShimmer();
 
-        binding.viewPager.setOffscreenPageLimit(2);
+        binding.viewPager.setOffscreenPageLimit(1);
         binding.viewPager.setAdapter(pager);
-        binding.tabLayout.setupWithViewPager(binding.viewPager);
 
         binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
         binding.tabLayout.setSmoothScrollingEnabled(true);
-        binding.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabLayout));
-        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                binding.viewPager.setCurrentItem(tab.getPosition());
+
+        new TabLayoutMediator(binding.tabLayout, binding.viewPager,
+                (tab, position) -> tab.setText(pager.getTitle(position))
+        ).attach();
+
+        binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+
+            private void updateChildHeight(View v) {
+
+                ViewGroup.LayoutParams params = binding.viewPager.getLayoutParams();
+
+                binding.viewPager.post(() -> {
+                    int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(v.getWidth(), View.MeasureSpec.EXACTLY);
+                    int hMeasureSpec = View.MeasureSpec.makeMeasureSpec(v.getHeight(), View.MeasureSpec.UNSPECIFIED);
+                    v.measure(wMeasureSpec, hMeasureSpec);
+
+                    params.height = v.getMeasuredHeight();
+
+                    if (v.getMeasuredHeight() != binding.viewPager.getHeight()) {
+                        binding.viewPager.setLayoutParams(params);
+                    }
+                });
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+                View v = pager.getViewAtPosition(position);
+                v.getViewTreeObserver().addOnGlobalLayoutListener(() -> updateChildHeight(v));
+
             }
         });
 
@@ -138,7 +158,6 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         shopFragment.setArguments(bundle3);
 
         if (pager != null) {
-            pager.clear();
             pager.addFragment(categoryFragment, context.getResources().getString(R.string.categories));
             pager.addFragment(brandFragment, context.getResources().getString(R.string.brands));
             pager.addFragment(shopFragment, context.getResources().getString(R.string.shops));

@@ -215,7 +215,7 @@
     </com.google.android.material.tabs.TabLayout>
 
 
-    <bd.com.evaly.evalyshop.views.WrapContentHeightViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

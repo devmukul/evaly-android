@@ -36,7 +36,6 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.home.adapter.HomeProductGridAdapter;
-import bd.com.evaly.evalyshop.ui.home.adapter.HomeTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
@@ -59,7 +58,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private boolean loading = true;
     private ReferPref referPref;
     private FragmentHomeBinding binding;
-    private HomeTabPagerAdapter tabPagerAdapter;
 
 
     public HomeFragment() {
@@ -127,9 +125,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(mLayoutManager);
 
-        tabPagerAdapter = new HomeTabPagerAdapter(getParentFragmentManager(), 0);
 
-        adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity, this, NavHostFragment.findNavController(this), tabPagerAdapter);
+        adapterProducts = new HomeProductGridAdapter(getContext(), productItemList, activity, this, NavHostFragment.findNavController(this));
         binding.recyclerView.setAdapter(adapterProducts);
 
         productItemList.add(new HomeHeaderItem());
