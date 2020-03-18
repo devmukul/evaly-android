@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeCategoryBinding;
-import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
@@ -41,20 +40,10 @@ public class SubTabsFragment extends Fragment {
     private String category;
     private int brandCounter = 1, shopCounter = 1;
     private String json = "[]";
-    private OnDoneListener onDoneListener;
     private FragmentHomeCategoryBinding binding;
 
     public SubTabsFragment() {
         // Required empty public constructor
-    }
-
-    public SubTabsFragment(OnDoneListener onDoneListener) {
-        // Required empty public constructor
-        this.onDoneListener = onDoneListener;
-    }
-
-    public void setOnDoneListener(OnDoneListener onDoneListener) {
-        this.onDoneListener = onDoneListener;
     }
 
     @Override
@@ -84,9 +73,6 @@ public class SubTabsFragment extends Fragment {
 
         itemList = new ArrayList<>();
         adapter = new TabsAdapter(context, (MainActivity) getActivity(), itemList, type);
-        // check if showing offline homepage vector categories
-
-
         binding.recyclerView.setAdapter(adapter);
 
         binding.showMoreBtnTabs.setOnClickListener(v -> {
@@ -265,7 +251,9 @@ public class SubTabsFragment extends Fragment {
 
             @Override
             public void onFailed(String body, int errorCode) {
-                binding.progressBar2.setVisibility(View.GONE);
+
+                if (binding != null)
+                    binding.progressBar2.setVisibility(View.GONE);
             }
 
             @Override
@@ -315,7 +303,9 @@ public class SubTabsFragment extends Fragment {
 
             @Override
             public void onFailed(String body, int errorCode) {
-                binding.progressBar2.setVisibility(View.GONE);
+
+                if (binding != null)
+                    binding.progressBar2.setVisibility(View.GONE);
             }
 
             @Override
@@ -360,8 +350,6 @@ public class SubTabsFragment extends Fragment {
                     }
 
 
-                    if (onDoneListener != null)
-                        onDoneListener.onDone();
                     stopShimmer();
 
                 } catch (Exception e) {
@@ -373,7 +361,9 @@ public class SubTabsFragment extends Fragment {
 
             @Override
             public void onFailed(String body, int errorCode) {
-                binding.progressBar2.setVisibility(View.GONE);
+
+                if (binding != null)
+                    binding.progressBar2.setVisibility(View.GONE);
             }
 
             @Override

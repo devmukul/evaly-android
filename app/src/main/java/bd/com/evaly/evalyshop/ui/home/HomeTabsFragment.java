@@ -103,15 +103,13 @@ public class HomeTabsFragment extends Fragment {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
 
-                        if (getActivity() != null) {
+                        if (binding != null && getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
                                 categoryItems.addAll(response);
                                 adapter2.notifyDataSetChanged();
                                 stopShimmer();
                             });
                         }
-
-                        // skeletonScreen.hide();
                     }
 
                     @Override
@@ -125,7 +123,7 @@ public class HomeTabsFragment extends Fragment {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
 
-                        if (getActivity() != null) {
+                        if (binding != null && getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
                                 categoryItems.addAll(response);
                                 adapter2.notifyDataSetChanged();
@@ -267,7 +265,9 @@ public class HomeTabsFragment extends Fragment {
 
             @Override
             public void onFailed(String body, int errorCode) {
-                binding.progressBar2.setVisibility(View.GONE);
+
+                if (binding != null)
+                    binding.progressBar2.setVisibility(View.GONE);
             }
 
             @Override
@@ -317,7 +317,9 @@ public class HomeTabsFragment extends Fragment {
 
             @Override
             public void onFailed(String body, int errorCode) {
-                binding.progressBar2.setVisibility(View.GONE);
+
+                if (binding != null)
+                    binding.progressBar2.setVisibility(View.GONE);
             }
 
             @Override
@@ -338,6 +340,7 @@ public class HomeTabsFragment extends Fragment {
 
                 if (onDoneListener != null)
                     onDoneListener.onDone();
+
                 binding.progressBar2.setVisibility(View.GONE);
                 try {
 
@@ -370,7 +373,10 @@ public class HomeTabsFragment extends Fragment {
 
             @Override
             public void onFailed(String body, int errorCode) {
-                binding.progressBar2.setVisibility(View.GONE);
+
+
+                if (binding != null)
+                    binding.progressBar2.setVisibility(View.GONE);
             }
 
             @Override

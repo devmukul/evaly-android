@@ -642,6 +642,10 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
     private void inflateMenu() {
+
+        if (refundMenuItem == null || cancelMenuItem == null)
+            return;
+
         if (Utils.canRefundRequest(paymentStatus, orderStatus, paymentMethod))
             refundMenuItem.setVisible(true);
         else
@@ -665,7 +669,6 @@ public class OrderDetailsActivity extends BaseActivity {
                 orderStatus = response.getOrderStatus().toLowerCase();
                 paymentMethod = response.getPaymentMethod();
                 paymentStatus = response.getPaymentStatus();
-
 
 
                 if (paymentStatus.toLowerCase().equals("refund_requested"))
