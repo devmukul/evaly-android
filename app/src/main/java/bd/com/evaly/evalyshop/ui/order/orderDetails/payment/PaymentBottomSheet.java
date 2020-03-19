@@ -129,6 +129,13 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
 
         binding.bkash.setOnClickListener(v -> {
 
+            try {
+                Double.parseDouble(binding.amountPay.getText().toString());
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Please enter valid amount.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (!binding.amountPay.getText().toString().matches("\\d+.\\d+")) {
                 Toast.makeText(getContext(), "Please enter amount in english number", Toast.LENGTH_SHORT).show();
                 return;

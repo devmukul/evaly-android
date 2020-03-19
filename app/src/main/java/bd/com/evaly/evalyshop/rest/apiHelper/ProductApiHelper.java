@@ -70,7 +70,7 @@ public class ProductApiHelper extends BaseApiHelper {
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call;
 
-        if (category.equals("root"))
+        if (category != null && category.equals("root"))
             call = iApiClient.getBrandsCategories(null, page, limit);
         else
             call = iApiClient.getBrandsCategories(category, page, limit);

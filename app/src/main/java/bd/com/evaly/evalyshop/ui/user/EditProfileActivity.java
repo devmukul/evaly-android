@@ -244,7 +244,6 @@ public class EditProfileActivity extends BaseActivity {
 
             Uri selectedImage = data.getData();
             String imagePath = RealPathUtil.getRealPath(context, selectedImage);
-            Log.d("json image uri", imagePath);
 
             try {
 

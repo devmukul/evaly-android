@@ -242,7 +242,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> {
 
-            if (progressBarShowing){
+            if (progressBarShowing && productItemList.size() > 1){
                 productItemList.remove(productItemList.size()-1);
                 adapterProducts.notifyItemRemoved(productItemList.size());
                 progressBarShowing = false;
@@ -489,11 +489,12 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private String getContactFromRoster(String number) {
         String roasterModel = null;
-        for (String model : rosterList) {
-            if (model.contains(number)) {
-                roasterModel = model;
+        if (rosterList != null)
+            for (String model : rosterList) {
+                if (model.contains(number)) {
+                    roasterModel = model;
+                }
             }
-        }
         return roasterModel;
     }
 

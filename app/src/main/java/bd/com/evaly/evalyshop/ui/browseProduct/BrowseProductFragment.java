@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,11 +84,13 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         activity = (MainActivity) getActivity();
         context = getContext();
 
-        Bundle bundle = new Bundle();
-        type = getArguments().getInt("type");
-        slug = getArguments().getString("slug");
-        category = getArguments().getString("category");
-        bundle.putString("category", category);
+        if (getArguments() != null) {
+            type = getArguments().getInt("type");
+            slug = getArguments().getString("slug");
+            category = getArguments().getString("category");
+        } else {
+            Toast.makeText(getContext(), "Can't load this page, try again later", Toast.LENGTH_SHORT).show();
+        }
 
         recyclerView = view.findViewById(R.id.products);
         progressBar = view.findViewById(R.id.progressBar);
@@ -149,7 +152,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
 
                 @Override
                 public void onBackPress() {
-                        NavHostFragment.findNavController(BrowseProductFragment.this).navigate(R.id.homeFragment);
+                    NavHostFragment.findNavController(BrowseProductFragment.this).navigate(R.id.homeFragment);
                 }
             });
     }
