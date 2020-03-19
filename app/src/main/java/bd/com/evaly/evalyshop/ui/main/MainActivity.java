@@ -186,8 +186,8 @@ public class MainActivity extends BaseActivity {
                         return false;
                     } else if (item.getItemId() == R.id.homeFragment) {
 
-                        navController.popBackStack(R.id.home_nav_graph, true);
-                        navController.navigate(R.id.homeFragment);
+                        // navController.popBackStack(R.id.home_nav_graph, true);
+                        navController.navigate(R.id.action_homeFragment_Pop);
                         return false;
                     } else
                         return onNavDestinationSelected(item, navController);

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -59,6 +60,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private boolean loading = true;
     private ReferPref referPref;
     private FragmentHomeBinding binding;
+    private NavController navController;
 
 
     public HomeFragment() {
@@ -79,7 +81,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-
         activity = (MainActivity) getActivity();
         context = getContext();
 
@@ -89,14 +90,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
     private void refreshFragment() {
-        NavHostFragment.findNavController(HomeFragment.this).popBackStack(R.id.home_nav_graph, true);
-        NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
+        navController.navigate(HomeFragmentDirections.actionHomeFragmentPop());
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        navController = NavHostFragment.findNavController(this);
 
         if (!Utils.isNetworkAvailable(context))
             new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
@@ -107,10 +108,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 @Override
                 public void onBackPress() {
-                    NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.homeFragment);
+                    navController.navigate(R.id.homeFragment);
                 }
             });
-
 
         userDetails = new UserDetails(context);
         referPref = new ReferPref(context);

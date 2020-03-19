@@ -5,6 +5,18 @@
     android:id="@+id/home_nav_graph"
     app:startDestination="@id/homeFragment">
 
+    <action
+        android:id="@+id/action_homeFragment_Pop"
+        app:destination="@id/homeFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_to_browseProduct_Pop"
+        app:destination="@id/browseProductFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
     <fragment
         android:id="@+id/homeFragment"
         android:name="bd.com.evaly.evalyshop.ui.home.HomeFragment"
@@ -14,9 +26,11 @@
         <action
             android:id="@+id/action_homeFragment_to_wishListFragment"
             app:destination="@id/wishListFragment" />
+
         <action
             android:id="@+id/action_homeFragment_to_browseProductFragment"
             app:destination="@id/browseProductFragment" />
+
         <action
             android:id="@+id/action_homeFragment_to_shopFragment"
             app:destination="@id/shopFragment" />
@@ -34,14 +48,7 @@
         android:id="@+id/browseProductFragment"
         android:name="bd.com.evaly.evalyshop.ui.browseProduct.BrowseProductFragment"
         android:label="fragment_browse_product"
-        tools:layout="@layout/fragment_browse_product" >
-        <action
-            android:id="@+id/action_browseProductFragment_to_shopFragment"
-            app:destination="@id/shopFragment" />
-        <action
-            android:id="@+id/action_browseProductFragment_to_brandFragment"
-            app:destination="@id/brandFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_browse_product"/>
     <fragment
         android:id="@+id/wishListFragment"
         android:name="bd.com.evaly.evalyshop.ui.wishlist.WishListFragment"
