@@ -58,7 +58,11 @@
         android:id="@+id/shopFragment"
         android:name="bd.com.evaly.evalyshop.ui.shop.ShopFragment"
         android:label="fragment_shop"
-        tools:layout="@layout/fragment_shop" />
+        tools:layout="@layout/fragment_shop">
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="https://evaly.com.bd/shops/{slug}" />
+    </fragment>
     <fragment
         android:id="@+id/brandFragment"
         android:name="bd.com.evaly.evalyshop.ui.brand.BrandFragment"
@@ -78,6 +82,9 @@
         <action
             android:id="@+id/action_campaignFragment_to_campaignShopFragment"
             app:destination="@id/campaignShopFragment" />
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="https://evaly.com.bd/campaign/{slug}" />
     </fragment>
     <fragment
         android:id="@+id/campaignShopFragment"

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class TransactionItem {
 
     @SerializedName("amount")
-    private int amount;
+    private double amount;
 
     @SerializedName("date_time")
     private String date_time;
@@ -24,11 +24,11 @@ public class TransactionItem {
         this.event = event;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 

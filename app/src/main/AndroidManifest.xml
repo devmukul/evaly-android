@@ -161,10 +161,24 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
 
+            <nav-graph android:value="@navigation/home_nav_graph" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+            <intent-filter android:label="Campaign deep link"
+                android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"
+                    android:host="evaly.com.bd"
+                    android:pathPrefix="/" />
+            </intent-filter>
+
 
         </activity>
         <activity

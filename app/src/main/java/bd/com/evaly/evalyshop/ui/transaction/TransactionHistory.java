@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.transaction;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -83,25 +84,32 @@ public class TransactionHistory extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        Log.d("hmt", "called");
+
         AuthApiHelper.getTransactionHistory(CredentialManager.getToken(), CredentialManager.getUserName(), page, new ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<TransactionItem>> response, int statusCode) {
 
                 progressBar.setVisibility(View.INVISIBLE);
 
-                if (response != null) {
-                    itemList.addAll(response.getData());
-                    adapter.notifyDataSetChanged();
+                Log.d("hmt", response.toString());
 
-                    if (response.getData().size() == 0 && page == 1) {
-                        not.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
-                    }
+                itemList.addAll(response.getData());
+                adapter.notifyDataSetChanged();
+
+                if (response.getData().size() == 0 && page == 1) {
+                    not.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
                 }
+
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+
+
+                Log.d("hmt", errorBody);
+
 
                 progressBar.setVisibility(View.GONE);
             }

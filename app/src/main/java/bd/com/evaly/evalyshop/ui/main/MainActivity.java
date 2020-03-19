@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.main;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -27,6 +28,7 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
@@ -165,6 +167,8 @@ public class MainActivity extends BaseActivity {
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
+        navController.createDeepLink();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView userNameNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.userNameNavHeader);
         TextView phoneNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.phone);
@@ -279,7 +283,6 @@ public class MainActivity extends BaseActivity {
                 return true;
             });
 
-
         } else {
 
             FirebaseMessaging.getInstance().subscribeToTopic("USER." + userDetails.getUserName());
@@ -393,6 +396,10 @@ public class MainActivity extends BaseActivity {
                 })
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
     }
 
     public UserDetails getUserDetails() {
