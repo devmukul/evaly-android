@@ -388,7 +388,7 @@ public class CartFragment extends Fragment {
             public void onFailed(String errorBody, int errorCode) {
 
                 dialog.hideDialog();
-                Toast.makeText(context, "Couldn't place order, might be a server error.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Couldn't place order, try again later.", Toast.LENGTH_SHORT).show();
             }
 
             @Override

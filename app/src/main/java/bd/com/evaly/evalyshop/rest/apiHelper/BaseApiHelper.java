@@ -61,7 +61,7 @@ public class BaseApiHelper {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
 
-                if (response.code() == 200 || response.code() == 201  || response.code() == 206) {
+                if (response.code() >= 200 && response.code() < 300) {
                     if (response.body() != null) {
                         dataFetchingListener.onDataFetched(response.body(), response.code());
 

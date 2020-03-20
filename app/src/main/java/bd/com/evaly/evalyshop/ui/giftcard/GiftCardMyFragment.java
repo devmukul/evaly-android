@@ -162,7 +162,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         } catch (Exception e) {
         }
 
-        Toast.makeText(context, "Sorry something went wrong(server error). Please try again.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Sorry something went wrong. Please try again later.", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -360,7 +360,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
             }
 
             dialog.hideDialog();
-            Toast.makeText(context, "Server error, try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Error occurred, try again later", Toast.LENGTH_SHORT).show();
 
         }) {
             @Override
