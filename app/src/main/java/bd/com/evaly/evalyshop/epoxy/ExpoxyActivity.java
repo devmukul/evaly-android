@@ -1,7 +1,10 @@
 package bd.com.evaly.evalyshop.epoxy;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import bd.com.evaly.evalyshop.R;
 
 public class ExpoxyActivity extends AppCompatActivity {
 
