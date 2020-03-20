@@ -25,6 +25,15 @@ package="bd.com.evaly.evalyshop">
     android:theme="@style/AppTheme"
     android:usesCleartextTraffic="true"
     tools:ignore="GoogleAppIndexingWarning">
+
+
+    <activity android:name="bd.com.evaly.evalyshop.epoxy.EpoxyActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+
     <activity
         android:name=".ui.issue.IssuesActivity"
         android:screenOrientation="portrait">
@@ -163,10 +172,10 @@ package="bd.com.evaly.evalyshop">
 
         <nav-graph android:value="@navigation/home_nav_graph" />
 
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+<!--        <intent-filter>-->
+<!--            <action android:name="android.intent.action.MAIN" />-->
+<!--            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--        </intent-filter>-->
 
 
         <intent-filter
@@ -249,12 +258,6 @@ package="bd.com.evaly.evalyshop">
         android:name="org.apache.http.legacy"
         android:required="false" />
 
-    <activity android:name="bd.com.evaly.evalyshop.epoxy.ExpoxyActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
 
 </application>
 
