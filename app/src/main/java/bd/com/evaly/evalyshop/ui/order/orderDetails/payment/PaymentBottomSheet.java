@@ -106,6 +106,18 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         // evaly pay
         binding.evalyPay.setOnClickListener(v -> {
 
+            try {
+                Double.parseDouble(binding.amountPay.getText().toString());
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Please enter valid amount.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!binding.amountPay.getText().toString().matches("\\d+.\\d+")) {
+                Toast.makeText(getContext(), "Please enter amount in english number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (binding.amountPay.getText().toString().trim().equals("")) {
                 Toast.makeText(getContext(), "Please enter an amount", Toast.LENGTH_SHORT).show();
                 return;
@@ -168,6 +180,18 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         });
 
         binding.card.setOnClickListener(v -> {
+
+            try {
+                Double.parseDouble(binding.amountPay.getText().toString());
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Please enter valid amount.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!binding.amountPay.getText().toString().matches("\\d+.\\d+")) {
+                Toast.makeText(getContext(), "Please enter amount in english number", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             double amountToPay = total_amount - paid_amount;
 

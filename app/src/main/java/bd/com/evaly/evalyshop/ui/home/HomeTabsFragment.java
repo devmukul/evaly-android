@@ -103,7 +103,7 @@ public class HomeTabsFragment extends Fragment {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response) {
 
-                        if (binding != null && getActivity() != null) {
+                        if (binding != null && getActivity() != null && adapter2 != null) {
                             getActivity().runOnUiThread(() -> {
                                 categoryItems.addAll(response);
                                 adapter2.notifyDataSetChanged();
