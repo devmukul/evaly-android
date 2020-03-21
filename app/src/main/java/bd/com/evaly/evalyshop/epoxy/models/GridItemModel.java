@@ -1,37 +1,33 @@
 package bd.com.evaly.evalyshop.epoxy.models;
 
-import android.view.View;
-import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.databinding.ViewDataBinding;
 
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
-import com.airbnb.epoxy.EpoxyHolder;
 import com.airbnb.epoxy.EpoxyModelClass;
-import com.airbnb.epoxy.EpoxyModelWithHolder;
 
 import bd.com.evaly.evalyshop.R;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import bd.com.evaly.evalyshop.databinding.EpxyGridItemBinding;
 
 @EpoxyModelClass(layout = R.layout.epxy_grid_item)
-public abstract class GridItemModel extends EpoxyModelWithHolder<GridItemModel.Holder> {
+public abstract class GridItemModel extends DataBindingEpoxyModel {
+
     @EpoxyAttribute
-    String title;
+    String text;
 
     @Override
-    public void bind(Holder holder) {
-        holder.header.setText(title);
+    public void bind(@NonNull DataBindingHolder holder) {
+        super.bind(holder);
+        EpxyGridItemBinding binding = (EpxyGridItemBinding) holder.getDataBinding();
+        binding.text.setText(text);
     }
 
-    static class Holder extends EpoxyHolder {
 
-        View itemView;
-        @BindView(R.id.text)
-        TextView header;
+    @Override
+    protected void setDataBindingVariables(ViewDataBinding binding) {
 
-        @Override
-        protected void bindView(View itemView) {
-            ButterKnife.bind(this, itemView);
-            this.itemView = itemView;
-        }
+       //  binding.setVariable(BR.textRes, textRes);
+
     }
 }

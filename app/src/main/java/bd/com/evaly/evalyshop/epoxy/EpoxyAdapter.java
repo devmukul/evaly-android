@@ -23,7 +23,7 @@ public class EpoxyAdapter extends com.airbnb.epoxy.EpoxyAdapter {
             item = item + item;
             GridItemModel gridItemModel = new GridItemModel_()
                     .id(i)
-                    .title(item)
+                    .text(item)
                     .spanSizeOverride((totalSpanCount, position, itemCount) -> totalSpanCount / 2);
             models.add(gridItemModel);
         }

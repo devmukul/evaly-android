@@ -6,7 +6,7 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.epoxy.models.GridItemModel_;
+import bd.com.evaly.evalyshop.EpxyGridItemBindingModel_;
 import bd.com.evaly.evalyshop.epoxy.models.Header2Model_;
 import bd.com.evaly.evalyshop.epoxy.models.HeaderModel_;
 import bd.com.evaly.evalyshop.epoxy.models.ItemModel_;
@@ -51,17 +51,11 @@ public class HeaderController extends EpoxyController {
                 .addTo(this);
 
         for (ProductItem productItem: items) {
-            new GridItemModel_()
-                    .id(productItem.getSlug())
-                    .title(productItem.getName())
-                    .spanSizeOverride((totalSpanCount, position, itemCount) -> totalSpanCount / 2)
-                    .addTo(this);
+
+            new EpxyGridItemBindingModel_().id(productItem.getSlug()).name(productItem.getName()).addTo(this);
         }
 
-
-        loader
-                .addIf(loadingMore, this);
-
+        loader.addIf(loadingMore, this);
 
     }
 

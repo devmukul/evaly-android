@@ -58,7 +58,9 @@ dependencies {
 
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
     implementation 'com.airbnb.android:epoxy:3.9.0'
+    implementation 'com.airbnb.android:epoxy-databinding:3.9.0'
     annotationProcessor 'com.airbnb.android:epoxy-processor:3.9.0'
+
 
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
