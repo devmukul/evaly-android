@@ -58,11 +58,9 @@
         android:label="fragment_browse_product"
         tools:layout="@layout/fragment_browse_product">
 
-        <deepLink
-            app:uri="https://evaly.com.bd/categories/{slug}"/>
+        <deepLink app:uri="https://evaly.com.bd/categories/{slug}" />
 
-        <deepLink
-            app:uri="https://www.evaly.com.bd/categories/{slug}"/>
+        <deepLink app:uri="https://www.evaly.com.bd/categories/{slug}" />
 
     </fragment>
     <fragment
@@ -81,6 +79,13 @@
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="https://www.evaly.com.bd/shops/{shop_slug}" />
+
+        <deepLink
+            app:uri="https://evaly.com.bd/campaign/shop/{shop_slug}/{campaign_slug}"/>
+        <deepLink
+            app:uri="https://www.evaly.com.bd/campaign/shop/{shop_slug}/{campaign_slug}"/>
+
+
     </fragment>
     <fragment
         android:id="@+id/brandFragment"
@@ -110,10 +115,8 @@
         <action
             android:id="@+id/action_campaignFragment_to_campaignShopFragment"
             app:destination="@id/campaignShopFragment" />
-        <deepLink
-            app:uri="https://campaign.evaly.com.bd/"/>
-        <deepLink
-            app:uri="https://evaly.com.bd/freedom-flash-sale"/>
+        <deepLink app:uri="https://campaign.evaly.com.bd/" />
+        <deepLink app:uri="https://evaly.com.bd/freedom-flash-sale" />
     </fragment>
     <fragment
         android:id="@+id/campaignShopFragment"
@@ -151,9 +154,14 @@
         android:label="activity_newsfeed"
         tools:layout="@layout/activity_newsfeed">
 
-        <deepLink
-            app:uri="https://evaly.com.bd/feeds"/>
+        <deepLink app:uri="https://evaly.com.bd/feeds" />
 
+    </activity>
+    <activity
+        android:id="@+id/giftCardActivity"
+        android:name="bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity"
+        android:label="GiftCardActivity">
+        <deepLink app:uri="https://evaly.com.bd/gift-card" />
     </activity>
 
 
