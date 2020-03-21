@@ -85,9 +85,12 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         context = getContext();
 
         if (getArguments() != null) {
-            type = getArguments().getInt("type");
-            slug = getArguments().getString("slug");
-            category = getArguments().getString("category");
+            if (getArguments().containsKey("type"))
+                type = getArguments().getInt("type");
+            if (getArguments().containsKey("slug"))
+                slug = getArguments().getString("slug");
+            if (getArguments().containsKey("category"))
+                category = getArguments().getString("category");
         } else {
             Toast.makeText(getContext(), "Can't load this page, try again later", Toast.LENGTH_SHORT).show();
         }
@@ -100,7 +103,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
 
         adapterProduct = new BrowseProductAdapter(getContext(), itemListProduct, activity, this, NavHostFragment.findNavController(this), slug);
         recyclerView.setAdapter(adapterProduct);
-
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -186,12 +188,22 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
                 isLoading = false;
                 progressBar.setVisibility(View.GONE);
 
+                if (currentPage == 1 && response.getData().size() == 0) {
+                    Toast.makeText(getContext(), "No product is available!", Toast.LENGTH_SHORT).show();
+                    progressBar1.setVisibility(View.GONE);
+                }
+
                 if (response.getCount() > 10)
                     currentPage++;
+
+
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+
+                isLoading = false;
+                progressBar.setVisibility(View.GONE);
 
             }
 

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,7 +49,13 @@ public class CampaignShopFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            model = (CampaignItem) getArguments().getSerializable("model");
+            if (getArguments().containsKey("model"))
+                model = (CampaignItem) getArguments().getSerializable("model");
+
+            if (getArguments().containsKey("slug")) {
+                model = new CampaignItem();
+                model.setSlug(getArguments().getString("slug"));
+            }
         }
     }
 
@@ -71,6 +78,19 @@ public class CampaignShopFragment extends Fragment {
                 getActivity().onBackPressed();
         });
 
+        if (model.getName() != null)
+            loadCampaignDetails();
+
+        itemList = new ArrayList<>();
+        adapter = new CampaignShopAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
+
+        binding.recyclerView.setAdapter(adapter);
+
+        getCampaignShops(1);
+
+    }
+
+    private void loadCampaignDetails() {
         binding.toolbar.setTitle(model.getName());
 
         Date startDate = Utils.getCampaignDate(model.getStartDate());
@@ -88,7 +108,7 @@ public class CampaignShopFragment extends Fragment {
             binding.tvStatus.setBackground(getResources().getDrawable(R.drawable.btn_pending_bg));
         }
 
-        Glide.with(view)
+        Glide.with(binding.getRoot())
                 .load(model.getBannerImage())
                 .into(binding.image);
 
@@ -97,14 +117,6 @@ public class CampaignShopFragment extends Fragment {
             intent.putExtra("image", model.getBannerImage());
             startActivity(intent);
         });
-
-        itemList = new ArrayList<>();
-        adapter = new CampaignShopAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
-
-        binding.recyclerView.setAdapter(adapter);
-
-        getCampaignShops(1);
-
     }
 
     public void getCampaignShops(int p) {
@@ -117,6 +129,14 @@ public class CampaignShopFragment extends Fragment {
 
                 binding.progressBar.setVisibility(View.GONE);
 
+                JsonObject meta = response.getMeta();
+
+                model.setName(meta.get("campaign_title").getAsString());
+                model.setBannerImage(meta.get("campaign_banner").getAsString());
+                model.setStartDate(meta.get("campaign_start_date").getAsString());
+                model.setEndDate(meta.get("campaign_end_date").getAsString());
+
+                loadCampaignDetails();
 
                 List<CampaignShopItem> list = response.getData();
 

@@ -169,15 +169,15 @@
             </intent-filter>
 
 
-            <intent-filter android:label="Campaign deep link"
-                android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https"
-                    android:host="evaly.com.bd"
-                    android:pathPrefix="/" />
-            </intent-filter>
+<!--            <intent-filter android:label="Open in Evaly app"-->
+<!--                android:autoVerify="true">-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+<!--                <data android:scheme="https"-->
+<!--                    android:host="evaly.com.bd"-->
+<!--                    android:pathPrefix="/" />-->
+<!--            </intent-filter>-->
 
 
         </activity>

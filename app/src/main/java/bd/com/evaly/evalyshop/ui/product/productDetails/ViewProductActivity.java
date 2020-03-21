@@ -196,8 +196,13 @@ public class ViewProductActivity extends BaseActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            slug = extras.getString("product_slug");
-            name = extras.getString("product_name");
+
+            if (extras.containsKey("product_slug"))
+                slug = extras.getString("product_slug");
+
+            if (extras.containsKey("product_name"))
+                name = extras.getString("product_name");
+
             // binding.productName.setVisibility(View.GONE);
 
             if (name != null) {
