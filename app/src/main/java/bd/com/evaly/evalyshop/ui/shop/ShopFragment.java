@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -278,9 +277,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             viewModel.loadShopProducts();
             AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
             appBarLayout.setExpanded(false, true);
-            TextView tv = view.findViewById(R.id.catTitle);
-            int scrollTo = ((View) tv.getParent()).getTop() + tv.getTop() + 30;
-
         });
 
         viewModel.getOnResetLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
