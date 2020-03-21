@@ -4,7 +4,6 @@ package bd.com.evaly.evalyshop.ui.order.orderList;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,6 @@ import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class OrderListFragment extends Fragment {
 
-
     private UserDetails userDetails;
     private RecyclerView recyclerView;
     private ArrayList<OrderListItem> orders;
@@ -55,30 +53,20 @@ public class OrderListFragment extends Fragment {
     public static OrderListFragment getInstance(String type) {
 
         OrderListFragment myFragment = new OrderListFragment();
-
         Bundle args = new Bundle();
         args.putString("type", type);
         myFragment.setArguments(args);
-
         return myFragment;
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for context fragment
         view = inflater.inflate(R.layout.fragment_order_list, container, false);
-
         context = getContext();
-
         Bundle bundle = getArguments();
-
-        if (bundle != null) {
-            if (bundle.containsKey("type"))
-                statusType = bundle.getString("type");
-        }
-
+        if (bundle != null && bundle.containsKey("type"))
+            statusType = bundle.getString("type");
         return view;
     }
 
@@ -86,7 +74,6 @@ public class OrderListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
         dummyView = view.findViewById(R.id.dummyView);
         recyclerView = view.findViewById(R.id.recycle);
@@ -97,39 +84,22 @@ public class OrderListFragment extends Fragment {
         orders = new ArrayList<>();
         adapter = new OrderAdapter(context, orders);
         recyclerView.setAdapter(adapter);
-
-
         userDetails = new UserDetails(context);
 
         showProgressView();
 
         getOrderData(currentPage);
 
-
         nestedSV = view.findViewById(R.id.relativeLayout);
 
-        if (nestedSV != null) {
-
-            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-
-                    try {
-
-                        showProgressView();
-                        getOrderData(++currentPage);
-
-                    } catch (Exception e) {
-                        Log.e("load more product", e.toString());
-                    }
-
-                }
-            });
-        }
-
+        nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                showProgressView();
+                getOrderData(++currentPage);
+            }
+        });
 
     }
-
 
     void showProgressView() {
         progressBar.setVisibility(View.VISIBLE);
@@ -152,8 +122,6 @@ public class OrderListFragment extends Fragment {
                 dummyView.setVisibility(View.GONE);
 
                 hideProgressView();
-
-
                 if (response != null) {
                     if (response.getCount() == 0 && page == 1) {
                         notOrdered.setVisibility(View.VISIBLE);
@@ -162,32 +130,25 @@ public class OrderListFragment extends Fragment {
                     } else {
                         notOrdered.setVisibility(View.GONE);
                         orders.addAll(response.getData());
-
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemRangeInserted(orders.size() - response.getData().size(), response.getData().size());
                     }
                 }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 hideProgressView();
-
             }
 
             @Override
             public void onAuthError(boolean logout) {
-
                 if (!logout)
                     getOrderData(page);
                 else if (getActivity() != null) {
-                    // Toast.makeText(getActivity(),"Token expired, please login again", Toast.LENGTH_LONG).show();
                     AppController.logout(getActivity());
                 }
-
             }
         });
-
     }
 
     @Override

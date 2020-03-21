@@ -191,14 +191,27 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
 
         plus.setOnClickListener(v -> {
-            int quan = Integer.parseInt(quantity.getText().toString());
+            int quan;
+            try {
+                quan = Integer.parseInt(quantity.getText().toString());
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Invalid quantity", Toast.LENGTH_SHORT).show();
+                return;
+            }
             total.setText(String.format(Locale.ENGLISH, "৳ %d", quan * voucherAmount));
             quan += 1;
             quantity.setText(String.format(Locale.ENGLISH, "%d", quan));
         });
 
         minus.setOnClickListener(v -> {
-            int quan = Integer.parseInt(quantity.getText().toString());
+            int quan;
+            try {
+                quan = Integer.parseInt(quantity.getText().toString());
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Invalid quantity", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             quan -= 1;
             if (quan < 1) {
                 quan = 1;
