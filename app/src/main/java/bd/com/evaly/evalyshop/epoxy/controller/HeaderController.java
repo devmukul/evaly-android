@@ -10,7 +10,7 @@ import bd.com.evaly.evalyshop.epoxy.models.GridItemModel_;
 import bd.com.evaly.evalyshop.epoxy.models.Header2Model_;
 import bd.com.evaly.evalyshop.epoxy.models.HeaderModel_;
 import bd.com.evaly.evalyshop.epoxy.models.ItemModel_;
-import bd.com.evaly.evalyshop.epoxy.models.NoHolderModel;
+import bd.com.evaly.evalyshop.epoxy.models.LoadingModel_;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 
 public class HeaderController extends EpoxyController {
@@ -25,6 +25,17 @@ public class HeaderController extends EpoxyController {
 
     @AutoModel
     ItemModel_ itemModel;
+
+    @AutoModel
+    LoadingModel_ loader;
+
+    private boolean loadingMore = true;
+
+
+    public void setLoadingMore(boolean loadingMore) {
+        this.loadingMore = loadingMore;
+        requestModelBuild();
+    }
 
     @Override
     protected void buildModels() {
@@ -47,7 +58,10 @@ public class HeaderController extends EpoxyController {
                     .addTo(this);
         }
 
-        new NoHolderModel().id(-3).addTo(this);
+
+        loader
+                .addIf(loadingMore, this);
+
 
     }
 

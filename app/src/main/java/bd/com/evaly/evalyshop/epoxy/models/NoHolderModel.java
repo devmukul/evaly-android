@@ -10,6 +10,7 @@ import com.airbnb.epoxy.EpoxyModel;
 
 import bd.com.evaly.evalyshop.R;
 
+
 public class NoHolderModel extends EpoxyModel<ConstraintLayout> {
 
     public NoHolderModel() {
@@ -23,7 +24,6 @@ public class NoHolderModel extends EpoxyModel<ConstraintLayout> {
     @Override
     public void bind(@NonNull ConstraintLayout view) {
         super.bind(view);
-
 
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
         params.setFullSpan(true);

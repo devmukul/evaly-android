@@ -73,9 +73,13 @@ public class EpoxyActivity extends AppCompatActivity {
 
 
     private void loadProducts(int page) {
+
+        controller.setLoadingMore(true);
+
         ProductApiHelper.getCategoryBrandProducts(page, null, null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
+                controller.setLoadingMore(false);
                 controller.addData(response.getData());
             }
 
