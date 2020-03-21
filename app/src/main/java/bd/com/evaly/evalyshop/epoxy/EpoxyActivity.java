@@ -6,16 +6,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.airbnb.epoxy.EpoxyControllerAdapter;
-
-import java.util.ArrayList;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.epoxy.controller.HeaderController;
 import bd.com.evaly.evalyshop.epoxy.decoration.GridSpacingDecoration;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class EpoxyActivity extends AppCompatActivity {
+
+    private int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private boolean loading = true;
+    private boolean isLoading = false;
+    private HeaderController controller;
+    private int currentPage = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,10 +33,8 @@ public class EpoxyActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
-        HeaderController controller = new HeaderController();
+        controller = new HeaderController();
         recyclerView.setAdapter(controller.getAdapter());
-
-        EpoxyControllerAdapter adapter = controller.getAdapter();
 
         int spanCount = 2;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -38,7 +45,49 @@ public class EpoxyActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
 
-        controller.setData(new ArrayList<>(), false);
+        loadProducts(currentPage);
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    int[] firstVisibleItems = null;
+                    firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
+                    if (firstVisibleItems != null && firstVisibleItems.length > 0) {
+                        pastVisiblesItems = firstVisibleItems[0];
+                    }
+
+                    if (!isLoading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            loadProducts(++currentPage);
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+
+    private void loadProducts(int page) {
+        ProductApiHelper.getCategoryBrandProducts(page, null, null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
+                controller.addData(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 }

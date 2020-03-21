@@ -1,17 +1,21 @@
 package bd.com.evaly.evalyshop.epoxy.controller;
 
 import com.airbnb.epoxy.AutoModel;
-import com.airbnb.epoxy.Typed2EpoxyController;
+import com.airbnb.epoxy.EpoxyController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.epoxy.models.GridItemModel_;
 import bd.com.evaly.evalyshop.epoxy.models.Header2Model_;
 import bd.com.evaly.evalyshop.epoxy.models.HeaderModel_;
 import bd.com.evaly.evalyshop.epoxy.models.ItemModel_;
+import bd.com.evaly.evalyshop.epoxy.models.NoHolderModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 
-public class HeaderController extends Typed2EpoxyController<List<ProductItem>, Boolean> {
+public class HeaderController extends EpoxyController {
+
+    private List<ProductItem> items = new ArrayList<>();
 
     @AutoModel
     HeaderModel_ headerModel;
@@ -23,35 +27,34 @@ public class HeaderController extends Typed2EpoxyController<List<ProductItem>, B
     ItemModel_ itemModel;
 
     @Override
-    protected void buildModels(List<ProductItem> photos, Boolean loadingMore) {
+    protected void buildModels() {
 
         headerModel
                 .title("My Photos")
-                .spanSizeOverride((totalSpanCount, position, itemCount) -> totalSpanCount / 1)
+                .spanSizeOverride((totalSpanCount, position, itemCount) -> 1)
                 .addTo(this);
 
         headerModel2
                 .title("My Photos")
-                .spanSizeOverride((totalSpanCount, position, itemCount) -> totalSpanCount / 1)
+                .spanSizeOverride((totalSpanCount, position, itemCount) -> 1)
                 .addTo(this);
 
-        for (int i = 0; i < 5; i++)
-            new ItemModel_()
-                    .id(i)
-                    .title("Item")
-                    .spanSizeOverride((totalSpanCount, position, itemCount) -> totalSpanCount / 1)
-                    .addTo(this);
-
-        String item = "item ";
-
-        for (int i = 0; i < 10; i++) {
-            item = item + item;
+        for (ProductItem productItem: items) {
             new GridItemModel_()
-                    .id(i)
-                    .title(item)
+                    .id(productItem.getSlug())
+                    .title(productItem.getName())
                     .spanSizeOverride((totalSpanCount, position, itemCount) -> totalSpanCount / 2)
                     .addTo(this);
         }
+
+        new NoHolderModel().id(-3).addTo(this);
+
+    }
+
+
+    public void addData(List<ProductItem> productItems){
+        this.items.addAll(productItems);
+        requestModelBuild();
     }
 
 }

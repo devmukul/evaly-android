@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.epoxy.models;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ public abstract class HeaderModel extends EpoxyModelWithHolder<HeaderModel.Holde
 
     @Override
     public void bind(Holder holder) {
+        Log.d("hmt", "reload");
         holder.header.setText(title);
     }
 
@@ -32,6 +34,9 @@ public abstract class HeaderModel extends EpoxyModelWithHolder<HeaderModel.Holde
 
         @Override
         protected void bindView(View itemView) {
+
+
+            Log.d("hmt", "reload 2");
 
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) itemView.getLayoutParams();
             params.setFullSpan(true);
