@@ -1,14 +1,18 @@
 package bd.com.evaly.evalyshop.epoxy.models;
 
+import android.view.View;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.airbnb.epoxy.EpoxyAttribute;
+import com.airbnb.epoxy.EpoxyHolder;
 import com.airbnb.epoxy.EpoxyModelClass;
 import com.airbnb.epoxy.EpoxyModelWithHolder;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.epoxy.base.BaseEpoxyHolder;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 @EpoxyModelClass(layout = R.layout.epoxy_item_list)
 public abstract class ItemModel extends EpoxyModelWithHolder<ItemModel.Holder> {
@@ -20,8 +24,20 @@ public abstract class ItemModel extends EpoxyModelWithHolder<ItemModel.Holder> {
         holder.header.setText(title);
     }
 
-    static class Holder extends BaseEpoxyHolder {
+    static class Holder extends EpoxyHolder {
+
+        View itemView;
         @BindView(R.id.text)
         TextView header;
+
+        @Override
+        protected void bindView(View itemView) {
+
+            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) itemView.getLayoutParams();
+            params.setFullSpan(true);
+
+            ButterKnife.bind(this, itemView);
+            this.itemView = itemView;
+        }
     }
 }

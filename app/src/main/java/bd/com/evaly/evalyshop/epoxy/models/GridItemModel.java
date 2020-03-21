@@ -3,8 +3,6 @@ package bd.com.evaly.evalyshop.epoxy.models;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyHolder;
 import com.airbnb.epoxy.EpoxyModelClass;
@@ -14,8 +12,8 @@ import bd.com.evaly.evalyshop.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-@EpoxyModelClass(layout = R.layout.epoxy_header_item2)
-public abstract class Header2Model extends EpoxyModelWithHolder<Header2Model.Holder> {
+@EpoxyModelClass(layout = R.layout.epxy_grid_item)
+public abstract class GridItemModel extends EpoxyModelWithHolder<GridItemModel.Holder> {
     @EpoxyAttribute
     String title;
 
@@ -32,10 +30,6 @@ public abstract class Header2Model extends EpoxyModelWithHolder<Header2Model.Hol
 
         @Override
         protected void bindView(View itemView) {
-
-            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) itemView.getLayoutParams();
-            params.setFullSpan(true);
-
             ButterKnife.bind(this, itemView);
             this.itemView = itemView;
         }
