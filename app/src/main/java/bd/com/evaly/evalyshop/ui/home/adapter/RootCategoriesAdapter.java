@@ -101,7 +101,7 @@ public class RootCategoriesAdapter extends RecyclerView.Adapter<RootCategoriesAd
             bundle.putString("slug", category);
             bundle.putString("category", category);
 
-            navController.navigate(R.id.action_homeFragment_to_browseProductFragment, bundle);
+            navController.navigate(R.id.browseProductFragment, bundle);
 
 
         }

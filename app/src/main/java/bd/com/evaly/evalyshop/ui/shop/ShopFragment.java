@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -87,12 +86,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
-    private boolean clickFromCategory = false;
-    private ShopViewModel viewModel;
-    private ProgressBar progressBar;
-    private FragmentShopNewBinding binding;
-    private boolean progressBarShowing = false;
-
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         public void onPresenceChanged(PresenceModel presenceModel) {
         }
@@ -113,6 +106,11 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         }
     };
+    private boolean clickFromCategory = false;
+    private ShopViewModel viewModel;
+    private ProgressBar progressBar;
+    private FragmentShopNewBinding binding;
+    private boolean progressBarShowing = false;
 
     public ShopFragment() {
         // Required empty public constructor
@@ -176,17 +174,15 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         if (getArguments() == null) {
-
             Toast.makeText(context, "Shop not available", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        title = getArguments().getString("shop_name");
+        if (getArguments().containsKey("shop_name"))
+            title = getArguments().getString("shop_name");
 
-        if (getArguments().getString("campaign_slug") != null) {
+        if (getArguments().getString("campaign_slug") != null)
             campaign_slug = getArguments().getString("campaign_slug");
-        }
-
 
         slug = getArguments().getString("shop_slug");
 
@@ -242,8 +238,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> {
 
-            if (progressBarShowing && productItemList.size() > 1){
-                productItemList.remove(productItemList.size()-1);
+            if (progressBarShowing && productItemList.size() > 1) {
+                productItemList.remove(productItemList.size() - 1);
                 adapterProducts.notifyItemRemoved(productItemList.size());
                 progressBarShowing = false;
             }
@@ -281,9 +277,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             viewModel.loadShopProducts();
             AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
             appBarLayout.setExpanded(false, true);
-            TextView tv = view.findViewById(R.id.catTitle);
-            int scrollTo = ((View) tv.getParent()).getTop() + tv.getTop() + 30;
-
         });
 
         viewModel.getOnResetLiveData().observe(getViewLifecycleOwner(), aBoolean -> {

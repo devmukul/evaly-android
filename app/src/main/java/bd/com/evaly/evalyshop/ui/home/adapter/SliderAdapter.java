@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.home.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,18 +21,17 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
-import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class SliderAdapter extends PagerAdapter {
 
+    FragmentTransaction ft;
+    AppCompatActivity activity;
     private Context context;
     private List<BannerItem> itemList;
     private int type = 1;
-    FragmentTransaction ft;
-    AppCompatActivity activity;
 
     public SliderAdapter(Context context, AppCompatActivity activity, List<BannerItem> itemList) {
         this.context = context;
@@ -69,7 +67,7 @@ public class SliderAdapter extends PagerAdapter {
 
         ImageView imageView = view.findViewById(R.id.sliderImage);
 
-        if(activity instanceof ViewProductActivity){
+        if (activity instanceof ViewProductActivity) {
             Glide.with(context)
                     .asBitmap()
                     .load(itemList.get(position).getImage())
@@ -93,53 +91,30 @@ public class SliderAdapter extends PagerAdapter {
         viewPager.addView(view, 0);
         view.setOnClickListener(v -> {
 
+            String url = itemList.get(position).getUrl();
 
-            if(itemList.get(position).getSlug().equals("")){
+            if (url.equals("")) {
                 return;
-            }else if(itemList.get(position).getUrl().equals("https://evaly.com.bd")){
-
+            } else if (url.equals("https://evaly.com.bd") || url.equals("https://evaly.com.bd/")) {
                 Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
-
                 return;
-            }
-
-
-            if (itemList.get(position).getUrl().contains("shops-grand-brand-days")){
-
-                Intent ni = new Intent(context, CampaignShopActivity.class);
-                ni.putExtra("title", "Grand Brand Days");
-                ni.putExtra("slug", "grandbranddays");
-                context.startActivity(ni);
-
-                return;
-
             }
 
             if (itemList.get(position).getUrl().contains("evaly.com.bd/shops")) {
-
-                    String[] ar = itemList.get(position).getUrl().split("/shops/");
-
-                    if (ar.length > 1) {
-
-                        String slug = ar[1];
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("type", 1);
-                        bundle.putString("shop_name", itemList.get(position).getName());
-                        bundle.putString("shop_slug", slug);
-                        bundle.putString("category", "root");
-
-                        Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.shopFragment, bundle);
-
-                    } else {
-
-                        Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
-
-                    }
-
+                String[] ar = itemList.get(position).getUrl().split("/shops/");
+                if (ar.length > 1) {
+                    String slug = ar[1];
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 1);
+                    bundle.putString("shop_name", itemList.get(position).getName());
+                    bundle.putString("shop_slug", slug);
+                    bundle.putString("category", "root");
+                    Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.shopFragment, bundle);
+                } else
+                    Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_SHORT).show();
             } else {
 
-
-                Utils.CustomTab(itemList.get(position).getUrl(),  context);
+                Utils.CustomTab(itemList.get(position).getUrl(), context);
             }
 
         });

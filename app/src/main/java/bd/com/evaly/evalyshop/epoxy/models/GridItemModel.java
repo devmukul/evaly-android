@@ -30,4 +30,7 @@ public abstract class GridItemModel extends DataBindingEpoxyModel {
        //  binding.setVariable(BR.textRes, textRes);
 
     }
+
+
+
 }

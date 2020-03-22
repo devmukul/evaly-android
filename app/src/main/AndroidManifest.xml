@@ -1,264 +1,250 @@
-<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-package="bd.com.evaly.evalyshop">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="bd.com.evaly.evalyshop">
 
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.READ_CONTACTS" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-
-<application
-    android:name=".controller.AppController"
-    android:allowBackup="true"
-    android:hardwareAccelerated="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:largeHeap="true"
-    android:roundIcon="@mipmap/ic_launcher_round"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme"
-    android:usesCleartextTraffic="true"
-    tools:ignore="GoogleAppIndexingWarning">
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
 
-    <activity android:name="bd.com.evaly.evalyshop.epoxy.EpoxyActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
-
-    <activity
-        android:name=".ui.issue.IssuesActivity"
-        android:screenOrientation="portrait">
-        <intent-filter>
-            <action android:name="OPEN_ISSUES" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
-    </activity>
-    <activity
-        android:name=".ui.chat.invite.InviteActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/AppTheme.NoActionBar" />
-    <activity
-        android:name=".ui.chat.RequestListActivity"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".controller.SplashActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/AppTheme.NoActionBar">
-
-    </activity>
-    <activity
-        android:name=".ui.newsfeed.NewsfeedNotification"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".ui.newsfeed.NewsfeedActivity"
-        android:theme="@style/AppTheme"
-        android:screenOrientation="portrait">
-
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-
-    </activity>
-    <activity
-        android:name=".ui.order.PayViaCard"
-        android:theme="@style/AppTheme" />
-    <activity
-        android:name=".ui.chat.ChatListActivity"
-        android:theme="@style/AppTheme.NoActionBar" />
-    <activity
-        android:name=".ui.chat.ChatDetailsActivity"
-        android:theme="@style/AppTheme.NoActionBar">
-        <intent-filter>
-            <action android:name="OPEN_CHAT_DETAILS" />
-
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
-    </activity>
-    <activity
-        android:name=".ui.transaction.TransactionHistory"
-        android:theme="@style/ThemeTransaction" />
-    <activity android:name=".ui.offers.OffersActivity" />
-    <activity
-        android:name=".ui.menu.InviteEarn"
-        android:theme="@style/AppTheme" />
-    <activity
-        android:name=".util.ImagePreview"
-        android:theme="@style/AppTheme.NoActionBar" />
-
-    <!--        <activity-->
-    <!--            android:name="com.facebook.FacebookActivity"-->
-    <!--            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
-    <!--            android:label="@string/app_name" />-->
-
-    <activity
-        android:name=".ui.voucher.VoucherActivity"
-        android:theme="@style/AppTheme.NoActionBar" />
-    <activity
-        android:name=".ui.giftcard.GiftCardActivity"
-        android:theme="@style/AppTheme" />
-    <activity
-        android:name=".ui.search.SearchCategory"
-        android:theme="@style/AppTheme.NoActionBar" />
-    <activity
-        android:name=".ui.order.PayViaBkashActivity"
-        android:theme="@style/AppTheme" />
-    <activity
-        android:name=".ui.networkError.NetworkErrorActivity"
-        android:theme="@style/AppTheme.NoActionBar" />
-    <activity
-        android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
-        android:configChanges="keyboardHidden|orientation|screenSize"
-        android:screenOrientation="sensor"
-        android:theme="@style/AppTheme.NoActionBar" />
-
-    <activity android:name=".ui.reviews.ReviewsActivity" />
-    <activity
-        android:name=".ui.order.orderDetails.OrderDetailsActivity"
-        android:theme="@style/AppTheme"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".ui.order.AddBalanceActivity"
-        android:theme="@style/AppTheme" />
-    <activity
-        android:name=".ui.auth.ChangePasswordActivity"
-        android:theme="@style/AppTheme" />
-    <activity
-        android:name=".ui.user.EditProfileActivity"
-        android:theme="@style/AppTheme" />
-    <activity
-        android:name=".ui.order.orderList.OrderListActivity"
-        android:theme="@style/AppTheme"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".ui.auth.password.PasswordActivity"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".ui.user.UserDashboardActivity"
-        android:label="@string/title_activity_user_profile"
-        android:theme="@style/AppTheme"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".ui.search.GlobalSearchActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".ui.auth.ForgotPasswordActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="adjustPan" />
-    <activity
-        android:name=".ui.cart.CartActivity"
-        android:windowSoftInputMode="adjustPan"
-        android:theme="@style/AppTheme.NoActionBar" />
-    <activity
-        android:name=".ui.product.productDetails.ViewProductActivity"
-        android:label="@string/title_activity_view_product"
-        android:theme="@style/AppThemeViewProduct"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".ui.main.MainActivity"
+    <application
+        android:name=".controller.AppController"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:largeHeap="true"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:screenOrientation="portrait">
-
-        <nav-graph android:value="@navigation/home_nav_graph" />
-
-<!--        <intent-filter>-->
-<!--            <action android:name="android.intent.action.MAIN" />-->
-<!--            <category android:name="android.intent.category.LAUNCHER" />-->
-<!--        </intent-filter>-->
-
-
-        <intent-filter
-            android:label="Campaign deep link"
-            android:autoVerify="true">
-            <action android:name="android.intent.action.VIEW" />
-
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-
-            <data
-                android:scheme="https"
-                android:host="evaly.com.bd"
-                android:pathPrefix="/" />
-        </intent-filter>
-
-
-    </activity>
-    <activity
-        android:name=".ui.auth.SignInActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="adjustPan" />
-    <activity
-        android:name=".ui.auth.SignUpActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="adjustPan" />
-
-    <activity
-        android:name=".ui.notification.NotificationActivity"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:windowSoftInputMode="adjustPan" />
-    <activity
-        android:name=".ui.menu.ContactActivity"
-        android:theme="@style/AppThemeViewProduct" />
-    <activity
-        android:name=".ui.menu.AboutActivity"
-        android:theme="@style/AppTheme" />
-    <activity
-        android:name=".ui.campaign.CampaignShopActivity"
-        android:label="Evaly Store"
-        android:theme="@style/AppTheme" />
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning">
 
-    <meta-data
-        android:name="com.facebook.sdk.ApplicationId"
-        android:value="@string/facebook_app_id" />
-    <meta-data
-        android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
-        android:value="false" />
-    <meta-data
-        android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
-        android:value="false" />
-    <meta-data
-        android:name="com.google.firebase.messaging.default_notification_icon"
-        android:resource="@drawable/ic_status_icon" />
-    <!--
+        <activity
+            android:name=".epoxy.EpoxyActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait">
+
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+
+        </activity>
+
+        <activity android:name=".ui.issue.IssuesActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="OPEN_ISSUES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.chat.invite.InviteActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.chat.RequestListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".controller.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".ui.newsfeed.NewsfeedNotification"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.newsfeed.NewsfeedActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+
+        </activity>
+        <activity
+            android:name=".ui.order.PayViaCard"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.chat.ChatListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.chat.ChatDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="OPEN_CHAT_DETAILS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.transaction.TransactionHistory"
+            android:theme="@style/ThemeTransaction" />
+        <activity android:name=".ui.offers.OffersActivity" />
+        <activity
+            android:name=".ui.menu.InviteEarn"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".util.ImagePreview"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+<!--        <activity-->
+<!--            android:name="com.facebook.FacebookActivity"-->
+<!--            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
+<!--            android:label="@string/app_name" />-->
+
+        <activity
+            android:name=".ui.voucher.VoucherActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.giftcard.GiftCardActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.search.SearchCategory"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.order.PayViaBkashActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.networkError.NetworkErrorActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensor"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".ui.reviews.ReviewsActivity" />
+        <activity
+            android:name=".ui.order.orderDetails.OrderDetailsActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.order.AddBalanceActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.auth.ChangePasswordActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.user.EditProfileActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.order.orderList.OrderListActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.auth.password.PasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.user.UserDashboardActivity"
+            android:label="@string/title_activity_user_profile"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.search.GlobalSearchActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.cart.CartActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".ui.product.productDetails.ViewProductActivity"
+            android:label="@string/title_activity_view_product"
+            android:theme="@style/AppThemeViewProduct"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:largeHeap="true"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
+
+            <nav-graph android:value="@navigation/home_nav_graph" />
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+
+        </activity>
+        <activity
+            android:name=".ui.auth.SignInActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.auth.SignUpActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".ui.notification.NotificationActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.menu.ContactActivity"
+            android:theme="@style/AppThemeViewProduct" />
+        <activity
+            android:name=".ui.menu.AboutActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.campaign.CampaignShopActivity"
+            android:label="Evaly Store"
+            android:theme="@style/AppTheme" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
+            android:value="false" />
+        <meta-data
+            android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
+            android:value="false" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_status_icon" />
+        <!--
  Set color used with incoming notification messages. This is used when no color is set for the incoming
              notification message. See README(https://goo.gl/6BKBk7) for more.
         -->
-    <meta-data
-        android:name="com.google.firebase.messaging.default_notification_color"
-        android:resource="@color/evaly_color" />
-    <meta-data
-        android:name="com.google.firebase.messaging.default_notification_channel_id"
-        android:value="@string/default_notification_channel_id" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/evaly_color" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
 
-    <service
-        android:name=".util.xmpp.XMPPService"
-        android:enabled="true" />
-    <service
-        android:name=".service.MyFirebaseMessagingService"
-        android:exported="true">
-        <intent-filter>
-            <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-        </intent-filter>
-    </service>
-    <service android:name=".service.XmppConnectionIntentService" />
+        <service
+            android:name=".util.xmpp.XMPPService"
+            android:enabled="true" />
+        <service
+            android:name=".service.MyFirebaseMessagingService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".service.XmppConnectionIntentService" />
 
-    <uses-library
-        android:name="org.apache.http.legacy"
-        android:required="false" />
-
-
-</application>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+    </application>
 
 </manifest>

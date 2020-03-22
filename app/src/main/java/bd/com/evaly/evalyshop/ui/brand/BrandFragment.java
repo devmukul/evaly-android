@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -121,21 +122,32 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             startActivity(intent);
         });
 
-        slug = getArguments().getString("brand_slug");
-        title = getArguments().getString("brand_name");
-        categorySlug = getArguments().getString("category");
+        if (getArguments() != null) {
+            if (getArguments().containsKey("brand_slug"))
+                slug = getArguments().getString("brand_slug");
 
-        if (categorySlug.equals("root"))
-            categoryString = getString(R.string.all_categories);
+            if (getArguments().containsKey("brand_name"))
+                title = getArguments().getString("brand_name");
 
-        else {
-            categoryString = categorySlug.replace('-', ' ');
-            categoryString = Utils.capitalize(categoryString);
-            categoryString = categoryString.replaceAll("\\w+$", "");
+
+            if (getArguments().containsKey("category"))
+                categorySlug = getArguments().getString("category");
+
+            if (categorySlug.equals("root"))
+                categoryString = getString(R.string.all_categories);
+            else {
+                categoryString = categorySlug.replace('-', ' ');
+                categoryString = Utils.capitalize(categoryString);
+                categoryString = categoryString.replaceAll("\\w+$", "");
+            }
+
+
+            if (getArguments().containsKey("image_url"))
+                imgUrl = getArguments().getString("image_url");
+
+        } else {
+            Toast.makeText(getContext(), "This page is not available!", Toast.LENGTH_SHORT).show();
         }
-
-        imgUrl = getArguments().getString("image_url");
-
 
         dummyView = view.findViewById(R.id.dummyView);
         recyclerView = view.findViewById(R.id.products);

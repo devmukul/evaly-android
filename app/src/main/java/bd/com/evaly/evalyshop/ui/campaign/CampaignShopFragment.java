@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,7 +40,6 @@ public class CampaignShopFragment extends Fragment {
     private CampaignItem model;
     private FragmentCampaignShopBinding binding;
 
-
     public CampaignShopFragment() {
         // Required empty public constructor
     }
@@ -48,7 +48,13 @@ public class CampaignShopFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            model = (CampaignItem) getArguments().getSerializable("model");
+            if (getArguments().containsKey("model"))
+                model = (CampaignItem) getArguments().getSerializable("model");
+
+            if (getArguments().containsKey("slug")) {
+                model = new CampaignItem();
+                model.setSlug(getArguments().getString("slug"));
+            }
         }
     }
 
@@ -71,32 +77,8 @@ public class CampaignShopFragment extends Fragment {
                 getActivity().onBackPressed();
         });
 
-        binding.toolbar.setTitle(model.getName());
-
-        Date startDate = Utils.getCampaignDate(model.getStartDate());
-        Date endDate = Utils.getCampaignDate(model.getEndDate());
-        Date currentDate = Calendar.getInstance().getTime();
-
-        if (currentDate.after(startDate) && currentDate.before(endDate)) {
-            binding.tvStatus.setText("Live Now");
-            binding.tvStatus.setBackground(getResources().getDrawable(R.drawable.btn_live_now_red));
-        } else if (currentDate.after(endDate)) {
-            binding.tvStatus.setText("Expired");
-            binding.tvStatus.setBackground(getResources().getDrawable(R.drawable.btn_campaign_expired));
-        } else {
-            binding.tvStatus.setText("Live on " + Utils.getFormatedCampaignDate("", "d MMM hh:mm aa", model.getStartDate()));
-            binding.tvStatus.setBackground(getResources().getDrawable(R.drawable.btn_pending_bg));
-        }
-
-        Glide.with(view)
-                .load(model.getBannerImage())
-                .into(binding.image);
-
-        binding.headerLogo.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), ImagePreview.class);
-            intent.putExtra("image", model.getBannerImage());
-            startActivity(intent);
-        });
+        if (model.getName() != null)
+            loadCampaignDetails();
 
         itemList = new ArrayList<>();
         adapter = new CampaignShopAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
@@ -105,6 +87,39 @@ public class CampaignShopFragment extends Fragment {
 
         getCampaignShops(1);
 
+    }
+
+    private void loadCampaignDetails() {
+
+        if (getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed() || binding == null)
+            return;
+
+        binding.toolbar.setTitle(model.getName());
+
+        Date startDate = Utils.getCampaignDate(model.getStartDate());
+        Date endDate = Utils.getCampaignDate(model.getEndDate());
+        Date currentDate = Calendar.getInstance().getTime();
+
+        if (currentDate.after(startDate) && currentDate.before(endDate)) {
+            binding.tvStatus.setText("Live Now");
+            binding.tvStatus.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_live_now_red));
+        } else if (currentDate.after(endDate)) {
+            binding.tvStatus.setText("Expired");
+            binding.tvStatus.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_campaign_expired));
+        } else {
+            binding.tvStatus.setText(String.format("Live on %s", Utils.getFormatedCampaignDate("", "d MMM hh:mm aa", model.getStartDate())));
+            binding.tvStatus.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_pending_bg));
+        }
+
+        Glide.with(binding.getRoot())
+                .load(model.getBannerImage())
+                .into(binding.image);
+
+        binding.headerLogo.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ImagePreview.class);
+            intent.putExtra("image", model.getBannerImage());
+            startActivity(intent);
+        });
     }
 
     public void getCampaignShops(int p) {
@@ -117,6 +132,14 @@ public class CampaignShopFragment extends Fragment {
 
                 binding.progressBar.setVisibility(View.GONE);
 
+                JsonObject meta = response.getMeta();
+
+                model.setName(meta.get("campaign_title").getAsString());
+                model.setBannerImage(meta.get("campaign_banner").getAsString());
+                model.setStartDate(meta.get("campaign_start_date").getAsString());
+                model.setEndDate(meta.get("campaign_end_date").getAsString());
+
+                loadCampaignDetails();
 
                 List<CampaignShopItem> list = response.getData();
 

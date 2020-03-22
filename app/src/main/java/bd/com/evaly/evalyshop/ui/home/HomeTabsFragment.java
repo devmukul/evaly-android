@@ -406,8 +406,6 @@ public class HomeTabsFragment extends Fragment {
         super.onDestroyView();
         binding.recyclerView.setAdapter(null);
         itemList.clear();
-        adapter = null;
-        adapter2 = null;
         binding = null;
     }
 }
