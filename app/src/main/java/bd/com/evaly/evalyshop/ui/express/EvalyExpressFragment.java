@@ -52,10 +52,17 @@ public class EvalyExpressFragment extends Fragment {
         binding.recyclerView.setAdapter(adapter);
 
         viewModel.getLiveData().observe(getViewLifecycleOwner(), shopGroupResponse -> {
-            binding.progressBar.setVisibility(View.GONE);
-            itemList.addAll(shopGroupResponse.getShops());
 
-            if (itemList.size() == 0){
+            binding.progressBar.setVisibility(View.GONE);
+            if (shopGroupResponse.getShops() == null) {
+                binding.layoutNot.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            itemList.addAll(shopGroupResponse.getShops());
+            adapter.notifyDataSetChanged();
+
+            if (itemList.size() == 0) {
                 binding.layoutNot.setVisibility(View.VISIBLE);
             } else
                 binding.layoutNot.setVisibility(View.GONE);

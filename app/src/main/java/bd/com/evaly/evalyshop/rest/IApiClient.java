@@ -195,7 +195,7 @@ public interface IApiClient {
     Call<CommonDataResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);
 
 
-    @GET(UrlUtils.BASE_URL+"/shop-groups/{group}/")
+    @GET(UrlUtils.BASE_URL+"shop-groups/{group}/")
     Call<ShopGroupResponse> getShopByGroup(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);
 
 

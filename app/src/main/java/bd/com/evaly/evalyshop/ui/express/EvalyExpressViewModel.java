@@ -9,7 +9,7 @@ import bd.com.evaly.evalyshop.models.shop.shopGroup.ShopGroupResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 
 public class EvalyExpressViewModel extends ViewModel {
-    private MutableLiveData<ShopGroupResponse> liveData;
+    private MutableLiveData<ShopGroupResponse> liveData = new MutableLiveData<>();
 
 
     public LiveData<ShopGroupResponse> getLiveData() {
@@ -26,6 +26,8 @@ public class EvalyExpressViewModel extends ViewModel {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+
+                liveData.setValue(new ShopGroupResponse());
 
             }
 
