@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -189,7 +190,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
                 progressBar.setVisibility(View.GONE);
 
                 if (currentPage == 1 && response.getData().size() == 0) {
-                    Toast.makeText(getContext(), "No product is available!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AppController.getmContext(), "No product is available!", Toast.LENGTH_SHORT).show();
                     progressBar1.setVisibility(View.GONE);
                 }
 

@@ -485,8 +485,10 @@ public class ViewProductActivity extends BaseActivity {
         sliderImages.addAll(item.getProductImages());
         sliderAdapter.notifyDataSetChanged();
 
-        if (sliderImages.size() == 1)
+        if (sliderImages.size() == 1) {
             binding.sliderIndicator.setVisibility(View.GONE);
+            binding.sliderIndicatorBg.setVisibility(View.GONE);
+        }
 
         shopItemId = item.getVariantId();
 

@@ -158,6 +158,7 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:largeHeap="true"
+            android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
 

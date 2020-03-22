@@ -40,7 +40,6 @@ public class CampaignShopFragment extends Fragment {
     private CampaignItem model;
     private FragmentCampaignShopBinding binding;
 
-
     public CampaignShopFragment() {
         // Required empty public constructor
     }
@@ -91,6 +90,10 @@ public class CampaignShopFragment extends Fragment {
     }
 
     private void loadCampaignDetails() {
+
+        if (getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed() || binding == null)
+            return;
+
         binding.toolbar.setTitle(model.getName());
 
         Date startDate = Utils.getCampaignDate(model.getStartDate());
@@ -99,13 +102,13 @@ public class CampaignShopFragment extends Fragment {
 
         if (currentDate.after(startDate) && currentDate.before(endDate)) {
             binding.tvStatus.setText("Live Now");
-            binding.tvStatus.setBackground(getResources().getDrawable(R.drawable.btn_live_now_red));
+            binding.tvStatus.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_live_now_red));
         } else if (currentDate.after(endDate)) {
             binding.tvStatus.setText("Expired");
-            binding.tvStatus.setBackground(getResources().getDrawable(R.drawable.btn_campaign_expired));
+            binding.tvStatus.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_campaign_expired));
         } else {
-            binding.tvStatus.setText("Live on " + Utils.getFormatedCampaignDate("", "d MMM hh:mm aa", model.getStartDate()));
-            binding.tvStatus.setBackground(getResources().getDrawable(R.drawable.btn_pending_bg));
+            binding.tvStatus.setText(String.format("Live on %s", Utils.getFormatedCampaignDate("", "d MMM hh:mm aa", model.getStartDate())));
+            binding.tvStatus.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_pending_bg));
         }
 
         Glide.with(binding.getRoot())
