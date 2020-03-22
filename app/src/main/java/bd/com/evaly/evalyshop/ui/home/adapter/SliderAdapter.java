@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -22,30 +21,16 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
-import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class SliderAdapter extends PagerAdapter {
 
-    FragmentTransaction ft;
-    AppCompatActivity activity;
-    private Context context;
+    private AppCompatActivity activity;
     private List<BannerItem> itemList;
-    private int type = 1;
 
-    public SliderAdapter(Context context, AppCompatActivity activity, List<BannerItem> itemList) {
-        this.context = context;
+    public SliderAdapter(AppCompatActivity activity, List<BannerItem> itemList) {
         this.itemList = itemList;
         this.activity = activity;
-        ft = activity.getSupportFragmentManager().beginTransaction();
-    }
-
-    public SliderAdapter(Context context, AppCompatActivity activity, List<BannerItem> itemList, int type) {
-        this.context = context;
-        this.itemList = itemList;
-        this.type = type;
-        this.activity = activity;
-        ft = activity.getSupportFragmentManager().beginTransaction();
     }
 
     @Override
@@ -60,43 +45,30 @@ public class SliderAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view;
 
         view = inflater.inflate(R.layout.item_slider, null);
 
         ImageView imageView = view.findViewById(R.id.sliderImage);
 
-        if (activity instanceof ViewProductActivity) {
-            Glide.with(context)
-                    .asBitmap()
-                    .load(itemList.get(position).getImage())
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(new RequestOptions().override(900, 900))
-                    .into(imageView);
-
-        } else {
-
-            Glide.with(context)
+            Glide.with(activity)
                     .asBitmap()
                     .load(itemList.get(position).getImage())
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(3000, 900))
                     .into(imageView);
-        }
 
         ViewPager viewPager = (ViewPager) container;
         viewPager.addView(view, 0);
         view.setOnClickListener(v -> {
 
             String url = itemList.get(position).getUrl();
-
             if (url.equals("")) {
                 return;
             } else if (url.equals("https://evaly.com.bd") || url.equals("https://evaly.com.bd/")) {
-                Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -111,10 +83,10 @@ public class SliderAdapter extends PagerAdapter {
                     bundle.putString("category", "root");
                     Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.shopFragment, bundle);
                 } else
-                    Toast.makeText(context, "It's just a banner. No page to open.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "It's just a banner. No page to open.", Toast.LENGTH_SHORT).show();
             } else {
 
-                Utils.CustomTab(itemList.get(position).getUrl(), context);
+                Utils.CustomTab(itemList.get(position).getUrl(), activity);
             }
 
         });

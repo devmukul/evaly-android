@@ -34,6 +34,7 @@ public class EpoxyActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
         controller = new HeaderController();
+        controller.setActivity(this);
         recyclerView.setAdapter(controller.getAdapter());
 
         int spanCount = 2;

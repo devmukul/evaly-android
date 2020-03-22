@@ -10,6 +10,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
@@ -114,7 +115,7 @@ public interface IApiClient {
     Call<JsonObject> getIssueList(@Header("Authorization") String header, @Path("invoice") String invoice);
 
     @GET(UrlUtils.GET_BANNERS)
-    Call<JsonObject> getBanners();
+    Call<CommonResultResponse<List<BannerItem>>> getBanners();
 
     // balance, transaction
 

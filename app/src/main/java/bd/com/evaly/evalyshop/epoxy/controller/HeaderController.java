@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.epoxy.controller;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.EpoxyController;
 
@@ -12,17 +14,22 @@ import bd.com.evaly.evalyshop.epoxy.models.ItemModel_;
 import bd.com.evaly.evalyshop.epoxy.models.LoadingModel_;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 
 public class HeaderController extends EpoxyController {
 
+    private AppCompatActivity activity;
     private List<ProductItem> items = new ArrayList<>();
 
     @AutoModel
-    HomeSliderModel_ headerModel;
+    HomeSliderModel_ sliderModel;
 
     @AutoModel
-    HomeWidgetModel_ headerModel2;
+    HomeWidgetModel_ widgetModel;
+
+    @AutoModel
+    HomeTabsModel_ tabsModel;
 
     @AutoModel
     ItemModel_ itemModel;
@@ -50,13 +57,14 @@ public class HeaderController extends EpoxyController {
     @Override
     protected void buildModels() {
 
-        headerModel
-                .spanSizeOverride((totalSpanCount, position, itemCount) -> 1)
+        sliderModel
+                .activity(activity)
                 .addTo(this);
 
-        headerModel2
-                .spanSizeOverride((totalSpanCount, position, itemCount) -> 1)
+        widgetModel
                 .addTo(this);
+
+        tabsModel.addTo(this);
 
 
         for (ProductItem productItem: items) {
@@ -74,4 +82,7 @@ public class HeaderController extends EpoxyController {
         requestModelBuild();
     }
 
+    public void setActivity(AppCompatActivity activity) {
+        this.activity = activity;
+    }
 }

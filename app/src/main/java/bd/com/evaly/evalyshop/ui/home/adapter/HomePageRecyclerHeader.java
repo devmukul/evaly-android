@@ -18,23 +18,18 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.RecyclerHeaderHomeBinding;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
@@ -42,7 +37,6 @@ import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
-import retrofit2.Response;
 
 public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
@@ -219,19 +213,20 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
             binding.shimmer.shimmer.setVisibility(View.GONE);
         }, 1500);
 
-        AuthApiHelper.getBanners(new DataFetchingListener<Response<JsonObject>>() {
+        GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String>() {
             @Override
-            public void onDataFetched(Response<JsonObject> response) {
-                if (response.code() == 200 || response.code() == 201) {
-                    ArrayList<BannerItem> sliderImages = new Gson().fromJson(response.body().get("results"), new TypeToken<List<BannerItem>>() {
-                    }.getType());
-                    binding.sliderPager.setAdapter(new SliderAdapter(context, activityInstance, sliderImages));
-                    binding.sliderIndicator.setupWithViewPager(binding.sliderPager, true);
-                }
+            public void onDataFetched(CommonResultResponse<List<BannerItem>> response, int statusCode) {
+                binding.sliderPager.setAdapter(new SliderAdapter(activityInstance, response.getData()));
+                binding.sliderIndicator.setupWithViewPager(binding.sliderPager, true);
             }
 
             @Override
-            public void onFailed(int status) {
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
 
             }
         });

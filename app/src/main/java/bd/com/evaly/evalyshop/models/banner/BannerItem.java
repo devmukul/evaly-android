@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.models.banner;
 
-public class BannerItem {
+import java.io.Serializable;
+
+public class BannerItem implements Serializable {
 
     String image, name, slug, status, type, url;
 

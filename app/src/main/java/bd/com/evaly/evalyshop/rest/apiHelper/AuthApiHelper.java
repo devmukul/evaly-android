@@ -328,23 +328,7 @@ public class AuthApiHelper extends BaseApiHelper {
         });
     }
 
-    public static void getBanners(DataFetchingListener<Response<JsonObject>> listener) {
-        IApiClient iApiClient = getiApiClient();
-        Call<JsonObject> call = iApiClient.getBanners();
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                listener.onDataFetched(response);
-
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                listener.onFailed(0);
-            }
-        });
-    }
 
     public static void updateProductStatus(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {
 
