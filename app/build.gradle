@@ -9,8 +9,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 164
-        versionName "1.194"
+        versionCode 170
+        versionName "1.2"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -57,11 +57,10 @@ android {
 dependencies {
 
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
+
     implementation 'com.airbnb.android:epoxy:3.9.0'
     implementation 'com.airbnb.android:epoxy-databinding:3.9.0'
     annotationProcessor 'com.airbnb.android:epoxy-processor:3.9.0'
-
-
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'

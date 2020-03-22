@@ -186,7 +186,6 @@
                         android:text="Sorry, no shop found"
                         android:textColor="#555"
                         android:textSize="15sp" />
-
                 </LinearLayout>
             </LinearLayout>
         </bd.com.evaly.evalyshop.views.StickyScrollView>

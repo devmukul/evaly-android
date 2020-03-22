@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
+import bd.com.evaly.evalyshop.models.shop.shopGroup.ShopGroupResponse;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import retrofit2.Call;
 
@@ -34,6 +35,12 @@ public class ShopApiHelper extends BaseApiHelper{
     public static void getFollowedShop(String token, ResponseListenerAuth<JsonObject, String> listener){
 
         getiApiClient().getFollowedShops(token).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
+    public static void getShopsByGroup(String group, int page, int limit, ResponseListenerAuth<ShopGroupResponse, String> listener){
+
+        getiApiClient().getShopByGroup(group, page, limit).enqueue(getResponseCallBackDefault(listener));
     }
 
 }

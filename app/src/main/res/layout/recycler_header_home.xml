@@ -181,7 +181,7 @@
                 android:background="@drawable/circle_bg"
                 android:clickable="false"
                 android:tint="#CC9933"
-                app:srcCompat="@drawable/ic_order_thin" />
+                app:srcCompat="@drawable/ic_express" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -189,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0"
-                android:text="@string/orders" />
+                android:text="@string/evaly_express" />
         </LinearLayout>
 
 

@@ -32,11 +32,9 @@ import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
-import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 
 public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
 
@@ -165,10 +163,13 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
         binding.evalyWholesale.setOnClickListener(v -> context.startActivity(new Intent(context, NewsfeedActivity.class)));
 
         binding.orders.setOnClickListener(v -> {
-            if (CredentialManager.getToken().equals(""))
-                context.startActivity(new Intent(context, SignInActivity.class));
-            else
-                context.startActivity(new Intent(context, OrderListActivity.class));
+
+            navController.navigate(R.id.evalyExpressFragment);
+
+//            if (CredentialManager.getToken().equals(""))
+//                context.startActivity(new Intent(context, SignInActivity.class));
+//            else
+//                context.startActivity(new Intent(context, OrderListActivity.class));
         });
 
         // slider
@@ -212,6 +213,8 @@ public class HomePageRecyclerHeader extends RecyclerView.ViewHolder {
             binding.shimmer.shimmer.stopShimmer();
             binding.shimmer.shimmer.setVisibility(View.GONE);
         }, 1500);
+
+
 
         GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String>() {
             @Override

@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,8 +34,6 @@ public class CampaignShopAdapter extends RecyclerView.Adapter<CampaignShopAdapte
 
     private Context context;
     private ArrayList<TabsItem> itemlist;
-    private int type;
-    private AppCompatActivity activity;
     private NavController navController;
     View.OnClickListener productListener = new View.OnClickListener() {
         @Override

@@ -119,7 +119,7 @@ public class BrowseProductAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 
             if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0))
-                holder.price.setText("Call For Price");
+                holder.price.setText("Not Available");
 
             else if (model.getMinDiscountedPriceD() != 0) {
 

@@ -247,4 +247,6 @@
     <string name="show_prev_1_reply">আগের আরো ১ টি রিপ্লে দেখুন</string>
     <string name="show_previous">"আগের আরো "</string>
     <string name="more_replies">টি রিপ্লে দেখুন</string>
+    <string name="payment">পেমেন্ট</string>
+    <string name="evaly_express">ইভ্যালি এক্সপ্রেস</string>
 </resources>

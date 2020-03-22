@@ -284,6 +284,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="show_previous">Show previous</string>
     <string name="more_replies">more replies</string>
     <string name="payment">Payment</string>
+    <string name="evaly_express">Evaly Express</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="search_categories">
