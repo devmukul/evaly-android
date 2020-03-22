@@ -12,6 +12,7 @@ import bd.com.evaly.evalyshop.epoxy.models.HeaderModel_;
 import bd.com.evaly.evalyshop.epoxy.models.ItemModel_;
 import bd.com.evaly.evalyshop.epoxy.models.LoadingModel_;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.views.epoxy.DividerViewModelModel_;
 
 public class HeaderController extends EpoxyController {
 
@@ -29,6 +30,10 @@ public class HeaderController extends EpoxyController {
     @AutoModel
     LoadingModel_ loader;
 
+    @AutoModel
+    DividerViewModelModel_ divider;
+
+
     private boolean loadingMore = true;
 
 
@@ -45,10 +50,13 @@ public class HeaderController extends EpoxyController {
                 .spanSizeOverride((totalSpanCount, position, itemCount) -> 1)
                 .addTo(this);
 
+        divider.addTo(this);
+
         headerModel2
                 .title("My Photos")
                 .spanSizeOverride((totalSpanCount, position, itemCount) -> 1)
                 .addTo(this);
+
 
         for (ProductItem productItem: items) {
             // new EpxyGridItemBindingModel_().id(productItem.getSlug()).name(productItem.getName()).addTo(this);
