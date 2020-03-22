@@ -1,4 +1,4 @@
-@EpoxyDataBindingLayouts(R.layout.epxy_grid_item)
+@EpoxyDataBindingLayouts({R.layout.divider_view})
 @PackageModelViewConfig(rClass = R.class)
 package bd.com.evaly.evalyshop;
 

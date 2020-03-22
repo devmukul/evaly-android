@@ -6,23 +6,23 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.DividerViewBindingModel_;
 import bd.com.evaly.evalyshop.epoxy.models.GridItemModel_;
-import bd.com.evaly.evalyshop.epoxy.models.Header2Model_;
-import bd.com.evaly.evalyshop.epoxy.models.HeaderModel_;
 import bd.com.evaly.evalyshop.epoxy.models.ItemModel_;
 import bd.com.evaly.evalyshop.epoxy.models.LoadingModel_;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.views.epoxy.DividerViewModelModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 
 public class HeaderController extends EpoxyController {
 
     private List<ProductItem> items = new ArrayList<>();
 
     @AutoModel
-    HeaderModel_ headerModel;
+    HomeSliderModel_ headerModel;
 
     @AutoModel
-    Header2Model_ headerModel2;
+    HomeWidgetModel_ headerModel2;
 
     @AutoModel
     ItemModel_ itemModel;
@@ -31,7 +31,12 @@ public class HeaderController extends EpoxyController {
     LoadingModel_ loader;
 
     @AutoModel
-    DividerViewModelModel_ divider;
+    DividerViewBindingModel_ divider;
+
+
+    @AutoModel
+    DividerViewBindingModel_ divider2;
+
 
 
     private boolean loadingMore = true;
@@ -46,14 +51,10 @@ public class HeaderController extends EpoxyController {
     protected void buildModels() {
 
         headerModel
-                .title("My Photos")
                 .spanSizeOverride((totalSpanCount, position, itemCount) -> 1)
                 .addTo(this);
 
-        divider.addTo(this);
-
         headerModel2
-                .title("My Photos")
                 .spanSizeOverride((totalSpanCount, position, itemCount) -> 1)
                 .addTo(this);
 

@@ -1,120 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-
-    <ImageView
-        android:id="@+id/btn1Image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/circle_bg"
-        android:clickable="false"
-        android:tint="@color/colorAccent"
-        app:layout_constraintEnd_toStartOf="@+id/btn2Image"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_newsfeed"
-        tools:layout_editor_absoluteY="0dp" />
-
-    <View
-        android:id="@+id/btn1Indicator"
-        android:layout_width="13dp"
-        android:layout_height="13dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/circle_indicator"
-        android:visibility="visible"
-        tools:layout_editor_absoluteX="107dp"
-        tools:layout_editor_absoluteY="149dp" />
-
-    <TextView
-        android:id="@+id/btn1Title"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:text="@string/newsfeed"
-        app:layout_constraintEnd_toEndOf="@+id/btn1Image"
-        app:layout_constraintStart_toStartOf="@+id/btn1Image"
-        app:layout_constraintTop_toBottomOf="@+id/btn1Image" />
+        android:paddingTop="20dp"
+        android:background="@color/fff">
 
 
-    <ImageView
-        android:id="@+id/btn2Image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_weight="0"
-        android:background="@drawable/circle_bg"
-        android:clickable="false"
-        android:tint="#0EAD75"
-        app:layout_constraintEnd_toStartOf="@+id/btn3Image"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn1Image"
-        app:layout_constraintTop_toTopOf="@+id/btn1Image"
-        app:srcCompat="@drawable/ic_gift_card_line2" />
+        <ImageView
+            android:id="@+id/btn1Image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/circle_bg"
+            android:clickable="false"
+            android:tint="@color/colorAccent"
+            app:layout_constraintEnd_toStartOf="@+id/btn2Image"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_newsfeed"
+            tools:layout_editor_absoluteY="0dp" />
 
-    <TextView
-        android:id="@+id/btn2Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:clickable="false"
-        android:gravity="center"
-        android:text="@string/gift_cards"
-        app:layout_constraintStart_toStartOf="@+id/btn2Image"
-        app:layout_constraintTop_toBottomOf="@+id/btn2Image" />
+        <View
+            android:id="@+id/btn1Indicator"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/circle_indicator"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/btn1Image"
+            app:layout_constraintTop_toTopOf="@+id/btn1Image" />
+
+        <TextView
+            android:id="@+id/btn1Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0"
+            android:text="@string/newsfeed"
+            app:layout_constraintEnd_toEndOf="@+id/btn1Image"
+            app:layout_constraintStart_toStartOf="@+id/btn1Image"
+            app:layout_constraintTop_toBottomOf="@+id/btn1Image" />
 
 
-    <ImageView
-        android:id="@+id/btn3Image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_weight="0"
-        android:background="@drawable/circle_bg"
-        android:clickable="false"
-        android:tint="#2ab5d2"
-        app:layout_constraintEnd_toStartOf="@+id/btn4Image"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn2Image"
-        app:layout_constraintTop_toTopOf="@+id/btn2Image"
-        app:srcCompat="@drawable/ic_discount_tag" />
+        <ImageView
+            android:id="@+id/btn2Image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="0"
+            android:background="@drawable/circle_bg"
+            android:clickable="false"
+            android:tint="#0EAD75"
+            app:layout_constraintEnd_toStartOf="@+id/btn3Image"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btn1Image"
+            app:layout_constraintTop_toTopOf="@+id/btn1Image"
+            app:srcCompat="@drawable/ic_gift_card_line2" />
 
-    <TextView
-        android:id="@+id/btn3Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:clickable="false"
-        android:text="@string/campaigns"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="@+id/btn3Image"
-        app:layout_constraintStart_toStartOf="@+id/btn3Image"
-        app:layout_constraintTop_toBottomOf="@+id/btn3Image" />
+        <TextView
+            android:id="@+id/btn2Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0"
+            android:clickable="false"
+            android:gravity="center"
+            android:text="@string/gift_cards"
+            app:layout_constraintStart_toStartOf="@+id/btn2Image"
+            app:layout_constraintTop_toBottomOf="@+id/btn2Image" />
 
-    <ImageView
-        android:id="@+id/btn4Image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_weight="0"
-        android:background="@drawable/circle_bg"
-        android:clickable="false"
-        android:tint="#CC9933"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn3Image"
-        app:layout_constraintTop_toTopOf="@+id/btn3Image"
-        app:srcCompat="@drawable/ic_order_thin" />
 
-    <TextView
-        android:id="@+id/btn4Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:text="@string/orders"
-        app:layout_constraintEnd_toEndOf="@+id/btn4Image"
-        app:layout_constraintStart_toStartOf="@+id/btn4Image"
-        app:layout_constraintTop_toBottomOf="@+id/btn4Image" />
+        <ImageView
+            android:id="@+id/btn3Image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="0"
+            android:background="@drawable/circle_bg"
+            android:clickable="false"
+            android:tint="#2ab5d2"
+            app:layout_constraintEnd_toStartOf="@+id/btn4Image"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btn2Image"
+            app:layout_constraintTop_toTopOf="@+id/btn2Image"
+            app:srcCompat="@drawable/ic_discount_tag" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/btn3Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0"
+            android:clickable="false"
+            android:text="@string/campaigns"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="@+id/btn3Image"
+            app:layout_constraintStart_toStartOf="@+id/btn3Image"
+            app:layout_constraintTop_toBottomOf="@+id/btn3Image" />
+
+        <ImageView
+            android:id="@+id/btn4Image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0"
+            android:background="@drawable/circle_bg"
+            android:clickable="false"
+            android:tint="#CC9933"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btn3Image"
+            app:layout_constraintTop_toTopOf="@+id/btn3Image"
+            app:srcCompat="@drawable/ic_order_thin" />
+
+        <TextView
+            android:id="@+id/btn4Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0"
+            android:text="@string/orders"
+            app:layout_constraintEnd_toEndOf="@+id/btn4Image"
+            app:layout_constraintStart_toStartOf="@+id/btn4Image"
+            app:layout_constraintTop_toBottomOf="@+id/btn4Image" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/separator_light"
+            app:layout_constraintTop_toBottomOf="@+id/btn2Title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

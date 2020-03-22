@@ -25,12 +25,7 @@ public abstract class GridItemModel extends DataBindingEpoxyModel {
 
 
     @Override
-    protected void setDataBindingVariables(ViewDataBinding binding) {
-
-       //  binding.setVariable(BR.textRes, textRes);
-
-    }
-
+    protected void setDataBindingVariables(ViewDataBinding binding) { }
 
 
 }

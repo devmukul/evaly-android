@@ -8,16 +8,16 @@ import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.HomeModelSliderBinding;
+import bd.com.evaly.evalyshop.databinding.HomeModelQuickAccessBinding;
 
-@EpoxyModelClass(layout = R.layout.home_model_slider)
-public abstract class HomeSliderModel extends DataBindingEpoxyModel {
+@EpoxyModelClass(layout = R.layout.home_model_quick_access)
+public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
 
 
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
-        HomeModelSliderBinding binding = (HomeModelSliderBinding) holder.getDataBinding();
+        HomeModelQuickAccessBinding binding = (HomeModelQuickAccessBinding) holder.getDataBinding();
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         params.setFullSpan(true);
     }

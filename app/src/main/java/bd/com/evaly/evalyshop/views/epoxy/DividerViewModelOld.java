@@ -8,10 +8,10 @@ import com.airbnb.epoxy.ModelView;
 
 import bd.com.evaly.evalyshop.R;
 
-@ModelView(defaultLayout = R.layout.divider_view_model)
-public class DividerViewModel extends View {
+@ModelView(defaultLayout = R.layout.divider_view)
+public class DividerViewModelOld extends View {
 
-    public DividerViewModel(Context context) {
+    public DividerViewModelOld(Context context) {
         super(context);
     }
 
