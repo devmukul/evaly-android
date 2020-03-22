@@ -64,6 +64,7 @@ public abstract class HomeSliderModel extends DataBindingEpoxyModel {
 
 
     @Override
-    protected void setDataBindingVariables(ViewDataBinding binding) { }
+    protected void setDataBindingVariables(ViewDataBinding binding) {
+    }
 
 }

@@ -57,15 +57,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private List<ProductItem> productItemList;
     private HomeProductGridAdapter adapterProducts;
     private boolean isLoading = false;
-    private boolean loading = true;
     private ReferPref referPref;
     private FragmentHomeBinding binding;
     private NavController navController;
     private HomeController homeController;
 
-
     public HomeFragment() {
-        // Required empty public constructor
+
     }
 
     public static HomeFragment newInstance() {
@@ -127,50 +125,24 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         homeController.requestModelBuild();
 
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy < 0) {
-                    if (isLoading && binding != null)
-                        binding.progressBar.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
 
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) //check for scroll down
-                {
+                if (dy > 0) {
                     visibleItemCount = layoutManager.getChildCount();
                     totalItemCount = layoutManager.getItemCount();
                     int[] firstVisibleItems = null;
                     firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
-                    if (firstVisibleItems != null && firstVisibleItems.length > 0) {
+                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
                         pastVisiblesItems = firstVisibleItems[0];
-                    }
 
-                    if (!isLoading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                    if (!isLoading)
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
                             getProducts();
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE && binding != null) {
-                    if (currentPage > 1)
-                        binding.progressBar.setVisibility(View.VISIBLE);
-                    else
-                        binding.progressBar.setVisibility(View.GONE);
                 }
             }
         });
-
 
 
         currentPage = 1;
@@ -181,7 +153,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
 
-    private void networkCheck(){
+    private void networkCheck() {
         if (!Utils.isNetworkAvailable(context))
             new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
                 @Override
@@ -206,13 +178,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 if (binding == null)
                     return;
 
-                List<ProductItem> data = response.getData();
-
                 homeController.setLoadingMore(false);
                 homeController.addData(response.getData());
 
                 isLoading = false;
-                binding.progressBar.setVisibility(View.GONE);
 
                 if (response.getCount() > 10)
                     currentPage++;
@@ -277,7 +246,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onDestroyView();
 
         FragmentManager fm = getChildFragmentManager();
-        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
             fm.popBackStack();
         }
 

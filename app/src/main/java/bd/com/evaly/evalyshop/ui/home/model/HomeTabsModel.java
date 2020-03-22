@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -9,11 +7,9 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleEventObserver;
-import androidx.navigation.NavController;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -28,11 +24,8 @@ import java.util.HashMap;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.HomeModelTabsBinding;
-import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
-import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
 import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
-import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
 
 @EpoxyModelClass(layout = R.layout.home_model_tabs)
 public abstract class HomeTabsModel extends DataBindingEpoxyModel {
@@ -66,7 +59,6 @@ public abstract class HomeTabsModel extends DataBindingEpoxyModel {
             viewList.clear();
             listenerList.clear();
         });
-
 
         binding.viewPager.setOffscreenPageLimit(1);
         binding.viewPager.setAdapter(pager);
@@ -116,7 +108,8 @@ public abstract class HomeTabsModel extends DataBindingEpoxyModel {
                                         listenerList.put(position, this);
                                     }
                                 });
-                        } catch (Exception ignored) { }
+                        } catch (Exception ignored) {
+                        }
                     }, 1000);
 
 
@@ -146,10 +139,10 @@ public abstract class HomeTabsModel extends DataBindingEpoxyModel {
         bundle2.putString("category", "root");
         brandFragment.setArguments(bundle2);
 
-       // OnDoneListener onDoneListener = () -> binding.shimmer.shimmer.setVisibility(View.GONE);
+        // OnDoneListener onDoneListener = () -> binding.shimmer.shimmer.setVisibility(View.GONE);
 
-      //  brandFragment.setOnDoneListener(onDoneListener);
-       // categoryFragment.setOnDoneListener(onDoneListener);
+        //  brandFragment.setOnDoneListener(onDoneListener);
+        // categoryFragment.setOnDoneListener(onDoneListener);
 
         HomeTabsFragment shopFragment = new HomeTabsFragment();
         Bundle bundle3 = new Bundle();
@@ -168,6 +161,7 @@ public abstract class HomeTabsModel extends DataBindingEpoxyModel {
 
 
     @Override
-    protected void setDataBindingVariables(ViewDataBinding binding) { }
+    protected void setDataBindingVariables(ViewDataBinding binding) {
+    }
 
 }

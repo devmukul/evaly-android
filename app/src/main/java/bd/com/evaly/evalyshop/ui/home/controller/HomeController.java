@@ -52,6 +52,8 @@ public class HomeController extends EpoxyController {
                 .addTo(this);
 
         widgetModel
+                .fragment(fragment)
+                .activity(activity)
                 .addTo(this);
 
         tabsModel
