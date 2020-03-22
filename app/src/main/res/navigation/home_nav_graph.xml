@@ -50,6 +50,9 @@
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="https://www.evaly.com.bd/" />
+        <action
+            android:id="@+id/action_homeFragment_to_evalyExpressFragment"
+            app:destination="@id/evalyExpressFragment" />
 
     </fragment>
     <fragment
@@ -163,6 +166,11 @@
         android:label="GiftCardActivity">
         <deepLink app:uri="https://evaly.com.bd/gift-card" />
     </activity>
+    <fragment
+        android:id="@+id/evalyExpressFragment"
+        android:name="bd.com.evaly.evalyshop.ui.express.EvalyExpressFragment"
+        android:label="fragment_evaly_express"
+        tools:layout="@layout/fragment_evaly_express" />
 
 
 </navigation>
