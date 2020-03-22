@@ -35,7 +35,7 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
             ShopsItem model = itemlist.get(position);
             Bundle bundle = new Bundle();
             bundle.putString("shop_name", model.getName());
-            bundle.putString("logo_image", model.getImage());
+            bundle.putString("logo_image", model.getLogoImage());
             bundle.putString("shop_slug", model.getSlug());
             navController.navigate(R.id.shopFragment, bundle);
         }
@@ -71,7 +71,7 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
         holder.view.setTag(position);
 
         Glide.with(context)
-                .load(model.getImage())
+                .load(model.getLogoImage())
                 .apply(new RequestOptions().override(240, 240))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_placeholder_small)
