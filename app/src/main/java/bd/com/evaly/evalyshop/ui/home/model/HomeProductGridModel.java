@@ -35,6 +35,10 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
 
+    public ProductItem getModel() {
+        return model;
+    }
+
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
@@ -73,7 +77,6 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
             binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
 
 
-
         binding.getRoot().setOnClickListener(clickListener);
 
         binding.buyNow.setVisibility(View.GONE);
@@ -86,6 +89,12 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
 
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
+    }
+
+    @Override
+    public void unbind(@NonNull DataBindingHolder holder) {
+        super.unbind(holder);
+        holder.getDataBinding().unbind();
     }
 
 }

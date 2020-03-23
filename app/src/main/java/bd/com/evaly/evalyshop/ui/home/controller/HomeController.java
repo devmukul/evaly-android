@@ -68,12 +68,14 @@ public class HomeController extends EpoxyController {
                     .id(productItem.getSlug())
                     .model(productItem)
                     .clickListener((model, parentView, clickedView, position) -> {
+
+                        ProductItem item = model.getModel();
                         Intent intent = new Intent(activity, ViewProductActivity.class);
-                        intent.putExtra("product_slug", items.get(position).getSlug());
-                        intent.putExtra("product_name", items.get(position).getName());
-                        intent.putExtra("product_price", items.get(position).getMaxPrice());
+                        intent.putExtra("product_slug", item.getSlug());
+                        intent.putExtra("product_name", item.getName());
+                        intent.putExtra("product_price", item.getMaxPrice());
                         if (items.get(position).getImageUrls().size() > 0)
-                            intent.putExtra("product_image", items.get(position).getImageUrls().get(0));
+                            intent.putExtra("product_image", item.getImageUrls().get(0));
                         activity.startActivity(intent);
                     })
                     .addTo(this);
