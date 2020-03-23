@@ -19,33 +19,22 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 
 public class HeaderController extends EpoxyController {
 
-    private AppCompatActivity activity;
-    private List<ProductItem> items = new ArrayList<>();
-
     @AutoModel
     HomeSliderModel_ sliderModel;
-
     @AutoModel
     HomeWidgetModel_ widgetModel;
-
     @AutoModel
     HomeTabsModel_ tabsModel;
-
     @AutoModel
     ItemModel_ itemModel;
-
     @AutoModel
     LoadingModel_ loader;
-
     @AutoModel
     DividerViewBindingModel_ divider;
-
-
     @AutoModel
     DividerViewBindingModel_ divider2;
-
-
-
+    private AppCompatActivity activity;
+    private List<ProductItem> items = new ArrayList<>();
     private boolean loadingMore = true;
 
 
@@ -67,7 +56,7 @@ public class HeaderController extends EpoxyController {
         tabsModel.addTo(this);
 
 
-        for (ProductItem productItem: items) {
+        for (ProductItem productItem : items) {
             // new EpxyGridItemBindingModel_().id(productItem.getSlug()).name(productItem.getName()).addTo(this);
             new GridItemModel_().id(productItem.getSlug()).text(productItem.getName()).addTo(this);
         }
@@ -77,7 +66,7 @@ public class HeaderController extends EpoxyController {
     }
 
 
-    public void addData(List<ProductItem> productItems){
+    public void addData(List<ProductItem> productItems) {
         this.items.addAll(productItems);
         requestModelBuild();
     }

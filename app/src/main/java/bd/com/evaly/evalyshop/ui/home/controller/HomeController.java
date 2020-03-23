@@ -12,6 +12,7 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.epoxy.models.LoadingModel_;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
@@ -25,6 +26,7 @@ public class HomeController extends EpoxyController {
     private AppCompatActivity activity;
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
+    private AppDatabase appDatabase;
 
     @AutoModel
     HomeSliderModel_ sliderModel;
@@ -35,12 +37,10 @@ public class HomeController extends EpoxyController {
     @AutoModel
     HomeTabsModel_ tabsModel;
 
-
     @AutoModel
     LoadingModel_ loader;
 
     private boolean loadingMore = true;
-
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
@@ -52,6 +52,8 @@ public class HomeController extends EpoxyController {
 
         sliderModel
                 .activity(activity)
+                .fragment(fragment)
+                .appDatabase(appDatabase)
                 .addTo(this);
 
         widgetModel
@@ -68,7 +70,6 @@ public class HomeController extends EpoxyController {
                     .id(productItem.getSlug())
                     .model(productItem)
                     .clickListener((model, parentView, clickedView, position) -> {
-
                         ProductItem item = model.getModel();
                         Intent intent = new Intent(activity, ViewProductActivity.class);
                         intent.putExtra("product_slug", item.getSlug());
@@ -91,6 +92,7 @@ public class HomeController extends EpoxyController {
 
     public void setActivity(AppCompatActivity activity) {
         this.activity = activity;
+        appDatabase = AppDatabase.getInstance(activity);
     }
 
     public void setFragment(Fragment fragment) {

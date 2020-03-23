@@ -10,10 +10,10 @@ import java.io.Serializable;
 public class BannerItem implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
-    int id;
+    public int id;
 
     @ColumnInfo
-    String image, name, slug, status, type, url;
+    public String image, name, slug, status, type, url;
 
     public BannerItem() {
 

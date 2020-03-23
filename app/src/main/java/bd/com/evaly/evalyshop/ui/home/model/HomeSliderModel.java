@@ -4,6 +4,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.EpoxyAttribute;
@@ -13,8 +14,11 @@ import com.airbnb.epoxy.EpoxyModelWithHolder;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.banner.BannerDao;
 import bd.com.evaly.evalyshop.databinding.HomeModelSliderBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -27,8 +31,12 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
 
     @EpoxyAttribute
     AppCompatActivity activity;
-    SliderController controller;
+    @EpoxyAttribute
+    AppDatabase appDatabase;
+    @EpoxyAttribute
+    Fragment fragment;
 
+    SliderController controller;
 
     @Override
     public void bind(@NonNull HomeSliderHolder holder) {
@@ -38,12 +46,12 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
     class HomeSliderHolder extends EpoxyHolder {
 
         View itemView;
+
         @Override
         protected void bindView(@NonNull View itemView) {
             this.itemView = itemView;
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) itemView.getLayoutParams();
             params.setFullSpan(true);
-
 
             HomeModelSliderBinding binding = HomeModelSliderBinding.bind(itemView);
 
@@ -56,11 +64,22 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
                     (tab, position) -> tab.setText("")
             ).attach();
 
+            BannerDao bannerDao = appDatabase.bannerDao();
+
+            bannerDao.getAll().observe(fragment.getViewLifecycleOwner(), bannerItems -> {
+                controller.addData(bannerItems);
+                controller.requestModelBuild();
+            });
+
             GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String>() {
                 @Override
                 public void onDataFetched(CommonResultResponse<List<BannerItem>> response, int statusCode) {
-                    controller.addData(response.getData());
-                    controller.requestModelBuild();
+
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        bannerDao.insertList(response.getData());
+                    });
+
+                   // bannerDao.deleteOld(response.getData());
                 }
 
                 @Override
