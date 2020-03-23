@@ -40,7 +40,6 @@ public abstract class HomeSliderModel extends DataBindingEpoxyModel {
 
         binding.sliderPager.setAdapter(controller.getAdapter());
 
-
         new TabLayoutMediator(binding.sliderIndicator, binding.sliderPager,
                 (tab, position) -> tab.setText("")
         ).attach();
