@@ -277,7 +277,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
 
         productItemList.clear();
-        adapterProducts.notifyDataSetChanged();
+        if (adapterProducts != null)
+            adapterProducts.notifyDataSetChanged();
         binding.recyclerView.setAdapter(null);
         adapterProducts = null;
         binding = null;
