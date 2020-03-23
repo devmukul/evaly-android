@@ -106,25 +106,28 @@ public class HomeTabsFragment extends Fragment {
                 stopShimmer();
             });
 
-            GeneralApiHelper.getRootCategories(new ResponseListenerAuth<List<CategoryEntity>, String>() {
-                @Override
-                public void onDataFetched(List<CategoryEntity> response, int statusCode) {
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        categoryDao.deleteAll();
-                        categoryDao.insertAll(response);
-                    });
-                }
+            if (getLastUpdated() == 0 || (getLastUpdated() != 0 && Calendar.getInstance().getTimeInMillis() - getLastUpdated() > 20200000)) {
+                GeneralApiHelper.getRootCategories(new ResponseListenerAuth<List<CategoryEntity>, String>() {
+                    @Override
+                    public void onDataFetched(List<CategoryEntity> response, int statusCode) {
+                        setLastUpdated();
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            categoryDao.deleteAll();
+                            categoryDao.insertAll(response);
+                        });
+                    }
 
-                @Override
-                public void onFailed(String errorBody, int errorCode) {
+                    @Override
+                    public void onFailed(String errorBody, int errorCode) {
 
-                }
+                    }
 
-                @Override
-                public void onAuthError(boolean logout) {
+                    @Override
+                    public void onAuthError(boolean logout) {
 
-                }
-            });
+                    }
+                });
+            }
         } else {
             binding.recyclerView.setAdapter(adapter);
         }
