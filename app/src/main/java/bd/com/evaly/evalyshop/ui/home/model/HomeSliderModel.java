@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
+import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
@@ -18,7 +18,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
-import bd.com.evaly.evalyshop.ui.home.adapter.SliderAdapter;
+import bd.com.evaly.evalyshop.ui.home.controller.SliderController;
 
 @EpoxyModelClass(layout = R.layout.home_model_slider)
 public abstract class HomeSliderModel extends DataBindingEpoxyModel {
@@ -26,8 +26,7 @@ public abstract class HomeSliderModel extends DataBindingEpoxyModel {
     @EpoxyAttribute
     AppCompatActivity activity;
 
-    private SliderAdapter adapter;
-    private List<BannerItem> itemList;
+    private SliderController controller;
 
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
@@ -36,17 +35,21 @@ public abstract class HomeSliderModel extends DataBindingEpoxyModel {
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         params.setFullSpan(true);
 
-        itemList = new ArrayList<>();
-        adapter = new SliderAdapter(activity, itemList);
+        controller = new SliderController();
+        controller.setActivity(activity);
 
-        binding.sliderPager.setAdapter(adapter);
-        binding.sliderIndicator.setupWithViewPager(binding.sliderPager, true);
+        binding.sliderPager.setAdapter(controller.getAdapter());
+
+
+        new TabLayoutMediator(binding.sliderIndicator, binding.sliderPager,
+                (tab, position) -> tab.setText("")
+        ).attach();
 
         GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<BannerItem>> response, int statusCode) {
-                itemList.addAll(response.getData());
-                adapter.notifyDataSetChanged();
+                controller.addData(response.getData());
+                controller.requestModelBuild();
             }
 
             @Override
