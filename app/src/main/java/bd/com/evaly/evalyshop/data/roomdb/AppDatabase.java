@@ -16,7 +16,7 @@ import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 
-@Database(entities = {CategoryEntity.class, WishListEntity.class, CartEntity.class, BannerItem.class}, version = 7, exportSchema = false)
+@Database(entities = {CategoryEntity.class, WishListEntity.class, CartEntity.class, BannerItem.class}, version = 8, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;

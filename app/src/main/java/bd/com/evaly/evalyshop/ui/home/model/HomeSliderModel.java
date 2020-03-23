@@ -13,6 +13,7 @@ import com.airbnb.epoxy.EpoxyModelClass;
 import com.airbnb.epoxy.EpoxyModelWithHolder;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -67,7 +68,7 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
             BannerDao bannerDao = appDatabase.bannerDao();
 
             bannerDao.getAll().observe(fragment.getViewLifecycleOwner(), bannerItems -> {
-                controller.addData(bannerItems);
+                controller.reAddData(bannerItems);
                 controller.requestModelBuild();
             });
 
@@ -77,9 +78,13 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
 
                     Executors.newSingleThreadExecutor().execute(() -> {
                         bannerDao.insertList(response.getData());
+                        List<String> slugs = new ArrayList<>();
+                        for (BannerItem item : response.getData()) {
+                            slugs.add(item.slug);
+                        }
+                        bannerDao.deleteOld(slugs);
                     });
 
-                   // bannerDao.deleteOld(response.getData());
                 }
 
                 @Override

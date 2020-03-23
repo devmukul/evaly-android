@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.models.banner;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -9,11 +10,12 @@ import java.io.Serializable;
 @Entity(tableName = "banner_table")
 public class BannerItem implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+    @PrimaryKey
+    @NonNull
+    public String slug;
 
     @ColumnInfo
-    public String image, name, slug, status, type, url;
+    public String image, name, status, type, url;
 
     public BannerItem() {
 
@@ -26,10 +28,6 @@ public class BannerItem implements Serializable {
         this.status = status;
         this.type = type;
         this.url = url;
-    }
-
-    public int getId() {
-        return id;
     }
 
 
