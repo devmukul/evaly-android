@@ -1,11 +1,19 @@
 package bd.com.evaly.evalyshop.models.banner;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 
+@Entity(tableName = "banner_table")
 public class BannerItem implements Serializable {
 
-    String image, name, slug, status, type, url;
+    @PrimaryKey(autoGenerate = true)
+    int id;
 
+    @ColumnInfo
+    String image, name, slug, status, type, url;
 
     public BannerItem() {
 
@@ -19,6 +27,12 @@ public class BannerItem implements Serializable {
         this.type = type;
         this.url = url;
     }
+
+    public int getId() {
+        return id;
+    }
+
+
 
     public String getImage() {
         return image;
