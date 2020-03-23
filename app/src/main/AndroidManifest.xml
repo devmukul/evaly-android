@@ -167,7 +167,7 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:largeHeap="true"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.Launcher"
             android:screenOrientation="portrait">
 
             <nav-graph android:value="@navigation/home_nav_graph" />
