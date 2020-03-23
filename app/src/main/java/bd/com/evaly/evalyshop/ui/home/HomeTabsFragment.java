@@ -22,20 +22,23 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Executors;
 
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeCategoryBinding;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.home.adapter.RootCategoriesAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.search.SearchCategory;
 import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
-import bd.com.evaly.evalyshop.util.CategoryUtils;
+import bd.com.evaly.evalyshop.util.preference.MyPreference;
 
 public class HomeTabsFragment extends Fragment {
 
@@ -50,6 +53,7 @@ public class HomeTabsFragment extends Fragment {
     private List<CategoryEntity> categoryItems;
     private OnDoneListener onDoneListener;
     private FragmentHomeCategoryBinding binding;
+    private AppDatabase appDatabase;
 
     public HomeTabsFragment() {
         // Required empty public constructor
@@ -79,6 +83,9 @@ public class HomeTabsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
+        appDatabase = AppDatabase.getInstance(getActivity());
+        CategoryDao categoryDao = appDatabase.categoryDao();
+
         itemList = new ArrayList<>();
         adapter = new TabsAdapter(getContext(), (MainActivity) getActivity(), itemList, type);
 
@@ -88,60 +95,36 @@ public class HomeTabsFragment extends Fragment {
 
         if (slug.equals("root") && type == 1) {
 
-            CategoryUtils categoryUtils = new CategoryUtils(getContext());
-
             adapter2 = new RootCategoriesAdapter(getContext(), categoryItems, NavHostFragment.findNavController(this));
             binding.recyclerView.setAdapter(adapter2);
             binding.recyclerView.setItemAnimator(new MyDefaultItemAnimator());
             adapter2.notifyDataSetChanged();
 
-            Calendar calendar = Calendar.getInstance();
+            appDatabase.categoryDao().getAllLiveData().observe(getViewLifecycleOwner(), categoryEntities -> {
+                categoryItems.addAll(categoryEntities);
+                adapter2.notifyDataSetChanged();
+                stopShimmer();
+            });
 
-            if (categoryUtils.getLastUpdated() == 0 || (categoryUtils.getLastUpdated() != 0 && calendar.getTimeInMillis() - categoryUtils.getLastUpdated() > 20200000)) {
-                categoryUtils.updateFromApi(new DataFetchingListener<List<CategoryEntity>>() {
-                    @Override
-                    public void onDataFetched(List<CategoryEntity> response) {
+            GeneralApiHelper.getRootCategories(new ResponseListenerAuth<List<CategoryEntity>, String>() {
+                @Override
+                public void onDataFetched(List<CategoryEntity> response, int statusCode) {
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        categoryDao.deleteAll();
+                        categoryDao.insertAll(response);
+                    });
+                }
 
-                        if (binding != null && getActivity() != null && adapter2 != null) {
-                            getActivity().runOnUiThread(() -> {
-                                categoryItems.addAll(response);
-                                adapter2.notifyDataSetChanged();
-                                stopShimmer();
-                            });
-                        }
-                    }
+                @Override
+                public void onFailed(String errorBody, int errorCode) {
 
-                    @Override
-                    public void onFailed(int status) {
+                }
 
-                    }
-                });
-            } else {
+                @Override
+                public void onAuthError(boolean logout) {
 
-                categoryUtils.getLocalCategoryList(new DataFetchingListener<List<CategoryEntity>>() {
-                    @Override
-                    public void onDataFetched(List<CategoryEntity> response) {
-
-                        if (binding != null && getActivity() != null && adapter2 != null) {
-                            getActivity().runOnUiThread(() -> {
-                                categoryItems.addAll(response);
-                                adapter2.notifyDataSetChanged();
-                                stopShimmer();
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-
-                    }
-                });
-                //skeletonScreen.hide();
-            }
-
-            binding.searchBtnTabs.setHint("Search categories");
-            binding.showMoreBtnTabs.setVisibility(View.GONE);
-            binding.searchBtnTabs.setVisibility(View.VISIBLE);
+                }
+            });
         } else {
             binding.recyclerView.setAdapter(adapter);
         }
@@ -170,6 +153,17 @@ public class HomeTabsFragment extends Fragment {
 
         loadData();
     }
+
+
+    public long getLastUpdated() {
+        return MyPreference.with(getContext(), "category_db_new13").getLong("last_updated", 0);
+    }
+
+    public void setLastUpdated() {
+        Calendar calendar = Calendar.getInstance();
+        MyPreference.with(getContext(), "category_db_new13").addLong("last_updated", calendar.getTimeInMillis()).save();
+    }
+
 
     public void loadData() {
         if (!(slug.equals("root") && type == 1)) {
@@ -218,7 +212,6 @@ public class HomeTabsFragment extends Fragment {
                     }
                 });
     }
-
 
 
     public void getBrandsOfCategory(int counter) {
@@ -329,6 +322,13 @@ public class HomeTabsFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding.recyclerView.setAdapter(null);
+        itemList.clear();
+        binding = null;
+    }
 
     public class MyDefaultItemAnimator extends DefaultItemAnimator {
 
@@ -340,14 +340,5 @@ public class HomeTabsFragment extends Fragment {
                 onDoneListener.onDone();
         }
 
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding.recyclerView.setAdapter(null);
-        itemList.clear();
-        binding = null;
     }
 }

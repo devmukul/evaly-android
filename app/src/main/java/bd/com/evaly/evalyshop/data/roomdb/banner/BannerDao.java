@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.data.roomdb.banner;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface BannerDao {
     @Insert(onConflict = REPLACE)
     void insert(BannerItem banner);
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertList(List<BannerItem> list);
 
     @Query("DELETE FROM banner_table")

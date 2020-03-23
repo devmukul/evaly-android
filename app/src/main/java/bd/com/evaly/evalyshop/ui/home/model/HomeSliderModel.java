@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;

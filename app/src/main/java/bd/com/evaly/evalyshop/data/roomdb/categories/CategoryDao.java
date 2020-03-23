@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.data.roomdb.categories;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -25,6 +26,12 @@ public interface CategoryDao {
 
     @Query("SELECT * FROM categories_table")
     List<CategoryEntity> getAll();
+
+    @Query("SELECT COUNT(id) FROM categories_table")
+    int getCount();
+
+    @Query("SELECT * FROM categories_table")
+    LiveData<List<CategoryEntity>> getAllLiveData();
 
 
 }
