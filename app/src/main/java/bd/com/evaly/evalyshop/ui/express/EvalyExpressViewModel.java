@@ -11,7 +11,6 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 public class EvalyExpressViewModel extends ViewModel {
     private MutableLiveData<ShopGroupResponse> liveData = new MutableLiveData<>();
 
-
     public LiveData<ShopGroupResponse> getLiveData() {
         return liveData;
     }
