@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -174,12 +173,7 @@ public class HomeTabsFragment extends Fragment {
 
     public void loadData() {
         if (!(slug.equals("root") && type == 1)) {
-            if (type == 1) {
-                binding.searchBtnTabs.setHint("Search categories");
-                //search.setVisibility(View.GONE);
-                binding.showMoreBtnTabs.setVisibility(View.GONE);
-                getSubCategories();
-            } else if (type == 2) {
+            if (type == 2) {
                 binding.searchBtnTabs.setHint("Search brands");
                 getBrandsOfCategory(1);
                 binding.showMoreBtnTabs.setText("Show More");
@@ -190,29 +184,21 @@ public class HomeTabsFragment extends Fragment {
             }
         }
 
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (binding == null)
-                    return;
+        if (!(slug.equals("root") && type == 1)) {
+            if (adapter.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
+                adapter.notifyDataSetChanged();
 
-                if (!(slug.equals("root") && type == 1)) {
-                    if (adapter.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
-                        adapter.notifyDataSetChanged();
-                        handler.postDelayed(this, 1000);
-                    }
-                } else {
-                    if (adapter2.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
-
-                        if (onDoneListener != null)
-                            onDoneListener.onDone();
-                        adapter2.notifyDataSetChanged();
-                        handler.postDelayed(this, 1000);
-                    }
-                }
             }
-        }, 1000);
+        } else {
+            if (adapter2.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
+
+                if (onDoneListener != null)
+                    onDoneListener.onDone();
+                adapter2.notifyDataSetChanged();
+
+            }
+        }
+
     }
 
     public void stopShimmer() {
@@ -233,51 +219,7 @@ public class HomeTabsFragment extends Fragment {
                 });
     }
 
-    public void getSubCategories() {
 
-        ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<JsonArray, String>() {
-
-            @Override
-            public void onDataFetched(JsonArray response, int statusCode) {
-                if (binding == null)
-                    return;
-
-                if (onDoneListener != null)
-                    onDoneListener.onDone();
-                binding.progressBar2.setVisibility(View.GONE);
-
-                try {
-
-                    for (int i = 0; i < response.size(); i++) {
-                        JsonObject ob = response.get(i).getAsJsonObject();
-                        TabsItem tabsItem = new TabsItem();
-                        tabsItem.setTitle(ob.get("name").getAsString());
-                        tabsItem.setImage(ob.get("image_url").isJsonNull() ? null : ob.get("image_url").getAsString());
-                        tabsItem.setSlug(ob.get("slug").getAsString());
-                        tabsItem.setCategory(category);
-                        itemList.add(tabsItem);
-                        adapter.notifyItemInserted(itemList.size());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailed(String body, int errorCode) {
-
-                if (binding != null)
-                    binding.progressBar2.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-
-    }
 
     public void getBrandsOfCategory(int counter) {
         ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {

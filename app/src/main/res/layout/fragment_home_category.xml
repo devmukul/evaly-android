@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout4"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
-    android:background="#fafafa"
-    android:orientation="vertical">
+    android:background="#fafafa">
 
     <include
         android:id="@+id/shimmer"
-        layout="@layout/shimmer_tabs" />
+        layout="@layout/shimmer_tabs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
+        android:layout_width="411dp"
         android:layout_height="wrap_content"
         android:background="#fafafa"
         android:nestedScrollingEnabled="false"
@@ -23,71 +26,71 @@
         android:paddingRight="5dp"
         android:paddingBottom="5dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmer"
         app:spanCount="3">
 
     </androidx.recyclerview.widget.RecyclerView>
 
+
     <ProgressBar
         android:id="@+id/progressBar2"
         style="?android:attr/progressBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="1dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/showMoreBtnTabs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:gravity="right"
-        android:orientation="horizontal">
+    <EditText
+        android:id="@+id/searchBtnTabs"
+        android:layout_width="271dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/search_cat_input"
+        android:clickable="true"
+        android:drawableRight="@drawable/ic_search_small"
+        android:ems="10"
+        android:focusableInTouchMode="false"
+        android:gravity="center_vertical"
+        android:hint="@string/search_categories"
+        android:inputType="textPersonName"
+        android:maxHeight="40dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:textColor="#555"
+        android:textColorHint="#555"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/showMoreBtnTabs"
+        app:layout_constraintEnd_toStartOf="@+id/showMoreBtnTabs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/showMoreBtnTabs" />
 
-        <EditText
-            android:id="@+id/searchBtnTabs"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/search_cat_input"
-            android:clickable="true"
-            android:drawableRight="@drawable/ic_search_small"
-            android:ems="10"
-            android:focusableInTouchMode="false"
-            android:gravity="center_vertical"
-            android:hint="@string/search_categories"
-            android:inputType="textPersonName"
-            android:maxHeight="40dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textColor="#555"
-            android:textColorHint="#555"
-            android:textSize="14sp" />
+    <Button
+        android:id="@+id/showMoreBtnTabs"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/border_box_more"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:stateListAnimator="@null"
+        android:text="@string/show_more"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
-        <Button
-            android:id="@+id/showMoreBtnTabs"
-            android:layout_width="wrap_content"
-            android:layout_height="43dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="0"
-            android:background="@drawable/border_box_more"
-            android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:maxHeight="39dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:stateListAnimator="@null"
-            android:text="@string/show_more"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:textColor="#fff"
-            android:textSize="14sp" />
 
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

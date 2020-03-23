@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -247,16 +246,15 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+//
+//        FragmentManager fm = getChildFragmentManager();
+//        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+//            fm.popBackStack();
+//        }
 
-        FragmentManager fm = getChildFragmentManager();
-        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-            fm.popBackStack();
-        }
-
-        productItemList.clear();
-        binding.recyclerView.setAdapter(null);
-        adapterProducts = null;
-        binding = null;
+       // productItemList.clear();
+       // binding.recyclerView.setAdapter(null);
+       // binding = null;
     }
 
 
