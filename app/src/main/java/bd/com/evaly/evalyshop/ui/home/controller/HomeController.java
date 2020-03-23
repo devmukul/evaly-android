@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.ui.home.controller;
 
 
+import android.content.Intent;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -10,12 +12,13 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.epoxy.models.GridItemModel_;
 import bd.com.evaly.evalyshop.epoxy.models.LoadingModel_;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
 public class HomeController extends EpoxyController {
 
@@ -60,15 +63,24 @@ public class HomeController extends EpoxyController {
                 .fragmentInstance(fragment)
                 .addTo(this);
 
-
         for (ProductItem productItem: items) {
-            new GridItemModel_().id(productItem.getSlug()).text(productItem.getName()).addTo(this);
+            new HomeProductGridModel_()
+                    .id(productItem.getSlug())
+                    .model(productItem)
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        Intent intent = new Intent(activity, ViewProductActivity.class);
+                        intent.putExtra("product_slug", items.get(position).getSlug());
+                        intent.putExtra("product_name", items.get(position).getName());
+                        intent.putExtra("product_price", items.get(position).getMaxPrice());
+                        if (items.get(position).getImageUrls().size() > 0)
+                            intent.putExtra("product_image", items.get(position).getImageUrls().get(0));
+                        activity.startActivity(intent);
+                    })
+                    .addTo(this);
         }
 
         loader.addIf(loadingMore, this);
-
     }
-
 
     public void addData(List<ProductItem> productItems){
         this.items.addAll(productItems);

@@ -170,6 +170,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void getProducts() {
 
+        homeController.setLoadingMore(true);
+
         isLoading = true;
         ProductApiHelper.getCategoryBrandProducts(currentPage, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
@@ -190,6 +192,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
+                homeController.setLoadingMore(false);
             }
 
             @Override

@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:background="#fafafa"
             android:clipToPadding="false"
-            android:paddingBottom="50dp"
+            android:paddingBottom="10dp"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:spanCount="2" />
 
