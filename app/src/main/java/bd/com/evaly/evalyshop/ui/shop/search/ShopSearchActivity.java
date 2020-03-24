@@ -36,7 +36,7 @@ public class ShopSearchActivity extends AppCompatActivity {
     private List<ItemsItem> itemList;
     private int currentPage = 1;
     private int cashbackRate;
-    private String campaignSlug = "", shopSlug = "sumash-tech", shopTitle;
+    private String campaignSlug = "", shopSlug = "sumash-tech", shopName;
     private boolean isLoading = false;
     private int totalCount = 0;
     private String query;
@@ -56,8 +56,16 @@ public class ShopSearchActivity extends AppCompatActivity {
         Intent bundle = getIntent();
         shopSlug = bundle.getStringExtra("shop_slug");
         campaignSlug = bundle.getStringExtra("campaign_slug");
+        shopName = bundle.getStringExtra("shop_name");
+
 
         binding = DataBindingUtil.setContentView(this, R.layout.fragment_shop_search);
+
+        if (shopName != null && !shopName.equals(""))
+            binding.search.setHint("Search in " + shopName + "...");
+        else
+            binding.search.setHint("Search in store...");
+
 
         itemList = new ArrayList<>();
         adapter = new ShopSearchAdapter(this, itemList, this, null, viewModel);

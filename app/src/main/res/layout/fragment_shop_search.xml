@@ -53,7 +53,7 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColorHint="#666"
-                    android:textSize="17sp" />
+                    android:textSize="16sp" />
 
                 <ImageView
                     android:id="@+id/imageView2"
