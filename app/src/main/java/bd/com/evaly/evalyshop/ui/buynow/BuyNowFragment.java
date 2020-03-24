@@ -227,7 +227,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         btnBottomSheet.setOnClickListener(view12 -> {
 
-
             if (userDetails.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
@@ -256,9 +255,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
             item.setShopItemId(shop_item_id);
 
+            if (productPriceInt * item.getQuantity() < 500){
+                Toast.makeText(getContext(), "You have to order more than TK. 500 from an individual shop", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             list = new ArrayList<>();
-
             list.add(item);
 
             orderJson.setOrderItems(list);
@@ -266,8 +268,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             JsonObject payload = new Gson().toJsonTree(orderJson).getAsJsonObject();
 
             placeOrder(payload);
-
-
         });
 
         TextView deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
@@ -430,17 +430,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
-                    if (response.has("data")) {
+                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
 
-                        if (response.getAsJsonArray("data").size() < 1) {
-                            Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
-                            return;
-                        } else {
-                            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-
-                            dismissDialog();
-                        }
-
+                    if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
+                        dismissDialog();
                         JsonArray data = response.getAsJsonArray("data");
                         for (int i = 0; i < data.size(); i++) {
                             JsonObject item = data.get(i).getAsJsonObject();
@@ -449,8 +442,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                             intent.putExtra("orderID", invoice);
                             startActivity(intent);
                         }
-                    } else
-                        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
 
@@ -458,7 +451,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             public void onFailed(String errorBody, int errorCode) {
 
                 dialog.hideDialog();
-
                 Toast.makeText(context, "Couldn't place order, try again later.", Toast.LENGTH_SHORT).show();
 
             }

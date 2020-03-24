@@ -38,6 +38,7 @@ import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -193,19 +194,39 @@ public class CartFragment extends Fragment {
 
         TextView deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
         checkout.setOnClickListener(v -> {
+
             if (userDetails.getToken().equals("")) {
                 Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
                 return;
             }
             boolean selected = false;
             boolean isExpress = true;
-            for (int i = 0; i < adapter.getItemList().size(); i++) {
 
+            HashMap<String, Integer> shopAmount = new HashMap<>();
+
+            for (int i = 0; i < adapter.getItemList().size(); i++) {
                 CartEntity cartItem = adapter.getItemList().get(i);
                 if (cartItem.isSelected()) {
+
+                    String ss = cartItem.getShopSlug();
+                    Integer am = shopAmount.get(ss);
+
+                    if (shopAmount.containsKey(ss) && am != null)
+                        shopAmount.put(ss, am + cartItem.getPriceInt() * cartItem.getQuantity());
+                    else
+                        shopAmount.put(ss, cartItem.getPriceInt() * cartItem.getQuantity());
+
                     selected = true;
                     if (!cartItem.getShopSlug().contains("evaly-express"))
                         isExpress = false;
+                }
+            }
+
+            for (String key : shopAmount.keySet()) {
+                Integer am = shopAmount.get(key);
+                if (am != null && am < 500) {
+                    Toast.makeText(getContext(), "You have to order more than TK. 500 from an individual shop", Toast.LENGTH_SHORT).show();
+                    return;
                 }
             }
 
@@ -370,18 +391,10 @@ public class CartFragment extends Fragment {
                 dialog.hideDialog();
 
                 if (response != null) {
-
-                    String errorMsg = response.get("message").getAsString();
+                    String message = response.get("message").getAsString();
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
                     if (response.has("data")) {
-                        if (response.getAsJsonArray("data").size() < 1) {
-                            Toast.makeText(context, "Order couldn't be placed", Toast.LENGTH_SHORT).show();
-                            return;
-                        } else {
-                            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                            orderPlaced();
-                        }
-
                         JsonArray data = response.getAsJsonArray("data");
                         for (int i = 0; i < data.size(); i++) {
                             JsonObject item = data.get(i).getAsJsonObject();
@@ -390,15 +403,12 @@ public class CartFragment extends Fragment {
                             intent.putExtra("orderID", invoice);
                             startActivity(intent);
                         }
-                    } else {
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 dialog.hideDialog();
                 Toast.makeText(context, "Couldn't place order, try again later.", Toast.LENGTH_SHORT).show();
             }
