@@ -14,9 +14,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.material.tabs.TabLayoutMediator;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.databinding.NewsfeedFragmentBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedPager;
 
 
@@ -37,7 +41,6 @@ public class NewsfeedFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.newsfeed_fragment, container, false);
-        binding.setViewModel(viewModel);
 
         navController = NavHostFragment.findNavController(this);
 
@@ -61,13 +64,6 @@ public class NewsfeedFragment extends Fragment {
                 AppController.logout(getActivity());
         });
 
-        binding.menuBtn.setOnClickListener(v -> {
-
-            if (mainViewModel != null) {
-                mainViewModel.drawerAction(true);
-            }
-
-        });
 
         binding.notificationHolder.setOnClickListener(v -> {
             if (CredentialManager.getToken().equals(""))

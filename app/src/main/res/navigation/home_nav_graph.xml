@@ -53,6 +53,9 @@
         <action
             android:id="@+id/action_homeFragment_to_evalyExpressFragment"
             app:destination="@id/evalyExpressFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_newsfeedFragment"
+            app:destination="@id/newsfeedFragment" />
 
     </fragment>
     <fragment
@@ -171,6 +174,19 @@
         android:name="bd.com.evaly.evalyshop.ui.express.EvalyExpressFragment"
         android:label="fragment_evaly_express"
         tools:layout="@layout/fragment_evaly_express" />
+    <fragment
+        android:id="@+id/newsfeedFragment"
+        android:name="bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment"
+        android:label="fragment_newsfeed"
+        tools:layout="@layout/fragment_newsfeed" >
+        <action
+            android:id="@+id/action_newsfeedFragment_to_newsfeedNotificationFragment"
+            app:destination="@id/newsfeedNotificationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newsfeedNotificationFragment"
+        android:name="bd.com.evaly.evalyshop.ui.newsfeed.notification.NewsfeedNotificationFragment"
+        android:label="NewsfeedNotificationFragment" />
 
 
 </navigation>

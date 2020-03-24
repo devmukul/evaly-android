@@ -128,6 +128,8 @@ public class HomeTabsFragment extends Fragment {
                     }
                 });
             }
+
+            binding.showMoreBtnTabs.setVisibility(View.GONE);
         } else {
             binding.recyclerView.setAdapter(adapter);
         }
