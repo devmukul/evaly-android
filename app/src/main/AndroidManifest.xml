@@ -100,6 +100,11 @@
         <activity
             android:name=".ui.search.SearchCategory"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".ui.shop.search.ShopSearchActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ui.order.PayViaBkashActivity"
             android:theme="@style/AppTheme" />

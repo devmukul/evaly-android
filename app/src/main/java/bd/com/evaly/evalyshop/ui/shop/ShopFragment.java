@@ -9,10 +9,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -61,9 +60,9 @@ import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
-import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopProductAdapter;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
@@ -171,29 +170,45 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
-        ImageView menuBtn = view.findViewById(R.id.menuBtn);
 
 
-        menuBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_back));
+        new InitializeActionBar( view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
 
-        RelativeLayout notification = view.findViewById(R.id.notification_holder);
-        menuBtn.setOnClickListener(v -> {
-            mainViewModel.setBackOnClick(true);
-        });
+//        ImageView menuBtn = view.findViewById(R.id.menuBtn);
+//
+//
+//        menuBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_back));
+//
+//        RelativeLayout notification = view.findViewById(R.id.notification_holder);
+//
+//        menuBtn.setOnClickListener(v -> {
+//            mainViewModel.setBackOnClick(true);
+//        });
+//
+//        notification.setOnClickListener(v -> {
+//            if (CredentialManager.getToken().equals("")) {
+//                context.startActivity(new Intent(context, SignInActivity.class));
+//            } else {
+//                context.startActivity(new Intent(context, NotificationActivity.class));
+//            }
+//        });
 
-        notification.setOnClickListener(v -> {
-            if (CredentialManager.getToken().equals("")) {
-                context.startActivity(new Intent(context, SignInActivity.class));
-            } else {
-                context.startActivity(new Intent(context, NotificationActivity.class));
-            }
-        });
 
+//
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view12 -> {
-            NavHostFragment.findNavController(this).navigate(R.id.shopSearchFragment);
+
+            Bundle bundle = new Bundle();
+            bundle.putString("shop_slug", slug);
+            bundle.putString("shop_name", shop_name);
+            bundle.putString("campaign_slug", campaign_slug);
+
+            NavHostFragment.findNavController(this).navigate(R.id.shopSearchActivity, bundle);
         });
 
+        TextView searchTitle = view.findViewById(R.id.searchTitle);
+
+        searchTitle.setText("Search in this shop...");
 
         if (getArguments() == null) {
             Toast.makeText(context, "Shop not available", Toast.LENGTH_SHORT).show();

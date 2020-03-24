@@ -62,12 +62,10 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private ShopDetailsModel shopDetails;
     private int cashback_rate = 0;
 
-    public ShopSearchAdapter(Context context, List<ItemsItem> a, AppCompatActivity activityInstance, Fragment fragmentInstance, NavController navController, HashMap<String, String> data, ShopViewModel viewModel) {
+    public ShopSearchAdapter(Context context, List<ItemsItem> a, AppCompatActivity activityInstance, HashMap<String, String> data, ShopViewModel viewModel) {
         this.context = context;
         productsList = a;
-        this.fragmentInstance = fragmentInstance;
         this.activityInstance = activityInstance;
-        this.navController = navController;
         this.data = data;
         this.viewModel = viewModel;
     }
