@@ -191,23 +191,35 @@ public class CartFragment extends Fragment {
         bottomSheetDialog.setContentView(bottomSheetView);
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
 
+        TextView deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
         checkout.setOnClickListener(v -> {
             if (userDetails.getToken().equals("")) {
                 Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
                 return;
             }
             boolean selected = false;
+            boolean isExpress = true;
             for (int i = 0; i < adapter.getItemList().size(); i++) {
-                if (adapter.getItemList().get(i).isSelected()) {
-                    bottomSheetDialog.show();
+
+                CartEntity cartItem = adapter.getItemList().get(i);
+                if (cartItem.isSelected()) {
                     selected = true;
-                    break;
+                    if (!cartItem.getShopSlug().contains("evaly-express"))
+                        isExpress = false;
                 }
             }
-            if (!selected) {
+
+            if (isExpress)
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 36 hours after payment.");
+            else
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 30 working days after payment.");
+
+            if (!selected)
                 Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();
-            }
+            else
+                bottomSheetDialog.show();
         });
+
 
         selectAllListener = (buttonView, isChecked) -> {
             Executors.newSingleThreadExecutor().execute(() -> {

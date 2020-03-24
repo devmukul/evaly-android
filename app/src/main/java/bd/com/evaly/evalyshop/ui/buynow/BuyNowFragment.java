@@ -270,6 +270,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         });
 
+        TextView deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
 
         checkOutBtn.setOnClickListener(view1 -> {
 
@@ -277,6 +278,11 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
+
+            if (shop_slug.contains("evaly-express"))
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 36 hours after payment.");
+            else
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 30 working days after payment.");
 
             bottomSheetDialog.show();
 
