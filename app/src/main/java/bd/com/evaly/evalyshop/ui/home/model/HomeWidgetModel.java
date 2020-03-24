@@ -17,7 +17,6 @@ import com.airbnb.epoxy.EpoxyModelClass;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.HomeModelQuickAccessBinding;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
-import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
 
 @EpoxyModelClass(layout = R.layout.home_model_quick_access)
 public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
@@ -36,7 +35,7 @@ public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
 
         NavController navController = NavHostFragment.findNavController(fragment);
 
-        binding.btn1Image.setOnClickListener(v -> activity.startActivity(new Intent(activity, NewsfeedActivity.class)));
+        binding.btn1Image.setOnClickListener(v -> navController.navigate(R.id.newsfeedFragment));
         binding.btn2Image.setOnClickListener(v -> {
             Intent ni = new Intent(activity, GiftCardActivity.class);
             activity.startActivity(ni);

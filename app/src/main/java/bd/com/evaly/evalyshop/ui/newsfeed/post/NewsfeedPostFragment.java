@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +33,7 @@ import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.databinding.NewsfeedTabsFragmentBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
@@ -82,13 +82,12 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.newsfeed_tabs_fragment, container, false);
+        binding = NewsfeedTabsFragmentBinding.inflate(inflater, container, false);
 
         viewModel = new ViewModelProvider(this).get(NewsfeedPostViewModel.class);
         chatViewModel = new ViewModelProvider(this).get(RoomWIthRxViewModel.class);
 
         viewModel.setType(type);
-        binding.setViewModel(viewModel);
 
         return binding.getRoot();
     }

@@ -176,7 +176,7 @@
         tools:layout="@layout/fragment_evaly_express" />
     <fragment
         android:id="@+id/newsfeedFragment"
-        android:name="bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment"
+        android:name="bd.com.evaly.evalyshop.ui.newsfeed.tabs.NewsfeedFragment"
         android:label="fragment_newsfeed"
         tools:layout="@layout/fragment_newsfeed" >
         <action
