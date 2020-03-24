@@ -150,7 +150,7 @@ public class ProductGrid {
         progressBar.setVisibility(View.VISIBLE);
         current = currentPage;
 
-        ProductApiHelper.getShopProducts(shopSlug, currentPage, 21, categorySlug, campaignSlug, new ResponseListenerAuth<JsonObject, String>() {
+        ProductApiHelper.getShopProducts(shopSlug, currentPage, 21, categorySlug, campaignSlug, null, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 

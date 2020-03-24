@@ -87,6 +87,9 @@
             app:uri="https://evaly.com.bd/campaign/shop/{shop_slug}/{campaign_slug}"/>
         <deepLink
             app:uri="https://www.evaly.com.bd/campaign/shop/{shop_slug}/{campaign_slug}"/>
+        <action
+            android:id="@+id/action_shopFragment_to_shopSearchFragment"
+            app:destination="@id/shopSearchFragment" />
 
 
     </fragment>
@@ -171,6 +174,10 @@
         android:name="bd.com.evaly.evalyshop.ui.express.EvalyExpressFragment"
         android:label="fragment_evaly_express"
         tools:layout="@layout/fragment_evaly_express" />
+    <fragment
+        android:id="@+id/shopSearchFragment"
+        android:name="bd.com.evaly.evalyshop.ui.shop.search.ShopSearchFragment"
+        android:label="ShopSearchFragment" />
 
 
 </navigation>

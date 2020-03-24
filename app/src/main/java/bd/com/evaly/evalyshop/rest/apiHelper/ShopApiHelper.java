@@ -16,15 +16,15 @@ public class ShopApiHelper extends BaseApiHelper{
     }
 
 
-    public static void getShopDetailsItem(String token, String shopSlug, int page, int limit, String categorySlug, String campaignSlug, ResponseListenerAuth<ShopDetailsModel, String> listener){
+    public static void getShopDetailsItem(String token, String shopSlug, int page, int limit, String categorySlug, String campaignSlug, String search, ResponseListenerAuth<ShopDetailsModel, String> listener){
 
         IApiClient iApiClient = getiApiClient();
         Call<ShopDetailsModel> call;
 
         if (!campaignSlug.equals(""))
-            call = iApiClient.getCampaignShopDetails(token, campaignSlug, shopSlug, page, limit, categorySlug);
+            call = iApiClient.getCampaignShopDetails(token, campaignSlug, shopSlug, page, limit, categorySlug, search);
         else
-            call = iApiClient.getShopDetails(token, shopSlug, page, limit, categorySlug);
+            call = iApiClient.getShopDetails(token, shopSlug, page, limit, categorySlug, search);
 
         call.enqueue(getResponseCallBackDefault(listener));
 

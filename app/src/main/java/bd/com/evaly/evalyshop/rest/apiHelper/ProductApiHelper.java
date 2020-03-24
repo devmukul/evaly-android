@@ -18,7 +18,7 @@ import retrofit2.Call;
 public class ProductApiHelper extends BaseApiHelper {
 
 
-    public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, ResponseListenerAuth<JsonObject, String> listener) {
+    public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, String search, ResponseListenerAuth<JsonObject, String> listener) {
 
         if (categorySlug.equals(""))
             categorySlug = null;
@@ -27,9 +27,9 @@ public class ProductApiHelper extends BaseApiHelper {
         Call<JsonObject> call;
 
         if (!campaignSlug.equals(""))
-            call = iApiClient.getCampaignShopProducts(campaignSlug, shopSlug, page, limit, categorySlug);
+            call = iApiClient.getCampaignShopProducts(campaignSlug, shopSlug, page, limit, categorySlug, search);
         else
-            call = iApiClient.getShopProducts(shopSlug, page, limit, categorySlug);
+            call = iApiClient.getShopProducts(shopSlug, page, limit, categorySlug, search);
         call.enqueue(getResponseCallBackDefault(listener));
 
     }

@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -59,10 +61,9 @@ import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
+import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopProductAdapter;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
@@ -163,13 +164,28 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
+
+        ImageView menuBtn = view.findViewById(R.id.menuBtn);
+
+
+        menuBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_back));
+
+        RelativeLayout notification = view.findViewById(R.id.notification_holder);
+        menuBtn.setOnClickListener(v -> {
+                mainViewModel.setBackOnClick(true);
+        });
+
+        notification.setOnClickListener(v -> {
+            if (CredentialManager.getToken().equals("")) {
+                context.startActivity(new Intent(context, SignInActivity.class));
+            } else {
+                context.startActivity(new Intent(context, NotificationActivity.class));
+            }
+        });
 
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view12 -> {
-            Intent intent = new Intent(context, GlobalSearchActivity.class);
-            intent.putExtra("type", 1);
-            startActivity(intent);
+            NavHostFragment.findNavController(this).navigate(R.id.shopSearchFragment);
         });
 
 
