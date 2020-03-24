@@ -49,6 +49,7 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.cart.CartItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
@@ -69,6 +70,7 @@ public class CartFragment extends Fragment {
     private CheckBox selectAll;
     private Button checkout, btnBottomSheet;
     private EditText customAddress, contact_number;
+    private TextView deliveryDuration;
     private Switch addressSwitch;
     private Spinner addressSpinner;
     private List<String> spinnerArray;
@@ -197,16 +199,26 @@ public class CartFragment extends Fragment {
                 return;
             }
             boolean selected = false;
+            boolean isExpress = true;
             for (int i = 0; i < adapter.getItemList().size(); i++) {
-                if (adapter.getItemList().get(i).isSelected()) {
-                    bottomSheetDialog.show();
+
+                CartEntity cartItem = adapter.getItemList().get(i);
+                if (cartItem.isSelected()) {
                     selected = true;
-                    break;
+                    if (!cartItem.getShopSlug().contains("evaly-express"))
+                        isExpress = false;
                 }
             }
-            if (!selected) {
+
+            if (isExpress)
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 36 hours after payment.");
+            else
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 30 working days after payment.");
+
+            if (!selected)
                 Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();
-            }
+            else
+                bottomSheetDialog.show();
         });
 
         selectAllListener = (buttonView, isChecked) -> {
@@ -220,6 +232,7 @@ public class CartFragment extends Fragment {
         };
 
         TextView privacyText = bottomSheetView.findViewById(R.id.privacyText);
+        deliveryDuration = bottomSheetView.findViewById(R.id.deliverDuration);
         privacyText.setText(Html.fromHtml("I agree to the <a href=\"https://evaly.com.bd/about/terms-conditions\">Terms & Conditions</a> and <a href=\"https://evaly.com.bd/about/purchasing-policy\">Purchasing Policy</a> of Evaly."));
         privacyText.setMovementMethod(LinkMovementMethod.getInstance());
         CheckBox checkBox = bottomSheetView.findViewById(R.id.checkBox);
