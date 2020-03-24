@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,11 +36,12 @@ public class ShopSearchActivity extends AppCompatActivity {
     private List<ItemsItem> itemList;
     private int currentPage = 1;
     private int cashbackRate;
-    private String campaignSlug="", shopSlug = "sumash-tech", shopTitle;
+    private String campaignSlug = "", shopSlug = "sumash-tech", shopTitle;
     private boolean isLoading = false;
     private int totalCount = 0;
     private String query;
     private ShopViewModel viewModel;
+    private boolean firstLoad = true;
 
     public ShopSearchActivity() {
 
@@ -63,13 +63,13 @@ public class ShopSearchActivity extends AppCompatActivity {
         adapter = new ShopSearchAdapter(this, itemList, this, null, viewModel);
         binding.recyclerView.setAdapter(adapter);
 
+        binding.back.setOnClickListener(v -> finish());
+
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-
-                    Toast.makeText(getApplicationContext(), "Next page", Toast.LENGTH_SHORT).show();
 
                     if (!isLoading && totalCount > itemList.size()) {
                         if (currentPage > 1)
@@ -91,7 +91,8 @@ public class ShopSearchActivity extends AppCompatActivity {
 
         binding.search.addTextChangedListener(new TextWatcher() {
 
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
@@ -101,19 +102,16 @@ public class ShopSearchActivity extends AppCompatActivity {
                                       int before, int count) {
 
 
-                if (!binding.search.getText().toString().trim().equals("")){
+                if (!binding.search.getText().toString().trim().equals("")) {
 
                     performSearch(binding.search.getText().toString().trim());
                     query = binding.search.getText().toString().trim();
-                }
-
-                else {
+                } else {
 
                     binding.noItem.setVisibility(View.VISIBLE);
                     itemList.clear();
                     adapter.notifyDataSetChanged();
                     binding.searchTitle.setVisibility(View.GONE);
-
                     binding.noText.setText("Search products here");
                 }
 
@@ -122,10 +120,10 @@ public class ShopSearchActivity extends AppCompatActivity {
 
         viewModel.getBuyNowLiveData().observe(this, s -> {
 
-                BuyNowFragment addPhotoBottomDialogFragment =
-                        BuyNowFragment.newInstance(shopSlug, s);
-                addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
-                        "BuyNow");
+            BuyNowFragment addPhotoBottomDialogFragment =
+                    BuyNowFragment.newInstance(shopSlug, s);
+            addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
+                    "BuyNow");
         });
 
 
@@ -134,7 +132,7 @@ public class ShopSearchActivity extends AppCompatActivity {
     // https://api-prod.evaly.com.bd/api/categories/?search=phone&page=1
 
 
-    public String getQuery(){
+    public String getQuery() {
 
         return query;
 
@@ -151,6 +149,8 @@ public class ShopSearchActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         binding.searchTitle.setVisibility(View.GONE);
 
+        binding.noItem.setVisibility(View.GONE);
+
         isLoading = true;
 
         this.query = query;
@@ -161,6 +161,9 @@ public class ShopSearchActivity extends AppCompatActivity {
     }
 
     public void getShopProducts(int page) {
+
+
+        binding.noItem.setVisibility(View.GONE);
 
         isLoading = true;
         binding.progressContainer.setVisibility(View.VISIBLE);
@@ -173,6 +176,10 @@ public class ShopSearchActivity extends AppCompatActivity {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
 
+
+                if (binding.search.getText().toString().length() > 0)
+                    binding.searchTitle.setVisibility(View.VISIBLE);
+
                 binding.progressContainer.setVisibility(View.GONE);
                 binding.bottomProgressBar.setVisibility(View.GONE);
 
@@ -183,6 +190,22 @@ public class ShopSearchActivity extends AppCompatActivity {
 
                 if (response.getCount() > 0)
                     currentPage++;
+
+                if (response.getCount() == 0) {
+                    binding.noItem.setVisibility(View.VISIBLE);
+                    binding.noText.setText("No products found");
+                } else {
+                    binding.noItem.setVisibility(View.GONE);
+                    binding.noText.setText("Search products here");
+                }
+
+                if (binding.search.getText().toString().length() == 0 && !firstLoad) {
+                    firstLoad = false;
+                    itemList.clear();
+                    adapter.notifyDataSetChanged();
+                    binding.noItem.setVisibility(View.VISIBLE);
+                    binding.noText.setText("Search products here");
+                }
             }
 
             @Override
