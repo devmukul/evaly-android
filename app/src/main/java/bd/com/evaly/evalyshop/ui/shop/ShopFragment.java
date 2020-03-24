@@ -80,8 +80,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private ShopProductAdapter adapterProducts;
     private Context context;
     private MainActivity mainActivity;
-    private int currentPage = 1;
-    private int totalCount = 0;
+    private int currentPage;
+    private int totalCount;
     private boolean isLoading = false;
     private VCard vCard;
     private AppController mChatApp = AppController.getInstance();
@@ -107,6 +107,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         }
     };
+    private boolean isInitiated = false;
     private boolean clickFromCategory = false;
     private ShopViewModel viewModel;
     private ProgressBar progressBar;
@@ -124,6 +125,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         if (!CredentialManager.getToken().equals(""))
             Executors.newSingleThreadExecutor().execute(() -> startXmppService());
+
     }
 
     @Override
@@ -131,7 +133,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         binding = FragmentShopNewBinding.inflate(inflater, container, false);
 
-        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
 
         context = getContext();
         mainActivity = (MainActivity) getActivity();
@@ -146,6 +147,11 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        currentPage = 1;
+        totalCount = 0;
+
+        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
 
         binding.swipeRefresh.setOnRefreshListener(this);
 
@@ -172,7 +178,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         RelativeLayout notification = view.findViewById(R.id.notification_holder);
         menuBtn.setOnClickListener(v -> {
-                mainViewModel.setBackOnClick(true);
+            mainViewModel.setBackOnClick(true);
         });
 
         notification.setOnClickListener(v -> {
@@ -216,7 +222,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         adapterProducts = new ShopProductAdapter(context, productItemList, (MainActivity) getActivity(), this, NavHostFragment.findNavController(this), data, viewModel);
         binding.products.setAdapter(adapterProducts);
-
 
         binding.products.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -263,7 +268,20 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             loadShopDetails(shopDetailsModel);
         });
 
-        viewModel.loadShopProducts();
+
+        productItemList.clear();
+        viewModel.setCategoryCurrentPage(1);
+
+        if (isInitiated)
+            viewModel.setCurrentPage(2);
+        else
+            viewModel.setCurrentPage(1);
+
+        if (!isInitiated) {
+            isInitiated = true;
+            viewModel.loadShopProducts();
+        }
+
 
         viewModel.getBuyNowLiveData().observe(getViewLifecycleOwner(), s -> {
             if (getActivity() != null) {
@@ -335,12 +353,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding.products.setAdapter(null);
-        disconnectXmpp();
-    }
 
     private void disconnectXmpp() {
         if (xmppHandler != null)
@@ -358,7 +370,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         totalCount = response.getCount();
 
-        if (currentPage == 1 && productItemList.size() != 1) {
+        if (productItemList.size() < 1) {
             productItemList.add(new HomeHeaderItem());
             adapterProducts.notifyItemInserted(0);
             shop_name = shopDetails.getName();
@@ -367,7 +379,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         progressBar.setVisibility(View.INVISIBLE);
 
-        if (shopData.getMeta() != null && currentPage == 1)
+        if (shopData.getMeta() != null)
             adapterProducts.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
 
         List<ItemsItem> shopItems = shopData.getItems();
@@ -403,19 +415,16 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             binding.noItem.setVisibility(View.GONE);
         }
 
-        if (currentPage == 2) {
-
-            binding.shimmerHolder.animate().alpha(0.0f)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            binding.shimmer.stopShimmer();
-                            binding.shimmer.setVisibility(View.GONE);
-                            binding.shimmerHolder.setVisibility(View.GONE);
-                        }
-                    });
-        }
+        binding.shimmerHolder.animate().alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        binding.shimmer.stopShimmer();
+                        binding.shimmer.setVisibility(View.GONE);
+                        binding.shimmerHolder.setVisibility(View.GONE);
+                    }
+                });
 
 
     }
@@ -597,6 +606,13 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         viewModel.setCurrentPage(1);
         viewModel.loadShopProducts();
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding.products.setAdapter(null);
+        disconnectXmpp();
     }
 
 }

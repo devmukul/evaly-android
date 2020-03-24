@@ -10,9 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import bd.com.evaly.evalyshop.databinding.FragmentShopSearchBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -20,6 +22,8 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
+import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 
 public class ShopSearchFragment extends Fragment {
@@ -52,6 +56,25 @@ public class ShopSearchFragment extends Fragment {
         itemList = new ArrayList<>();
         adapter = new ShopSearchAdapter(getContext(), itemList, (AppCompatActivity) getActivity(), this,  NavHostFragment.findNavController(this), null, null);
         binding.recyclerView.setAdapter(adapter);
+
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!isLoading && totalCount > itemList.size()) {
+                        if (currentPage > 1)
+                            binding.progressContainer.setVisibility(View.VISIBLE);
+                        getShopProducts(currentPage);
+                    }
+                }
+            }
+        });
+
+        int spanCount = 2; // 3 columns
+        int spacing = (int) Utils.convertDpToPixel(10, Objects.requireNonNull(getContext())); // 50px
+        boolean includeEdge = true;
+        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
 
         getShopProducts(1);
 

@@ -35,6 +35,12 @@ public class ShopViewModel extends ViewModel {
     private int currentPage = 1;
     private int categoryCurrentPage = 1;
 
+
+    public void clear() {
+        currentPage = 2;
+        categoryCurrentPage = 1;
+    }
+
     public int getCategoryCurrentPage() {
         return categoryCurrentPage;
     }

@@ -27,7 +27,7 @@ public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
         int column = position % spanCount; // item column
 
 
-        if (parent.getChildLayoutPosition(view) == 0) {
+        if (lp.isFullSpan()) {
 
             outRect.top = 0;
             outRect.left = 0;
