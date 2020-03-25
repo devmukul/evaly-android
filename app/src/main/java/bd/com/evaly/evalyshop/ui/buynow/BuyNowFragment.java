@@ -255,7 +255,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
             item.setShopItemId(shop_item_id);
 
-            if (productPriceInt * item.getQuantity() < 500){
+            if (!shop_slug.equals("evaly-amol-1")  && productPriceInt * item.getQuantity() < 500){
                 Toast.makeText(getContext(), "You have to order more than TK. 500 from an individual shop", Toast.LENGTH_SHORT).show();
                 return;
             }

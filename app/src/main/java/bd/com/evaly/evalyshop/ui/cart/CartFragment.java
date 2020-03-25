@@ -224,7 +224,7 @@ public class CartFragment extends Fragment {
 
             for (String key : shopAmount.keySet()) {
                 Integer am = shopAmount.get(key);
-                if (am != null && am < 500) {
+                if (!key.equals("evaly-amol-1") && am != null && am < 500) {
                     Toast.makeText(getContext(), "You have to order more than TK. 500 from an individual shop", Toast.LENGTH_SHORT).show();
                     return;
                 }
