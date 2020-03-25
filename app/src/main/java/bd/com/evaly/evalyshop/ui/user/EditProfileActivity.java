@@ -111,9 +111,9 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile);
+        setContentView(R.layout.activity_edit_profile_new);
         getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle("Edit Personal Information");
+        getSupportActionBar().setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = this;
