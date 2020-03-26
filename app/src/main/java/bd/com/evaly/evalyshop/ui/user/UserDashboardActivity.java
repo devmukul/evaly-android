@@ -43,6 +43,7 @@ import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.transaction.TransactionHistory;
+import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;

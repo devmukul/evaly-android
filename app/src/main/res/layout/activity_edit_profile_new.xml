@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="#fff"
         android:orientation="vertical"
-        tools:context=".ui.user.EditProfileActivity">
+        tools:context=".ui.user.editProfile.EditProfileActivity">
 
 
         <RelativeLayout

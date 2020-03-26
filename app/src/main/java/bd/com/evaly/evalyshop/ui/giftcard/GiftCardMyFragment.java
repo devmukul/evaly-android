@@ -46,7 +46,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
-import bd.com.evaly.evalyshop.ui.user.EditProfileActivity;
+import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;

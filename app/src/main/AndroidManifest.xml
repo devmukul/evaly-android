@@ -138,7 +138,7 @@
             android:name=".ui.auth.ChangePasswordActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ui.user.EditProfileActivity"
+            android:name=".ui.user.editProfile.EditProfileActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.order.orderList.OrderListActivity"
