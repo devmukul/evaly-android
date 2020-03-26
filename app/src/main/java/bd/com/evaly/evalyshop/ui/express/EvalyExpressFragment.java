@@ -32,7 +32,6 @@ public class EvalyExpressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentEvalyExpressBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(this).get(EvalyExpressViewModel.class);
         return binding.getRoot();
     }
 
@@ -47,12 +46,15 @@ public class EvalyExpressFragment extends Fragment {
                 getActivity().onBackPressed();
         });
 
+        viewModel = new ViewModelProvider(this).get(EvalyExpressViewModel.class);
+
         itemList = new ArrayList<>();
         adapter = new EvalyExpressAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
         binding.recyclerView.setAdapter(adapter);
 
         viewModel.getLiveData().observe(getViewLifecycleOwner(), shopGroupResponse -> {
 
+            itemList.clear();
             binding.progressBar.setVisibility(View.GONE);
             if (shopGroupResponse.getShops() == null) {
                 binding.layoutNot.setVisibility(View.VISIBLE);
@@ -70,6 +72,8 @@ public class EvalyExpressFragment extends Fragment {
         });
 
         binding.progressBar.setVisibility(View.VISIBLE);
+
+        itemList.clear();
         viewModel.getShops("evaly-express", 1);
 
     }

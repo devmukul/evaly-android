@@ -10,7 +10,6 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -93,16 +92,16 @@ public class CampaignShopActivity extends AppCompatActivity {
 
         nestedSV = findViewById(R.id.sticky);
 
-        if (nestedSV != null) {
-            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    if (slug.equals("shop-subscriptions"))
-                        getFollowedShops(page);
-                    else
-                        getEvalyShops(page);
-                }
-            });
-        }
+//        if (nestedSV != null) {
+//            nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+//                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+//                    if (slug.equals("shop-subscriptions"))
+//                        getFollowedShops(page);
+//                    else
+//                        getEvalyShops(page);
+//                }
+//            });
+//        }
 
     }
 

@@ -213,9 +213,6 @@ public class HomeTabsFragment extends Fragment {
         if (binding == null)
             return;
 
-
-        binding.shimmer.shimmer.setVisibility(View.GONE);
-
         binding.shimmer.shimmer.animate().alpha(0.0f)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override

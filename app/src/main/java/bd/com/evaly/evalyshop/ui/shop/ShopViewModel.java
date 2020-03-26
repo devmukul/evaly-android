@@ -35,6 +35,12 @@ public class ShopViewModel extends ViewModel {
     private int currentPage = 1;
     private int categoryCurrentPage = 1;
 
+
+    public void clear() {
+        currentPage = 2;
+        categoryCurrentPage = 1;
+    }
+
     public int getCategoryCurrentPage() {
         return categoryCurrentPage;
     }
@@ -174,7 +180,7 @@ public class ShopViewModel extends ViewModel {
 
     public void loadShopProducts() {
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetailsLiveData.setValue(response);

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -64,7 +65,7 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 public class EditProfileActivity extends BaseActivity {
 
-    EditText firstname, lastName, email, phone, address;
+    TextView firstname, lastName, email, phone, address;
     Button update;
     String username = "", token = "";
     UserDetails userDetails;
@@ -111,9 +112,9 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile);
+        setContentView(R.layout.activity_edit_profile_new);
         getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle("Edit Personal Information");
+        getSupportActionBar().setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = this;
@@ -122,7 +123,6 @@ public class EditProfileActivity extends BaseActivity {
         dialog = new ViewDialog(this);
 
         firstname = findViewById(R.id.firstName);
-        lastName = findViewById(R.id.lastName);
         email = findViewById(R.id.email);
         phone = findViewById(R.id.phone);
         update = findViewById(R.id.update);
@@ -131,8 +131,7 @@ public class EditProfileActivity extends BaseActivity {
         setProfilePic();
 
 
-        firstname.setText(userDetails.getFirstName());
-        lastName.setText(userDetails.getLastName());
+        firstname.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
         email.setText(userDetails.getEmail());
         phone.setText(userDetails.getPhone());
 

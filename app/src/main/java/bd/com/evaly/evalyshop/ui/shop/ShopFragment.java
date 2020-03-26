@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -59,7 +60,6 @@ import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
-import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopProductAdapter;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
@@ -79,8 +79,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private ShopProductAdapter adapterProducts;
     private Context context;
     private MainActivity mainActivity;
-    private int currentPage = 1;
-    private int totalCount = 0;
+    private int currentPage;
+    private int totalCount;
     private boolean isLoading = false;
     private VCard vCard;
     private AppController mChatApp = AppController.getInstance();
@@ -106,6 +106,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         }
     };
+    private boolean isInitiated = false;
     private boolean clickFromCategory = false;
     private ShopViewModel viewModel;
     private ProgressBar progressBar;
@@ -123,6 +124,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         if (!CredentialManager.getToken().equals(""))
             Executors.newSingleThreadExecutor().execute(() -> startXmppService());
+
     }
 
     @Override
@@ -130,7 +132,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         binding = FragmentShopNewBinding.inflate(inflater, container, false);
 
-        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
 
         context = getContext();
         mainActivity = (MainActivity) getActivity();
@@ -145,6 +146,11 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        currentPage = 1;
+        totalCount = 0;
+
+        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
 
         binding.swipeRefresh.setOnRefreshListener(this);
 
@@ -163,15 +169,46 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
 
+
+
+        new InitializeActionBar( view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
+
+//        ImageView menuBtn = view.findViewById(R.id.menuBtn);
+//
+//
+//        menuBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_back));
+//
+//        RelativeLayout notification = view.findViewById(R.id.notification_holder);
+//
+//        menuBtn.setOnClickListener(v -> {
+//            mainViewModel.setBackOnClick(true);
+//        });
+//
+//        notification.setOnClickListener(v -> {
+//            if (CredentialManager.getToken().equals("")) {
+//                context.startActivity(new Intent(context, SignInActivity.class));
+//            } else {
+//                context.startActivity(new Intent(context, NotificationActivity.class));
+//            }
+//        });
+
+
+//
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view12 -> {
-            Intent intent = new Intent(context, GlobalSearchActivity.class);
-            intent.putExtra("type", 1);
-            startActivity(intent);
+
+            Bundle bundle = new Bundle();
+            bundle.putString("shop_slug", slug);
+            bundle.putString("shop_name", shop_name);
+            bundle.putString("campaign_slug", campaign_slug);
+
+            NavHostFragment.findNavController(this).navigate(R.id.shopSearchActivity, bundle);
         });
 
+        TextView searchTitle = view.findViewById(R.id.searchTitle);
+
+        searchTitle.setText("Search in this shop...");
 
         if (getArguments() == null) {
             Toast.makeText(context, "Shop not available", Toast.LENGTH_SHORT).show();
@@ -200,7 +237,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         adapterProducts = new ShopProductAdapter(context, productItemList, (MainActivity) getActivity(), this, NavHostFragment.findNavController(this), data, viewModel);
         binding.products.setAdapter(adapterProducts);
-
 
         binding.products.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -247,7 +283,20 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             loadShopDetails(shopDetailsModel);
         });
 
-        viewModel.loadShopProducts();
+
+        productItemList.clear();
+        viewModel.setCategoryCurrentPage(1);
+
+        if (isInitiated)
+            viewModel.setCurrentPage(2);
+        else
+            viewModel.setCurrentPage(1);
+
+        if (!isInitiated) {
+            isInitiated = true;
+            viewModel.loadShopProducts();
+        }
+
 
         viewModel.getBuyNowLiveData().observe(getViewLifecycleOwner(), s -> {
             if (getActivity() != null) {
@@ -319,12 +368,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding.products.setAdapter(null);
-        disconnectXmpp();
-    }
 
     private void disconnectXmpp() {
         if (xmppHandler != null)
@@ -342,7 +385,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         totalCount = response.getCount();
 
-        if (currentPage == 1 && productItemList.size() != 1) {
+        if (productItemList.size() < 1) {
             productItemList.add(new HomeHeaderItem());
             adapterProducts.notifyItemInserted(0);
             shop_name = shopDetails.getName();
@@ -351,7 +394,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         progressBar.setVisibility(View.INVISIBLE);
 
-        if (shopData.getMeta() != null && currentPage == 1)
+        if (shopData.getMeta() != null)
             adapterProducts.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
 
         List<ItemsItem> shopItems = shopData.getItems();
@@ -387,19 +430,16 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             binding.noItem.setVisibility(View.GONE);
         }
 
-        if (currentPage == 2) {
-
-            binding.shimmerHolder.animate().alpha(0.0f)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            binding.shimmer.stopShimmer();
-                            binding.shimmer.setVisibility(View.GONE);
-                            binding.shimmerHolder.setVisibility(View.GONE);
-                        }
-                    });
-        }
+        binding.shimmerHolder.animate().alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        binding.shimmer.stopShimmer();
+                        binding.shimmer.setVisibility(View.GONE);
+                        binding.shimmerHolder.setVisibility(View.GONE);
+                    }
+                });
 
 
     }
@@ -581,6 +621,13 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         viewModel.setCurrentPage(1);
         viewModel.loadShopProducts();
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding.products.setAdapter(null);
+        disconnectXmpp();
     }
 
 }

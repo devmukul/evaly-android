@@ -483,14 +483,8 @@ public class OrderDetailsActivity extends BaseActivity {
                 dialog2.hideDialog();
                 Toast.makeText(OrderDetailsActivity.this, response.get("message").getAsString(), Toast.LENGTH_LONG).show();
                 if (response.has("success")) {
-
-                    giftCardSuccessDialog();
-
-//                    final Handler handler = new Handler();
-//                    handler.postDelayed(() -> {
-//                        finish();
-//                        startActivity(getIntent());
-//                    }, 1000);
+                    if (response.get("success").getAsBoolean())
+                        giftCardSuccessDialog();
                 }
             }
 

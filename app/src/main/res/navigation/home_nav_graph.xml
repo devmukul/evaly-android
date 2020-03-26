@@ -53,9 +53,6 @@
         <action
             android:id="@+id/action_homeFragment_to_evalyExpressFragment"
             app:destination="@id/evalyExpressFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_newsfeedFragment"
-            app:destination="@id/newsfeedFragment" />
 
     </fragment>
     <fragment
@@ -177,16 +174,11 @@
     <fragment
         android:id="@+id/newsfeedFragment"
         android:name="bd.com.evaly.evalyshop.ui.newsfeed.tabs.NewsfeedFragment"
-        android:label="fragment_newsfeed"
-        tools:layout="@layout/fragment_newsfeed" >
-        <action
-            android:id="@+id/action_newsfeedFragment_to_newsfeedNotificationFragment"
-            app:destination="@id/newsfeedNotificationFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/newsfeedNotificationFragment"
-        android:name="bd.com.evaly.evalyshop.ui.newsfeed.notification.NewsfeedNotificationFragment"
-        android:label="NewsfeedNotificationFragment" />
+        android:label="NewsfeedFragment" />
+    <activity
+        android:id="@+id/shopSearchActivity"
+        android:name="bd.com.evaly.evalyshop.ui.shop.search.ShopSearchActivity"
+        android:label="ShopSearchActivity" />
 
 
 </navigation>

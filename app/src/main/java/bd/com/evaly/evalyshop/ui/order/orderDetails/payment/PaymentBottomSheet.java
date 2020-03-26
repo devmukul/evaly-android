@@ -113,11 +113,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 return;
             }
 
-            if (!binding.amountPay.getText().toString().matches("\\d+.\\d+")) {
-                Toast.makeText(getContext(), "Please enter amount in english number", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
             if (binding.amountPay.getText().toString().trim().equals("")) {
                 Toast.makeText(getContext(), "Please enter an amount", Toast.LENGTH_SHORT).show();
                 return;
@@ -129,7 +124,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 return;
             }
             if (Double.parseDouble(binding.amountPay.getText().toString()) > Double.parseDouble(userDetails.getBalance())) {
-                Toast.makeText(getContext(), "Insufficient Evaly balance (৳ " + userDetails.getBalance() + ")", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Insufficient Evaly Balance (৳ " + userDetails.getBalance() + ")", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -145,11 +140,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 Double.parseDouble(binding.amountPay.getText().toString());
             } catch (Exception e) {
                 Toast.makeText(getContext(), "Please enter valid amount.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (!binding.amountPay.getText().toString().matches("\\d+.\\d+")) {
-                Toast.makeText(getContext(), "Please enter amount in english number", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -185,11 +175,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 Double.parseDouble(binding.amountPay.getText().toString());
             } catch (Exception e) {
                 Toast.makeText(getContext(), "Please enter valid amount.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (!binding.amountPay.getText().toString().matches("\\d+.\\d+")) {
-                Toast.makeText(getContext(), "Please enter amount in english number", Toast.LENGTH_SHORT).show();
                 return;
             }
 
