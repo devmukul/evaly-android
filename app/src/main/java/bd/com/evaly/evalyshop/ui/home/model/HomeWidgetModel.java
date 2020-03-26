@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
 import android.content.Intent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,10 @@ import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.HomeModelQuickAccessBinding;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.notification.NotificationCount;
+import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
 
 @EpoxyModelClass(layout = R.layout.home_model_quick_access)
@@ -44,6 +49,28 @@ public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
         binding.btn3Image.setOnClickListener(v -> navController.navigate(R.id.campaignFragment));
 
         binding.btn4Image.setOnClickListener(v -> navController.navigate(R.id.evalyExpressFragment));
+
+        if (!CredentialManager.getToken().equals("")) {
+            GeneralApiHelper.getNotificationCount(CredentialManager.getToken(), "newsfeed", new ResponseListenerAuth<NotificationCount, String>() {
+                @Override
+                public void onDataFetched(NotificationCount response, int statusCode) {
+                    if (response.getCount() > 0)
+                        binding.btn1Indicator.setVisibility(View.VISIBLE);
+                    else
+                        binding.btn1Indicator.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onFailed(String errorBody, int errorCode) {
+
+                }
+
+                @Override
+                public void onAuthError(boolean logout) {
+
+                }
+            });
+        }
     }
 
 
