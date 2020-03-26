@@ -41,18 +41,15 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
     class HomeTabsHolder extends EpoxyHolder {
 
         View itemView;
-
         private FragmentTabPagerAdapter pager;
         private HashMap<Integer, ViewTreeObserver.OnGlobalLayoutListener> listenerList = new HashMap<>();
         private HashMap<Integer, View> viewList = new HashMap<>();
-
 
         @Override
         protected void bindView(@NonNull View itemView) {
             this.itemView = itemView;
 
             HomeModelTabsBinding binding = HomeModelTabsBinding.bind(itemView);
-
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
 
@@ -74,7 +71,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
 
             binding.viewPager.setOffscreenPageLimit(1);
             binding.viewPager.setAdapter(pager);
-
             binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
             binding.tabLayout.setSmoothScrollingEnabled(true);
 

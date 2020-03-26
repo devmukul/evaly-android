@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
@@ -83,6 +85,8 @@ public class HomeTabsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
+       // binding.shimmer.shimmer.setVisibility(View.GONE);
+
         appDatabase = AppDatabase.getInstance(getActivity());
         CategoryDao categoryDao = appDatabase.categoryDao();
 
@@ -103,10 +107,14 @@ public class HomeTabsFragment extends Fragment {
             appDatabase.categoryDao().getAllLiveData().observe(getViewLifecycleOwner(), categoryEntities -> {
                 categoryItems.addAll(categoryEntities);
                 adapter2.notifyDataSetChanged();
-                stopShimmer();
+
+                new Handler().postDelayed(() -> stopShimmer(), 200);
             });
 
             if (getLastUpdated() == 0 || (getLastUpdated() != 0 && Calendar.getInstance().getTimeInMillis() - getLastUpdated() > 20200000)) {
+
+                binding.shimmer.shimmer.setVisibility(View.VISIBLE);
+
                 GeneralApiHelper.getRootCategories(new ResponseListenerAuth<List<CategoryEntity>, String>() {
                     @Override
                     public void onDataFetched(List<CategoryEntity> response, int statusCode) {
@@ -161,12 +169,12 @@ public class HomeTabsFragment extends Fragment {
 
 
     public long getLastUpdated() {
-        return MyPreference.with(getContext(), "category_db_new13").getLong("last_updated", 0);
+        return MyPreference.with(AppController.getmContext(), "category_db_new13").getLong("last_updated", 0);
     }
 
     public void setLastUpdated() {
         Calendar calendar = Calendar.getInstance();
-        MyPreference.with(getContext(), "category_db_new13").addLong("last_updated", calendar.getTimeInMillis()).save();
+        MyPreference.with(AppController.getmContext(), "category_db_new13").addLong("last_updated", calendar.getTimeInMillis()).save();
     }
 
 
@@ -205,6 +213,9 @@ public class HomeTabsFragment extends Fragment {
         if (binding == null)
             return;
 
+
+        binding.shimmer.shimmer.setVisibility(View.GONE);
+
         binding.shimmer.shimmer.animate().alpha(0.0f)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
@@ -220,6 +231,9 @@ public class HomeTabsFragment extends Fragment {
 
 
     public void getBrandsOfCategory(int counter) {
+
+        binding.shimmer.shimmer.setVisibility(View.VISIBLE);
+
         ProductApiHelper.getBrandsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
@@ -271,6 +285,10 @@ public class HomeTabsFragment extends Fragment {
     }
 
     public void getShopsOfCategory(int counter) {
+
+
+        binding.shimmer.shimmer.setVisibility(View.VISIBLE);
+
         ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject res, int statusCode) {
