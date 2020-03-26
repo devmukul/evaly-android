@@ -243,6 +243,7 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/editContactInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
@@ -383,6 +384,7 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/editAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"

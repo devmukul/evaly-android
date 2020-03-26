@@ -38,6 +38,8 @@ import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.AddressBottomSheet;
+import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.ContactInfoBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.PersonalInfoBottomSheet;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
@@ -124,6 +126,16 @@ public class EditProfileActivity extends BaseActivity {
         binding.editPersonalInfo.setOnClickListener(v -> {
             PersonalInfoBottomSheet bottomSheet = PersonalInfoBottomSheet.newInstance();
             bottomSheet.show(getSupportFragmentManager(), "Edit Personal Info");
+        });
+
+        binding.editContactInfo.setOnClickListener(v -> {
+            ContactInfoBottomSheet bottomSheet = ContactInfoBottomSheet.newInstance();
+            bottomSheet.show(getSupportFragmentManager(), "Edit Contact Info");
+        });
+
+        binding.editAddress.setOnClickListener(v -> {
+            AddressBottomSheet bottomSheet = AddressBottomSheet.newInstance();
+            bottomSheet.show(getSupportFragmentManager(), "Edit Address");
         });
 
         viewModel.getInfoSavedStatus().observe(this, aBoolean -> {
