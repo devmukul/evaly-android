@@ -161,4 +161,8 @@ public class UserModel {
     public void setVerified(boolean verified) {
         this.verified = verified;
     }
+
+    public void setImage_sm(String image_sm) {
+        this.image_sm = image_sm;
+    }
 }

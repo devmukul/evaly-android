@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,17 +9,24 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.HashMap;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditPersonalInfoBinding;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.user.UserModel;
+import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
 
 public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
     private BottomSheetEditPersonalInfoBinding binding;
+    private EditProfileViewModel viewModel;
 
     public static PersonalInfoBottomSheet newInstance() {
         PersonalInfoBottomSheet instance = new PersonalInfoBottomSheet();
@@ -43,7 +49,9 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.TransparentBottomSheet);
+        setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
+        if (getActivity() != null)
+            viewModel = new ViewModelProvider(getActivity()).get(EditProfileViewModel.class);
     }
 
     @NonNull
@@ -61,10 +69,45 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
         return bottomSheetDialog;
     }
 
-    @SuppressLint("DefaultLocale")
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        UserModel userModel = CredentialManager.getUserData();
+
+        binding.firstName.setText(userModel.getFirst_name());
+        binding.lastName.setText(userModel.getLast_name());
+
+        if (userModel.getGender().equals("male"))
+            binding.genderGroup.check(R.id.checkMale);
+        else if ((userModel.getGender().equals("female")))
+            binding.genderGroup.check(R.id.checkFemale);
+        else
+            binding.genderGroup.check(R.id.checkGenderOther);
+
+        binding.save.setOnClickListener(v -> {
+
+            String firstName = binding.firstName.getText().toString().trim();
+            String lastName = binding.lastName.getText().toString().trim();
+            String gender = "male";
+
+            if (binding.genderGroup.getCheckedRadioButtonId() == R.id.checkMale)
+                gender = "male";
+            else if (binding.genderGroup.getCheckedRadioButtonId() == R.id.checkFemale)
+                gender = "female";
+            else
+                gender = "other";
+
+            HashMap<String, String> body = new HashMap<>();
+            body.put("first_name", firstName);
+            body.put("last_name", lastName);
+            body.put("gender", gender);
+
+            viewModel.setUserData(body);
+
+        });
+
     }
 
 }

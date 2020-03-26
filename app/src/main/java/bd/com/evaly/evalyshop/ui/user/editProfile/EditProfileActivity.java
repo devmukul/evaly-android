@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,46 +17,31 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ActivityEditProfileNewBinding;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.user.UserModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.PersonalInfoBottomSheet;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
-import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
@@ -65,20 +49,16 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 public class EditProfileActivity extends BaseActivity {
 
-    String username = "", token = "";
-    UserDetails userDetails;
-    Context context;
+    private Context context;
     private ViewDialog dialog;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private ActivityEditProfileNewBinding binding;
+    private EditProfileViewModel viewModel;
 
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-        //Event Listeners
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
-            Logger.d("======   CONNECTED  -========");
         }
 
         public void onLoggedIn() {
@@ -97,8 +77,6 @@ public class EditProfileActivity extends BaseActivity {
         }
 
         public void onUpdateUserFailed(String error) {
-            Logger.d(error);
-
             xmppHandler.disconnect();
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
         }
@@ -112,84 +90,83 @@ public class EditProfileActivity extends BaseActivity {
         binding = ActivityEditProfileNewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        viewModel = new ViewModelProvider(this).get(EditProfileViewModel.class);
+
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = this;
-        userDetails = new UserDetails(this);
 
         dialog = new ViewDialog(this);
         setProfilePic();
 
+        UserModel userModel = CredentialManager.getUserData();
 
-        binding.firstName.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
-        binding.email.setText(userDetails.getEmail());
-        binding.phone.setText(userDetails.getPhone());
+        binding.firstName.setText(userModel.getFirst_name() + " " + userModel.getLast_name());
+        binding.email.setText(userModel.getEmail());
+        binding.phone.setText(userModel.getContacts());
 
-        if (userDetails.getJsonAddress().equals("null"))
+        if (userModel.getAddresses().equals(""))
             binding.address.setHint("Add an address");
         else
-            binding.address.setText(userDetails.getJsonAddress());
+            binding.address.setText(userModel.getAddresses());
 
 
         ImageView editPicture = findViewById(R.id.editPicture);
         editPicture.bringToFront();
-
 
         View.OnClickListener uploadListener = v -> openImageSelector();
 
         editPicture.setOnClickListener(uploadListener);
         binding.editPicture.setOnClickListener(uploadListener);
 
+        binding.editPersonalInfo.setOnClickListener(v -> {
+            PersonalInfoBottomSheet bottomSheet = PersonalInfoBottomSheet.newInstance();
+            bottomSheet.show(getSupportFragmentManager(), "Edit Personal Info");
+        });
+
+        viewModel.getInfoSavedStatus().observe(this, aBoolean -> {
+            if (aBoolean) {
+                mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+                startXmppService();
+                viewModel.setInfoSavedStatus(false);
+            }
+        });
 
     }
 
-
     private void setProfilePic() {
 
-        if (!userDetails.getProfilePictureSM().equals("null")) {
+        if (CredentialManager.getUserData().getProfile_pic_url() != null)
             Glide.with(this)
                     .asBitmap()
-                    .load(userDetails.getProfilePictureSM())
+                    .load(CredentialManager.getUserData().getProfile_pic_url())
                     .skipMemoryCache(true)
                     .fitCenter()
                     .optionalCenterCrop()
                     .placeholder(R.drawable.half_dp_bg_light)
                     .apply(new RequestOptions().override(500, 500))
-                    .into(binding.editPicture);
-        }
-
+                    .into(binding.picture);
     }
 
 
     private void openImageSelector() {
-
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     8000);
 
-        } else {
-
-            openSelector();
-
-        }
-
+        } else openSelector();
     }
 
-
     private void openSelector() {
-
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, 1001);
-
     }
 
     @Override
@@ -198,33 +175,22 @@ public class EditProfileActivity extends BaseActivity {
         if (requestCode == 8000) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 openSelector();
-            else {
-
-                Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show();
-            }
-
+            else Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-
             Uri selectedImage = data.getData();
             String imagePath = RealPathUtil.getRealPath(context, selectedImage);
-
             try {
-
                 String destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
-
                 try {
 
                     File cImage = compressImage(data.getData(), Bitmap.CompressFormat.JPEG, 60, destinationDirectoryPath);
-
                     Bitmap bitmap = BitmapFactory.decodeFile(destinationDirectoryPath);
-
                     Glide.with(this)
                             .asBitmap()
                             .load(bitmap)
@@ -232,17 +198,14 @@ public class EditProfileActivity extends BaseActivity {
                             .fitCenter()
                             .optionalCenterCrop()
                             .apply(new RequestOptions().override(500, 500))
-                            .into(profilePic);
+                            .into(binding.picture);
 
                     uploadPicture(bitmap);
 
-                } catch (Exception e) {
-
+                } catch (Exception ignored) {
                 }
 
             } catch (Exception e) {
-
-                Log.d("json image error", e.toString());
                 Toast.makeText(context, "Error occurred while uploading image", Toast.LENGTH_SHORT).show();
             }
         }
@@ -251,26 +214,19 @@ public class EditProfileActivity extends BaseActivity {
 
 
     private File compressImage(Uri path, Bitmap.CompressFormat compressFormat, int quality, String destinationPath) throws IOException {
-        //FileOutputStream fileOutputStream = null;
         File file = new File(destinationPath).getParentFile();
-        if (!file.exists()) {
-            file.mkdirs();
-        }
+        if (!file.exists()) file.mkdirs();
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(destinationPath)) {
-
             ImageUtils.getCorrectlyOrientedImage(EditProfileActivity.this, path).compress(compressFormat, quality, fileOutputStream);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return new File(destinationPath);
-
     }
 
 
-    private void uploadPicture(Bitmap bitmap){
+    private void uploadPicture(Bitmap bitmap) {
 
         ProgressDialog dialog = ProgressDialog.show(EditProfileActivity.this, "",
                 "Uploading image...", true);
@@ -281,37 +237,29 @@ public class EditProfileActivity extends BaseActivity {
 
                 if (dialog != null && dialog.isShowing())
                     dialog.dismiss();
-                userDetails.setProfilePicture(response.getData().getUrl());
-                userDetails.setProfilePictureSM(response.getData().getUrlSm());
+
+                UserModel userModel = CredentialManager.getUserData();
+                userModel.setProfile_pic_url(response.getData().getUrl());
+                userModel.setImage_sm(response.getData().getUrlSm());
+
                 setProfilePic();
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 if (dialog != null && dialog.isShowing())
                     dialog.dismiss();
                 Toast.makeText(EditProfileActivity.this, "Upload erro, try again!", Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
                     uploadPicture(bitmap);
-
             }
         });
 
     }
-
-
-    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
-    }
-
 
     private void startXmppService() {
         if (!XMPPService.isServiceRunning) {
@@ -336,74 +284,13 @@ public class EditProfileActivity extends BaseActivity {
 
         HashMap<String, String> userInfo = new HashMap<>();
 
-        userInfo.put("first_name", firstname.getText().toString());
-        userInfo.put("last_name", lastName.getText().toString());
-        userInfo.put("email", email.getText().toString());
-        userInfo.put("contact", phone.getText().toString());
-        userInfo.put("address", address.getText().toString());
-        userInfo.put("profile_pic_url", userDetails.getProfilePicture());
+//        userInfo.put("first_name", firstname.getText().toString());
+//        userInfo.put("last_name", lastName.getText().toString());
+//        userInfo.put("email", email.getText().toString());
+//        userInfo.put("contact", phone.getText().toString());
+//        userInfo.put("address", address.getText().toString());
+//        userInfo.put("profile_pic_url", userDetails.getProfilePicture());
 
-
-        AuthApiHelper.setUserData(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-
-                mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-                dialog.hideDialog();
-
-                JsonObject ob = response.getAsJsonObject("data");
-
-                if (!ob.get("first_name").isJsonNull())
-                    userDetails.setFirstName(ob.get("first_name").getAsString());
-
-                if (!ob.get("last_name").isJsonNull())
-                    userDetails.setLastName(ob.get("last_name").getAsString());
-
-                if (!ob.get("email").isJsonNull())
-                    userDetails.setEmail(ob.get("email").getAsString());
-
-                if (!ob.get("contact").isJsonNull())
-                    userDetails.setPhone(ob.get("contact").getAsString());
-
-                if (!ob.get("address").isJsonNull())
-                    userDetails.setJsonAddress(ob.get("address").getAsString());
-
-                if (!ob.get("profile_pic_url").isJsonNull())
-                    userDetails.setProfilePicture(ob.get("profile_pic_url").getAsString());
-
-                if (!ob.get("image_sm").isJsonNull())
-                    userDetails.setProfilePictureSM(ob.get("image_sm").getAsString());
-
-                UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
-
-                if (ob.get("first_name").isJsonNull())
-                    userModel.setFirst_name("");
-
-                if (ob.get("last_name").isJsonNull())
-                    userModel.setLast_name("");
-
-                CredentialManager.saveUserData(userModel);
-
-                startXmppService();
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-                dialog.hideDialog();
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-                if (logout)
-                    AppController.logout(EditProfileActivity.this);
-                else
-                    setUserData();
-
-
-            }
-        });
 
     }
 

@@ -3,8 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bottom_sheet_round_create_post"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="20dp">
+
+    <View
+        android:layout_width="60dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/bottomsheet_top_brd" />
 
     <TextView
         android:layout_width="match_parent"
@@ -14,7 +25,7 @@
         android:textColor="#333"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +37,9 @@
             android:id="@+id/fn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
             android:text="@string/first_name"
+            android:textColor="#555"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,7 +63,9 @@
             android:id="@+id/ln"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
             android:text="@string/first_name"
+            android:textColor="#555"
             app:layout_constraintStart_toStartOf="@id/lastName"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -83,31 +98,35 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="20dp"
         android:text="Gender"
+        android:textColor="#555"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="20dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <RadioGroup
+        android:id="@+id/genderGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal">
 
-        <CheckBox
+        <RadioButton
             android:id="@+id/checkMale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Male" />
 
-        <CheckBox
+        <RadioButton
             android:id="@+id/checkFemale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:text="Female" />
 
-        <CheckBox
+        <RadioButton
             android:id="@+id/checkGenderOther"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -123,7 +142,6 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/input_btn_bg_small"
         android:elevation="0dp"
-        android:shadowRadius="6dp"
         android:stateListAnimator="@null"
         android:text="Save Personal Information"
         android:textColor="#fff" />
