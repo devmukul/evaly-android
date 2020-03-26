@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
-            android:text="@string/first_name"
+            android:text="@string/last_name"
             android:textColor="#555"
             app:layout_constraintStart_toStartOf="@id/lastName"
             app:layout_constraintTop_toTopOf="parent" />
@@ -77,7 +77,7 @@
             android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:background="@drawable/input_brd_small"
-            android:hint="@string/first_name"
+            android:hint="@string/last_name"
             android:paddingLeft="15dp"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
