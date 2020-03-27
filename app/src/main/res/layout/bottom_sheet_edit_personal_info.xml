@@ -54,6 +54,8 @@
             android:hint="@string/first_name"
             android:paddingLeft="15dp"
             android:textSize="16sp"
+            android:maxLines="1"
+            android:imeOptions="actionGo"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fn" />
@@ -78,6 +80,8 @@
             android:layout_weight="1"
             android:background="@drawable/input_brd_small"
             android:hint="@string/last_name"
+            android:maxLines="1"
+            android:imeOptions="actionDone"
             android:paddingLeft="15dp"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"

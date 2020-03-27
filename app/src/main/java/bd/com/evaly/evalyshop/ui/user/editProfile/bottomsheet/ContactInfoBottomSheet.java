@@ -49,7 +49,7 @@ public class ContactInfoBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
+        setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
         if (getActivity() != null)
             viewModel = new ViewModelProvider(getActivity()).get(EditProfileViewModel.class);
     }

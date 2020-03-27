@@ -145,11 +145,9 @@ public class EditProfileActivity extends BaseActivity {
                 viewModel.setInfoSavedStatus(false);
             }
         });
-
     }
 
     private void setProfilePic() {
-
         if (CredentialManager.getUserData().getProfile_pic_url() != null)
             Glide.with(this)
                     .asBitmap()
@@ -161,7 +159,6 @@ public class EditProfileActivity extends BaseActivity {
                     .apply(new RequestOptions().override(500, 500))
                     .into(binding.picture);
     }
-
 
     private void openImageSelector() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||

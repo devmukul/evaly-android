@@ -37,6 +37,8 @@
             android:layout_weight="1"
             android:background="@drawable/input_brd_small"
             android:hint="@string/contact_number"
+            android:maxLines="1"
+            android:imeOptions="actionGo"
             android:paddingLeft="15dp"
             android:textSize="16sp" />
 
@@ -62,6 +64,8 @@
             android:hint="@string/email_address"
             android:paddingLeft="15dp"
             android:textSize="16sp"
+            android:maxLines="1"
+            android:imeOptions="actionDone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@id/ln" />
