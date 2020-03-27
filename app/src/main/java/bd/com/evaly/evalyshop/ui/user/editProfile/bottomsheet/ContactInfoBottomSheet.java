@@ -95,10 +95,9 @@ public class ContactInfoBottomSheet extends BottomSheetDialogFragment {
             HashMap<String, String> body = new HashMap<>();
             body.put("email", email);
             body.put("contact", contact);
+
             viewModel.setUserData(body);
-
             dismiss();
-
         });
     }
 

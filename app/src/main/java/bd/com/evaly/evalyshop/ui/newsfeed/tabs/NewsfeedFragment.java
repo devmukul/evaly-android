@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,21 +58,39 @@ public class NewsfeedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//
-//        viewModel.getNotificationCountLiveData().observe(getViewLifecycleOwner(), integer -> updateHotCount(integer));
+
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        binding.toolbar.setNavigationOnClickListener(view1 -> {
+            if (getActivity() != null)
+                getActivity().onBackPressed();
+        });
+
+        binding.toolbar.inflateMenu(R.menu.badge_newsfeed_menu);
+        final View menu_hotlist = binding.toolbar.getMenu().findItem(R.id.menu_messages).getActionView();
+        TextView ui_hot = menu_hotlist.findViewById(R.id.hotlist_hot);
+
+        ui_hot.setVisibility(View.INVISIBLE);
+        menu_hotlist.setOnClickListener(viw -> {
+            if (CredentialManager.getToken().equals(""))
+                Toast.makeText(getContext(), "You need to login first.", Toast.LENGTH_SHORT).show();
+            else
+                navController.navigate(R.id.newsfeedNotificationFragment);
+        });
+
+        viewModel.getNotificationCountLiveData().observe(getViewLifecycleOwner(), integer -> {
+            if (integer == 0)
+                ui_hot.setVisibility(View.GONE);
+            else if (integer > 99)
+                ui_hot.setText("99");
+            else
+                ui_hot.setText(String.format("%d", integer));
+        });
 
         viewModel.getLogoutLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean)
                 AppController.logout(getActivity());
         });
 
-
-//        binding.notificationHolder.setOnClickListener(v -> {
-//            if (CredentialManager.getToken().equals(""))
-//                Toast.makeText(getContext(), "You need to login first.", Toast.LENGTH_SHORT).show();
-//            else
-//                navController.navigate(R.id.notificationFragment);
-//        });
 
         pager = new NewsfeedTabPager(getChildFragmentManager(), getLifecycle());
         binding.viewPager.setOffscreenPageLimit(1);

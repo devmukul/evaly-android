@@ -59,8 +59,9 @@ public class AddressBottomSheet extends BottomSheetDialogFragment {
             HashMap<String, String> body = new HashMap<>();
             body.put("address", address);
             viewModel.setUserData(body);
-        });
 
+            dismiss();
+        });
     }
 
     @Override
@@ -91,6 +92,5 @@ public class AddressBottomSheet extends BottomSheetDialogFragment {
         });
         return bottomSheetDialog;
     }
-
 
 }

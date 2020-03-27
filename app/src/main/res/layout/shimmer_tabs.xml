@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shimmer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:shimmer_base_alpha="1"
+    app:shimmer_base_alpha="0.7"
     app:shimmer_colored="false"
-    app:shimmer_highlight_alpha="0"
-    app:shimmer_highlight_color="@color/fff">
+    app:shimmer_highlight_alpha="0.4"
+    app:shimmer_highlight_color="@color/aaa">
 
     <ImageView
         android:layout_width="match_parent"

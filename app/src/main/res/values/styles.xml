@@ -11,11 +11,9 @@
     </style>
 
     <style name="ThemeTransaction" parent="Theme.AppCompat.Light.DarkActionBar">
-
         <item name="colorPrimary">@color/transaction_color</item>
         <item name="colorPrimaryDark">@color/transaction_color</item>
         <item name="colorAccent">@color/colorAccent</item>
-
     </style>
 
     <style name="AppTheme.Launcher" parent="Theme.AppCompat.NoActionBar">
@@ -23,8 +21,23 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    // rounded bottom sheet fragment
 
+
+    <style name="nonBold" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="TabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="tabIndicator">@drawable/bg_tab_feed</item>
+        <item name="tabIndicatorColor">@color/colorAccent</item>
+    </style>
+
+    <style name="TabTextAppearance" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    // rounded bottom sheet fragment
 
     <style name="BottomSheetDarker" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/round_border_bottom_sheet_darker</item>

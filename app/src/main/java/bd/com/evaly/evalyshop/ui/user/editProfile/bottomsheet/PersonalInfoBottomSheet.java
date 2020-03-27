@@ -69,7 +69,6 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             BottomSheetBehavior.from(bottomSheet).setHideable(true);
         });
 
-
         return bottomSheetDialog;
     }
 
@@ -117,7 +116,6 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
             viewModel.setUserData(body);
             dismiss();
-
         });
 
     }

@@ -179,6 +179,10 @@
         android:id="@+id/shopSearchActivity"
         android:name="bd.com.evaly.evalyshop.ui.shop.search.ShopSearchActivity"
         android:label="ShopSearchActivity" />
+    <fragment
+        android:id="@+id/newsfeedNotificationFragment"
+        android:name="bd.com.evaly.evalyshop.ui.newsfeed.notification.NewsfeedNotificationFragment"
+        android:label="NewsfeedNotificationFragment" />
 
 
 </navigation>
