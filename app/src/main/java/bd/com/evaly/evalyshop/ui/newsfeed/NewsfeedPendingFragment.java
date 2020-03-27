@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -26,30 +25,29 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
-    SkeletonScreen skeletonCommentHeader;
+    private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private String type;
     private RecyclerView recyclerView;
     private NewsfeedPendingAdapter adapter;
     private ArrayList<NewsfeedItem> itemsList;
     private Context context;
-    private NewsfeedActivity activity;
+    private MainActivity activity;
     private UserDetails userDetails;
     private LinearLayout not, progressContainer;
-    // newfeed scroller
     private boolean loading = true;
     private int currentPage;
     private ProgressBar bottomProgressBar;
     private SwipeRefreshLayout swipeLayout;
 
     public NewsfeedPendingFragment() {
-        // Required empty public constructor
+
     }
 
     public static NewsfeedPendingFragment newInstance(String type) {
@@ -65,7 +63,7 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         super.onCreate(savedInstanceState);
 
         context = getContext();
-        activity = (NewsfeedActivity) getActivity();
+        activity = (MainActivity) getActivity();
 
         if (getArguments() != null) {
             type = getArguments().getString("type");
@@ -75,7 +73,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_newsfeed, container, false);
     }
 
@@ -106,7 +103,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
         userDetails = new UserDetails(context);
 
@@ -142,18 +138,13 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) //check for scroll down
-                {
+                if (dy > 0) {
                     visibleItemCount = manager.getChildCount();
                     totalItemCount = manager.getItemCount();
                     pastVisiblesItems = manager.findFirstVisibleItemPosition();
-
-                    if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            getPosts(++currentPage);
-
-                        }
-                    }
+                    if (loading)
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        getPosts(++currentPage);
                 }
             }
         });
@@ -194,7 +185,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
                     action(id, type, position);
             }
         });
-
 
     }
 
@@ -255,7 +245,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
 
                     }
                 }
-
             }
 
             @Override
@@ -270,17 +259,12 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
                     getPosts(page);
             }
         });
-
-
     }
 
 
     @Override
     public void onDestroy() {
-
         super.onDestroy();
-
-
     }
 
 

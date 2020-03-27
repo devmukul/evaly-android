@@ -6,8 +6,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="20dp"
-        android:background="@color/fff">
+        android:background="@color/fff"
+        android:paddingTop="20dp">
 
 
         <ImageView
@@ -15,13 +15,15 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginRight="5dp"
+            android:adjustViewBounds="true"
             android:background="@drawable/circle_bg"
             android:clickable="false"
+            android:padding="16dp"
             android:tint="@color/colorAccent"
             app:layout_constraintEnd_toStartOf="@+id/btn2Image"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_newsfeed"
+            app:srcCompat="@drawable/ic_newsfeed_icon"
             tools:layout_editor_absoluteY="0dp" />
 
         <View

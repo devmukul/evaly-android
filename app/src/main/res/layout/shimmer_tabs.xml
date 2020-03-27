@@ -4,15 +4,17 @@
     android:id="@+id/shimmer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:shimmer_base_alpha="0.7"
+    app:shimmer_base_alpha="1"
     app:shimmer_colored="false"
-    app:shimmer_highlight_alpha="0.4"
-    app:shimmer_highlight_color="@color/aaa">
+    app:shimmer_highlight_alpha="0.3"
+    app:shimmer_base_color="@color/c333"
+    app:shimmer_highlight_color="@color/c333">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:tint="#fff"
         app:srcCompat="@drawable/ic_skeleton_category_grid" />
 
 </com.facebook.shimmer.ShimmerFrameLayout>

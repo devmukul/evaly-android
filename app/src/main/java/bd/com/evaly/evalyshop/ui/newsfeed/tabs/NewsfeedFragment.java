@@ -22,6 +22,7 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.NewsfeedFragmentBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
+import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedPendingFragment;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedTabPager;
 import bd.com.evaly.evalyshop.ui.newsfeed.post.NewsfeedPostFragment;
 
@@ -38,14 +39,12 @@ public class NewsfeedFragment extends Fragment {
         return new NewsfeedFragment();
     }
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.newsfeed_fragment, container, false);
 
         navController = NavHostFragment.findNavController(this);
-
         viewModel = new ViewModelProvider(this).get(NewsfeedViewModel.class);
 
         if (getActivity() != null)
@@ -53,7 +52,6 @@ public class NewsfeedFragment extends Fragment {
 
         return binding.getRoot();
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -78,6 +76,7 @@ public class NewsfeedFragment extends Fragment {
         });
 
         viewModel.getNotificationCountLiveData().observe(getViewLifecycleOwner(), integer -> {
+            ui_hot.setVisibility(View.VISIBLE);
             if (integer == 0)
                 ui_hot.setVisibility(View.GONE);
             else if (integer > 99)
@@ -91,13 +90,11 @@ public class NewsfeedFragment extends Fragment {
                 AppController.logout(getActivity());
         });
 
-
         pager = new NewsfeedTabPager(getChildFragmentManager(), getLifecycle());
         binding.viewPager.setOffscreenPageLimit(1);
         binding.viewPager.setAdapter(pager);
 
         binding.tabLayout.setSmoothScrollingEnabled(true);
-
 
         new TabLayoutMediator(binding.tabLayout, binding.viewPager,
                 (tab, position) -> tab.setText(pager.getTitle(position))
@@ -112,31 +109,22 @@ public class NewsfeedFragment extends Fragment {
         NewsfeedPostFragment ceoFragment = NewsfeedPostFragment.newInstance("ceo");
         pager.addFragment(ceoFragment, "CEO");
 
-
         if (!CredentialManager.getToken().equals("")) {
             NewsfeedPostFragment myFragment = NewsfeedPostFragment.newInstance("my");
             pager.addFragment(myFragment, "MY POSTS");
         }
 
+
+        if (CredentialManager.getUserData() != null &&
+                (CredentialManager.getUserData().isIs_staff() ||
+                        CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))) {
+
+            NewsfeedPendingFragment pendingFragment = NewsfeedPendingFragment.newInstance("pending");
+            pager.addFragment(pendingFragment, getString(R.string.pending));
+        }
+
         pager.notifyDataSetChanged();
-
     }
-
-//
-//    public void updateHotCount(final int new_hot_number) {
-//        if (binding.hotlistHot == null) return;
-//
-//        if (new_hot_number == 0)
-//            binding.hotlistHot.setVisibility(View.INVISIBLE);
-//        else {
-//            binding.hotlistHot.setVisibility(View.VISIBLE);
-//            if (new_hot_number > 99)
-//                binding.hotlistHot.setText("99");
-//            else
-//                binding.hotlistHot.setText(Integer.toString(new_hot_number));
-//        }
-//    }
-
 
     @Override
     public void onResume() {
