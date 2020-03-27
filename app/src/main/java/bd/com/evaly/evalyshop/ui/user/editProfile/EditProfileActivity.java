@@ -118,6 +118,7 @@ public class EditProfileActivity extends BaseActivity {
                 startXmppService();
                 viewModel.setInfoSavedStatus(false);
                 updateProfileData();
+                Toast.makeText(EditProfileActivity.this, "Profile updated!", Toast.LENGTH_SHORT).show();
             }
         });
 

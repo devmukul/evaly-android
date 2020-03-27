@@ -23,7 +23,6 @@ import bd.com.evaly.evalyshop.databinding.BottomSheetEditPersonalInfoBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
-import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
@@ -52,6 +51,7 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
+
         if (getActivity() != null)
             viewModel = new ViewModelProvider(getActivity()).get(EditProfileViewModel.class);
     }
@@ -60,14 +60,16 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-        bottomSheetDialog.setOnShowListener(dialog -> {
-            BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
-            FrameLayout bottomSheet = dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        bottomSheetDialog.setOnShowListener(d -> {
+            BottomSheetDialog dialog = (BottomSheetDialog) d;
+            FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
             assert bottomSheet != null;
             BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
             BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
             BottomSheetBehavior.from(bottomSheet).setHideable(true);
         });
+
+
         return bottomSheetDialog;
     }
 
@@ -87,9 +89,6 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             binding.genderGroup.check(R.id.checkFemale);
         else
             binding.genderGroup.check(R.id.checkGenderOther);
-
-
-        ViewDialog dialog = new ViewDialog(getActivity());
 
         binding.save.setOnClickListener(v -> {
             String firstName = binding.firstName.getText().toString().trim();
@@ -111,21 +110,14 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
                 return;
             }
 
-
             HashMap<String, String> body = new HashMap<>();
             body.put("first_name", firstName);
             body.put("last_name", lastName);
             body.put("gender", gender);
 
             viewModel.setUserData(body);
-
             dismiss();
 
-        });
-
-        viewModel.getInfoSavedStatus().observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean)
-                Toast.makeText(getActivity(), "Personal information updated!", Toast.LENGTH_SHORT).show();
         });
 
     }

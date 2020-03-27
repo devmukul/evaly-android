@@ -19,12 +19,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditAddressBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
-import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class AddressBottomSheet extends BottomSheetDialogFragment {
 
@@ -50,8 +48,6 @@ public class AddressBottomSheet extends BottomSheetDialogFragment {
         UserModel userModel = CredentialManager.getUserData();
         binding.address.setText(userModel.getAddresses());
 
-        ViewDialog dialog = new ViewDialog(getActivity());
-
         binding.save.setOnClickListener(v -> {
             String address = binding.address.getText().toString().trim();
 
@@ -60,15 +56,9 @@ public class AddressBottomSheet extends BottomSheetDialogFragment {
                 return;
             }
 
-            dialog.showDialog();
             HashMap<String, String> body = new HashMap<>();
             body.put("address", address);
             viewModel.setUserData(body);
-        });
-
-        viewModel.getInfoSavedStatus().observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean)
-                Toast.makeText(AppController.getmContext(), "Address is updated!", Toast.LENGTH_SHORT).show();
         });
 
     }
