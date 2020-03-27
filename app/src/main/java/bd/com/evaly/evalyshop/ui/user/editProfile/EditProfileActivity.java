@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,7 +41,6 @@ import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.ContactInfoBottomS
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.PersonalInfoBottomSheet;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
-import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
@@ -52,7 +49,6 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 public class EditProfileActivity extends BaseActivity {
 
     private Context context;
-    private ViewDialog dialog;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private ActivityEditProfileNewBinding binding;
@@ -69,13 +65,6 @@ public class EditProfileActivity extends BaseActivity {
         }
 
         public void onUpdateUserSuccess() {
-            dialog.hideDialog();
-            Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
-            try {
-                onBackPressed();
-            } catch (Exception e) {
-                finish();
-            }
         }
 
         public void onUpdateUserFailed(String error) {
@@ -100,27 +89,12 @@ public class EditProfileActivity extends BaseActivity {
 
         context = this;
 
-        dialog = new ViewDialog(this);
-        setProfilePic();
 
-        UserModel userModel = CredentialManager.getUserData();
-
-        binding.firstName.setText(userModel.getFirst_name() + " " + userModel.getLast_name());
-        binding.email.setText(userModel.getEmail());
-        binding.phone.setText(userModel.getContacts());
-
-        if (userModel.getAddresses().equals(""))
-            binding.address.setHint("Add an address");
-        else
-            binding.address.setText(userModel.getAddresses());
-
-
-        ImageView editPicture = findViewById(R.id.editPicture);
-        editPicture.bringToFront();
+        binding.editPicture.bringToFront();
 
         View.OnClickListener uploadListener = v -> openImageSelector();
 
-        editPicture.setOnClickListener(uploadListener);
+        binding.editPicture.setOnClickListener(uploadListener);
         binding.editPicture.setOnClickListener(uploadListener);
 
         binding.editPersonalInfo.setOnClickListener(v -> {
@@ -143,8 +117,30 @@ public class EditProfileActivity extends BaseActivity {
                 mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
                 startXmppService();
                 viewModel.setInfoSavedStatus(false);
+                updateProfileData();
             }
         });
+
+        updateProfileData();
+
+        setProfilePic();
+    }
+
+
+    private void  updateProfileData(){
+
+
+        UserModel userModel = CredentialManager.getUserData();
+
+        binding.firstName.setText(String.format("%s %s", userModel.getFirst_name(), userModel.getLast_name()));
+        binding.email.setText(userModel.getEmail());
+        binding.phone.setText(userModel.getContacts());
+
+        if (userModel.getAddresses().equals(""))
+            binding.address.setHint("Add an address");
+        else
+            binding.address.setText(userModel.getAddresses());
+
     }
 
     private void setProfilePic() {
@@ -251,6 +247,10 @@ public class EditProfileActivity extends BaseActivity {
                 userModel.setProfile_pic_url(response.getData().getUrl());
                 userModel.setImage_sm(response.getData().getUrlSm());
 
+                HashMap<String, String> body = new HashMap<>();
+                body.put("profile_pic_url", response.getData().getUrl());
+                viewModel.setUserData(body);
+
                 setProfilePic();
             }
 
@@ -258,7 +258,7 @@ public class EditProfileActivity extends BaseActivity {
             public void onFailed(String errorBody, int errorCode) {
                 if (dialog != null && dialog.isShowing())
                     dialog.dismiss();
-                Toast.makeText(EditProfileActivity.this, "Upload erro, try again!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditProfileActivity.this, "Upload error, try again!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -275,9 +275,7 @@ public class EditProfileActivity extends BaseActivity {
             Intent intent = new Intent(this, XMPPService.class);
             mChatApp.UnbindService();
             mChatApp.BindService(intent);
-            Logger.d("++++++++++");
         } else {
-            Logger.d("---------");
             xmppHandler = AppController.getmService().xmpp;
             if (!xmppHandler.isConnected()) {
                 xmppHandler.connect();
@@ -285,22 +283,6 @@ public class EditProfileActivity extends BaseActivity {
                 xmppHandler.updateUserInfo(CredentialManager.getUserData());
             }
         }
-    }
-
-    public void setUserData() {
-
-        dialog.showDialog();
-
-        HashMap<String, String> userInfo = new HashMap<>();
-
-//        userInfo.put("first_name", firstname.getText().toString());
-//        userInfo.put("last_name", lastName.getText().toString());
-//        userInfo.put("email", email.getText().toString());
-//        userInfo.put("contact", phone.getText().toString());
-//        userInfo.put("address", address.getText().toString());
-//        userInfo.put("profile_pic_url", userDetails.getProfilePicture());
-
-
     }
 
     @Override

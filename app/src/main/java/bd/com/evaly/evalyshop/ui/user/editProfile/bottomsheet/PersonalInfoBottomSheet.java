@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import bd.com.evaly.evalyshop.databinding.BottomSheetEditPersonalInfoBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
@@ -86,8 +88,10 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
         else
             binding.genderGroup.check(R.id.checkGenderOther);
 
-        binding.save.setOnClickListener(v -> {
 
+        ViewDialog dialog = new ViewDialog(getActivity());
+
+        binding.save.setOnClickListener(v -> {
             String firstName = binding.firstName.getText().toString().trim();
             String lastName = binding.lastName.getText().toString().trim();
             String gender = "male";
@@ -99,6 +103,15 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             else
                 gender = "other";
 
+            if (firstName.equals("")) {
+                Toast.makeText(getContext(), "Please enter your first name", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (lastName.equals("")) {
+                Toast.makeText(getContext(), "Please enter your last name", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
             HashMap<String, String> body = new HashMap<>();
             body.put("first_name", firstName);
             body.put("last_name", lastName);
@@ -106,6 +119,13 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
             viewModel.setUserData(body);
 
+            dismiss();
+
+        });
+
+        viewModel.getInfoSavedStatus().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean)
+                Toast.makeText(getActivity(), "Personal information updated!", Toast.LENGTH_SHORT).show();
         });
 
     }

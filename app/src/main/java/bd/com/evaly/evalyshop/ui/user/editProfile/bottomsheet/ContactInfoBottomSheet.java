@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,10 +19,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.BottomSheetEditContactInfoBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
+import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class ContactInfoBottomSheet extends BottomSheetDialogFragment {
 
@@ -79,14 +82,32 @@ public class ContactInfoBottomSheet extends BottomSheetDialogFragment {
         binding.email.setText(userModel.getEmail());
         binding.phone.setText(userModel.getContacts());
 
+        ViewDialog dialog = new ViewDialog(getActivity());
+
         binding.save.setOnClickListener(v -> {
             String email = binding.email.getText().toString().trim();
             String contact = binding.phone.getText().toString().trim();
+
+            if (email.equals("")) {
+                Toast.makeText(getContext(), "Please  enter your email address", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (contact.equals("")) {
+                Toast.makeText(getContext(), "Please  enter your phone number", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             HashMap<String, String> body = new HashMap<>();
             body.put("email", email);
             body.put("contact", contact);
             viewModel.setUserData(body);
+
+            dismiss();
+
+        });
+
+        viewModel.getInfoSavedStatus().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean)
+                Toast.makeText(AppController.getmContext(), "Contact information updated!", Toast.LENGTH_SHORT).show();
         });
 
     }
