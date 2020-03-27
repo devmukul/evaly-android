@@ -8,7 +8,8 @@
     app:shimmer_colored="false"
     app:shimmer_highlight_alpha="0.3"
     app:shimmer_base_color="@color/c333"
-    app:shimmer_highlight_color="@color/c333">
+    app:shimmer_highlight_color="@color/c333"
+    android:background="#fafafa">
 
     <ImageView
         android:layout_width="match_parent"

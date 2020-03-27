@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedPendingFragment;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedTabPager;
+import bd.com.evaly.evalyshop.ui.newsfeed.createPost.CreatePostBottomSheet;
 import bd.com.evaly.evalyshop.ui.newsfeed.post.NewsfeedPostFragment;
 
 
@@ -114,7 +115,6 @@ public class NewsfeedFragment extends Fragment {
             pager.addFragment(myFragment, "MY POSTS");
         }
 
-
         if (CredentialManager.getUserData() != null &&
                 (CredentialManager.getUserData().isIs_staff() ||
                         CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))) {
@@ -124,6 +124,11 @@ public class NewsfeedFragment extends Fragment {
         }
 
         pager.notifyDataSetChanged();
+
+        binding.createPost.setOnClickListener(v -> {
+            CreatePostBottomSheet createPostBottomSheet = new CreatePostBottomSheet();
+            createPostBottomSheet.show(getParentFragmentManager(), "Create Post");
+        });
     }
 
     @Override

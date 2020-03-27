@@ -95,7 +95,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
 
         initCommentHeader(newsfeedPostModel);
 
-        adapter = new CommentAdapter(itemList, getContext(), getFragmentManager(), newsfeedPostModel.getSlug());
+        adapter = new CommentAdapter(itemList, getContext(), getFragmentManager(), newsfeedPostModel.getSlug(), viewModel);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.recyclerView.setLayoutManager(layoutManager);

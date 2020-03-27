@@ -22,8 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:spanCount="3"
-        android:minHeight="300dp">
+        app:spanCount="3">
 
     </androidx.recyclerview.widget.RecyclerView>
 

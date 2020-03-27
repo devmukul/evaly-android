@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,6 +43,7 @@ import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
+import bd.com.evaly.evalyshop.ui.newsfeed.createPost.CreatePostBottomSheet;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 
@@ -103,7 +105,6 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
         super.onViewCreated(view, savedInstanceState);
 
         binding.swipeLayout.setOnRefreshListener(this);
-
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new NewsfeedPostAdapter(getContext(), viewModel, getParentFragmentManager(), object -> {
@@ -170,6 +171,12 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
 
 
         binding.recyclerView.setAdapter(adapter);
+
+        viewModel.getEditPostLiveData().observe(getViewLifecycleOwner(), model -> {
+            CreatePostBottomSheet createPostBottomSheet = CreatePostBottomSheet.newInstance(model);
+            createPostBottomSheet.show(getChildFragmentManager(), model.getSlug());
+        });
+
 
     }
 

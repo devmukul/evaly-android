@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,12 +36,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     private Context context;
     private FragmentManager fragment;
     private String newsfeedPostSlug;
+    private CommentViewModel viewModel;
 
-    public CommentAdapter(List<CommentItem> itemsList, Context context, FragmentManager fragment, String newsfeedPostSlug) {
+    public CommentAdapter(List<CommentItem> itemsList, Context context, FragmentManager fragment, String newsfeedPostSlug, CommentViewModel viewModel) {
         this.itemsList = itemsList;
         this.context = context;
         this.fragment = fragment;
         this.newsfeedPostSlug = newsfeedPostSlug;
+        this.viewModel = viewModel;
     }
 
     @NonNull
@@ -152,7 +153,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         Object postImageURL = commentItem.getAttachement();
 
-
         if (postImageURL != null) {
             if (postImageURL.equals("null")) {
 
@@ -168,15 +168,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         }
 
         View.OnClickListener openReply = view -> {
-
             ReplyBottomSheet frag = ReplyBottomSheet.newInstance(commentItem, newsfeedPostSlug);
-
-
-            Log.d("hmt size", newsfeedPostSlug);
-
             frag.show(fragment, "reply");
-
-
         };
 
         myViewHolder.replyCountView.setOnClickListener(openReply);
@@ -184,24 +177,25 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         myViewHolder.replyHolder.setOnClickListener(openReply);
         myViewHolder.replyMoreCount.setOnClickListener(openReply);
 
-
         myViewHolder.view.setLongClickable(true);
 
         myViewHolder.view.setOnLongClickListener(
                 view -> {
-
                     if (!CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
                         return false;
 
                     new AlertDialog.Builder(context)
                             .setMessage("Are you sure you want to delete?")
                             .setIcon(android.R.drawable.ic_dialog_alert)
-                           // .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(commentItem.getId() + "", "comment"))
+                            .setPositiveButton("YES", (dialog, whichButton) -> {
+                                itemsList.remove(i);
+                                notifyItemRemoved(i);
+                                viewModel.deleteComment(commentItem.getId());
+                            })
                             .setNegativeButton("NO", null).show();
                     return false;
                 }
         );
-
 
     }
 

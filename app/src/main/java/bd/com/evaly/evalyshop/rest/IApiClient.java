@@ -358,7 +358,7 @@ public interface IApiClient {
     Call<JsonObject> createNewsfeedPost(@Header("Authorization") String token,
                                         @Body CreatePostModel body);
 
-    @POST(UrlUtils.BASE_URL_NEWSFEED + "posts/{postSlug}")
+    @PUT(UrlUtils.BASE_URL_NEWSFEED + "posts/{postSlug}")
     Call<JsonObject> editNewsfeedPost(@Header("Authorization") String token,
                                       @Body CreatePostModel body,
                                       @Path(("postSlug")) String postSlug);

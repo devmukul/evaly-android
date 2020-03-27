@@ -14,6 +14,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.executor.MainThreadExecutor;
 
 
@@ -24,6 +25,7 @@ public class NewsfeedPostViewModel extends ViewModel {
     private LiveData<NewsfeedPostDataSource> dataSourceLiveData;
     private String type = "public";
     private NewsfeedPostDataFactory feedDataFactory;
+    private MutableLiveData<NewsfeedPost> editPostLiveData = new MutableLiveData<>();
 
 
     public void setType(String type) {
@@ -34,7 +36,6 @@ public class NewsfeedPostViewModel extends ViewModel {
         feedDataFactory = new NewsfeedPostDataFactory(type);
 
         feedDataFactory.create();
-
 
         PagedList.Config pagedListConfig =
                 (new PagedList.Config.Builder())
@@ -94,4 +95,33 @@ public class NewsfeedPostViewModel extends ViewModel {
     }
 
 
+    public void deletePost(String postId) {
+
+        String url = UrlUtils.BASE_URL_NEWSFEED + "posts/" + postId;
+
+        NewsfeedApiHelper.deleteItem(CredentialManager.getToken(), url, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+    public LiveData<NewsfeedPost> getEditPostLiveData() {
+        return editPostLiveData;
+    }
+
+    public void setEditPostLiveData(NewsfeedPost editPostLiveData) {
+        this.editPostLiveData.setValue(editPostLiveData);
+    }
 }

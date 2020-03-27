@@ -1,16 +1,19 @@
 package bd.com.evaly.evalyshop.ui.newsfeed.post;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +34,8 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.ui.newsfeed.comment.CommentBottomSheet;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
@@ -164,12 +169,12 @@ public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, Recycler
                     myViewHolder.binding.cardLink.setVisibility(View.VISIBLE);
                     myViewHolder.binding.cardLink.setOnClickListener(view -> {
                         Logger.json(object.toString());
-//                    try {
-//                        context.startActivity(new Intent(new Intent(context, ViewProductActivity.class))
-//                                .putExtra("product_slug", object.getString("url").replace(UrlUtils.PRODUCT_BASE_URL, "")));
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
+                        try {
+                            context.startActivity(new Intent(new Intent(context, ViewProductActivity.class))
+                                    .putExtra("product_slug", object.getString("url").replace(UrlUtils.PRODUCT_BASE_URL, "")));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -258,45 +263,43 @@ public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, Recycler
             myViewHolder.binding.text.setOnClickListener(commentOpener);
             myViewHolder.binding.postImage.setOnClickListener(commentOpener);
 
-//        myViewHolder.menuIcon.setOnClickListener(view -> {
-//
-//            PopupMenu popup = new PopupMenu(context, myViewHolder.menuIcon);
-//
-//            if (fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
-//                popup.getMenuInflater().inflate(R.menu.newsfeed_menu_super, popup.getMenu());
-//            else
-//                popup.getMenuInflater().inflate(R.menu.newsfeed_menu_user, popup.getMenu());
-//
-//            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    switch (item.getItemId()) {
-//                        case R.id.action_share:
-//                            Intent in = new Intent(Intent.ACTION_SEND);
-//                            in.setType("text/plain");
-//                            in.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
-//                            in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/" + model.getSlug());
-//                            context.startActivity(Intent.createChooser(in, "Share CreatePostModel"));
-//                            break;
-//                        case R.id.action_delete:
-//                            if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
-//                                break;
-//                            new AlertDialog.Builder(context)
-//                                    .setMessage("Are you sure you want to delete?")
-//                                    .setIcon(android.R.drawable.ic_dialog_alert)
-//                                    .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(model.getSlug(), "post"))
-//                                    .setNegativeButton("NO", null).show();
-//                            break;
-//                        case R.id.action_edit:
-//                            NewsfeedActivity activity = (NewsfeedActivity) context;
-//                            activity.openEditBottomSheet(model);
-//                    }
-//
-//                    return true;
-//                }
-//            });
-//
-//            popup.show();
-//        });
+            myViewHolder.binding.menu.setOnClickListener(view -> {
+
+                PopupMenu popup = new PopupMenu(context, myViewHolder.binding.menu);
+
+                if (CredentialManager.getUserData() != null && (CredentialManager.getUserData().getGroups().contains("EvalyEmployee") || CredentialManager.getUserData().isIs_staff()))
+                    popup.getMenuInflater().inflate(R.menu.newsfeed_menu_super, popup.getMenu());
+                else
+                    popup.getMenuInflater().inflate(R.menu.newsfeed_menu_user, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(item -> {
+                    switch (item.getItemId()) {
+                        case R.id.action_share:
+                            Intent in = new Intent(Intent.ACTION_SEND);
+                            in.setType("text/plain");
+                            in.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
+                            in.putExtra(Intent.EXTRA_TEXT, "https://evaly.com.bd/feeds/" + model.getSlug());
+                            context.startActivity(Intent.createChooser(in, "Share post"));
+                            break;
+                        case R.id.action_delete:
+                            new AlertDialog.Builder(context)
+                                    .setMessage("Are you sure you want to delete?")
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setPositiveButton("YES", (dialog, whichButton) -> {
+                                        viewModel.deletePost(model.getSlug());
+                                        notifyItemRemoved(i);
+                                    })
+                                    .setNegativeButton("NO", null).show();
+                            break;
+                        case R.id.action_edit:
+                            viewModel.setEditPostLiveData(model);
+                    }
+
+                    return true;
+                });
+
+                popup.show();
+            });
 
         }
     }

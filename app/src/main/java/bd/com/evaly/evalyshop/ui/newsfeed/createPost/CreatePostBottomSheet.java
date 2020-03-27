@@ -116,7 +116,6 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
             }
         });
 
-
         binding.cancelImage.setOnClickListener(v -> {
 
             selectedImage = "";
@@ -151,10 +150,39 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
             }
         });
 
+        if (postModel != null) {
+            binding.title.setText("Edit Post");
+            binding.text.setText(postModel.getBody());
+
+            if (postModel.getAttachment() != null) {
+
+                selectedImage = postModel.getAttachment();
+                binding.postImage.setVisibility(View.VISIBLE);
+                binding.postImageHolder.setVisibility(View.VISIBLE);
+                binding.addPhotoText.setText("Change Photo");
+
+                Glide.with(this)
+                        .asBitmap()
+                        .load(selectedImage)
+                        .skipMemoryCache(true)
+                        .fitCenter()
+                        .optionalCenterCrop()
+                        .placeholder(R.drawable.half_dp_bg_light)
+                        .apply(new RequestOptions().override(500, 500))
+                        .into(binding.postImage);
+
+            } else {
+
+                binding.addPhotoText.setText("Add Photo");
+                binding.postImageHolder.setVisibility(View.GONE);
+                selectedImage = "";
+
+            }
+        }
+
     }
 
     public void createPost() {
-
 
         String postBody = binding.text.getText().toString().trim();
 
@@ -200,6 +228,14 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
             postSlug = postModel.getSlug();
 
         viewModel.createPost(model, postSlug);
+
+        viewModel.getResponseListenerAuthMutableLiveData().observe(getViewLifecycleOwner(), responseViewModel -> {
+            if (responseViewModel.getOnSuccess().equals("true")) {
+                if (!CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
+                    Toast.makeText(context, "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
+                dismiss();
+            }
+        });
 
     }
 
