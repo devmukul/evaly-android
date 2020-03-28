@@ -8,6 +8,7 @@ public class MainViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> drawerOnClick = new MutableLiveData<>();
     private MutableLiveData<Boolean> backOnClick = new MutableLiveData<>();
+    private MutableLiveData<Boolean> updateNewsfeed = new MutableLiveData<>();
 
 
     public LiveData<Boolean> getDrawerOnClick() {
@@ -24,5 +25,13 @@ public class MainViewModel extends ViewModel {
 
     public void setBackOnClick(boolean backOnClick) {
         this.backOnClick.setValue(backOnClick);
+    }
+
+    public LiveData<Boolean> getUpdateNewsfeed() {
+        return updateNewsfeed;
+    }
+
+    public void setUpdateNewsfeed(boolean updateNewsfeed) {
+        this.updateNewsfeed.setValue(updateNewsfeed);
     }
 }

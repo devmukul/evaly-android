@@ -40,6 +40,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 
@@ -53,6 +54,7 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
     private Context context;
     private NewsfeedPost postModel;
     private ProgressDialog progressDialogImage;
+    private MainViewModel mainViewModel;
 
     public CreatePostBottomSheet() {
     }
@@ -72,6 +74,8 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
 
         context = getContext();
         viewModel = new ViewModelProvider(this).get(CreatePostViewModel.class);
+        if (getActivity() != null)
+            mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
         if (getArguments() != null)
             postModel = (NewsfeedPost) getArguments().getSerializable("postModel");
@@ -145,7 +149,8 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
             if (responseViewModel.getOnSuccess().equals("true")) {
                 if (!CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
                     Toast.makeText(context, "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
-
+                if (mainViewModel != null)
+                    mainViewModel.setUpdateNewsfeed(true);
                 dismiss();
             }
         });

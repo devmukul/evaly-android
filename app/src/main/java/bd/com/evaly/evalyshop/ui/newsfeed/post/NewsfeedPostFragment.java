@@ -43,6 +43,7 @@ import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.newsfeed.createPost.CreatePostBottomSheet;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
@@ -50,8 +51,8 @@ import bd.com.evaly.evalyshop.util.KeyboardUtil;
 
 public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private NewsfeedPostViewModel viewModel;
+    private MainViewModel mainViewModel;
     private RoomWIthRxViewModel chatViewModel;
     private String type;
     private NewsfeedTabsFragmentBinding binding;
@@ -87,10 +88,10 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
         binding = NewsfeedTabsFragmentBinding.inflate(inflater, container, false);
 
         viewModel = new ViewModelProvider(this).get(NewsfeedPostViewModel.class);
+        if (getActivity() != null)
+            mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         chatViewModel = new ViewModelProvider(this).get(RoomWIthRxViewModel.class);
-
         viewModel.setType(type);
-
         return binding.getRoot();
     }
 
@@ -177,7 +178,10 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
             createPostBottomSheet.show(getChildFragmentManager(), model.getSlug());
         });
 
-
+        mainViewModel.getUpdateNewsfeed().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean)
+                viewModel.refreshData();
+        });
     }
 
     @Override
