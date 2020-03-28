@@ -100,7 +100,6 @@ public class CartFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_cart, container, false);
     }
 
@@ -390,16 +389,20 @@ public class CartFragment extends Fragment {
                 bottomSheetDialog.hide();
                 dialog.hideDialog();
 
-                if (response != null) {
+                if (response != null && getActivity() != null) {
                     String message = response.get("message").getAsString();
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
                     if (response.has("data")) {
                         JsonArray data = response.getAsJsonArray("data");
+
+                        if (data.size() > 0)
+                            orderPlaced();
+
                         for (int i = 0; i < data.size(); i++) {
                             JsonObject item = data.get(i).getAsJsonObject();
                             String invoice = item.get("invoice_no").getAsString();
-                            Intent intent = new Intent(context, OrderDetailsActivity.class);
+                            Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
                             intent.putExtra("orderID", invoice);
                             startActivity(intent);
                         }
@@ -441,7 +444,6 @@ public class CartFragment extends Fragment {
         for (int i = 0; i < adapterItems.size(); i++) {
 
             if (adapterItems.get(i).isSelected()) {
-
                 String fromShopJson = adapterItems.get(i).getShopJson();
                 OrderItemsItem item = new OrderItemsItem();
                 item.setQuantity(adapterItems.get(i).getQuantity());
@@ -454,7 +456,6 @@ public class CartFragment extends Fragment {
 
                 } catch (Exception e) {
                 }
-
             }
         }
 
@@ -477,7 +478,6 @@ public class CartFragment extends Fragment {
 
         bottomSheetDialog.hide();
         Toast.makeText(context, "Your order has been placed!", Toast.LENGTH_LONG).show();
-
     }
 
     @Override
@@ -485,6 +485,5 @@ public class CartFragment extends Fragment {
         super.onDestroyView();
         view = null;
     }
-
 
 }
