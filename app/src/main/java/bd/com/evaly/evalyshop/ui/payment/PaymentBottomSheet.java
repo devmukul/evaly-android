@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.order.orderDetails.payment;
+package bd.com.evaly.evalyshop.ui.payment;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;

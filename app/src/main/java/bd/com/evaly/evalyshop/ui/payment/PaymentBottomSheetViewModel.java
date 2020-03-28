@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.order.orderDetails.payment;
+package bd.com.evaly.evalyshop.ui.payment;
 
 import androidx.lifecycle.ViewModel;
 
@@ -30,15 +30,19 @@ public class PaymentBottomSheetViewModel extends ViewModel {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
-                if (response.get("success").getAsBoolean())
-                    navigator.onPaymentSuccess("Payment successful!");
-                else
-                    navigator.onPaymentFailed(response.get("message").toString());
+                if (response != null) {
+                    if (response.get("success").getAsBoolean())
+                        navigator.onPaymentSuccess(response.get("message").toString());
+                    else
+                        navigator.onPaymentFailed(response.get("message").toString());
+                } else {
+                    navigator.onPaymentFailed("Payment failed, try again later");
+                }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                navigator.onPaymentFailed("Payment failed!");
+                navigator.onPaymentFailed("Payment failed, try again later");
             }
 
             @Override
@@ -67,8 +71,6 @@ public class PaymentBottomSheetViewModel extends ViewModel {
                     navigator.payViaCard(purl);
                 } else
                     navigator.payViaCard("");
-
-
             }
 
             @Override
