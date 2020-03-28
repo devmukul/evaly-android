@@ -90,7 +90,8 @@ public class NewsfeedPostViewModel extends ViewModel {
 
     public void refreshData() {
 
-        postLiveData.getValue().getDataSource().invalidate();
+        if (postLiveData.getValue() != null)
+            postLiveData.getValue().getDataSource().invalidate();
 
     }
 

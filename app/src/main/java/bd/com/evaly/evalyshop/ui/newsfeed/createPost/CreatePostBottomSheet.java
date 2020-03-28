@@ -145,7 +145,6 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
         });
 
         viewModel.getResponseListenerAuthMutableLiveData().observe(getViewLifecycleOwner(), responseViewModel -> {
-
             if (responseViewModel.getOnSuccess().equals("true")) {
                 if (!CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
                     Toast.makeText(context, "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
