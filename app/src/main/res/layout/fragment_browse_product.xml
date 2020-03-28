@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:background="#fafafa"
             android:clipToPadding="false"
-            android:paddingBottom="60dp"
+            android:paddingBottom="10dp"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

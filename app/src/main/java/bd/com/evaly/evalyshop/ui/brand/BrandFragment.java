@@ -2,16 +2,12 @@ package bd.com.evaly.evalyshop.ui.brand;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,83 +16,59 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.FragmentBrandBinding;
+import bd.com.evaly.evalyshop.epoxy.decoration.GridSpacingDecoration;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
-import bd.com.evaly.evalyshop.models.HomeHeaderItem;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.ui.brand.adapter.BrandProductAdapter;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.brand.controller.BrandController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+
+    private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private String slug = "", title = "", categoryString = "", imgUrl = "", categorySlug = "";
-    private View view;
-    private Context context;
-    private MainActivity mainActivity;
-    private ProgressBar progressBar;
-    private View dummyView;
-    private List<ProductItem> itemListProduct;
-    private BrandProductAdapter adapterProduct;
-    private RecyclerView recyclerView;
     private int currentPage = 1;
     private boolean isLoading = false;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private ShimmerFrameLayout shimmerFrameLayout;
-    private FrameLayout shimmerHolder;
+    private FragmentBrandBinding binding;
+    private BrandController controller;
 
     public BrandFragment() {
 
     }
 
     private void refreshFragment() {
-        if (getFragmentManager() != null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                getFragmentManager().beginTransaction().detach(this).commitNow();
-                getFragmentManager().beginTransaction().attach(this).commitNow();
-            } else {
-                getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-            }
+        NavHostFragment.findNavController(this).navigate(R.id.brandFragment, getArguments());
     }
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_brand_new, container, false);
 
-        context = getContext();
-        mainActivity = (MainActivity) getActivity();
+        binding = FragmentBrandBinding.inflate(inflater, container, false);
 
-        return view;
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
-
-        swipeRefreshLayout.setOnRefreshListener(this);
-
-        if (!Utils.isNetworkAvailable(context))
-            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
+        if (!Utils.isNetworkAvailable(getContext()))
+            new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
                 @Override
                 public void onRetry() {
                     refreshFragment();
@@ -104,11 +76,9 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
                 @Override
                 public void onBackPress() {
-                    if (getFragmentManager() != null)
-                        NavHostFragment.findNavController(BrandFragment.this).navigate(R.id.homeFragment);
+                    NavHostFragment.findNavController(BrandFragment.this).navigate(R.id.homeFragment);
                 }
             });
-
 
 
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
@@ -141,7 +111,6 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 categoryString = categoryString.replaceAll("\\w+$", "");
             }
 
-
             if (getArguments().containsKey("image_url"))
                 imgUrl = getArguments().getString("image_url");
 
@@ -149,57 +118,40 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             Toast.makeText(getContext(), "This page is not available!", Toast.LENGTH_SHORT).show();
         }
 
-        dummyView = view.findViewById(R.id.dummyView);
-        recyclerView = view.findViewById(R.id.products);
-        progressBar = view.findViewById(R.id.progressBar);
+        controller = new BrandController();
+        controller.setAttr(title, imgUrl, categoryString);
 
-        shimmerFrameLayout = view.findViewById(R.id.shimmer);
-        shimmerHolder = view.findViewById(R.id.shimmerHolder);
-        shimmerFrameLayout.startShimmer();
+        binding.recyclerView.setAdapter(controller.getAdapter());
 
-        itemListProduct = new ArrayList<>();
+        int spanCount = 2;
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        controller.setSpanCount(spanCount);
 
-        HashMap<String, String> data = new HashMap<>();
-        data.put("slug", slug);
-        data.put("title", title);
-        data.put("categorySlug", categorySlug);
-        data.put("categoryString", categoryString);
-        data.put("imgUrl", imgUrl);
+        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
+        binding.recyclerView.addItemDecoration(new GridSpacingDecoration(spanCount, spacing, true));
+        binding.recyclerView.setLayoutManager(layoutManager);
 
-        adapterProduct = new BrandProductAdapter(getContext(), itemListProduct, mainActivity, this, NavHostFragment.findNavController(this), data);
-        recyclerView.setAdapter(adapterProduct);
+        controller.requestModelBuild();
 
-        itemListProduct.add(new HomeHeaderItem());
-        adapterProduct.notifyItemInserted(0);
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy < 0) {
-                    if (isLoading)
-                        progressBar.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
+                if (dy > 0) {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    int[] firstVisibleItems = null;
+                    firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
+                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
+                        pastVisiblesItems = firstVisibleItems[0];
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (!isLoading)
-                        getProducts();
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                            getProducts();
                 }
             }
         });
-
-        int spanCount = 2; // 3 columns
-        int spacing = (int) Utils.convertDpToPixel(10, Objects.requireNonNull(getContext())); // 50px
-        boolean includeEdge = true;
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
 
         getProducts();
-
 
     }
 
@@ -208,41 +160,23 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         isLoading = true;
 
-        if (currentPage > 1)
-            progressBar.setVisibility(View.VISIBLE);
-        else
-            progressBar.setVisibility(View.GONE);
+        controller.setLoadingMore(true);
 
         ProductApiHelper.getCategoryBrandProducts(currentPage, null, slug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
 
-                List<ProductItem> data = response.getData();
+                controller.setLoadingMore(false);
 
-                itemListProduct.addAll(data);
-                adapterProduct.notifyItemRangeInserted(itemListProduct.size() - data.size(), data.size());
+                List<ProductItem> data = response.getData();
+                controller.addData(data);
                 isLoading = false;
-                progressBar.setVisibility(View.INVISIBLE);
+
+                hideShimmer();
 
                 if (response.getCount() == 0) {
-                    LinearLayout noItem = view.findViewById(R.id.noItem);
                     // noItem.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
                 }
-
-                if (currentPage == 1){
-                    shimmerHolder.animate().alpha(0.0f)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    shimmerFrameLayout.stopShimmer();
-                                    shimmerFrameLayout.setVisibility(View.GONE);
-                                    shimmerHolder.setVisibility(View.GONE);
-                                }
-                            });
-                }
-
 
                 if (response.getCount() > 10)
                     currentPage++;
@@ -250,6 +184,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
+                hideShimmer();
 
             }
 
@@ -261,24 +196,30 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
+    private void hideShimmer() {
+        binding.shimmerHolder.animate().alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        binding.shimmer.stopShimmer();
+                        binding.shimmerHolder.setVisibility(View.GONE);
+                        binding.shimmer.setVisibility(View.GONE);
+                    }
+                });
+    }
 
     @Override
     public void onRefresh() {
 
-        swipeRefreshLayout.setRefreshing(false);
-
-
-        shimmerFrameLayout.setVisibility(View.VISIBLE);
-        shimmerHolder.setVisibility(View.VISIBLE);
-        shimmerFrameLayout.startShimmer();
-        shimmerHolder.setAlpha(1);
+        binding.swipeRefresh.setRefreshing(false);
+        binding.shimmer.setVisibility(View.VISIBLE);
+        binding.shimmerHolder.setVisibility(View.VISIBLE);
+        binding.shimmer.startShimmer();
+        binding.shimmerHolder.setAlpha(1);
 
         currentPage = 1;
-        itemListProduct.clear();
-        itemListProduct.add(new HomeHeaderItem());
-        adapterProduct.notifyDataSetChanged();
-
-
+        controller.clear();
         getProducts();
 
     }
@@ -286,7 +227,6 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        recyclerView.setAdapter(null);
-        view = null;
+        binding.recyclerView.setAdapter(null);
     }
 }
