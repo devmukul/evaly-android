@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <androidx.cardview.widget.CardView
@@ -72,7 +73,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
                                 android:layout_toRightOf="@id/pictureHolder"
-                                android:text="User Name"
+                                tools:text="User Name"
                                 android:textColor="#333"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -83,7 +84,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/user_name"
                                 android:layout_alignStart="@id/user_name"
-                                android:text="2 hours ago"
+                                tools:text="2 hours ago"
                                 android:textSize="13sp" />
 
 
@@ -101,7 +102,7 @@
                             android:paddingTop="5dp"
                             android:paddingRight="17dp"
                             android:paddingBottom="20dp"
-                            android:text="Status text..."
+                            tools:text="Status text..."
                             android:textColor="#444"
                             android:textSize="17sp" />
 

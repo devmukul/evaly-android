@@ -35,9 +35,11 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.CommentBottomSheetFragmentBinding;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
+import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -93,7 +95,10 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initCommentHeader(newsfeedPostModel);
+        if (newsfeedPostModel.getCreatedAt() == null)
+            loadDetailsFromApi();
+        else
+            initCommentHeader(newsfeedPostModel);
 
         adapter = new CommentAdapter(itemList, getContext(), getFragmentManager(), newsfeedPostModel.getSlug(), viewModel);
 
@@ -195,6 +200,48 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
             binding.commentInput.setEnabled(false);
             binding.submitComment.setEnabled(false);
         }
+
+    }
+
+    private void loadDetailsFromApi() {
+
+        NewsfeedApiHelper.getPostDetails(CredentialManager.getToken(), newsfeedPostModel.getSlug(), new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject ob, int statusCode) {
+                if (ob != null && ob.has("body")) {
+                    JsonObject author = ob.getAsJsonObject("author");
+                    String authorName = author.get("full_name").getAsString();
+                    String authorImage = author.get("compressed_image").getAsString();
+                    boolean isAdmin = author.get("is_admin").getAsBoolean();
+                    String postText = ob.get("body").getAsString();
+                    String date = ob.get("created_at").getAsString();
+                    String postImageUrl = ob.get("attachment").isJsonNull() ? "" : ob.get("attachment").getAsString();
+
+                    newsfeedPostModel.setAuthorFullName(authorName);
+                    newsfeedPostModel.setAuthorCompressedImage(authorImage);
+                    newsfeedPostModel.setAuthorIsAdmin(isAdmin ? 1 : 0);
+                    newsfeedPostModel.setBody(postText);
+                    newsfeedPostModel.setCreatedAt(date);
+                    newsfeedPostModel.setAttachment(postImageUrl);
+                    initCommentHeader(newsfeedPostModel);
+
+                } else {
+                    Toast.makeText(getContext(), "Post is not available", Toast.LENGTH_SHORT).show();
+                    dismiss();
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                Toast.makeText(getContext(), "Post is not available", Toast.LENGTH_SHORT).show();
+                dismiss();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
 
     }
 

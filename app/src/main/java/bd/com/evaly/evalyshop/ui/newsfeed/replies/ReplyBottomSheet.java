@@ -159,7 +159,6 @@ public class ReplyBottomSheet extends BottomSheetDialogFragment {
 
     private void initCommentHeader(CommentItem postModel) {
 
-
         if (getContext() != null) {
 
             binding.userName.setText(postModel.getAuthor().getFullName());

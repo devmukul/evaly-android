@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.newsfeed.notification.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -11,18 +10,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
+import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.models.notification.NotificationItem;
+import bd.com.evaly.evalyshop.ui.newsfeed.comment.CommentBottomSheet;
 import bd.com.evaly.evalyshop.util.Utils;
 
 
@@ -30,10 +33,12 @@ public class NewsfeedNotificationAdapter extends RecyclerView.Adapter<NewsfeedNo
 
     private List<NotificationItem> notifications;
     private Context context;
+    private FragmentManager fragmentManager;
 
-    public NewsfeedNotificationAdapter(List<NotificationItem> notifications, Context context) {
+    public NewsfeedNotificationAdapter(List<NotificationItem> notifications, Context context, FragmentManager fragmentManager) {
         this.notifications = notifications;
         this.context = context;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -62,38 +67,48 @@ public class NewsfeedNotificationAdapter extends RecyclerView.Adapter<NewsfeedNo
                 .placeholder(R.drawable.user_image)
                 .into(myViewHolder.shopImage);
 
-
         myViewHolder.view.setOnClickListener(v -> {
 
-            try {
+            JsonObject metaData = new Gson().fromJson(notifications.get(i).getMetaData(), JsonObject.class);
 
-                JSONObject metaData = new JSONObject(notifications.get(i).getMetaData());
+            String postSlug = metaData.get("post_slug").getAsString();
 
-                Intent intent = new Intent();
+            if (metaData.has("reply_id")) {
 
-                if (metaData.has("post_slug"))
-                    intent.putExtra("status_id", metaData.getString("post_slug"));
-                else
-                    intent.putExtra("status_id", "");
+                int commentId = metaData.get("comment_id").getAsInt();
+                int replyId = metaData.get("reply_id").getAsInt();
 
-                if (metaData.has("comment_id"))
-                    intent.putExtra("comment_id", metaData.getString("comment_id"));
-                else
-                    intent.putExtra("comment_id", "");
+                NewsfeedPost newsfeedPost = new NewsfeedPost();
+                newsfeedPost.setSlug(postSlug);
 
-//
-//                if (notifications.get(i).getContent_type().equals("comment") || notifications.get(i).getContent_type().equals("reply")) {
-//                    ((NewsfeedNotification) context).setResult(Activity.RESULT_OK, intent);
-//                    ((NewsfeedNotification) context).finish();
-//                } else {
-//
-//                    ((NewsfeedNotification) context).finish();
-//                }
+                CommentItem commentItem = new CommentItem();
+                commentItem.setId(commentId);
 
+                CommentBottomSheet commentBottomSheet = CommentBottomSheet.newInstance(newsfeedPost);
+                commentBottomSheet.show(fragmentManager, postSlug + "_" + commentId);
 
-            } catch (Exception e) {
+//                ReplyBottomSheet replyBottomSheet = ReplyBottomSheet.newInstance(commentItem, postSlug);
+//                replyBottomSheet.show(fragmentManager, postSlug + "_" + commentId + "_" + replyId);
+
+            } else if (metaData.has("comment_id")) {
+
+                int commentId = metaData.get("comment_id").getAsInt();
+
+                NewsfeedPost newsfeedPost = new NewsfeedPost();
+                newsfeedPost.setSlug(postSlug);
+
+                CommentBottomSheet commentBottomSheet = CommentBottomSheet.newInstance(newsfeedPost);
+                commentBottomSheet.show(fragmentManager, postSlug + "_" + commentId);
+
+            } else {
+
+                NewsfeedPost newsfeedPost = new NewsfeedPost();
+                newsfeedPost.setSlug(postSlug);
+                CommentBottomSheet commentBottomSheet = CommentBottomSheet.newInstance(newsfeedPost);
+                commentBottomSheet.show(fragmentManager, postSlug);
 
             }
+
 
         });
 

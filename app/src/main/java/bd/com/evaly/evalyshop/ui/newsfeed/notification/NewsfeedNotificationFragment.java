@@ -60,7 +60,7 @@ public class NewsfeedNotificationFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.recyclerView.setLayoutManager(layoutManager);
 
-        NewsfeedNotificationAdapter adapter = new NewsfeedNotificationAdapter(itemList, getContext());
+        NewsfeedNotificationAdapter adapter = new NewsfeedNotificationAdapter(itemList, getContext(), getParentFragmentManager());
         binding.recyclerView.setAdapter(adapter);
 
         itemList.clear();
