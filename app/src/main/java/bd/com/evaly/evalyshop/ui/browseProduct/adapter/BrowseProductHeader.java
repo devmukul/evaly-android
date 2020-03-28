@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.browseProduct.adapter;
 
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
