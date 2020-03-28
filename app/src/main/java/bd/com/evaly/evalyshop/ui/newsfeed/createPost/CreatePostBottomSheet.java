@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +69,7 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+        setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
 
         context = getContext();
         viewModel = new ViewModelProvider(this).get(CreatePostViewModel.class);
@@ -222,10 +221,7 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
         }
 
         model.setPost(post);
-
         binding.shareBtn.setEnabled(false);
-
-
         String postSlug = null;
 
         if (postModel != null)
@@ -249,6 +245,7 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
         BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         bottomSheetDialog.setOnShowListener(dialogz -> {
             BottomSheetDialog dialog = (BottomSheetDialog) dialogz;
+            dialog.setCancelable(false);
             FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
             if (getContext() != null && bottomSheet != null) {
@@ -257,11 +254,11 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
                 LinearLayout dialogLayoutReply = dialog.findViewById(R.id.container2);
                 assert dialogLayoutReply != null;
                 dialogLayoutReply.setMinimumHeight(screenUtils.getHeight());
-
-                //BottomSheetBehavior.from(bottomSheet).setPeekHeight(screenUtils.getHeight());
+                // BottomSheetBehavior.from(bottomSheet).setPeekHeight(screenUtils.getHeight());
                 BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
                 BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
-                BottomSheetBehavior.from(bottomSheet).setHideable(true);
+                BottomSheetBehavior.from(bottomSheet).setHideable(false);
+                BottomSheetBehavior.from(bottomSheet).setDraggable(false);
             }
 
         });
@@ -274,7 +271,6 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
 
             binding.postImage.setVisibility(View.VISIBLE);
             binding.postImageHolder.setVisibility(View.VISIBLE);
-
             binding.addPhotoText.setText("Change Photo");
 
             Glide.with(this)
@@ -330,18 +326,12 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-
             Uri selectedImage = data.getData();
             //  String imagePath = RealPathUtil.getRealPath(getActivity(), selectedImage);
-
-
             String destinationDirectoryPath = getContext().getCacheDir().getPath() + File.separator + "images";
 
             try {
-
-
                 File cImage = compressImage(data.getData(), Bitmap.CompressFormat.JPEG, 70, destinationDirectoryPath);
-
                 Bitmap bitmap = BitmapFactory.decodeFile(destinationDirectoryPath);
 
                 if (selectedImage != null && isVisible()) {
@@ -356,49 +346,31 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
                             .apply(new RequestOptions().override(500, 500))
                             .into(binding.postImage);
                 }
-
                 uploadProfilePicture(bitmap);
-
-
             } catch (Exception e) {
-
-                Log.d("json image error", e.toString());
                 Toast.makeText(context, "Error occurred while uploading image", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
     private void uploadProfilePicture(Bitmap bitmap) {
-
         progressDialogImage = ProgressDialog.show(getActivity(), "",
                 "Uploading image...", true);
-
         progressDialogImage.show();
-
         viewModel.uploadImage(bitmap);
-
     }
 
-
     private File compressImage(Uri path, Bitmap.CompressFormat compressFormat, int quality, String destinationPath) throws IOException {
-        //FileOutputStream fileOutputStream = null;
         File file = new File(destinationPath).getParentFile();
         if (!file.exists()) {
             file.mkdirs();
         }
-
         try (FileOutputStream fileOutputStream = new FileOutputStream(destinationPath)) {
-
             ImageUtils.getCorrectlyOrientedImage(getActivity(), path).compress(compressFormat, quality, fileOutputStream);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return new File(destinationPath);
-
     }
-
 
 }
