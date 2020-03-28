@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 
-<com.facebook.shimmer.ShimmerFrameLayout
-    android:id="@+id/shimmerTabs"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#fafafa"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout
+    <com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/shimmerTabs"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="bottom"
-        android:paddingLeft="5dp"
-        android:paddingTop="10dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="15dp">
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="7dp"
-            android:layout_weight="1"
-            android:background="#ddd" />
+        android:layout_height="wrap_content"
+        android:background="#fafafa">
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="14dp"
-            android:layout_weight="1"
-            android:background="#ddd" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="bottom"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="15dp">
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:layout_marginLeft="9dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:background="#ddd" />
-    </LinearLayout>
-</com.facebook.shimmer.ShimmerFrameLayout>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="7dp"
+                android:layout_weight="1"
+                android:background="#ddd" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="14dp"
+                android:layout_weight="1"
+                android:background="#ddd" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_marginLeft="9dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="#ddd" />
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+</layout>

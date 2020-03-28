@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/shimmer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:shimmer_base_alpha="1"
-    app:shimmer_colored="false"
-    app:shimmer_highlight_alpha="0.3"
-    app:shimmer_base_color="@color/c333"
-    app:shimmer_highlight_color="@color/c333"
-    android:background="#fafafa">
+<layout>
 
-    <ImageView
+    <com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/shimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:tint="#fff"
-        app:srcCompat="@drawable/ic_skeleton_category_grid" />
+        android:background="#fafafa"
+        app:shimmer_base_alpha="1"
+        app:shimmer_base_color="@color/c333"
+        app:shimmer_colored="false"
+        app:shimmer_highlight_alpha="0.3"
+        app:shimmer_highlight_color="@color/c333">
 
-</com.facebook.shimmer.ShimmerFrameLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:tint="#fff"
+            app:srcCompat="@drawable/ic_skeleton_category_grid" />
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+</layout>

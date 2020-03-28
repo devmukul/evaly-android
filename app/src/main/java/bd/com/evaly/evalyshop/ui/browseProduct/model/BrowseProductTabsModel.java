@@ -146,7 +146,6 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
 
             binding.shimmer.shimmer.startShimmer();
             binding.shimmer.shimmer.setVisibility(View.VISIBLE);
-            binding.tabLayout.setVisibility(View.GONE);
 
             ProductApiHelper.getSubCategories(category, new ResponseListenerAuth<JsonArray, String>() {
 
@@ -227,7 +226,7 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
         public void hideShimmer() {
 
             binding.shimmerHolder.animate().alpha(0.0f)
-                    .setDuration(100)
+                    .setDuration(50)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
@@ -239,6 +238,5 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
                         }
                     });
         }
-
     }
 }
