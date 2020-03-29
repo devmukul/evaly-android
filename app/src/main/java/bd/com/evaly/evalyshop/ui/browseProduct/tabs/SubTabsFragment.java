@@ -21,14 +21,14 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.FragmentHomeCategoryBinding;
+import bd.com.evaly.evalyshop.databinding.FragmentBrowseProductTabBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.search.SearchCategory;
-import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 
 public class SubTabsFragment extends Fragment {
 
@@ -40,7 +40,7 @@ public class SubTabsFragment extends Fragment {
     private String category;
     private int brandCounter = 1, shopCounter = 1;
     private String json = "[]";
-    private FragmentHomeCategoryBinding binding;
+    private FragmentBrowseProductTabBinding binding;
 
     public SubTabsFragment() {
         // Required empty public constructor
@@ -48,7 +48,7 @@ public class SubTabsFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentHomeCategoryBinding.inflate(inflater, container, false);
+        binding = FragmentBrowseProductTabBinding.inflate(inflater, container, false);
 
         context = getContext();
         Bundle bundle = getArguments();
