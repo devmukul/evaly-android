@@ -27,7 +27,7 @@ import bd.com.evaly.evalyshop.databinding.RecyclerHeaderBrowseProductBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
-import bd.com.evaly.evalyshop.ui.tabs.SubTabsFragment;
+import bd.com.evaly.evalyshop.ui.browseProduct.tabs.SubTabsFragment;
 
 public class BrowseProductHeader extends RecyclerView.ViewHolder {
 

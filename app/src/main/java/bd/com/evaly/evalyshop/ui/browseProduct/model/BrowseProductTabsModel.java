@@ -31,7 +31,7 @@ import bd.com.evaly.evalyshop.databinding.BrowseProductModelTabsBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
-import bd.com.evaly.evalyshop.ui.tabs.SubTabsFragment;
+import bd.com.evaly.evalyshop.ui.browseProduct.tabs.SubTabsFragment;
 
 @EpoxyModelClass(layout = R.layout.browse_product_model_tabs)
 public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<BrowseProductTabsModel.HomeTabsHolder> {
@@ -168,7 +168,7 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
 
                         if (pager != null) {
                             // pager.clear();
-                            pager.addFragment(fragment, AppController.getmContext().getResources().getString(R.string.sub_categories));
+                            pager.addFragment(fragment, AppController.getmContext().getResources().getString(R.string.categories));
                         }
                     }
 
@@ -225,15 +225,16 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
 
         public void hideShimmer() {
 
+
+            binding.shimmerTabs.setVisibility(View.GONE);
             binding.shimmerHolder.animate().alpha(0.0f)
                     .setDuration(50)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            binding.shimmerTabs.shimmerTabs.setVisibility(View.GONE);
                             binding.shimmer.shimmer.stopShimmer();
-                            binding.shimmerTabs.shimmerTabs.stopShimmer();
+                            binding.shimmerTabs.stopShimmer();
                             binding.shimmer.shimmer.setVisibility(View.GONE);
                         }
                     });

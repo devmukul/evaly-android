@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.tabs.adapter;
+package bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter;
 
 import android.content.Context;
 import android.content.Intent;

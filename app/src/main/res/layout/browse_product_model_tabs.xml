@@ -27,12 +27,31 @@
 
         </com.google.android.material.tabs.TabLayout>
 
-        <include
+
+        <com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/shimmerTabs"
-            layout="@layout/skeleton_tablayout_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            app:layout_constraintBottom_toBottomOf="@id/tabLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/tabLayout"
+
+            app:shimmer_base_alpha="1"
+            app:shimmer_base_color="@color/c333"
+            app:shimmer_colored="false"
+            app:shimmer_highlight_alpha="0.3"
+            app:shimmer_highlight_color="@color/c333">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:tint="@color/fafafa"
+                app:srcCompat="@drawable/ic_tab_header" />
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
@@ -43,21 +62,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tabLayout" />
 
-        <TextView
-            android:id="@+id/productTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="15dp"
-            android:paddingTop="10dp"
-            android:paddingRight="15dp"
-            android:paddingBottom="18dp"
-            android:text="@string/products"
-            android:textColor="#555"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/viewPager" />
 
         <FrameLayout
             android:id="@+id/shimmerHolder"
@@ -73,6 +77,23 @@
                 layout="@layout/shimmer_tabs" />
 
         </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/productTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="18dp"
+            android:text="@string/products"
+            android:textColor="#555"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shimmerHolder" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

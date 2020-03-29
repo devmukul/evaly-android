@@ -60,7 +60,7 @@ import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.search.adapter.AutoCompleteAdapter;
 import bd.com.evaly.evalyshop.ui.search.adapter.SearchFilterAdapter;
-import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
+import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;

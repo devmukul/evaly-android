@@ -39,7 +39,7 @@ import bd.com.evaly.evalyshop.ui.home.adapter.RootCategoriesAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.search.SearchCategory;
-import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
+import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
 
 public class HomeTabsFragment extends Fragment {

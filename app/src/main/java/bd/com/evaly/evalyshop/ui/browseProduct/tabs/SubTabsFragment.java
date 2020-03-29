@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.tabs;
+package bd.com.evaly.evalyshop.ui.browseProduct.tabs;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +28,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.search.SearchCategory;
-import bd.com.evaly.evalyshop.ui.tabs.adapter.TabsAdapter;
+import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 
 public class SubTabsFragment extends Fragment {
 
