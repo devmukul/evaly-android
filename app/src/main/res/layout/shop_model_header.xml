@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
@@ -11,7 +11,7 @@
         android:layout_marginRight="15dp"
         android:background="@drawable/border_box"
         android:paddingTop="15dp"
-        android:paddingBottom="15dp">
+        android:paddingBottom="20dp">
 
         <ImageView
             android:id="@+id/logo"
@@ -56,8 +56,10 @@
             android:textIsSelectable="true"
             android:textSize="17sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/logo"
-            app:layout_constraintTop_toTopOf="@+id/logo" />
+            app:layout_constraintTop_toTopOf="@+id/logo"
+            android:layout_marginRight="20dp"/>
 
 
         <RatingBar

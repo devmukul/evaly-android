@@ -33,9 +33,14 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
     public ProductItem model;
     @EpoxyAttribute
     public int cashbackRate = 0;
+    @EpoxyAttribute
+    public boolean isShop;
 
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
+
+    @EpoxyAttribute(DoNotHash)
+    View.OnClickListener buyNowClickListener;
 
     public ProductItem getModel() {
         return model;
@@ -81,7 +86,12 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
 
         binding.getRoot().setOnClickListener(clickListener);
 
-        binding.buyNow.setVisibility(View.GONE);
+        if (isShop) {
+            binding.buyNow.setVisibility(View.VISIBLE);
+            binding.buyNow.setOnClickListener(buyNowClickListener);
+        }
+        else
+            binding.buyNow.setVisibility(View.GONE);
 
         if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
             binding.buyNow.setVisibility(View.GONE);

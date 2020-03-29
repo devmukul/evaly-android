@@ -17,6 +17,7 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopHeaderModel_;
 
@@ -27,6 +28,7 @@ public class ShopController extends EpoxyController {
     private List<ProductItem> items = new ArrayList<>();
     private Shop shopInfo;
     private int cashbackRate = 0;
+    private ShopViewModel viewModel;
 
     @AutoModel
     ShopHeaderModel_ headerModel;
@@ -41,7 +43,7 @@ public class ShopController extends EpoxyController {
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
-        requestModelBuild();
+        // requestModelBuild();
     }
 
     public void setAttr(Shop shopInfo){
@@ -50,26 +52,26 @@ public class ShopController extends EpoxyController {
 
     @Override
     protected void buildModels() {
-
-
         headerModel
                 .activity(activity)
                 .fragment(fragment)
                 .shopInfo(shopInfo)
+                .viewModel(viewModel)
                 .addTo(this);
 
         categoryModel
+                .viewModel(viewModel)
                 .activity(activity)
                 .fragment(fragment)
                 .addTo(this);
-
-
 
         for (ProductItem productItem: items) {
             new HomeProductGridModel_()
                     .id(productItem.getSlug())
                     .model(productItem)
                     .cashbackRate(cashbackRate)
+                    .isShop(true)
+                    .buyNowClickListener((model, parentView, clickedView, position) -> viewModel.setBuyNowLiveData(model.getModel().getSlug()))
                     .clickListener((model, parentView, clickedView, position) -> {
                         ProductItem item = model.getModel();
                         Intent intent = new Intent(activity, ViewProductActivity.class);
@@ -113,6 +115,10 @@ public class ShopController extends EpoxyController {
 
     public void setCashbackRate(int cashbackRate) {
         this.cashbackRate = cashbackRate;
+    }
+
+    public void setViewModel(ShopViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 }
 
