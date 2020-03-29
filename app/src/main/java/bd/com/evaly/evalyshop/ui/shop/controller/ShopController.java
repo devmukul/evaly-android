@@ -43,7 +43,7 @@ public class ShopController extends EpoxyController {
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
-        // requestModelBuild();
+         requestModelBuild();
     }
 
     public void setAttr(Shop shopInfo){

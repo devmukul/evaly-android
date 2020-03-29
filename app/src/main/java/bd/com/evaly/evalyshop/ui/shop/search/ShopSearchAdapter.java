@@ -30,7 +30,6 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
-import bd.com.evaly.evalyshop.ui.shop.adapter.ShopProductHeader;
 
 public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -89,9 +88,7 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderz, int position) {
-        if (holderz instanceof ShopProductHeader) {
-
-        } else if (holderz instanceof ShopSearchAdapter.VHItem) {
+         if (holderz instanceof ShopSearchAdapter.VHItem) {
 
             ShopSearchAdapter.VHItem holder = (ShopSearchAdapter.VHItem) holderz;
             ItemsItem model = productsList.get(position);

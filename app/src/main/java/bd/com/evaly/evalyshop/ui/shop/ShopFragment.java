@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -106,9 +105,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private boolean isInitiated = false;
     private boolean clickFromCategory = false;
     private ShopViewModel viewModel;
-    private ProgressBar progressBar;
     private FragmentShopBinding binding;
-    private boolean progressBarShowing = false;
 
     public ShopFragment() {
         // Required empty public constructor
@@ -195,9 +192,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         viewModel.setShopSlug(slug);
 
         binding.shimmer.startShimmer();
-        progressBar = view.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.GONE);
-
         controller = new ShopController();
         controller.setActivity((AppCompatActivity) getActivity());
         controller.setFragment(this);
@@ -226,8 +220,11 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         pastVisiblesItems = firstVisibleItems[0];
 
                     if (!isLoading)
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            if (currentPage > 1)
+                                controller.setLoadingMore(true);
                             viewModel.loadShopProducts();
+                        }
                 }
             }
         });
@@ -251,10 +248,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         if (!isInitiated) {
             isInitiated = true;
-            controller.setLoadingMore(true);
             viewModel.loadShopProducts();
         }
-
 
         viewModel.getBuyNowLiveData().observe(getViewLifecycleOwner(), s -> {
             if (getActivity() != null) {
@@ -264,7 +259,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         "BuyNow");
             }
         });
-
 
         viewModel.getSelectedCategoryLiveData().observe(getViewLifecycleOwner(), tabsItem -> {
 
@@ -327,7 +321,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void loadShopDetails(ShopDetailsModel response) {
 
-        controller.setLoadingMore(false);
 
         Data shopData = response.getData();
         Shop shopDetails = shopData.getShop();
@@ -335,9 +328,10 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         controller.setAttr(shopDetails);
 
+        controller.setLoadingMore(false);
+
         totalCount = response.getCount();
 
-        progressBar.setVisibility(View.INVISIBLE);
 
         if (shopData.getMeta() != null)
             controller.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
