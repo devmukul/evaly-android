@@ -53,6 +53,8 @@
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
+
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
@@ -68,16 +70,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#fafafa"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tabLayout">
 
+            app:layout_constraintTop_toBottomOf="@id/tabLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
             <include
                 android:id="@+id/shimmer"
                 layout="@layout/shimmer_tabs" />
 
         </FrameLayout>
-
 
         <TextView
             android:id="@+id/productTitle"
@@ -93,7 +94,17 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/shimmerHolder" />
+            app:layout_constraintTop_toBottomOf="@id/barrier" />
+
+
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="viewPager,shimmerHolder,productTitle" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
