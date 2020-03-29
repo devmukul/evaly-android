@@ -9,13 +9,15 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
-        android:background="@drawable/border_box">
-
+        android:background="@drawable/border_box"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="101dp"
-            android:layout_height="0dp"
+            android:layout_width="90dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_evaly_placeholder" />
@@ -153,7 +155,8 @@
             android:id="@+id/btn1Image"
             android:layout_width="55dp"
             android:layout_height="55dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="5dp"
             android:layout_weight="0"
             android:background="@drawable/circle_bg_shop"
             android:clickable="false"
@@ -179,6 +182,7 @@
             android:id="@+id/btn2Image"
             android:layout_width="55dp"
             android:layout_height="55dp"
+            android:layout_marginRight="5dp"
             android:layout_weight="0"
             android:background="@drawable/circle_bg_shop"
             android:clickable="false"
@@ -233,6 +237,7 @@
             android:id="@+id/btn4Image"
             android:layout_width="55dp"
             android:layout_height="55dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="0"
             android:background="@drawable/circle_bg_shop"
             android:clickable="false"
