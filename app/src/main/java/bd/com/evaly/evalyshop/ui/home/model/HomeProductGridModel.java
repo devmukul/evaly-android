@@ -31,6 +31,8 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
     public AppCompatActivity activity;
     @EpoxyAttribute
     public ProductItem model;
+    @EpoxyAttribute
+    public int cashbackRate = 0;
 
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
@@ -83,6 +85,14 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
 
         if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
             binding.buyNow.setVisibility(View.GONE);
+        }
+
+        if (cashbackRate == 0)
+            binding.tvCashback.setVisibility(View.GONE);
+        else {
+            binding.tvCashback.setVisibility(View.VISIBLE);
+            binding.tvCashback.bringToFront();
+            binding.tvCashback.setText(String.format(Locale.ENGLISH, "%d%% Cashback", cashbackRate));
         }
     }
 

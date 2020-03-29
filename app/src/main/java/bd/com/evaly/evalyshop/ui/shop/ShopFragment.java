@@ -3,7 +3,7 @@ package bd.com.evaly.evalyshop.ui.shop;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Context;
+import android.content.getContext();
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.AppBarLayout;
@@ -40,7 +41,8 @@ import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.databinding.FragmentShopNewBinding;
+import bd.com.evaly.evalyshop.databinding.FragmentShopBinding;
+import bd.com.evaly.evalyshop.epoxy.decoration.GridSpacingDecoration;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -60,7 +62,7 @@ import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
-import bd.com.evaly.evalyshop.ui.shop.adapter.ShopProductAdapter;
+import bd.com.evaly.evalyshop.ui.shop.controller.ShopController;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -68,17 +70,14 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
-import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 
 public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+
+    private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private String slug = "", title = "", owner_number = "", shop_name = "", campaign_slug = "", logo_image;
     private String categorySlug = null;
-    private List<ProductItem> productItemList;
-    private ShopProductAdapter adapterProducts;
-    private Context context;
-    private MainActivity mainActivity;
     private int currentPage;
     private int totalCount;
     private boolean isLoading = false;
@@ -106,11 +105,12 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         }
     };
+    private ShopController controller;
     private boolean isInitiated = false;
     private boolean clickFromCategory = false;
     private ShopViewModel viewModel;
     private ProgressBar progressBar;
-    private FragmentShopNewBinding binding;
+    private FragmentShopBinding binding;
     private boolean progressBarShowing = false;
 
     public ShopFragment() {
@@ -130,12 +130,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        binding = FragmentShopNewBinding.inflate(inflater, container, false);
-
-
-        context = getContext();
-        mainActivity = (MainActivity) getActivity();
-
+        binding = FragmentShopBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -154,8 +149,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         binding.swipeRefresh.setOnRefreshListener(this);
 
-        if (!Utils.isNetworkAvailable(context))
-            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
+        if (!Utils.isNetworkAvailable(getContext()))
+            new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
                 @Override
                 public void onRetry() {
                     refreshFragment();
@@ -167,42 +162,16 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 }
             });
 
-
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
+        new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
 
-
-        new InitializeActionBar( view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
-
-//        ImageView menuBtn = view.findViewById(R.id.menuBtn);
-//
-//
-//        menuBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_back));
-//
-//        RelativeLayout notification = view.findViewById(R.id.notification_holder);
-//
-//        menuBtn.setOnClickListener(v -> {
-//            mainViewModel.setBackOnClick(true);
-//        });
-//
-//        notification.setOnClickListener(v -> {
-//            if (CredentialManager.getToken().equals("")) {
-//                context.startActivity(new Intent(context, SignInActivity.class));
-//            } else {
-//                context.startActivity(new Intent(context, NotificationActivity.class));
-//            }
-//        });
-
-
-//
         LinearLayout homeSearch = view.findViewById(R.id.home_search);
         homeSearch.setOnClickListener(view12 -> {
-
             Bundle bundle = new Bundle();
             bundle.putString("shop_slug", slug);
             bundle.putString("shop_name", shop_name);
             bundle.putString("campaign_slug", campaign_slug);
-
             NavHostFragment.findNavController(this).navigate(R.id.shopSearchActivity, bundle);
         });
 
@@ -211,7 +180,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         searchTitle.setText("Search in this shop...");
 
         if (getArguments() == null) {
-            Toast.makeText(context, "Shop not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Shop not available", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -231,41 +200,38 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.shimmer.startShimmer();
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-        productItemList = new ArrayList<>();
 
-        HashMap<String, String> data = new HashMap<>();
+        controller = new ShopController();
 
-        adapterProducts = new ShopProductAdapter(context, productItemList, (MainActivity) getActivity(), this, NavHostFragment.findNavController(this), data, viewModel);
-        binding.products.setAdapter(adapterProducts);
+        binding.recyclerView.setAdapter(controller.getAdapter());
 
-        binding.products.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        int spanCount = 2;
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        controller.setSpanCount(spanCount);
+
+        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
+        binding.recyclerView.addItemDecoration(new GridSpacingDecoration(spanCount, spacing, true));
+        binding.recyclerView.setLayoutManager(layoutManager);
+
+        controller.requestModelBuild();
+
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy < 0) {
-                    if (isLoading)
-                        progressBar.setVisibility(View.INVISIBLE);
+                if (dy > 0) {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    int[] firstVisibleItems = null;
+                    firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
+                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
+                        pastVisiblesItems = firstVisibleItems[0];
+
+                    if (!isLoading)
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                            viewModel.loadShopProducts();
                 }
             }
         });
-
-        binding.products.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!isLoading && totalCount > productItemList.size()) {
-                        if (currentPage > 1)
-                            progressBar.setVisibility(View.VISIBLE);
-                        viewModel.loadShopProducts();
-                    }
-                }
-            }
-        });
-
-        int spanCount = 2; // 3 columns
-        int spacing = (int) Utils.convertDpToPixel(10, Objects.requireNonNull(getContext())); // 50px
-        boolean includeEdge = true;
-        binding.products.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
 
         viewModel.getOnChatClickLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean)
@@ -273,18 +239,9 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
         viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> {
-
-            if (progressBarShowing && productItemList.size() > 1) {
-                productItemList.remove(productItemList.size() - 1);
-                adapterProducts.notifyItemRemoved(productItemList.size());
-                progressBarShowing = false;
-            }
-
             loadShopDetails(shopDetailsModel);
         });
 
-
-        productItemList.clear();
         viewModel.setCategoryCurrentPage(1);
 
         if (isInitiated)
@@ -315,10 +272,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             viewModel.setCategorySlug(categorySlug);
             viewModel.setCurrentPage(1);
 
-            productItemList.clear();
-            productItemList.add(new HomeHeaderItem());
-            productItemList.add(new ProgressHeaderItem());
-            adapterProducts.notifyDataSetChanged();
             progressBarShowing = true;
 
             currentPage = 1;
@@ -333,10 +286,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 viewModel.setCategorySlug(null);
                 viewModel.setCurrentPage(1);
-
-                productItemList.clear();
-                productItemList.add(new HomeHeaderItem());
-                adapterProducts.notifyDataSetChanged();
                 currentPage = 1;
                 viewModel.loadShopProducts();
             }
@@ -378,28 +327,25 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void loadShopDetails(ShopDetailsModel response) {
 
-        adapterProducts.setShopDetails(response);
 
         Data shopData = response.getData();
         Shop shopDetails = shopData.getShop();
 
-        totalCount = response.getCount();
 
-        if (productItemList.size() < 1) {
-            productItemList.add(new HomeHeaderItem());
-            adapterProducts.notifyItemInserted(0);
-            shop_name = shopDetails.getName();
-            owner_number = shopDetails.getOwnerName();
-        }
+        controller.setAttr(shopDetails);
+
+        totalCount = response.getCount();
 
         progressBar.setVisibility(View.INVISIBLE);
 
         if (shopData.getMeta() != null)
-            adapterProducts.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
+            controller.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
 
         List<ItemsItem> shopItems = shopData.getItems();
 
-        binding.products.setVisibility(View.VISIBLE);
+        binding.recyclerView.setVisibility(View.VISIBLE);
+
+        List<ProductItem> tempList = new ArrayList<>();
 
         for (int i = 0; i < shopItems.size(); i++) {
             if (i == 0)
@@ -415,12 +361,13 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             item.setMinPrice(String.valueOf(shopItem.getItemPrice()));
             item.setMinDiscountedPrice(String.valueOf(shopItem.getDiscountedPrice()));
 
-            productItemList.add(item);
-            adapterProducts.notifyItemInserted(productItemList.size());
+            tempList.add(item);
         }
 
+        controller.addData(tempList);
+
         if (clickFromCategory) {
-            binding.products.scrollToPosition(1);
+            binding.recyclerView.scrollToPosition(1);
             clickFromCategory = false;
         }
 
@@ -474,7 +421,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                     Logger.d(new Gson().toJson(rosterTable));
                                     startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
                                 } else {
-                                    Toast.makeText(context, "Can't send message", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Can't send message", Toast.LENGTH_SHORT).show();
                                 }
                             }
 

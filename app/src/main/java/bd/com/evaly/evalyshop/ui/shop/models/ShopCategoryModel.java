@@ -21,7 +21,7 @@ import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 import bd.com.evaly.evalyshop.ui.shop.adapter.ShopCategoryAdapter;
 
-@EpoxyModelClass(layout = R.layout.brand_model_category)
+@EpoxyModelClass(layout = R.layout.shop_model_category)
 public abstract class ShopCategoryModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
