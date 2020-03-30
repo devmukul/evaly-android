@@ -162,6 +162,8 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         controller.setLoadingMore(true);
 
+        controller.showEmptyPage(false, false);
+
         ProductApiHelper.getCategoryBrandProducts(currentPage, null, slug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
@@ -174,9 +176,8 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
                 hideShimmer();
 
-                if (response.getCount() == 0) {
-                    // noItem.setVisibility(View.VISIBLE);
-                }
+                if (response.getCount() == 0)
+                    controller.showEmptyPage(true, true);
 
                 if (response.getCount() > 10)
                     currentPage++;

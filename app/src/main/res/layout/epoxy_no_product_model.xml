@@ -26,6 +26,6 @@
         android:textAlignment="center"
         android:layout_marginTop="15dp"
         android:textColor="#555"
-        top app:layout_constraintTop_toBottomOf="@id/image"/>
+        app:layout_constraintTop_toBottomOf="@id/image"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

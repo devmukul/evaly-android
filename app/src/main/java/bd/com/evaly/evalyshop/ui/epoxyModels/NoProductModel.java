@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModel;
 import com.airbnb.epoxy.ModelProp;
 import com.bumptech.glide.Glide;
@@ -15,10 +16,10 @@ import bd.com.evaly.evalyshop.R;
 
 public class NoProductModel extends EpoxyModel<ConstraintLayout> {
 
-    @ModelProp
+    @EpoxyAttribute
     int image;
 
-    @ModelProp
+    @EpoxyAttribute
     String text;
 
     public NoProductModel() {

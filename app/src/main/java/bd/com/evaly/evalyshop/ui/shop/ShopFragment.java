@@ -225,6 +225,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                     if (!isLoading && totalItemCount < totalCount)
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            controller.showEmptyPage(false, false);
                             controller.setLoadingMore(true);
                             viewModel.loadShopProducts();
                             isLoading = true;
@@ -367,15 +368,11 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         controller.addData(tempList);
 
         if (clickFromCategory) {
-            binding.recyclerView.scrollToPosition(1);
+            binding.recyclerView.scrollToPosition(3);
             clickFromCategory = false;
         }
 
-        if (currentPage == 1 & shopItems.size() == 0) {
-            //   binding.noItem.setVisibility(View.VISIBLE);
-        } else {
-
-        }
+        if (totalCount == 0) controller.showEmptyPage(true, true);
 
         binding.shimmerHolder.animate().alpha(0.0f)
                 .setListener(new AnimatorListenerAdapter() {

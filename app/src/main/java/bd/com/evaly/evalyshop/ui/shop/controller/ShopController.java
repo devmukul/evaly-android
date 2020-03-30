@@ -12,9 +12,11 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.epoxy.models.LoadingModel_;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
+import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
@@ -41,8 +43,11 @@ public class ShopController extends EpoxyController {
     @AutoModel
     ShopCategoryModel_ categoryModel;
 
+    @AutoModel
+    NoProductModel_ noProductModel;
 
     private boolean loadingMore = true;
+    private boolean emptyPage = false;
 
     public ShopController() {
         setDebugLoggingEnabled(true);
@@ -51,6 +56,12 @@ public class ShopController extends EpoxyController {
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
          requestModelBuild();
+    }
+
+    public void showEmptyPage(boolean emptyPage, boolean build) {
+        this.emptyPage = emptyPage;
+        if (build)
+            requestModelBuild();
     }
 
     public void setAttr(Shop shopInfo){
@@ -95,7 +106,14 @@ public class ShopController extends EpoxyController {
                     .addTo(this);
         }
 
+
+        noProductModel
+                .text("No Products Available")
+                .image(R.drawable.ic_empty_product)
+                .addIf(emptyPage, this);
+
         loader.addIf(loadingMore, this);
+
     }
 
     public void addData(List<ProductItem> productItems){

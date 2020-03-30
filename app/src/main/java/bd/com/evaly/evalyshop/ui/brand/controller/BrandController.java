@@ -11,9 +11,11 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.epoxy.models.LoadingModel_;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.brand.model.BrandHeaderModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
@@ -31,11 +33,21 @@ public class BrandController extends EpoxyController {
     @AutoModel
     LoadingModel_ loader;
 
+    @AutoModel
+    NoProductModel_ noProductModel;
+
     private boolean loadingMore = true;
+    private boolean emptyPage = false;
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
         requestModelBuild();
+    }
+
+    public void showEmptyPage(boolean emptyPage, boolean build) {
+        this.emptyPage = emptyPage;
+        if (build)
+            requestModelBuild();
     }
 
 
@@ -71,6 +83,12 @@ public class BrandController extends EpoxyController {
                     })
                     .addTo(this);
         }
+
+
+        noProductModel
+                .text("No Products Available")
+                .image(R.drawable.ic_empty_product)
+                .addIf(emptyPage, this);
 
         loader.addIf(loadingMore, this);
     }
