@@ -54,7 +54,7 @@ public class ReplyBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+        setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
 
         viewModel = new ViewModelProvider(this).get(ReplyViewModel.class);
 
@@ -95,14 +95,12 @@ public class ReplyBottomSheet extends BottomSheetDialogFragment {
 
         });
 
-
         viewModel.getReplyListLiveData().observe(getViewLifecycleOwner(), commentItems -> {
 
 
             if (commentItems.size() == 0) {
                 binding.not.setVisibility(View.VISIBLE);
             } else {
-
                 binding.not.setVisibility(View.GONE);
                 binding.progressContainer.setVisibility(View.GONE);
                 itemList.addAll(commentItems);

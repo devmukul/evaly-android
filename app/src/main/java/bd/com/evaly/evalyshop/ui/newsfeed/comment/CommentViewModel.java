@@ -80,6 +80,7 @@ public class CommentViewModel extends ViewModel {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 commentCreatedLiveData.setValue(response);
+
             }
 
             @Override

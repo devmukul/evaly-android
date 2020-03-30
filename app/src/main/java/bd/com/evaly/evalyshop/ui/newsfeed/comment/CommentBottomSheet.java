@@ -67,7 +67,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+        setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
 
         viewModel = new ViewModelProvider(this).get(CommentViewModel.class);
 
@@ -130,6 +130,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
                 binding.commentInput.setText("");
                 binding.commentInput.setEnabled(true);
                 binding.submitComment.setEnabled(true);
+                binding.not.setVisibility(View.GONE);
             } else
                 Toast.makeText(getContext(), "Couldn't create comment", Toast.LENGTH_SHORT).show();
         });
@@ -172,7 +173,6 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
         binding.uploadImage.setOnClickListener(view1 -> Toast.makeText(getContext(), "Photo reply is disabled now.", Toast.LENGTH_SHORT).show());
 
         binding.submitComment.setOnClickListener(v -> {
-
 
             if (!isVisible())
                 return;
