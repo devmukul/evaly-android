@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleEventObserver;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -61,10 +59,6 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
 
             pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
-            fragmentInstance.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
-                pager.clear();
-            });
-
             binding.viewPager.setOffscreenPageLimit(2);
             binding.viewPager.setAdapter(pager);
             binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -86,27 +80,21 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
 
                     TabsViewModel viewModel = pager.getViewModel(position);
 
-                    viewModel.getItemCount().observe(fragmentInstance.getViewLifecycleOwner(), new Observer<Integer>() {
-                        @Override
-                        public void onChanged(Integer integer) {
-                            ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
+                    viewModel.getItemCount().observe(fragmentInstance.getViewLifecycleOwner(), integer -> {
+                        ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
 
-                            int row = (int) (Math.ceil(viewModel.getIntCount() / 3.0));
+                        int row = (int) (Math.ceil(viewModel.getIntCount() / 3.0));
 
-                            if (position == 0 && pager.getItemCount() == 3)
-                                params1.height = (int) ((row * boxHeight) + marginHeight);
-                            else
-                                params1.height = (int) ((row * boxHeight) + barHeight);
+                        if (position == 0 && pager.getItemCount() == 3)
+                            params1.height = (int) ((row * boxHeight) + marginHeight);
+                        else
+                            params1.height = (int) ((row * boxHeight) + barHeight);
 
-                            binding.viewPager.post(() -> {
-                                binding.viewPager.setLayoutParams(params1);
-                            });
+                        binding.viewPager.post(() -> binding.viewPager.setLayoutParams(params1));
 
-                        }
                     });
                 }
             });
-
 
             getSubCategories();
         }

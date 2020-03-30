@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,11 +36,12 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.ui.browseProduct.tabs.TabsViewModel;
+import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.ui.home.adapter.RootCategoriesAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.search.SearchCategory;
-import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
 
 public class HomeTabsFragment extends Fragment {
@@ -56,6 +58,7 @@ public class HomeTabsFragment extends Fragment {
     private OnDoneListener onDoneListener;
     private FragmentHomeCategoryBinding binding;
     private AppDatabase appDatabase;
+    private TabsViewModel viewModel;
 
     public HomeTabsFragment() {
         // Required empty public constructor
@@ -64,6 +67,20 @@ public class HomeTabsFragment extends Fragment {
     public void setOnDoneListener(OnDoneListener onDoneListener) {
         this.onDoneListener = onDoneListener;
     }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle bundle = getArguments();
+
+        category = bundle.getString("category");
+        type = bundle.getInt("type");
+        slug = bundle.getString("slug");
+
+        viewModel = new ViewModelProvider(this).get("type_" + type, TabsViewModel.class);
+    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -107,7 +124,7 @@ public class HomeTabsFragment extends Fragment {
             appDatabase.categoryDao().getAllLiveData().observe(getViewLifecycleOwner(), categoryEntities -> {
                 categoryItems.addAll(categoryEntities);
                 adapter2.notifyDataSetChanged();
-
+                viewModel.setItemCount(categoryEntities.size());
                 new Handler().postDelayed(() -> stopShimmer(), 200);
             });
 
@@ -255,6 +272,8 @@ public class HomeTabsFragment extends Fragment {
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
+
+                        viewModel.setItemCount(itemList.size());
                     }
 
                     stopShimmer();
@@ -315,6 +334,8 @@ public class HomeTabsFragment extends Fragment {
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
+
+                        viewModel.setItemCount(itemList.size());
 
                     }
 

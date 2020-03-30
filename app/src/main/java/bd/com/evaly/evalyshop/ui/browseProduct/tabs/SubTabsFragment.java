@@ -59,21 +59,15 @@ public class SubTabsFragment extends Fragment {
         slug = bundle.getString("slug");
         json = bundle.getString("json");
 
-        viewModel = new ViewModelProvider(this).get("type_"+type, TabsViewModel.class);
+        viewModel = new ViewModelProvider(this).get("type_" + type, TabsViewModel.class);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentBrowseProductTabBinding.inflate(inflater, container, false);
 
-
         context = getContext();
-
-        try {
-            binding.shimmer.shimmer.startShimmer();
-        } catch (Exception e) {
-        }
-
+        binding.shimmer.shimmer.startShimmer();
 
         return binding.getRoot();
     }
