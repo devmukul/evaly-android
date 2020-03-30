@@ -54,12 +54,12 @@
         </com.facebook.shimmer.ShimmerFrameLayout>
 
 
-
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
+            android:minHeight="145dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tabLayout" />
@@ -71,9 +71,10 @@
             android:layout_height="wrap_content"
             android:background="#fafafa"
 
-            app:layout_constraintTop_toBottomOf="@id/tabLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tabLayout">
+
             <include
                 android:id="@+id/shimmer"
                 layout="@layout/shimmer_tabs" />
@@ -95,7 +96,6 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/barrier" />
-
 
 
         <androidx.constraintlayout.widget.Barrier

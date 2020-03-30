@@ -14,4 +14,8 @@
 
     <dimen name="newsfeed_verified_icon">17dp</dimen>
 
+    <dimen name="tab_height">145dp</dimen>
+    <dimen name="five_dp">5dp</dimen>
+
+    <dimen name="eight_dp">8dp</dimen>
 </resources>

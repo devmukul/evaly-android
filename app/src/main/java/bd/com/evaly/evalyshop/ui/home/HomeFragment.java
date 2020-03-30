@@ -35,7 +35,6 @@ import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.ui.home.adapter.HomeProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -54,7 +53,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private Context context;
     private int currentPage = 1;
     private List<ProductItem> productItemList;
-    private HomeProductGridAdapter adapterProducts;
     private boolean isLoading = false;
     private ReferPref referPref;
     private FragmentHomeBinding binding;

@@ -133,7 +133,9 @@ public class EditProfileActivity extends BaseActivity {
 
         UserModel userModel = CredentialManager.getUserData();
 
-        binding.firstName.setText(String.format("%s %s", userModel.getFirst_name(), userModel.getLast_name()));
+        String fullName = String.format("%s %s", userModel.getFirst_name(), userModel.getLast_name());
+        binding.firstName.setText(fullName);
+        binding.userNameTop.setText(fullName);
         binding.email.setText(userModel.getEmail());
         binding.phone.setText(userModel.getContacts());
 

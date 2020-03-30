@@ -3,15 +3,14 @@ package bd.com.evaly.evalyshop.ui.browseProduct.model;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleEventObserver;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -23,8 +22,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.JsonArray;
 
-import java.util.HashMap;
-
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.BrowseProductModelTabsBinding;
@@ -32,6 +29,8 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.SubTabsFragment;
+import bd.com.evaly.evalyshop.ui.browseProduct.tabs.TabsViewModel;
+import bd.com.evaly.evalyshop.util.Utils;
 
 @EpoxyModelClass(layout = R.layout.browse_product_model_tabs)
 public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<BrowseProductTabsModel.HomeTabsHolder> {
@@ -50,8 +49,6 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
 
         View itemView;
         private FragmentTabPagerAdapter pager;
-        private HashMap<Integer, ViewTreeObserver.OnGlobalLayoutListener> listenerList = new HashMap<>();
-        private HashMap<Integer, View> viewList = new HashMap<>();
         private BrowseProductModelTabsBinding binding;
 
         @Override
@@ -65,20 +62,10 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
             pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
             fragmentInstance.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
-                if (viewList.size() == 0)
-                    return;
-
-                for (int i = 0; i < listenerList.size(); i++) {
-                    View view = viewList.get(i);
-                    if (view != null)
-                        view.getViewTreeObserver().removeOnGlobalLayoutListener(listenerList.get(i));
-                }
-
-                viewList.clear();
-                listenerList.clear();
+                pager.clear();
             });
 
-            binding.viewPager.setOffscreenPageLimit(1);
+            binding.viewPager.setOffscreenPageLimit(2);
             binding.viewPager.setAdapter(pager);
             binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
             binding.tabLayout.setSmoothScrollingEnabled(true);
@@ -87,56 +74,39 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
                     (tab, position) -> tab.setText(pager.getTitle(position))
             ).attach();
 
+            final float boxHeight = AppController.getmContext().getResources().getDimension(R.dimen.tab_height) + 2;
+            final float barHeight = Utils.convertDpToPixel(60, AppController.getmContext());
+            final float marginHeight = AppController.getmContext().getResources().getDimension(R.dimen.eight_dp);
+
             binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-
-                private void updateChildHeight(View v) {
-                    ViewGroup.LayoutParams params = binding.viewPager.getLayoutParams();
-                    binding.viewPager.post(() -> {
-                        int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(v.getWidth(), View.MeasureSpec.EXACTLY);
-                        int hMeasureSpec = View.MeasureSpec.makeMeasureSpec(v.getHeight(), View.MeasureSpec.UNSPECIFIED);
-                        v.measure(wMeasureSpec, hMeasureSpec);
-
-                        params.height = v.getMeasuredHeight();
-
-                        if (v.getMeasuredHeight() != binding.viewPager.getHeight()) {
-                            binding.viewPager.setLayoutParams(params);
-                        }
-                    });
-                }
 
                 @Override
                 public void onPageSelected(int position) {
                     super.onPageSelected(position);
 
-                    View v = pager.getViewAtPosition(position);
+                    TabsViewModel viewModel = pager.getViewModel(position);
 
-                    if (v == null) {
-                        new Handler().postDelayed(() -> {
-                            try {
-                                View vv = pager.getViewAtPosition(position);
-                                if (vv != null)
-                                    vv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                        @Override
-                                        public void onGlobalLayout() {
-                                            updateChildHeight(vv);
-                                            viewList.put(position, vv);
-                                            listenerList.put(position, this);
-                                        }
-                                    });
-                            } catch (Exception ignored) {
-                            }
-                        }, 1000);
-                    } else
-                        v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
-                                updateChildHeight(v);
-                                viewList.put(position, v);
-                                listenerList.put(position, this);
-                            }
-                        });
+                    viewModel.getItemCount().observe(fragmentInstance.getViewLifecycleOwner(), new Observer<Integer>() {
+                        @Override
+                        public void onChanged(Integer integer) {
+                            ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
+
+                            int row = (int) (Math.ceil(viewModel.getIntCount() / 3.0));
+
+                            if (position == 0 && pager.getItemCount() == 3)
+                                params1.height = (int) ((row * boxHeight) + marginHeight);
+                            else
+                                params1.height = (int) ((row * boxHeight) + barHeight);
+
+                            binding.viewPager.post(() -> {
+                                binding.viewPager.setLayoutParams(params1);
+                            });
+
+                        }
+                    });
                 }
             });
+
 
             getSubCategories();
         }

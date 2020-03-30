@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -41,22 +42,32 @@ public class SubTabsFragment extends Fragment {
     private int brandCounter = 1, shopCounter = 1;
     private String json = "[]";
     private FragmentBrowseProductTabBinding binding;
+    private TabsViewModel viewModel;
 
     public SubTabsFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentBrowseProductTabBinding.inflate(inflater, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        context = getContext();
         Bundle bundle = getArguments();
 
         category = bundle.getString("category");
         type = bundle.getInt("type");
         slug = bundle.getString("slug");
         json = bundle.getString("json");
+
+        viewModel = new ViewModelProvider(this).get("type_"+type, TabsViewModel.class);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentBrowseProductTabBinding.inflate(inflater, container, false);
+
+
+        context = getContext();
 
         try {
             binding.shimmer.shimmer.startShimmer();
@@ -202,6 +213,9 @@ public class SubTabsFragment extends Fragment {
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
+
+                        viewModel.setItemCount(itemList.size());
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -240,6 +254,9 @@ public class SubTabsFragment extends Fragment {
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
+
+
+                        viewModel.setItemCount(itemList.size());
 
                     }
 
@@ -289,6 +306,9 @@ public class SubTabsFragment extends Fragment {
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
+
+
+                        viewModel.setItemCount(itemList.size());
 
                     }
 
@@ -345,6 +365,8 @@ public class SubTabsFragment extends Fragment {
                         tabsItem.setCategory(category);
                         itemList.add(tabsItem);
                         adapter.notifyItemInserted(itemList.size());
+
+                        viewModel.setItemCount(itemList.size());
 
 
                     }

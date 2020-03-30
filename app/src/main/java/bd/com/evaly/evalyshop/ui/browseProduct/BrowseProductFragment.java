@@ -68,8 +68,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         FragmentAppBarHeaderBinding headerBinding = binding.header;
         headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
 
-
-
         if (!Utils.isNetworkAvailable(getContext()))
             new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
                 @Override
@@ -86,7 +84,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
 
         binding.swipeRefresh.setOnRefreshListener(this);
 
-
         if (getArguments() != null) {
             if (getArguments().containsKey("slug"))
                 slug = getArguments().getString("slug");
@@ -95,7 +92,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         } else {
             Toast.makeText(getContext(), "Can't load this page, try again later", Toast.LENGTH_SHORT).show();
         }
-
 
         controller = new BrowseProductController();
         controller.setActivity((AppCompatActivity) getActivity());
