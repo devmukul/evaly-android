@@ -29,6 +29,8 @@ public class ShopController extends EpoxyController {
     private Shop shopInfo;
     private int cashbackRate = 0;
     private ShopViewModel viewModel;
+    private int subCount = 0;
+    private boolean subscribed;
 
     @AutoModel
     ShopHeaderModel_ headerModel;
@@ -38,6 +40,7 @@ public class ShopController extends EpoxyController {
 
     @AutoModel
     ShopCategoryModel_ categoryModel;
+
 
     private boolean loadingMore = true;
 
@@ -61,6 +64,8 @@ public class ShopController extends EpoxyController {
                 .fragment(fragment)
                 .shopInfo(shopInfo)
                 .viewModel(viewModel)
+                .subCount(subCount)
+                .subscribed(subscribed)
                 .addTo(this);
 
         categoryModel
@@ -124,6 +129,14 @@ public class ShopController extends EpoxyController {
 
     public void setViewModel(ShopViewModel viewModel) {
         this.viewModel = viewModel;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        this.subscribed = subscribed;
+    }
+
+    public void setSubCount(int subCount) {
+        this.subCount = subCount;
     }
 }
 

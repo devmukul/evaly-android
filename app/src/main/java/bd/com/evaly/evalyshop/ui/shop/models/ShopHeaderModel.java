@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ShopModelHeaderBinding;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
@@ -36,6 +38,14 @@ public abstract class ShopHeaderModel extends DataBindingEpoxyModel {
     public Fragment fragment;
     @EpoxyAttribute
     Shop shopInfo;
+
+    @EpoxyAttribute
+    boolean subscribed;
+
+
+    @EpoxyAttribute
+    int subCount;
+
     @EpoxyAttribute
     ShopViewModel viewModel;
     private String ratingJson = "{}";
@@ -53,6 +63,28 @@ public abstract class ShopHeaderModel extends DataBindingEpoxyModel {
                 .load(shopInfo.getLogoImage())
                 .skipMemoryCache(true)
                 .into(binding.logo);
+
+        if (subscribed)
+            binding.followText.setText(String.format(Locale.ENGLISH, "Unfollow (%d)", subCount));
+        else
+            binding.followText.setText(String.format(Locale.ENGLISH, "Follow (%d)", subCount));
+
+        binding.followBtn.setOnClickListener(v -> {
+
+            if (CredentialManager.getToken().equals("")) {
+                Toast.makeText(activity, "You need to login first to follow a shop", Toast.LENGTH_LONG).show();
+                return;
+            }
+            boolean subscribe = true;
+
+            if (binding.followText.getText().toString().contains("Unfollow")) {
+                subscribe = false;
+                binding.followText.setText(String.format("Follow (%d)", --subCount));
+            } else
+                binding.followText.setText(String.format("Unfollow (%d)", ++subCount));
+
+            viewModel.subscribe(subscribe);
+        });
 
         binding.btn1Image.setOnClickListener(v -> {
             String phone = shopInfo.getContactNumber();
