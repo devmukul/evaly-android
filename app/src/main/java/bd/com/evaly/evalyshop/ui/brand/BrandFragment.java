@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -121,6 +122,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }
 
         controller = new BrandController();
+        controller.setActivity((AppCompatActivity) getActivity());
         controller.setAttr(title, imgUrl, categoryString);
 
         binding.recyclerView.setAdapter(controller.getAdapter());
