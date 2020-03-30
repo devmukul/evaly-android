@@ -1,16 +1,14 @@
 package bd.com.evaly.evalyshop.ui.issue;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -42,20 +40,24 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
     @Override
     public void onBindViewHolder(@NonNull IssuesViewHolder holder, int i) {
         IssuesModel model = list.get(i);
-        holder.tvBody.setText(model.getDescription());
-        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss","",model.getCreated_at())));
 
-        if (model.getIssue_replies() != null)
-            holder.commentCount.setText(model.getIssue_replies().size()+" Comments");
+        holder.tvIssueType.setText(Utils.toFirstCharUpperAll(model.getIssue_type()));
+        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss", "", model.getCreated_at())));
 
-        if (model.getAttachment() != null){
-            holder.ivIssueImage.setVisibility(View.VISIBLE);
-            Glide.with(context)
-                    .load(model.getAttachment())
-                    .into(holder.ivIssueImage);
-        }else {
-            holder.ivIssueImage.setVisibility(View.GONE);
+        holder.tvIssueStatus.setText(Utils.toFirstCharUpperAll(model.getStatus()));
+
+        if (model.getStatus().toLowerCase().equalsIgnoreCase("active")) {
+            holder.tvIssueStatus.setBackgroundColor(Color.parseColor("#f0ac4e"));
+        } else {
+            holder.tvIssueStatus.setBackgroundColor(Color.parseColor("#33d274"));
         }
+
+        int comment = model.getIssue_replies().size();
+        String commentString = comment + " Comments";
+        if (comment == 1)
+            commentString = comment + " Comment";
+
+        holder.tvCommentCount.setText(commentString);
     }
 
     @Override
@@ -64,14 +66,14 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
     }
 
     class IssuesViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tvBody)
-        TextView tvBody;
+        @BindView(R.id.tvIssueType)
+        TextView tvIssueType;
+        @BindView(R.id.tvCommentCount)
+        TextView tvCommentCount;
         @BindView(R.id.tvDate)
         TextView tvDate;
-        @BindView(R.id.commentCount)
-        TextView commentCount;
-        @BindView(R.id.ivIssueImage)
-        ImageView ivIssueImage;
+        @BindView(R.id.tvIssueStatus)
+        TextView tvIssueStatus;
 
         public IssuesViewHolder(@NonNull View itemView) {
             super(itemView);

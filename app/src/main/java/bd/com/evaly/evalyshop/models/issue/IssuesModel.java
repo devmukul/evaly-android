@@ -1,14 +1,18 @@
 package bd.com.evaly.evalyshop.models.issue;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class IssuesModel {
+public class IssuesModel implements Serializable {
     private int id;
     private String issue_type;
     private String attachment;
     private String created_at;
     private String updated_at;
     private String description;
+    private String status;
+    private String order_status;
+    private String order_invoice;
     private List<ReplyModel> issue_replies;
 
     public int getId() {
@@ -67,12 +71,37 @@ public class IssuesModel {
         this.issue_replies = issue_replies;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getOrder_status() {
+        return order_status;
+    }
+
+    public void setOrder_status(String order_status) {
+        this.order_status = order_status;
+    }
+
+    public String getOrder_invoice() {
+        return order_invoice;
+    }
+
+    public void setOrder_invoice(String order_invoice) {
+        this.order_invoice = order_invoice;
+    }
+
     public class ReplyModel{
         private int id;
         private String body;
         private String attachement;
         private String updated_at;
         private String created_at;
+        private String user_profile_image;
         private RepliedByModel reply_by;
 
         public int getId() {
@@ -121,6 +150,14 @@ public class IssuesModel {
 
         public void setReply_by(RepliedByModel reply_by) {
             this.reply_by = reply_by;
+        }
+
+        public String getUser_profile_image() {
+            return user_profile_image;
+        }
+
+        public void setUser_profile_image(String user_profile_image) {
+            this.user_profile_image = user_profile_image;
         }
     }
 

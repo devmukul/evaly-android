@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -39,6 +42,10 @@ public class IssueReplyAdapter extends RecyclerView.Adapter<IssueReplyAdapter.Is
         holder.tvReply.setText(model.getBody());
         holder.tvName.setText(model.getReply_by().getFirst_name()+" "+model.getReply_by().getLast_name());
         holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss","",model.getCreated_at())));
+
+        if (model.getUser_profile_image() != null)
+            Glide.with(context)
+                    .load(model.getUser_profile_image()).into(holder.picture);
     }
 
     @Override
@@ -53,6 +60,8 @@ public class IssueReplyAdapter extends RecyclerView.Adapter<IssueReplyAdapter.Is
         TextView tvDate;
         @BindView(R.id.tvReply)
         TextView tvReply;
+        @BindView(R.id.picture)
+        ImageView picture;
 
 
         public IssueReplyViewHolder(@NonNull View itemView) {

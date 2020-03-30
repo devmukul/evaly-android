@@ -76,4 +76,22 @@
     <color name="color9">#C4CBEA</color>
     <color name="color10">#EAC4C4</color>
 
+
+    <color name="barColor1">#4f81bc</color>
+    <color name="barColor2">#269EA9</color>
+    <color name="barColor3">#9bbb58</color>
+    <color name="barColor4">#3698db</color>
+    <color name="barColor5">#db9803</color>
+    <color name="barColor6">#4eb950</color>
+    <color name="barColor7">#d9534f</color>
+
+    <color name="barColorPending">#4f81bc</color>
+    <color name="barColorConfirmed">#269EA9</color>
+    <color name="barColorProcessing">#9bbb58</color>
+    <color name="barColorPicked">#3698db</color>
+    <color name="barColorShipped">#3facc6</color>
+    <color name="barColorDelivered">#55b263</color>
+    <color name="barColorCancelled">#d9534f</color>
+
+
 </resources>

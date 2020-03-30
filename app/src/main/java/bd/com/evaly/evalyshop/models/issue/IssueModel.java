@@ -3,7 +3,9 @@ package bd.com.evaly.evalyshop.models.issue;
 
 import com.google.gson.annotations.SerializedName;
 
-public class IssueModel {
+import java.io.Serializable;
+
+public class IssueModel implements Serializable {
 
 	@SerializedName("order_status")
 	private String orderStatus;
