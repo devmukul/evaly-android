@@ -2,10 +2,6 @@ package bd.com.evaly.evalyshop.ui.campaign.adapter;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +13,8 @@ import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 
@@ -48,7 +40,7 @@ public class CampaignShopAdapter extends RecyclerView.Adapter<CampaignShopAdapte
             bundle.putString("logo_image", model.getImage());
             bundle.putString("shop_slug", model.getSlug());
             bundle.putString("category", model.getCategory());
-            bundle.putString("campaign", model.getCampaignSlug());
+            bundle.putString("campaign_slug", model.getCampaignSlug());
 
             navController.navigate(R.id.shopFragment, bundle);
         }
@@ -88,20 +80,6 @@ public class CampaignShopAdapter extends RecyclerView.Adapter<CampaignShopAdapte
                 .apply(new RequestOptions().override(240, 240))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_placeholder_small)
-                .listener(new RequestListener<Drawable>() {
-                              @Override
-                              public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                  return false;
-                              }
-
-                              @Override
-                              public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                  Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
-                                  holder.iv.setImageBitmap(bitmap);
-                                  return true;
-                              }
-                          }
-                )
                 .into(holder.iv);
 
     }

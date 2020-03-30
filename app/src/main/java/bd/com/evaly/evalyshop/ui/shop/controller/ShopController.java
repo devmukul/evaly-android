@@ -41,6 +41,10 @@ public class ShopController extends EpoxyController {
 
     private boolean loadingMore = true;
 
+    public ShopController() {
+        setDebugLoggingEnabled(true);
+    }
+
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
          requestModelBuild();
@@ -66,6 +70,7 @@ public class ShopController extends EpoxyController {
                 .addTo(this);
 
         for (ProductItem productItem: items) {
+
             new HomeProductGridModel_()
                     .id(productItem.getSlug())
                     .model(productItem)
@@ -77,8 +82,8 @@ public class ShopController extends EpoxyController {
                         Intent intent = new Intent(activity, ViewProductActivity.class);
                         intent.putExtra("product_slug", item.getSlug());
                         intent.putExtra("product_name", item.getName());
-                        intent.putExtra("product_price", item.getMaxPrice());
-                        if (items.get(position).getImageUrls().size() > 0)
+                        intent.putExtra("product_price", (int) Double.parseDouble(item.getMaxPrice()));
+                        if (item.getImageUrls().size() > 0)
                             intent.putExtra("product_image", item.getImageUrls().get(0));
                         activity.startActivity(intent);
                     })

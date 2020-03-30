@@ -75,7 +75,7 @@ public class HomeController extends EpoxyController {
                         intent.putExtra("product_slug", item.getSlug());
                         intent.putExtra("product_name", item.getName());
                         intent.putExtra("product_price", item.getMaxPrice());
-                        if (items.get(position).getImageUrls().size() > 0)
+                        if (item.getImageUrls().size() > 0)
                             intent.putExtra("product_image", item.getImageUrls().get(0));
                         activity.startActivity(intent);
                     })

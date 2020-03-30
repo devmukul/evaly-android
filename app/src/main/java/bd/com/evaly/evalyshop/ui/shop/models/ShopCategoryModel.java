@@ -87,6 +87,7 @@ public abstract class ShopCategoryModel extends EpoxyModelWithHolder<ShopCategor
                 else if (currentPage == 1 && categoryList.size() < 4) {
                     GridLayoutManager mLayoutManager = new GridLayoutManager(activity, 1, GridLayoutManager.HORIZONTAL, false);
                     binding.recyclerView.setLayoutManager(mLayoutManager);
+                    binding.recyclerView.setMinimumHeight(100);
                 } else
                     currentPage++;
 

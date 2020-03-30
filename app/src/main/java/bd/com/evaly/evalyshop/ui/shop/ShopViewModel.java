@@ -197,7 +197,6 @@ public class ShopViewModel extends ViewModel {
             public void onAuthError(boolean logout) {
                 if (!logout)
                     loadShopProducts();
-
             }
         });
     }

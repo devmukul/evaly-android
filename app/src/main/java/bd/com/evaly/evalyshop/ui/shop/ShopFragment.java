@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +76,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private String slug = "", title = "", owner_number = "", shop_name = "", campaign_slug = "", logo_image;
     private String categorySlug = null;
     private int currentPage;
-    private int totalCount;
+    private int totalCount = 0;
     private boolean isLoading = false;
     private VCard vCard;
     private AppController mChatApp = AppController.getInstance();
@@ -188,6 +189,9 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         viewModel.setCampaignSlug(campaign_slug);
+
+        Log.e("hmt", campaign_slug + " cam slug");
+
         viewModel.setCategorySlug(categorySlug);
         viewModel.setShopSlug(slug);
 
@@ -219,11 +223,11 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     if (firstVisibleItems != null && firstVisibleItems.length > 0)
                         pastVisiblesItems = firstVisibleItems[0];
 
-                    if (!isLoading)
+                    if (!isLoading && totalItemCount < totalCount)
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            if (currentPage > 1)
-                                controller.setLoadingMore(true);
+                            controller.setLoadingMore(true);
                             viewModel.loadShopProducts();
+                            isLoading = true;
                         }
                 }
             }
@@ -234,10 +238,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 setUpXmpp();
         });
 
-        viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> {
-
-            loadShopDetails(shopDetailsModel);
-        });
+        viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> loadShopDetails(shopDetailsModel));
 
         viewModel.setCategoryCurrentPage(1);
 
@@ -321,20 +322,23 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void loadShopDetails(ShopDetailsModel response) {
 
+        isLoading = false;
 
         Data shopData = response.getData();
         Shop shopDetails = shopData.getShop();
 
+        totalCount = response.getCount();
 
-        controller.setAttr(shopDetails);
+        if (currentPage == 1)
+            controller.setAttr(shopDetails);
+
+        if (shopData.getMeta() != null)
+            controller.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
 
         controller.setLoadingMore(false);
 
         totalCount = response.getCount();
 
-
-        if (shopData.getMeta() != null)
-            controller.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
 
         List<ItemsItem> shopItems = shopData.getItems();
 
