@@ -56,11 +56,11 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.search.SearchFilterItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.product.productList.adapter.ProductGridAdapter;
 import bd.com.evaly.evalyshop.ui.search.adapter.AutoCompleteAdapter;
 import bd.com.evaly.evalyshop.ui.search.adapter.SearchFilterAdapter;
-import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
@@ -392,33 +392,30 @@ public class GlobalSearchActivity extends BaseActivity {
         } else
             getProducts(1);
 
-        searchText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                nestedSV.setBackgroundColor(Color.parseColor("#fafafa"));
-                noResult.setVisibility(View.GONE);
+        searchText.setOnItemClickListener((arg0, arg1, arg2, arg3) -> {
+            nestedSV.setBackgroundColor(Color.parseColor("#fafafa"));
+            noResult.setVisibility(View.GONE);
 
-                fromFilter = false;
+            fromFilter = false;
 
-                page = 1;
-                filterURL = "";
-                itemList.clear();
-                itemListProduct.clear();
-                searchText.setAdapter(adapterAuto);
-                // hide keyboard
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                //or try following:
-                //InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
-                searchText.clearFocus();
-                RecyclerView.LayoutManager mLayoutManager;
-                mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-                recyclerView.setAdapter(adapterProduct);
+            page = 1;
+            filterURL = "";
+            itemList.clear();
+            itemListProduct.clear();
+            searchText.setAdapter(adapterAuto);
+            // hide keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            //or try following:
+            //InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+            searchText.clearFocus();
+            RecyclerView.LayoutManager mLayoutManager;
+            mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            recyclerView.setAdapter(adapterProduct);
 
-                categoryList.clear();
-                allCategories.clear();
-                getSearchedItems(page);
-            }
+            categoryList.clear();
+            allCategories.clear();
+            getSearchedItems(page);
         });
 
         searchClear.setOnClickListener(new View.OnClickListener() {
@@ -698,6 +695,7 @@ public class GlobalSearchActivity extends BaseActivity {
 
                     try {
 
+                        noResult.setVisibility(View.GONE);
 
                         progressBar.setVisibility(View.INVISIBLE);
 
@@ -829,7 +827,7 @@ public class GlobalSearchActivity extends BaseActivity {
                         progressBar.setVisibility(View.INVISIBLE);
                         try {
 
-                            if ((productList.length() < 1 && page == 1) || jsonObject.getInt("nbHits") < 2) {
+                            if ((productList.length() < 1 && page == 1) || jsonObject.getInt("nbHits") < 1) {
                                 nestedSV.setBackgroundColor(Color.parseColor("#ffffff"));
                                 noResult.setVisibility(View.VISIBLE);
 

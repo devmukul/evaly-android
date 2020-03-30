@@ -27,6 +27,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.NewsfeedItemBinding;
 import bd.com.evaly.evalyshop.databinding.ProgressBarBinding;
@@ -41,7 +43,6 @@ import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 
 public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, RecyclerView.ViewHolder> {
-
 
     private Context context;
     private int ITEM_VIEW = 1;
@@ -217,10 +218,9 @@ public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, Recycler
             final TextView likeCount = myViewHolder.binding.likeCount;
             likeCount.setText(wordBeautify(model.getFavoritesCount(), true));
 
-            if (model.getFavorited() == 1 || (favorite.getTag() != null && favorite.getTag().toString().equals("yes"))) {
+            if (model.getFavorited() == 1) {
                 favorite.setTag("yes");
                 favorite.setImageResource(R.drawable.ic_favorite_color);
-
             } else {
                 favorite.setTag("no");
                 favorite.setImageResource(R.drawable.ic_favorite);
@@ -233,29 +233,27 @@ public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, Recycler
                     return;
                 }
                 if (favorite.getTag().equals("yes")) {
-
                     viewModel.sendLike(model.getSlug(), true);
                     favorite.setImageResource(R.drawable.ic_favorite);
                     favorite.setTag("no");
-                    model.setFavoritesCount(model.getFavoritesCount() - 1);
+                    Objects.requireNonNull(getItem(i)).setFavorited(0);
+                    Objects.requireNonNull(getItem(i)).setFavoritesCount(model.getFavoritesCount() - 1);
                     likeCount.setText(wordBeautify(model.getFavoritesCount(), true));
 
                 } else {
                     viewModel.sendLike(model.getSlug(), false);
                     favorite.setImageResource(R.drawable.ic_favorite_color);
                     favorite.setTag("yes");
-                    model.setFavoritesCount(model.getFavoritesCount() + 1);
+
+                    Objects.requireNonNull(getItem(i)).setFavorited(1);
+                    Objects.requireNonNull(getItem(i)).setFavoritesCount(model.getFavoritesCount() + 1);
                     likeCount.setText(wordBeautify(model.getFavoritesCount(), true));
                 }
             });
 
             View.OnClickListener commentOpener = view -> {
-
-
                 CommentBottomSheet commentBottomSheet = CommentBottomSheet.newInstance(model);
                 commentBottomSheet.show(fragmentManager, "comment");
-
-
             };
 
             myViewHolder.binding.commentIcon.setOnClickListener(commentOpener);

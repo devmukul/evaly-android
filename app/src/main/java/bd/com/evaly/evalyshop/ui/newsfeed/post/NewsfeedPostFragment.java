@@ -138,6 +138,8 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
 
             if (currentPage == 2 && adapter.getItemCount() == 0)
                 binding.not.setVisibility(View.VISIBLE);
+            else
+                binding.not.setVisibility(View.GONE);
 
             //   adapter.setNetworkState(networkState);
 

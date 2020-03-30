@@ -82,10 +82,10 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         else
             myViewHolder.address.setText(availableShops.get(i).getShopAddress());
 
-        if (availableShops.get(i).getInStock() == 0) {
-            myViewHolder.buyBtn.setText("Out of Stock");
-            myViewHolder.buyBtn.setEnabled(false);
-        }
+//        if (availableShops.get(i).getInStock() == 0) {
+//            myViewHolder.buyBtn.setText("Out of Stock");
+//            myViewHolder.buyBtn.setEnabled(false);
+//        }
 
         try {
             String actualPrice = Integer.toString((int) Math.round(availableShops.get(i).getPrice()));
