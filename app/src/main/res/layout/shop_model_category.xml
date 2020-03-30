@@ -11,7 +11,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:background="@drawable/white_to_grey_gradient"
             android:paddingLeft="20dp"
             android:paddingTop="15dp"
             android:paddingRight="15dp"
@@ -82,9 +81,9 @@
             android:text="Reset"
             android:textColor="#333"
             android:textSize="15sp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/categoryTitle"
-            android:visibility="gone"/>
+            app:layout_constraintTop_toTopOf="@+id/categoryTitle" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

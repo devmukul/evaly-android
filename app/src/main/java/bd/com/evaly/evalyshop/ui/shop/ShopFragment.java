@@ -369,7 +369,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (currentPage == 1 & shopItems.size() == 0) {
             //   binding.noItem.setVisibility(View.VISIBLE);
         } else {
-            binding.noItem.setVisibility(View.GONE);
+
         }
 
         binding.shimmerHolder.animate().alpha(0.0f)
@@ -558,6 +558,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.shimmerHolder.setAlpha(1);
         binding.shimmer.startShimmer();
 
+        controller.clear();
         viewModel.setCurrentPage(1);
         viewModel.loadShopProducts();
 
