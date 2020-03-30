@@ -23,7 +23,6 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentBrandBinding;
-import bd.com.evaly.evalyshop.epoxy.decoration.GridSpacingDecoration;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -35,6 +34,7 @@ import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -66,6 +66,8 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        binding.swipeRefresh.setOnRefreshListener(this);
 
         if (!Utils.isNetworkAvailable(getContext()))
             new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
@@ -128,7 +130,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         controller.setSpanCount(spanCount);
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new GridSpacingDecoration(spanCount, spacing, true));
+        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
         controller.requestModelBuild();
@@ -171,6 +173,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 controller.setLoadingMore(false);
 
                 List<ProductItem> data = response.getData();
+
                 controller.addData(data);
                 isLoading = false;
 
@@ -212,17 +215,8 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onRefresh() {
-
+        refreshFragment();
         binding.swipeRefresh.setRefreshing(false);
-        binding.shimmer.setVisibility(View.VISIBLE);
-        binding.shimmerHolder.setVisibility(View.VISIBLE);
-        binding.shimmer.startShimmer();
-        binding.shimmerHolder.setAlpha(1);
-
-        currentPage = 1;
-        controller.clear();
-        getProducts();
-
     }
 
     @Override

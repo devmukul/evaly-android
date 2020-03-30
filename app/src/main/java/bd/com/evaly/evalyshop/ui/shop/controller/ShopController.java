@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.epoxy.models.LoadingModel_;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
+import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;

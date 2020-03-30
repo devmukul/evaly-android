@@ -4,10 +4,10 @@
 
     <item android:drawable="@android:color/white" />
     <item
+        android:bottom="100dp"
         android:gravity="center">
         <bitmap
             android:gravity="clip_horizontal"
             android:src="@drawable/evaly_logo_splash"/>
-
     </item>
 </layer-list>

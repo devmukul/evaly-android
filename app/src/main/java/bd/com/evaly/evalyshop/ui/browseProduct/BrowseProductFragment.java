@@ -23,7 +23,6 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentBrowseProductBinding;
-import bd.com.evaly.evalyshop.epoxy.decoration.GridSpacingDecoration;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -35,6 +34,7 @@ import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 public class BrowseProductFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -109,7 +109,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         controller.setSpanCount(spanCount);
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new GridSpacingDecoration(spanCount, spacing, true));
+        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
         controller.requestModelBuild();

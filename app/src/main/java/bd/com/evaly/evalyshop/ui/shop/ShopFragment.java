@@ -42,7 +42,6 @@ import java.util.concurrent.Executors;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentShopBinding;
-import bd.com.evaly.evalyshop.epoxy.decoration.GridSpacingDecoration;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -67,6 +66,7 @@ import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
+import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 
 public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -208,7 +208,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         controller.setSpanCount(spanCount);
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new GridSpacingDecoration(spanCount, spacing, true));
+        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
 
@@ -342,7 +342,9 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         totalCount = response.getCount();
 
+
         List<ItemsItem> shopItems = shopData.getItems();
+
 
         binding.recyclerView.setVisibility(View.VISIBLE);
 
@@ -353,7 +355,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 currentPage++;
 
             ItemsItem shopItem = shopItems.get(i);
-
             ProductItem item = new ProductItem();
             item.setImageUrls(shopItem.getItemImages());
             item.setSlug(shopItem.getShopItemSlug());
@@ -361,14 +362,13 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             item.setMaxPrice(String.valueOf(shopItem.getItemPrice()));
             item.setMinPrice(String.valueOf(shopItem.getItemPrice()));
             item.setMinDiscountedPrice(String.valueOf(shopItem.getDiscountedPrice()));
-
             tempList.add(item);
         }
 
         controller.addData(tempList);
 
         if (clickFromCategory) {
-            binding.recyclerView.scrollToPosition(3);
+            binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(3), 200);
             clickFromCategory = false;
         }
 
