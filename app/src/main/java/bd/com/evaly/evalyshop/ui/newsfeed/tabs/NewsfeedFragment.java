@@ -128,6 +128,9 @@ public class NewsfeedFragment extends Fragment {
 
         pager.notifyDataSetChanged();
 
+        if (CredentialManager.getToken().equals(""))
+            binding.createPost.setVisibility(View.GONE);
+
         binding.createPost.setOnClickListener(v -> {
             CreatePostBottomSheet createPostBottomSheet = new CreatePostBottomSheet();
             createPostBottomSheet.show(getParentFragmentManager(), "Create Post");

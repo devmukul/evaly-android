@@ -69,7 +69,7 @@ public class BrandController extends EpoxyController {
 
         for (ProductItem productItem: items) {
             new HomeProductGridModel_()
-                    .id(productItem.getSlug())
+                    .id(productItem.getUniqueId())
                     .model(productItem)
                     .clickListener((model, parentView, clickedView, position) -> {
                         ProductItem item = model.getModel();

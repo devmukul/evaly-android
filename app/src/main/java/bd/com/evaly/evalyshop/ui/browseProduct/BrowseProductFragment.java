@@ -42,7 +42,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private String slug;
     private String category = "";
-    private int currentPage = 1;
+    private int currentPage;
     private boolean isLoading = false;
     private BrowseProductController controller;
     private FragmentBrowseProductBinding binding;
@@ -94,6 +94,8 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
             Toast.makeText(getContext(), "Can't load this page, try again later", Toast.LENGTH_SHORT).show();
         }
 
+        currentPage = 1;
+
         controller = new BrowseProductController();
         controller.setActivity((AppCompatActivity) getActivity());
         controller.setFragment(this);
@@ -128,6 +130,8 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
                 }
             }
         });
+
+        getProducts();
 
     }
 
@@ -185,9 +189,6 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onResume() {
         super.onResume();
-        currentPage = 1;
-        controller.clear();
-        getProducts();
     }
 
     @Override

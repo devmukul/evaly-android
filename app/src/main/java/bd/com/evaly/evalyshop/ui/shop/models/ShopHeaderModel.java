@@ -88,7 +88,9 @@ public abstract class ShopHeaderModel extends DataBindingEpoxyModel {
 
         binding.btn1Image.setOnClickListener(v -> {
             String phone = shopInfo.getContactNumber();
-            final Snackbar snackBar = Snackbar.make(activity.getWindow().getDecorView(), phone + "", Snackbar.LENGTH_LONG);
+            if (fragment.getView() == null)
+                return;
+            final Snackbar snackBar = Snackbar.make(fragment.getView(), phone + "", Snackbar.LENGTH_LONG);
             snackBar.setAction("Call", v12 -> {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse("tel:" + shopInfo.getContactNumber()));
@@ -100,7 +102,9 @@ public abstract class ShopHeaderModel extends DataBindingEpoxyModel {
 
         binding.btn2Image.setOnClickListener(v -> {
             String phone = shopInfo.getAddress();
-            final Snackbar snackBar = Snackbar.make(activity.getWindow().getDecorView(), phone + "", Snackbar.LENGTH_LONG);
+            if (fragment.getView() == null)
+                return;
+            final Snackbar snackBar = Snackbar.make(fragment.getView(), phone + "", Snackbar.LENGTH_LONG);
             snackBar.setAction("Copy", v1 -> {
                 ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("address", shopInfo.getAddress());

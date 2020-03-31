@@ -5,7 +5,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -282,6 +281,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 viewModel.setCurrentPage(1);
                 currentPage = 1;
                 controller.clear();
+                controller.setLoadingMore(true);
+                clickFromCategory = true;
                 viewModel.loadShopProducts();
             }
         });
@@ -369,12 +370,12 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         controller.addData(tempList);
 
+        if (totalCount == 0) controller.showEmptyPage(true, true);
+
         if (clickFromCategory) {
-            binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(3), 200);
+            binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(2), 200);
             clickFromCategory = false;
         }
-
-        if (totalCount == 0) controller.showEmptyPage(true, true);
 
         binding.shimmerHolder.animate().alpha(0.0f)
                 .setListener(new AnimatorListenerAdapter() {

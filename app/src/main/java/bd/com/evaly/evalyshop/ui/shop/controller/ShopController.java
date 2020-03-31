@@ -88,7 +88,7 @@ public class ShopController extends EpoxyController {
         for (ProductItem productItem: items) {
 
             new HomeProductGridModel_()
-                    .id(productItem.getSlug())
+                    .id(productItem.getUniqueId())
                     .model(productItem)
                     .cashbackRate(cashbackRate)
                     .isShop(true)
