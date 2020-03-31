@@ -244,15 +244,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//
-//        FragmentManager fm = getChildFragmentManager();
-//        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-//            fm.popBackStack();
-//        }
 
-       // productItemList.clear();
-       // binding.recyclerView.setAdapter(null);
-       // binding = null;
+        binding.recyclerView.setAdapter(null);
+        binding = null;
     }
 
 

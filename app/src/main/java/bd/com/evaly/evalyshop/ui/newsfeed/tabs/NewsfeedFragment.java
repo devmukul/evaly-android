@@ -139,4 +139,11 @@ public class NewsfeedFragment extends Fragment {
             viewModel.updateNotificationCount();
 
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding.viewPager.setAdapter(null);
+        binding = null;
+    }
 }

@@ -303,4 +303,13 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
         bottomSheetDialog.show();
     }
 
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        adapter.submitList(null);
+        binding.recyclerView.setAdapter(null);
+        binding = null;
+    }
+
 }

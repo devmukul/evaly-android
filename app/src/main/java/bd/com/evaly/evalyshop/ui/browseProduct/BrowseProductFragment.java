@@ -183,7 +183,9 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         binding.recyclerView.setAdapter(null);
+        binding = null;
     }
 
 }

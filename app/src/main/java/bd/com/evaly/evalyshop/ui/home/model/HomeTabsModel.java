@@ -35,10 +35,17 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
         super.bind(holder);
     }
 
+    @Override
+    public void unbind(@NonNull HomeTabsHolder holder) {
+        super.unbind(holder);
+        holder.itemView = null;
+    }
+
     class HomeTabsHolder extends EpoxyHolder {
 
         View itemView;
         private FragmentTabPagerAdapter pager;
+
 
 
         @Override
