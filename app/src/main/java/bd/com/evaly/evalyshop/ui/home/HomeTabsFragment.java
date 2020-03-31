@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeCategoryBinding;
-import bd.com.evaly.evalyshop.listener.OnDoneListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
@@ -52,20 +50,14 @@ public class HomeTabsFragment extends Fragment {
     private int type = 1;
     private String slug = "root";
     private String category;
-    private boolean isEmpty = false;
     private int brandCounter = 1, shopCounter = 1;
     private List<CategoryEntity> categoryItems;
-    private OnDoneListener onDoneListener;
     private FragmentHomeCategoryBinding binding;
     private AppDatabase appDatabase;
     private TabsViewModel viewModel;
 
     public HomeTabsFragment() {
         // Required empty public constructor
-    }
-
-    public void setOnDoneListener(OnDoneListener onDoneListener) {
-        this.onDoneListener = onDoneListener;
     }
 
     @Override
@@ -101,16 +93,11 @@ public class HomeTabsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-       // binding.shimmer.shimmer.setVisibility(View.GONE);
-
         appDatabase = AppDatabase.getInstance(getActivity());
         CategoryDao categoryDao = appDatabase.categoryDao();
 
         itemList = new ArrayList<>();
         adapter = new TabsAdapter(getContext(), (MainActivity) getActivity(), itemList, type);
-
-        // check if showing offline homepage vector categories
 
         categoryItems = new ArrayList<>();
 
@@ -124,13 +111,18 @@ public class HomeTabsFragment extends Fragment {
             appDatabase.categoryDao().getAllLiveData().observe(getViewLifecycleOwner(), categoryEntities -> {
                 categoryItems.addAll(categoryEntities);
                 adapter2.notifyDataSetChanged();
-                viewModel.setItemCount(categoryEntities.size());
-                new Handler().postDelayed(() -> stopShimmer(), 200);
+                if (categoryEntities.size() > 0) {
+                    viewModel.setItemCount(categoryEntities.size());
+                    stopShimmer();
+                }
             });
 
             if (getLastUpdated() == 0 || (getLastUpdated() != 0 && Calendar.getInstance().getTimeInMillis() - getLastUpdated() > 20200000)) {
 
+                viewModel.setItemCount(16);
+
                 binding.shimmer.shimmer.setVisibility(View.VISIBLE);
+                binding.shimmer.shimmer.setAlpha(1);
 
                 GeneralApiHelper.getRootCategories(new ResponseListenerAuth<List<CategoryEntity>, String>() {
                     @Override
@@ -215,11 +207,7 @@ public class HomeTabsFragment extends Fragment {
             }
         } else {
             if (adapter2.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
-
-                if (onDoneListener != null)
-                    onDoneListener.onDone();
                 adapter2.notifyDataSetChanged();
-
             }
         }
 
@@ -254,9 +242,6 @@ public class HomeTabsFragment extends Fragment {
 
                 if (binding == null)
                     return;
-
-                if (onDoneListener != null)
-                    onDoneListener.onDone();
 
                 binding.progressBar2.setVisibility(View.GONE);
                 try {
@@ -301,8 +286,6 @@ public class HomeTabsFragment extends Fragment {
     }
 
     public void getShopsOfCategory(int counter) {
-
-
         binding.shimmer.shimmer.setVisibility(View.VISIBLE);
 
         ProductApiHelper.getShopsOfCategories(slug, counter, 12, new ResponseListenerAuth<JsonObject, String>() {
@@ -311,9 +294,6 @@ public class HomeTabsFragment extends Fragment {
 
                 if (binding == null)
                     return;
-
-                if (onDoneListener != null)
-                    onDoneListener.onDone();
 
                 binding.progressBar2.setVisibility(View.GONE);
                 try {
@@ -376,9 +356,6 @@ public class HomeTabsFragment extends Fragment {
         @Override
         public void onAddFinished(RecyclerView.ViewHolder item) {
             super.onAddFinished(item);
-
-            if (onDoneListener != null)
-                onDoneListener.onDone();
         }
 
     }
