@@ -85,10 +85,10 @@ public class ContactInfoBottomSheet extends BottomSheetDialogFragment {
             String contact = binding.phone.getText().toString().trim();
 
             if (email.equals("")) {
-                Toast.makeText(getContext(), "Please  enter your email address", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Please enter your email address", Toast.LENGTH_SHORT).show();
                 return;
             } else if (contact.equals("")) {
-                Toast.makeText(getContext(), "Please  enter your phone number", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Please enter your phone number", Toast.LENGTH_SHORT).show();
                 return;
             }
 

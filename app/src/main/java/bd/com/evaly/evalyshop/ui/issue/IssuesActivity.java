@@ -49,9 +49,6 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
         ButterKnife.bind(this);
 
         invoice = getIntent().getStringExtra("invoice");
-        if (invoice == null) {
-            invoice = getIntent().getExtras().getString("resource_id");
-        }
 
         getSupportActionBar().setTitle(invoice);
         getSupportActionBar().setElevation(0);

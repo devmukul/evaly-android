@@ -80,19 +80,24 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
 
                     TabsViewModel viewModel = pager.getViewModel(position);
 
-                    viewModel.getItemCount().observe(fragmentInstance.getViewLifecycleOwner(), integer -> {
-                        ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
+                    if (viewModel != null) {
+                        if (viewModel.getItemCount().hasActiveObservers())
+                            viewModel.getItemCount().removeObservers(fragmentInstance.getViewLifecycleOwner());
 
-                        int row = (int) (Math.ceil(viewModel.getIntCount() / 3.0));
+                        viewModel.getItemCount().observe(fragmentInstance.getViewLifecycleOwner(), integer -> {
+                            ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
 
-                        if (position == 0 && pager.getItemCount() == 3)
-                            params1.height = (int) ((row * boxHeight) + marginHeight);
-                        else
-                            params1.height = (int) ((row * boxHeight) + barHeight);
+                            int row = (int) (Math.ceil(viewModel.getIntCount() / 3.0));
 
-                        binding.viewPager.post(() -> binding.viewPager.setLayoutParams(params1));
+                            if (position == 0 && pager.getItemCount() == 3)
+                                params1.height = (int) ((row * boxHeight) + marginHeight);
+                            else
+                                params1.height = (int) ((row * boxHeight) + barHeight);
 
-                    });
+                            binding.viewPager.post(() -> binding.viewPager.setLayoutParams(params1));
+
+                        });
+                    }
                 }
             });
 

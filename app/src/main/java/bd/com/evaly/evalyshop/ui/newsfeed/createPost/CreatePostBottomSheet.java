@@ -127,7 +127,9 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
 
         });
 
-        if (!CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
+        if (CredentialManager.getUserData().getGroups() != null && CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
+            binding.spinnerHolder.setVisibility(View.VISIBLE);
+        else
             binding.spinnerHolder.setVisibility(View.GONE);
 
         viewModel.getImageUploadSuccess().observe(getViewLifecycleOwner(), imageDataModel -> {

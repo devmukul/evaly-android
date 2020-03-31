@@ -128,19 +128,25 @@ public class EditProfileActivity extends BaseActivity {
     }
 
 
-    private void  updateProfileData(){
-
+    private void updateProfileData() {
 
         UserModel userModel = CredentialManager.getUserData();
 
-        String fullName = String.format("%s %s", userModel.getFirst_name(), userModel.getLast_name());
+        String fullName = String.format("%s %s",
+                (userModel.getFirst_name() != null ? userModel.getFirst_name() : ""),
+                (userModel.getLast_name() != null ? userModel.getLast_name() : ""));
+
         binding.firstName.setText(fullName);
         binding.userNameTop.setText(fullName);
-        binding.email.setText(userModel.getEmail());
-        binding.phone.setText(userModel.getContacts());
 
-        if (userModel.getAddresses().equals(""))
-            binding.address.setHint("Add an address");
+        binding.email.setText(((userModel.getEmail() == null) ||
+                (userModel.getEmail() != null && userModel.getEmail().equals(""))) ? "No email address provided" : userModel.getEmail());
+
+        binding.phone.setText(((userModel.getContacts() == null) ||
+                (userModel.getContacts() != null && userModel.getContacts().equals(""))) ? "No phone number provided" : userModel.getContacts());
+
+        if (userModel.getAddresses() == null || (userModel.getContacts() != null && userModel.getContacts().equals("")))
+            binding.address.setText("No address provided");
         else
             binding.address.setText(userModel.getAddresses());
 

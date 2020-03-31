@@ -48,6 +48,7 @@ public class FragmentTabPagerAdapter extends FragmentStateAdapter {
     }
 
     public TabsViewModel getViewModel(int position) {
+
         int type = 1;
         if (mFragmentList.size() == 2) {
             if (position == 0)
@@ -62,7 +63,11 @@ public class FragmentTabPagerAdapter extends FragmentStateAdapter {
             else
                 type = 3;
         }
-        return new ViewModelProvider(mFragmentList.get(position)).get("type_" + type, TabsViewModel.class);
+
+        if (mFragmentList.get(position).isDetached())
+            return null;
+        else
+            return new ViewModelProvider(mFragmentList.get(position)).get("type_" + type, TabsViewModel.class);
     }
 
 
