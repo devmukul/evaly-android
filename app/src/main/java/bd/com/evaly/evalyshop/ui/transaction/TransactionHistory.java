@@ -84,7 +84,6 @@ public class TransactionHistory extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        Log.d("hmt", "called");
 
         AuthApiHelper.getTransactionHistory(CredentialManager.getToken(), CredentialManager.getUserName(), page, new ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String>() {
             @Override
@@ -92,7 +91,6 @@ public class TransactionHistory extends AppCompatActivity {
 
                 progressBar.setVisibility(View.INVISIBLE);
 
-                Log.d("hmt", response.toString());
 
                 itemList.addAll(response.getData());
                 adapter.notifyDataSetChanged();
@@ -106,10 +104,6 @@ public class TransactionHistory extends AppCompatActivity {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
-
-                Log.d("hmt", errorBody);
-
 
                 progressBar.setVisibility(View.GONE);
             }

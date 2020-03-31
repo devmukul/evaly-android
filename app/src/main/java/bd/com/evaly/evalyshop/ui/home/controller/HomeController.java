@@ -65,9 +65,12 @@ public class HomeController extends EpoxyController {
                 .fragmentInstance(fragment)
                 .addTo(this);
 
+
         for (ProductItem productItem: items) {
+
+
             new HomeProductGridModel_()
-                    .id(productItem.getSlug())
+                    .id(productItem.getUniqueId())
                     .model(productItem)
                     .clickListener((model, parentView, clickedView, position) -> {
                         ProductItem item = model.getModel();

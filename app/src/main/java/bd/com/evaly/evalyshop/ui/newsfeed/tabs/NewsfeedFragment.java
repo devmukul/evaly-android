@@ -77,6 +77,9 @@ public class NewsfeedFragment extends Fragment {
         });
 
         viewModel.getNotificationCountLiveData().observe(getViewLifecycleOwner(), integer -> {
+            if (integer == null || isDetached() || isRemoving())
+                return;
+
             ui_hot.setVisibility(View.VISIBLE);
             if (integer == 0)
                 ui_hot.setVisibility(View.GONE);

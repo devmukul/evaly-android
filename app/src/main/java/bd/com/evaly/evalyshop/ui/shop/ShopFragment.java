@@ -34,6 +34,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -189,8 +190,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         viewModel.setCampaignSlug(campaign_slug);
-
-        Log.e("hmt", campaign_slug + " cam slug");
 
         viewModel.setCategorySlug(categorySlug);
         viewModel.setShopSlug(slug);
@@ -350,6 +349,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         List<ProductItem> tempList = new ArrayList<>();
 
+        long timeInMill = Calendar.getInstance().getTimeInMillis();
         for (int i = 0; i < shopItems.size(); i++) {
             if (i == 0)
                 currentPage++;
@@ -362,6 +362,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             item.setMaxPrice(String.valueOf(shopItem.getItemPrice()));
             item.setMinPrice(String.valueOf(shopItem.getItemPrice()));
             item.setMinDiscountedPrice(String.valueOf(shopItem.getDiscountedPrice()));
+            item.setUniqueId(item.getSlug() + timeInMill);
+
             tempList.add(item);
         }
 

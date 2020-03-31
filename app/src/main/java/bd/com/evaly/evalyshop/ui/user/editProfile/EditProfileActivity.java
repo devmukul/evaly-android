@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -28,7 +29,7 @@ import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.databinding.ActivityEditProfileNewBinding;
+import bd.com.evaly.evalyshop.databinding.ActivityEditProfileBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -51,7 +52,7 @@ public class EditProfileActivity extends BaseActivity {
     private Context context;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
-    private ActivityEditProfileNewBinding binding;
+    private ActivityEditProfileBinding binding;
     private EditProfileViewModel viewModel;
 
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
@@ -77,9 +78,7 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        binding = ActivityEditProfileNewBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile);
 
         viewModel = new ViewModelProvider(this).get(EditProfileViewModel.class);
 
@@ -88,7 +87,6 @@ public class EditProfileActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = this;
-
 
         binding.editPicture.bringToFront();
 

@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.newsfeed.post;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PageKeyedDataSource;
@@ -85,8 +83,6 @@ public class NewsfeedPostDataSource extends PageKeyedDataSource<Integer, Newsfee
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, NewsfeedPost> callback) {
 
-
-        Log.d("hmt", type);
 
         String url;
 

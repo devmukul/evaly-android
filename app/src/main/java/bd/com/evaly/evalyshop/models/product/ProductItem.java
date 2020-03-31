@@ -28,6 +28,10 @@ public class ProductItem {
 	@SerializedName("min_discounted_price")
 	private String minDiscountedPrice;
 
+	private String uniqueId;
+
+
+
 	public void setMaxPrice(String maxPrice){
 		this.maxPrice = maxPrice;
 	}
@@ -123,4 +127,12 @@ public class ProductItem {
 			",min_discounted_price = '" + minDiscountedPrice + '\'' + 
 			"}";
 		}
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
 }

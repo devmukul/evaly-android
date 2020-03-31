@@ -63,10 +63,12 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
         bottomSheetDialog.setOnShowListener(d -> {
             BottomSheetDialog dialog = (BottomSheetDialog) d;
             FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-            assert bottomSheet != null;
-            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-            BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
-            BottomSheetBehavior.from(bottomSheet).setHideable(true);
+
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+                BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
+                BottomSheetBehavior.from(bottomSheet).setHideable(true);
+            }
         });
 
         return bottomSheetDialog;

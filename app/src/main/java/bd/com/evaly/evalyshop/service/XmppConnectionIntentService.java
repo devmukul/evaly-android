@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.service;
 
 import android.app.IntentService;
 import android.content.Intent;
+
 import androidx.annotation.Nullable;
 
 import bd.com.evaly.evalyshop.controller.AppController;
@@ -24,6 +25,11 @@ public class XmppConnectionIntentService extends IntentService {
             mChatApp.UnbindService();
             mChatApp.BindService(i);
         } else {
+            if (AppController.getmService() == null)
+                return;
+            if (AppController.getmService().xmpp == null)
+                return;
+
             xmppHandler = AppController.getmService().xmpp;
             if (!xmppHandler.isConnected()) {
                 xmppHandler.connect();

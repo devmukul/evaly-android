@@ -22,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -178,7 +179,15 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     return;
 
                 homeController.setLoadingMore(false);
-                homeController.addData(response.getData());
+
+                List<ProductItem> list = response.getData();
+
+                long timeInMill = Calendar.getInstance().getTimeInMillis();
+
+                for (ProductItem item : list)
+                    item.setUniqueId(item.getSlug() + timeInMill);
+
+                homeController.addData(list);
 
                 isLoading = false;
 

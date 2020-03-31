@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.util.Calendar;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
@@ -140,7 +141,16 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
                 controller.setLoadingMore(false);
-                controller.addData(response.getData());
+
+                List<ProductItem> list = response.getData();
+
+                long timeInMill = Calendar.getInstance().getTimeInMillis();
+
+                for (ProductItem item : list)
+                    item.setUniqueId(item.getSlug() + timeInMill);
+
+                controller.addData(list);
+
                 isLoading = false;
 
                 if (currentPage == 1 && response.getData().size() == 0)

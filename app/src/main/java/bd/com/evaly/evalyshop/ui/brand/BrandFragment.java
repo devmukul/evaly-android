@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.util.Calendar;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
@@ -174,9 +175,14 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
                 controller.setLoadingMore(false);
 
-                List<ProductItem> data = response.getData();
+                List<ProductItem> list = response.getData();
 
-                controller.addData(data);
+                long timeInMill = Calendar.getInstance().getTimeInMillis();
+
+                for (ProductItem item : list)
+                    item.setUniqueId(item.getSlug() + timeInMill);
+
+                controller.addData(list);
                 isLoading = false;
 
                 hideShimmer();
