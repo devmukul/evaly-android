@@ -87,12 +87,12 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                         viewModel.getItemCount().observe(fragmentInstance.getViewLifecycleOwner(), integer -> {
                             ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
 
-                            int row = (int) (Math.ceil(viewModel.getIntCount() / 3.0));
+                            int row = (int) (Math.ceil(integer == 0 ? 1 : integer / 3.0));
 
                             if (position == 0)
                                 params1.height = (int) (((row * boxHeight) + barHeight) - marginHeight);
                             else
-                                params1.height = (int) ((row * (boxHeight + 2)) + barHeight);
+                                params1.height = (int) ((row * (boxHeight + 1)) + barHeight);
 
                             binding.viewPager.post(() -> binding.viewPager.setLayoutParams(params1));
 

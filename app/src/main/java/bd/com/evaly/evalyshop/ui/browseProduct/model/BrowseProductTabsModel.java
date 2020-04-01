@@ -15,13 +15,10 @@ import com.airbnb.epoxy.EpoxyModelClass;
 import com.airbnb.epoxy.EpoxyModelWithHolder;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.gson.JsonArray;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.BrowseProductModelTabsBinding;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.SubTabsFragment;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.TabsViewModel;
@@ -45,6 +42,7 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
         View itemView;
         private FragmentTabPagerAdapter pager;
         private BrowseProductModelTabsBinding binding;
+        private boolean firstTime;
 
         @Override
         protected void bindView(@NonNull View itemView) {
@@ -55,7 +53,6 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
             params.setFullSpan(true);
 
             pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
-
 
             binding.viewPager.setOffscreenPageLimit(2);
             binding.viewPager.setAdapter(pager);
@@ -70,6 +67,8 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
             final float barHeight = Utils.convertDpToPixel(60, AppController.getmContext());
             final float marginHeight = AppController.getmContext().getResources().getDimension(R.dimen.eight_dp);
 
+            firstTime = true;
+
             binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
 
                 @Override
@@ -79,25 +78,32 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
                     TabsViewModel viewModel = pager.getViewModel(position);
 
                     if (viewModel != null) {
-                        if (viewModel.getItemCount().hasActiveObservers())
+                        if (viewModel.getItemCount().hasActiveObservers()) {
+                            firstTime = false;
                             viewModel.getItemCount().removeObservers(fragmentInstance.getViewLifecycleOwner());
-
+                        }
                         viewModel.getItemCount().observe(fragmentInstance.getViewLifecycleOwner(), integer -> {
                             ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
 
-                            int row = (int) (Math.ceil(viewModel.getIntCount() / 3.0));
+                            int row = (int) (Math.ceil(integer == 0 ? 1 : integer / 3.0));
 
-                            if (position == 0 && pager.getItemCount() == 3)
+                            if (position == 0)
                                 params1.height = (int) ((row * boxHeight) + marginHeight);
                             else
                                 params1.height = (int) ((row * boxHeight) + barHeight);
 
-                            binding.viewPager.post(() -> binding.viewPager.setLayoutParams(params1));
-
+                            binding.viewPager.post(() -> {
+                                binding.viewPager.setLayoutParams(params1);
+                                if (integer == 0 && firstTime) {
+                                    if (binding != null && binding.tabLayout.getTabCount() > 0)
+                                        binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
+                                }
+                            });
                         });
                     }
                 }
             });
+
 
             SubTabsFragment fragment = new SubTabsFragment();
             Bundle bundle = new Bundle();
@@ -105,46 +111,14 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
             bundle.putString("slug", category);
             bundle.putString("category", category);
             fragment.setArguments(bundle);
-
             pager.addFragment(fragment, AppController.getmContext().getResources().getString(R.string.categories));
 
             loadOtherTabs();
 
-            checkSubCategories();
         }
 
-
-        public void checkSubCategories() {
-
-            ProductApiHelper.getSubCategories(category, new ResponseListenerAuth<JsonArray, String>() {
-
-                @Override
-                public void onDataFetched(JsonArray res, int statusCode) {
-
-                    if (fragmentInstance.getContext() == null)
-                        return;
-
-                    int length = res.size();
-
-                    if (binding != null && length == 0 && binding.tabLayout.getTabCount() > 0)
-                        binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
-
-                }
-
-                @Override
-                public void onFailed(String body, int errorCode) {
-
-                }
-
-                @Override
-                public void onAuthError(boolean logout) {
-
-                }
-            });
-        }
 
         private void loadOtherTabs() {
-
 
             if (fragmentInstance.getContext() == null || binding == null || pager == null)
                 return;

@@ -16,9 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 
@@ -137,9 +135,6 @@ public class SubTabsFragment extends Fragment {
     public void stopShimmer() {
         if (binding == null)
             return;
-//
-//        binding.shimmer.shimmer.stopShimmer();
-//        binding.shimmer.shimmer.setVisibility(View.GONE);
 
         binding.shimmer.shimmer.animate().alpha(0.0f)
                 .setListener(new AnimatorListenerAdapter() {
@@ -154,59 +149,6 @@ public class SubTabsFragment extends Fragment {
                 });
     }
 
-    public void loadJsonToView(String json, int type) {
-
-        if (binding == null)
-            return;
-
-        if (slug != null) {
-
-            if (!(slug.equals("root") && type == 1)) {
-                if (type == 1) {
-                    binding.searchBtnTabs.setVisibility(View.GONE);
-                    binding.showMoreBtnTabs.setVisibility(View.GONE);
-                }
-            }
-
-            try {
-                JsonParser parser = new JsonParser();
-                JsonElement tradeElement = parser.parse(json);
-                JsonArray response = tradeElement.getAsJsonArray();
-
-                for (int i = 0; i < response.size(); i++) {
-                    try {
-                        JsonObject ob = response.get(i).getAsJsonObject();
-                        TabsItem tabsItem = new TabsItem();
-
-                        if (type == 3) {
-                            tabsItem.setTitle(ob.get("shop_name").getAsString());
-                            tabsItem.setImage(ob.get("shop_image").isJsonNull() ? null : ob.get("shop_image").getAsString());
-                            tabsItem.setSlug(ob.get("shop_slug").getAsString());
-                        } else {
-                            tabsItem.setTitle(ob.get("name").getAsString());
-                            tabsItem.setImage(ob.get("image_url").isJsonNull() ? null : ob.get("image_url").getAsString());
-                            tabsItem.setSlug(ob.get("slug").getAsString());
-                        }
-
-                        tabsItem.setCategory(category);
-                        itemList.add(tabsItem);
-                        adapter.notifyItemInserted(itemList.size());
-
-                        viewModel.setItemCount(itemList.size());
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                stopShimmer();
-            } catch (Exception e) {
-
-            }
-        } else {
-            Toast.makeText(context, "Page is empty!", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public void getSubCategories() {
 
@@ -224,14 +166,15 @@ public class SubTabsFragment extends Fragment {
                     JsonObject ob = res.get(i).getAsJsonObject();
                     TabsItem tabsItem = new TabsItem();
                     tabsItem.setTitle(ob.get("name").getAsString());
-                    tabsItem.setImage(ob.get("image_url").getAsString());
+                    tabsItem.setImage(ob.get("image_url").isJsonNull() ? null : ob.get("image_url").getAsString());
                     tabsItem.setSlug(ob.get("slug").getAsString());
                     tabsItem.setCategory(category);
                     itemList.add(tabsItem);
                     adapter.notifyItemInserted(itemList.size());
 
-                    viewModel.setItemCount(itemList.size());
                 }
+
+                viewModel.setItemCount(itemList.size());
 
                 if (res.size() == 0)
                     binding.noCat.setVisibility(View.VISIBLE);
@@ -274,9 +217,7 @@ public class SubTabsFragment extends Fragment {
                     JsonObject ob = jsonArray.get(i).getAsJsonObject();
                     TabsItem tabsItem = new TabsItem();
                     tabsItem.setTitle(ob.get("name").getAsString());
-
                     tabsItem.setImage(ob.get("image_url").isJsonNull() ? null : ob.get("image_url").getAsString());
-
                     tabsItem.setSlug(ob.get("slug").getAsString());
                     tabsItem.setCategory(category);
                     itemList.add(tabsItem);
