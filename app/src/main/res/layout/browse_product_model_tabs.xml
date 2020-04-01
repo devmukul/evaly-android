@@ -28,32 +28,6 @@
         </com.google.android.material.tabs.TabLayout>
 
 
-        <com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/shimmerTabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            app:layout_constraintBottom_toBottomOf="@id/tabLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tabLayout"
-
-            app:shimmer_base_alpha="1"
-            app:shimmer_base_color="@color/c333"
-            app:shimmer_colored="false"
-            app:shimmer_highlight_alpha="0.3"
-            app:shimmer_highlight_color="@color/c333">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:tint="@color/fafafa"
-                app:srcCompat="@drawable/ic_tab_header" />
-
-        </com.facebook.shimmer.ShimmerFrameLayout>
-
-
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
@@ -64,22 +38,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tabLayout" />
 
-
-        <FrameLayout
-            android:id="@+id/shimmerHolder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fafafa"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tabLayout">
-
-            <include
-                android:id="@+id/shimmer"
-                layout="@layout/shimmer_tabs" />
-
-        </FrameLayout>
 
         <TextView
             android:id="@+id/productTitle"
@@ -104,7 +62,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="viewPager,shimmerHolder,productTitle" />
+            app:constraint_referenced_ids="viewPager,productTitle" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

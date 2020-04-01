@@ -47,6 +47,13 @@ public class FragmentTabPagerAdapter extends FragmentStateAdapter {
         return mFragmentList.get(position).getView();
     }
 
+    public void removeAt(int position){
+        mFragmentList.remove(position);
+        mFragmentTitleList.remove(position);
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
+    }
+
     public TabsViewModel getViewModel(int position) {
 
         int type = 1;

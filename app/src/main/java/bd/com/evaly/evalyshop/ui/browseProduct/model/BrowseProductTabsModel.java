@@ -1,9 +1,6 @@
 package bd.com.evaly.evalyshop.ui.browseProduct.model;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -59,6 +56,7 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
 
             pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
+
             binding.viewPager.setOffscreenPageLimit(2);
             binding.viewPager.setAdapter(pager);
             binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -101,8 +99,6 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
                 }
             });
 
-            // getSubCategories();
-
             SubTabsFragment fragment = new SubTabsFragment();
             Bundle bundle = new Bundle();
             bundle.putInt("type", 1);
@@ -110,19 +106,15 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
             bundle.putString("category", category);
             fragment.setArguments(bundle);
 
-
             pager.addFragment(fragment, AppController.getmContext().getResources().getString(R.string.categories));
 
             loadOtherTabs();
 
-
+            checkSubCategories();
         }
 
 
-        public void getSubCategories() {
-
-            binding.shimmer.shimmer.startShimmer();
-            binding.shimmer.shimmer.setVisibility(View.VISIBLE);
+        public void checkSubCategories() {
 
             ProductApiHelper.getSubCategories(category, new ResponseListenerAuth<JsonArray, String>() {
 
@@ -134,30 +126,14 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
 
                     int length = res.size();
 
-                    if (length > 0) {
-                        SubTabsFragment fragment = new SubTabsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("type", 1);
-                        bundle.putString("slug", category);
-                        bundle.putString("category", category);
-                        bundle.putString("json", res.toString());
-                        fragment.setArguments(bundle);
+                    if (binding != null && length == 0 && binding.tabLayout.getTabCount() > 0)
+                        binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
 
-                        if (pager != null) {
-                            // pager.clear();
-                            pager.addFragment(fragment, AppController.getmContext().getResources().getString(R.string.categories));
-                        }
-                    }
-
-                    hideShimmer();
-                    binding.tabLayout.setVisibility(View.VISIBLE);
-                    loadOtherTabs();
                 }
 
                 @Override
                 public void onFailed(String body, int errorCode) {
 
-                    Log.d("jsonz", "Response " + body);
                 }
 
                 @Override
@@ -198,23 +174,6 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
 
             pager.notifyDataSetChanged();
 
-        }
-
-        public void hideShimmer() {
-
-
-            binding.shimmerTabs.setVisibility(View.GONE);
-            binding.shimmerHolder.animate().alpha(0.0f)
-                    .setDuration(50)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            binding.shimmer.shimmer.stopShimmer();
-                            binding.shimmerTabs.stopShimmer();
-                            binding.shimmer.shimmer.setVisibility(View.GONE);
-                        }
-                    });
         }
     }
 }

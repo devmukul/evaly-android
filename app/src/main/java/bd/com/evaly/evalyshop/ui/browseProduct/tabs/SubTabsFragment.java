@@ -80,6 +80,7 @@ public class SubTabsFragment extends Fragment {
         adapter = new TabsAdapter(context, (MainActivity) getActivity(), itemList, type);
         binding.recyclerView.setAdapter(adapter);
 
+
         binding.showMoreBtnTabs.setOnClickListener(v -> {
 
             binding.progressBar2.setVisibility(View.VISIBLE);
@@ -218,11 +219,9 @@ public class SubTabsFragment extends Fragment {
                 if (binding == null)
                     return;
 
-                JsonArray response = res;
+                for (int i = 0; i < res.size(); i++) {
 
-                for (int i = 0; i < response.size(); i++) {
-
-                    JsonObject ob = response.get(i).getAsJsonObject();
+                    JsonObject ob = res.get(i).getAsJsonObject();
                     TabsItem tabsItem = new TabsItem();
                     tabsItem.setTitle(ob.get("name").getAsString());
                     tabsItem.setImage(ob.get("image_url").getAsString());
@@ -233,6 +232,11 @@ public class SubTabsFragment extends Fragment {
 
                     viewModel.setItemCount(itemList.size());
                 }
+
+                if (res.size() == 0)
+                    binding.noCat.setVisibility(View.VISIBLE);
+                else
+                    binding.noCat.setVisibility(View.GONE);
 
                 stopShimmer();
             }
