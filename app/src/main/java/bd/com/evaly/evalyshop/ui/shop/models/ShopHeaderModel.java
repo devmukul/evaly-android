@@ -62,6 +62,7 @@ public abstract class ShopHeaderModel extends DataBindingEpoxyModel {
         Glide.with(binding.getRoot())
                 .load(shopInfo.getLogoImage())
                 .skipMemoryCache(true)
+                .placeholder(R.drawable.ic_evaly_placeholder)
                 .into(binding.logo);
 
         if (subscribed)
