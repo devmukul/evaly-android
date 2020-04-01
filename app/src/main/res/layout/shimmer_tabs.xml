@@ -22,11 +22,11 @@
                 android:layout_height="0dp"
                 android:adjustViewBounds="true"
                 android:tint="#fff"
-                app:layout_constraintDimensionRatio="W,1.152083318:1"
+                app:layout_constraintDimensionRatio="W,1.123:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_skeleton_category_grid" />
+                app:srcCompat="@drawable/ic_category_grid" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

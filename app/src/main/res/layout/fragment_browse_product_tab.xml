@@ -7,31 +7,7 @@
     android:layout_marginBottom="5dp"
     android:background="#fafafa">
 
-    <LinearLayout
-        android:id="@+id/noCat"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:tint="@color/aaa"
-            app:srcCompat="@drawable/ic_category" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="No subcategories available"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textColor="#666" />
-
-
-    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -128,5 +104,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <LinearLayout
+        android:id="@+id/noCat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:background="@drawable/menu_box"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:tint="@color/aaa"
+            app:srcCompat="@drawable/ic_category"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="No subcategories available"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textColor="#666" />
+
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

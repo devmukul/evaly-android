@@ -1,0 +1,12 @@
+<vector android:height="157.11111dp" android:viewportHeight="1616"
+    android:viewportWidth="1440" android:width="140dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#FFF" android:fillType="evenOdd" android:pathData="M72,35L431,35A36,36 0,0 1,467 71L467,489A36,36 0,0 1,431 525L72,525A36,36 0,0 1,36 489L36,71A36,36 0,0 1,72 35z"/>
+    <path android:fillColor="#FFF" android:fillType="evenOdd" android:pathData="M1008,35L1367,35A36,36 0,0 1,1403 71L1403,489A36,36 0,0 1,1367 525L1008,525A36,36 0,0 1,972 489L972,71A36,36 0,0 1,1008 35z"/>
+    <path android:fillColor="#FFF" android:fillType="evenOdd" android:pathData="M540,35L899,35A36,36 0,0 1,935 71L935,489A36,36 0,0 1,899 525L540,525A36,36 0,0 1,504 489L504,71A36,36 0,0 1,540 35z"/>
+    <path android:fillColor="#FFF" android:fillType="evenOdd" android:pathData="M72,562L431,562A36,36 0,0 1,467 598L467,1016A36,36 0,0 1,431 1052L72,1052A36,36 0,0 1,36 1016L36,598A36,36 0,0 1,72 562z"/>
+    <path android:fillColor="#FFF" android:fillType="evenOdd" android:pathData="M1008,562L1367,562A36,36 0,0 1,1403 598L1403,1016A36,36 0,0 1,1367 1052L1008,1052A36,36 0,0 1,972 1016L972,598A36,36 0,0 1,1008 562z"/>
+    <path android:fillColor="#FFF" android:fillType="evenOdd" android:pathData="M540,562L899,562A36,36 0,0 1,935 598L935,1016A36,36 0,0 1,899 1052L540,1052A36,36 0,0 1,504 1016L504,598A36,36 0,0 1,540 562z"/>
+    <path android:fillColor="#FFF" android:fillType="evenOdd" android:pathData="M73,1089L432,1089A36,36 0,0 1,468 1125L468,1543A36,36 0,0 1,432 1579L73,1579A36,36 0,0 1,37 1543L37,1125A36,36 0,0 1,73 1089z"/>
+    <path android:fillColor="#FFF" android:fillType="evenOdd" android:pathData="M1009,1089L1368,1089A36,36 0,0 1,1404 1125L1404,1543A36,36 0,0 1,1368 1579L1009,1579A36,36 0,0 1,973 1543L973,1125A36,36 0,0 1,1009 1089z"/>
+    <path android:fillColor="#FFF" android:fillType="evenOdd" android:pathData="M541,1089L900,1089A36,36 0,0 1,936 1125L936,1543A36,36 0,0 1,900 1579L541,1579A36,36 0,0 1,505 1543L505,1125A36,36 0,0 1,541 1089z"/>
+</vector>

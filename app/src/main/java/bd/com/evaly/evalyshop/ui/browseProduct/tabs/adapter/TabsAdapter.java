@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,11 +29,11 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.util.Utils;
 
-public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
+public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<TabsItem> itemlist;
@@ -43,24 +42,6 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
     AppCompatActivity activity;
 
     private NavController navController;
-
-    public TabsAdapter(Context ctx, AppCompatActivity activity, ArrayList<TabsItem> item, int type){
-        context=ctx;
-        itemlist = item;
-        this.type=type;
-        this.activity = activity;
-        if (activity instanceof MainActivity)
-            navController = Navigation.findNavController(activity, R.id.nav_host_fragment);
-    }
-
-    public TabsAdapter(Context ctx, AppCompatActivity activity, ArrayList<TabsItem> item, int type, NavController navController){
-        context=ctx;
-        itemlist = item;
-        this.type=type;
-        this.activity = activity;
-        this.navController = navController;
-    }
-
     View.OnClickListener productListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -68,9 +49,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
             TabsItem model = itemlist.get(position);
 
-            if(context instanceof MainActivity) {
-
-                FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+            if (context instanceof MainActivity) {
 
                 if (type == 1) {
 
@@ -91,8 +70,6 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                     bundle.putString("image_url", model.getImage());
 
                     navController.navigate(R.id.brandFragment, bundle);
-
-
 
 
                 } else if (type == 3 || type == 6) {
@@ -138,6 +115,22 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
         }
     };
 
+    public TabsAdapter(Context ctx, AppCompatActivity activity, ArrayList<TabsItem> item, int type) {
+        context = ctx;
+        itemlist = item;
+        this.type = type;
+        this.activity = activity;
+        if (activity instanceof MainActivity)
+            navController = Navigation.findNavController(activity, R.id.nav_host_fragment);
+    }
+
+    public TabsAdapter(Context ctx, AppCompatActivity activity, ArrayList<TabsItem> item, int type, NavController navController) {
+        context = ctx;
+        itemlist = item;
+        this.type = type;
+        this.activity = activity;
+        this.navController = navController;
+    }
 
     @Override
     public int getItemCount() {
@@ -146,7 +139,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home_brands,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home_brands, parent, false);
 
         return new MyViewHolder(view);
     }
@@ -171,9 +164,10 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
                               public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                   return false;
                               }
+
                               @Override
                               public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                  Bitmap bitmap = Utils.changeColor(((BitmapDrawable)resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
+                                  Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
                                   holder.iv.setImageBitmap(bitmap);
                                   return true;
                               }
@@ -183,7 +177,13 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public void setFilter(ArrayList<TabsItem> ar) {
+        itemlist = new ArrayList<>();
+        itemlist.addAll(ar);
+        notifyDataSetChanged();
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView tv;
         ImageView iv;
@@ -191,17 +191,11 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder>{
 
         public MyViewHolder(final View itemView) {
             super(itemView);
-            tv=itemView.findViewById(R.id.text);
-            iv= itemView.findViewById(R.id.image);
+            tv = itemView.findViewById(R.id.text);
+            iv = itemView.findViewById(R.id.image);
             view = itemView;
 
         }
-    }
-
-    public void setFilter(ArrayList<TabsItem> ar){
-        itemlist=new ArrayList<>();
-        itemlist.addAll(ar);
-        notifyDataSetChanged();
     }
 
 }
