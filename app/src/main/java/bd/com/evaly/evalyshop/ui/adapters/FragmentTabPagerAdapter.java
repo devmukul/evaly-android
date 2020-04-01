@@ -64,7 +64,9 @@ public class FragmentTabPagerAdapter extends FragmentStateAdapter {
                 type = 3;
         }
 
-        if (mFragmentList.get(position).isDetached())
+        if (mFragmentList.get(position).isDetached() ||
+                mFragmentList.get(position).isRemoving() ||
+                !mFragmentList.get(position).isAdded())
             return null;
         else
             return new ViewModelProvider(mFragmentList.get(position)).get("type_" + type, TabsViewModel.class);

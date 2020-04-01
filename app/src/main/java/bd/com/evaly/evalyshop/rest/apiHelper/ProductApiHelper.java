@@ -20,7 +20,7 @@ public class ProductApiHelper extends BaseApiHelper {
 
     public static void getShopProducts(String shopSlug, int page, int limit, String categorySlug, String campaignSlug, String search, ResponseListenerAuth<JsonObject, String> listener) {
 
-        if (categorySlug.equals(""))
+        if (categorySlug != null && categorySlug.equals(""))
             categorySlug = null;
 
         IApiClient iApiClient = getiApiClient();
@@ -84,7 +84,7 @@ public class ProductApiHelper extends BaseApiHelper {
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call;
 
-        if (category.equals("root"))
+        if (category != null && category.equals("root"))
             call = iApiClient.getShopsOfCategories(page, limit);
         else
             call = iApiClient.getShopsOfCategories(category, page, limit);
