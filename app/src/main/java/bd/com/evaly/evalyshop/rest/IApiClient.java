@@ -10,6 +10,12 @@ import java.util.List;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.auth.LoginBody;
+import bd.com.evaly.evalyshop.models.auth.LoginResponse;
+import bd.com.evaly.evalyshop.models.auth.RegisterBody;
+import bd.com.evaly.evalyshop.models.auth.RegisterResponse;
+import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
+import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
@@ -378,4 +384,19 @@ public interface IApiClient {
     // refund
     @POST(UrlUtils.BASE_URL+"/orders/request-refund")
     Call<CommonDataResponse<String>> postRequestRefund(@Header("Authorization") String token, @Body HashMap<String, String> body);
+
+    // auth 2.0
+
+
+    @POST(UrlUtils.BASE_AUTH+"users/register")
+    Call<LoginResponse> authLogin(@Body LoginBody body);
+
+    @POST(UrlUtils.BASE_AUTH+"users/register")
+    Call<RegisterResponse> authRegister(@Body RegisterBody body);
+
+    @POST(UrlUtils.BASE_AUTH+"users/set-user-password")
+    Call<SetPasswordResponse> authSetPassword(@Body SetPasswordBody body);
+
+
+
 }

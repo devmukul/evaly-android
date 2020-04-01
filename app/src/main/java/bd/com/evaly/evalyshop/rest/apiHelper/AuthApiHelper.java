@@ -23,6 +23,12 @@ import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.auth.LoginBody;
+import bd.com.evaly.evalyshop.models.auth.LoginResponse;
+import bd.com.evaly.evalyshop.models.auth.RegisterBody;
+import bd.com.evaly.evalyshop.models.auth.RegisterResponse;
+import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
+import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
@@ -477,6 +483,23 @@ public class AuthApiHelper extends BaseApiHelper {
         HashMap<String,String> body = new HashMap<>();
         body.put("phone_number", phone);
         getiApiClient().forgetPassword(body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
+
+    // auth 2.0
+
+    public static void authLogin(LoginBody body, ResponseListenerAuth<LoginResponse, String> listener){
+        getiApiClient().authLogin(body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void authRegister(RegisterBody body, ResponseListenerAuth<RegisterResponse, String> listener){
+        getiApiClient().authRegister(body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
+    public static void authSetPassword(SetPasswordBody body, ResponseListenerAuth<SetPasswordResponse, String> listener){
+        getiApiClient().authSetPassword(body).enqueue(getResponseCallBackDefault(listener));
     }
 
 

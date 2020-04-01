@@ -14,6 +14,7 @@ public class UrlUtils {
 
     public static final String DOMAIN = BuildConfig.BASE_URL;
     public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
+    public static final String BASE_AUTH = "http://beta.gateway.evaly.com.bd/";
     public static final String DOMAIN_AUTH = DOMAIN+"auth/";
 
     public static final String BASE_URL = DOMAIN + "core/";
@@ -60,4 +61,9 @@ public class UrlUtils {
 
     // categories
     public static final String ROOTCATEGORIES = BASE_URL+"public/categories/";
+
+
+    // Auth 2.0
+
+
 }
