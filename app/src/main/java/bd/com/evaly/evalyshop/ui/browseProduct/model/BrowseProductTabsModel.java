@@ -101,7 +101,21 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
                 }
             });
 
-            getSubCategories();
+            // getSubCategories();
+
+            SubTabsFragment fragment = new SubTabsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("type", 1);
+            bundle.putString("slug", category);
+            bundle.putString("category", category);
+            fragment.setArguments(bundle);
+
+
+            pager.addFragment(fragment, AppController.getmContext().getResources().getString(R.string.categories));
+
+            loadOtherTabs();
+
+
         }
 
 

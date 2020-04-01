@@ -1,9 +1,10 @@
 package bd.com.evaly.evalyshop.ui.browseProduct.tabs;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,6 @@ public class SubTabsFragment extends Fragment {
         category = bundle.getString("category");
         type = bundle.getInt("type");
         slug = bundle.getString("slug");
-        json = bundle.getString("json");
 
         viewModel = new ViewModelProvider(this).get("type_" + type, TabsViewModel.class);
     }
@@ -104,11 +104,8 @@ public class SubTabsFragment extends Fragment {
             }
         });
 
-        if (json.equals(""))
-            loadData();
-        else {
-            loadJsonToView(json, type);
-        }
+
+        loadData();
 
 
     }
@@ -116,36 +113,20 @@ public class SubTabsFragment extends Fragment {
     public void loadData() {
         if (slug != null) {
 
-            if (!(slug.equals("root") && type == 1)) {
-                if (type == 1) {
-                    binding.searchBtnTabs.setHint(R.string.search_categories);
-                    binding.showMoreBtnTabs.setVisibility(View.GONE);
-                    getSubCategories();
-                } else if (type == 2) {
-                    binding.searchBtnTabs.setHint(R.string.search_brands);
-                    getBrandsOfCategory(1);
-                    binding.showMoreBtnTabs.setText(R.string.show_more);
-                } else if (type == 3) {
-                    binding.searchBtnTabs.setHint(R.string.search_shops);
-                    getShopsOfCategory(1);
-                    binding.showMoreBtnTabs.setText(R.string.show_more);
-                }
+            if (type == 1) {
+                binding.searchBtnTabs.setHint(R.string.search_categories);
+                binding.showMoreBtnTabs.setVisibility(View.GONE);
+                getSubCategories();
+            } else if (type == 2) {
+                binding.searchBtnTabs.setHint(R.string.search_brands);
+                getBrandsOfCategory(1);
+                binding.showMoreBtnTabs.setText(R.string.show_more);
+            } else if (type == 3) {
+                binding.searchBtnTabs.setHint(R.string.search_shops);
+                getShopsOfCategory(1);
+                binding.showMoreBtnTabs.setText(R.string.show_more);
             }
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (binding == null)
-                        return;
 
-                    if (!(slug.equals("root") && type == 1)) {
-                        if (adapter.getItemCount() < 1 || binding.recyclerView.getHeight() < 100) {
-                            adapter.notifyDataSetChanged();
-                            handler.postDelayed(this, 1000);
-                        }
-                    }
-                }
-            }, 1000);
         } else {
             Toast.makeText(getContext(), "Page is not available, go back please.", Toast.LENGTH_SHORT).show();
         }
@@ -155,19 +136,21 @@ public class SubTabsFragment extends Fragment {
     public void stopShimmer() {
         if (binding == null)
             return;
+//
+//        binding.shimmer.shimmer.stopShimmer();
+//        binding.shimmer.shimmer.setVisibility(View.GONE);
 
-        binding.shimmer.shimmer.stopShimmer();
-        binding.shimmer.shimmer.setVisibility(View.GONE);
-
-//        binding.shimmer.shimmer.animate().alpha(0.0f)
-//                .setListener(new AnimatorListenerAdapter() {
-//                    @Override
-//                    public void onAnimationEnd(Animator animation) {
-//                        super.onAnimationEnd(animation);
-//                        binding.shimmer.shimmer.stopShimmer();
-//                        binding.shimmer.shimmer.setVisibility(View.GONE);
-//                    }
-//                });
+        binding.shimmer.shimmer.animate().alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        if (binding == null)
+                            return;
+                        binding.shimmer.shimmer.stopShimmer();
+                        binding.shimmer.shimmer.setVisibility(View.GONE);
+                    }
+                });
     }
 
     public void loadJsonToView(String json, int type) {
@@ -226,6 +209,7 @@ public class SubTabsFragment extends Fragment {
 
     public void getSubCategories() {
 
+
         ProductApiHelper.getSubCategories(slug, new ResponseListenerAuth<JsonArray, String>() {
 
             @Override
@@ -234,30 +218,23 @@ public class SubTabsFragment extends Fragment {
                 if (binding == null)
                     return;
 
-                binding.progressBar2.setVisibility(View.GONE);
+                JsonArray response = res;
 
-                try {
-                    JsonArray response = res;
+                for (int i = 0; i < response.size(); i++) {
 
-                    for (int i = 0; i < response.size(); i++) {
-                        JsonObject ob = response.get(i).getAsJsonObject();
-                        TabsItem tabsItem = new TabsItem();
-                        tabsItem.setTitle(ob.get("name").getAsString());
-                        tabsItem.setImage(ob.get("image_url").getAsString());
-                        tabsItem.setSlug(ob.get("slug").getAsString());
-                        tabsItem.setCategory(category);
-                        itemList.add(tabsItem);
-                        adapter.notifyItemInserted(itemList.size());
+                    JsonObject ob = response.get(i).getAsJsonObject();
+                    TabsItem tabsItem = new TabsItem();
+                    tabsItem.setTitle(ob.get("name").getAsString());
+                    tabsItem.setImage(ob.get("image_url").getAsString());
+                    tabsItem.setSlug(ob.get("slug").getAsString());
+                    tabsItem.setCategory(category);
+                    itemList.add(tabsItem);
+                    adapter.notifyItemInserted(itemList.size());
 
-
-                        viewModel.setItemCount(itemList.size());
-
-                    }
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    viewModel.setItemCount(itemList.size());
                 }
+
+                stopShimmer();
             }
 
             @Override
@@ -285,34 +262,31 @@ public class SubTabsFragment extends Fragment {
                     return;
 
                 binding.progressBar2.setVisibility(View.GONE);
-                try {
-
-                    JsonArray jsonArray = res.getAsJsonArray("results");
-
-                    for (int i = 0; i < jsonArray.size(); i++) {
-                        JsonObject ob = jsonArray.get(i).getAsJsonObject();
-                        TabsItem tabsItem = new TabsItem();
-                        tabsItem.setTitle(ob.get("name").getAsString());
-
-                        tabsItem.setImage(ob.get("image_url").isJsonNull() ? null : ob.get("image_url").getAsString());
-
-                        tabsItem.setSlug(ob.get("slug").getAsString());
-                        tabsItem.setCategory(category);
-                        itemList.add(tabsItem);
-                        adapter.notifyItemInserted(itemList.size());
 
 
-                        viewModel.setItemCount(itemList.size());
+                JsonArray jsonArray = res.getAsJsonArray("results");
 
-                    }
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JsonObject ob = jsonArray.get(i).getAsJsonObject();
+                    TabsItem tabsItem = new TabsItem();
+                    tabsItem.setTitle(ob.get("name").getAsString());
 
+                    tabsItem.setImage(ob.get("image_url").isJsonNull() ? null : ob.get("image_url").getAsString());
 
-                    stopShimmer();
+                    tabsItem.setSlug(ob.get("slug").getAsString());
+                    tabsItem.setCategory(category);
+                    itemList.add(tabsItem);
+                    adapter.notifyItemInserted(itemList.size());
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(context, "Brand loading error", Toast.LENGTH_SHORT).show();
+                    viewModel.setItemCount(itemList.size());
+
                 }
+
+                binding.btnHolder.setVisibility(View.VISIBLE);
+
+                stopShimmer();
+
+
             }
 
             @Override
@@ -340,39 +314,34 @@ public class SubTabsFragment extends Fragment {
                     return;
 
                 binding.progressBar2.setVisibility(View.GONE);
-                try {
-
-                    JsonArray jsonArray = res.get("data").getAsJsonArray();
-
-                    for (int i = 0; i < jsonArray.size(); i++) {
-
-                        JsonObject ob = jsonArray.get(i).getAsJsonObject();
-                        TabsItem tabsItem = new TabsItem();
-                        tabsItem.setTitle(ob.get("shop_name").getAsString());
-                        tabsItem.setImage(ob.get("shop_image").isJsonNull() ? null : ob.get("shop_image").getAsString());
-
-                        if (slug.equals("root"))
-                            tabsItem.setSlug(ob.get("slug").getAsString());
-                        else
-                            tabsItem.setSlug(ob.get("shop_slug").getAsString());
-
-                        tabsItem.setCategory(category);
-                        itemList.add(tabsItem);
-                        adapter.notifyItemInserted(itemList.size());
-
-                        viewModel.setItemCount(itemList.size());
 
 
-                    }
+                JsonArray jsonArray = res.get("data").getAsJsonArray();
+
+                for (int i = 0; i < jsonArray.size(); i++) {
+
+                    JsonObject ob = jsonArray.get(i).getAsJsonObject();
+                    TabsItem tabsItem = new TabsItem();
+                    tabsItem.setTitle(ob.get("shop_name").getAsString());
+                    tabsItem.setImage(ob.get("shop_image").isJsonNull() ? null : ob.get("shop_image").getAsString());
+
+                    if (slug.equals("root"))
+                        tabsItem.setSlug(ob.get("slug").getAsString());
+                    else
+                        tabsItem.setSlug(ob.get("shop_slug").getAsString());
+
+                    tabsItem.setCategory(category);
+                    itemList.add(tabsItem);
+                    adapter.notifyItemInserted(itemList.size());
+
+                    viewModel.setItemCount(itemList.size());
 
 
-                    stopShimmer();
-
-                } catch (Exception e) {
-
-                    Toast.makeText(context, "Shop Loading Error", Toast.LENGTH_SHORT).show();
                 }
 
+                stopShimmer();
+
+                binding.btnHolder.setVisibility(View.VISIBLE);
             }
 
             @Override
