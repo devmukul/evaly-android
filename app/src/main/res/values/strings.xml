@@ -345,7 +345,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
     </string-array>
 
     <string-array name="districtsList" translatable="false">
-        <item>All</item>
+        <item>All Districts</item>
+        <item>Automatic</item>
         <item>Dhaka</item>
         <item>Barisal</item>
         <item>Chittagong</item>

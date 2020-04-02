@@ -40,8 +40,8 @@ public class EvalyExpressViewModel extends ViewModel {
         loading = true;
 
         if (CredentialManager.getArea() == null)
-            area = "Dhaka";
-        else if (CredentialManager.getArea().equals("All"))
+            area = null;
+        else if (CredentialManager.getArea().contains("Districts"))
             area = null;
         else
             area = CredentialManager.getArea();
@@ -54,7 +54,6 @@ public class EvalyExpressViewModel extends ViewModel {
 
                 loading = false;
                 totalCount = response.getCount();
-
 
 //                liveData.setValue(response.getData());
 //                if (totalCount - (24 * currentPage) > 0)

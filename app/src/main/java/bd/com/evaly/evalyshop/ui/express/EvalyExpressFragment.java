@@ -1,29 +1,43 @@
 package bd.com.evaly.evalyshop.ui.express;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentEvalyExpressBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
+import bd.com.evaly.evalyshop.util.LocationUtils;
+
+import static androidx.core.content.ContextCompat.checkSelfPermission;
+import static androidx.core.content.ContextCompat.getMainExecutor;
 
 public class EvalyExpressFragment extends Fragment {
 
@@ -140,10 +154,9 @@ public class EvalyExpressFragment extends Fragment {
 
         });
 
-
         binding.districtSelector.setOnClickListener(v -> showDistrictSelector());
 
-        binding.districtName.setText(CredentialManager.getArea() == null ? "Dhaka" : CredentialManager.getArea());
+        binding.districtName.setText(CredentialManager.getArea() == null ? "All District" : CredentialManager.getArea());
 
         binding.search.addTextChangedListener(textWatcher);
 
@@ -153,6 +166,87 @@ public class EvalyExpressFragment extends Fragment {
                 written = true;
         });
 
+        if (CredentialManager.getArea() == null)
+            checkPermissionAndLoad();
+
+    }
+
+
+    private void checkPermissionAndLoad() {
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            checkMyLocation();
+        else
+            requestPermissions(new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
+                    1212);
+    }
+
+    private void checkMyLocation() {
+
+        LocationUtils locationUtils = new LocationUtils();
+        locationUtils.getLocation(getContext(), new LocationUtils.LocationResult() {
+            @Override
+            public void gotLocation(Location location) {
+
+                Log.d("hmtl", "lot location" + location.toString());
+
+                if (getContext() == null)
+                    return;
+
+                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    Address obj = addresses.get(0);
+
+                    String myAddress = obj.toString();
+
+                    String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
+
+                    int c = 0;
+
+                    for (String district : districts) {
+                        if (myAddress.contains(district)) {
+                            getMainExecutor(getContext()).execute(() -> {
+                                CredentialManager.saveArea(district);
+                                binding.districtName.setText(district);
+                                viewModel.clear();
+                                viewModel.loadShops();
+                            });
+                            c++;
+                            break;
+                        }
+                    }
+
+                    if (c == 0) {
+                        Toast.makeText(getContext(), "Could't find your district with GPS, please select manually", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (IOException ignored) {
+                }
+            }
+        });
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1212:
+                if (checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    checkMyLocation();
+
+                } else {
+                    CredentialManager.saveArea("All Districts");
+                    Toast.makeText(getContext(), "Location permission denied, please select your district manually", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case 0:
+                break;
+        }
     }
 
     private void showDistrictSelector() {
@@ -165,11 +259,15 @@ public class EvalyExpressFragment extends Fragment {
 
         final String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
         builder.setItems(districts, (dialog, which) -> {
-            CredentialManager.saveArea(districts[which]);
-            itemList.clear();
-            viewModel.clear();
-            viewModel.loadShops();
-            binding.districtName.setText(districts[which]);
+            if (districts[which].equalsIgnoreCase("automatic")) {
+                checkPermissionAndLoad();
+            } else {
+                CredentialManager.saveArea(districts[which]);
+                itemList.clear();
+                viewModel.clear();
+                viewModel.loadShops();
+                binding.districtName.setText(districts[which]);
+            }
         });
 
         AlertDialog dialog = builder.create();
