@@ -1,11 +1,11 @@
 package bd.com.evaly.evalyshop.ui.express;
 
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,9 +29,41 @@ public class EvalyExpressFragment extends Fragment {
 
     private FragmentEvalyExpressBinding binding;
     private EvalyExpressAdapter adapter;
-    private List<GroupShopModel> itemList;
+    private List<GroupShopModel> itemList = new ArrayList<>();
     private EvalyExpressViewModel viewModel;
+    private boolean written = false;
+
+    TextWatcher textWatcher = new TextWatcher() {
+
+        public void afterTextChanged(Editable s) {
+
+        }
+
+        public void beforeTextChanged(CharSequence s, int start,
+                                      int count, int after) {
+
+
+        }
+
+        public void onTextChanged(CharSequence s, int start,
+                                  int before, int count) {
+
+            if (!written)
+                return;
+
+            written = true;
+            viewModel.clear();
+            itemList.clear();
+
+            if (binding.search.getText().toString().trim().equals(""))
+                viewModel.setSearch(null);
+            else
+                viewModel.setSearch(binding.search.getText().toString().trim());
+            viewModel.loadShops();
+        }
+    };
     private int visibleItemCount, totalItemCount, pastVisibleItems;
+
 
     public EvalyExpressFragment() {
 
@@ -49,6 +81,7 @@ public class EvalyExpressFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         binding.toolbar.setNavigationOnClickListener(view1 -> {
             if (getActivity() != null)
@@ -57,8 +90,9 @@ public class EvalyExpressFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(EvalyExpressViewModel.class);
 
-        itemList = new ArrayList<>();
         adapter = new EvalyExpressAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
+
+        written = false;
 
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
 
@@ -90,13 +124,15 @@ public class EvalyExpressFragment extends Fragment {
 
         viewModel.getLiveData().observe(getViewLifecycleOwner(), list -> {
 
-            itemList.addAll(list);
-            adapter.notifyDataSetChanged();
+            if (list == null)
+                return;
+
+            adapter.addData(list);
 
             binding.progressBar.setVisibility(View.GONE);
             binding.progressBarBottom.setVisibility(View.INVISIBLE);
 
-            if (list.size() == 0 && viewModel.getCurrentPage() == 1) {
+            if (list.size() == 0) {
                 binding.layoutNot.setVisibility(View.VISIBLE);
             } else {
                 binding.layoutNot.setVisibility(View.GONE);
@@ -109,22 +145,13 @@ public class EvalyExpressFragment extends Fragment {
 
         binding.districtName.setText(CredentialManager.getArea() == null ? "Dhaka" : CredentialManager.getArea());
 
-        binding.search.setOnEditorActionListener((v, actionId, event) -> {
+        binding.search.addTextChangedListener(textWatcher);
 
-            if ((actionId == EditorInfo.IME_ACTION_DONE) ||
-                    (event != null && ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
-                if (binding.search.getText().toString().equals("")) {
-                    return false;
-                }
-                viewModel.clear();
-                itemList.clear();
-                viewModel.setSearch(binding.search.getText().toString().trim());
-                viewModel.loadShops();
-            }
 
-            return false;
+        binding.search.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus)
+                written = true;
         });
-
 
     }
 

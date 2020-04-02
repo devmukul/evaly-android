@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -14,7 +13,7 @@ import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 
 public class EvalyExpressViewModel extends ViewModel {
-    private MutableLiveData<List<GroupShopModel>> liveData = new MutableLiveData<>();
+    private MutableLiveData<List<GroupShopModel>> liveData;
     private int currentPage;
     private int totalCount = 0;
     private boolean loading;
@@ -26,9 +25,9 @@ public class EvalyExpressViewModel extends ViewModel {
 
         currentPage = 1;
         totalCount = 0;
-
         group = "evaly-express";
-        liveData.setValue(new ArrayList<>());
+        liveData = new MutableLiveData<>();
+
         loadShops();
     }
 
@@ -50,33 +49,40 @@ public class EvalyExpressViewModel extends ViewModel {
         ShopApiHelper.getShopsByGroup(group, currentPage, 24, area, search, new ResponseListenerAuth<CommonDataResponse<List<GroupShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<GroupShopModel>> response, int statusCode) {
+                if (response == null)
+                    return;
 
                 loading = false;
                 totalCount = response.getCount();
-                liveData.setValue(response.getData());
 
 
-                if ((totalCount - 24) * currentPage > 0)
+//                liveData.setValue(response.getData());
+//                if (totalCount - (24 * currentPage) > 0)
+//                    hasNext = true;
+//                else
+//                    hasNext = false;
+//
+//                currentPage++;
+
+                if (totalCount - (24 * currentPage) > 0)
                     hasNext = true;
                 else
                     hasNext = false;
 
+                if (liveData.getValue() != null) {
 
-                currentPage++;
+                    List<GroupShopModel> oldList = liveData.getValue();
+                    oldList.addAll(response.getData());
+                    liveData.setValue(oldList);
 
-//                List<GroupShopModel> oldList = liveData.getValue();
-//
-//                if (oldList != null) {
-//                    oldList.addAll(response.getData());
-//                    liveData.setValue(oldList);
-//
-//                    currentPage++;
-//
-//                    if (totalCount > oldList.size())
-//                        hasNext = true;
-//                    else
-//                        hasNext = false;
-//                }
+                    currentPage++;
+
+                } else {
+                    liveData.setValue(response.getData());
+
+                    currentPage++;
+                }
+
             }
 
             @Override
@@ -86,6 +92,7 @@ public class EvalyExpressViewModel extends ViewModel {
 
             }
 
+
             @Override
             public void onAuthError(boolean logout) {
 
@@ -94,7 +101,7 @@ public class EvalyExpressViewModel extends ViewModel {
     }
 
     public void clear() {
-        liveData.setValue(new ArrayList<>());
+        liveData.setValue(null);
         currentPage = 1;
         totalCount = 0;
         search = null;

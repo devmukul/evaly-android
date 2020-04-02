@@ -47,7 +47,7 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
 
     public EvalyExpressAdapter(Context ctx, List<GroupShopModel> itemList, NavController navController) {
         context = ctx;
-        this.itemList = itemList;
+        // this.itemList = itemList;
         this.navController = navController;
     }
 
@@ -107,10 +107,8 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    GroupShopModel newProduct = newList.get(newItemPosition);
-                    GroupShopModel oldProduct = itemList.get(oldItemPosition);
-
-                    return Objects.equals(newProduct.getShopSlug(), oldProduct.getShopSlug());
+                    return false;
+//                    return Objects.equals(itemList.get(oldItemPosition).getShopSlug(), newList.get(newItemPosition).getShopSlug());
                 }
             });
 

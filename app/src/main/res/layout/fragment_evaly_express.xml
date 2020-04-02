@@ -77,9 +77,11 @@
                     android:background="@color/transparent"
                     android:hint="Search area, shop..."
                     android:imeOptions="actionDone"
+                    android:text=""
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="#444"
+                    android:inputType="textNoSuggestions"
                     android:textColorHint="#666"
                     android:textSize="15sp" />
 
