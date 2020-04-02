@@ -4,34 +4,85 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.models.shop.shopGroup.ShopGroupResponse;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 
 public class EvalyExpressViewModel extends ViewModel {
-    private MutableLiveData<ShopGroupResponse> liveData = new MutableLiveData<>();
+    private MutableLiveData<List<GroupShopModel>> liveData = new MutableLiveData<>();
+    private int currentPage;
+    private int totalCount = 0;
+    private boolean loading;
+    private String group, area, search;
+    private boolean hasNext;
 
     public EvalyExpressViewModel() {
         super();
-        getShops("evaly-express", 1);
+
+        currentPage = 1;
+        totalCount = 0;
+
+        group = "evaly-express";
+        liveData.setValue(new ArrayList<>());
+        loadShops();
     }
 
-    public LiveData<ShopGroupResponse> getLiveData() {
+    public LiveData<List<GroupShopModel>> getLiveData() {
         return liveData;
     }
 
-    public void getShops(String group, int page){
+    public void loadShops() {
 
-        ShopApiHelper.getShopsByGroup(group, page, 100, new ResponseListenerAuth<ShopGroupResponse, String>() {
+        loading = true;
+
+        if (CredentialManager.getArea() == null)
+            area = "Dhaka";
+        else if (CredentialManager.getArea().equals("All"))
+            area = null;
+        else
+            area = CredentialManager.getArea();
+
+        ShopApiHelper.getShopsByGroup(group, currentPage, 24, area, search, new ResponseListenerAuth<CommonDataResponse<List<GroupShopModel>>, String>() {
             @Override
-            public void onDataFetched(ShopGroupResponse response, int statusCode) {
-                liveData.setValue(response);
+            public void onDataFetched(CommonDataResponse<List<GroupShopModel>> response, int statusCode) {
+
+                loading = false;
+                totalCount = response.getCount();
+                liveData.setValue(response.getData());
+
+
+                if ((totalCount - 24) * currentPage > 0)
+                    hasNext = true;
+                else
+                    hasNext = false;
+
+
+                currentPage++;
+
+//                List<GroupShopModel> oldList = liveData.getValue();
+//
+//                if (oldList != null) {
+//                    oldList.addAll(response.getData());
+//                    liveData.setValue(oldList);
+//
+//                    currentPage++;
+//
+//                    if (totalCount > oldList.size())
+//                        hasNext = true;
+//                    else
+//                        hasNext = false;
+//                }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
 
-                liveData.setValue(new ShopGroupResponse());
+                loading = false;
 
             }
 
@@ -42,8 +93,30 @@ public class EvalyExpressViewModel extends ViewModel {
         });
     }
 
-    public void clear(){
-        liveData.setValue(null);
+    public void clear() {
+        liveData.setValue(new ArrayList<>());
+        currentPage = 1;
+        totalCount = 0;
+        search = null;
     }
 
+    public int getTotalCount() {
+        return totalCount;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public boolean isLoading() {
+        return loading;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
+    public boolean isHasNext() {
+        return hasNext;
+    }
 }

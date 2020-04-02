@@ -69,23 +69,16 @@ public class CredentialManager {
         return MyPreference.with(AppController.getmContext()).getObject(ConstantUtils.USER_MODEL, UserModel.class);
     }
 
-    public static void saveShopList(String shopList){
-        MyPreference.with(AppController.mContext).addString(ConstantUtils.SHOP_LIST, shopList).save();
-    }
-
-    public static String getShopList(){
-        return MyPreference.with(AppController.getmContext()).getString(ConstantUtils.SHOP_LIST,"");
-    }
-
-    public static void saveTodaysDate(String date){
-        MyPreference.with(AppController.mContext).addString(ConstantUtils.DATE, date).save();
-    }
-
-    public static String getTodaysDate(){
-        return MyPreference.with(AppController.mContext).getString(ConstantUtils.DATE, "");
-    }
-
     public static boolean isUserRegistered() {
         return MyPreference.with(AppController.mContext).getBoolean(ConstantUtils.REGISTERED, false);
     }
+
+    public static void saveArea(String area){
+        MyPreference.with(AppController.mContext).addString("AREA", area).save();
+    }
+
+    public static String getArea(){
+        return MyPreference.with(AppController.mContext).getString("AREA", null);
+    }
+
 }

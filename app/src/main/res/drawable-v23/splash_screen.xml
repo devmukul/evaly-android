@@ -5,7 +5,7 @@
     <item android:drawable="@android:color/white" />
 
     <item
-        android:bottom="100dp"
+        android:bottom="80dp"
         android:height="65dp"
         android:width="200dp"
         android:gravity="center"

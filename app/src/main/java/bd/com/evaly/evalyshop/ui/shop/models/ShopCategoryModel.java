@@ -82,8 +82,11 @@ public abstract class ShopCategoryModel extends EpoxyModelWithHolder<ShopCategor
 
             viewModel.getShopCategoryListLiveData().observe(fragment.getViewLifecycleOwner(), categoryList -> {
 
-                if (currentPage == 1 && categoryList.size() < 1)
+                if (currentPage == 1 && categoryList.size() < 1) {
+                    binding.getRoot().setVisibility(View.GONE);
+                    itemView.setVisibility(View.GONE);
                     binding.ct.setText(" ");
+                }
                 else if (currentPage == 1 && categoryList.size() < 4) {
                     GridLayoutManager mLayoutManager = new GridLayoutManager(activity, 1, GridLayoutManager.HORIZONTAL, false);
                     binding.recyclerView.setLayoutManager(mLayoutManager);

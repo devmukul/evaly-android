@@ -286,7 +286,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="payment">Payment</string>
     <string name="evaly_express">Evaly Express</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string-array name="search_categories">
         <item>All Categories</item>
     </string-array>
@@ -343,6 +342,74 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Selected wrong product variant</item>
         <item>Want to buy from another seller</item>
         <item>Other reason</item>
+    </string-array>
+
+    <string-array name="districtsList" translatable="false">
+        <item>All</item>
+        <item>Dhaka</item>
+        <item>Barisal</item>
+        <item>Chittagong</item>
+        <item>Bagerhat</item>
+        <item>Bandarban</item>
+        <item>Barguna</item>
+        <item>Bhola</item>
+        <item>Bogra</item>
+        <item>Brahmanbaria</item>
+        <item>Chandpur</item>
+        <item>Chapainawabganj</item>
+        <item>Chuadanga</item>
+        <item>Cox\'s Bazar</item>
+        <item>Comilla</item>
+        <item>Dinajpur</item>
+        <item>Faridpur</item>
+        <item>Feni</item>
+        <item>Gaibandha</item>
+        <item>Gazipur</item>
+        <item>Gopalganj</item>
+        <item>Habiganj</item>
+        <item>Jamalpur</item>
+        <item>Jashore</item>
+        <item>Jhalokati</item>
+        <item>Jhenaidah</item>
+        <item>Joypurhat</item>
+        <item>Khagrachhari</item>
+        <item>Khulna</item>
+        <item>Kishoreganj</item>
+        <item>Kurigram</item>
+        <item>Kushtia</item>
+        <item>Lakshmipur</item>
+        <item>Lalmonirhat</item>
+        <item>Madaripur</item>
+        <item>Magura</item>
+        <item>Manikganj</item>
+        <item>Meherpur</item>
+        <item>Moulvibazar</item>
+        <item>Munshiganj</item>
+        <item>Mymensingh</item>
+        <item>Naogaon</item>
+        <item>Narail</item>
+        <item>Narayanganj</item>
+        <item>Narsingdi</item>
+        <item>Natore</item>
+        <item>Netrokona</item>
+        <item>Nilphamari</item>
+        <item>Noakhali</item>
+        <item>Pabna</item>
+        <item>Panchagarh</item>
+        <item>Patuakhali</item>
+        <item>Pirojpur</item>
+        <item>Rajbari</item>
+        <item>Rajshahi</item>
+        <item>Rangamati</item>
+        <item>Rangpur</item>
+        <item>Satkhira</item>
+        <item>Shariatpur</item>
+        <item>Sherpur</item>
+        <item>Sirajganj</item>
+        <item>Sunamganj</item>
+        <item>Sylhet</item>
+        <item>Tangail</item>
+        <item>Thakurgaon</item>
     </string-array>
 
 </resources>

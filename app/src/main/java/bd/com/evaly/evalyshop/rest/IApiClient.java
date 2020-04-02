@@ -22,8 +22,8 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
-import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
+import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.models.notification.NotificationItem;
@@ -35,8 +35,8 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
+import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
-import bd.com.evaly.evalyshop.models.shop.shopGroup.ShopGroupResponse;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
@@ -202,8 +202,8 @@ public interface IApiClient {
     Call<CommonDataResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);
 
 
-    @GET(UrlUtils.BASE_URL+"shop-groups/{group}/")
-    Call<ShopGroupResponse> getShopByGroup(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);
+    @GET(UrlUtils.BASE_URL+"shop-group-shops/{group}")
+    Call<CommonDataResponse<List<GroupShopModel>>> getShopByGroup(@Path("group") String group, @Query("page") int page, @Query("limit") int limit, @Query("area") String area, @Query("search") String search);
 
 
     // Root Category

@@ -1,28 +1,37 @@
 package bd.com.evaly.evalyshop.ui.express;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentEvalyExpressBinding;
-import bd.com.evaly.evalyshop.models.shop.shopGroup.ShopsItem;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 
 public class EvalyExpressFragment extends Fragment {
 
     private FragmentEvalyExpressBinding binding;
     private EvalyExpressAdapter adapter;
-    private ArrayList<ShopsItem> itemList;
+    private List<GroupShopModel> itemList;
     private EvalyExpressViewModel viewModel;
+    private int visibleItemCount, totalItemCount, pastVisibleItems;
 
     public EvalyExpressFragment() {
 
@@ -50,31 +59,94 @@ public class EvalyExpressFragment extends Fragment {
 
         itemList = new ArrayList<>();
         adapter = new EvalyExpressAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+
+        binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(adapter);
 
-        viewModel.getLiveData().observe(getViewLifecycleOwner(), shopGroupResponse -> {
 
-            if (shopGroupResponse == null)
-                return;
+        binding.progressBar.setVisibility(View.VISIBLE);
 
-            itemList.clear();
-            binding.progressBar.setVisibility(View.GONE);
-            if (shopGroupResponse.getShops() == null) {
-                binding.layoutNot.setVisibility(View.VISIBLE);
-                return;
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+
+                    if (!viewModel.isLoading() && viewModel.isHasNext())
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            if (viewModel.getCurrentPage() > 1)
+                                binding.progressBarBottom.setVisibility(View.VISIBLE);
+                            else
+                                binding.progressBarBottom.setVisibility(View.INVISIBLE);
+                            viewModel.loadShops();
+                        }
+                }
             }
+        });
 
-            itemList.addAll(shopGroupResponse.getShops());
+        viewModel.getLiveData().observe(getViewLifecycleOwner(), list -> {
+
+            itemList.addAll(list);
             adapter.notifyDataSetChanged();
 
-            if (itemList.size() == 0) {
+            binding.progressBar.setVisibility(View.GONE);
+            binding.progressBarBottom.setVisibility(View.INVISIBLE);
+
+            if (list.size() == 0 && viewModel.getCurrentPage() == 1) {
                 binding.layoutNot.setVisibility(View.VISIBLE);
-            } else
+            } else {
                 binding.layoutNot.setVisibility(View.GONE);
+            }
 
         });
 
-        binding.progressBar.setVisibility(View.VISIBLE);
+
+        binding.districtSelector.setOnClickListener(v -> showDistrictSelector());
+
+        binding.districtName.setText(CredentialManager.getArea() == null ? "Dhaka" : CredentialManager.getArea());
+
+        binding.search.setOnEditorActionListener((v, actionId, event) -> {
+
+            if ((actionId == EditorInfo.IME_ACTION_DONE) ||
+                    (event != null && ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
+                if (binding.search.getText().toString().equals("")) {
+                    return false;
+                }
+                viewModel.clear();
+                itemList.clear();
+                viewModel.setSearch(binding.search.getText().toString().trim());
+                viewModel.loadShops();
+            }
+
+            return false;
+        });
+
+
+    }
+
+    private void showDistrictSelector() {
+
+        if (getContext() == null)
+            return;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Choose your district");
+
+        final String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
+        builder.setItems(districts, (dialog, which) -> {
+            CredentialManager.saveArea(districts[which]);
+            itemList.clear();
+            viewModel.clear();
+            viewModel.loadShops();
+            binding.districtName.setText(districts[which]);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
     }
 

@@ -4,7 +4,7 @@
 
     <item android:drawable="@android:color/white" />
     <item
-        android:bottom="100dp"
+        android:bottom="80dp"
         android:gravity="center">
         <bitmap
             android:gravity="clip_horizontal"
