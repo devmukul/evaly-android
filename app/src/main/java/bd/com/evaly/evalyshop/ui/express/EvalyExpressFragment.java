@@ -54,6 +54,9 @@ public class EvalyExpressFragment extends Fragment {
 
         viewModel.getLiveData().observe(getViewLifecycleOwner(), shopGroupResponse -> {
 
+            if (shopGroupResponse == null)
+                return;
+
             itemList.clear();
             binding.progressBar.setVisibility(View.GONE);
             if (shopGroupResponse.getShops() == null) {
@@ -72,9 +75,6 @@ public class EvalyExpressFragment extends Fragment {
         });
 
         binding.progressBar.setVisibility(View.VISIBLE);
-
-        itemList.clear();
-        viewModel.getShops("evaly-express", 1);
 
     }
 

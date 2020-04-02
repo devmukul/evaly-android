@@ -11,6 +11,11 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 public class EvalyExpressViewModel extends ViewModel {
     private MutableLiveData<ShopGroupResponse> liveData = new MutableLiveData<>();
 
+    public EvalyExpressViewModel() {
+        super();
+        getShops("evaly-express", 1);
+    }
+
     public LiveData<ShopGroupResponse> getLiveData() {
         return liveData;
     }
@@ -35,6 +40,10 @@ public class EvalyExpressViewModel extends ViewModel {
 
             }
         });
+    }
+
+    public void clear(){
+        liveData.setValue(null);
     }
 
 }
