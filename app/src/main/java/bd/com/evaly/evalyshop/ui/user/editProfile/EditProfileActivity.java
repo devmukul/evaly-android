@@ -122,13 +122,20 @@ public class EditProfileActivity extends BaseActivity {
 
         updateProfileData();
 
-        setProfilePic();
     }
 
 
     private void updateProfileData() {
 
         UserModel userModel = CredentialManager.getUserData();
+
+        if (userModel == null) {
+            Toast.makeText(this, "Profile information not found, please logout and login again.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        setProfilePic();
 
         String fullName = String.format("%s %s",
                 (userModel.getFirst_name() != null ? userModel.getFirst_name() : ""),

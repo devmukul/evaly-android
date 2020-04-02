@@ -8,7 +8,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,19 +52,14 @@ public class EvalyExpressFragment extends Fragment {
 
         }
 
-        public void beforeTextChanged(CharSequence s, int start,
-                                      int count, int after) {
-
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
         }
 
-        public void onTextChanged(CharSequence s, int start,
-                                  int before, int count) {
-
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (!written)
                 return;
 
-            written = true;
             viewModel.clear();
             itemList.clear();
 
@@ -112,8 +106,6 @@ public class EvalyExpressFragment extends Fragment {
 
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(adapter);
-
-
         binding.progressBar.setVisibility(View.VISIBLE);
 
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -155,15 +147,12 @@ public class EvalyExpressFragment extends Fragment {
         });
 
         binding.districtSelector.setOnClickListener(v -> showDistrictSelector());
-
         binding.districtName.setText(CredentialManager.getArea() == null ? "All District" : CredentialManager.getArea());
 
         binding.search.addTextChangedListener(textWatcher);
 
-
         binding.search.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus)
-                written = true;
+            if (hasFocus) written = true;
         });
 
         if (CredentialManager.getArea() == null)
@@ -190,8 +179,6 @@ public class EvalyExpressFragment extends Fragment {
             @Override
             public void gotLocation(Location location) {
 
-                Log.d("hmtl", "lot location" + location.toString());
-
                 if (getContext() == null)
                     return;
 
@@ -199,7 +186,6 @@ public class EvalyExpressFragment extends Fragment {
                 try {
                     List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                     Address obj = addresses.get(0);
-
                     String myAddress = obj.toString();
 
                     String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
@@ -219,15 +205,11 @@ public class EvalyExpressFragment extends Fragment {
                         }
                     }
 
-                    if (c == 0) {
+                    if (c == 0)
                         Toast.makeText(getContext(), "Could't find your district with GPS, please select manually", Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (IOException ignored) {
-                }
+                } catch (IOException ignored) { }
             }
         });
-
     }
 
 
@@ -272,7 +254,6 @@ public class EvalyExpressFragment extends Fragment {
 
         AlertDialog dialog = builder.create();
         dialog.show();
-
     }
 
 }

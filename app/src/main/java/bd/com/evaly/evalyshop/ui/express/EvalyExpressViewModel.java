@@ -55,14 +55,6 @@ public class EvalyExpressViewModel extends ViewModel {
                 loading = false;
                 totalCount = response.getCount();
 
-//                liveData.setValue(response.getData());
-//                if (totalCount - (24 * currentPage) > 0)
-//                    hasNext = true;
-//                else
-//                    hasNext = false;
-//
-//                currentPage++;
-
                 if (totalCount - (24 * currentPage) > 0)
                     hasNext = true;
                 else
@@ -73,7 +65,6 @@ public class EvalyExpressViewModel extends ViewModel {
                     List<GroupShopModel> oldList = liveData.getValue();
                     oldList.addAll(response.getData());
                     liveData.setValue(oldList);
-
                     currentPage++;
 
                 } else {
@@ -81,16 +72,12 @@ public class EvalyExpressViewModel extends ViewModel {
 
                     currentPage++;
                 }
-
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 loading = false;
-
             }
-
 
             @Override
             public void onAuthError(boolean logout) {
@@ -104,10 +91,6 @@ public class EvalyExpressViewModel extends ViewModel {
         currentPage = 1;
         totalCount = 0;
         search = null;
-    }
-
-    public int getTotalCount() {
-        return totalCount;
     }
 
     public int getCurrentPage() {
