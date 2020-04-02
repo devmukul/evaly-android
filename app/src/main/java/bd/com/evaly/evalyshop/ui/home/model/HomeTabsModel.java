@@ -46,8 +46,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
         View itemView;
         private FragmentTabPagerAdapter pager;
 
-
-
         @Override
         protected void bindView(@NonNull View itemView) {
             this.itemView = itemView;
@@ -67,10 +65,8 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                     (tab, position) -> tab.setText(pager.getTitle(position))
             ).attach();
 
-
             final float boxHeight = AppController.getmContext().getResources().getDimension(R.dimen.tab_height);
             final float barHeight = Utils.convertDpToPixel(65, AppController.getmContext());
-            final float marginHeight = AppController.getmContext().getResources().getDimension(R.dimen.eight_dp);
 
             binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
 
@@ -85,14 +81,10 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                             viewModel.getItemCount().removeObservers(fragmentInstance.getViewLifecycleOwner());
 
                         viewModel.getItemCount().observe(fragmentInstance.getViewLifecycleOwner(), integer -> {
+
                             ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
-
                             int row = (int) (Math.ceil(integer == 0 ? 1 : integer / 3.0));
-
-                            if (position == 0)
-                                params1.height = (int) (((row * boxHeight) + barHeight) - marginHeight);
-                            else
-                                params1.height = (int) ((row * (boxHeight + 1)) + barHeight);
+                            params1.height = (int) ((row * (boxHeight + 1)) + barHeight);
 
                             binding.viewPager.post(() -> binding.viewPager.setLayoutParams(params1));
 
@@ -100,7 +92,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                     }
                 }
             });
-
 
             HomeTabsFragment categoryFragment = new HomeTabsFragment();
             Bundle bundle = new Bundle();
@@ -115,11 +106,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
             bundle2.putString("slug", "root");
             bundle2.putString("category", "root");
             brandFragment.setArguments(bundle2);
-
-            // OnDoneListener onDoneListener = () -> binding.shimmer.shimmer.setVisibility(View.GONE);
-
-            //  brandFragment.setOnDoneListener(onDoneListener);
-            // categoryFragment.setOnDoneListener(onDoneListener);
 
             HomeTabsFragment shopFragment = new HomeTabsFragment();
             Bundle bundle3 = new Bundle();
