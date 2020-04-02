@@ -170,7 +170,10 @@
         android:id="@+id/evalyExpressFragment"
         android:name="bd.com.evaly.evalyshop.ui.express.EvalyExpressFragment"
         android:label="fragment_evaly_express"
-        tools:layout="@layout/fragment_evaly_express" />
+        tools:layout="@layout/fragment_evaly_express">
+        <deepLink app:uri="https://evaly.com.bd/evaly_express_shops"/>
+        <deepLink app:uri="https://express.evaly.com.bd"/>
+    </fragment>
     <fragment
         android:id="@+id/newsfeedFragment"
         android:name="bd.com.evaly.evalyshop.ui.newsfeed.tabs.NewsfeedFragment"

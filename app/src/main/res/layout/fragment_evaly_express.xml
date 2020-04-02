@@ -77,6 +77,9 @@
                     android:background="@color/transparent"
                     android:hint="Search area, shop name..."
                     android:textColorHint="#666"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:imeOptions="actionDone"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
