@@ -106,7 +106,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:background="@color/transparent"
             android:elevation="0dp"
             android:fitsSystemWindows="true" />
@@ -139,6 +139,7 @@
                 android:layout_width="40dp"
                 android:layout_height="20dp"
                 android:layout_weight="0"
+                android:layout_marginLeft="5dp"
                 app:srcCompat="@drawable/ic_search" />
 
             <TextView
@@ -146,6 +147,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="15sp"
                 android:text="@string/what_would_you_like_to_buy" />
         </LinearLayout>
     </LinearLayout>
