@@ -90,6 +90,7 @@ public class EvalyExpressViewModel extends ViewModel {
         liveData.setValue(null);
         currentPage = 1;
         totalCount = 0;
+        hasNext = true;
         search = null;
     }
 

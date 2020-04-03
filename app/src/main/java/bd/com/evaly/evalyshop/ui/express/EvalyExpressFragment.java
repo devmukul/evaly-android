@@ -23,7 +23,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -179,35 +178,47 @@ public class EvalyExpressFragment extends Fragment {
             @Override
             public void gotLocation(Location location) {
 
-                if (getContext() == null)
+                if (getContext() == null || location == null)
+                    return;
+
+                if (location.getLatitude() == 0 || location.getLongitude() == 0)
                     return;
 
                 Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
                 try {
                     List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    Address obj = addresses.get(0);
-                    String myAddress = obj.toString();
-
-                    String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
 
                     int c = 0;
 
-                    for (String district : districts) {
-                        if (myAddress.contains(district)) {
-                            getMainExecutor(getContext()).execute(() -> {
-                                CredentialManager.saveArea(district);
-                                binding.districtName.setText(district);
-                                viewModel.clear();
-                                viewModel.loadShops();
-                            });
-                            c++;
-                            break;
+                    if (addresses.size() > 0) {
+                        Address obj = addresses.get(0);
+                        String myAddress = obj.toString();
+
+                        String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
+                        for (String district : districts) {
+                            if (myAddress.contains(district)) {
+                                getMainExecutor(getContext()).execute(() -> {
+                                    CredentialManager.saveArea(district);
+                                    binding.districtName.setText(district);
+                                    viewModel.clear();
+                                    viewModel.loadShops();
+                                });
+                                c++;
+                                break;
+                            }
                         }
                     }
 
                     if (c == 0)
-                        Toast.makeText(getContext(), "Could't find your district with GPS, please select manually", Toast.LENGTH_SHORT).show();
-                } catch (IOException ignored) { }
+                        getMainExecutor(getContext()).execute(() -> {
+                            if (getContext() != null) {
+                                Toast.makeText(getContext(), "Could't find your district with GPS, please select manually", Toast.LENGTH_SHORT).show();
+                                binding.progressBar.setVisibility(View.GONE);
+                            }
+                        });
+
+                } catch (Exception ignored) {
+                }
             }
         });
     }
@@ -241,6 +252,9 @@ public class EvalyExpressFragment extends Fragment {
 
         final String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
         builder.setItems(districts, (dialog, which) -> {
+
+            binding.progressBar.setVisibility(View.VISIBLE);
+
             if (districts[which].equalsIgnoreCase("automatic")) {
                 checkPermissionAndLoad();
             } else {

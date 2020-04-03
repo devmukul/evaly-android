@@ -30,19 +30,7 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
     private List<GroupShopModel> itemList;
     private NavController navController;
 
-    View.OnClickListener productListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            int position = (int) view.getTag();
 
-            GroupShopModel model = itemList.get(position);
-            Bundle bundle = new Bundle();
-            bundle.putString("shop_name", model.getShopName());
-            bundle.putString("logo_image", model.getLogoImage());
-            bundle.putString("shop_slug", model.getShopSlug());
-            navController.navigate(R.id.shopFragment, bundle);
-        }
-    };
 
 
     public EvalyExpressAdapter(Context ctx, List<GroupShopModel> itemList, NavController navController) {
@@ -70,8 +58,7 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
 
         holder.tv.setText(Utils.titleBeautify(model.getShopName()));
 
-        holder.view.setOnClickListener(productListener);
-        holder.view.setTag(position);
+       // holder.view.setTag(position);
 
         Glide.with(context)
                 .load(model.getLogoImage())
@@ -130,7 +117,15 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
             super(itemView);
             tv = itemView.findViewById(R.id.text);
             iv = itemView.findViewById(R.id.image);
-            view = itemView;
+
+            itemView.setOnClickListener(v -> {
+                        GroupShopModel model = itemList.get(getLayoutPosition());
+                        Bundle bundle = new Bundle();
+                        bundle.putString("shop_name", model.getShopName());
+                        bundle.putString("logo_image", model.getLogoImage());
+                        bundle.putString("shop_slug", model.getShopSlug());
+                        navController.navigate(R.id.shopFragment, bundle);
+            });
 
         }
     }
