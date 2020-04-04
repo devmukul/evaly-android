@@ -75,6 +75,9 @@ public class UserDashboardActivity extends BaseActivity {
 
         @Override
         public void onConnected() {
+            if (AppController.getmService() == null)
+                return;
+
             xmppHandler = AppController.getmService().xmpp;
             xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
             xmppHandler.login();
@@ -275,8 +278,7 @@ public class UserDashboardActivity extends BaseActivity {
                 if (n == 1) {
                     CredentialManager.setLanguage("BN");
                     myLocale = new Locale("BN");
-                }
-                else {
+                } else {
                     CredentialManager.setLanguage("EN");
                     myLocale = new Locale("EN");
                 }
@@ -305,9 +307,6 @@ public class UserDashboardActivity extends BaseActivity {
             BalanceFragment balanceFragment = BalanceFragment.newInstance();
 
             balanceFragment.show(getSupportFragmentManager(), "balance");
-
-
-
 
 
         });

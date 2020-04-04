@@ -94,6 +94,9 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             if (shopDetailsModel == null)
                 return;
 
+            if (AppController.getmService() == null)
+                return;
+
             xmppHandler = AppController.getmService().xmpp;
             rosterList = xmppHandler.rosterList;
 
