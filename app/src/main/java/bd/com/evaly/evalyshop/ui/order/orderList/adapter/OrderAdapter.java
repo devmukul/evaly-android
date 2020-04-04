@@ -109,16 +109,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             myViewHolder.status.setBackgroundColor(Color.parseColor("#5ac1de"));
 
 
-        myViewHolder.phone.setText(userDetails.getPhone());
+        myViewHolder.phone.setText("৳ " + Utils.formatePrice(orders.get(i).getTotal()));
         myViewHolder.view.setOnClickListener(v -> {
 
             try {
                 Intent intent = new Intent(context, OrderDetailsActivity.class);
-                intent.putExtra("orderID", myViewHolder.orderID.getText().toString());
+                intent.putExtra("orderID", orders.get(i).getInvoiceNo());
                 context.startActivity(intent);
             } catch (Exception e) {
                 Intent intent = new Intent(context, OrderDetailsActivity.class);
-                intent.putExtra("orderID", myViewHolder.orderID.getText().toString());
+                intent.putExtra("orderID", orders.get(i).getInvoiceNo());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

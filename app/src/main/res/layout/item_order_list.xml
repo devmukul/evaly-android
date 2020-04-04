@@ -2,26 +2,29 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="10dp"
     android:layout_marginTop="10dp"
     android:layout_marginRight="10dp"
-    android:background="@drawable/border_box_thin"
+    android:background="@drawable/newsfeed_box_bg"
     android:paddingLeft="15dp"
-    android:paddingTop="13dp"
+    android:paddingTop="15dp"
     android:paddingRight="15dp"
-    android:paddingBottom="13dp">
+    android:paddingBottom="15dp">
 
     <TextView
         android:id="@+id/orderID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="-1dp"
         android:clickable="false"
         android:textColor="#444"
         android:textIsSelectable="true"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="EVL28139213" />
 
 
     <androidx.cardview.widget.CardView
@@ -47,13 +50,13 @@
                 android:layout_height="wrap_content"
                 android:background="#333"
                 android:clickable="false"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="5dp"
+                android:paddingLeft="8dp"
+                android:paddingTop="3dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="3dp"
                 android:text="Pending"
                 android:textColor="#fff"
-                android:textSize="14sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/paymentStatus"
@@ -62,13 +65,13 @@
                 android:layout_weight="1"
                 android:background="#A53F3F"
                 android:clickable="false"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="5dp"
+                android:paddingLeft="8dp"
+                android:paddingTop="3dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="3dp"
                 android:text="Unpaid"
                 android:textColor="#fff"
-                android:textSize="14sp" />
+                android:textSize="13sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -77,10 +80,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/orderID"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:clickable="false"
-        android:textColor="#444"
-        android:textSize="16sp" />
+        android:textColor="#f57224"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="4500" />
 
     <TextView
         android:id="@+id/date"
@@ -90,5 +95,6 @@
         android:layout_alignParentRight="true"
         android:clickable="false"
         android:textColor="#777"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        tools:text="12/02/2020" />
 </RelativeLayout>

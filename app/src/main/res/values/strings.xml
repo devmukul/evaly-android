@@ -82,7 +82,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="invoice_no">INVOICE NO</string>
     <string name="order_status">ORDER STATUS</string>
     <string name="product">Product</string>
-    <string name="rate_amp_qty"><![CDATA[Rate & Qty]]></string>
+    <string name="rate_amp_qty"><![CDATA[Amount & Qty]]></string>
     <string name="amount">Amount</string>
     <string name="payment_methods">Payment Methods</string>
     <string name="evaly_pay">Evaly Pay</string>
