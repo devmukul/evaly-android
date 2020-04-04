@@ -330,9 +330,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         totalCount = response.getCount();
 
         if (controller.getShopInfo() == null) {
-            controller.setAttr(shopDetails);
-            controller.setSubCount(shopData.getSubscriberCount());
-            controller.setSubscribed(shopData.isSubscribed());
+            controller.setAttr(response);
             if (shopData.getMeta() != null)
                 controller.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
 

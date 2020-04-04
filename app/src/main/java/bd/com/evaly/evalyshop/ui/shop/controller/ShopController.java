@@ -14,7 +14,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
@@ -28,11 +28,9 @@ public class ShopController extends EpoxyController {
     private AppCompatActivity activity;
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
-    private Shop shopInfo;
+    private ShopDetailsModel shopInfo;
     private int cashbackRate = 0;
     private ShopViewModel viewModel;
-    private int subCount = 0;
-    private boolean subscribed;
 
     @AutoModel
     ShopHeaderModel_ headerModel;
@@ -64,7 +62,7 @@ public class ShopController extends EpoxyController {
             requestModelBuild();
     }
 
-    public void setAttr(Shop shopInfo){
+    public void setAttr(ShopDetailsModel shopInfo){
         this.shopInfo = shopInfo;
     }
 
@@ -75,8 +73,6 @@ public class ShopController extends EpoxyController {
                 .fragment(fragment)
                 .shopInfo(shopInfo)
                 .viewModel(viewModel)
-                .subCount(subCount)
-                .subscribed(subscribed)
                 .addTo(this);
 
         categoryModel
@@ -149,15 +145,7 @@ public class ShopController extends EpoxyController {
         this.viewModel = viewModel;
     }
 
-    public void setSubscribed(boolean subscribed) {
-        this.subscribed = subscribed;
-    }
-
-    public void setSubCount(int subCount) {
-        this.subCount = subCount;
-    }
-
-    public Shop getShopInfo() {
+    public ShopDetailsModel getShopInfo() {
         return shopInfo;
     }
 }
