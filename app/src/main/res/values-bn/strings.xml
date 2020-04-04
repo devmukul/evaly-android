@@ -249,4 +249,9 @@
     <string name="more_replies">টি রিপ্লে দেখুন</string>
     <string name="payment">পেমেন্ট</string>
     <string name="evaly_express">ইভ্যালি এক্সপ্রেস</string>
+    <string name="total">মোট</string>
+    <string name="subtotal">মোট</string>
+    <string name="paid_amount">পরিশোধিত হয়েছে</string>
+    <string name="due_amount">বাকি রয়েছে</string>
+    <string name="order_summary">অর্ডার সংক্ষিপ্তসার</string>
 </resources>

@@ -16,27 +16,34 @@
         android:text="1"
         android:visibility="gone" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginLeft="15dp"
+    <FrameLayout
+        android:layout_width="81dp"
+        android:layout_height="81dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="15dp"
-        android:elevation="0dp"
-        android:padding="1dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="#eeee"
-        app:cardCornerRadius="6dp">
+        android:background="@drawable/input_brd"
+        android:padding="1dp">
 
-        <ImageView
-            android:id="@+id/productImage"
+        <androidx.cardview.widget.CardView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:adjustViewBounds="true"
-            android:padding="1dp"
-            app:srcCompat="@drawable/ic_placeholder_small" />
-    </androidx.cardview.widget.CardView>
+            android:clipToPadding="true"
+            app:cardBackgroundColor="#fff"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="true">
 
+            <ImageView
+                android:id="@+id/productImage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:adjustViewBounds="true"
+                android:padding="1dp"
+                app:srcCompat="@drawable/ic_placeholder_small" />
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -45,12 +52,12 @@
         android:gravity="clip_horizontal"
         android:orientation="vertical">
 
-
         <TextView
             android:id="@+id/productName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#444"
+            android:textColor="#666"
+            android:layout_marginTop="2dp"
             tools:text="This is the product title, variation name is on bottom" />
 
         <TextView
@@ -71,6 +78,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:textAlignment="textEnd"
+        android:textColor="#666"
+        android:layout_marginTop="2dp"
         tools:text="1 x 4,00000" />
 
     <TextView
@@ -80,7 +89,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:textAlignment="textEnd"
-        android:textColor="#444"
+        android:textColor="#666"
+        android:layout_marginTop="2dp"
         tools:text="4,00000" />
 
 </LinearLayout>

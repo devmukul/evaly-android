@@ -795,7 +795,7 @@ public class OrderDetailsActivity extends BaseActivity {
                 if (payMethod.equals("cod"))
                     paymentMethods.setText("Cash on Delivery");
                 else if (payMethod.equals(""))
-                    paymentMethods.setText("None");
+                    paymentMethods.setVisibility(View.GONE);
                 else {
 
                     payMethod = payMethod.replaceAll("card", "Card");
