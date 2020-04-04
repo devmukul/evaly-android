@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -28,11 +27,11 @@ import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
 
-public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder>{
+public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder> {
 
     private List<RepliesItem> itemsList;
     private Context context;
-    private ViewModel viewModel;
+    private ReplyViewModel viewModel;
 
     public ReplyAdapter(List<RepliesItem> itemsList, Context context, ReplyViewModel viewModel) {
         this.itemsList = itemsList;
@@ -43,7 +42,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
     @NonNull
     @Override
     public ReplyAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_reply,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_reply, viewGroup, false);
         return new ReplyAdapter.MyViewHolder(view);
     }
 
@@ -62,7 +61,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
             img.setBounds(0, 0, sizeInPixel, sizeInPixel);
             myViewHolder.userNameView.setCompoundDrawables(null, null, img, null);
             myViewHolder.userNameView.setCompoundDrawablePadding(15);
-        }else {
+        } else {
             myViewHolder.userNameView.setCompoundDrawables(null, null, null, null);
         }
 
@@ -70,7 +69,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
         if (author.getFullName().trim().equals(""))
             myViewHolder.userNameView.setText("User");
 
-        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS","hh:mm aa - d',' MMMM", RepliesItem.getCreatedAt())));
+        myViewHolder.timeView.setText(Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", RepliesItem.getCreatedAt())));
         myViewHolder.statusView.setText(Html.fromHtml(RepliesItem.getBody()));
 
         Glide.with(context)
@@ -107,13 +106,20 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
 
         myViewHolder.view.setOnLongClickListener(
                 view -> {
-                    if (!CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
+                    if (CredentialManager.getToken().equals(""))
+                        return false;
+                    if (CredentialManager.getUserData() != null && !CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
                         return false;
 
                     new AlertDialog.Builder(context)
                             .setMessage("Are you sure you want to delete?")
                             .setIcon(android.R.drawable.ic_dialog_alert)
-                           // .setPositiveButton("YES", (dialog, whichButton) -> fragment.deletePost(RepliesItem.getId()+"", "reply"))
+                            .setPositiveButton("YES", (dialog, whichButton) -> {
+                                viewModel.deleteReply(itemsList.get(i).getId());
+                                itemsList.remove(i);
+                                notifyItemRemoved(i);
+
+                            })
                             .setNegativeButton("NO", null).show();
 
                     return false;
@@ -133,10 +139,11 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
         return position;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView userNameView, timeView, statusView, likeCountView, replyCountView;
         ImageView userImage, likeIcon, commentIcon, menuIcon, postImage;
         View view;
+
         public MyViewHolder(final View itemView) {
             super(itemView);
 

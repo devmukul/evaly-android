@@ -3,7 +3,9 @@ package bd.com.evaly.evalyshop.models.newsfeed.createPost;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CreatePostModel{
+import java.io.Serializable;
+
+public class CreatePostModel implements Serializable {
 
 	@SerializedName("post")
 	private Post post;

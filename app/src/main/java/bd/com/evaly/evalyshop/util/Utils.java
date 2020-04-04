@@ -295,7 +295,10 @@ public class Utils {
     }
 
     public static String truncateText(String text, int maxLength, String endWith) {
-        if (text != null && text.length() > maxLength) {
+        if (text == null)
+            return "";
+
+        if (text.length() > maxLength) {
             BreakIterator bi = BreakIterator.getWordInstance();
             bi.setText(text);
 

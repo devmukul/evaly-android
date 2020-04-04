@@ -2,7 +2,9 @@ package bd.com.evaly.evalyshop.models.newsfeed.comment;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Author{
+import java.io.Serializable;
+
+public class Author implements Serializable {
 
 	@SerializedName("compressed_image")
 	private String compressedImage;

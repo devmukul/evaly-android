@@ -108,8 +108,6 @@ public class ReplyBottomSheet extends BottomSheetDialogFragment {
             }
         });
 
-        // itemList.addAll(commentModel.getReplies());
-
         adapter = new ReplyAdapter(itemList, getContext(), viewModel);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());

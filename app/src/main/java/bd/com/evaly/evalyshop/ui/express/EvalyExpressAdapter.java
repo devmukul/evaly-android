@@ -46,7 +46,7 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
 
     @Override
     public EvalyExpressAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_campaign_shop, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_express_shop, parent, false);
 
         return new EvalyExpressAdapter.MyViewHolder(view);
     }

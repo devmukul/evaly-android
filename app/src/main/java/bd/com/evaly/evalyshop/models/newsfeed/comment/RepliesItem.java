@@ -2,7 +2,9 @@ package bd.com.evaly.evalyshop.models.newsfeed.comment;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RepliesItem{
+import java.io.Serializable;
+
+public class RepliesItem implements Serializable {
 
 	@SerializedName("author")
 	private Author author;
