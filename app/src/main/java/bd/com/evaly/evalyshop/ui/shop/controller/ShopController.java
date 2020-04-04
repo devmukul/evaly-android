@@ -156,5 +156,9 @@ public class ShopController extends EpoxyController {
     public void setSubCount(int subCount) {
         this.subCount = subCount;
     }
+
+    public Shop getShopInfo() {
+        return shopInfo;
+    }
 }
 

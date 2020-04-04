@@ -41,8 +41,6 @@ public abstract class ShopHeaderModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
     boolean subscribed;
-
-
     @EpoxyAttribute
     int subCount;
 

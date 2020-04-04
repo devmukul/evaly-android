@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -73,7 +71,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
-    private String slug = "", title = "", owner_number = "", shop_name = "", campaign_slug = "", logo_image;
+    private String slug = "", campaign_slug = "", title = "";
     private String categorySlug = null;
     private int currentPage;
     private int totalCount = 0;
@@ -82,31 +80,35 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
-    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-        public void onPresenceChanged(PresenceModel presenceModel) {
-        }
-
-        public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-            rosterList = xmppHandler.rosterList;
-            if (!owner_number.equals("")) {
-                try {
-                    Logger.d(owner_number);
-                    EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
-                            + Constants.XMPP_HOST);
-                    vCard = xmppHandler.getUserDetails(jid);
-                    Logger.d(new Gson().toJson(vCard));
-                } catch (XmppStringprepException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
     private ShopController controller;
     private boolean isInitiated = false;
     private boolean clickFromCategory = false;
     private ShopViewModel viewModel;
     private FragmentShopBinding binding;
+    private Shop shopDetailsModel;
+    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+        public void onPresenceChanged(PresenceModel presenceModel) {
+        }
+
+        public void onConnected() {
+            if (shopDetailsModel == null)
+                return;
+
+            xmppHandler = AppController.getmService().xmpp;
+            rosterList = xmppHandler.rosterList;
+
+//            if (!shopDetailsModel.getOwnerName().equals("")) {
+//                try {
+//                    EntityBareJid jid = JidCreate.entityBareFrom(shopDetailsModel.getOwnerName() + "@"
+//                            + Constants.XMPP_HOST);
+//                    vCard = xmppHandler.getUserDetails(jid);
+//                    Logger.d(new Gson().toJson(vCard));
+//                } catch (XmppStringprepException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+        }
+    };
 
     public ShopFragment() {
         // Required empty public constructor
@@ -119,7 +121,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         if (!CredentialManager.getToken().equals(""))
             Executors.newSingleThreadExecutor().execute(() -> startXmppService());
-
     }
 
     @Override
@@ -161,18 +162,18 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
 
-        LinearLayout homeSearch = view.findViewById(R.id.home_search);
-        homeSearch.setOnClickListener(view12 -> {
+
+        binding.appBarLayout.homeSearch.setOnClickListener(view12 -> {
             Bundle bundle = new Bundle();
             bundle.putString("shop_slug", slug);
-            bundle.putString("shop_name", shop_name);
+            bundle.putString("shop_name", shopDetailsModel.getName());
             bundle.putString("campaign_slug", campaign_slug);
             NavHostFragment.findNavController(this).navigate(R.id.shopSearchActivity, bundle);
         });
 
-        TextView searchTitle = view.findViewById(R.id.searchTitle);
+        binding.appBarLayout.homeSearch.setEnabled(false);
 
-        searchTitle.setText("Search in this shop...");
+        binding.appBarLayout.searchTitle.setText("Search in this shop...");
 
         if (getArguments() == null) {
             Toast.makeText(getContext(), "Shop not available", Toast.LENGTH_SHORT).show();
@@ -187,7 +188,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         slug = getArguments().getString("shop_slug");
 
-
         viewModel.setCampaignSlug(campaign_slug);
 
         viewModel.setCategorySlug(categorySlug);
@@ -199,8 +199,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         controller.setFragment(this);
         controller.setViewModel(viewModel);
 
-        binding.recyclerView.setAdapter(controller.getAdapter());
-
         int spanCount = 2;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         controller.setSpanCount(spanCount);
@@ -209,6 +207,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
+        binding.recyclerView.setAdapter(controller.getAdapter());
 
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -286,7 +285,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 viewModel.loadShopProducts();
             }
         });
-
     }
 
     @Override
@@ -296,19 +294,20 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void startXmppService() {
-        if (getContext() != null && getActivity() != null) {
-            if (!XMPPService.isServiceRunning) {
-                Intent intent = new Intent(getActivity(), XMPPService.class);
-                mChatApp.UnbindService();
-                mChatApp.BindService(intent);
+        if (getActivity() == null || getActivity().isFinishing())
+            return;
+
+        if (!XMPPService.isServiceRunning) {
+            Intent intent = new Intent(getActivity(), XMPPService.class);
+            mChatApp.UnbindService();
+            mChatApp.BindService(intent);
+        } else {
+            xmppHandler = AppController.getmService().xmpp;
+            if (!xmppHandler.isConnected()) {
+                xmppHandler.connect();
             } else {
-                xmppHandler = AppController.getmService().xmpp;
-                if (!xmppHandler.isConnected()) {
-                    xmppHandler.connect();
-                } else {
-                    xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                    xmppHandler.login();
-                }
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
             }
         }
     }
@@ -330,21 +329,24 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         totalCount = response.getCount();
 
-        if (currentPage == 1) {
+        if (controller.getShopInfo() == null) {
             controller.setAttr(shopDetails);
             controller.setSubCount(shopData.getSubscriberCount());
             controller.setSubscribed(shopData.isSubscribed());
             if (shopData.getMeta() != null)
                 controller.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
+
+            shopDetailsModel = shopDetails;
         }
+
+
+        binding.appBarLayout.homeSearch.setEnabled(true);
 
         controller.setLoadingMore(false);
 
         totalCount = response.getCount();
 
-
         List<ItemsItem> shopItems = shopData.getItems();
-
 
         binding.recyclerView.setVisibility(View.VISIBLE);
 
@@ -393,6 +395,9 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void setUpXmpp() {
 
+        if (shopDetailsModel == null)
+            return;
+
         ViewDialog dialog = new ViewDialog(getActivity());
         dialog.showDialog();
 
@@ -400,9 +405,10 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             startActivity(new Intent(getActivity(), SignInActivity.class));
             Objects.requireNonNull(getActivity()).finish();
         } else {
-            if (xmppHandler != null && xmppHandler.isConnected() && xmppHandler.isLoggedin()) {
-                String jid = getContactFromRoster(owner_number);
-                if (!CredentialManager.getUserName().equalsIgnoreCase(owner_number)) {
+
+            if (xmppHandler != null && xmppHandler.isConnected()) {
+                String jid = getContactFromRoster(shopDetailsModel.getOwnerName());
+                if (!CredentialManager.getUserName().equalsIgnoreCase(shopDetailsModel.getOwnerName())) {
                     if (jid != null) {
                         dialog.hideDialog();
                         VCard vCard;
@@ -411,9 +417,9 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             if (vCard != null) {
                                 if (vCard.getFrom() != null) {
                                     RosterTable rosterTable = new RosterTable();
-                                    rosterTable.name = shop_name;
+                                    rosterTable.name = shopDetailsModel.getName();
                                     rosterTable.id = vCard.getFrom().asUnescapedString();
-                                    rosterTable.imageUrl = logo_image;
+                                    rosterTable.imageUrl = shopDetailsModel.getLogoImage();
                                     rosterTable.status = 0;
                                     rosterTable.lastMessage = "";
                                     rosterTable.nick_name = vCard.getNickName();
@@ -435,9 +441,9 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         HashMap<String, String> data1 = new HashMap<>();
                         data1.put("localuser", CredentialManager.getUserName());
                         data1.put("localserver", Constants.XMPP_HOST);
-                        data1.put("user", owner_number);
+                        data1.put("user", shopDetailsModel.getOwnerName());
                         data1.put("server", Constants.XMPP_HOST);
-                        data1.put("nick", shop_name);
+                        data1.put("nick", shopDetailsModel.getName());
                         data1.put("subs", "both");
                         data1.put("group", "evaly");
 
@@ -463,7 +469,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 } else
                     Toast.makeText(getContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
             } else
-                startXmppService();
+                Executors.newSingleThreadExecutor().execute(() -> startXmppService());
         }
     }
 
@@ -488,7 +494,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 CredentialManager.getUserData().setFirst_name("");
 
             HashMap<String, String> data = new HashMap<>();
-            data.put("localuser", shop_name);
+            data.put("localuser", shopDetailsModel.getName());
             data.put("localserver", Constants.XMPP_HOST);
             data.put("user", CredentialManager.getUserName());
             data.put("server", Constants.XMPP_HOST);
@@ -500,36 +506,37 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 public void onDataFetched(retrofit2.Response<JsonPrimitive> response) {
                     dialog.hideDialog();
                     try {
-                        EntityBareJid jid = JidCreate.entityBareFrom(owner_number + "@"
+                        EntityBareJid jid = JidCreate.entityBareFrom(shopDetailsModel.getOwnerName() + "@"
                                 + Constants.XMPP_HOST);
                         VCard mVCard = xmppHandler.getUserDetails(jid);
                         HashMap<String, String> data1 = new HashMap<>();
-                        data1.put("phone_number", owner_number);
+                        data1.put("phone_number", shopDetailsModel.getOwnerName());
                         data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.evalyshop");
 
-                        Logger.d(new Gson().toJson(mVCard.getFirstName()) + "       ====");
+                        Logger.d(response.body());
+
                         if (mVCard.getFirstName() == null) {
                             dialog.hideDialog();
                             RosterTable table = new RosterTable();
                             table.id = jid.asUnescapedString();
-                            table.rosterName = shop_name;
+                            table.rosterName = shopDetailsModel.getName();
                             table.name = "";
                             table.status = 0;
                             table.unreadCount = 0;
                             table.nick_name = "";
-                            table.imageUrl = logo_image;
+                            table.imageUrl = shopDetailsModel.getLogoImage();
                             table.lastMessage = "";
 
                             startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", table));
                         } else {
                             dialog.hideDialog();
                             RosterTable rosterTable = new RosterTable();
-                            rosterTable.name = vCard.getFirstName() + " " + vCard.getLastName();
-                            rosterTable.id = vCard.getFrom().asUnescapedString();
-                            rosterTable.imageUrl = vCard.getField("URL");
+                            rosterTable.name = shopDetailsModel.getName();
+                            rosterTable.id = mVCard.getFrom().asUnescapedString();
+                            rosterTable.imageUrl = shopDetailsModel.getLogoImage();
                             rosterTable.status = 0;
                             rosterTable.lastMessage = "";
-                            rosterTable.nick_name = vCard.getNickName();
+                            rosterTable.nick_name = mVCard.getNickName();
                             rosterTable.time = 0;
                             startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
 

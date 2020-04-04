@@ -73,7 +73,6 @@ import java.util.Set;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
@@ -81,6 +80,7 @@ import bd.com.evaly.evalyshop.models.xmpp.ChatStateModel;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
 import bd.com.evaly.evalyshop.models.xmpp.RoasterModel;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
+import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 import retrofit2.Response;
@@ -1003,11 +1003,8 @@ public class XMPPHandler {
     public void login() {
         try {
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (!connected && !isconnecting) connect();
-                }
+            new Thread(() -> {
+                if (!connected && !isconnecting) connect();
             }).start();
 
             Log.e(TAG, "User " + userId + userPassword);
@@ -1019,11 +1016,14 @@ public class XMPPHandler {
                 service.onLoginFailed("username empty");
                 return;
             }
-            connection.login(userId, userPassword);
+
+            if (!loggedin)
+                connection.login(userId, userPassword);
 
             Log.e(TAG, "Yey! We're logged in to the Xmpp server!");
 
             service.onLoggedIn();
+
         } catch (XMPPException | SmackException | IOException e) {
             Logger.d(e.getMessage());
             service.onLoginFailed(e.getMessage());
