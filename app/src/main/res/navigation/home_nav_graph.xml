@@ -46,10 +46,14 @@
 
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="https://evaly.com.bd/" />
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/"
+            tools:targetApi="m" />
         <deepLink
             android:id="@+id/deepLink2"
-            app:uri="https://www.evaly.com.bd/" />
+            android:autoVerify="true"
+            app:uri="https://www.evaly.com.bd/"
+            tools:targetApi="m" />
         <action
             android:id="@+id/action_homeFragment_to_evalyExpressFragment"
             app:destination="@id/evalyExpressFragment" />
@@ -61,9 +65,15 @@
         android:label="fragment_browse_product"
         tools:layout="@layout/fragment_browse_product">
 
-        <deepLink app:uri="https://evaly.com.bd/categories/{slug}" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/categories/{slug}"
+            tools:targetApi="m" />
 
-        <deepLink app:uri="https://www.evaly.com.bd/categories/{slug}" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://www.evaly.com.bd/categories/{slug}"
+            tools:targetApi="m" />
 
     </fragment>
     <fragment
@@ -78,15 +88,23 @@
         tools:layout="@layout/fragment_shop">
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="https://evaly.com.bd/shops/{shop_slug}" />
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/shops/{shop_slug}"
+            tools:targetApi="m" />
         <deepLink
             android:id="@+id/deepLink2"
-            app:uri="https://www.evaly.com.bd/shops/{shop_slug}" />
+            android:autoVerify="true"
+            app:uri="https://www.evaly.com.bd/shops/{shop_slug}"
+            tools:targetApi="m" />
 
         <deepLink
-            app:uri="https://evaly.com.bd/campaign/shop/{shop_slug}/{campaign_slug}"/>
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/campaign/shop/{shop_slug}/{campaign_slug}"
+            tools:targetApi="m" />
         <deepLink
-            app:uri="https://www.evaly.com.bd/campaign/shop/{shop_slug}/{campaign_slug}"/>
+            android:autoVerify="true"
+            app:uri="https://www.evaly.com.bd/campaign/shop/{shop_slug}/{campaign_slug}"
+            tools:targetApi="m" />
 
 
     </fragment>
@@ -97,11 +115,15 @@
         tools:layout="@layout/fragment_brand">
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="https://evaly.com.bd/brands/{slug}" />
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/brands/{slug}"
+            tools:targetApi="m" />
 
         <deepLink
             android:id="@+id/deepLink2"
-            app:uri="https://www.evaly.com.bd/brands/{slug}" />
+            android:autoVerify="true"
+            app:uri="https://www.evaly.com.bd/brands/{slug}"
+            tools:targetApi="m" />
 
     </fragment>
     <fragment
@@ -118,8 +140,14 @@
         <action
             android:id="@+id/action_campaignFragment_to_campaignShopFragment"
             app:destination="@id/campaignShopFragment" />
-        <deepLink app:uri="https://campaign.evaly.com.bd/" />
-        <deepLink app:uri="https://evaly.com.bd/freedom-flash-sale" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://campaign.evaly.com.bd/"
+            tools:targetApi="m" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/freedom-flash-sale"
+            tools:targetApi="m" />
     </fragment>
     <fragment
         android:id="@+id/campaignShopFragment"
@@ -128,10 +156,14 @@
 
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="https://evaly.com.bd/campaign/{slug}" />
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/campaign/{slug}"
+            tools:targetApi="m" />
         <deepLink
             android:id="@+id/deepLink2"
-            app:uri="https://www.evaly.com.bd/campaign/{slug}" />
+            android:autoVerify="true"
+            app:uri="https://www.evaly.com.bd/campaign/{slug}"
+            tools:targetApi="m" />
 
     </fragment>
     <activity
@@ -146,10 +178,14 @@
         android:label="ViewProductActivity">
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="https://evaly.com.bd/products/{product_slug}" />
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/products/{product_slug}"
+            tools:targetApi="m" />
         <deepLink
             android:id="@+id/deepLink2"
-            app:uri="https://www.evaly.com.bd/products/{product_slug}" />
+            android:autoVerify="true"
+            app:uri="https://www.evaly.com.bd/products/{product_slug}"
+            tools:targetApi="m" />
     </activity>
     <activity
         android:id="@+id/newsfeedActivity"
@@ -157,22 +193,34 @@
         android:label="activity_newsfeed"
         tools:layout="@layout/activity_newsfeed">
 
-        <deepLink app:uri="https://evaly.com.bd/feeds" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/feeds"
+            tools:targetApi="m" />
 
     </activity>
     <activity
         android:id="@+id/giftCardActivity"
         android:name="bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity"
         android:label="GiftCardActivity">
-        <deepLink app:uri="https://evaly.com.bd/gift-card" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/gift-card"
+            tools:targetApi="m" />
     </activity>
     <fragment
         android:id="@+id/evalyExpressFragment"
         android:name="bd.com.evaly.evalyshop.ui.express.EvalyExpressFragment"
         android:label="fragment_evaly_express"
         tools:layout="@layout/fragment_evaly_express">
-        <deepLink app:uri="https://evaly.com.bd/evaly_express_shops"/>
-        <deepLink app:uri="https://express.evaly.com.bd"/>
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/evaly_express_shops"
+            tools:targetApi="m" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://express.evaly.com.bd"
+            tools:targetApi="m" />
     </fragment>
     <fragment
         android:id="@+id/newsfeedFragment"
@@ -185,7 +233,25 @@
     <fragment
         android:id="@+id/newsfeedNotificationFragment"
         android:name="bd.com.evaly.evalyshop.ui.newsfeed.notification.NewsfeedNotificationFragment"
-        android:label="NewsfeedNotificationFragment" />
+        android:label="NewsfeedNotificationFragment">
+
+
+
+    </fragment>
+
+<!--    <activity-->
+<!--        android:id="@+id/orderDetailsActivity"-->
+<!--        android:name="bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity"-->
+<!--        android:label="OrderDetailsActivity">-->
+
+<!--        <deepLink-->
+<!--            app:uri="https://evaly.com.bd/order/my-orders?invoice_no={orderID}"/>-->
+
+<!--    </activity>-->
+<!--    <activity-->
+<!--        android:id="@+id/orderListActivity"-->
+<!--        android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity"-->
+<!--        android:label="OrderListActivity" />-->
 
 
 </navigation>
