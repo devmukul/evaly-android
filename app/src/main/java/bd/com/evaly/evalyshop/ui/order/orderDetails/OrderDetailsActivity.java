@@ -80,8 +80,8 @@ import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
-import bd.com.evaly.evalyshop.ui.payment.PaymentBottomSheet;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
+import bd.com.evaly.evalyshop.ui.payment.PaymentBottomSheet;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
@@ -664,12 +664,10 @@ public class OrderDetailsActivity extends BaseActivity {
                 paymentMethod = response.getPaymentMethod();
                 paymentStatus = response.getPaymentStatus();
 
-
                 if (paymentStatus.toLowerCase().equals("refund_requested"))
                     tvPaymentStatus.setText("Refund Requested");
                 else
                     tvPaymentStatus.setText(Utils.toFirstCharUpperAll(paymentStatus));
-
 
                 if (paymentStatus.toLowerCase().equals("paid")) {
                     tvPaymentStatus.setBackgroundColor(Color.parseColor("#33d274"));
@@ -762,18 +760,11 @@ public class OrderDetailsActivity extends BaseActivity {
                             Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
                             Calendar end = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
 
-//                            end.set(Calendar.HOUR_OF_DAY, 0);
-//                            start.set(Calendar.HOUR_OF_DAY, 0);
-
                             try {
                                 end.setTime(df_input.parse(cashback_date));
                             } catch (ParseException e) {
                                 Log.e("timze", e.toString());
                             }
-
-//                            long startTime = start.getTimeInMillis();
-//                            long diffTime = end.getTimeInMillis() - startTime;
-//                            long diffDays = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
 
                             int diffDays = Utils.daysBetween(start, end);
 
@@ -783,7 +774,14 @@ public class OrderDetailsActivity extends BaseActivity {
                             if (diffDays < 1)
                                 campaignRuleHolder.setVisibility(View.GONE);
                         } else {
-                            String message = "Payments with <font color=\"#c53030\">" + payMethod + "</font> will be rewarded by <b>" + cashback_percentage + "%</b> cashback balance instantly.";
+                            String message = "Payments with <font color=\"#c53030\">" + payMethod + "</font> will be rewarded by <b>" + cashback_percentage + "%</b> cashback balance";
+
+
+                            if (campaignRuleObject.get("name").getAsString().contains("Express"))
+                                message = message + ", 3 days after payment.";
+                            else
+                                message = message + " instantly.";
+
                             tvCampaignRule.setText(Html.fromHtml(message));
                         }
                     }
