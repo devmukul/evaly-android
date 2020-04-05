@@ -11,8 +11,6 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
-
 @Dao
 public interface UserInfoDao {
 
@@ -20,7 +18,7 @@ public interface UserInfoDao {
     void insert(UserInfoEntity entity);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<CartEntity> list);
+    void insertAll(List<UserInfoEntity> list);
 
     @Delete
     void delete(UserInfoEntity entity);
@@ -32,7 +30,7 @@ public interface UserInfoDao {
     Cursor getCursor();
 
     @Query("SELECT * FROM user_info_table")
-    List<CartEntity> getAll();
+    List<UserInfoEntity> getAll();
     
     @Query("SELECT COUNT(token) FROM user_info_table")
     int getCount();

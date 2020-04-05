@@ -13,6 +13,14 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <permission
+        android:name="bd.com.evaly.evalyshop.manager.TokenContentProvider._READ_PERMISSION"
+        android:protectionLevel="normal" />
+
+
+    <permission
+        android:name="bd.com.evaly.evalyshop.manager.TokenContentProvider._WRITE_PERMISSION"
+        android:protectionLevel="normal" />
 
     <application
         android:name=".controller.AppController"
@@ -26,6 +34,16 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <provider
+            android:name="bd.com.evaly.evalyshop.manager.TokenContentProvider"
+            android:authorities="bd.com.evaly.econnect"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="true"
+            android:grantUriPermissions="true"
+            android:readPermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._READ_PERMISSION"
+            android:writePermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._WRITE_PERMISSION"/>
 
         <activity
             android:name=".ui.issue.IssuesActivity"
@@ -53,8 +71,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.newsfeed.NewsfeedActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -121,8 +139,8 @@
         <activity android:name=".ui.reviews.ReviewsActivity" />
         <activity
             android:name=".ui.order.orderDetails.OrderDetailsActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.order.AddBalanceActivity"
             android:theme="@style/AppTheme" />
@@ -134,38 +152,38 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.order.orderList.OrderListActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.auth.password.PasswordActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.user.UserDashboardActivity"
             android:label="@string/title_activity_user_profile"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.search.GlobalSearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.cart.CartActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.product.productDetails.ViewProductActivity"
             android:label="@string/title_activity_view_product"
-            android:theme="@style/AppThemeViewProduct"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeViewProduct" />
         <activity
             android:name=".ui.main.MainActivity"
             android:largeHeap="true"
-            android:theme="@style/AppTheme.Launcher"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Launcher">
 
             <nav-graph android:value="@navigation/home_nav_graph" />
 

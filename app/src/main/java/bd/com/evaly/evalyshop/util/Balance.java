@@ -9,13 +9,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.Locale;
+import java.util.concurrent.Executors;
 
-import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
+import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
+import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 
 
 public class Balance {
@@ -70,7 +74,19 @@ public class Balance {
 
                     CredentialManager.saveUserData(userModel);
 
-                    if (openDashboard) {
+                ProviderDatabase providerDatabase = ProviderDatabase.getInstance(context);
+                UserInfoDao userInfoDao = providerDatabase.userInfoDao();
+
+                Executors.newSingleThreadExecutor().execute(() -> {
+                    UserInfoEntity entity = new UserInfoEntity();
+                    entity.setToken(CredentialManager.getToken());
+                    entity.setRefreshToken(CredentialManager.getRefreshToken());
+                    entity.setName(ob.get("first_name").getAsString() + " " + ob.get("last_name").getAsString());
+                    entity.setImage(ob.get("profile_pic_url").getAsString());
+                    userInfoDao.insert(entity);
+                });
+
+                if (openDashboard) {
                        // Toast.makeText(context, "Successfully signed in", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, UserDashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("from", "signin");

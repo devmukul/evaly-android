@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,8 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.pref.ReferPref;
+import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
 import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
@@ -98,6 +101,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         userDetails = new UserDetails(context);
         referPref = new ReferPref(context);
+
+
+        ProviderDatabase providerDatabase = ProviderDatabase.getInstance(context);
+        UserInfoDao userInfoDao = providerDatabase.userInfoDao();
+
+        DatabaseUtils.dumpCursor(userInfoDao.getCursor());
 
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "home", mainViewModel);

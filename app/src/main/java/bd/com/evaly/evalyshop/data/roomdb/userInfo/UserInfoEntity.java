@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.data.roomdb.userInfo;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -9,6 +10,7 @@ public class UserInfoEntity {
 
     @PrimaryKey
     @ColumnInfo
+    @NonNull
     private String token;
 
     @ColumnInfo

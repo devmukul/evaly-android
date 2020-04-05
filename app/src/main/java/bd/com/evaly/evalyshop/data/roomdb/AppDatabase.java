@@ -12,7 +12,6 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
-import bd.com.evaly.evalyshop.data.roomdb.userInfo.UserInfoDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
@@ -25,7 +24,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract WishListDao wishListDao();
     public abstract CartDao cartDao();
     public abstract BannerDao bannerDao();
-    public abstract UserInfoDao userInfoDao();
 
     public static synchronized AppDatabase getInstance(Context context){
         if (instance == null) {
