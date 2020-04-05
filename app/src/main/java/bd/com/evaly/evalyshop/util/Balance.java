@@ -82,7 +82,9 @@ public class Balance {
                     entity.setToken(CredentialManager.getToken());
                     entity.setRefreshToken(CredentialManager.getRefreshToken());
                     entity.setName(ob.get("first_name").getAsString() + " " + ob.get("last_name").getAsString());
-                    entity.setImage(ob.get("profile_pic_url").getAsString());
+                    entity.setImage(ob.get("image_sm").getAsString());
+                    entity.setUsername(CredentialManager.getUserName());
+                    entity.setPassword(CredentialManager.getPassword());
                     userInfoDao.insert(entity);
                 });
 
