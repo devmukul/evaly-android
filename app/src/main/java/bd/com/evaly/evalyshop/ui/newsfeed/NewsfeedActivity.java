@@ -251,6 +251,10 @@ public class NewsfeedActivity extends AppCompatActivity {
             pager.addFragment(pendingFragment, getString(R.string.pending));
         }
         pager.notifyDataSetChanged();
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
     }
 
 

@@ -27,7 +27,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".ui.issue.IssuesActivity"
+        <activity
+            android:name=".ui.issue.IssuesActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="OPEN_ISSUES" />
@@ -60,6 +61,17 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
 
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="evaly.com.bd"
+                    android:pathPattern="/feeds" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.order.PayViaCard"
@@ -87,10 +99,10 @@
             android:name=".util.ImagePreview"
             android:theme="@style/AppTheme.NoActionBar" />
 
-<!--        <activity-->
-<!--            android:name="com.facebook.FacebookActivity"-->
-<!--            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
-<!--            android:label="@string/app_name" />-->
+        <!--        <activity-->
+        <!--            android:name="com.facebook.FacebookActivity"-->
+        <!--            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
+        <!--            android:label="@string/app_name" />-->
 
         <activity
             android:name=".ui.voucher.VoucherActivity"
@@ -138,7 +150,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.auth.password.PasswordActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.user.UserDashboardActivity"
             android:label="@string/title_activity_user_profile"
@@ -147,7 +159,7 @@
         <activity
             android:name=".ui.search.GlobalSearchActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -155,12 +167,12 @@
         <activity
             android:name=".ui.cart.CartActivity"
             android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.product.productDetails.ViewProductActivity"
             android:label="@string/title_activity_view_product"
             android:theme="@style/AppThemeViewProduct"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.main.MainActivity"
             android:largeHeap="true"
