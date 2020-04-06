@@ -209,7 +209,6 @@ public class MainActivity extends BaseActivity {
         WishListDao wishListDao = appDatabase.wishListDao();
         CartDao cartDao = appDatabase.cartDao();
 
-
         BottomNavigationItemView itemView = binding.bottomNavigationView.findViewById(R.id.wishListFragment);
         View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
         TextView wishListCount = wishListBadge.findViewById(R.id.notification);

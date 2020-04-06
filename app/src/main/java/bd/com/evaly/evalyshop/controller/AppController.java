@@ -19,11 +19,12 @@ import com.orhanobut.logger.Logger;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.google.GoogleEmojiProvider;
 
-import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
+import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.util.preference.MyPreference;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.xmpp.LocalBinder;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
@@ -210,6 +211,9 @@ public class AppController extends Application implements Application.ActivityLi
 //                database.clearAllTables();
 //            }
 //        });
+
+        ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getmContext());
+        providerDatabase.userInfoDao().deleteAll();
 
 
         new Handler().postDelayed(() -> {
