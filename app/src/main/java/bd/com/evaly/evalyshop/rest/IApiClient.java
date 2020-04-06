@@ -20,6 +20,8 @@ import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
+import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
+import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
@@ -398,5 +400,13 @@ public interface IApiClient {
     Call<SetPasswordResponse> authSetPassword(@Body SetPasswordBody body);
 
 
+    // evaly express services
+
+    @GET(UrlUtils.BASE_URL+"public/express-services/")
+    Call<List<ExpressServiceModel>> getExpressServicesList();
+
+
+    @GET(UrlUtils.BASE_URL+"public/express-services/{slug}/")
+    Call<ExpressServiceDetailsModel> getExpressServiceDetails(@Path("slug") String slug);
 
 }

@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:elevation="0dp"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:titleEnabled="false">
+
+            <LinearLayout
+                android:id="@+id/header_logo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/fff"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="fill_parent"
+                    android:layout_marginRight="4dp"
+                    android:layout_weight="0"
+                    android:clickable="true"
+                    android:gravity="left"
+                    android:orientation="vertical"
+                    android:paddingLeft="8dp">
+
+                    <ImageView
+                        android:id="@+id/menuBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:adjustViewBounds="true"
+                        android:background="?attr/actionBarItemBackground"
+                        android:clickable="true"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:tag="menu"
+                        app:srcCompat="@drawable/ic_menu" />
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_weight="1"
+                    android:paddingBottom="5dp"
+                    app:srcCompat="@drawable/ic_evaly_new_logo" />
+
+                <RelativeLayout
+                    android:id="@+id/notification_holder"
+                    style="@android:style/Widget.ActionButton"
+                    android:layout_width="50dp"
+                    android:layout_height="fill_parent"
+                    android:layout_marginRight="4dp"
+                    android:layout_weight="0"
+                    android:clickable="true"
+                    android:gravity="right"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/hotlist_bell"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="bell"
+                        android:gravity="center"
+                        android:src="@drawable/ic_notification" />
+
+                    <TextView
+                        android:id="@+id/hotlist_hot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/hotlist_bell"
+                        android:layout_alignRight="@id/hotlist_bell"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginRight="0dp"
+                        android:background="@drawable/rounded_square"
+                        android:gravity="center"
+                        android:minWidth="15sp"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:paddingBottom="1dp"
+                        android:text="@null"
+                        android:textColor="#ffffffff"
+                        android:textSize="10sp"
+                        android:visibility="gone" />
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@color/transparent"
+                android:elevation="0dp"
+                android:fitsSystemWindows="true" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="-5dp"
+            android:background="@color/fff"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <LinearLayout
+                android:id="@+id/home_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/round_box"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="40dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="0"
+                    android:tint="@color/red_app"
+                    app:srcCompat="@drawable/ic_marker_filled" />
+
+                <TextView
+                    android:id="@+id/searchTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Bashundhara R/A, Dhaka"
+                    android:textColor="#555"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/fff">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="15dp"
+                    app:cardBackgroundColor="@color/fff"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/sliderHolder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#fff"
+                        android:minHeight="100dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:background="@drawable/banner_skeleton_bg"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintDimensionRatio="H,2.93478:1"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.viewpager2.widget.ViewPager2
+                            android:id="@+id/sliderPager"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:clipToPadding="false"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/sliderIndicator"
+                            android:layout_width="match_parent"
+                            android:layout_height="25dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="40dp"
+                            android:layout_marginEnd="40dp"
+                            app:layout_constraintBottom_toBottomOf="@id/sliderPager"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:tabBackground="@drawable/indicator_selector"
+                            app:tabGravity="center"
+                            app:tabIndicatorHeight="0dp"
+                            app:tabPaddingEnd="7dp"
+                            app:tabPaddingStart="7dp" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+            </FrameLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/fff"
+                android:paddingTop="19dp">
+
+
+                <ImageView
+                    android:id="@+id/btn2Image"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/circle_bg"
+                    android:clickable="false"
+                    app:layout_constraintEnd_toStartOf="@+id/btn3Image"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_color_ingredients" />
+
+                <TextView
+                    android:id="@+id/btn2Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="0"
+                    android:clickable="false"
+                    android:gravity="center"
+                    android:text="Grocery"
+                    app:layout_constraintStart_toStartOf="@+id/btn2Image"
+                    app:layout_constraintTop_toBottomOf="@+id/btn2Image" />
+
+
+                <ImageView
+                    android:id="@+id/btn3Image"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/circle_bg"
+                    android:clickable="false"
+                    app:layout_constraintEnd_toStartOf="@+id/btn4Image"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/btn2Image"
+                    app:layout_constraintTop_toTopOf="@+id/btn2Image"
+                    app:srcCompat="@drawable/ic_color_health_checkup_1" />
+
+                <TextView
+                    android:id="@+id/btn3Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="0"
+                    android:clickable="false"
+                    android:text="Pharmacy"
+                    android:textAlignment="center"
+                    app:layout_constraintEnd_toEndOf="@+id/btn3Image"
+                    app:layout_constraintStart_toStartOf="@+id/btn3Image"
+                    app:layout_constraintTop_toBottomOf="@+id/btn3Image" />
+
+                <ImageView
+                    android:id="@+id/btn4Image"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/circle_bg"
+                    android:clickable="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/btn3Image"
+                    app:layout_constraintTop_toTopOf="@+id/btn3Image"
+                    app:srcCompat="@drawable/ic_color_food_plate" />
+
+                <TextView
+                    android:id="@+id/btn4Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="0"
+                    android:text="Food"
+                    app:layout_constraintEnd_toEndOf="@+id/btn4Image"
+                    app:layout_constraintStart_toStartOf="@+id/btn4Image"
+                    app:layout_constraintTop_toBottomOf="@+id/btn4Image" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="17dp"
+                    android:background="@color/separator_light"
+                    app:layout_constraintTop_toBottomOf="@+id/btn2Title" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
