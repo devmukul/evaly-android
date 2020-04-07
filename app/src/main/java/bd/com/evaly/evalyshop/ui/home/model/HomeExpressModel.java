@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.ViewDataBinding;
@@ -31,6 +33,25 @@ public abstract class HomeExpressModel extends DataBindingEpoxyModel {
         params.setFullSpan(true);
 
         NavController navController = NavHostFragment.findNavController(fragment);
+
+        binding.btnGrocery.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("slug", "grocery");
+            navController.navigate(R.id.evalyExpressFragment, bundle);
+        });
+
+        binding.btnPharmacy.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("slug", "pharmacy");
+            navController.navigate(R.id.evalyExpressFragment, bundle);
+        });
+
+        binding.btnFoods.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("slug", "foods");
+            navController.navigate(R.id.evalyExpressFragment, bundle);
+        });
+
     }
 
 

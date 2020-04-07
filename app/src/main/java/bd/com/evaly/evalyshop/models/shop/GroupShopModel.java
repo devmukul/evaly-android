@@ -10,7 +10,7 @@ public class GroupShopModel{
 	@SerializedName("approved")
 	private int approved;
 
-	@SerializedName("shop_name")
+	@SerializedName(value = "shop_name", alternate = "name")
 	private String shopName;
 
 	@SerializedName("logo_image")
@@ -22,7 +22,7 @@ public class GroupShopModel{
 	@SerializedName("contact_number")
 	private String contactNumber;
 
-	@SerializedName("shop_slug")
+	@SerializedName(value = "shop_slug", alternate = "slug")
 	private String shopSlug;
 
 	public void setImage(String image){

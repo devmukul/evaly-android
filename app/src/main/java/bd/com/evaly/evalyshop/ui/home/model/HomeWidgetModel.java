@@ -21,7 +21,9 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardActivity;
+import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 
 @EpoxyModelClass(layout = R.layout.home_model_quick_access)
 public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
@@ -48,7 +50,12 @@ public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
 
         binding.btn3Image.setOnClickListener(v -> navController.navigate(R.id.campaignFragment));
 
-        binding.btn4Image.setOnClickListener(v -> navController.navigate(R.id.evalyExpressFragment));
+        binding.btn4Image.setOnClickListener(v -> {
+            if (CredentialManager.getToken().equals(""))
+                activity.startActivity(new Intent(activity, SignInActivity.class));
+            else
+                activity.startActivity(new Intent(activity, OrderListActivity.class));
+        });
 
         if (!CredentialManager.getToken().equals("")) {
             GeneralApiHelper.getNotificationCount(CredentialManager.getToken(), "newsfeed", new ResponseListenerAuth<NotificationCount, String>() {

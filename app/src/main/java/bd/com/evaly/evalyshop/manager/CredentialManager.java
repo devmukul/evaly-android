@@ -81,4 +81,21 @@ public class CredentialManager {
         return MyPreference.with(AppController.mContext).getString("AREA", null);
     }
 
+    public static void saveLongitude(String value){
+        MyPreference.with(AppController.mContext).addString("LONGITUDE", value).save();
+    }
+
+    public static String getLongitude(){
+        return MyPreference.with(AppController.mContext).getString("LONGITUDE", null);
+    }
+
+    public static void saveLatitude(String value){
+        MyPreference.with(AppController.mContext).addString("LATITUDE", value).save();
+    }
+
+    public static String getLatitude(){
+        return MyPreference.with(AppController.mContext).getString("LATITUDE", null);
+    }
+
+
 }

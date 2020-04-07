@@ -23,6 +23,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -42,9 +44,9 @@ public class EvalyExpressFragment extends Fragment {
     private FragmentEvalyExpressBinding binding;
     private EvalyExpressAdapter adapter;
     private List<GroupShopModel> itemList = new ArrayList<>();
+    private EvalyExpressViewModelFactory factory;
     private EvalyExpressViewModel viewModel;
     private boolean written = false;
-
     TextWatcher textWatcher = new TextWatcher() {
 
         public void afterTextChanged(Editable s) {
@@ -69,6 +71,7 @@ public class EvalyExpressFragment extends Fragment {
             viewModel.loadShops();
         }
     };
+    private String serviceSlug;
     private int visibleItemCount, totalItemCount, pastVisibleItems;
 
 
@@ -88,6 +91,8 @@ public class EvalyExpressFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        serviceSlug = getArguments().get("slug");
+
 
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         binding.toolbar.setNavigationOnClickListener(view1 -> {
@@ -95,7 +100,10 @@ public class EvalyExpressFragment extends Fragment {
                 getActivity().onBackPressed();
         });
 
-        viewModel = new ViewModelProvider(this).get(EvalyExpressViewModel.class);
+
+        factory = new EvalyExpressViewModelFactory(serviceSlug);
+
+        viewModel = new ViewModelProvider(this, factory).get(EvalyExpressViewModel.class);
 
         adapter = new EvalyExpressAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
 
@@ -144,6 +152,10 @@ public class EvalyExpressFragment extends Fragment {
             }
 
         });
+
+        viewModel.getExpressDetails().observe(this, expressServiceDetailsModel -> Glide.with(getActivity())
+                .load(expressServiceDetailsModel.getBannerImage())
+                .into(binding.sliderImage));
 
         binding.districtSelector.setOnClickListener(v -> showDistrictSelector());
         binding.districtName.setText(CredentialManager.getArea() == null ? "All District" : CredentialManager.getArea());

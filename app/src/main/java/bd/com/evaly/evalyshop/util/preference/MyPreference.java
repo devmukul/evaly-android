@@ -87,6 +87,7 @@ public class MyPreference {
             return preferences.getFloat(key, defalutValue);
         }
 
+
         public long getLong(String key, long defalutValue) {
             return preferences.getLong(key, defalutValue);
         }

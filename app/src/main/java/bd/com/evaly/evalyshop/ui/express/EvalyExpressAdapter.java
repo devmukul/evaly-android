@@ -30,9 +30,6 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
     private List<GroupShopModel> itemList;
     private NavController navController;
 
-
-
-
     public EvalyExpressAdapter(Context ctx, List<GroupShopModel> itemList, NavController navController) {
         context = ctx;
         // this.itemList = itemList;
