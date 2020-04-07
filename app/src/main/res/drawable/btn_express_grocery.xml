@@ -10,6 +10,7 @@
                 android:right="15dp"
                 android:top="15dp"
                 android:bottom="15dp"/>
+            <corners android:radius="10dp"/>
 
         </shape>
     </item>
@@ -21,6 +22,7 @@
                 android:right="15dp"
                 android:top="15dp"
                 android:bottom="15dp"/>
+            <corners android:radius="10dp"/>
         </shape>
     </item>
 </ripple>
