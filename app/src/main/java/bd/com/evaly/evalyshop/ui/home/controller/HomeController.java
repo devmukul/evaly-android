@@ -15,6 +15,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
@@ -33,6 +34,9 @@ public class HomeController extends EpoxyController {
 
     @AutoModel
     HomeWidgetModel_ widgetModel;
+
+    @AutoModel
+    HomeExpressModel_ expressModel;
 
     @AutoModel
     HomeTabsModel_ tabsModel;
@@ -57,6 +61,11 @@ public class HomeController extends EpoxyController {
                 .addTo(this);
 
         widgetModel
+                .fragment(fragment)
+                .activity(activity)
+                .addTo(this);
+
+        expressModel
                 .fragment(fragment)
                 .activity(activity)
                 .addTo(this);
