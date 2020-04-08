@@ -352,9 +352,15 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string-array name="districtsList" translatable="false">
         <item>All Districts</item>
         <item>Automatic</item>
+        <item>Nearest</item>
         <item>Dhaka</item>
         <item>Barisal</item>
         <item>Chittagong</item>
+        <item>Khulna</item>
+        <item>Mymensingh</item>
+        <item>Rajshahi</item>
+        <item>Rangpur</item>
+        <item>Sylhet</item>
         <item>Bagerhat</item>
         <item>Bandarban</item>
         <item>Barguna</item>
@@ -379,7 +385,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Jhenaidah</item>
         <item>Joypurhat</item>
         <item>Khagrachhari</item>
-        <item>Khulna</item>
         <item>Kishoreganj</item>
         <item>Kurigram</item>
         <item>Kushtia</item>
@@ -391,7 +396,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Meherpur</item>
         <item>Moulvibazar</item>
         <item>Munshiganj</item>
-        <item>Mymensingh</item>
         <item>Naogaon</item>
         <item>Narail</item>
         <item>Narayanganj</item>
@@ -405,15 +409,12 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Patuakhali</item>
         <item>Pirojpur</item>
         <item>Rajbari</item>
-        <item>Rajshahi</item>
         <item>Rangamati</item>
-        <item>Rangpur</item>
         <item>Satkhira</item>
         <item>Shariatpur</item>
         <item>Sherpur</item>
         <item>Sirajganj</item>
         <item>Sunamganj</item>
-        <item>Sylhet</item>
         <item>Tangail</item>
         <item>Thakurgaon</item>
     </string-array>

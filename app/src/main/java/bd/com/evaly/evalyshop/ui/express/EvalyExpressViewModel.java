@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.ui.express;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -14,7 +16,7 @@ import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 
 public class EvalyExpressViewModel extends ViewModel {
-    private MutableLiveData<List<GroupShopModel>> liveData;
+    private MutableLiveData<List<GroupShopModel>> liveData = new MutableLiveData<>();
     private MutableLiveData<ExpressServiceDetailsModel> expressDetails = new MutableLiveData<>();
     private int currentPage;
     private int totalCount = 0;
@@ -27,8 +29,6 @@ public class EvalyExpressViewModel extends ViewModel {
         this.serviceSlug = serviceSlug;
         currentPage = 1;
         totalCount = 0;
-        liveData = new MutableLiveData<>();
-
         loadShops();
         loadServiceDetails();
     }
@@ -42,18 +42,31 @@ public class EvalyExpressViewModel extends ViewModel {
 
         loading = true;
 
+        Double longitude = null;
+        Double latitude = null;
+
         if (CredentialManager.getArea() == null)
             area = null;
         else if (CredentialManager.getArea().contains("Districts"))
             area = null;
-        else
+        else if (CredentialManager.getArea().contains("Nearest")) {
+            area = null;
+
+            if (CredentialManager.getLatitude() != null)
+                latitude = Double.parseDouble(CredentialManager.getLatitude());
+            if (CredentialManager.getLongitude() != null)
+
+            longitude = Double.parseDouble(CredentialManager.getLongitude());
+        } else
             area = CredentialManager.getArea();
 
-        ExpressApiHelper.getShopList(serviceSlug, currentPage, 24, area, addressSearch, shopSearch, null, null, new ResponseListenerAuth<CommonResultResponse<List<GroupShopModel>>, String>() {
+        ExpressApiHelper.getShopList(serviceSlug, currentPage, 24, area, shopSearch, null, longitude, latitude, new ResponseListenerAuth<CommonResultResponse<List<GroupShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<GroupShopModel>> response, int statusCode) {
                 if (response == null)
                     return;
+
+                Log.d("hmt", response.toString());
 
                 loading = false;
                 totalCount = response.getCount();
@@ -64,15 +77,12 @@ public class EvalyExpressViewModel extends ViewModel {
                     hasNext = false;
 
                 if (liveData.getValue() != null) {
-
                     List<GroupShopModel> oldList = liveData.getValue();
                     oldList.addAll(response.getData());
                     liveData.setValue(oldList);
                     currentPage++;
-
                 } else {
                     liveData.setValue(response.getData());
-
                     currentPage++;
                 }
             }
@@ -80,6 +90,8 @@ public class EvalyExpressViewModel extends ViewModel {
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 loading = false;
+
+                Log.d("hmt", errorBody);
             }
 
             @Override

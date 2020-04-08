@@ -8,7 +8,7 @@ public class GroupShopModel{
 	private String image;
 
 	@SerializedName("approved")
-	private int approved;
+	private boolean approved;
 
 	@SerializedName(value = "shop_name", alternate = "name")
 	private String shopName;
@@ -33,11 +33,11 @@ public class GroupShopModel{
 		return image;
 	}
 
-	public void setApproved(int approved){
+	public void setApproved(boolean approved){
 		this.approved = approved;
 	}
 
-	public int getApproved(){
+	public boolean getApproved(){
 		return approved;
 	}
 

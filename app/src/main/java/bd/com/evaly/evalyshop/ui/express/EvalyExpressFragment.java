@@ -33,6 +33,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentEvalyExpressBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 
@@ -71,6 +72,7 @@ public class EvalyExpressFragment extends Fragment {
             viewModel.loadShops();
         }
     };
+    private boolean checkNearest = false;
     private String serviceSlug;
     private int visibleItemCount, totalItemCount, pastVisibleItems;
 
@@ -91,9 +93,17 @@ public class EvalyExpressFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        serviceSlug = getArguments().getString("slug");
+        if (getArguments() == null)
+            return;
+        ExpressServiceModel model = (ExpressServiceModel) getArguments().getSerializable("model");
+        if (model == null)
+            return;
+
+        serviceSlug = model.getSlug();
+
 
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        binding.toolbar.setTitle(model.getName());
         binding.toolbar.setNavigationOnClickListener(view1 -> {
             if (getActivity() != null)
                 getActivity().onBackPressed();
@@ -189,47 +199,53 @@ public class EvalyExpressFragment extends Fragment {
         locationUtils.getLocation(getContext(), new LocationUtils.LocationResult() {
             @Override
             public void gotLocation(Location location) {
-
                 if (getContext() == null || location == null)
                     return;
-
                 if (location.getLatitude() == 0 || location.getLongitude() == 0)
                     return;
 
+                CredentialManager.saveLongitude(String.valueOf(location.getLongitude()));
+                CredentialManager.saveLatitude(String.valueOf(location.getLatitude()));
+
                 Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                try {
-                    List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
-                    int c = 0;
-
-                    if (addresses.size() > 0) {
-                        Address obj = addresses.get(0);
-                        String myAddress = obj.toString();
-
-                        String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
-                        for (String district : districts) {
-                            if (myAddress.contains(district)) {
-                                getMainExecutor(getContext()).execute(() -> {
-                                    CredentialManager.saveArea(district);
-                                    binding.districtName.setText(district);
-                                    viewModel.clear();
-                                    viewModel.loadShops();
-                                });
-                                c++;
-                                break;
+                if (checkNearest) {
+                    getMainExecutor(getContext()).execute(() -> {
+                        CredentialManager.saveArea("Nearest");
+                        binding.districtName.setText("Nearest");
+                        viewModel.clear();
+                        viewModel.loadShops();
+                    });
+                } else {
+                    try {
+                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        int c = 0;
+                        if (addresses.size() > 0) {
+                            Address obj = addresses.get(0);
+                            String myAddress = obj.toString();
+                            String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
+                            for (String district : districts) {
+                                if (myAddress.contains(district)) {
+                                    getMainExecutor(getContext()).execute(() -> {
+                                        CredentialManager.saveArea(district);
+                                        binding.districtName.setText(district);
+                                        viewModel.clear();
+                                        viewModel.loadShops();
+                                    });
+                                    c++;
+                                    break;
+                                }
                             }
                         }
+                        if (c == 0)
+                            getMainExecutor(getContext()).execute(() -> {
+                                if (getContext() != null) {
+                                    Toast.makeText(getContext(), "Could't find your district with GPS, please select manually", Toast.LENGTH_SHORT).show();
+                                    binding.progressBar.setVisibility(View.GONE);
+                                }
+                            });
+                    } catch (Exception ignored) {
                     }
-
-                    if (c == 0)
-                        getMainExecutor(getContext()).execute(() -> {
-                            if (getContext() != null) {
-                                Toast.makeText(getContext(), "Could't find your district with GPS, please select manually", Toast.LENGTH_SHORT).show();
-                                binding.progressBar.setVisibility(View.GONE);
-                            }
-                        });
-
-                } catch (Exception ignored) {
                 }
             }
         });
@@ -267,7 +283,11 @@ public class EvalyExpressFragment extends Fragment {
 
             binding.progressBar.setVisibility(View.VISIBLE);
 
-            if (districts[which].equalsIgnoreCase("automatic")) {
+            if (districts[which].toLowerCase().contains("auto")) {
+                checkNearest = false;
+                checkPermissionAndLoad();
+            } else if (districts[which].toLowerCase().contains("nearest")) {
+                checkNearest = true;
                 checkPermissionAndLoad();
             } else {
                 CredentialManager.saveArea(districts[which]);

@@ -71,19 +71,19 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
                     if (name.contains("grocery")) {
                         binding.btnGrocery.setOnClickListener(v -> {
                             Bundle bundle = new Bundle();
-                            bundle.putString("slug", serviceModel.getSlug());
+                            bundle.putSerializable("model", serviceModel);
                             navController.navigate(R.id.evalyExpressFragment, bundle);
                         });
                     } else if (name.contains("pharmacy")) {
                         binding.btnPharmacy.setOnClickListener(v -> {
                             Bundle bundle = new Bundle();
-                            bundle.putString("slug", serviceModel.getSlug());
+                            bundle.putSerializable("model", serviceModel);
                             navController.navigate(R.id.evalyExpressFragment, bundle);
                         });
                     } else if (name.contains("food")) {
                         binding.btnFoods.setOnClickListener(v -> {
                             Bundle bundle = new Bundle();
-                            bundle.putString("slug", serviceModel.getSlug());
+                            bundle.putSerializable("model", serviceModel);
                             navController.navigate(R.id.evalyExpressFragment, bundle);
                         });
                     }
