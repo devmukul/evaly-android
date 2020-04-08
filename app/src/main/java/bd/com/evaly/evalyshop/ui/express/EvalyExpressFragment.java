@@ -35,6 +35,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentEvalyExpressBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
+import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
@@ -109,7 +110,6 @@ public class EvalyExpressFragment extends Fragment {
                 getActivity().onBackPressed();
         });
 
-
         factory = new EvalyExpressViewModelFactory(serviceSlug);
 
         viewModel = new ViewModelProvider(this, factory).get(EvalyExpressViewModel.class);
@@ -162,10 +162,18 @@ public class EvalyExpressFragment extends Fragment {
 
         });
 
-        viewModel.getExpressDetails().observe(getViewLifecycleOwner(), expressServiceDetailsModel -> Glide.with(getActivity())
-                .load(expressServiceDetailsModel.getBannerImage())
-                .placeholder(R.drawable.banner_skeleton_bg)
-                .into(binding.sliderImage));
+        viewModel.getExpressDetails().observe(getViewLifecycleOwner(), expressServiceDetailsModel -> {
+
+            binding.btnTerms.setOnClickListener(v -> {
+                TextBottomSheetFragment fragment = TextBottomSheetFragment.newInstance(expressServiceDetailsModel.getDescription());
+                fragment.show(getParentFragmentManager(), "terms");
+            });
+            Glide.with(binding.getRoot())
+                    .load(expressServiceDetailsModel.getBannerImage())
+                    .placeholder(R.drawable.banner_skeleton_bg)
+                    .into(binding.sliderImage);
+
+        });
 
         binding.districtSelector.setOnClickListener(v -> showDistrictSelector());
         binding.districtName.setText(CredentialManager.getArea() == null ? "All District" : CredentialManager.getArea());
@@ -282,6 +290,7 @@ public class EvalyExpressFragment extends Fragment {
         builder.setItems(districts, (dialog, which) -> {
 
             binding.progressBar.setVisibility(View.VISIBLE);
+            binding.layoutNot.setVisibility(View.GONE);
 
             if (districts[which].toLowerCase().contains("auto")) {
                 checkNearest = false;

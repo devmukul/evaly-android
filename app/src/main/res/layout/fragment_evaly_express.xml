@@ -200,12 +200,10 @@
     <LinearLayout
         android:id="@+id/layoutNot"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_height="300dp"
         android:background="#fafafa"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="-300dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:visibility="gone">
 
@@ -229,9 +227,8 @@
     <ProgressBar
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/progressBar"
-        android:layout_marginTop="-300dp"
         android:layout_width="45dp"
-        android:layout_height="56dp"
-        android:layout_gravity="center"
+        android:layout_height="300dp"
+        android:layout_gravity="center_vertical|top"
         android:visibility="visible" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
