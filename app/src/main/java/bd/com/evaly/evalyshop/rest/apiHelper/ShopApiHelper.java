@@ -11,15 +11,15 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import retrofit2.Call;
 
-public class ShopApiHelper extends BaseApiHelper{
+public class ShopApiHelper extends BaseApiHelper {
 
-    public static void getShopDetailsItem(String token, String url, ResponseListenerAuth<ShopDetailsModel, String> listener){
+    public static void getShopDetailsItem(String token, String url, ResponseListenerAuth<ShopDetailsModel, String> listener) {
 
         getiApiClient().getShopDetailsItems(token, url).enqueue(getResponseCallBackDefault(listener));
     }
 
 
-    public static void getShopDetailsItem(String token, String shopSlug, int page, int limit, String categorySlug, String campaignSlug, String search, ResponseListenerAuth<ShopDetailsModel, String> listener){
+    public static void getShopDetailsItem(String token, String shopSlug, int page, int limit, String categorySlug, String campaignSlug, String search, ResponseListenerAuth<ShopDetailsModel, String> listener) {
 
         IApiClient iApiClient = getiApiClient();
         Call<ShopDetailsModel> call;
@@ -34,18 +34,16 @@ public class ShopApiHelper extends BaseApiHelper{
     }
 
 
-
-    public static void getFollowedShop(String token, ResponseListenerAuth<JsonObject, String> listener){
+    public static void getFollowedShop(String token, ResponseListenerAuth<JsonObject, String> listener) {
 
         getiApiClient().getFollowedShops(token).enqueue(getResponseCallBackDefault(listener));
     }
 
 
-    public static void getShopsByGroup(String group, int page, int limit, String area, String search, ResponseListenerAuth<CommonDataResponse<List<GroupShopModel>>, String> listener){
+    public static void getShopsByGroup(String group, int page, int limit, String area, String search, ResponseListenerAuth<CommonDataResponse<List<GroupShopModel>>, String> listener) {
 
         getiApiClient().getShopByGroup(group, page, limit, area, search).enqueue(getResponseCallBackDefault(listener));
     }
-
 
 
 }

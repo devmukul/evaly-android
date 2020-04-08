@@ -49,14 +49,13 @@ public class EvalyExpressFragment extends Fragment {
     private EvalyExpressViewModelFactory factory;
     private EvalyExpressViewModel viewModel;
     private boolean written = false;
+
     TextWatcher textWatcher = new TextWatcher() {
 
         public void afterTextChanged(Editable s) {
-
         }
 
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -111,7 +110,6 @@ public class EvalyExpressFragment extends Fragment {
         });
 
         factory = new EvalyExpressViewModelFactory(serviceSlug);
-
         viewModel = new ViewModelProvider(this, factory).get(EvalyExpressViewModel.class);
 
         adapter = new EvalyExpressAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
@@ -119,7 +117,6 @@ public class EvalyExpressFragment extends Fragment {
         written = false;
 
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(adapter);
         binding.progressBar.setVisibility(View.VISIBLE);
@@ -188,7 +185,6 @@ public class EvalyExpressFragment extends Fragment {
             checkPermissionAndLoad();
 
     }
-
 
     private void checkPermissionAndLoad() {
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
@@ -293,7 +289,9 @@ public class EvalyExpressFragment extends Fragment {
 
             viewModel.clear();
             itemList.clear();
-            adapter.clear();
+
+            if (adapter != null)
+                adapter.clear();
 
             if (districts[which].toLowerCase().contains("auto")) {
                 checkNearest = false;

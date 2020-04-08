@@ -41,7 +41,7 @@ public class BaseApiHelper {
 
                     listener.onDataFetched(response.body(), response.code());
 
-                }else if (response.code() == 401){
+                } else if (response.code() == 401) {
 
                     listener.onAuthError(true);
                 }

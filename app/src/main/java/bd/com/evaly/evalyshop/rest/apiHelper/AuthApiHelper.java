@@ -30,13 +30,13 @@ import bd.com.evaly.evalyshop.models.auth.RegisterResponse;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordBody;
 import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
-import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
+import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
+import bd.com.evaly.evalyshop.util.UserDetails;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -335,7 +335,6 @@ public class AuthApiHelper extends BaseApiHelper {
     }
 
 
-
     public static void updateProductStatus(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {
 
         IApiClient iApiClient = ApiClient.getClient().create(IApiClient.class);
@@ -445,60 +444,58 @@ public class AuthApiHelper extends BaseApiHelper {
     }
 
 
-
     // user info pay
 
-    public static void getUserInfoPay(String token, String username, ResponseListenerAuth<JsonObject, String> listener){
+    public static void getUserInfoPay(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().getUserInfoPay(token, username).enqueue(getResponseCallBackDefault(listener));
     }
 
     // cashback claim
 
-    public static void claimCashback(String token, String username, ResponseListenerAuth<JsonObject, String> listener){
+    public static void claimCashback(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().claimCashBack(token, username).enqueue(getResponseCallBackDefault(listener));
     }
 
     // change password
 
-    public static void changePassword(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
+    public static void changePassword(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().changePassword(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
 
     // update profile data
 
-    public static void setUserData(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
+    public static void setUserData(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
     // balance, transaction
-    public static void getTransactionHistory(String token, String username, int page, ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String> listener){
+    public static void getTransactionHistory(String token, String username, int page, ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String> listener) {
         getiApiClient().getTransactionHistory(token, username, page).enqueue(getResponseCallBackDefault(listener));
     }
 
     // forget password
 
-    public static void forgetPassword(String phone, ResponseListenerAuth<JsonObject, String> listener){
+    public static void forgetPassword(String phone, ResponseListenerAuth<JsonObject, String> listener) {
 
-        HashMap<String,String> body = new HashMap<>();
+        HashMap<String, String> body = new HashMap<>();
         body.put("phone_number", phone);
         getiApiClient().forgetPassword(body).enqueue(getResponseCallBackDefault(listener));
     }
 
 
-
     // auth 2.0
 
-    public static void authLogin(LoginBody body, ResponseListenerAuth<LoginResponse, String> listener){
+    public static void authLogin(LoginBody body, ResponseListenerAuth<LoginResponse, String> listener) {
         getiApiClient().authLogin(body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void authRegister(RegisterBody body, ResponseListenerAuth<RegisterResponse, String> listener){
+    public static void authRegister(RegisterBody body, ResponseListenerAuth<RegisterResponse, String> listener) {
         getiApiClient().authRegister(body).enqueue(getResponseCallBackDefault(listener));
     }
 
 
-    public static void authSetPassword(SetPasswordBody body, ResponseListenerAuth<SetPasswordResponse, String> listener){
+    public static void authSetPassword(SetPasswordBody body, ResponseListenerAuth<SetPasswordResponse, String> listener) {
         getiApiClient().authSetPassword(body).enqueue(getResponseCallBackDefault(listener));
     }
 

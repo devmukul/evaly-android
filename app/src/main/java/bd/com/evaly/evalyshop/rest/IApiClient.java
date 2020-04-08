@@ -418,4 +418,5 @@ public interface IApiClient {
                                                                         @Query("search") String search,
                                                                         @Query("longitude") Double longitude,
                                                                         @Query("latitude") Double latitude);
+
 }

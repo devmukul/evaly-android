@@ -13,6 +13,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
+import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 
 public class EvalyExpressViewModel extends ViewModel {
@@ -39,7 +40,6 @@ public class EvalyExpressViewModel extends ViewModel {
     }
 
     public void loadShops() {
-
         loading = true;
 
         Double longitude = null;
@@ -56,7 +56,7 @@ public class EvalyExpressViewModel extends ViewModel {
                 latitude = Double.parseDouble(CredentialManager.getLatitude());
             if (CredentialManager.getLongitude() != null)
 
-            longitude = Double.parseDouble(CredentialManager.getLongitude());
+                longitude = Double.parseDouble(CredentialManager.getLongitude());
         } else
             area = CredentialManager.getArea();
 
@@ -128,6 +128,7 @@ public class EvalyExpressViewModel extends ViewModel {
         totalCount = 0;
         hasNext = false;
         shopSearch = null;
+        ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
     }
 
     public int getCurrentPage() {

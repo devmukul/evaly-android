@@ -86,6 +86,7 @@ public abstract class ShopCategoryModel extends EpoxyModelWithHolder<ShopCategor
                     binding.getRoot().setVisibility(View.GONE);
                     itemView.setVisibility(View.GONE);
                     binding.ct.setText(" ");
+                    binding.ct.setVisibility(View.GONE);
                     binding.recyclerView.setVisibility(View.GONE);
                 }
                 else if (currentPage == 1 && categoryList.size() < 4) {

@@ -28,7 +28,14 @@ public class ExpressApiHelper extends BaseApiHelper {
                                    Double longitude,
                                    Double latitude,
                                    ResponseListenerAuth<CommonResultResponse<List<GroupShopModel>>, String> listener) {
+
         getiApiClient().getExpressShopList(serviceSug, page, limit, address, address2, search, longitude, latitude).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void cancelPendingRequests(){
+
+
+
     }
 
 }

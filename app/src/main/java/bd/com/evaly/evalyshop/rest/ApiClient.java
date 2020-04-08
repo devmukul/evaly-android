@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.rest;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 
 import org.jivesoftware.smack.util.TLSUtils;
@@ -41,9 +39,6 @@ public class ApiClient {
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .client(getUnsafeOkHttpClient()).build();
-
-
-            Log.d("hmt", "retrofit instance");
         }
 
         return retrofit;
@@ -59,7 +54,7 @@ public class ApiClient {
         return retrofit;
     }
 
-    private static OkHttpClient getUnsafeOkHttpClient() {
+    public static OkHttpClient getUnsafeOkHttpClient() {
 
         try {
             // Create a trust manager that does not validate certificate chains

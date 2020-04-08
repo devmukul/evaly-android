@@ -33,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#fafafa"
+            android:minHeight="295dp"
             android:orientation="horizontal"
             android:paddingLeft="8dp"
             android:paddingTop="5dp"
@@ -43,9 +44,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ct"
-            tools:listitem="@layout/shop_category_item"
-            android:minHeight="295dp"
-            app:spanCount="2" />
+            app:spanCount="2"
+            tools:listitem="@layout/shop_category_item" />
 
 
         <TextView
