@@ -118,7 +118,7 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
 
             binding.help.setOnClickListener(v -> {
 
-                String text = "Evaly Express is a special service for daily need products. With extremely fast delivery system, you will get your ordered items within 48 hours. <br><br>Currently this service is available for:<br><br>  • <b>Grocery</b><br>  • <b>Pharmacy</b><br>  • <b>Foods</b>";
+                String text = "Evaly Express is a special service for daily needs products. With extremely fast delivery system, you will get your ordered items within 48 hours. <br><br>Currently this service is available for:<br><br>  • <b>Grocery</b><br>  • <b>Pharmacy</b><br>  • <b>Foods</b>";
 
                 TextBottomSheetFragment fragment = TextBottomSheetFragment.newInstance(text);
                 fragment.show(activity.getSupportFragmentManager(), "terms");

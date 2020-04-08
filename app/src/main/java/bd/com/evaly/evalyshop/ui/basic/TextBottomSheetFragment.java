@@ -55,7 +55,6 @@ public class TextBottomSheetFragment extends BottomSheetDialogFragment {
 
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

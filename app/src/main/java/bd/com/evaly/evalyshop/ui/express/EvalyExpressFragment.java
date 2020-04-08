@@ -165,7 +165,7 @@ public class EvalyExpressFragment extends Fragment {
         viewModel.getExpressDetails().observe(getViewLifecycleOwner(), expressServiceDetailsModel -> {
 
             binding.btnTerms.setOnClickListener(v -> {
-                TextBottomSheetFragment fragment = TextBottomSheetFragment.newInstance(expressServiceDetailsModel.getDescription());
+                TextBottomSheetFragment fragment = TextBottomSheetFragment.newInstance(expressServiceDetailsModel.getDescription().replaceAll("\n", "<br>"));
                 fragment.show(getParentFragmentManager(), "terms");
             });
             Glide.with(binding.getRoot())
