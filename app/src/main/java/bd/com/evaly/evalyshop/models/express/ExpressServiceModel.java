@@ -1,7 +1,12 @@
 package bd.com.evaly.evalyshop.models.express;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "express_service_list")
 public class ExpressServiceModel{
 
 	@SerializedName("image")
@@ -19,6 +24,8 @@ public class ExpressServiceModel{
 	@SerializedName("modified_at")
 	private String modifiedAt;
 
+	@NonNull
+	@PrimaryKey
 	@SerializedName("slug")
 	private String slug;
 

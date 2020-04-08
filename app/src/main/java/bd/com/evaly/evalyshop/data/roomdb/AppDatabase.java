@@ -12,11 +12,13 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryDao;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
+import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
+import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 
-@Database(entities = {CategoryEntity.class, WishListEntity.class, CartEntity.class, BannerItem.class}, version = 8, exportSchema = false)
+@Database(entities = {CategoryEntity.class, WishListEntity.class, CartEntity.class, BannerItem.class, ExpressServiceModel.class}, version = 10, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
@@ -24,6 +26,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract WishListDao wishListDao();
     public abstract CartDao cartDao();
     public abstract BannerDao bannerDao();
+    public abstract ExpressServiceDao expressServiceDao();
 
     public static synchronized AppDatabase getInstance(Context context){
         if (instance == null) {

@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -80,10 +79,11 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
                     Executors.newSingleThreadExecutor().execute(() -> {
                         bannerDao.insertList(response.getData());
                         List<String> slugs = new ArrayList<>();
-                        for (BannerItem item : response.getData()) {
+                        for (BannerItem item : response.getData())
                             slugs.add(item.slug);
-                        }
-                        bannerDao.deleteOld(slugs);
+
+                        if (slugs.size() > 0)
+                            bannerDao.deleteOld(slugs);
                     });
 
                 }

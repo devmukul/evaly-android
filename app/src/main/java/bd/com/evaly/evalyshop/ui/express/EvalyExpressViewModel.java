@@ -15,7 +15,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 
 public class EvalyExpressViewModel extends ViewModel {
     private MutableLiveData<List<GroupShopModel>> liveData;
-    private MutableLiveData<ExpressServiceDetailsModel> expressDetails;
+    private MutableLiveData<ExpressServiceDetailsModel> expressDetails = new MutableLiveData<>();
     private int currentPage;
     private int totalCount = 0;
     private boolean loading;
@@ -115,7 +115,7 @@ public class EvalyExpressViewModel extends ViewModel {
         currentPage = 1;
         totalCount = 0;
         hasNext = true;
-        search = null;
+        shopSearch = null;
     }
 
     public int getCurrentPage() {
@@ -126,8 +126,8 @@ public class EvalyExpressViewModel extends ViewModel {
         return loading;
     }
 
-    public void setSearch(String search) {
-        this.search = search;
+    public void setShopSearch(String search) {
+        this.shopSearch = search;
     }
 
     public boolean isHasNext() {

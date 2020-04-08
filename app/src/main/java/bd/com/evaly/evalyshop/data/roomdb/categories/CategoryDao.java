@@ -30,6 +30,9 @@ public interface CategoryDao {
     @Query("SELECT COUNT(id) FROM categories_table")
     int getCount();
 
+    @Query("SELECT COUNT(id) FROM categories_table")
+    LiveData<Integer> getCountLive();
+
     @Query("SELECT * FROM categories_table")
     LiveData<List<CategoryEntity>> getAllLiveData();
 

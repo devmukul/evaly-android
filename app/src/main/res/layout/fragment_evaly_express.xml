@@ -59,13 +59,13 @@
                         <ImageView
                             android:id="@+id/sliderImage"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:adjustViewBounds="true"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintDimensionRatio="H,2.93478:1"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            android:src="@drawable/banner" />
+                            app:srcCompat="@drawable/banner_skeleton_bg"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -189,10 +189,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="56dp"
         android:background="#fafafa"
         android:gravity="center"
         android:orientation="vertical"
+        android:layout_marginTop="-300dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:visibility="gone">
 
         <ImageView
@@ -213,10 +214,11 @@
     </LinearLayout>
 
     <ProgressBar
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/progressBar"
+        android:layout_marginTop="-300dp"
         android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_height="56dp"
         android:layout_gravity="center"
-        android:layout_marginTop="56dp"
         android:visibility="visible" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -65,9 +65,9 @@ public class EvalyExpressFragment extends Fragment {
             itemList.clear();
 
             if (binding.search.getText().toString().trim().equals(""))
-                viewModel.setSearch(null);
+                viewModel.setShopSearch(null);
             else
-                viewModel.setSearch(binding.search.getText().toString().trim());
+                viewModel.setShopSearch(binding.search.getText().toString().trim());
             viewModel.loadShops();
         }
     };
@@ -91,8 +91,7 @@ public class EvalyExpressFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        serviceSlug = getArguments().get("slug");
-
+        serviceSlug = getArguments().getString("slug");
 
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         binding.toolbar.setNavigationOnClickListener(view1 -> {
@@ -153,8 +152,9 @@ public class EvalyExpressFragment extends Fragment {
 
         });
 
-        viewModel.getExpressDetails().observe(this, expressServiceDetailsModel -> Glide.with(getActivity())
+        viewModel.getExpressDetails().observe(getViewLifecycleOwner(), expressServiceDetailsModel -> Glide.with(getActivity())
                 .load(expressServiceDetailsModel.getBannerImage())
+                .placeholder(R.drawable.banner_skeleton_bg)
                 .into(binding.sliderImage));
 
         binding.districtSelector.setOnClickListener(v -> showDistrictSelector());

@@ -54,6 +54,7 @@ public class HomeTabsFragment extends Fragment {
     private FragmentHomeCategoryBinding binding;
     private AppDatabase appDatabase;
     private TabsViewModel viewModel;
+    private CategoryDao categoryDao;
 
     public HomeTabsFragment() {
         // Required empty public constructor
@@ -93,7 +94,7 @@ public class HomeTabsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         appDatabase = AppDatabase.getInstance(getActivity());
-        CategoryDao categoryDao = appDatabase.categoryDao();
+        categoryDao = appDatabase.categoryDao();
 
         itemList = new ArrayList<>();
         adapter = new TabsAdapter(getContext(), (MainActivity) getActivity(), itemList, type);
@@ -101,6 +102,7 @@ public class HomeTabsFragment extends Fragment {
         categoryItems = new ArrayList<>();
 
         if (slug.equals("root") && type == 1) {
+
 
             adapter2 = new RootCategoriesAdapter(getContext(), categoryItems, NavHostFragment.findNavController(this));
             binding.recyclerView.setAdapter(adapter2);
@@ -117,33 +119,14 @@ public class HomeTabsFragment extends Fragment {
                 }
             });
 
+            categoryDao.getCountLive().observe(getViewLifecycleOwner(), integer -> {
+                if (integer == 0){
+                    updateCategoryList();
+                }
+            });
+
             if (getLastUpdated() == 0 || (getLastUpdated() != 0 && Calendar.getInstance().getTimeInMillis() - getLastUpdated() > 20200000)) {
-
-                viewModel.setItemCount(16);
-
-                binding.shimmer.shimmer.setVisibility(View.VISIBLE);
-                binding.shimmer.shimmer.setAlpha(1);
-
-                GeneralApiHelper.getRootCategories(new ResponseListenerAuth<List<CategoryEntity>, String>() {
-                    @Override
-                    public void onDataFetched(List<CategoryEntity> response, int statusCode) {
-                        setLastUpdated();
-                        Executors.newSingleThreadExecutor().execute(() -> {
-                            categoryDao.deleteAll();
-                            categoryDao.insertAll(response);
-                        });
-                    }
-
-                    @Override
-                    public void onFailed(String errorBody, int errorCode) {
-
-                    }
-
-                    @Override
-                    public void onAuthError(boolean logout) {
-
-                    }
-                });
+                updateCategoryList();
             }
 
             binding.showMoreBtnTabs.setVisibility(View.GONE);
@@ -176,6 +159,34 @@ public class HomeTabsFragment extends Fragment {
         loadData();
     }
 
+
+    private void updateCategoryList(){
+
+        binding.shimmer.shimmer.setVisibility(View.VISIBLE);
+        binding.shimmer.shimmer.setAlpha(1);
+
+        GeneralApiHelper.getRootCategories(new ResponseListenerAuth<List<CategoryEntity>, String>() {
+            @Override
+            public void onDataFetched(List<CategoryEntity> response, int statusCode) {
+                setLastUpdated();
+                Executors.newSingleThreadExecutor().execute(() -> {
+                    categoryDao.deleteAll();
+                    categoryDao.insertAll(response);
+                });
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+    }
 
     public long getLastUpdated() {
         return MyPreference.with(AppController.getmContext(), "category_db_new13").getLong("last_updated", 0);

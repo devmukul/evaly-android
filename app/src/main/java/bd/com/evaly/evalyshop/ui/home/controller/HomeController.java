@@ -68,6 +68,7 @@ public class HomeController extends EpoxyController {
         expressModel
                 .fragment(fragment)
                 .activity(activity)
+                .appDatabase(appDatabase)
                 .addTo(this);
 
         tabsModel
