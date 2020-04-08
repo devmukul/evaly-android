@@ -237,7 +237,6 @@ public class EvalyExpressFragment extends Fragment {
                                     getMainExecutor(getContext()).execute(() -> {
                                         CredentialManager.saveArea(district);
                                         binding.districtName.setText(district);
-                                        viewModel.clear();
                                         viewModel.loadShops();
                                     });
                                     c++;
@@ -292,6 +291,10 @@ public class EvalyExpressFragment extends Fragment {
             binding.progressBar.setVisibility(View.VISIBLE);
             binding.layoutNot.setVisibility(View.GONE);
 
+            viewModel.clear();
+            itemList.clear();
+            adapter.clear();
+
             if (districts[which].toLowerCase().contains("auto")) {
                 checkNearest = false;
                 checkPermissionAndLoad();
@@ -300,8 +303,6 @@ public class EvalyExpressFragment extends Fragment {
                 checkPermissionAndLoad();
             } else {
                 CredentialManager.saveArea(districts[which]);
-                itemList.clear();
-                viewModel.clear();
                 viewModel.loadShops();
                 binding.districtName.setText(districts[which]);
             }

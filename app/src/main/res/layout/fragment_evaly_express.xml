@@ -123,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/transparent"
-                    android:hint="Search area, shop..."
+                    android:hint="Search your area..."
                     android:imeOptions="actionDone"
                     android:inputType="textNoSuggestions"
                     android:maxLines="1"
