@@ -221,6 +221,8 @@
             android:autoVerify="true"
             app:uri="https://express.evaly.com.bd"
             tools:targetApi="m" />
+        <deepLink
+            app:uri="https://evaly.com.bd/express/{slug}"/>
     </fragment>
     <fragment
         android:id="@+id/newsfeedFragment"
@@ -234,8 +236,6 @@
         android:id="@+id/newsfeedNotificationFragment"
         android:name="bd.com.evaly.evalyshop.ui.newsfeed.notification.NewsfeedNotificationFragment"
         android:label="NewsfeedNotificationFragment">
-
-
 
     </fragment>
 

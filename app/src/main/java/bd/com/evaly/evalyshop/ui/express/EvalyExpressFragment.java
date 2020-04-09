@@ -37,6 +37,7 @@ import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 import bd.com.evaly.evalyshop.util.LocationUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static androidx.core.content.ContextCompat.getMainExecutor;
@@ -49,7 +50,6 @@ public class EvalyExpressFragment extends Fragment {
     private EvalyExpressViewModelFactory factory;
     private EvalyExpressViewModel viewModel;
     private boolean written = false;
-
     TextWatcher textWatcher = new TextWatcher() {
 
         public void afterTextChanged(Editable s) {
@@ -75,7 +75,7 @@ public class EvalyExpressFragment extends Fragment {
     private boolean checkNearest = false;
     private String serviceSlug;
     private int visibleItemCount, totalItemCount, pastVisibleItems;
-
+    private ExpressServiceModel model;
 
     public EvalyExpressFragment() {
 
@@ -93,14 +93,23 @@ public class EvalyExpressFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         if (getArguments() == null)
             return;
-        ExpressServiceModel model = (ExpressServiceModel) getArguments().getSerializable("model");
-        if (model == null)
+        if (getArguments().containsKey("model")) {
+            model = (ExpressServiceModel) getArguments().getSerializable("model");
+            if (model == null)
+                return;
+        } else if (getArguments().containsKey("slug")) {
+            model = new ExpressServiceModel();
+            model.setSlug(getArguments().getString("slug"));
+            model.setName(Utils.capitalize(getArguments().getString("slug").replace("-", " ")));
+        } else {
+            Toast.makeText(getActivity(), "This page is not available", Toast.LENGTH_SHORT).show();
             return;
+        }
 
         serviceSlug = model.getSlug();
-
 
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         binding.toolbar.setTitle(model.getName());
@@ -160,6 +169,9 @@ public class EvalyExpressFragment extends Fragment {
         });
 
         viewModel.getExpressDetails().observe(getViewLifecycleOwner(), expressServiceDetailsModel -> {
+
+            if (!expressServiceDetailsModel.getName().equals(model.getName()))
+                binding.toolbar.setTitle(expressServiceDetailsModel.getName());
 
             binding.btnTerms.setOnClickListener(v -> {
                 TextBottomSheetFragment fragment = TextBottomSheetFragment.newInstance(expressServiceDetailsModel.getDescription().replaceAll("\n", "<br>"));
