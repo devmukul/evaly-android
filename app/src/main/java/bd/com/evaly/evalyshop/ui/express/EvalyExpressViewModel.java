@@ -17,8 +17,8 @@ import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 
 public class EvalyExpressViewModel extends ViewModel {
-    private MutableLiveData<List<GroupShopModel>> liveData = new MutableLiveData<>();
-    private MutableLiveData<ExpressServiceDetailsModel> expressDetails = new MutableLiveData<>();
+    private MutableLiveData<List<GroupShopModel>> liveData;
+    private MutableLiveData<ExpressServiceDetailsModel> expressDetails;
     private int currentPage;
     private int totalCount = 0;
     private boolean loading;
@@ -30,12 +30,17 @@ public class EvalyExpressViewModel extends ViewModel {
         this.serviceSlug = serviceSlug;
         currentPage = 1;
         totalCount = 0;
+        liveData = new MutableLiveData<>();
+        expressDetails = new MutableLiveData<>();
         loadShops();
         loadServiceDetails();
     }
 
 
     public LiveData<List<GroupShopModel>> getLiveData() {
+        if (liveData == null)
+            liveData = new MutableLiveData<>();
+
         return liveData;
     }
 

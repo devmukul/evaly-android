@@ -86,6 +86,8 @@ public class EditProfileActivity extends BaseActivity {
         getSupportActionBar().setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        updateProfileData();
+
         context = this;
 
         binding.editPicture.bringToFront();
@@ -120,8 +122,6 @@ public class EditProfileActivity extends BaseActivity {
             }
         });
 
-        updateProfileData();
-
     }
 
 
@@ -129,7 +129,7 @@ public class EditProfileActivity extends BaseActivity {
 
         UserModel userModel = CredentialManager.getUserData();
 
-        if (userModel == null) {
+        if (CredentialManager.getUserData() == null) {
             Toast.makeText(this, "Profile information not found, please logout and login again.", Toast.LENGTH_SHORT).show();
             finish();
             return;
