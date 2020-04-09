@@ -78,7 +78,6 @@ public class HomeController extends EpoxyController {
 
         for (ProductItem productItem: items) {
 
-
             new HomeProductGridModel_()
                     .id(productItem.getUniqueId())
                     .model(productItem)

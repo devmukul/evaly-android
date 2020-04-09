@@ -32,7 +32,6 @@ public class SliderController extends EpoxyController {
                     .clickListener((model, parentView, clickedView, position) -> {
 
                         BannerItem item1 = model.getModel();
-
                         String url = item1.getUrl();
 
                         if (url.equals("") || url.equals("https://evaly.com.bd") || url.equals("https://evaly.com.bd/")) {
@@ -52,11 +51,8 @@ public class SliderController extends EpoxyController {
                                 Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.shopFragment, bundle);
                             } else
                                 Toast.makeText(activity, "It's just a banner. No page to open.", Toast.LENGTH_SHORT).show();
-                        } else {
-
+                        } else
                             Utils.CustomTab(item1.getUrl(), activity);
-                        }
-
                     })
                     .addTo(this);
         }

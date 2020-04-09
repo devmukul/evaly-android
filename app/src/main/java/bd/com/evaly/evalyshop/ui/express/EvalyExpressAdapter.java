@@ -105,8 +105,10 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
 
 
     public void clear(){
-        itemList.clear();
-        notifyDataSetChanged();
+        if (itemList != null) {
+            itemList.clear();
+            notifyDataSetChanged();
+        }
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

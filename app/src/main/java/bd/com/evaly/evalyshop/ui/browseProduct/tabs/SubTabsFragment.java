@@ -26,6 +26,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
+import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.ui.search.SearchCategory;
@@ -45,6 +46,16 @@ public class SubTabsFragment extends Fragment {
 
     public SubTabsFragment() {
         // Required empty public constructor
+    }
+
+    public static SubTabsFragment getInstance(int type, String slug, String category) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", type);
+        bundle.putString("slug", slug);
+        bundle.putString("category", category);
+        SubTabsFragment fragment = new SubTabsFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override

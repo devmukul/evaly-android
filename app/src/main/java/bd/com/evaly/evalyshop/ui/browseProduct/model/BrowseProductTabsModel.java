@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.browseProduct.model;
 
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -105,49 +104,16 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
             });
 
 
-            SubTabsFragment fragment = new SubTabsFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt("type", 1);
-            bundle.putString("slug", category);
-            bundle.putString("category", category);
-            fragment.setArguments(bundle);
-            pager.addFragment(fragment, AppController.getmContext().getResources().getString(R.string.categories));
+            SubTabsFragment categoryFragment = SubTabsFragment.getInstance(1, category, category);
+            SubTabsFragment brandFragment = SubTabsFragment.getInstance(2, category, category);
+            SubTabsFragment shopFragment = SubTabsFragment.getInstance(3, category, category);
 
-            loadOtherTabs();
-
-        }
-
-
-        private void loadOtherTabs() {
-
-            if (fragmentInstance.getContext() == null || binding == null || pager == null)
-                return;
-            {
-                SubTabsFragment fragment = new SubTabsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 2);
-                bundle.putString("slug", category);
-                bundle.putString("category", category);
-                bundle.putString("json", "");
-                fragment.setArguments(bundle);
-                pager.addFragment(fragment, AppController.getmContext().getResources().getString(R.string.brands));
-
-            }
-
-            {
-                SubTabsFragment fragment = new SubTabsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 3);
-                bundle.putString("slug", category);
-                bundle.putString("category", category);
-                bundle.putString("json", "");
-                fragment.setArguments(bundle);
-                pager.addFragment(fragment, AppController.getmContext().getResources().getString(R.string.shops));
-
-            }
-
+            pager.addFragment(categoryFragment, AppController.getmContext().getResources().getString(R.string.categories));
+            pager.addFragment(brandFragment, AppController.getmContext().getResources().getString(R.string.brands));
+            pager.addFragment(shopFragment, AppController.getmContext().getResources().getString(R.string.shops));
+            
             pager.notifyDataSetChanged();
-
         }
+
     }
 }

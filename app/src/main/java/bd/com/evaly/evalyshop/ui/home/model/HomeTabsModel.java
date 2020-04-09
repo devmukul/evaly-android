@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -93,35 +92,16 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                 }
             });
 
-            HomeTabsFragment categoryFragment = new HomeTabsFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt("type", 1);
-            bundle.putString("slug", "root");
-            bundle.putString("category", "root");
-            categoryFragment.setArguments(bundle);
-
-            HomeTabsFragment brandFragment = new HomeTabsFragment();
-            Bundle bundle2 = new Bundle();
-            bundle2.putInt("type", 2);
-            bundle2.putString("slug", "root");
-            bundle2.putString("category", "root");
-            brandFragment.setArguments(bundle2);
-
-            HomeTabsFragment shopFragment = new HomeTabsFragment();
-            Bundle bundle3 = new Bundle();
-            bundle3.putInt("type", 3);
-            bundle3.putString("slug", "root");
-            bundle3.putString("category", "root");
-            shopFragment.setArguments(bundle3);
-
             if (pager != null) {
+                HomeTabsFragment categoryFragment = HomeTabsFragment.getInstance(1, "root", "root");
+                HomeTabsFragment brandFragment = HomeTabsFragment.getInstance(2, "root", "root");
+                HomeTabsFragment shopFragment = HomeTabsFragment.getInstance(3, "root", "root");
+
                 pager.addFragment(categoryFragment, AppController.getmContext().getResources().getString(R.string.categories));
                 pager.addFragment(brandFragment, AppController.getmContext().getResources().getString(R.string.brands));
                 pager.addFragment(shopFragment, AppController.getmContext().getResources().getString(R.string.shops));
                 pager.notifyDataSetChanged();
             }
         }
-
-
     }
 }

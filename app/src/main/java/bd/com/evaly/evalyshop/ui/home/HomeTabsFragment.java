@@ -56,6 +56,16 @@ public class HomeTabsFragment extends Fragment {
     private TabsViewModel viewModel;
     private CategoryDao categoryDao;
 
+    public static HomeTabsFragment getInstance(int type, String slug, String category) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", type);
+        bundle.putString("slug", slug);
+        bundle.putString("category", category);
+        HomeTabsFragment fragment = new HomeTabsFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     public HomeTabsFragment() {
         // Required empty public constructor
     }
@@ -120,7 +130,7 @@ public class HomeTabsFragment extends Fragment {
             });
 
             categoryDao.getCountLive().observe(getViewLifecycleOwner(), integer -> {
-                if (integer == 0){
+                if (integer == 0) {
                     updateCategoryList();
                 }
             });
@@ -160,7 +170,7 @@ public class HomeTabsFragment extends Fragment {
     }
 
 
-    private void updateCategoryList(){
+    private void updateCategoryList() {
 
         binding.shimmer.shimmer.setVisibility(View.VISIBLE);
         binding.shimmer.shimmer.setAlpha(1);

@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.home.model;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,6 +55,10 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
 
         View itemView;
 
+        View.OnClickListener emptyListener = v -> {
+            Toast.makeText(activity, "Coming soon!", Toast.LENGTH_SHORT).show();
+        };
+
         @Override
         protected void bindView(@NonNull View itemView) {
             this.itemView = itemView;
@@ -65,6 +70,10 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
             NavController navController = NavHostFragment.findNavController(fragment);
 
             ExpressServiceDao expressServiceDao = appDatabase.expressServiceDao();
+
+            binding.btnGrocery.setOnClickListener(emptyListener);
+            binding.btnPharmacy.setOnClickListener(emptyListener);
+            binding.btnFoods.setOnClickListener(emptyListener);
 
             expressServiceDao.getAll().observe(fragment.getViewLifecycleOwner(), expressServiceModels -> {
                 for (ExpressServiceModel serviceModel : expressServiceModels) {
