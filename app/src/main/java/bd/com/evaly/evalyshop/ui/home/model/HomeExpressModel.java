@@ -56,7 +56,6 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
         View itemView;
 
         View.OnClickListener emptyListener = v -> {
-            // Toast.makeText(activity, "Coming soon!", Toast.LENGTH_SHORT).show();
             ImageDialog dialog = new ImageDialog();
             dialog.show(activity.getSupportFragmentManager(), "empty");
 
@@ -94,11 +93,11 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
                             navController.navigate(R.id.evalyExpressFragment, bundle);
                         });
                     } else if (name.contains("food")) {
-//                        binding.btnFoods.setOnClickListener(v -> {
-//                            Bundle bundle = new Bundle();
-//                            bundle.putSerializable("model", serviceModel);
-//                            navController.navigate(R.id.evalyExpressFragment, bundle);
-//                        });
+                        binding.btnFoods.setOnClickListener(v -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("model", serviceModel);
+                            navController.navigate(R.id.evalyExpressFragment, bundle);
+                        });
                     }
                 }
             });
