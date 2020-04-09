@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fff"
@@ -28,8 +29,10 @@
             app:titleEnabled="false">
 
             <LinearLayout
+                android:id="@+id/toolbarHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.Toolbar
@@ -44,11 +47,11 @@
                         android:id="@+id/btnTerms"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:padding="3dp"
                         android:layout_gravity="right"
                         android:layout_marginRight="20dp"
-                        android:clickable="true"
                         android:background="?selectableItemBackground"
+                        android:clickable="true"
+                        android:padding="3dp"
                         app:srcCompat="@drawable/ic_info_small" />
 
                 </androidx.appcompat.widget.Toolbar>
@@ -63,12 +66,14 @@
                     app:cardBackgroundColor="@color/fff"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="0dp">
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/sliderHolder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="#fff"
                         android:minHeight="100dp">
+
                         <ImageView
                             android:id="@+id/sliderImage"
                             android:layout_width="match_parent"
@@ -78,7 +83,7 @@
                             app:layout_constraintDimensionRatio="H,2.93478:1"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/banner_skeleton_bg"/>
+                            app:srcCompat="@drawable/banner_skeleton_bg" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -91,7 +96,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:layout_marginTop="5dp"
             android:background="@color/fff"
             android:orientation="horizontal"
             android:paddingTop="10dp"
@@ -204,8 +208,8 @@
         android:background="#fafafa"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <ImageView
             android:layout_width="80dp"
@@ -225,10 +229,10 @@
     </LinearLayout>
 
     <ProgressBar
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/progressBar"
         android:layout_width="45dp"
         android:layout_height="300dp"
         android:layout_gravity="center_vertical|top"
-        android:visibility="visible" />
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
