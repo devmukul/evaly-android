@@ -52,14 +52,10 @@ import com.orhanobut.logger.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
@@ -731,62 +727,11 @@ public class OrderDetailsActivity extends BaseActivity {
                 paidAmountTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getPaidAmount()))));
                 duePriceTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount()))));
 
-                if (response.getCampaignRules().size() > 0) {
-
-                    JsonObject campaignRuleObject = response.getCampaignRules().get(0);
-
-                    double cashback_percentage = campaignRuleObject.get("cashback_percentage").getAsDouble();
-
-                    if (cashback_percentage > 0) {
-
-                        String payMethod = campaignRuleObject.get("cashback_on_payment_by").getAsString();
-
-                        campaignRuleHolder.setVisibility(View.VISIBLE);
-                        payMethod = payMethod.replaceAll("card", "Credit/Debit Card");
-                        payMethod = payMethod.replaceAll("balance", "Balance");
-                        payMethod = payMethod.replaceAll("bank", "Bank Account");
-                        payMethod = payMethod.replaceAll("gift_code", "Gift Code");
-                        payMethod = payMethod.replaceAll(",", ", ");
-                        payMethod = payMethod.replaceAll("  ", " ");
-
-                        if (!campaignRuleObject.get("cashback_date").isJsonNull()) {
-
-                            String cashback_date = campaignRuleObject.get("cashback_date").getAsString();
-                            String inputFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-
-                            SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
-                            df_input.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-                            Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
-                            Calendar end = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
-
-                            try {
-                                end.setTime(df_input.parse(cashback_date));
-                            } catch (ParseException e) {
-                                Log.e("timze", e.toString());
-                            }
-
-                            int diffDays = Utils.daysBetween(start, end);
-
-                            String message = "Payments with <font color=\"#c53030\">" + payMethod + "</font> will be rewarded by <b>" + cashback_percentage + "%</b> cashback balance within <b>" + diffDays + " days</b>.";
-                            tvCampaignRule.setText(Html.fromHtml(message));
-
-                            if (diffDays < 1)
-                                campaignRuleHolder.setVisibility(View.GONE);
-                        } else {
-                            String message = "Payments with <font color=\"#c53030\">" + payMethod + "</font> will be rewarded by <b>" + cashback_percentage + "%</b> cashback balance";
-
-
-                            if (campaignRuleObject.get("name").getAsString().contains("Express"))
-                                message = message + ", 3 days after payment.";
-                            else
-                                message = message + " instantly.";
-
-                            tvCampaignRule.setText(Html.fromHtml(message));
-                        }
-                    }
-                }
-
+                if (response.getCustomerNote() != null && !response.getCustomerNote().equals("")) {
+                    tvCampaignRule.setText(response.getCustomerNote());
+                    campaignRuleHolder.setVisibility(View.VISIBLE);
+                } else
+                    campaignRuleHolder.setVisibility(View.GONE);
 
                 String payMethod = response.getPaymentMethod();
 
@@ -867,7 +812,8 @@ public class OrderDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                dialog.hideDialog();
+                Toast.makeText(OrderDetailsActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
