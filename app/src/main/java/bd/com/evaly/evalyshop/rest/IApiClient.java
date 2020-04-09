@@ -419,4 +419,10 @@ public interface IApiClient {
                                                                         @Query("longitude") Double longitude,
                                                                         @Query("latitude") Double latitude);
 
+    @GET(UrlUtils.BASE_URL + "public/express-products/")
+    Call<CommonResultResponse<List<ProductItem>>> getExpressProductList(@Query("express_service") String serviceSlug,
+                                                                        @Query("page") int page,
+                                                                        @Query("limit") int limit,
+                                                                        @Query("search") String search);
+
 }

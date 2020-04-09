@@ -16,8 +16,6 @@
     <permission
         android:name="bd.com.evaly.evalyshop.manager.TokenContentProvider._READ_PERMISSION"
         android:protectionLevel="normal" />
-
-
     <permission
         android:name="bd.com.evaly.evalyshop.manager.TokenContentProvider._WRITE_PERMISSION"
         android:protectionLevel="normal" />
@@ -44,6 +42,10 @@
             android:grantUriPermissions="true"
             android:readPermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._READ_PERMISSION"
             android:writePermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._WRITE_PERMISSION"/>
+
+        <activity
+            android:name=".ui.express.products.ExpressProductSearchActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.issue.IssuesActivity"
