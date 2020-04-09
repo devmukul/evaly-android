@@ -56,10 +56,13 @@
                     android:textSize="16sp" />
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/searchClear"
                     android:layout_width="45dp"
-                    android:layout_height="20dp"
+                    android:layout_height="45dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
                     android:layout_weight="0"
+                    android:clickable="true"
                     app:srcCompat="@drawable/ic_search" />
             </LinearLayout>
         </LinearLayout>

@@ -20,12 +20,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ActivityExpressProductSearchBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
+import bd.com.evaly.evalyshop.ui.express.products.controller.ExpressProductController;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
@@ -42,7 +45,6 @@ public class ExpressProductSearchFragment extends Fragment {
     private String query;
     private boolean firstLoad = true;
     private ExpressProductController expressProductController;
-
 
     public ExpressProductSearchFragment() {
 
@@ -102,14 +104,16 @@ public class ExpressProductSearchFragment extends Fragment {
 
                     if (!isLoading)
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                            getShopProducts(currentPage);
+                            if (totalCount > expressProductController.listSize())
+                                getShopProducts();
                 }
             }
         });
 
 
         binding.progressContainer.setVisibility(View.VISIBLE);
-        getShopProducts(1);
+        getShopProducts();
+
 
         binding.search.setOnEditorActionListener((v, actionId, event) -> {
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
@@ -119,13 +123,15 @@ public class ExpressProductSearchFragment extends Fragment {
                     ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
                     performSearch(binding.search.getText().toString().trim());
                     query = binding.search.getText().toString().trim();
+                    binding.searchClear.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_close));
+
                 } else {
 
                     // binding.noItem.setVisibility(View.VISIBLE);
                     expressProductController.clear();
                     binding.searchTitle.setVisibility(View.GONE);
                     currentPage = 1;
-                    getShopProducts(currentPage);
+                    getShopProducts();
                 }
 
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -134,6 +140,21 @@ public class ExpressProductSearchFragment extends Fragment {
                 return true;
             } else {
                 return false;
+            }
+
+        });
+
+        binding.searchClear.setOnClickListener(v -> {
+
+            if (!binding.search.getText().toString().trim().equals("")) {
+                binding.searchClear.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_search));
+                binding.search.setText("");
+                query = null;
+                currentPage = 1;
+                expressProductController.clear();
+                expressProductController.setTitle("Products");
+                binding.progressContainer.setVisibility(View.VISIBLE);
+                getShopProducts();
             }
 
         });
@@ -149,7 +170,7 @@ public class ExpressProductSearchFragment extends Fragment {
 
     public void performSearch(String query) {
 
-        binding.searchTitle.setText("Search result for \"" + query + "\"");
+        expressProductController.setTitle("Search result for \"" + query + "\"");
         binding.progressContainer.setVisibility(View.VISIBLE);
         expressProductController.clear();
         binding.searchTitle.setVisibility(View.GONE);
@@ -160,12 +181,14 @@ public class ExpressProductSearchFragment extends Fragment {
 
         currentPage = 1;
 
-        getShopProducts(currentPage);
+        getShopProducts();
     }
 
-    public void getShopProducts(int page) {
+    public void getShopProducts() {
 
         isLoading = true;
+
+        expressProductController.showEmptyPage(false, false);
 
         if (currentPage > 1)
             expressProductController.setLoadingMore(true);
@@ -173,6 +196,10 @@ public class ExpressProductSearchFragment extends Fragment {
         ExpressApiHelper.getProductList(null, currentPage, 24, query, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
+
+
+                if (!binding.search.getText().toString().equals(""))
+                    binding.searchClear.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_close));
 
                 expressProductController.setLoadingMore(false);
 
@@ -196,20 +223,14 @@ public class ExpressProductSearchFragment extends Fragment {
                 if (response.getCount() > 0)
                     currentPage++;
 
-//                if (response.getCount() == 0) {
-//                    binding.noItem.setVisibility(View.VISIBLE);
-//                    binding.noText.setText("No products found");
-//                } else {
-//                    binding.noItem.setVisibility(View.GONE);
-//                    binding.noText.setText("Search products here");
-//                }
 
+                if (response.getCount() == 0) {
+                    expressProductController.showEmptyPage(true, true);
+
+                }
                 if (binding.search.getText().toString().length() == 0 && !firstLoad) {
                     firstLoad = false;
                     expressProductController.clear();
-                    adapter.notifyDataSetChanged();
-                    //   binding.noItem.setVisibility(View.VISIBLE);
-                    //  binding.noText.setText("Search products here");
                 }
             }
 

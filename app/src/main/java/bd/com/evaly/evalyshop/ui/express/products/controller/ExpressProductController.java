@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.express.products;
+package bd.com.evaly.evalyshop.ui.express.products.controller;
 
 import android.content.Intent;
 
@@ -11,10 +11,12 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.ExpressProductTitleBindingModel_;
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
+import bd.com.evaly.evalyshop.ui.express.products.model.ExpressTitleModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
@@ -26,6 +28,9 @@ public class ExpressProductController extends EpoxyController {
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
     private AppDatabase appDatabase;
+    private boolean loadingMore = false;
+    private boolean emptyPage = false;
+    private String title;
 
     @AutoModel
     HomeExpressModel_ expressModel;
@@ -37,9 +42,18 @@ public class ExpressProductController extends EpoxyController {
     LoadingModel_ loader;
 
     @AutoModel
-    ExpressProductTitleBindingModel_ title;
+    ExpressTitleModel_ titleModel;
 
-    private boolean loadingMore = false;
+
+    @AutoModel
+    NoProductModel_ noProductModel;
+
+    public void showEmptyPage(boolean emptyPage, boolean build) {
+        this.emptyPage = emptyPage;
+        if (build)
+            requestModelBuild();
+    }
+
 
     public void setLoadingMore(boolean loadingMore) {
         this.loadingMore = loadingMore;
@@ -55,8 +69,8 @@ public class ExpressProductController extends EpoxyController {
                 .appDatabase(appDatabase)
                 .addTo(this);
 
-        title
-                .spanSizeOverride((totalSpanCount, position, itemCount) -> 1)
+        titleModel
+                .title(title)
                 .addTo(this);
 
         for (ProductItem productItem: items) {
@@ -76,6 +90,12 @@ public class ExpressProductController extends EpoxyController {
                     .addTo(this);
         }
 
+
+        noProductModel
+                .text("No Products Found")
+                .image(R.drawable.ic_empty_product)
+                .addIf(emptyPage, this);
+
         loader.addIf(loadingMore, this);
     }
 
@@ -94,9 +114,15 @@ public class ExpressProductController extends EpoxyController {
     }
 
     public void clear(){
-
         items.clear();
         requestModelBuild();
+    }
 
+    public int listSize(){
+        return items.size();
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
