@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.home.model;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +26,7 @@ import bd.com.evaly.evalyshop.databinding.HomeModelExpressBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
+import bd.com.evaly.evalyshop.ui.basic.ImageDialog;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 
 @EpoxyModelClass(layout = R.layout.home_model_express)
@@ -56,7 +56,10 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
         View itemView;
 
         View.OnClickListener emptyListener = v -> {
-            Toast.makeText(activity, "Coming soon!", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(activity, "Coming soon!", Toast.LENGTH_SHORT).show();
+            ImageDialog dialog = new ImageDialog();
+            dialog.show(activity.getSupportFragmentManager(), "empty");
+
         };
 
         @Override
@@ -91,11 +94,11 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
                             navController.navigate(R.id.evalyExpressFragment, bundle);
                         });
                     } else if (name.contains("food")) {
-                        binding.btnFoods.setOnClickListener(v -> {
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("model", serviceModel);
-                            navController.navigate(R.id.evalyExpressFragment, bundle);
-                        });
+//                        binding.btnFoods.setOnClickListener(v -> {
+//                            Bundle bundle = new Bundle();
+//                            bundle.putSerializable("model", serviceModel);
+//                            navController.navigate(R.id.evalyExpressFragment, bundle);
+//                        });
                     }
                 }
             });
