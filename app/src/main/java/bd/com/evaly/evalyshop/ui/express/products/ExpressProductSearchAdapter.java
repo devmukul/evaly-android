@@ -29,7 +29,6 @@ import bd.com.evaly.evalyshop.models.network.NetworkState;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 
 public class ExpressProductSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -57,16 +56,14 @@ public class ExpressProductSearchAdapter extends RecyclerView.Adapter<RecyclerVi
     };
     private NetworkState networkState;
     private HashMap<String, String> data;
-    private ShopViewModel viewModel;
     private ShopDetailsModel shopDetails;
     private int cashback_rate = 0;
 
-    public ExpressProductSearchAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, HashMap<String, String> data, ShopViewModel viewModel) {
+    public ExpressProductSearchAdapter(Context context, List<ProductItem> a, AppCompatActivity activityInstance, HashMap<String, String> data) {
         this.context = context;
         productsList = a;
         this.activityInstance = activityInstance;
         this.data = data;
-        this.viewModel = viewModel;
     }
 
     public void setCashbackRate(int cashback_rate) {
@@ -113,6 +110,7 @@ public class ExpressProductSearchAdapter extends RecyclerView.Adapter<RecyclerVi
             } else if (model.getMinDiscountedPriceD() != 0) {
 
                 holder.tvCashback.setVisibility(View.GONE);
+
                 if (model.getMinDiscountedPriceD() < model.getMinPriceD()) {
                     holder.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
                     holder.priceDiscount.setVisibility(View.VISIBLE);
@@ -124,8 +122,9 @@ public class ExpressProductSearchAdapter extends RecyclerView.Adapter<RecyclerVi
                 }
 
             } else {
-                holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
+
                 holder.tvCashback.setVisibility(View.GONE);
+                holder.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
             }
 
             holder.itemView.setTag(position);
@@ -136,8 +135,10 @@ public class ExpressProductSearchAdapter extends RecyclerView.Adapter<RecyclerVi
             }
 
             holder.buyNow.setVisibility(View.GONE);
-
+            holder.tvCashback.bringToFront();
         }
+
+
     }
 
     @Override

@@ -65,10 +65,24 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
                 .placeholder(R.drawable.ic_evaly_placeholder)
                 .into(binding.image);
 
-        if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0))
-            binding.price.setText("Not Available");
+        if (cashbackRate == 0)
+            binding.tvCashback.setVisibility(View.GONE);
+        else {
+            binding.tvCashback.setVisibility(View.VISIBLE);
+            binding.tvCashback.bringToFront();
+            binding.tvCashback.setText(String.format(Locale.ENGLISH, "%d%% Cashback", cashbackRate));
+        }
 
-        else if (model.getMinDiscountedPriceD() != 0) {
+        if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
+            if (cashbackRate == 0) {
+                binding.tvCashback.setText("Unavailable");
+                binding.tvCashback.bringToFront();
+                binding.tvCashback.setVisibility(View.VISIBLE);
+            } else {
+                binding.price.setText("Unavailable");
+                binding.tvCashback.setVisibility(View.GONE);
+            }
+        } else if (model.getMinDiscountedPriceD() != 0) {
 
             if (model.getMinDiscountedPriceD() < model.getMinPriceD()) {
                 binding.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getMinPriceD()));
@@ -89,20 +103,11 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
         if (isShop) {
             binding.buyNow.setVisibility(View.VISIBLE);
             binding.buyNow.setOnClickListener(buyNowClickListener);
-        }
-        else
+        } else
             binding.buyNow.setVisibility(View.GONE);
 
         if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
             binding.buyNow.setVisibility(View.GONE);
-        }
-
-        if (cashbackRate == 0)
-            binding.tvCashback.setVisibility(View.GONE);
-        else {
-            binding.tvCashback.setVisibility(View.VISIBLE);
-            binding.tvCashback.bringToFront();
-            binding.tvCashback.setText(String.format(Locale.ENGLISH, "%d%% Cashback", cashbackRate));
         }
     }
 

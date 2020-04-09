@@ -219,15 +219,15 @@
         android:label="NewsfeedNotificationFragment">
 
     </fragment>
-    <activity
-        android:id="@+id/expressProductSearchActivity"
-        android:name="bd.com.evaly.evalyshop.ui.express.products.ExpressProductSearchActivity"
+    <fragment
+        android:id="@+id/expressProductSearchFragment"
+        android:name="bd.com.evaly.evalyshop.ui.express.products.ExpressProductSearchFragment"
         android:label="activity_express_product_search"
         tools:layout="@layout/activity_express_product_search">
         <deepLink
             android:autoVerify="true"
             app:uri="https://evaly.com.bd/express" />
-    </activity>
+    </fragment>
 
     <!--    <activity-->
     <!--        android:id="@+id/orderDetailsActivity"-->

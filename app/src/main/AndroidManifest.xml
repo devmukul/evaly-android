@@ -44,10 +44,6 @@
             android:writePermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._WRITE_PERMISSION"/>
 
         <activity
-            android:name=".ui.express.products.ExpressProductSearchActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
             android:name=".ui.issue.IssuesActivity"
             android:screenOrientation="portrait">
             <intent-filter>

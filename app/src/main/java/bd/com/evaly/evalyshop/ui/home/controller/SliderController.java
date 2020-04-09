@@ -49,7 +49,7 @@ public class SliderController extends EpoxyController {
                             } else
                                 Toast.makeText(activity, "It's just a banner. No page to open.", Toast.LENGTH_SHORT).show();
                         } else if (item1.getUrl().equals("https://evaly.com.bd/express"))
-                            Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.expressProductSearchActivity);
+                            Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.expressProductSearchFragment);
                         else
                             Utils.CustomTab(item1.getUrl(), activity);
                     })

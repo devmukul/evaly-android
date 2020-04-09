@@ -105,31 +105,6 @@
                         android:layout_height="40dp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/noItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:id="@+id/noImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        app:srcCompat="@drawable/ic_category_search" />
-
-                    <TextView
-                        android:id="@+id/noText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Search products here"
-                        android:textAlignment="center"
-                        android:textColor="#333"
-                        android:layout_marginTop="5dp"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
@@ -143,20 +118,11 @@
             android:background="#fafafa"
             android:clipToPadding="false"
             android:paddingTop="10dp"
-            android:paddingBottom="50dp"
+            android:paddingBottom="12dp"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:spanCount="2"
             tools:listitem="@layout/item_home_product_grid" />
 
-        <ProgressBar
-            android:id="@+id/bottomProgressBar"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="10dp"
-            android:layout_gravity="bottom"
-            android:background="@color/fafafa"
-            android:visibility="invisible"/>
 
     </FrameLayout>
 </layout>
