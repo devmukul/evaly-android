@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.express;
+package bd.com.evaly.evalyshop.ui.express.adapter;
 
 
 import android.content.Context;

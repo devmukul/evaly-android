@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.express;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -11,11 +12,12 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,6 +39,8 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
+import bd.com.evaly.evalyshop.ui.express.adapter.EvalyExpressAdapter;
+import bd.com.evaly.evalyshop.ui.express.adapter.ExpressDistrictAdapter;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -286,66 +291,76 @@ public class EvalyExpressFragment extends Fragment {
     }
 
     private void showLocationSelector() {
-
-
         if (getContext() == null)
             return;
+        Dialog dialog = new Dialog(getActivity(), R.style.TransparentDialog);
+        dialog.setContentView(R.layout.dialog_express_location_filter);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        RecyclerView districtRecyclerView = dialog.findViewById(R.id.recyclerView);
 
-        final String[] districts = {"Nearest Shops", "Select District"};
-        builder.setItems(districts, (dialog, which) -> {
-            if (districts[which].toLowerCase().contains("nearest")) {
-                checkNearest = true;
-                checkPermissionAndLoad();
-                dialog.dismiss();
+        String[] districtList = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
+        ArrayList<String> districts = new ArrayList<>(Arrays.asList(districtList));
 
-            } else {
-                dialog.dismiss();
-                showDistrictSelector();
+        ExpressDistrictAdapter adapter = new ExpressDistrictAdapter(districts, object -> {
+            hideAndClear();
+
+            CredentialManager.saveArea(object);
+            viewModel.loadShops();
+            binding.districtName.setText(object);
+            dialog.dismiss();
+        });
+
+        EditText search = dialog.findViewById(R.id.search);
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                EditText search = dialog.findViewById(R.id.search);
+
+                ArrayList<String> temp = new ArrayList<>();
+
+                for (int i = 0; i < districtList.length; i++) {
+                    if (districtList[i].toLowerCase().contains(search.getText().toString().toLowerCase()))
+                        temp.add(districtList[i]);
+                }
+
+                adapter.setFilter(temp);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
-        AlertDialog dialog = builder.create();
+        districtRecyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        LinearLayout nearby = dialog.findViewById(R.id.nearby);
+        nearby.setOnClickListener(v -> {
+
+            hideAndClear();
+
+            checkNearest = true;
+            checkPermissionAndLoad();
+            dialog.dismiss();
+        });
         dialog.show();
 
     }
 
-    private void showDistrictSelector() {
+    private void hideAndClear(){
 
-        if (getContext() == null)
-            return;
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.layoutNot.setVisibility(View.GONE);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Choose your district");
-
-        final String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
-        builder.setItems(districts, (dialog, which) -> {
-
-            binding.progressBar.setVisibility(View.VISIBLE);
-            binding.layoutNot.setVisibility(View.GONE);
-
-            viewModel.clear();
-            itemList.clear();
-
-            if (adapter != null)
-                adapter.clear();
-
-            if (districts[which].toLowerCase().contains("auto")) {
-                checkNearest = false;
-                checkPermissionAndLoad();
-            } else if (districts[which].toLowerCase().contains("nearest")) {
-                checkNearest = true;
-                checkPermissionAndLoad();
-            } else {
-                CredentialManager.saveArea(districts[which]);
-                viewModel.loadShops();
-                binding.districtName.setText(districts[which]);
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        viewModel.clear();
+        itemList.clear();
     }
+
 
 }
