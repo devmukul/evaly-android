@@ -33,6 +33,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
 
+        <meta-data
+            android:name="asset_statements"
+            android:resource="@string/asset_statements"/>
+
         <provider
             android:name="bd.com.evaly.evalyshop.manager.TokenContentProvider"
             android:authorities="bd.com.evaly.econnect"

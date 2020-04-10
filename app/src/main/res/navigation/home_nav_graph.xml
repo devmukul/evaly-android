@@ -177,10 +177,6 @@
         android:label="activity_newsfeed"
         tools:layout="@layout/activity_newsfeed">
 
-        <deepLink
-            android:autoVerify="true"
-            app:uri="https://evaly.com.bd/feeds" />
-
     </activity>
     <activity
         android:id="@+id/giftCardActivity"
@@ -197,18 +193,16 @@
         tools:layout="@layout/fragment_evaly_express">
         <deepLink
             android:autoVerify="true"
-            app:uri="https://evaly.com.bd/evaly_express_shops" />
-        <deepLink
-            android:autoVerify="true"
-            app:uri="https://express.evaly.com.bd" />
-        <deepLink
-            android:autoVerify="true"
             app:uri="https://evaly.com.bd/express/{slug}" />
     </fragment>
     <fragment
         android:id="@+id/newsfeedFragment"
         android:name="bd.com.evaly.evalyshop.ui.newsfeed.tabs.NewsfeedFragment"
-        android:label="NewsfeedFragment" />
+        android:label="NewsfeedFragment">
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/feeds" />
+    </fragment>
     <activity
         android:id="@+id/shopSearchActivity"
         android:name="bd.com.evaly.evalyshop.ui.shop.search.ShopSearchActivity"
@@ -224,6 +218,12 @@
         android:name="bd.com.evaly.evalyshop.ui.express.products.ExpressProductSearchFragment"
         android:label="activity_express_product_search"
         tools:layout="@layout/activity_express_product_search">
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://evaly.com.bd/evaly_express_shops" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://express.evaly.com.bd" />
         <deepLink
             android:autoVerify="true"
             app:uri="https://evaly.com.bd/express" />

@@ -56,6 +56,10 @@ public class HomeTabsFragment extends Fragment {
     private TabsViewModel viewModel;
     private CategoryDao categoryDao;
 
+    public HomeTabsFragment() {
+        // Required empty public constructor
+    }
+
     public static HomeTabsFragment getInstance(int type, String slug, String category) {
         Bundle bundle = new Bundle();
         bundle.putInt("type", type);
@@ -64,10 +68,6 @@ public class HomeTabsFragment extends Fragment {
         HomeTabsFragment fragment = new HomeTabsFragment();
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    public HomeTabsFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -113,13 +113,13 @@ public class HomeTabsFragment extends Fragment {
 
         if (slug.equals("root") && type == 1) {
 
-
             adapter2 = new RootCategoriesAdapter(getContext(), categoryItems, NavHostFragment.findNavController(this));
             binding.recyclerView.setAdapter(adapter2);
             binding.recyclerView.setItemAnimator(new MyDefaultItemAnimator());
             adapter2.notifyDataSetChanged();
 
             appDatabase.categoryDao().getAllLiveData().observe(getViewLifecycleOwner(), categoryEntities -> {
+                categoryItems.clear();
                 categoryItems.addAll(categoryEntities);
                 adapter2.notifyDataSetChanged();
                 if (categoryEntities.size() > 0) {
@@ -130,14 +130,11 @@ public class HomeTabsFragment extends Fragment {
             });
 
             categoryDao.getCountLive().observe(getViewLifecycleOwner(), integer -> {
-                if (integer == 0) {
+                if (integer == 0)
                     updateCategoryList();
-                }
+                else if (getLastUpdated() == 0 || (getLastUpdated() != 0 && Calendar.getInstance().getTimeInMillis() - getLastUpdated() > 20200000))
+                    updateCategoryList();
             });
-
-            if (getLastUpdated() == 0 || (getLastUpdated() != 0 && Calendar.getInstance().getTimeInMillis() - getLastUpdated() > 20200000)) {
-                updateCategoryList();
-            }
 
             binding.showMoreBtnTabs.setVisibility(View.GONE);
         } else {
