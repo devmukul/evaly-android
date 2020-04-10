@@ -36,7 +36,7 @@ public class BrandController extends EpoxyController {
     @AutoModel
     NoProductModel_ noProductModel;
 
-    private boolean loadingMore = true;
+    private boolean loadingMore = false;
     private boolean emptyPage = false;
 
     public void setLoadingMore(boolean loadingMore) {

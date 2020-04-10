@@ -54,7 +54,7 @@ public class EvalyExpressViewModel extends ViewModel {
             area = null;
         else if (CredentialManager.getArea().contains("Districts"))
             area = null;
-        else if (CredentialManager.getArea().contains("Nearest")) {
+        else if (CredentialManager.getArea().toLowerCase().contains("near")) {
             area = null;
 
             if (CredentialManager.getLatitude() != null)

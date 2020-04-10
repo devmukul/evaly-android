@@ -78,7 +78,9 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
                 binding.tvCashback.setText("Unavailable");
                 binding.tvCashback.bringToFront();
                 binding.tvCashback.setVisibility(View.VISIBLE);
+                binding.price.setVisibility(View.GONE);
             } else {
+                binding.price.setVisibility(View.VISIBLE);
                 binding.price.setText("Unavailable");
                 binding.tvCashback.setVisibility(View.GONE);
             }

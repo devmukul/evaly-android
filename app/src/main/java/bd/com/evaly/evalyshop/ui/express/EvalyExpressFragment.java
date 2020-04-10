@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -232,8 +233,8 @@ public class EvalyExpressFragment extends Fragment {
 
                 if (checkNearest) {
                     getMainExecutor(getContext()).execute(() -> {
-                        CredentialManager.saveArea("Nearest");
-                        binding.districtName.setText("Nearest");
+                        CredentialManager.saveArea("Nearby");
+                        binding.districtName.setText("Nearby");
                         viewModel.clear();
                         viewModel.loadShops();
                     });
@@ -310,6 +311,8 @@ public class EvalyExpressFragment extends Fragment {
             dialog.dismiss();
         });
 
+        final TextView notFound = dialog.findViewById(R.id.not);
+
         EditText search = dialog.findViewById(R.id.search);
         search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -329,6 +332,11 @@ public class EvalyExpressFragment extends Fragment {
                 }
 
                 adapter.setFilter(temp);
+
+                if (temp.size() == 0)
+                    notFound.setVisibility(View.VISIBLE);
+                else
+                    notFound.setVisibility(View.GONE);
             }
 
             @Override
@@ -349,11 +357,15 @@ public class EvalyExpressFragment extends Fragment {
             checkPermissionAndLoad();
             dialog.dismiss();
         });
+
         dialog.show();
 
     }
 
-    private void hideAndClear(){
+    private void hideAndClear() {
+
+        if (adapter != null)
+            adapter.clear();
 
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.layoutNot.setVisibility(View.GONE);
