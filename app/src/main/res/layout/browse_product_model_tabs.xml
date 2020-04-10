@@ -12,7 +12,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="46dp"
             android:layout_weight="0"
             android:background="#fff"
             android:visibility="visible"
@@ -21,7 +21,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tabPaddingBottom="10dp"
             app:tabSelectedTextColor="@color/black"
-            app:tabTextAppearance="@style/home_tab_text"
             app:tabTextColor="@color/c777">
 
 
