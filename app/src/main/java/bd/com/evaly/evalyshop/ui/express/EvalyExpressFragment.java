@@ -184,7 +184,7 @@ public class EvalyExpressFragment extends Fragment {
 
         });
 
-        binding.districtSelector.setOnClickListener(v -> showDistrictSelector());
+        binding.districtSelector.setOnClickListener(v -> showLocationSelector());
         binding.districtName.setText(CredentialManager.getArea() == null ? "All District" : CredentialManager.getArea());
 
         binding.search.addTextChangedListener(textWatcher);
@@ -283,6 +283,32 @@ public class EvalyExpressFragment extends Fragment {
             case 0:
                 break;
         }
+    }
+
+    private void showLocationSelector() {
+
+
+        if (getContext() == null)
+            return;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        final String[] districts = {"Nearest Shops", "Select District"};
+        builder.setItems(districts, (dialog, which) -> {
+            if (districts[which].toLowerCase().contains("nearest")) {
+                checkNearest = true;
+                checkPermissionAndLoad();
+                dialog.dismiss();
+
+            } else {
+                dialog.dismiss();
+                showDistrictSelector();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 
     private void showDistrictSelector() {
