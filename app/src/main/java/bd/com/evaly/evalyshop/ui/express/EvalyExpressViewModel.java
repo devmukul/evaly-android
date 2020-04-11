@@ -81,6 +81,9 @@ public class EvalyExpressViewModel extends ViewModel {
                 else
                     hasNext = false;
 
+//                liveData.setValue(response.getData());
+//                currentPage++;
+
                 if (liveData.getValue() != null) {
                     List<GroupShopModel> oldList = liveData.getValue();
                     oldList.addAll(response.getData());

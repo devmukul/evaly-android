@@ -38,7 +38,6 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentEvalyExpressBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
-import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.express.adapter.EvalyExpressAdapter;
 import bd.com.evaly.evalyshop.ui.express.adapter.ExpressDistrictAdapter;
@@ -52,7 +51,6 @@ public class EvalyExpressFragment extends Fragment {
 
     private FragmentEvalyExpressBinding binding;
     private EvalyExpressAdapter adapter;
-    private List<GroupShopModel> itemList = new ArrayList<>();
     private EvalyExpressViewModelFactory factory;
     private EvalyExpressViewModel viewModel;
     private boolean written = false;
@@ -69,7 +67,6 @@ public class EvalyExpressFragment extends Fragment {
                 return;
 
             viewModel.clear();
-            itemList.clear();
 
             if (binding.search.getText().toString().trim().equals(""))
                 viewModel.setShopSearch(null);
@@ -82,6 +79,7 @@ public class EvalyExpressFragment extends Fragment {
     private String serviceSlug;
     private int visibleItemCount, totalItemCount, pastVisibleItems;
     private ExpressServiceModel model;
+    private GridLayoutManager layoutManager;
 
     public EvalyExpressFragment() {
 
@@ -127,12 +125,13 @@ public class EvalyExpressFragment extends Fragment {
         factory = new EvalyExpressViewModelFactory(serviceSlug);
         viewModel = new ViewModelProvider(this, factory).get(EvalyExpressViewModel.class);
 
-        adapter = new EvalyExpressAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
+        adapter = new EvalyExpressAdapter(getContext(), NavHostFragment.findNavController(this));
 
         written = false;
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        layoutManager = new GridLayoutManager(getContext(), 2);
         binding.recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setHasFixedSize(false);
         binding.recyclerView.setAdapter(adapter);
         binding.progressBar.setVisibility(View.VISIBLE);
 
@@ -161,12 +160,12 @@ public class EvalyExpressFragment extends Fragment {
             if (list == null)
                 return;
 
-            adapter.addData(list);
+            adapter.submitList(list);
 
             binding.progressBar.setVisibility(View.GONE);
             binding.progressBarBottom.setVisibility(View.INVISIBLE);
 
-            if (list.size() == 0) {
+            if (list.size() == 0 && viewModel.getCurrentPage() < 2) {
                 binding.layoutNot.setVisibility(View.VISIBLE);
             } else {
                 binding.layoutNot.setVisibility(View.GONE);
@@ -309,6 +308,7 @@ public class EvalyExpressFragment extends Fragment {
             viewModel.loadShops();
             binding.districtName.setText(object);
             dialog.dismiss();
+            binding.search.setText("");
         });
 
         final TextView notFound = dialog.findViewById(R.id.not);
@@ -353,6 +353,7 @@ public class EvalyExpressFragment extends Fragment {
 
             hideAndClear();
 
+            binding.search.setText("");
             checkNearest = true;
             checkPermissionAndLoad();
             dialog.dismiss();
@@ -371,7 +372,6 @@ public class EvalyExpressFragment extends Fragment {
         binding.layoutNot.setVisibility(View.GONE);
 
         viewModel.clear();
-        itemList.clear();
     }
 
 

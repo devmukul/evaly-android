@@ -187,7 +187,6 @@
         android:paddingTop="10dp"
         android:paddingRight="10dp"
         android:paddingBottom="55dp"
-        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:spanCount="2"
         tools:itemCount="7" />
@@ -199,7 +198,8 @@
         android:layout_gravity="bottom"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:visibility="invisible" />
+        android:background="@color/transparent"
+        android:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/layoutNot"
