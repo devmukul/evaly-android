@@ -199,7 +199,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:background="@color/transparent"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/layoutNot"

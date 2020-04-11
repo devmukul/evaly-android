@@ -165,7 +165,7 @@ public class EvalyExpressFragment extends Fragment {
             binding.progressBar.setVisibility(View.GONE);
             binding.progressBarBottom.setVisibility(View.INVISIBLE);
 
-            if (list.size() == 0 && viewModel.getCurrentPage() < 2) {
+            if (list.size() == 0) {
                 binding.layoutNot.setVisibility(View.VISIBLE);
             } else {
                 binding.layoutNot.setVisibility(View.GONE);
@@ -220,6 +220,8 @@ public class EvalyExpressFragment extends Fragment {
         locationUtils.getLocation(getContext(), new LocationUtils.LocationResult() {
             @Override
             public void gotLocation(Location location) {
+                if (getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed())
+                    return;
                 if (getContext() == null || location == null)
                     return;
                 if (location.getLatitude() == 0 || location.getLongitude() == 0)
