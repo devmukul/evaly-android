@@ -24,6 +24,7 @@ public class EvalyExpressViewModel extends ViewModel {
     private boolean loading;
     private String serviceSlug, area, addressSearch, shopSearch;
     private boolean hasNext;
+    private boolean shouldClear = true;
 
     public EvalyExpressViewModel(String serviceSlug) {
         super();
@@ -68,10 +69,8 @@ public class EvalyExpressViewModel extends ViewModel {
         ExpressApiHelper.getShopList(serviceSlug, currentPage, 24, area, shopSearch, null, longitude, latitude, new ResponseListenerAuth<CommonResultResponse<List<GroupShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<GroupShopModel>> response, int statusCode) {
-                if (response == null)
-                    return;
 
-                Log.d("hmt", response.toString());
+                if (response == null) return;
 
                 loading = false;
                 totalCount = response.getCount();
@@ -81,17 +80,23 @@ public class EvalyExpressViewModel extends ViewModel {
                 else
                     hasNext = false;
 
-//                liveData.setValue(response.getData());
-//                currentPage++;
-
-                if (liveData.getValue() != null) {
+                if (liveData.getValue() != null && !shouldClear) {
                     List<GroupShopModel> oldList = liveData.getValue();
-                    oldList.addAll(response.getData());
+                    List<GroupShopModel> newList = response.getData();
+
+                    for (GroupShopModel model : newList) {
+                        if (!oldList.contains(model))
+                            oldList.add(model);
+                    }
+
                     liveData.setValue(oldList);
+
                     currentPage++;
+                    shouldClear = false;
                 } else {
                     liveData.setValue(response.getData());
                     currentPage++;
+                    shouldClear = false;
                 }
             }
 
@@ -131,7 +136,7 @@ public class EvalyExpressViewModel extends ViewModel {
     }
 
     public void clear() {
-        liveData.setValue(null);
+        shouldClear = true;
         currentPage = 1;
         totalCount = 0;
         hasNext = false;

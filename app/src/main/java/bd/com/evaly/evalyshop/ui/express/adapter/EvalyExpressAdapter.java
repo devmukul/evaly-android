@@ -39,7 +39,7 @@ public class EvalyExpressAdapter extends ListAdapter<GroupShopModel, EvalyExpres
 
         @Override
         public boolean areContentsTheSame(@NonNull GroupShopModel oldItem, @NonNull GroupShopModel newItem) {
-            return newItem.getShopSlug().equals(oldItem.getShopSlug());
+            return oldItem.getShopSlug().equals(newItem.getShopSlug());
         }
     };
 
