@@ -33,6 +33,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -101,16 +102,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         getGiftCardList();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        itemList.clear();
-        adapter.notifyDataSetChanged();
-        currentPage = 1;
-        getGiftCardList();
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -154,6 +145,9 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 }
             }
         });
+
+
+        getGiftCardList();
 
         return view;
     }
@@ -207,12 +201,10 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         ProgressDialog dialog = ProgressDialog.show(context, "",
                 "Updating data...", true);
 
-
         HashMap<String, String> parameters = new HashMap<>();
-
         try {
             double a = Double.parseDouble(amountToPayView.getText().toString().trim());
-            parameters.put("amount", a);
+            parameters.put("amount", Utils.formatePrice(a));
         } catch (Exception e) {
             Toast.makeText(context, "Invalid amount, enter only numbers!", Toast.LENGTH_SHORT).show();
             return;
@@ -227,14 +219,21 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             public void onDataFetched(JsonObject response, int statusCode) {
                 dialog.dismiss();
                 Toast.makeText(context, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
-                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                getActivity().finish();
-                startActivity(getActivity().getIntent());
+
+                if (bottomSheetBehavior != null)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+                currentPage = 1;
+                itemList.clear();
+                adapter.notifyDataSetChanged();
+                getGiftCardList();
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                dialog.dismiss();
+                if (getContext() != null)
+                    Toast.makeText(getContext(), "Error occurred!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -276,14 +275,19 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1000 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), data.getData());
                 isImageSelected = true;
                 buildBankDialog(bitmap);
-
-            } catch (Exception e) {
-
+            } catch (Exception ignore) {
             }
+
+        } else if (requestCode == 10003) {
+            itemList.clear();
+            adapter.notifyDataSetChanged();
+            currentPage = 1;
+            getGiftCardList();
         }
     }
 
@@ -315,7 +319,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             intent.putExtra("amount", amountToPayView.getText().toString());
             intent.putExtra("invoice_no", giftCardInvoice);
             intent.putExtra("context", "gift_card_order_payment");
-            startActivityForResult(intent, 10002);
+            startActivityForResult(intent, 10003);
         });
 
         cards.setOnClickListener(v -> {
@@ -424,12 +428,14 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 String purl = response.get("payment_gateway_url").getAsString();
                 Intent intent = new Intent(context, PayViaCard.class);
                 intent.putExtra("url", purl);
-                startActivityForResult(intent, 10002);
+                startActivityForResult(intent, 10003);
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
+                if (getContext() != null)
+                    Toast.makeText(getContext(), "Error occurred!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -437,9 +443,5 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
             }
         });
-
-
     }
-
-
 }
