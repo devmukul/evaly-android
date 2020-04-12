@@ -248,7 +248,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         JSONObject parameters = new JSONObject();
 
         try {
-            int a = Integer.parseInt(amount);
+            double a = Double.parseDouble(amountToPayView.getText().toString().trim());
             parameters.put("amount", a);
         } catch (Exception e) {
             Toast.makeText(context, "Invalid amount, enter only numbers!", Toast.LENGTH_SHORT).show();
@@ -260,7 +260,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
             parameters.put("context_reference", giftCardInvoice);
             parameters.put("bank_receipt_copy", image);
         } catch (Exception e) {
-            Toast.makeText(context, "Error occured!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Error occurred!", Toast.LENGTH_SHORT).show();
             return;
         }
 
