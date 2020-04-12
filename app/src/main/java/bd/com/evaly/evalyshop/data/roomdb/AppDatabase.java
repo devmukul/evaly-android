@@ -18,7 +18,7 @@ import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 
-@Database(entities = {CategoryEntity.class, WishListEntity.class, CartEntity.class, BannerItem.class, ExpressServiceModel.class}, version = 10, exportSchema = false)
+@Database(entities = {CategoryEntity.class, WishListEntity.class, CartEntity.class, BannerItem.class, ExpressServiceModel.class}, version = 12, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;

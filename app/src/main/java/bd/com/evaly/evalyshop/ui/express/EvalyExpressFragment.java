@@ -230,6 +230,8 @@ public class EvalyExpressFragment extends Fragment {
                 CredentialManager.saveLongitude(String.valueOf(location.getLongitude()));
                 CredentialManager.saveLatitude(String.valueOf(location.getLatitude()));
 
+                if (getContext() == null)
+                    return;
                 Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
 
                 if (checkNearest) {

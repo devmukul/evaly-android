@@ -1,7 +1,5 @@
 package bd.com.evaly.evalyshop.ui.home;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -115,7 +113,6 @@ public class HomeTabsFragment extends Fragment {
 
             adapter2 = new RootCategoriesAdapter(getContext(), categoryItems, NavHostFragment.findNavController(this));
             binding.recyclerView.setAdapter(adapter2);
-            binding.recyclerView.setItemAnimator(new MyDefaultItemAnimator());
             adapter2.notifyDataSetChanged();
 
             appDatabase.categoryDao().getAllLiveData().observe(getViewLifecycleOwner(), categoryEntities -> {
@@ -176,9 +173,15 @@ public class HomeTabsFragment extends Fragment {
             @Override
             public void onDataFetched(List<CategoryEntity> response, int statusCode) {
                 setLastUpdated();
-                Executors.newSingleThreadExecutor().execute(() -> {
-                    categoryDao.deleteAll();
+                Executors.newFixedThreadPool(5).execute(() -> {
+
                     categoryDao.insertAll(response);
+
+                    List<String> slugs = new ArrayList<>();
+                    for (CategoryEntity item : response)
+                        slugs.add(item.getSlug());
+                    if (slugs.size() > 0)
+                        categoryDao.deleteOld(slugs);
                 });
             }
 
@@ -236,17 +239,8 @@ public class HomeTabsFragment extends Fragment {
         if (binding == null)
             return;
 
-        binding.shimmer.shimmer.animate().alpha(0.0f)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        if (binding == null)
-                            return;
-                        binding.shimmer.shimmer.stopShimmer();
-                        binding.shimmer.shimmer.setVisibility(View.GONE);
-                    }
-                });
+        binding.shimmer.shimmer.stopShimmer();
+        binding.shimmer.shimmer.setVisibility(View.GONE);
     }
 
 

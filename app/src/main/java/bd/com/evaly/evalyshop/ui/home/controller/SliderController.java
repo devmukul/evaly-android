@@ -73,5 +73,8 @@ public class SliderController extends EpoxyController {
         this.activity = activity;
     }
 
+    public List<BannerItem> getList(){
+        return items;
+    }
 
 }

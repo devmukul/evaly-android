@@ -40,9 +40,8 @@ public abstract class HomeSliderItemModel extends DataBindingEpoxyModel {
         Glide.with(binding.getRoot())
                 .asBitmap()
                 .load(model.getImage())
-                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .apply(new RequestOptions().override(3000, 900))
+                .apply(new RequestOptions().override(1450, 460))
                 .into(binding.sliderImage);
 
         binding.sliderImage.setOnClickListener(clickListener);
