@@ -174,15 +174,9 @@ public class HomeTabsFragment extends Fragment {
             public void onDataFetched(List<CategoryEntity> response, int statusCode) {
                 setLastUpdated();
                 Executors.newFixedThreadPool(5).execute(() -> {
-
                     categoryDao.insertAll(response);
-
-                    List<String> slugs = new ArrayList<>();
-                    for (CategoryEntity item : response)
-                        slugs.add(item.getSlug());
-                    if (slugs.size() > 0)
-                        categoryDao.deleteOld(slugs);
                 });
+
             }
 
             @Override
