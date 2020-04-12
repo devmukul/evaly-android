@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
+import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 
-public class GiftCardApiHelper extends BaseApiHelper{
+public class GiftCardApiHelper extends BaseApiHelper {
 
 
     public static void payWithGiftCard(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
@@ -18,19 +20,28 @@ public class GiftCardApiHelper extends BaseApiHelper{
     }
 
 
-    public static void getGiftCard(int page, ResponseListenerAuth<CommonDataResponse<List<GiftCardListItem>>, String> listener){
+    public static void getGiftCard(int page, ResponseListenerAuth<CommonDataResponse<List<GiftCardListItem>>, String> listener) {
 
         getiApiClient().getGiftCardList(page).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void placeGiftCardOrder(String token, JsonObject body, ResponseListenerAuth<JsonObject, String> listener){
+    public static void placeGiftCardOrder(String token, JsonObject body, ResponseListenerAuth<JsonObject, String> listener) {
 
         getiApiClient().placeGiftCardOrder(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void getGiftCardDetails(String slug, ResponseListenerAuth<JsonObject, String> listener){
+    public static void getGiftCardDetails(String slug, ResponseListenerAuth<JsonObject, String> listener) {
 
         getiApiClient().getGiftCardDetails(slug).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void getPurchasedGiftCardList(String show, int page, ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String> listener) {
+
+        getiApiClient().getPurchasedGiftCardList(CredentialManager.getToken(), show, page).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void redeem(String invoiceNo, ResponseListenerAuth<JsonObject, String> listener) {
+
+        getiApiClient().redeemGiftCard(invoiceNo).enqueue(getResponseCallBackDefault(listener));
+    }
 }

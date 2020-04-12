@@ -23,6 +23,7 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
+import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
@@ -283,8 +284,14 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN + "cpn/gift-cards/retrieve/{slug}")
     Call<JsonObject> getGiftCardDetails(@Path("slug") String slug);
 
+    @GET(UrlUtils.DOMAIN +"cpn/gift-card-orders")
+    Call<CommonDataResponse<List<GiftCardListPurchasedItem>>> getPurchasedGiftCardList(@Header("Authorization") String token, @Query("show") String show, @Query("page") int page);
+
+    @POST(UrlUtils.DOMAIN + "cpn/gift-card-orders/gift-code/retrieve")
+    Call<JsonObject> redeemGiftCard(@Query("invoice_no") String invoiceNo);
 
     // payment
+
     @POST(UrlUtils.DOMAIN + "pay/transactions/payment/order/")
     Call<JsonObject> makePartialPayment(@Header("Authorization") String token, @Body ParitalPaymentModel body);
 
@@ -292,6 +299,8 @@ public interface IApiClient {
     @POST(UrlUtils.DOMAIN + "pay/pg")
     Call<JsonObject> payViaCard(@Header("Authorization") String token, @Body HashMap<String, String> body);
 
+    @POST(UrlUtils.DOMAIN + "pay/bank_deposit/")
+    Call<JsonObject> payViaBank(@Header("Authorization") String token, @Body HashMap<String, String> body);
 
     // reviews
     @GET(UrlUtils.BASE_URL + "reviews/shops/{slug}/")

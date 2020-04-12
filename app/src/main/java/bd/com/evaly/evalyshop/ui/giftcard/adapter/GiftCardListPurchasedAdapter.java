@@ -53,8 +53,8 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
         else
             Glide.with(context).load(itemList.get(i).getGiftCardImage()).into(myViewHolder.iv);
 
-        myViewHolder.amount.setText("৳ " + Utils.formatePrice(itemList.get(i).getGiftCardPrice()));
-        myViewHolder.quantity.setText("x " + itemList.get(i).getQuantity());
+        myViewHolder.amount.setText(String.format("৳ %s", Utils.formatePrice(itemList.get(i).getGiftCardPrice())));
+        myViewHolder.quantity.setText(String.format("x %d", itemList.get(i).getQuantity()));
         myViewHolder.invoiceId.setText(itemList.get(i).getInvoiceNo());
         myViewHolder.giftFrom.setText(itemList.get(i).getFrom());
 
@@ -96,7 +96,7 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
             myViewHolder.button.setBackground(context.getResources().getDrawable(R.drawable.gift_redeem_btn));
             myViewHolder.button.setText("Redeem");
             myViewHolder.balanceHolder.setVisibility(View.VISIBLE);
-            myViewHolder.balance.setText("৳ " + itemList.get(i).getAvailableBalance());
+            myViewHolder.balance.setText(String.format("৳ %s", Utils.formatePrice(itemList.get(i).getAvailableBalance())));
             myViewHolder.fromTotext.setText("From");
             myViewHolder.giftTo.setText(itemList.get(i).getFrom());
 
