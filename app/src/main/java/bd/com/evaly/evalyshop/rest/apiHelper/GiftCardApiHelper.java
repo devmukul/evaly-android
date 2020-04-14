@@ -42,6 +42,9 @@ public class GiftCardApiHelper extends BaseApiHelper {
 
     public static void redeem(String invoiceNo, ResponseListenerAuth<JsonObject, String> listener) {
 
-        getiApiClient().redeemGiftCard(invoiceNo).enqueue(getResponseCallBackDefault(listener));
+        HashMap<String, String> body = new HashMap<>();
+        body.put("invoice_no", invoiceNo);
+
+        getiApiClient().redeemGiftCard(CredentialManager.getToken(), body).enqueue(getResponseCallBackDefault(listener));
     }
 }

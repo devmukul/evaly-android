@@ -288,7 +288,7 @@ public interface IApiClient {
     Call<CommonDataResponse<List<GiftCardListPurchasedItem>>> getPurchasedGiftCardList(@Header("Authorization") String token, @Query("show") String show, @Query("page") int page);
 
     @POST(UrlUtils.DOMAIN + "cpn/gift-card-orders/gift-code/retrieve")
-    Call<JsonObject> redeemGiftCard(@Query("invoice_no") String invoiceNo);
+    Call<JsonObject> redeemGiftCard(@Header("Authorization") String token, @Body HashMap<String, String> invoiceNo);
 
     // payment
 

@@ -190,7 +190,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        GiftCardApiHelper.getPurchasedGiftCardList("gift", currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
+        GiftCardApiHelper.getPurchasedGiftCardList("gifts", currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {
 
