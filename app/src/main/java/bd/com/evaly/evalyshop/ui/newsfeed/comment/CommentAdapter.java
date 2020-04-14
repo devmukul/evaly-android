@@ -181,6 +181,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         myViewHolder.view.setOnLongClickListener(
                 view -> {
+                    if (CredentialManager.getToken().equals(""))
+                        return false;
                     if (!CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
                         return false;
 
