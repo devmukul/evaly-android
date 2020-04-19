@@ -128,6 +128,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     long delay = 1000; // 1 seconds after user stops typing
     long last_text_edit = 0;
     final Handler mHandler = new Handler();
+    private boolean isFromResume = false;
 
 
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
@@ -139,7 +140,11 @@ public class ChatDetailsActivity extends AppCompatActivity {
         public void onLoggedIn() {
             xmppHandler = AppController.getmService().xmpp;
             mVCard = xmppHandler.mVcard;
-            loadMessage();
+            if (isFromResume){
+                isFromResume = false;
+                chatItemList.clear();
+                loadMessage();
+            }
         }
 
         //Event Listeners
@@ -410,6 +415,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
         if (xmppHandler != null && xmppHandler.isConnected()) {
             loadMessage();
         } else {
+            isFromResume = true;
             startXmppService();
         }
 
@@ -721,6 +727,11 @@ public class ChatDetailsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         xmppEventReceiver.setListener(xmppCustomEventListener);
+        Logger.d("==============  "+xmppHandler.isConnected()+"  =========");
+        if (!xmppHandler.isConnected()){
+            isFromResume = true;
+            startXmppService();
+        }
     }
 
     @OnClick(R.id.ivBack)
