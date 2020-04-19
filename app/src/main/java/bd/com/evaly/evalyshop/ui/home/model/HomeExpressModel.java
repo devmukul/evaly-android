@@ -92,7 +92,7 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
                             bundle.putSerializable("model", serviceModel);
                             navController.navigate(R.id.evalyExpressFragment, bundle);
                         });
-                    } else if (name.contains("food")) {
+                    } else if (name.contains("meat")) {
                         binding.btnFoods.setOnClickListener(v -> {
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("model", serviceModel);
