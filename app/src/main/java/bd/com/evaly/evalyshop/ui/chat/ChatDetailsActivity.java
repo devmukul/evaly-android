@@ -147,6 +147,12 @@ public class ChatDetailsActivity extends AppCompatActivity {
             }
         }
 
+        public void onLoginFailed(String msg) {
+            if (msg.contains("not-authorized")){
+                AppController.logout(ChatDetailsActivity.this);
+            }
+        }
+
         //Event Listeners
         public void onNewMessageReceived(ChatItem chatItem) {
             Logger.d(chatItem.getChat());

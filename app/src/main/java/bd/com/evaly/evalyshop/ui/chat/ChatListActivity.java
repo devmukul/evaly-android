@@ -124,6 +124,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                 } catch (XmppStringprepException e) {
                     e.printStackTrace();
                 }
+            }else if (msg.contains("not-authorized")){
+                AppController.logout(ChatListActivity.this);
             }
         }
 
