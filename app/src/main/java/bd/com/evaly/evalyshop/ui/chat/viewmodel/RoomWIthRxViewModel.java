@@ -56,10 +56,20 @@ public class RoomWIthRxViewModel extends ViewModel {
                                             if (name == null) {
                                                 name = "";
                                             }
+                                            if (chatItem.getReceiver_name().replace(" ", "").isEmpty()){
+                                                table.name = name;
+                                                table.nick_name = object.getString("NICKNAME");
+                                            }else{
+                                                table.name = chatItem.getReceiver_name();
+                                                table.nick_name = chatItem.getReceiver_name();
+                                            }
 
-                                            table.name = name;
-                                            table.nick_name = object.getString("NICKNAME");
-                                            table.imageUrl = object.get("URL").toString();
+                                            if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()){
+                                                table.imageUrl = chatItem.getReceiver_image();
+                                            }else {
+                                                table.imageUrl = object.get("URL").toString();
+                                            }
+
 
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -77,6 +87,12 @@ public class RoomWIthRxViewModel extends ViewModel {
                                         table.lastMessage = model.getLast_message();
                                         table.unreadCount = model.getUnseen_messages();
                                         table.messageId = model.getLast_unread_message_id();
+                                        table.name = chatItem.getReceiver_name();
+                                        table.nick_name = chatItem.getReceiver_name();
+
+                                        if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()){
+                                            table.imageUrl = chatItem.getReceiver_image();
+                                        }
                                         tableList.add(table);
                                     }
                                 }else {
@@ -91,9 +107,14 @@ public class RoomWIthRxViewModel extends ViewModel {
                                                 if (name == null) {
                                                     name = "";
                                                 }
+                                                if (chatItem.getReceiver_name().replace(" ", "").isEmpty()){
+                                                    table.name = name;
+                                                    table.nick_name = object.getString("NICKNAME");
+                                                }else{
+                                                    table.name = chatItem.getReceiver_name();
+                                                    table.nick_name = chatItem.getReceiver_name();
+                                                }
 
-                                                table.name = name;
-                                                table.nick_name = object.getString("NICKNAME");
                                                 table.imageUrl = object.get("URL").toString();
 
                                             } catch (JSONException e) {

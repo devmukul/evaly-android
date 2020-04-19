@@ -521,7 +521,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             RosterTable table = new RosterTable();
                             table.id = jid.asUnescapedString();
                             table.rosterName = shopDetailsModel.getName();
-                            table.name = "";
+                            table.name = shopDetailsModel.getName();
                             table.status = 0;
                             table.unreadCount = 0;
                             table.nick_name = "";
