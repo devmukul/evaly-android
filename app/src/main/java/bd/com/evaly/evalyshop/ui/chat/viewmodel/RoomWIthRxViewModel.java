@@ -46,57 +46,7 @@ public class RoomWIthRxViewModel extends ViewModel {
                             try {
                                 ChatItem chatItem = new Gson().fromJson(model.getLast_message(), ChatItem.class);
                                 if (!chatItem.isInvitation()) {
-                                    RosterTable table = new RosterTable();
-                                    if (model.getVcard() != null) {
-                                        XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
-//                                Logger.json(xmlToJson.toJson().toString());
-                                        try {
-                                            JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
-                                            String name = object.getString("FN");
-                                            if (name == null) {
-                                                name = "";
-                                            }
-                                            if (chatItem.getReceiver_name().replace(" ", "").isEmpty()){
-                                                table.name = name;
-                                                table.nick_name = object.getString("NICKNAME");
-                                            }else{
-                                                table.name = chatItem.getReceiver_name();
-                                                table.nick_name = chatItem.getReceiver_name();
-                                            }
-
-                                            if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()){
-                                                table.imageUrl = chatItem.getReceiver_image();
-                                            }else {
-                                                table.imageUrl = object.get("URL").toString();
-                                            }
-
-
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        table.id = model.getJid();
-                                        table.lastMessage = model.getLast_message();
-                                        table.unreadCount = model.getUnseen_messages();
-                                        table.messageId = model.getLast_unread_message_id();
-//                                Logger.json(new Gson().toJson(table));
-                                        tableList.add(table);
-                                    } else {
-                                        table.id = model.getJid();
-//                                table.name = "Evaly User";
-                                        table.lastMessage = model.getLast_message();
-                                        table.unreadCount = model.getUnseen_messages();
-                                        table.messageId = model.getLast_unread_message_id();
-                                        table.name = chatItem.getReceiver_name();
-                                        table.nick_name = chatItem.getReceiver_name();
-
-                                        if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()){
-                                            table.imageUrl = chatItem.getReceiver_image();
-                                        }
-                                        tableList.add(table);
-                                    }
-                                }else {
-                                    if (chatItem.getSender().contains(CredentialManager.getUserName())){
+                                    if (chatItem.getSender().contains(CredentialManager.getUserName())) {
                                         RosterTable table = new RosterTable();
                                         if (model.getVcard() != null) {
                                             XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
@@ -107,15 +57,19 @@ public class RoomWIthRxViewModel extends ViewModel {
                                                 if (name == null) {
                                                     name = "";
                                                 }
-                                                if (chatItem.getReceiver_name().replace(" ", "").isEmpty()){
+                                                if (chatItem.getReceiver_name().replace(" ", "").isEmpty()) {
                                                     table.name = name;
                                                     table.nick_name = object.getString("NICKNAME");
-                                                }else{
+                                                } else {
                                                     table.name = chatItem.getReceiver_name();
                                                     table.nick_name = chatItem.getReceiver_name();
                                                 }
 
-                                                table.imageUrl = object.get("URL").toString();
+                                                if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()) {
+                                                    table.imageUrl = chatItem.getReceiver_image();
+                                                } else {
+                                                    table.imageUrl = object.get("URL").toString();
+                                                }
 
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
@@ -133,11 +87,131 @@ public class RoomWIthRxViewModel extends ViewModel {
                                             table.lastMessage = model.getLast_message();
                                             table.unreadCount = model.getUnseen_messages();
                                             table.messageId = model.getLast_unread_message_id();
+
+                                            if (chatItem.getReceiver_name() == null || chatItem.getReceiver_name().isEmpty()){
+                                                table.name = "Evaly User";
+                                            } else {
+                                                table.name = chatItem.getReceiver_name();
+                                                table.nick_name = chatItem.getReceiver_name();
+                                            }
+
+                                            table.nick_name = chatItem.getReceiver_name();
+
+
+                                            if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()) {
+                                                table.imageUrl = chatItem.getReceiver_image();
+                                            }
+                                            tableList.add(table);
+                                        }
+                                    } else {
+                                        RosterTable table = new RosterTable();
+                                        if (model.getVcard() != null) {
+                                            XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
+//                                Logger.json(xmlToJson.toJson().toString());
+                                            try {
+                                                JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
+                                                String name = object.getString("FN");
+                                                if (name == null) {
+                                                    name = "";
+                                                }
+                                                if (chatItem.getName().replace(" ", "").isEmpty()) {
+                                                    table.name = name;
+                                                    table.nick_name = object.getString("NICKNAME");
+                                                } else {
+                                                    table.name = chatItem.getName();
+                                                    table.nick_name = chatItem.getName();
+                                                }
+
+                                                if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()) {
+                                                    table.imageUrl = chatItem.getImage();
+                                                } else {
+                                                    table.imageUrl = object.get("URL").toString();
+                                                }
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            table.id = model.getJid();
+                                            table.lastMessage = model.getLast_message();
+                                            table.unreadCount = model.getUnseen_messages();
+                                            table.messageId = model.getLast_unread_message_id();
+//                                Logger.json(new Gson().toJson(table));
+                                            tableList.add(table);
+                                        } else {
+                                            table.id = model.getJid();
+//                                table.name = "Evaly User";
+                                            table.lastMessage = model.getLast_message();
+                                            table.unreadCount = model.getUnseen_messages();
+                                            table.messageId = model.getLast_unread_message_id();
+
+                                            if (chatItem.getName() == null || chatItem.getName().isEmpty()){
+                                                table.name = "Evaly User";
+                                            } else {
+                                                table.name = chatItem.getName();
+                                                table.nick_name = chatItem.getName();
+                                            }
+
+
+                                            if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()) {
+                                                table.imageUrl = chatItem.getImage();
+                                            }
                                             tableList.add(table);
                                         }
                                     }
+//                                    RosterTable table = new RosterTable();
+//                                    if (model.getVcard() != null) {
+//                                        XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
+////                                Logger.json(xmlToJson.toJson().toString());
+//                                        try {
+//                                            JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
+//                                            String name = object.getString("FN");
+//                                            if (name == null) {
+//                                                name = "";
+//                                            }
+//                                            if (chatItem.getReceiver_name().replace(" ", "").isEmpty()){
+//                                                table.name = name;
+//                                                table.nick_name = object.getString("NICKNAME");
+//                                            }else{
+//                                                table.name = chatItem.getReceiver_name();
+//                                                table.nick_name = chatItem.getReceiver_name();
+//                                            }
+//
+//                                            if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()){
+//                                                table.imageUrl = chatItem.getReceiver_image();
+//                                            }else {
+//                                                table.imageUrl = object.get("URL").toString();
+//                                            }
+//
+//
+//                                        } catch (JSONException e) {
+//                                            e.printStackTrace();
+//                                        }
+//
+//                                        table.id = model.getJid();
+//                                        table.lastMessage = model.getLast_message();
+//                                        table.unreadCount = model.getUnseen_messages();
+//                                        table.messageId = model.getLast_unread_message_id();
+////                                Logger.json(new Gson().toJson(table));
+//                                        tableList.add(table);
+//                                    } else {
+//                                        table.id = model.getJid();
+////                                table.name = "Evaly User";
+//                                        table.lastMessage = model.getLast_message();
+//                                        table.unreadCount = model.getUnseen_messages();
+//                                        table.messageId = model.getLast_unread_message_id();
+//                                        table.name = chatItem.getReceiver_name();
+//                                        table.nick_name = chatItem.getReceiver_name();
+//
+//                                        if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()){
+//                                            table.imageUrl = chatItem.getReceiver_image();
+//                                        }
+//                                        tableList.add(table);
+//                                    }
+                                } else {
+
                                 }
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
