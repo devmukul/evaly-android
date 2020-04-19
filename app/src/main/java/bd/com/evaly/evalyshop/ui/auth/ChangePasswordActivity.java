@@ -13,22 +13,26 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
+import retrofit2.Response;
 
 public class ChangePasswordActivity extends BaseActivity {
 
@@ -39,28 +43,6 @@ public class ChangePasswordActivity extends BaseActivity {
     private UserDetails userDetails;
     private ImageView showCurrent, showNew, showNewConfirm;
     private boolean isCurrentShowing, isNewShowing, isNewConfirmShowing;
-    private AppController mChatApp = AppController.getInstance();
-    private XMPPHandler xmppHandler;
-
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-        //Event Listeners
-        public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), oldPassword.getText().toString());
-            xmppHandler.login();
-            Logger.d("======   CONNECTED  -========");
-        }
-
-        public void onLoggedIn() {
-            xmppHandler.changePassword(newPassword.getText().toString());
-        }
-
-        public void onPasswordChanged() {
-            dialog.hideDialog();
-            Snackbar.make(newPassword, "Password change successfully, Please Login!", Snackbar.LENGTH_LONG).show();
-            new Handler().postDelayed(() -> AppController.logout(ChangePasswordActivity.this), 2000);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,12 +138,35 @@ public class ChangePasswordActivity extends BaseActivity {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
-                dialog.hideDialog();
-
                 Toast.makeText(ChangePasswordActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                 if (response.get("success").getAsBoolean()) {
                     CredentialManager.savePassword(newPassword.getText().toString());
-                    startXmppService();
+                    HashMap<String, String> data = new HashMap<>();
+                    data.put("user", CredentialManager.getUserName());
+                    data.put("host", Constants.XMPP_HOST);
+                    data.put("newpass", newPassword.getText().toString());
+                    Logger.d("===============");
+                    AuthApiHelper.changeXmppPassword(data, new DataFetchingListener<Response<JsonPrimitive>>() {
+                        @Override
+                        public void onDataFetched(Response<JsonPrimitive> response) {
+//                        Logger.d(new Gson().toJson(response));
+                            dialog.hideDialog();
+                            if (response.code() == 200 || response.code() == 201) {
+                                Snackbar.make(newPassword, "Password change successfully, Please Login!", Snackbar.LENGTH_LONG).show();
+                                new Handler().postDelayed(() -> AppController.logout(ChangePasswordActivity.this), 2000);
+                            } else {
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailed(int status) {
+                            Logger.d("======-=-=-=-=-=-=");
+                            dialog.hideDialog();
+                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+
+                        }
+                    });
                 }
             }
 
@@ -185,28 +190,9 @@ public class ChangePasswordActivity extends BaseActivity {
     }
 
 
-    private void startXmppService() {
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(this, XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-            Logger.d("++++++++++");
-        } else {
-            Logger.d("---------");
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
-            } else {
-                xmppHandler.changePassword(newPassword.getText().toString());
-            }
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-
     }
 
     @Override

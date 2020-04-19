@@ -43,6 +43,8 @@ import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatException;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.jivesoftware.smackx.ping.PingFailedListener;
+import org.jivesoftware.smackx.ping.PingManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
@@ -93,7 +95,7 @@ public class XMPPHandler {
     public static AbstractXMPPConnection connection;
     public static XMPPHandler instance = null;
     public static boolean instanceCreated = false;
-    static ReconnectionManager reconnectionManager;
+//    static ReconnectionManager reconnectionManager;
     private final String TAG = getClass().getSimpleName();
     private final boolean debug = Constants.XMPP_DEBUG;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
@@ -121,6 +123,7 @@ public class XMPPHandler {
     private MyMessageListener mMessageListener;
     private MyStanzaListener mStanzaListener;
     private MyRosterListener mRoasterListener;
+    private static PingManager pingManager;
 
 
     /*
@@ -159,7 +162,8 @@ public class XMPPHandler {
     public static void disconnect() {
 
         try {
-            reconnectionManager.disableAutomaticReconnection();
+//            pingManager.unregisterPingFailedListener(this);
+//            reconnectionManager.disableAutomaticReconnection();
             connection.disconnect();
             Logger.d(connection.isConnected());
         } catch (Exception e) {
@@ -217,29 +221,29 @@ public class XMPPHandler {
                     });
 
 
-                    reconnectionManager = ReconnectionManager.getInstanceFor(connection);
-                    reconnectionManager.disableAutomaticReconnection();
-                    reconnectionManager.setDefaultFixedDelay(5);
-                    reconnectionManager.addReconnectionListener(new ReconnectionListener() {
-                        @Override
-                        public void reconnectingIn(int seconds) {
-                            service.onReConnection();
-                            Logger.e("Reconnection    " + seconds);
-                            loggedin = false;
-                        }
-
-                        @Override
-                        public void reconnectionFailed(Exception e) {
-                            service.onReConnectionError();
-
-                            if (debug) Log.d(TAG, "ReconnectionFailed!");
-
-                            //Reset the variables
-                            connected = false;
-                            chatInstanceIterator(chat_created_for);
-                            loggedin = false;
-                        }
-                    });
+//                    reconnectionManager = ReconnectionManager.getInstanceFor(connection);
+//                    reconnectionManager.disableAutomaticReconnection();
+////                    reconnectionManager.setEnabledPerDefault(true);
+//                    reconnectionManager.addReconnectionListener(new ReconnectionListener() {
+//                        @Override
+//                        public void reconnectingIn(int seconds) {
+//                            service.onReConnection();
+//                            Logger.e("Reconnection    " + seconds);
+//                            loggedin = false;
+//                        }
+//
+//                        @Override
+//                        public void reconnectionFailed(Exception e) {
+//                            service.onReConnectionError();
+//
+//                            if (debug) Log.d(TAG, "ReconnectionFailed!");
+//
+//                            //Reset the variables
+//                            connected = false;
+//                            chatInstanceIterator(chat_created_for);
+//                            loggedin = false;
+//                        }
+//                    });
 
                     roster = Roster.getInstanceFor(connection);
                     roster.addRosterListener(mRoasterListener);
@@ -875,7 +879,7 @@ public class XMPPHandler {
         try {
             accountManager.sensitiveOperationOverInsecureConnection(true);
             Logger.d(connection.getUser());
-            Logger.d(userId + "   " + userPassword);
+            Logger.d(userId + "   " + password);
             accountManager.changePassword(password);
             service.onPasswordChanged();
         } catch (SmackException.NoResponseException e) {
@@ -1642,6 +1646,28 @@ public class XMPPHandler {
 
             mVcard = getCurrentUserDetails();
 
+//            pingManager = PingManager.getInstanceFor(connection);
+//            pingManager.setPingInterval(300);
+//
+//            try {
+//                pingManager.pingMyServer();
+//                pingManager.pingMyServer(true,300);
+//                pingManager.pingServerIfNecessary();
+//                pingManager.registerPingFailedListener(new PingFailedListener() {
+//                    @Override
+//                    public void pingFailed() {
+//                        Logger.e("pingFailed");
+//                        disconnect();
+//                        connect();
+//                    }
+//                });
+//            } catch (SmackException.NotConnectedException e) {
+//                e.printStackTrace();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+
+
             getAllRoaster();
 
             new Thread(new Runnable() {
@@ -1716,8 +1742,9 @@ public class XMPPHandler {
         @Override
         public void connectionClosedOnError(Exception e) {
             Logger.d("CONNECTION_ERROR   " + e.getMessage());
-            service.onConnectionClosed();
-
+//            service.onConnectionClosed();
+            Logger.d(connection.isConnected());
+            connect();
             if (isToasted)
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {

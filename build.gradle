@@ -3,12 +3,11 @@
 buildscript {
     repositories {
         google()
-        jcenter({url "http://jcenter.bintray.com/"})
+        jcenter()
         maven { url "https://jitpack.io" }
         maven {
             url 'https://maven.fabric.io/public'
         }
-        mavenCentral()
         maven {
             url 'http://dl.bintray.com/amulyakhare/maven'
         }
