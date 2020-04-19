@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="7dp"
             android:layout_marginEnd="7dp"
-            android:background="@drawable/btn_express_pharmacy"
+            android:background="@drawable/btn_express_foods"
             android:clickable="true"
             android:orientation="vertical"
             app:layout_constraintEnd_toStartOf="@+id/btnFoods"
@@ -120,8 +120,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="7dp"
             android:layout_marginEnd="18dp"
-            android:background="@drawable/btn_express_foods"
             android:clickable="true"
+            android:background="@drawable/btn_express_pharmacy"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -137,7 +137,7 @@
                 android:clickable="false"
                 android:paddingTop="1dp"
                 android:paddingBottom="1dp"
-                app:srcCompat="@drawable/ic_color_food_plate" />
+                app:srcCompat="@drawable/ic_fish_meat" />
 
             <TextView
                 android:id="@+id/btn4Title"
@@ -146,7 +146,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_weight="0"
                 android:gravity="center"
-                android:text="Foods"
+                android:text="Fish &amp; Meat"
                 android:textColor="#000" />
         </LinearLayout>
 
