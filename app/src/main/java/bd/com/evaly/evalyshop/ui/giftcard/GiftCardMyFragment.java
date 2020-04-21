@@ -4,13 +4,11 @@ package bd.com.evaly.evalyshop.ui.giftcard;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,34 +19,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
-import bd.com.evaly.evalyshop.util.UrlUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -65,12 +52,7 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
     private BottomSheetBehavior sheetBehavior;
     private LinearLayout layoutBottomSheet;
     private ViewDialog dialog;
-    private ImageView image, plus, minus;
     private UserDetails userDetails;
-    private TextView details, name, amount, total;
-    private EditText quantity;
-    private int voucherAmount = 0;
-    private Button placeOrder;
     private String giftCardInvoice = "";
     private LinearLayout noItem;
     private Context context;
@@ -81,8 +63,6 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
     private ProgressBar progressBar;
     private int currentPage;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
-    private TextView amountToPayView;
-    private ImageView bkash, cards;
     private SwipeRefreshLayout swipeLayout;
     private boolean loading = true;
 
@@ -156,16 +136,6 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         return view;
     }
 
-    public void catchError() {
-        try {
-            dialog.hideDialog();
-        } catch (Exception e) {
-        }
-
-        Toast.makeText(context, "Sorry something went wrong. Please try again later.", Toast.LENGTH_SHORT).show();
-
-    }
-
     public void toggleBottomSheet(GiftCardListPurchasedItem item) {
 
         giftCardInvoice = item.getInvoiceNo();
@@ -220,163 +190,72 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        String url = UrlUtils.DOMAIN + "cpn/gift-card-orders?show=gifts&page=" + currentPage;
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
-                response -> {
-                    try {
-
-                        Log.d("json response", response.toString());
-
-                        loading = true;
-                        progressBar.setVisibility(View.GONE);
-
-                        JSONArray jsonArray = response.getJSONArray("data");
-
-                        if (currentPage == 1)
-                            progressContainer.setVisibility(View.GONE);
-
-
-                        if (jsonArray.length() == 0 && currentPage == 1) {
-                            noItem.setVisibility(View.VISIBLE);
-                            TextView noText = view.findViewById(R.id.noText);
-                            noText.setText("You have no gift cards");
-                        } else {
-
-                            recyclerView.setVisibility(View.VISIBLE);
-                        }
-
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            Gson gson = new Gson();
-
-                            GiftCardListPurchasedItem item = gson.fromJson(jsonArray.getJSONObject(i).toString(), GiftCardListPurchasedItem.class);
-                            itemList.add(item);
-                            adapter.notifyItemInserted(itemList.size());
-                        }
-
-                        currentPage++;
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        catchError();
-                    }
-                }, error -> {
-            error.printStackTrace();
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401) {
-
-                    if (getContext() != null) {
-                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                getGiftCardList();
-                            }
-
-                            @Override
-                            public void onFailed(int status) {
-
-                            }
-                        });
-                    }
-
-                    return;
-
-                }
-            }
-
-            progressContainer.setVisibility(View.GONE);
-            progressBar.setVisibility(View.GONE);
-        }) {
+        GiftCardApiHelper.getPurchasedGiftCardList("gifts", currentPage, new ResponseListenerAuth<CommonDataResponse<List<GiftCardListPurchasedItem>>, String>() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
+            public void onDataFetched(CommonDataResponse<List<GiftCardListPurchasedItem>> response, int statusCode) {
 
-                if (!userDetails.getToken().equals(""))
-                    headers.put("Authorization", CredentialManager.getToken());
+                loading = true;
+                progressBar.setVisibility(View.GONE);
+                if (currentPage == 1)
+                    progressContainer.setVisibility(View.GONE);
 
-                headers.put("Content-Type", "application/json");
-                return headers;
+                itemList.addAll(response.getData());
+                adapter.notifyItemRangeInserted(itemList.size() - response.getData().size(), response.getData().size());
+                currentPage++;
+
+                if (itemList.size() == 0 && currentPage == 1) {
+                    loading = false;
+                    noItem.setVisibility(View.VISIBLE);
+
+                    TextView noText = view.findViewById(R.id.noText);
+                    noText.setText("You have no gift cards");
+                } else {
+                    noItem.setVisibility(View.GONE);
+                }
+
+                if (response.getData().size() < 10)
+                    loading = false;
+
             }
-        };
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    getGiftCardList();
+            }
+        });
     }
 
     public void redeemCard(String invoice_no) {
 
-        String url = UrlUtils.DOMAIN + "cpn/gift-card-orders/gift-code/retrieve";
-
         dialog.showDialog();
 
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("invoice_no", invoice_no);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, response -> {
-
-            dialog.hideDialog();
-
-            try {
-
-                Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
-                bottomSheetDialog.hide();
-
-            } catch (Exception e) {
-
-            }
-        }, error -> {
-            Log.e("onErrorResponse", error.toString());
-
-            NetworkResponse response = error.networkResponse;
-            if (response != null && response.data != null) {
-                if (error.networkResponse.statusCode == 401) {
-
-                    if (getContext() != null) {
-
-                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                            @Override
-                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                                redeemCard(invoice_no);
-                            }
-
-                            @Override
-                            public void onFailed(int status) {
-
-                            }
-                        });
-                    }
-
-                    return;
-
-                }
-            }
-
-            dialog.hideDialog();
-            Toast.makeText(context, "Error occurred, try again later", Toast.LENGTH_SHORT).show();
-
-        }) {
+        GiftCardApiHelper.redeem(invoice_no, new ResponseListenerAuth<JsonObject, String>() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                return headers;
+            public void onDataFetched(JsonObject response, int statusCode) {
+                dialog.hideDialog();
+                Toast.makeText(context, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+                bottomSheetDialog.hide();
             }
-        };
 
-        request.setShouldCache(false);
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                Toast.makeText(context, "Couldn't redeem gift card", Toast.LENGTH_SHORT).show();
+                dialog.hideDialog();
+            }
 
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    redeemCard(invoice_no);
+            }
+        });
     }
 
 

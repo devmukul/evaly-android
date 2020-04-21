@@ -76,7 +76,11 @@ public abstract class HomeSliderModel extends EpoxyModelWithHolder<HomeSliderMod
                 @Override
                 public void onDataFetched(CommonResultResponse<List<BannerItem>> response, int statusCode) {
 
-                    Executors.newSingleThreadExecutor().execute(() -> {
+//                    if (controller.getList().containsAll(response.getData()) && response.getData().containsAll(controller.getList())) {
+//                    } else {
+//                    }
+
+                    Executors.newFixedThreadPool(5).execute(() -> {
                         bannerDao.insertList(response.getData());
                         List<String> slugs = new ArrayList<>();
                         for (BannerItem item : response.getData())

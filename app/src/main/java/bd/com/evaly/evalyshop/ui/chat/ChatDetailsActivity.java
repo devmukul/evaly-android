@@ -128,6 +128,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     long delay = 1000; // 1 seconds after user stops typing
     long last_text_edit = 0;
     final Handler mHandler = new Handler();
+    private boolean isFromResume = false;
 
 
     public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
@@ -139,7 +140,17 @@ public class ChatDetailsActivity extends AppCompatActivity {
         public void onLoggedIn() {
             xmppHandler = AppController.getmService().xmpp;
             mVCard = xmppHandler.mVcard;
-            loadMessage();
+            if (isFromResume){
+                isFromResume = false;
+                chatItemList.clear();
+                loadMessage();
+            }
+        }
+
+        public void onLoginFailed(String msg) {
+            if (msg.contains("not-authorized")){
+                AppController.logout(ChatDetailsActivity.this);
+            }
         }
 
         //Event Listeners
@@ -410,6 +421,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
         if (xmppHandler != null && xmppHandler.isConnected()) {
             loadMessage();
         } else {
+            isFromResume = true;
             startXmppService();
         }
 
@@ -663,7 +675,10 @@ public class ChatDetailsActivity extends AppCompatActivity {
                         if (mVCard != null) {
 
                             ChatItem chatItem = new ChatItem(smImg, rosterTable.name, mVCard.getField("URL"), rosterTable.nick_name, System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_IMAGE, true, img);
-
+                            chatItem.setReceiver_name(rosterTable.name);
+                            if (rosterTable.imageUrl != null || !rosterTable.imageUrl.isEmpty()){
+                                chatItem.setReceiver_image(rosterTable.imageUrl);
+                            }
 //                        chatItemList.add(chatItem);
 //                        adapter.notifyItemInserted(chatItemList.size() - 1);
 //                        rvChatDetails.smoothScrollToPosition(adapter.getItemCount() - 1);
@@ -698,6 +713,9 @@ public class ChatDetailsActivity extends AppCompatActivity {
             ChatItem chatItem = new ChatItem(etCommentsBox.getText().toString().trim(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), mVCard.getNickName(), System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_TEXT, true, "");
             chatItem.setUid(CredentialManager.getUserName() + System.currentTimeMillis());
             chatItem.setReceiver_name(rosterTable.name);
+            if (rosterTable.imageUrl != null || !rosterTable.imageUrl.isEmpty()){
+                chatItem.setReceiver_image(rosterTable.imageUrl);
+            }
 //            chatItemList.add(chatItem);
             Logger.d(new Gson().toJson(chatItem));
 //            adapter.notifyDataSetChanged();
@@ -721,6 +739,10 @@ public class ChatDetailsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         xmppEventReceiver.setListener(xmppCustomEventListener);
+        if (xmppHandler == null || !xmppHandler.isConnected()){
+            isFromResume = true;
+            startXmppService();
+        }
     }
 
     @OnClick(R.id.ivBack)

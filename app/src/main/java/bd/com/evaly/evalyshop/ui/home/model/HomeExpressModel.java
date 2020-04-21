@@ -105,7 +105,7 @@ public abstract class HomeExpressModel extends EpoxyModelWithHolder<HomeExpressM
             ExpressApiHelper.getServicesList(new ResponseListenerAuth<List<ExpressServiceModel>, String>() {
                 @Override
                 public void onDataFetched(List<ExpressServiceModel> response, int statusCode) {
-                    Executors.newSingleThreadExecutor().execute(() -> {
+                    Executors.newFixedThreadPool(4).execute(() -> {
                         expressServiceDao.insertList(response);
                         List<String> slugs = new ArrayList<>();
                         for (ExpressServiceModel item : response)

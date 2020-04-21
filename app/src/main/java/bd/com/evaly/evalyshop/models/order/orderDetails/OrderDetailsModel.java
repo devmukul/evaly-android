@@ -64,6 +64,9 @@ public class OrderDetailsModel {
 	@SerializedName("status")
 	private String status;
 
+	@SerializedName("customer_note")
+	private String customerNote;
+
 
 	public void setDate(String date){
 		this.date = date;
@@ -242,4 +245,12 @@ public class OrderDetailsModel {
 			",status = '" + status + '\'' + 
 			"}";
 		}
+
+	public String getCustomerNote() {
+		return customerNote;
+	}
+
+	public void setCustomerNote(String customerNote) {
+		this.customerNote = customerNote;
+	}
 }

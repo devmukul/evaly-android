@@ -53,7 +53,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void refreshFragment() {
-        NavHostFragment.findNavController(this).navigate(R.id.brandFragment, getArguments());
+        binding.getRoot().post(() -> NavHostFragment.findNavController(BrandFragment.this).navigate(R.id.brandFragment, getArguments()));
     }
 
 
@@ -165,7 +165,8 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         isLoading = true;
 
-        controller.setLoadingMore(true);
+        if (currentPage > 1)
+            controller.setLoadingMore(true);
 
         controller.showEmptyPage(false, false);
 

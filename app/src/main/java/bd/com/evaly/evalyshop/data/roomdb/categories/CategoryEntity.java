@@ -1,16 +1,14 @@
 package bd.com.evaly.evalyshop.data.roomdb.categories;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity (tableName = "categories_table")
+@Entity(tableName = "categories_table")
 public class CategoryEntity {
-
-    @PrimaryKey(autoGenerate = true)
-    private int id;
 
     @ColumnInfo(name = "image_url")
     @SerializedName("image_url")
@@ -20,44 +18,47 @@ public class CategoryEntity {
     @SerializedName("name")
     private String name;
 
+    @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "slug")
     @SerializedName("slug")
     private String slug;
 
-
     @ColumnInfo(name = "drawable")
     private int drawable = 0;
 
-    public int getId() {
-        return id;
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof CategoryEntity) {
+            CategoryEntity model = (CategoryEntity) other;
+            return slug.equals(model.getSlug());
+        } else {
+            return false;
+        }
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setImageUrl(String imageUrl){
-        this.imageUrl = imageUrl;
-    }
-
-    public String getImageUrl(){
+    public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setName(String name){
-        this.name = name;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public void setSlug(String slug){
-        this.slug = slug;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getSlug(){
+    public String getSlug() {
         return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public int getDrawable() {
@@ -69,7 +70,7 @@ public class CategoryEntity {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return
                 "CategoryItem{" +
                         "image_url = '" + imageUrl + '\'' +

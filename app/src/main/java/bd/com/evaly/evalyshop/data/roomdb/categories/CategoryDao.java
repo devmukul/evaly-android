@@ -9,13 +9,15 @@ import androidx.room.Query;
 
 import java.util.List;
 
+import static androidx.room.OnConflictStrategy.REPLACE;
+
 @Dao
 public interface CategoryDao {
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     void insert(CategoryEntity entity);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<CategoryEntity> list);
 
     @Delete
@@ -27,14 +29,16 @@ public interface CategoryDao {
     @Query("SELECT * FROM categories_table")
     List<CategoryEntity> getAll();
 
-    @Query("SELECT COUNT(id) FROM categories_table")
+    @Query("SELECT COUNT(slug) FROM categories_table")
     int getCount();
 
-    @Query("SELECT COUNT(id) FROM categories_table")
+    @Query("SELECT COUNT(slug) FROM categories_table")
     LiveData<Integer> getCountLive();
 
     @Query("SELECT * FROM categories_table")
     LiveData<List<CategoryEntity>> getAllLiveData();
 
+    @Query("DELETE FROM categories_table WHERE categories_table.slug NOT IN(:list)")
+    void deleteOld(List<String> list);
 
 }

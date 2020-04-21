@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.express;
+package bd.com.evaly.evalyshop.ui.express.adapter;
 
 
 import android.content.Context;
@@ -9,36 +9,49 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.util.Utils;
 
-public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapter.MyViewHolder> {
+public class EvalyExpressAdapter extends ListAdapter<GroupShopModel, EvalyExpressAdapter.MyViewHolder> {
 
     private Context context;
-    private List<GroupShopModel> itemList;
     private NavController navController;
 
-    public EvalyExpressAdapter(Context ctx, List<GroupShopModel> itemList, NavController navController) {
-        context = ctx;
-        // this.itemList = itemList;
+    private static final DiffUtil.ItemCallback<GroupShopModel> diffCallback = new DiffUtil.ItemCallback<GroupShopModel>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull GroupShopModel oldItem, @NonNull GroupShopModel newItem) {
+            return oldItem.getShopSlug().equals(newItem.getShopSlug());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull GroupShopModel oldItem, @NonNull GroupShopModel newItem) {
+            return oldItem.getShopSlug().equals(newItem.getShopSlug());
+        }
+    };
+
+    public EvalyExpressAdapter(Context context, NavController navController) {
+        super(diffCallback);
+        this.context = context;
         this.navController = navController;
     }
 
     @Override
-    public int getItemCount() {
-        return itemList == null ? 0 : itemList.size();
+    public void submitList(final List<GroupShopModel> list) {
+        super.submitList(list != null ? new ArrayList<>(list) : null);
     }
 
     @Override
@@ -51,7 +64,7 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
     @Override
     public void onBindViewHolder(EvalyExpressAdapter.MyViewHolder holder, int position) {
 
-        GroupShopModel model = itemList.get(position);
+        GroupShopModel model = getItem(position);
 
         holder.tv.setText(Utils.titleBeautify(model.getShopName()));
 
@@ -66,50 +79,11 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
     }
 
 
-    public void addData(List<GroupShopModel> newList) {
-
-        if (itemList == null) {
-            itemList = newList;
-            notifyItemRangeInserted(0, newList.size());
-        } else {
-
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-                @Override
-                public int getOldListSize() {
-                    return itemList.size();
-                }
-
-                @Override
-                public int getNewListSize() {
-                    return newList.size();
-                }
-
-                @Override
-                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return Objects.equals(itemList.get(oldItemPosition).getShopSlug(), newList.get(newItemPosition).getShopSlug());
-                }
-
-                @Override
-                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    return false;
-//                    return Objects.equals(itemList.get(oldItemPosition).getShopSlug(), newList.get(newItemPosition).getShopSlug());
-                }
-            });
-
-
-            itemList = newList;
-            result.dispatchUpdatesTo(this);
-        }
-
-    }
-
-
     public void clear(){
-        if (itemList != null) {
-            itemList.clear();
-            notifyDataSetChanged();
-        }
+
     }
+
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -123,7 +97,7 @@ public class EvalyExpressAdapter extends RecyclerView.Adapter<EvalyExpressAdapte
             iv = itemView.findViewById(R.id.image);
 
             itemView.setOnClickListener(v -> {
-                        GroupShopModel model = itemList.get(getLayoutPosition());
+                        GroupShopModel model = getItem(getAdapterPosition());
                         Bundle bundle = new Bundle();
                         bundle.putString("shop_name", model.getShopName());
                         bundle.putString("logo_image", model.getLogoImage());

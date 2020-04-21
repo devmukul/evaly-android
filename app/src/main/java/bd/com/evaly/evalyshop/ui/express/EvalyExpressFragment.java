@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.express;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -11,11 +12,13 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,9 +38,11 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentEvalyExpressBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
-import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
+import bd.com.evaly.evalyshop.ui.express.adapter.EvalyExpressAdapter;
+import bd.com.evaly.evalyshop.ui.express.adapter.ExpressDistrictAdapter;
 import bd.com.evaly.evalyshop.util.LocationUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static androidx.core.content.ContextCompat.getMainExecutor;
@@ -45,11 +51,9 @@ public class EvalyExpressFragment extends Fragment {
 
     private FragmentEvalyExpressBinding binding;
     private EvalyExpressAdapter adapter;
-    private List<GroupShopModel> itemList = new ArrayList<>();
     private EvalyExpressViewModelFactory factory;
     private EvalyExpressViewModel viewModel;
     private boolean written = false;
-
     TextWatcher textWatcher = new TextWatcher() {
 
         public void afterTextChanged(Editable s) {
@@ -63,7 +67,6 @@ public class EvalyExpressFragment extends Fragment {
                 return;
 
             viewModel.clear();
-            itemList.clear();
 
             if (binding.search.getText().toString().trim().equals(""))
                 viewModel.setShopSearch(null);
@@ -75,7 +78,8 @@ public class EvalyExpressFragment extends Fragment {
     private boolean checkNearest = false;
     private String serviceSlug;
     private int visibleItemCount, totalItemCount, pastVisibleItems;
-
+    private ExpressServiceModel model;
+    private GridLayoutManager layoutManager;
 
     public EvalyExpressFragment() {
 
@@ -93,14 +97,23 @@ public class EvalyExpressFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         if (getArguments() == null)
             return;
-        ExpressServiceModel model = (ExpressServiceModel) getArguments().getSerializable("model");
-        if (model == null)
+        if (getArguments().containsKey("model")) {
+            model = (ExpressServiceModel) getArguments().getSerializable("model");
+            if (model == null)
+                return;
+        } else if (getArguments().containsKey("slug")) {
+            model = new ExpressServiceModel();
+            model.setSlug(getArguments().getString("slug"));
+            model.setName(Utils.capitalize(getArguments().getString("slug").replace("-", " ")));
+        } else {
+            Toast.makeText(getActivity(), "This page is not available", Toast.LENGTH_SHORT).show();
             return;
+        }
 
         serviceSlug = model.getSlug();
-
 
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         binding.toolbar.setTitle(model.getName());
@@ -112,12 +125,13 @@ public class EvalyExpressFragment extends Fragment {
         factory = new EvalyExpressViewModelFactory(serviceSlug);
         viewModel = new ViewModelProvider(this, factory).get(EvalyExpressViewModel.class);
 
-        adapter = new EvalyExpressAdapter(getContext(), itemList, NavHostFragment.findNavController(this));
+        adapter = new EvalyExpressAdapter(getContext(), NavHostFragment.findNavController(this));
 
         written = false;
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        layoutManager = new GridLayoutManager(getContext(), 2);
         binding.recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setHasFixedSize(false);
         binding.recyclerView.setAdapter(adapter);
         binding.progressBar.setVisibility(View.VISIBLE);
 
@@ -146,7 +160,7 @@ public class EvalyExpressFragment extends Fragment {
             if (list == null)
                 return;
 
-            adapter.addData(list);
+            adapter.submitList(list);
 
             binding.progressBar.setVisibility(View.GONE);
             binding.progressBarBottom.setVisibility(View.INVISIBLE);
@@ -161,6 +175,9 @@ public class EvalyExpressFragment extends Fragment {
 
         viewModel.getExpressDetails().observe(getViewLifecycleOwner(), expressServiceDetailsModel -> {
 
+            if (!expressServiceDetailsModel.getName().equals(model.getName()))
+                binding.toolbar.setTitle(expressServiceDetailsModel.getName());
+
             binding.btnTerms.setOnClickListener(v -> {
                 TextBottomSheetFragment fragment = TextBottomSheetFragment.newInstance(expressServiceDetailsModel.getDescription().replaceAll("\n", "<br>"));
                 fragment.show(getParentFragmentManager(), "terms");
@@ -172,7 +189,7 @@ public class EvalyExpressFragment extends Fragment {
 
         });
 
-        binding.districtSelector.setOnClickListener(v -> showDistrictSelector());
+        binding.districtSelector.setOnClickListener(v -> showLocationSelector());
         binding.districtName.setText(CredentialManager.getArea() == null ? "All District" : CredentialManager.getArea());
 
         binding.search.addTextChangedListener(textWatcher);
@@ -203,6 +220,8 @@ public class EvalyExpressFragment extends Fragment {
         locationUtils.getLocation(getContext(), new LocationUtils.LocationResult() {
             @Override
             public void gotLocation(Location location) {
+                if (getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed())
+                    return;
                 if (getContext() == null || location == null)
                     return;
                 if (location.getLatitude() == 0 || location.getLongitude() == 0)
@@ -211,12 +230,14 @@ public class EvalyExpressFragment extends Fragment {
                 CredentialManager.saveLongitude(String.valueOf(location.getLongitude()));
                 CredentialManager.saveLatitude(String.valueOf(location.getLatitude()));
 
+                if (getContext() == null)
+                    return;
                 Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
 
                 if (checkNearest) {
                     getMainExecutor(getContext()).execute(() -> {
-                        CredentialManager.saveArea("Nearest");
-                        binding.districtName.setText("Nearest");
+                        CredentialManager.saveArea("Nearby");
+                        binding.districtName.setText("Nearby");
                         viewModel.clear();
                         viewModel.loadShops();
                     });
@@ -273,41 +294,89 @@ public class EvalyExpressFragment extends Fragment {
         }
     }
 
-    private void showDistrictSelector() {
-
+    private void showLocationSelector() {
         if (getContext() == null)
             return;
+        Dialog dialog = new Dialog(getActivity(), R.style.TransparentDialog);
+        dialog.setContentView(R.layout.dialog_express_location_filter);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Choose your district");
+        RecyclerView districtRecyclerView = dialog.findViewById(R.id.recyclerView);
 
-        final String[] districts = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
-        builder.setItems(districts, (dialog, which) -> {
+        String[] districtList = AppController.getmContext().getResources().getStringArray(R.array.districtsList);
+        ArrayList<String> districts = new ArrayList<>(Arrays.asList(districtList));
 
-            binding.progressBar.setVisibility(View.VISIBLE);
-            binding.layoutNot.setVisibility(View.GONE);
+        ExpressDistrictAdapter adapter = new ExpressDistrictAdapter(districts, object -> {
+            hideAndClear();
 
-            viewModel.clear();
-            itemList.clear();
+            CredentialManager.saveArea(object);
+            viewModel.loadShops();
+            binding.districtName.setText(object);
+            dialog.dismiss();
+            binding.search.setText("");
+        });
 
-            if (adapter != null)
-                adapter.clear();
+        final TextView notFound = dialog.findViewById(R.id.not);
 
-            if (districts[which].toLowerCase().contains("auto")) {
-                checkNearest = false;
-                checkPermissionAndLoad();
-            } else if (districts[which].toLowerCase().contains("nearest")) {
-                checkNearest = true;
-                checkPermissionAndLoad();
-            } else {
-                CredentialManager.saveArea(districts[which]);
-                viewModel.loadShops();
-                binding.districtName.setText(districts[which]);
+        EditText search = dialog.findViewById(R.id.search);
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                EditText search = dialog.findViewById(R.id.search);
+
+                ArrayList<String> temp = new ArrayList<>();
+
+                for (int i = 0; i < districtList.length; i++) {
+                    if (districtList[i].toLowerCase().contains(search.getText().toString().toLowerCase()))
+                        temp.add(districtList[i]);
+                }
+
+                adapter.setFilter(temp);
+
+                if (temp.size() == 0)
+                    notFound.setVisibility(View.VISIBLE);
+                else
+                    notFound.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
-        AlertDialog dialog = builder.create();
+        districtRecyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        LinearLayout nearby = dialog.findViewById(R.id.nearby);
+        nearby.setOnClickListener(v -> {
+
+            hideAndClear();
+
+            binding.search.setText("");
+            checkNearest = true;
+            checkPermissionAndLoad();
+            dialog.dismiss();
+        });
+
         dialog.show();
+
     }
+
+    private void hideAndClear() {
+
+        if (adapter != null)
+            adapter.clear();
+
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.layoutNot.setVisibility(View.GONE);
+
+        viewModel.clear();
+    }
+
 
 }

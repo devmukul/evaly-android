@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.Author;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
@@ -174,8 +175,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         myViewHolder.view.setOnLongClickListener(
                 view -> {
-
-                    if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
+                    if (!CredentialManager.getToken().equals("") || !CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
                         return false;
 
                     new AlertDialog.Builder(context)

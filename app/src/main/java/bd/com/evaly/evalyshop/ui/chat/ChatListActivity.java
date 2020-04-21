@@ -124,6 +124,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
                 } catch (XmppStringprepException e) {
                     e.printStackTrace();
                 }
+            }else if (msg.contains("not-authorized")){
+                AppController.logout(ChatListActivity.this);
             }
         }
 
@@ -312,6 +314,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListAdapt
         roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
         roasterModel.rosterName = "Evaly";
         roasterModel.imageUrl = Constants.EVALY_LOGO;
+        roasterModel.status = 1;
         startActivity(new Intent(ChatListActivity.this, ChatDetailsActivity.class)
                 .putExtra("roster", (Serializable) roasterModel));
     }

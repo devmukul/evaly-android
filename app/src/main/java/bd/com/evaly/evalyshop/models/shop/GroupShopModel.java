@@ -82,6 +82,16 @@ public class GroupShopModel{
 	}
 
 	@Override
+	public boolean equals(Object other) {
+		if (other instanceof GroupShopModel) {
+			GroupShopModel model = (GroupShopModel) other;
+			return shopSlug.equals(model.getShopSlug());
+		} else {
+			return false;
+		}
+	}
+
+	@Override
  	public String toString(){
 		return 
 			"GroupShopModel{" + 

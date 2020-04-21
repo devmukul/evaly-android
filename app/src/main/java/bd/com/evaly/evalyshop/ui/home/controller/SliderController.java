@@ -30,15 +30,12 @@ public class SliderController extends EpoxyController {
                     .id(item.getSlug())
                     .model(item)
                     .clickListener((model, parentView, clickedView, position) -> {
-
                         BannerItem item1 = model.getModel();
                         String url = item1.getUrl();
-
                         if (url.equals("") || url.equals("https://evaly.com.bd") || url.equals("https://evaly.com.bd/")) {
                             Toast.makeText(activity, "It's just a banner. No page to open.", Toast.LENGTH_LONG).show();
                             return;
                         }
-
                         if (item1.getUrl().contains("evaly.com.bd/shops")) {
                             String[] ar = item1.getUrl().split("/shops/");
                             if (ar.length > 1) {
@@ -51,12 +48,13 @@ public class SliderController extends EpoxyController {
                                 Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.shopFragment, bundle);
                             } else
                                 Toast.makeText(activity, "It's just a banner. No page to open.", Toast.LENGTH_SHORT).show();
-                        } else
+                        } else if (item1.getUrl().equals("https://evaly.com.bd/express"))
+                            Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.expressProductSearchFragment);
+                        else
                             Utils.CustomTab(item1.getUrl(), activity);
                     })
                     .addTo(this);
         }
-
     }
 
     public void addData(List<BannerItem> items) {
@@ -64,7 +62,7 @@ public class SliderController extends EpoxyController {
         requestModelBuild();
     }
 
-    public void reAddData(List<BannerItem> items){
+    public void reAddData(List<BannerItem> items) {
         this.items.clear();
         this.items.addAll(items);
         requestModelBuild();
@@ -75,5 +73,8 @@ public class SliderController extends EpoxyController {
         this.activity = activity;
     }
 
+    public List<BannerItem> getList(){
+        return items;
+    }
 
 }

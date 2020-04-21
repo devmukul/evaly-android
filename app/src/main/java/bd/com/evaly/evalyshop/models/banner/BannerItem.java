@@ -26,6 +26,17 @@ public class BannerItem implements Serializable {
         this.url = url;
     }
 
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof BannerItem) {
+            BannerItem model = (BannerItem) other;
+            return slug.equals(model.getSlug());
+        } else {
+            return false;
+        }
+    }
+
     public String getImage() {
         return image;
     }

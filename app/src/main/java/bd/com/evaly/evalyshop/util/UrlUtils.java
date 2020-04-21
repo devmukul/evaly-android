@@ -39,7 +39,7 @@ public class UrlUtils {
     public static final String ADD_ROSTER = "api/add_rosteritem";
     public static final String INVITATION_LIST = "rest/messages/invitations/";
     public static final String ROSTER_LIST = "rest/messages/user/last-messages/";
-    public static final String IMAGE_UPLOAD = "image/upload/";
+    public static final String IMAGE_UPLOAD = BASE_URL+"image/upload/";
     public static final String CHECK_UPDATE = BASE_URL + "apps/versions/current";
     public static final String EVALY_USERS = DOMAIN_AUTH + "evaly-users/";
     public static final String NEWS_FEED = DOMAIN + "newsfeed/posts";

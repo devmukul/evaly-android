@@ -62,6 +62,7 @@ import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
+import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.menu.InviteEarn;
@@ -117,8 +118,13 @@ public class MainActivity extends BaseActivity {
 
         public void onLoginFailed(String msg) {
             Logger.d(msg);
-            if (!msg.contains("already logged in")) {
+            if (msg.contains("not-authorized")){
+                AppController.logout(MainActivity.this);
+            } else if (msg.contains("already logged in")) {
+                CredentialManager.saveUserRegistered(true);
+                disconnectXmpp();
 
+            }  else {
                 if (xmppHandler == null) {
                     if (AppController.getmService() != null)
                         if (AppController.getmService().xmpp != null)
@@ -127,10 +133,6 @@ public class MainActivity extends BaseActivity {
                     if (xmppHandler.isConnected())
                         xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
                 }
-
-            } else {
-                CredentialManager.saveUserRegistered(true);
-                disconnectXmpp();
             }
         }
 

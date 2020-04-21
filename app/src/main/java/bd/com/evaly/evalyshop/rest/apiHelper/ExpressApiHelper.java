@@ -6,6 +6,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
+import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 
 public class ExpressApiHelper extends BaseApiHelper {
@@ -32,10 +33,14 @@ public class ExpressApiHelper extends BaseApiHelper {
         getiApiClient().getExpressShopList(serviceSug, page, limit, address, address2, search, longitude, latitude).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void cancelPendingRequests(){
-
-
-
+    public static void getProductList(String serviceSug,
+                                   int page,
+                                   int limit,
+                                   String search,
+                                   ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String> listener) {
+        getiApiClient().getExpressProductList(serviceSug, page, limit, search).enqueue(getResponseCallBackDefault(listener));
     }
+
+
 
 }

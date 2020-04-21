@@ -367,8 +367,8 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                     name.setText(item.getName());
                     details.setText(item.getDescription());
                     voucherAmount = item.getPrice();
-                    amount.setText(String.format("৳ %d", item.getPrice()));
-                    total.setText(String.format("৳ %d", item.getPrice()));
+                    amount.setText(String.format("৳ %s", Utils.formatePrice(voucherAmount)));
+                    total.setText(String.format("৳ %s", Utils.formatePrice(voucherAmount)));
                     cardValue.setText(String.format("৳ %d", item.getValue()));
 
                     if (item.getImageUrl() == null)

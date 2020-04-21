@@ -351,8 +351,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
 
     <string-array name="districtsList" translatable="false">
         <item>All Districts</item>
-        <item>Automatic</item>
-        <item>Nearest</item>
         <item>Dhaka</item>
         <item>Barisal</item>
         <item>Chittagong</item>
@@ -418,5 +416,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Tangail</item>
         <item>Thakurgaon</item>
     </string-array>
+
+    <string name="asset_statements" translatable="false">[{\"include\": \"https://evaly.com.bd/.well-known/assetlinks.json\"}]</string>
 
 </resources>

@@ -17,25 +17,31 @@ import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 
 public class EvalyExpressViewModel extends ViewModel {
-    private MutableLiveData<List<GroupShopModel>> liveData = new MutableLiveData<>();
-    private MutableLiveData<ExpressServiceDetailsModel> expressDetails = new MutableLiveData<>();
+    private MutableLiveData<List<GroupShopModel>> liveData;
+    private MutableLiveData<ExpressServiceDetailsModel> expressDetails;
     private int currentPage;
     private int totalCount = 0;
     private boolean loading;
     private String serviceSlug, area, addressSearch, shopSearch;
     private boolean hasNext;
+    private boolean shouldClear = true;
 
     public EvalyExpressViewModel(String serviceSlug) {
         super();
         this.serviceSlug = serviceSlug;
         currentPage = 1;
         totalCount = 0;
+        liveData = new MutableLiveData<>();
+        expressDetails = new MutableLiveData<>();
         loadShops();
         loadServiceDetails();
     }
 
 
     public LiveData<List<GroupShopModel>> getLiveData() {
+        if (liveData == null)
+            liveData = new MutableLiveData<>();
+
         return liveData;
     }
 
@@ -49,7 +55,7 @@ public class EvalyExpressViewModel extends ViewModel {
             area = null;
         else if (CredentialManager.getArea().contains("Districts"))
             area = null;
-        else if (CredentialManager.getArea().contains("Nearest")) {
+        else if (CredentialManager.getArea().toLowerCase().contains("near")) {
             area = null;
 
             if (CredentialManager.getLatitude() != null)
@@ -63,10 +69,8 @@ public class EvalyExpressViewModel extends ViewModel {
         ExpressApiHelper.getShopList(serviceSlug, currentPage, 24, area, shopSearch, null, longitude, latitude, new ResponseListenerAuth<CommonResultResponse<List<GroupShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<GroupShopModel>> response, int statusCode) {
-                if (response == null)
-                    return;
 
-                Log.d("hmt", response.toString());
+                if (response == null) return;
 
                 loading = false;
                 totalCount = response.getCount();
@@ -76,14 +80,23 @@ public class EvalyExpressViewModel extends ViewModel {
                 else
                     hasNext = false;
 
-                if (liveData.getValue() != null) {
+                if (liveData.getValue() != null && !shouldClear) {
                     List<GroupShopModel> oldList = liveData.getValue();
-                    oldList.addAll(response.getData());
+                    List<GroupShopModel> newList = response.getData();
+
+                    for (GroupShopModel model : newList) {
+                        if (!oldList.contains(model))
+                            oldList.add(model);
+                    }
+
                     liveData.setValue(oldList);
+
                     currentPage++;
+                    shouldClear = false;
                 } else {
                     liveData.setValue(response.getData());
                     currentPage++;
+                    shouldClear = false;
                 }
             }
 
@@ -123,7 +136,7 @@ public class EvalyExpressViewModel extends ViewModel {
     }
 
     public void clear() {
-        liveData.setValue(null);
+        shouldClear = true;
         currentPage = 1;
         totalCount = 0;
         hasNext = false;

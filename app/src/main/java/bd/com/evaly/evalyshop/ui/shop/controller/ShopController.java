@@ -102,7 +102,6 @@ public class ShopController extends EpoxyController {
                     .addTo(this);
         }
 
-
         noProductModel
                 .text("No Products Available")
                 .image(R.drawable.ic_empty_product)

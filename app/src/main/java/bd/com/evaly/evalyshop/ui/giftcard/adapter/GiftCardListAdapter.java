@@ -19,8 +19,9 @@ import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.ui.giftcard.GiftCardListFragment;
+import bd.com.evaly.evalyshop.util.Utils;
 
-public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapter.MyViewHolder>{
+public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<GiftCardListItem> itemList;
@@ -33,7 +34,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_gift_card,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_gift_card, viewGroup, false);
         return new MyViewHolder(view);
     }
 
@@ -47,7 +48,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
         else
             Glide.with(context).load(itemList.get(i).getImageUrl()).into(myViewHolder.iv);
 
-        myViewHolder.amount.setText("৳ " + itemList.get(i).getPrice());
+        myViewHolder.amount.setText("৳ " + Utils.formatePrice(itemList.get(i).getPrice()));
         myViewHolder.button.setOnClickListener(v -> GiftCardListFragment.getInstance().toggleBottomSheet(itemList.get(i)));
 
     }
@@ -57,22 +58,22 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
         return itemList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView iv;
-        TextView tv,amount;
+        TextView tv, amount;
         LinearLayout lin;
         View view;
         Button button;
 
         public MyViewHolder(final View itemView) {
             super(itemView);
-            iv= itemView.findViewById(R.id.image);
-            tv=itemView.findViewById(R.id.name);
-            amount=itemView.findViewById(R.id.price);
-            lin=itemView.findViewById(R.id.lin);
+            iv = itemView.findViewById(R.id.image);
+            tv = itemView.findViewById(R.id.name);
+            amount = itemView.findViewById(R.id.price);
+            lin = itemView.findViewById(R.id.lin);
             button = itemView.findViewById(R.id.button);
-            view=itemView;
+            view = itemView;
         }
     }
 }
