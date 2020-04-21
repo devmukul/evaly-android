@@ -739,8 +739,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         xmppEventReceiver.setListener(xmppCustomEventListener);
-        Logger.d("==============  "+xmppHandler.isConnected()+"  =========");
-        if (!xmppHandler.isConnected()){
+        if (xmppHandler == null || !xmppHandler.isConnected()){
             isFromResume = true;
             startXmppService();
         }

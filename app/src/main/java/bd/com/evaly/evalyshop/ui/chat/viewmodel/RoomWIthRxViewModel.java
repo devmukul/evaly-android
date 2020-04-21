@@ -79,11 +79,9 @@ public class RoomWIthRxViewModel extends ViewModel {
                                             table.lastMessage = model.getLast_message();
                                             table.unreadCount = model.getUnseen_messages();
                                             table.messageId = model.getLast_unread_message_id();
-//                                Logger.json(new Gson().toJson(table));
                                             tableList.add(table);
                                         } else {
                                             table.id = model.getJid();
-//                                table.name = "Evaly User";
                                             table.lastMessage = model.getLast_message();
                                             table.unreadCount = model.getUnseen_messages();
                                             table.messageId = model.getLast_unread_message_id();
@@ -107,7 +105,6 @@ public class RoomWIthRxViewModel extends ViewModel {
                                         RosterTable table = new RosterTable();
                                         if (model.getVcard() != null) {
                                             XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
-//                                Logger.json(xmlToJson.toJson().toString());
                                             try {
                                                 JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
                                                 String name = object.getString("FN");
@@ -136,11 +133,9 @@ public class RoomWIthRxViewModel extends ViewModel {
                                             table.lastMessage = model.getLast_message();
                                             table.unreadCount = model.getUnseen_messages();
                                             table.messageId = model.getLast_unread_message_id();
-//                                Logger.json(new Gson().toJson(table));
                                             tableList.add(table);
                                         } else {
                                             table.id = model.getJid();
-//                                table.name = "Evaly User";
                                             table.lastMessage = model.getLast_message();
                                             table.unreadCount = model.getUnseen_messages();
                                             table.messageId = model.getLast_unread_message_id();
@@ -159,55 +154,6 @@ public class RoomWIthRxViewModel extends ViewModel {
                                             tableList.add(table);
                                         }
                                     }
-//                                    RosterTable table = new RosterTable();
-//                                    if (model.getVcard() != null) {
-//                                        XmlToJson xmlToJson = new XmlToJson.Builder(model.getVcard()).build();
-////                                Logger.json(xmlToJson.toJson().toString());
-//                                        try {
-//                                            JSONObject object = xmlToJson.toJson().getJSONObject("vCard");
-//                                            String name = object.getString("FN");
-//                                            if (name == null) {
-//                                                name = "";
-//                                            }
-//                                            if (chatItem.getReceiver_name().replace(" ", "").isEmpty()){
-//                                                table.name = name;
-//                                                table.nick_name = object.getString("NICKNAME");
-//                                            }else{
-//                                                table.name = chatItem.getReceiver_name();
-//                                                table.nick_name = chatItem.getReceiver_name();
-//                                            }
-//
-//                                            if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()){
-//                                                table.imageUrl = chatItem.getReceiver_image();
-//                                            }else {
-//                                                table.imageUrl = object.get("URL").toString();
-//                                            }
-//
-//
-//                                        } catch (JSONException e) {
-//                                            e.printStackTrace();
-//                                        }
-//
-//                                        table.id = model.getJid();
-//                                        table.lastMessage = model.getLast_message();
-//                                        table.unreadCount = model.getUnseen_messages();
-//                                        table.messageId = model.getLast_unread_message_id();
-////                                Logger.json(new Gson().toJson(table));
-//                                        tableList.add(table);
-//                                    } else {
-//                                        table.id = model.getJid();
-////                                table.name = "Evaly User";
-//                                        table.lastMessage = model.getLast_message();
-//                                        table.unreadCount = model.getUnseen_messages();
-//                                        table.messageId = model.getLast_unread_message_id();
-//                                        table.name = chatItem.getReceiver_name();
-//                                        table.nick_name = chatItem.getReceiver_name();
-//
-//                                        if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()){
-//                                            table.imageUrl = chatItem.getReceiver_image();
-//                                        }
-//                                        tableList.add(table);
-//                                    }
                                 } else {
 
                                 }
