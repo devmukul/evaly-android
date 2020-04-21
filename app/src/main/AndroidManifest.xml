@@ -40,7 +40,7 @@
 
         <provider
             android:name="bd.com.evaly.evalyshop.manager.TokenContentProvider"
-            android:authorities="bd.com.evaly.econnect"
+            android:authorities="bd.com.evaly.econnect;bd.com.evaly.hero;com.evaly.ekhata;bd.com.evaly.merchant"
             android:enabled="true"
             android:exported="true"
             android:multiprocess="true"
