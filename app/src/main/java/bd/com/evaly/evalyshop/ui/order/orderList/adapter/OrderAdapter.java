@@ -109,7 +109,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             myViewHolder.status.setBackgroundColor(Color.parseColor("#5ac1de"));
 
 
-        myViewHolder.phone.setText("৳ " + Utils.formatePrice(orders.get(i).getTotal()));
+        myViewHolder.phone.setText("৳ " + Utils.formatPrice(orders.get(i).getTotal()));
         myViewHolder.view.setOnClickListener(v -> {
 
             try {
