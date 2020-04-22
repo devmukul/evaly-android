@@ -95,7 +95,7 @@ public class XMPPHandler {
     public static AbstractXMPPConnection connection;
     public static XMPPHandler instance = null;
     public static boolean instanceCreated = false;
-//    static ReconnectionManager reconnectionManager;
+    //    static ReconnectionManager reconnectionManager;
     private final String TAG = getClass().getSimpleName();
     private final boolean debug = Constants.XMPP_DEBUG;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
