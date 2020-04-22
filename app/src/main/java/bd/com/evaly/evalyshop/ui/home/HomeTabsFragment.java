@@ -134,6 +134,8 @@ public class HomeTabsFragment extends Fragment {
             });
 
             binding.showMoreBtnTabs.setVisibility(View.GONE);
+
+            binding.shimmer.shimmer.postDelayed(this::stopShimmer, 3000);
         } else {
             binding.recyclerView.setAdapter(adapter);
         }

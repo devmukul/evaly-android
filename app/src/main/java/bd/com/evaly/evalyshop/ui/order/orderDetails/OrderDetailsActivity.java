@@ -723,9 +723,9 @@ public class OrderDetailsActivity extends BaseActivity {
                 username.setText(String.format("%s %s", response.getCustomer().getFirstName(), response.getCustomer().getLastName()));
                 userAddress.setText(response.getCustomerAddress());
                 userNumber.setText(response.getContactNumber());
-                totalPriceTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getTotal()))));
-                paidAmountTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getPaidAmount()))));
-                duePriceTextView.setText(String.format(Locale.ENGLISH, "৳ %d", Math.round(Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount()))));
+                totalPriceTextView.setText(String.format("৳%s", Utils.formatPrice(response.getTotal())));
+                paidAmountTextView.setText(String.format("৳%s", Utils.formatPrice(response.getPaidAmount())));
+                duePriceTextView.setText(String.format(Locale.ENGLISH, "৳ %s", Utils.formatPrice((Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount())))));
 
                 if (response.getCustomerNote() != null && !response.getCustomerNote().equals("")) {
                     tvCampaignRule.setText(response.getCustomerNote());

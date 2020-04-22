@@ -130,18 +130,18 @@ public class Utils {
         }
     }
 
-    public static String formatePrice(double d) {
+    public static String formatPrice(double d) {
         if (d == (int) d)
             return String.format(Locale.ENGLISH, "%d", (int) d);
         else
             return String.format(Locale.ENGLISH, "%s", d);
     }
 
-    public static String formatePrice(String s) {
+    public static String formatPrice(String s) {
 
         double d = Double.parseDouble(s);
 
-        return formatePrice(d);
+        return formatPrice(d);
     }
 
     public static float convertDpToPixel(float dp, Context context) {
