@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,9 +63,10 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
             if (name == null) {
                 name = "";
             }
-            imageUrl = object.getString("URL");
+
             holder.tvName.setText(name);
             nameList.add(name);
+            imageUrl = object.getString("URL");
         } catch (JSONException e) {
             e.printStackTrace();
         }
