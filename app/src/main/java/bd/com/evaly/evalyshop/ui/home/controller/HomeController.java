@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.home.controller;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,11 +15,13 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.DividerViewBindingModel_;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeCarouselModelModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressItemModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
@@ -41,6 +44,10 @@ public class HomeController extends EpoxyController {
     LoadingModel_ loader;
     @AutoModel
     HomeCarouselModelModel_ expressCarouselModel_;
+    @AutoModel
+    DividerViewBindingModel_ dividerModel_;
+    @AutoModel
+    HomeExpressHeaderModel_ expressHeaderModel_;
 
     private AppCompatActivity activity;
     private Fragment fragment;
@@ -53,14 +60,21 @@ public class HomeController extends EpoxyController {
     @Override
     protected void buildModels() {
 
+        // slider model
         sliderModel
                 .activity(activity)
                 .fragment(fragment)
                 .appDatabase(appDatabase)
                 .addTo(this);
 
+        // home widget buttons
         widgetModel
                 .fragment(fragment)
+                .activity(activity)
+                .addTo(this);
+
+        //express services carousel
+        expressHeaderModel_
                 .activity(activity)
                 .addTo(this);
 
@@ -84,16 +98,20 @@ public class HomeController extends EpoxyController {
                         params.setFullSpan(true);
                         view.setLayoutParams(params);
                     }
+                    view.setBackgroundColor(Color.WHITE);
                 })
                 .paddingDp(15)
                 .models(expressItemModels)
                 .addTo(this);
 
+        dividerModel_.addTo(this);
+
+        // category, brand, shop tabs
         tabsModel
                 .fragmentInstance(fragment)
                 .addTo(this);
 
-
+        // product listing
         for (ProductItem productItem : items) {
             new HomeProductGridModel_()
                     .id(productItem.getUniqueId())
@@ -111,6 +129,7 @@ public class HomeController extends EpoxyController {
                     .addTo(this);
         }
 
+        // bottom loading bar
         loader.addIf(loadingMore, this);
     }
 

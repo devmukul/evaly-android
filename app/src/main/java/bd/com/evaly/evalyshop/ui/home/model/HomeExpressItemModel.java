@@ -10,11 +10,12 @@ import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.HomeModelExpressItemBinding;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
+import bd.com.evaly.evalyshop.util.Utils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -37,12 +38,41 @@ public abstract class HomeExpressItemModel extends DataBindingEpoxyModel {
         super.bind(holder);
         HomeModelExpressItemBinding binding = (HomeModelExpressItemBinding) holder.getDataBinding();
 
-        Glide.with(binding.getRoot())
-                .asBitmap()
-                .load(model.getImage())
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .apply(new RequestOptions().override(1450, 460))
-                .into(binding.image);
+        int drawableBg = R.drawable.btn_express_default;
+
+        if (Utils.countWords(model.getName()) == 2)
+            model.setName(model.getName().replace(" ", "\n"));
+
+        if (model.getSlug().contains("bullet")){
+            drawableBg = R.drawable.btn_express_bullet;
+
+            binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_color_ingredients));
+            binding.image.setPadding(20, 20, 20, 20);
+        }
+        else if (model.getSlug().contains("grocery")) {
+            drawableBg = R.drawable.btn_express_grocery;
+            binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_color_ingredients));
+            binding.image.setPadding(20, 20, 20, 20);
+        } else if (model.getSlug().contains("pharmacy")) {
+            drawableBg = R.drawable.btn_express_foods;
+            binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_pill));
+            binding.image.setPadding(40, 40, 40, 40);
+
+        } else if (model.getSlug().contains("meat")) {
+            drawableBg = R.drawable.btn_express_pharmacy;
+            binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_fish_meat));
+            binding.image.setPadding(20, 20, 20, 20);
+        } else {
+            Glide.with(binding.getRoot())
+                    .asBitmap()
+                    .load(model.getImage())
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(binding.image);
+            binding.image.setPadding(0, 0, 0, 0);
+        }
+
+        binding.holder.setBackground(AppController.getmContext().getDrawable(drawableBg));
+
 
         binding.title.setText(model.getName());
         binding.getRoot().setOnClickListener(clickListener);
