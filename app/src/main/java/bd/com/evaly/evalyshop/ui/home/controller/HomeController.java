@@ -3,27 +3,32 @@ package bd.com.evaly.evalyshop.ui.home.controller;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
+import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.EpoxyController;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.DividerViewBindingModel_;
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeCarouselModelModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressItemModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
@@ -45,9 +50,11 @@ public class HomeController extends EpoxyController {
     @AutoModel
     HomeCarouselModelModel_ expressCarouselModel_;
     @AutoModel
-    DividerViewBindingModel_ dividerModel_;
+    EpoxyDividerModel_ dividerModel_;
     @AutoModel
     HomeExpressHeaderModel_ expressHeaderModel_;
+    @AutoModel
+    HomeExpressSkeletonModel_ expressSkeletonBindingModel_;
 
     private AppCompatActivity activity;
     private Fragment fragment;
@@ -81,8 +88,19 @@ public class HomeController extends EpoxyController {
         List<HomeExpressItemModel_> expressItemModels = new ArrayList<>();
         for (ExpressServiceModel model : itemsExpress) {
             expressItemModels.add(new HomeExpressItemModel_()
+                    .clickListener((model1, parentView, clickedView, position) -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("model", model1.getModel());
+                        NavHostFragment.findNavController(fragment).navigate(R.id.evalyExpressFragment, bundle);
+                    })
                     .id(model.getSlug())
                     .model(model));
+        }
+
+        List<HomeExpressSkeletonModel_> expressDummyItemModels = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            expressDummyItemModels.add(new HomeExpressSkeletonModel_()
+                    .id("express_dummy" + i));
         }
 
         expressCarouselModel_
@@ -100,9 +118,10 @@ public class HomeController extends EpoxyController {
                     }
                     view.setBackgroundColor(Color.WHITE);
                 })
-                .paddingDp(15)
-                .models(expressItemModels)
+                .padding(new Carousel.Padding(0, 0, 50, 0, 0))
+                .models(expressItemModels.size() > 0 ? expressItemModels : expressDummyItemModels)
                 .addTo(this);
+
 
         dividerModel_.addTo(this);
 
