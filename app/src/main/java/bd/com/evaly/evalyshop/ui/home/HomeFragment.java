@@ -33,7 +33,9 @@ import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
@@ -142,14 +144,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
-
         currentPage = 1;
 
         checkReferral();
+
+        getExpressShops();
         getProducts();
 
     }
-
 
     private void networkCheck() {
         if (!Utils.isNetworkAvailable(context))
@@ -164,6 +166,25 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     navController.navigate(R.id.homeFragment);
                 }
             });
+    }
+
+    private void getExpressShops(){
+        ExpressApiHelper.getServicesList(new ResponseListenerAuth<List<ExpressServiceModel>, String>() {
+            @Override
+            public void onDataFetched(List<ExpressServiceModel> response, int statusCode) {
+                homeController.addExpressData(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     private void getProducts() {
