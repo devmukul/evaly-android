@@ -40,14 +40,22 @@ public abstract class HomeExpressItemModel extends DataBindingEpoxyModel {
 
         int drawableBg = R.drawable.btn_express_default;
 
-        if (Utils.countWords(model.getName()) == 2)
-            model.setName(model.getName().replace(" ", "\n"));
+        String name = model.getName();
 
-        if (model.getSlug().contains("bullet")){
+        if (name.contains("Meat"))
+            name  = name.replace("Market", "");
+
+        int wordCount = Utils.countWords(name);
+
+        if (wordCount > 1 && wordCount < 4) {
+            String firstWord = name.substring(0, model.getName().indexOf(' '));
+            name = name.replace(firstWord+" ", firstWord + "\n");
+        }
+
+        if (model.getSlug().contains("bullet")) {
             drawableBg = R.drawable.btn_express_bullet;
             binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_bullet_express));
-        }
-        else if (model.getSlug().contains("grocery")) {
+        } else if (model.getSlug().contains("grocery")) {
             drawableBg = R.drawable.btn_express_grocery;
             binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_color_ingredients));
             binding.image.setPadding(20, 20, 20, 20);
@@ -72,7 +80,7 @@ public abstract class HomeExpressItemModel extends DataBindingEpoxyModel {
         binding.holder.setBackground(AppController.getmContext().getDrawable(drawableBg));
 
 
-        binding.title.setText(model.getName());
+        binding.title.setText(name);
         binding.getRoot().setOnClickListener(clickListener);
 
     }
