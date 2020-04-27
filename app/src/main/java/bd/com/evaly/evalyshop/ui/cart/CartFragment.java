@@ -34,6 +34,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -246,8 +247,10 @@ public class CartFragment extends Fragment {
 
             if (!selected)
                 Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();
-            else
+            else {
+                bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
                 bottomSheetDialog.show();
+            }
         });
 
 

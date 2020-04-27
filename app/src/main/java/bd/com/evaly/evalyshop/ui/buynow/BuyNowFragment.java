@@ -341,6 +341,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 deliveryDuration.setText("Delivery of the products will be completed within approximately 30 working days after payment.");
 
             checkLocationPermission();
+            bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
             bottomSheetDialog.show();
         });
 
