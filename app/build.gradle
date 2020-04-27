@@ -14,8 +14,9 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
     }
+
+    android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
     dataBinding {
         enabled = true

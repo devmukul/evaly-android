@@ -54,7 +54,10 @@ public abstract class HomeExpressItemModel extends DataBindingEpoxyModel {
 
         if (model.getSlug().contains("bullet")) {
             drawableBg = R.drawable.btn_express_bullet;
-            binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_bullet_express));
+           // binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_bullet_express));
+            Glide.with(binding.getRoot())
+                    .load(R.drawable.ic_bullet_express)
+                    .into(binding.image);
         } else if (model.getSlug().contains("grocery")) {
             drawableBg = R.drawable.btn_express_grocery;
             binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_color_ingredients));
