@@ -158,6 +158,7 @@ public class HomeController extends EpoxyController {
     }
 
     public void addExpressData(List<ExpressServiceModel> items) {
+        this.itemsExpress.clear();
         this.itemsExpress.addAll(items);
         requestModelBuild();
     }

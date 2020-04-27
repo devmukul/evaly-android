@@ -25,9 +25,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.pref.ReferPref;
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
@@ -61,6 +64,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private FragmentHomeBinding binding;
     private NavController navController;
     private HomeController homeController;
+    private AppDatabase appDatabase;
+    private ExpressServiceDao expressServiceDao;
 
     public HomeFragment() {
 
@@ -76,20 +81,35 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         refreshFragment();
     }
 
+    private void refreshFragment() {
+        navController.navigate(HomeFragmentDirections.actionHomeFragmentPop());
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         activity = (MainActivity) getActivity();
         context = getContext();
+        appDatabase = AppDatabase.getInstance(getActivity());
 
         binding.swipeRefresh.setOnRefreshListener(this);
         return binding.getRoot();
     }
 
+    private void networkCheck() {
+        if (!Utils.isNetworkAvailable(context))
+            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
+                @Override
+                public void onRetry() {
+                    refreshFragment();
+                }
 
-    private void refreshFragment() {
-        navController.navigate(HomeFragmentDirections.actionHomeFragmentPop());
+                @Override
+                public void onBackPress() {
+                    navController.navigate(R.id.homeFragment);
+                }
+            });
     }
 
     @Override
@@ -100,6 +120,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         userDetails = new UserDetails(context);
         referPref = new ReferPref(context);
+
+        expressServiceDao = appDatabase.expressServiceDao();
 
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "home", mainViewModel);
@@ -125,7 +147,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         homeController.requestModelBuild();
 
-
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -144,6 +165,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
+        expressServiceDao.getAll().observe(getViewLifecycleOwner(), expressServiceModels -> {
+            homeController.addExpressData(expressServiceModels);
+        });
+
         currentPage = 1;
 
         checkReferral();
@@ -153,26 +178,20 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     }
 
-    private void networkCheck() {
-        if (!Utils.isNetworkAvailable(context))
-            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
-                @Override
-                public void onRetry() {
-                    refreshFragment();
-                }
 
-                @Override
-                public void onBackPress() {
-                    navController.navigate(R.id.homeFragment);
-                }
-            });
-    }
-
-    private void getExpressShops(){
+    private void getExpressShops() {
         ExpressApiHelper.getServicesList(new ResponseListenerAuth<List<ExpressServiceModel>, String>() {
             @Override
             public void onDataFetched(List<ExpressServiceModel> response, int statusCode) {
-                homeController.addExpressData(response);
+                Executors.newFixedThreadPool(4).execute(() -> {
+                    expressServiceDao.insertList(response);
+                    List<String> slugs = new ArrayList<>();
+                    for (ExpressServiceModel item : response)
+                        slugs.add(item.getSlug());
+
+                    if (slugs.size() > 0)
+                        expressServiceDao.deleteOld(slugs);
+                });
             }
 
             @Override
