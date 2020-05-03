@@ -651,7 +651,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     context.startActivity(new Intent(context, ViewProductActivity.class)
                             .putExtra("slug", model.getP_slug())
                             .putExtra("product_name", model.getP_name())
-                            .putExtra("price", Integer.parseInt(model.getP_price())));
+                            .putExtra("price", Double.parseDouble(model.getP_price())));
                 }
             });
             try {

@@ -99,7 +99,7 @@ import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 public class ViewProductActivity extends BaseActivity {
 
     private String slug = "", category = "", name = "", productImage = "";
-    private int productPrice;
+    private double productPrice;
     private ArrayList<Products> products;
     private ArrayList<AvailableShop> availableShops;
     private ArrayList<String> sliderImages;
@@ -157,8 +157,9 @@ public class ViewProductActivity extends BaseActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setTitle("View Product");
 
-        productPrice = getIntent().getIntExtra("product_price", -1);
+        productPrice = getIntent().getDoubleExtra("product_price", -1);
         productImage = getIntent().getStringExtra("product_image");
+        slug = getIntent().getStringExtra("slug");
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
         wishListDao = appDatabase.wishListDao();
