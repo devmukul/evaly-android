@@ -34,6 +34,7 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class HomeController extends EpoxyController {
 
@@ -98,7 +99,7 @@ public class HomeController extends EpoxyController {
         }
 
         List<HomeExpressSkeletonModel_> expressDummyItemModels = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 6; i++) {
             expressDummyItemModels.add(new HomeExpressSkeletonModel_()
                     .id("express_dummy" + i));
         }
@@ -118,7 +119,11 @@ public class HomeController extends EpoxyController {
                     }
                     view.setBackgroundColor(Color.WHITE);
                 })
-                .padding(new Carousel.Padding(0, 0, 50, 0, 0))
+                .padding(new Carousel.Padding(
+                        (int) Utils.convertDpToPixel(5, activity),
+                        (int) Utils.convertDpToPixel(5, activity), 50,
+                        (int) Utils.convertDpToPixel(20, activity),
+                        0))
                 .models(expressItemModels.size() > 0 ? expressItemModels : expressDummyItemModels)
                 .addTo(this);
 

@@ -5,14 +5,12 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/holder"
-        android:layout_width="136dp"
-        android:layout_height="146dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginStart="15dp"
+        android:layout_width="130dp"
+        android:layout_height="140dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
         android:background="@drawable/btn_express_bullet"
-        android:clickable="true"
-        android:paddingTop="5dp">
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/image"
@@ -44,7 +42,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image"
-            tools:text="Grocery" />
+            tools:text="Grocery\nExpress" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

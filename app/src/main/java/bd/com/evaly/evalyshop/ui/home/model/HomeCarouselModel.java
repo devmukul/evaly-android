@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.ui.home.model;
 import android.content.Context;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.ModelView;
@@ -22,7 +23,8 @@ public class HomeCarouselModel extends Carousel {
 
     @Nullable
     @Override
-    public LayoutManager getLayoutManager() {
-        return super.getLayoutManager();
+    public LayoutManager createLayoutManager() {
+        return new GridLayoutManager(getContext(), 2,
+                GridLayoutManager.HORIZONTAL, false);
     }
 }
