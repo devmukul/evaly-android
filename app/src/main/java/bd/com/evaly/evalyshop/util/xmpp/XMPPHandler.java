@@ -1538,20 +1538,21 @@ public class XMPPHandler {
 ////                    xmppTcpConnection.processMessage((Message) stanza);
 //                }
 
-                    ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
-                    JSONObject jsonObject = new JSONObject(new Gson().toJson(message));
+                    try {
+                        ChatItem chatItem = new Gson().fromJson(message.getBody(), ChatItem.class);
+                        JSONObject jsonObject = new JSONObject(new Gson().toJson(message));
 
-                    JSONObject ob1 = jsonObject.getJSONObject("packetExtensions").getJSONObject("map");
-                    String json = ob1.toString();
-//                Logger.d(json);
-                    String json1 = "{\"" + json.substring(json.indexOf("urn:xmpp:sid:0"));
-                    JSONObject object = new JSONObject(json1);
-//                Logger.d(json1);
-                    JSONArray jsonArray = object.getJSONArray("urn:xmpp:sid:0");
-                    String id = jsonArray.getJSONObject(0).getString("id");
-//                Logger.d(id+" ==========");
-                    chatItem.setMessageId(id);
-                    chatMessageList.add(chatItem);
+                        JSONObject ob1 = jsonObject.getJSONObject("packetExtensions").getJSONObject("map");
+                        String json = ob1.toString();
+                        String json1 = "{\"" + json.substring(json.indexOf("urn:xmpp:sid:0"));
+                        JSONObject object = new JSONObject(json1);
+                        JSONArray jsonArray = object.getJSONArray("urn:xmpp:sid:0");
+                        String id = jsonArray.getJSONObject(0).getString("id");
+                        chatItem.setMessageId(id);
+                        chatMessageList.add(chatItem);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -1564,8 +1565,6 @@ public class XMPPHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (SmackException.NoResponseException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
             e.printStackTrace();
         }
 //        Logger.d(new Gson().toJson(chatMessageList));

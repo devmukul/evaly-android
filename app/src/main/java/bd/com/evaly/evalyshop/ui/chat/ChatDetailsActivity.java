@@ -135,15 +135,17 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
+
         }
 
         public void onLoggedIn() {
             xmppHandler = AppController.getmService().xmpp;
             mVCard = xmppHandler.mVcard;
+            chatItemList.clear();
+            loadMessage();
             if (isFromResume){
                 isFromResume = false;
-                chatItemList.clear();
-                loadMessage();
+
             }
         }
 
