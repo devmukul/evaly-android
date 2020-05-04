@@ -13,7 +13,10 @@ public class HomeCarouselModel extends Carousel {
 
     public HomeCarouselModel(Context context) {
         super(context);
+        setNestedScrollingEnabled(false);
     }
+
+
 
     @Nullable
     @Override
@@ -25,6 +28,6 @@ public class HomeCarouselModel extends Carousel {
     @Override
     public LayoutManager createLayoutManager() {
         return new GridLayoutManager(getContext(), 2,
-                GridLayoutManager.HORIZONTAL, false);
+                GridLayoutManager.VERTICAL, false);
     }
 }

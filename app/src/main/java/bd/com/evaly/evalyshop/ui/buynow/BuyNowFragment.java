@@ -446,8 +446,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
             Calendar calendar = Calendar.getInstance();
             String price = firstItem.getShopItemPrice();
+
             if (firstItem.getShopItemDiscountedPrice() != null)
-                if (!firstItem.getShopItemDiscountedPrice().equals("0"))
+                if (!(firstItem.getShopItemDiscountedPrice().trim().equals("0") || firstItem.getShopItemDiscountedPrice().trim().equals("0.0")))
                     price = firstItem.getShopItemDiscountedPrice();
 
             String sellerJson = new Gson().toJson(firstItem);

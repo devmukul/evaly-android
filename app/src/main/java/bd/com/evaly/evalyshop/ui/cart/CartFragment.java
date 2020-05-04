@@ -246,7 +246,7 @@ public class CartFragment extends Fragment {
                 Boolean express = shopExpressMap.get(key);
 
                 int minAmount = 500;
-                if (express)
+                if (express && key.contains("food"))
                     minAmount = 300;
 
                 if (!key.equals("evaly-amol-1") && am != null && am < minAmount) {
