@@ -121,6 +121,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private VariationAdapter adapterVariation;
     private ViewDialog dialog;
     private List<OrderItemsItem> list;
+    private boolean isExpress = false;
 
     public static BuyNowFragment newInstance(String shopSlug, String productSlug) {
         BuyNowFragment f = new BuyNowFragment();
@@ -228,7 +229,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         context = view.getContext();
         userDetails = new UserDetails(context);
 
-
         skeleton = Skeleton.bind((LinearLayout) view.findViewById(R.id.linearLayout))
                 .load(R.layout.skeleton_buy_now_modal)
                 .color(R.color.ddd)
@@ -311,8 +311,13 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
             item.setShopItemId(shop_item_id);
 
-            if (!shop_slug.equals("evaly-amol-1")  && productPriceInt * item.getQuantity() < 500){
-                Toast.makeText(getContext(), "You have to order more than TK. 500 from an individual shop", Toast.LENGTH_SHORT).show();
+            int minOrderValue = 500;
+
+            if (shop_slug.contains("food") && isExpress)
+                minOrderValue = 300;
+
+            if (!shop_slug.equals("evaly-amol-1") && productPriceInt * item.getQuantity() < minOrderValue) {
+                Toast.makeText(getContext(), "You have to order more than TK. " + minOrderValue + " from an individual shop", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -403,6 +408,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         } catch (Exception ignored) {
         }
 
+        isExpress = itemsList.get(position).isExpress();
+
         if (firstItem.getShopItemDiscountedPrice() != null)
             if (!(firstItem.getShopItemDiscountedPrice().equals("0.0") || firstItem.getShopItemDiscountedPrice().equals("0"))) {
                 int disPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
@@ -427,7 +434,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     .into(productImage);
 
         if (firstItem.getAttributes().size() > 0) {
-
             variationHolder.setVisibility(View.VISIBLE);
             AttributesItem attributesItem = firstItem.getAttributes().get(0);
             String varName = attributesItem.getName();
@@ -458,18 +464,16 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
 
             Executors.newSingleThreadExecutor().execute(() -> {
-
                 List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
 
                 if (dbItem.size() == 0)
                     cartDao.insert(cartEntity);
                 else
                     cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
-
             });
 
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
-            BuyNowFragment.this.dismiss();
+            dismiss();
 
         });
 
