@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class HomeController extends EpoxyController {
                 .activity(activity)
                 .addTo(this);
 
-        List<HomeExpressItemModel_> expressItemModels = new ArrayList<>();
+        List<DataBindingEpoxyModel> expressItemModels = new ArrayList<>();
         for (ExpressServiceModel model : itemsExpress) {
             expressItemModels.add(new HomeExpressItemModel_()
                     .clickListener((model1, parentView, clickedView, position) -> {
@@ -124,16 +125,17 @@ public class HomeController extends EpoxyController {
                         (int) Utils.convertDpToPixel(5, activity), 50,
                         (int) Utils.convertDpToPixel(20, activity),
                         0))
-                .models(expressItemModels.size() > 0 ? expressItemModels : expressDummyItemModels)
+                .models(expressItemModels)
                 .addTo(this);
+
 
 
         dividerModel_.addTo(this);
 
-        // category, brand, shop tabs
         tabsModel
                 .fragmentInstance(fragment)
                 .addTo(this);
+
 
         // product listing
         for (ProductItem productItem : items) {

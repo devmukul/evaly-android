@@ -139,7 +139,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         int spanCount = 2;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        layoutManager.set
+        layoutManager.setItemPrefetchEnabled(true);
 
 
         homeController.setSpanCount(spanCount);

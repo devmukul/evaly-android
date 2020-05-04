@@ -1,10 +1,7 @@
 package bd.com.evaly.evalyshop.util;
 
 import android.content.Context;
-import android.util.AttributeSet;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 public class PreCachingLayoutManager extends StaggeredGridLayoutManager {
@@ -21,16 +18,6 @@ public class PreCachingLayoutManager extends StaggeredGridLayoutManager {
     public void setExtraLayoutSpace(int extraLayoutSpace) {
         this.extraLayoutSpace = extraLayoutSpace;
     }
-
-
-    @Override
-    protected int getExtraLayoutSpace(RecyclerView.State state) {
-        if (extraLayoutSpace > 0) {
-            return extraLayoutSpace;
-        }
-        return DEFAULT_EXTRA_LAYOUT_SPACE;
-    }
-
 
 
 }
