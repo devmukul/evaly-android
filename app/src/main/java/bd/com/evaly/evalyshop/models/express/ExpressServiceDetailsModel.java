@@ -31,6 +31,15 @@ public class ExpressServiceDetailsModel{
 	@SerializedName("start_date")
 	private String startDate;
 
+	@SerializedName("app_name")
+	private String appName;
+
+	@SerializedName("app_logo")
+	private String appLogo;
+
+	@SerializedName("app_bg_color")
+	private String appBgColor;
+
 	public void setEndDate(String endDate){
 		this.endDate = endDate;
 	}
@@ -101,6 +110,30 @@ public class ExpressServiceDetailsModel{
 
 	public String getStartDate(){
 		return startDate;
+	}
+
+	public String getAppName() {
+		return appName;
+	}
+
+	public void setAppName(String appName) {
+		this.appName = appName;
+	}
+
+	public String getAppLogo() {
+		return appLogo;
+	}
+
+	public void setAppLogo(String appLogo) {
+		this.appLogo = appLogo;
+	}
+
+	public String getAppBgColor() {
+		return appBgColor;
+	}
+
+	public void setAppBgColor(String appBgColor) {
+		this.appBgColor = appBgColor;
 	}
 
 	@Override
