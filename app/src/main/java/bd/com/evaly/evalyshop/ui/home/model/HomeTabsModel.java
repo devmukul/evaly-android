@@ -139,6 +139,7 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                 public void onDataFetched(List<ExpressServiceModel> response, int statusCode) {
                     Executors.newFixedThreadPool(4).execute(() -> {
                         expressServiceDao.insertList(response);
+
                         List<String> slugs = new ArrayList<>();
                         for (ExpressServiceModel item : response)
                             slugs.add(item.getSlug());

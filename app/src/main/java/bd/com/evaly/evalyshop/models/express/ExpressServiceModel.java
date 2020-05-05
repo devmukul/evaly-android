@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.models.express;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -17,10 +18,10 @@ public class ExpressServiceModel implements Serializable {
     @SerializedName("service_type")
     private String serviceType;
 
-    @SerializedName("name")
+    @SerializedName(value = "app_name", alternate = {"name"})
     private String name;
 
-    @SerializedName("app_name")
+    @SerializedName("app_namez")
     private String appName;
 
     @SerializedName("app_logo")
@@ -126,5 +127,18 @@ public class ExpressServiceModel implements Serializable {
 
     public void setAppLogo(String appLogo) {
         this.appLogo = appLogo;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof ExpressServiceModel) {
+            ExpressServiceModel newModel = (ExpressServiceModel) obj;
+            return (slug.equals(newModel.getSlug()) &&
+                    name.equals(newModel.getName()) &&
+                    appBgColor.equals(newModel.getAppBgColor()) &&
+                    appLogo.equals(newModel.getAppLogo()));
+
+        } else
+            return false;
     }
 }

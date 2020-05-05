@@ -124,8 +124,7 @@ public class HomeController extends EpoxyController {
 //                .addTo(this);
 
 
-
-     //   dividerModel_.addTo(this);
+        //   dividerModel_.addTo(this);
 
         tabsModel
                 .activity(activity)

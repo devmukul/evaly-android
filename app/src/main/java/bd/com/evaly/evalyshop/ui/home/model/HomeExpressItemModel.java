@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
+import android.graphics.Color;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -37,8 +38,6 @@ public abstract class HomeExpressItemModel extends DataBindingEpoxyModel {
         super.bind(holder);
         HomeModelExpressItemNewBinding binding = (HomeModelExpressItemNewBinding) holder.getDataBinding();
 
-        int drawableBg = R.drawable.btn_express_default;
-
         String name = model.getName();
 
         if (name.contains("Meat"))
@@ -51,44 +50,9 @@ public abstract class HomeExpressItemModel extends DataBindingEpoxyModel {
             name = name.replace(firstWord+" ", firstWord + "\n");
         }
 
-
-//        if (model.getSlug().contains("food")) {
-//            drawableBg = R.drawable.btn_express_fashion;
-//            // binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_bullet_express));
-//            Glide.with(binding.getRoot())
-//                    .load(R.drawable.ic_food_express)
-//                    .into(binding.image);
-//            binding.image.setPadding(0, 0, 0, 0);
-//        } else if (model.getSlug().contains("fashion")) {
-//            drawableBg = R.drawable.btn_express_fashion;
-//            // binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_bullet_express));
-//            Glide.with(binding.getRoot())
-//                    .load(R.drawable.ic_color_jacket_bag)
-//                    .into(binding.image);
-//            binding.image.setPadding(40, 40, 40, 40);
-//        } else if (model.getSlug().contains("bullet")) {
-//            drawableBg = R.drawable.btn_express_fashion;
-//           // binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_bullet_express));
-//            Glide.with(binding.getRoot())
-//                    .load(R.drawable.ic_bullet_express)
-//                    .into(binding.image);
-//        } else if (model.getSlug().contains("grocery")) {
-//            drawableBg = R.drawable.btn_express_fashion;
-//            binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_color_ingredients));
-//            binding.image.setPadding(20, 20, 20, 20);
-//        } else if (model.getSlug().contains("pharmacy")) {
-//            drawableBg = R.drawable.btn_express_fashion;
-//            binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_pill));
-//            binding.image.setPadding(40, 40, 40, 40);
-//
-//        } else if (model.getSlug().contains("meat")) {
-//            drawableBg = R.drawable.btn_express_fashion;
-//            binding.image.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_fish_meat));
-//            binding.image.setPadding(20, 20, 20, 20);
-//        } else {
-//
-//        }
-
+        if (model.getAppBgColor() != null){
+            binding.overly.setBackgroundColor(Color.parseColor(model.getAppBgColor()));
+        }
 
         Glide.with(binding.getRoot())
                 .asBitmap()
@@ -98,8 +62,7 @@ public abstract class HomeExpressItemModel extends DataBindingEpoxyModel {
         binding.image.setPadding(0, 0, 0, 0);
 
         binding.title.setText(name);
-        binding.getRoot().setOnClickListener(clickListener);
-
+        binding.overly.setOnClickListener(clickListener);
     }
 
 
