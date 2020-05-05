@@ -341,9 +341,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             }
 
             if (shop_slug.contains("evaly-express"))
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 36 hours after payment.");
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
             else
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 30 working days after payment.");
+                deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign.");
 
             checkLocationPermission();
             bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
