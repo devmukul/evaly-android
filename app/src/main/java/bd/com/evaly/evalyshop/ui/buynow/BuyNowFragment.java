@@ -491,6 +491,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                 bottomSheetDialog.hide();
                 dialog.hideDialog();
+                dismiss();
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();

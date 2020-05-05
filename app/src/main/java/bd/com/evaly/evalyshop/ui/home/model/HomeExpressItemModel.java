@@ -40,25 +40,30 @@ public abstract class HomeExpressItemModel extends DataBindingEpoxyModel {
 
         String name = model.getName();
 
-        if (name.contains("Meat"))
-            name  = name.replace("Market", "");
+        if (model.getAppName() == null) {
+            if (name.contains("Meat"))
+                name = name.replace("Market", "");
+            int wordCount = Utils.countWords(name);
+            if (wordCount > 1 && wordCount < 4) {
+                String firstWord = name.substring(0, model.getName().indexOf(' '));
+                name = name.replace(firstWord + " ", firstWord + "\n");
+            }
+        } else
+            name = model.getAppName();
 
-        int wordCount = Utils.countWords(name);
-
-        if (wordCount > 1 && wordCount < 4) {
-            String firstWord = name.substring(0, model.getName().indexOf(' '));
-            name = name.replace(firstWord+" ", firstWord + "\n");
-        }
-
-        if (model.getAppBgColor() != null){
-            binding.overly.setBackgroundColor(Color.parseColor(model.getAppBgColor()));
-        }
+        if (model.getAppBgColor() == null || model.getAppBgColor().equals("")) {
+        } else
+            try {
+                binding.overly.setBackgroundColor(Color.parseColor(model.getAppBgColor()));
+            } catch (Exception ignored) {
+            }
 
         Glide.with(binding.getRoot())
                 .asBitmap()
-                .load(model.getAppLogo())
+                .load(model.getAppLogo() == null ? model.getImage() : model.getAppLogo())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(binding.image);
+
         binding.image.setPadding(0, 0, 0, 0);
 
         binding.title.setText(name);

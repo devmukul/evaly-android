@@ -30,12 +30,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
             <View
                 android:id="@+id/overly"
                 android:layout_width="match_parent"
                 android:layout_height="130dp"
-                android:alpha="0.65"
+                android:alpha="0.6"
                 android:background="#333"
                 android:clickable="true"
                 android:foreground="?selectableItemBackground"
@@ -56,7 +55,7 @@
                 android:paddingBottom="5dp"
                 android:textColor="#fff"
                 android:shadowRadius="6"
-                android:shadowColor="#5C000000"
+                android:shadowColor="#80000000"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

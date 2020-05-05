@@ -18,10 +18,10 @@ public class ExpressServiceModel implements Serializable {
     @SerializedName("service_type")
     private String serviceType;
 
-    @SerializedName(value = "app_name", alternate = {"name"})
+    @SerializedName(value = "name")
     private String name;
 
-    @SerializedName("app_namez")
+    @SerializedName("app_name")
     private String appName;
 
     @SerializedName("app_logo")
@@ -135,6 +135,7 @@ public class ExpressServiceModel implements Serializable {
             ExpressServiceModel newModel = (ExpressServiceModel) obj;
             return (slug.equals(newModel.getSlug()) &&
                     name.equals(newModel.getName()) &&
+                    (appName == null ? "" : appName).equals(newModel.getAppName()) &&
                     appBgColor.equals(newModel.getAppBgColor()) &&
                     appLogo.equals(newModel.getAppLogo()));
 
