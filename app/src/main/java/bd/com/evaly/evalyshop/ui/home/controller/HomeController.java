@@ -2,17 +2,13 @@ package bd.com.evaly.evalyshop.ui.home.controller;
 
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
-import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
 
@@ -35,7 +31,6 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.util.Utils;
 
 public class HomeController extends EpoxyController {
 
@@ -104,35 +99,36 @@ public class HomeController extends EpoxyController {
             expressDummyItemModels.add(new HomeExpressSkeletonModel_()
                     .id("express_dummy" + i));
         }
+//
+//        expressCarouselModel_
+//                .onBind((model, view, position) -> {
+//                    if (view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+//                        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+//                        params.setFullSpan(true);
+//                    } else {
+//                        StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+//                                ViewGroup.LayoutParams.MATCH_PARENT,
+//                                ViewGroup.LayoutParams.WRAP_CONTENT
+//                        );
+//                        params.setFullSpan(true);
+//                        view.setLayoutParams(params);
+//                    }
+//                    view.setBackgroundColor(Color.WHITE);
+//                })
+//                .padding(new Carousel.Padding(
+//                        (int) Utils.convertDpToPixel(5, activity),
+//                        (int) Utils.convertDpToPixel(5, activity), 50,
+//                        (int) Utils.convertDpToPixel(20, activity),
+//                        0))
+//                .models(expressItemModels)
+//                .addTo(this);
 
-        expressCarouselModel_
-                .onBind((model, view, position) -> {
-                    if (view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-                        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-                        params.setFullSpan(true);
-                    } else {
-                        StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                        );
-                        params.setFullSpan(true);
-                        view.setLayoutParams(params);
-                    }
-                    view.setBackgroundColor(Color.WHITE);
-                })
-                .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(5, activity),
-                        (int) Utils.convertDpToPixel(5, activity), 50,
-                        (int) Utils.convertDpToPixel(20, activity),
-                        0))
-                .models(expressItemModels)
-                .addTo(this);
 
 
-
-        dividerModel_.addTo(this);
+     //   dividerModel_.addTo(this);
 
         tabsModel
+                .activity(activity)
                 .fragmentInstance(fragment)
                 .addTo(this);
 

@@ -136,17 +136,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         binding.recyclerView.setAdapter(homeController.getAdapter());
 
-
         int spanCount = 2;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        layoutManager.setItemPrefetchEnabled(true);
-
-
         homeController.setSpanCount(spanCount);
 
         int spacing = (int) Utils.convertDpToPixel(10, getActivity());
         binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
+
 
         homeController.requestModelBuild();
 
@@ -168,15 +165,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
-        expressServiceDao.getAll().observe(getViewLifecycleOwner(), expressServiceModels -> {
-            homeController.addExpressData(expressServiceModels);
-        });
+
 
         currentPage = 1;
 
         checkReferral();
 
-        getExpressShops();
+      //  getExpressShops();
         getProducts();
 
     }
