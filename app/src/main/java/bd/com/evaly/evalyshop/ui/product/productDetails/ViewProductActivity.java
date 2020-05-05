@@ -37,8 +37,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -991,21 +994,42 @@ public class ViewProductActivity extends BaseActivity {
                     ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
 
                     if (xmppHandler.isLoggedin()) {
-                        try {
-                            for (RosterTable rosterTable : selectedRosterList) {
-                                ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
+                        for (RosterTable rosterTable : selectedRosterList) {
+
+                                JSONObject jsonObject= new JSONObject();
+                                try {
+                                    jsonObject.put("p_slug", slug);
+                                    jsonObject.put("p_name", name);
+                                    jsonObject.put("p_image", productImage);
+                                    jsonObject.put("p_price", String.valueOf(productPrice));
+
+//                                    return jsonObject.toString();
+                                } catch (JSONException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                    return;
+//                                    return "";
+                                }
+
+                            ChatItem chatItem = new ChatItem(jsonObject.toString(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
+                            chatItem.setReceiver_name(rosterTable.name);
+                            if (rosterTable.imageUrl != null && !rosterTable.imageUrl.isEmpty()){
+                                chatItem.setReceiver_image(rosterTable.imageUrl);
+                            }
+
+                                try {
                                 xmppHandler.sendMessage(chatItem);
+                            } catch (SmackException e) {
+                                e.printStackTrace();
                             }
-                            for (int i = 0; i < rosterList.size(); i++) {
-                                rosterList.get(i).isSelected = false;
-                            }
-                            contactShareAdapter.notifyDataSetChanged();
-                            selectedRosterList.clear();
-                            tvCount.setText("(" + selectedRosterList.size() + ") ");
-                            Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
-                        } catch (SmackException e) {
-                            e.printStackTrace();
                         }
+                        for (int i = 0; i < rosterList.size(); i++) {
+                            rosterList.get(i).isSelected = false;
+                        }
+                        contactShareAdapter.notifyDataSetChanged();
+                        selectedRosterList.clear();
+                        tvCount.setText("(" + selectedRosterList.size() + ") ");
+                        Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
 
                     }
                 });
