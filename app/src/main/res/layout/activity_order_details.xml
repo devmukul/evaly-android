@@ -99,6 +99,82 @@
                     app:stpi_stepCount="6" />
 
 
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/hero"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="18dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/bg_profile"
+                    android:orientation="vertical"
+                    android:paddingLeft="20dp"
+                    android:visibility="gone">
+
+
+                    <TextView
+                        android:id="@+id/heroName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="18dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="#000"
+                        android:textSize="19sp"
+                        android:paddingRight="10dp"
+                        app:layout_constraintBottom_toTopOf="@+id/barrier"
+                        app:layout_constraintEnd_toStartOf="@+id/heroCall"
+                        app:layout_constraintStart_toEndOf="@id/heroPicture"
+                        tools:text="HM Tamim" />
+
+                    <TextView
+                        android:id="@+id/deliveryHeroStatus"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:textColor="#333"
+                        android:textSize="14sp"
+                        android:paddingRight="10dp"
+                        app:layout_constraintEnd_toStartOf="@+id/heroCall"
+                        app:layout_constraintStart_toStartOf="@+id/heroName"
+                        app:layout_constraintTop_toBottomOf="@+id/barrier"
+                        tools:text="Delivering the product" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/barrier"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_begin="50dp" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/heroPicture"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/user_image"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <ImageView
+                        android:id="@+id/heroCall"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="18dp"
+                        android:background="@drawable/circle_bg"
+                        android:padding="10dp"
+                        app:srcCompat="@drawable/ic_hero_call"
+                        android:tint="#555"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -143,6 +219,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
+                    android:paddingBottom="5dp"
+                    tools:listitem="@layout/item_order_status"
                     tools:itemCount="2">
 
                 </androidx.recyclerview.widget.RecyclerView>

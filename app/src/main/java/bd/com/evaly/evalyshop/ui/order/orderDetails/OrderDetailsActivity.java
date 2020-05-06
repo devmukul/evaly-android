@@ -36,6 +36,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
@@ -62,6 +63,7 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
@@ -85,8 +87,10 @@ import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class OrderDetailsActivity extends BaseActivity {
 
@@ -115,6 +119,18 @@ public class OrderDetailsActivity extends BaseActivity {
     private String imageUrl;
     private MenuItem cancelMenuItem;
     private MenuItem refundMenuItem;
+
+    @BindView(R.id.hero)
+    ConstraintLayout heroHolder;
+    @BindView(R.id.heroName)
+    TextView heroName;
+    @BindView(R.id.heroPicture)
+    CircleImageView heroPicture;
+    @BindView(R.id.deliveryHeroStatus)
+    TextView heroStatus;
+
+    @BindView(R.id.heroCall)
+    ImageView heroCall;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -248,6 +264,7 @@ public class OrderDetailsActivity extends BaseActivity {
         payViaGiftCard = findViewById(R.id.payViaGiftCard);
         payViaGiftCard.setOnClickListener(v -> dialogGiftCardPayment());
 
+        getDeliveryHero();
 
     }
 
@@ -409,6 +426,39 @@ public class OrderDetailsActivity extends BaseActivity {
                 Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void getDeliveryHero() {
+
+        OrderApiHelper.getDeliveryHero(invoice_no, new ResponseListenerAuth<DeliveryHeroResponse, String>() {
+            @Override
+            public void onDataFetched(DeliveryHeroResponse response, int statusCode) {
+                heroHolder.setVisibility(View.VISIBLE);
+                heroName.setText(String.format("%s %s", response.getData().getUser().getFirstName(), response.getData().getUser().getLastName()));
+                Glide.with(OrderDetailsActivity.this)
+                        .load(response.getData().getUser().getProfilePicUrl())
+                        .into(heroPicture);
+
+                heroCall.setOnClickListener(v -> {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + response.getData().getUser().getContact()));
+                    startActivity(intent);
+                });
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                heroHolder.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    getDeliveryHero();
+            }
+        });
+
     }
 
 
@@ -683,6 +733,8 @@ public class OrderDetailsActivity extends BaseActivity {
                 }
 
 
+                heroStatus.setText("Assigned for delivery");
+
                 if (orderStatus.equals("pending")) {
                     indicator.setCurrentStep(1);
                 } else if (orderStatus.equals("confirmed")) {
@@ -691,10 +743,13 @@ public class OrderDetailsActivity extends BaseActivity {
                     indicator.setCurrentStep(3);
                 } else if (orderStatus.equals("picked")) {
                     indicator.setCurrentStep(4);
+                    heroStatus.setText("Picked the order for delivery");
                 } else if (orderStatus.equals("shipped")) {
                     indicator.setCurrentStep(5);
+                    heroStatus.setText("Picked the order for delivery");
                 } else if (orderStatus.equals("delivered")) {
                     indicator.setCurrentStep(6);
+                    heroStatus.setText("Delivered the products");
                 }
 
                 if (!response.isDeliveryConfirmed() && response.isDeliveryConfirmationRequired())

@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
@@ -65,4 +67,7 @@ public class OrderApiHelper extends BaseApiHelper {
         getiApiClient().postRequestRefund(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void getDeliveryHero(String invoiceNo, ResponseListenerAuth<DeliveryHeroResponse, String> listener) {
+        getiApiClient().getDeliveryHero(CredentialManager.getToken(), invoiceNo).enqueue(getResponseCallBackDefault(listener));
+    }
 }
