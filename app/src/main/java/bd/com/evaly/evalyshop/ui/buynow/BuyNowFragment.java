@@ -489,9 +489,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
-                bottomSheetDialog.hide();
-                dialog.hideDialog();
-                dismiss();
+                if (bottomSheetDialog.isShowing())
+                    bottomSheetDialog.hide();
+                if (dialog.isShowing())
+                    dialog.hideDialog();
+                if (isVisible())
+                    dismiss();
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
