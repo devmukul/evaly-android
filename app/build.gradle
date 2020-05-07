@@ -9,13 +9,14 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 199
-        versionName "1.2.28"
+        versionCode 204
+        versionName "2.0.4"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
     }
+
+    android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
     dataBinding {
         enabled = true
@@ -31,6 +32,7 @@ android {
             minifyEnabled false
             shrinkResources false
             buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
+            buildConfigField "String", 'WEB_URL', "\"https://evaly.com.bd/\""
             buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111666\""
             buildConfigField "String", 'BUILD', "\"prod\""
@@ -39,6 +41,7 @@ android {
         }
         debug {
             buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
+            buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
             buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
             buildConfigField "String", 'BUILD', "\"dev\""

@@ -1,8 +1,11 @@
 package bd.com.evaly.evalyshop.ui.buynow;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,11 +60,14 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class BuyNowFragment extends BottomSheetDialogFragment implements VariationAdapter.ClickListenerVariation {
 
@@ -114,6 +121,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private VariationAdapter adapterVariation;
     private ViewDialog dialog;
     private List<OrderItemsItem> list;
+    private boolean isExpress = false;
 
     public static BuyNowFragment newInstance(String shopSlug, String productSlug) {
         BuyNowFragment f = new BuyNowFragment();
@@ -170,13 +178,56 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         return view;
     }
 
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            updateLocation();
+        else
+            requestPermissions(new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
+                    1212);
+    }
+
+    private void updateLocation() {
+
+        LocationUtils locationUtils = new LocationUtils();
+        locationUtils.getLocation(getContext(), new LocationUtils.LocationResult() {
+            @Override
+            public void gotLocation(Location location) {
+                if (getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed())
+                    return;
+                if (getContext() == null || location == null)
+                    return;
+                if (location.getLatitude() == 0 || location.getLongitude() == 0)
+                    return;
+
+                CredentialManager.saveLongitude(String.valueOf(location.getLongitude()));
+                CredentialManager.saveLatitude(String.valueOf(location.getLatitude()));
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1212:
+                if (checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    updateLocation();
+                }
+                break;
+            case 0:
+                break;
+        }
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         context = view.getContext();
         userDetails = new UserDetails(context);
-
 
         skeleton = Skeleton.bind((LinearLayout) view.findViewById(R.id.linearLayout))
                 .load(R.layout.skeleton_buy_now_modal)
@@ -211,7 +262,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         // bottom sheet
 
-        bottomSheetDialog = new BottomSheetDialog(context);
+        bottomSheetDialog = new BottomSheetDialog(context, R.style.TransparentBottomSheetDialog);
         bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_checkout, null);
         bottomSheetDialog.setContentView(bottomSheetView);
 
@@ -251,12 +302,22 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             orderJson.setPaymentMethod("evaly_pay");
             orderJson.setOrderOrigin("app");
 
+            if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {
+                orderJson.setDeliveryLatitude(CredentialManager.getLatitude());
+                orderJson.setDeliveryLongitude(CredentialManager.getLongitude());
+            }
+
             OrderItemsItem item = new OrderItemsItem();
             item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
             item.setShopItemId(shop_item_id);
 
-            if (!shop_slug.equals("evaly-amol-1")  && productPriceInt * item.getQuantity() < 500){
-                Toast.makeText(getContext(), "You have to order more than TK. 500 from an individual shop", Toast.LENGTH_SHORT).show();
+            int minOrderValue = 500;
+
+            if (shop_slug.contains("food") && isExpress)
+                minOrderValue = 300;
+
+            if (!shop_slug.equals("evaly-amol-1") && productPriceInt * item.getQuantity() < minOrderValue) {
+                Toast.makeText(getContext(), "You have to order more than TK. " + minOrderValue + " from an individual shop", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -280,10 +341,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             }
 
             if (shop_slug.contains("evaly-express"))
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 36 hours after payment.");
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
             else
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 30 working days after payment.");
+                deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign.");
 
+            checkLocationPermission();
+            bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
             bottomSheetDialog.show();
         });
 
@@ -345,6 +408,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         } catch (Exception ignored) {
         }
 
+        isExpress = itemsList.get(position).isExpress();
+
         if (firstItem.getShopItemDiscountedPrice() != null)
             if (!(firstItem.getShopItemDiscountedPrice().equals("0.0") || firstItem.getShopItemDiscountedPrice().equals("0"))) {
                 int disPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
@@ -369,7 +434,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     .into(productImage);
 
         if (firstItem.getAttributes().size() > 0) {
-
             variationHolder.setVisibility(View.VISIBLE);
             AttributesItem attributesItem = firstItem.getAttributes().get(0);
             String varName = attributesItem.getName();
@@ -382,8 +446,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
             Calendar calendar = Calendar.getInstance();
             String price = firstItem.getShopItemPrice();
+
             if (firstItem.getShopItemDiscountedPrice() != null)
-                if (!firstItem.getShopItemDiscountedPrice().equals("0"))
+                if (!(firstItem.getShopItemDiscountedPrice().trim().equals("0") || firstItem.getShopItemDiscountedPrice().trim().equals("0.0")))
                     price = firstItem.getShopItemDiscountedPrice();
 
             String sellerJson = new Gson().toJson(firstItem);
@@ -400,18 +465,16 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
 
             Executors.newSingleThreadExecutor().execute(() -> {
-
                 List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
 
                 if (dbItem.size() == 0)
                     cartDao.insert(cartEntity);
                 else
                     cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
-
             });
 
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
-            BuyNowFragment.this.dismiss();
+            dismiss();
 
         });
 
@@ -426,8 +489,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
-                bottomSheetDialog.hide();
-                dialog.hideDialog();
+                if (bottomSheetDialog.isShowing())
+                    bottomSheetDialog.hide();
+                if (dialog.isShowing())
+                    dialog.hideDialog();
+                if (isVisible())
+                    dismiss();
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();

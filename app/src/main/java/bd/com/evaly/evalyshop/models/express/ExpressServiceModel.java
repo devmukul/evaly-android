@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.models.express;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -11,84 +12,134 @@ import java.io.Serializable;
 @Entity(tableName = "express_service_list")
 public class ExpressServiceModel implements Serializable {
 
-	@SerializedName("image")
-	private String image;
+    @SerializedName("image")
+    private String image;
 
-	@SerializedName("service_type")
-	private String serviceType;
+    @SerializedName("service_type")
+    private String serviceType;
 
-	@SerializedName("name")
-	private String name;
+    @SerializedName(value = "name")
+    private String name;
 
-	@SerializedName("modified_by")
-	private String modifiedBy;
+    @SerializedName("app_name")
+    private String appName;
 
-	@SerializedName("modified_at")
-	private String modifiedAt;
+    @SerializedName("app_logo")
+    private String appLogo;
 
-	@NonNull
-	@PrimaryKey
-	@SerializedName("slug")
-	private String slug;
+    @SerializedName("app_bg_color")
+    private String appBgColor;
 
-	public void setImage(String image){
-		this.image = image;
-	}
+    @SerializedName("modified_by")
+    private String modifiedBy;
 
-	public String getImage(){
-		return image;
-	}
+    @SerializedName("modified_at")
+    private String modifiedAt;
 
-	public void setServiceType(String serviceType){
-		this.serviceType = serviceType;
-	}
+    @NonNull
+    @PrimaryKey
+    @SerializedName("slug")
+    private String slug;
 
-	public String getServiceType(){
-		return serviceType;
-	}
+    public ExpressServiceModel() {
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public String getImage() {
+        return image;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public void setImage(String image) {
+        this.image = image;
+    }
 
-	public void setModifiedBy(String modifiedBy){
-		this.modifiedBy = modifiedBy;
-	}
+    public String getServiceType() {
+        return serviceType;
+    }
 
-	public String getModifiedBy(){
-		return modifiedBy;
-	}
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
 
-	public void setModifiedAt(String modifiedAt){
-		this.modifiedAt = modifiedAt;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getModifiedAt(){
-		return modifiedAt;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setSlug(String slug){
-		this.slug = slug;
-	}
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
 
-	public String getSlug(){
-		return slug;
-	}
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"ExpressServiceModel{" + 
-			"image = '" + image + '\'' + 
-			",service_type = '" + serviceType + '\'' + 
-			",name = '" + name + '\'' + 
-			",modified_by = '" + modifiedBy + '\'' + 
-			",modified_at = '" + modifiedAt + '\'' + 
-			",slug = '" + slug + '\'' + 
-			"}";
-		}
+    public String getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(String modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "ExpressServiceModel{" +
+                        "image = '" + image + '\'' +
+                        ",service_type = '" + serviceType + '\'' +
+                        ",name = '" + name + '\'' +
+                        ",modified_by = '" + modifiedBy + '\'' +
+                        ",modified_at = '" + modifiedAt + '\'' +
+                        ",slug = '" + slug + '\'' +
+                        "}";
+    }
+
+    public String getAppBgColor() {
+        return appBgColor;
+    }
+
+    public void setAppBgColor(String appBgColor) {
+        this.appBgColor = appBgColor;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getAppLogo() {
+        return appLogo;
+    }
+
+    public void setAppLogo(String appLogo) {
+        this.appLogo = appLogo;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof ExpressServiceModel) {
+            ExpressServiceModel newModel = (ExpressServiceModel) obj;
+            return (slug.equals(newModel.getSlug()) &&
+                    name.equals(newModel.getName()) &&
+                    (appName == null ? "" : appName).equals(newModel.getAppName()) &&
+                    appBgColor.equals(newModel.getAppBgColor()) &&
+                    appLogo.equals(newModel.getAppLogo()));
+
+        } else
+            return false;
+    }
 }

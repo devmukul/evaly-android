@@ -4,7 +4,7 @@
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff"
+    android:background="@drawable/bottom_sheet_round_create_post"
     android:clickable="true"
     android:orientation="vertical"
     android:padding="15dp"
@@ -117,7 +117,6 @@
             android:textColor="#444"
             android:textSize="15sp" />
 
-
     </LinearLayout>
 
 
@@ -153,11 +152,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:background="@drawable/input_brd"
+        android:gravity="top"
         android:hint="Enter your address"
-        android:imeOptions="actionDone"
-        android:maxLines="1"
+        android:inputType="textMultiLine"
+        android:maxHeight="100dp"
+        android:minLines="3"
         android:padding="12dp"
-        android:singleLine="true"
         android:textColorHint="#777"
         android:textSize="16sp"
         android:visibility="visible" />

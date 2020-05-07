@@ -25,15 +25,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.pref.ReferPref;
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
@@ -59,6 +64,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private FragmentHomeBinding binding;
     private NavController navController;
     private HomeController homeController;
+    private AppDatabase appDatabase;
+    private ExpressServiceDao expressServiceDao;
 
     public HomeFragment() {
 
@@ -74,20 +81,35 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         refreshFragment();
     }
 
+    private void refreshFragment() {
+        navController.navigate(HomeFragmentDirections.actionHomeFragmentPop());
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         activity = (MainActivity) getActivity();
         context = getContext();
+        appDatabase = AppDatabase.getInstance(getActivity());
 
         binding.swipeRefresh.setOnRefreshListener(this);
         return binding.getRoot();
     }
 
+    private void networkCheck() {
+        if (!Utils.isNetworkAvailable(context))
+            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
+                @Override
+                public void onRetry() {
+                    refreshFragment();
+                }
 
-    private void refreshFragment() {
-        navController.navigate(HomeFragmentDirections.actionHomeFragmentPop());
+                @Override
+                public void onBackPress() {
+                    navController.navigate(R.id.homeFragment);
+                }
+            });
     }
 
     @Override
@@ -98,6 +120,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         userDetails = new UserDetails(context);
         referPref = new ReferPref(context);
+
+        expressServiceDao = appDatabase.expressServiceDao();
 
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "home", mainViewModel);
@@ -112,7 +136,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         binding.recyclerView.setAdapter(homeController.getAdapter());
 
-
         int spanCount = 2;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         homeController.setSpanCount(spanCount);
@@ -121,8 +144,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
-        homeController.requestModelBuild();
 
+        homeController.requestModelBuild();
 
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -143,27 +166,42 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
 
+
         currentPage = 1;
 
         checkReferral();
+
+      //  getExpressShops();
         getProducts();
 
     }
 
 
-    private void networkCheck() {
-        if (!Utils.isNetworkAvailable(context))
-            new NetworkErrorDialog(context, new NetworkErrorDialogListener() {
-                @Override
-                public void onRetry() {
-                    refreshFragment();
-                }
+    private void getExpressShops() {
+        ExpressApiHelper.getServicesList(new ResponseListenerAuth<List<ExpressServiceModel>, String>() {
+            @Override
+            public void onDataFetched(List<ExpressServiceModel> response, int statusCode) {
+                Executors.newFixedThreadPool(4).execute(() -> {
+                    expressServiceDao.insertList(response);
+                    List<String> slugs = new ArrayList<>();
+                    for (ExpressServiceModel item : response)
+                        slugs.add(item.getSlug());
 
-                @Override
-                public void onBackPress() {
-                    navController.navigate(R.id.homeFragment);
-                }
-            });
+                    if (slugs.size() > 0)
+                        expressServiceDao.deleteOld(slugs);
+                });
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     private void getProducts() {

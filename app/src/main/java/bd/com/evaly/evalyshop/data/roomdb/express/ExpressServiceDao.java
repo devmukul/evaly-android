@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -16,9 +17,9 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 public interface ExpressServiceDao {
 
     @Insert(onConflict = REPLACE)
-    void insert(ExpressServiceModel expressServiceModel);
+    void insertOne(ExpressServiceModel expressServiceModel);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = REPLACE)
     void insertList(List<ExpressServiceModel> list);
 
     @Query("DELETE FROM express_service_list")
@@ -29,5 +30,11 @@ public interface ExpressServiceDao {
 
     @Query("SELECT * FROM express_service_list")
     LiveData<List<ExpressServiceModel>> getAll();
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    long insert(ExpressServiceModel entity);
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    void update(ExpressServiceModel entity);
 
 }

@@ -37,7 +37,7 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.messages.setText(itemList.get(i).getEvent());
         myViewHolder.time.setText(Utils.formattedDateFromString("", "hh:mm aa - d',' MMMM", itemList.get(i).getDate_time()));
-        myViewHolder.amount.setText(String.format("৳ %s", Utils.formatePrice(itemList.get(i).getAmount())));
+        myViewHolder.amount.setText(String.format("৳ %s", Utils.formatPrice(itemList.get(i).getAmount())));
     }
 
     @Override

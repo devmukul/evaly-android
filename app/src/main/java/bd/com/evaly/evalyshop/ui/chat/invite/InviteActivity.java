@@ -357,7 +357,7 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
 //                        xmppHandler.sendRequestTo(etPhoneNumber.getText().toString(), etContactName.getText().toString());
 //                        Toast.makeText(getApplicationContext(), "Invitation sent", Toast.LENGTH_LONG).show();
 
-                        sendCustomMessage(etPhoneNumber.getText().toString(), etContactName.getText().toString());
+//                        sendCustomMessage(etPhoneNumber.getText().toString(), etContactName.getText().toString());
 
 
                     } else {
@@ -388,7 +388,7 @@ public class InviteActivity extends BaseActivity implements RecyclerViewOnItemCl
         if ((vCard == null || vCard.getFirstName() == null) && CredentialManager.getUserData() != null) {
             HashMap<String, String> data2 = new HashMap<>();
             data2.put("phone_number", id);
-            data2.put("text", "You are invited to chat with " + CredentialManager.getUserData().getFirst_name() + " at Evaly. Please download Evaly app from here, \n https://play.google.com/store/apps/details?id=bd.com.evaly.merchant and start conversation");
+            data2.put("text", "You are invited to chat with " + CredentialManager.getUserData().getFirst_name() + " at Evaly. Please download Evaly app from here, \n https://play.google.com/store/apps/details?id=bd.com.evaly.evalyshop and start conversation");
 
             EntityBareJid finalJid = jid;
             AuthApiHelper.sendCustomMessage(data2, new DataFetchingListener<Response<JsonObject>>() {

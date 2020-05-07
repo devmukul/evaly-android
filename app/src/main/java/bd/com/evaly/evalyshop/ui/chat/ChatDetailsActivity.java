@@ -135,15 +135,17 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         public void onConnected() {
             xmppHandler = AppController.getmService().xmpp;
+
         }
 
         public void onLoggedIn() {
             xmppHandler = AppController.getmService().xmpp;
             mVCard = xmppHandler.mVcard;
+            chatItemList.clear();
+            loadMessage();
             if (isFromResume){
                 isFromResume = false;
-                chatItemList.clear();
-                loadMessage();
+
             }
         }
 
@@ -713,7 +715,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
             ChatItem chatItem = new ChatItem(etCommentsBox.getText().toString().trim(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), mVCard.getNickName(), System.currentTimeMillis(), mVCard.getFrom().asBareJid().toString(), rosterTable.id, Constants.TYPE_TEXT, true, "");
             chatItem.setUid(CredentialManager.getUserName() + System.currentTimeMillis());
             chatItem.setReceiver_name(rosterTable.name);
-            if (rosterTable.imageUrl != null || !rosterTable.imageUrl.isEmpty()){
+            if (rosterTable.imageUrl != null && !rosterTable.imageUrl.isEmpty()){
                 chatItem.setReceiver_image(rosterTable.imageUrl);
             }
 //            chatItemList.add(chatItem);

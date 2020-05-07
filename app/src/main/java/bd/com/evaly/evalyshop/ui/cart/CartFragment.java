@@ -1,10 +1,13 @@
 package bd.com.evaly.evalyshop.ui.cart;
 
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -25,15 +28,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONObject;
 
@@ -56,9 +62,12 @@ import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+
+import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 
 public class CartFragment extends Fragment {
@@ -186,7 +195,7 @@ public class CartFragment extends Fragment {
 
         // bottom sheet
 
-        bottomSheetDialog = new BottomSheetDialog(getContext());
+        bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.TransparentBottomSheetDialog);
         bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_checkout, null);
         bottomSheetDialog.setContentView(bottomSheetView);
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
@@ -199,45 +208,67 @@ public class CartFragment extends Fragment {
                 return;
             }
             boolean selected = false;
-            boolean isExpress = true;
+            boolean isExpress = false;
 
-            HashMap<String, Integer> shopAmount = new HashMap<>();
+            HashMap<String, Integer> shopAmountMap = new HashMap<>();
+            HashMap<String, Boolean> shopExpressMap = new HashMap<>();
 
             for (int i = 0; i < adapter.getItemList().size(); i++) {
                 CartEntity cartItem = adapter.getItemList().get(i);
                 if (cartItem.isSelected()) {
 
                     String ss = cartItem.getShopSlug();
-                    Integer am = shopAmount.get(ss);
+                    Integer am = shopAmountMap.get(ss);
 
-                    if (shopAmount.containsKey(ss) && am != null)
-                        shopAmount.put(ss, am + cartItem.getPriceInt() * cartItem.getQuantity());
+                    if (shopAmountMap.containsKey(ss) && am != null)
+                        shopAmountMap.put(ss, am + cartItem.getPriceInt() * cartItem.getQuantity());
                     else
-                        shopAmount.put(ss, cartItem.getPriceInt() * cartItem.getQuantity());
+                        shopAmountMap.put(ss, cartItem.getPriceInt() * cartItem.getQuantity());
 
                     selected = true;
-                    if (!cartItem.getShopSlug().contains("evaly-express"))
-                        isExpress = false;
+
+                    JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
+                    if (shopObject.has("is_express_shop")) {
+                        if (shopObject.get("is_express_shop").getAsInt() == 1)
+                            isExpress = true;
+
+                    } else {
+                        if (cartItem.getShopSlug().contains("evaly-express"))
+                            isExpress = true;
+                    }
+
+                    shopExpressMap.put(ss, isExpress);
                 }
             }
 
-            for (String key : shopAmount.keySet()) {
-                Integer am = shopAmount.get(key);
-                if (!key.equals("evaly-amol-1") && am != null && am < 500) {
-                    Toast.makeText(getContext(), "You have to order more than TK. 500 from an individual shop", Toast.LENGTH_SHORT).show();
+            for (String key : shopAmountMap.keySet()) {
+                Integer am = shopAmountMap.get(key);
+                Boolean express = shopExpressMap.get(key);
+
+                int minAmount = 500;
+                if (express && key.contains("food"))
+                    minAmount = 300;
+
+                if (!key.equals("evaly-amol-1") && am != null && am < minAmount) {
+                    Toast.makeText(getContext(), "You have to order more than TK. " + minAmount + " from an individual shop", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
 
+
+            checkLocationPermission();
+
             if (isExpress)
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 36 hours after payment.");
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
             else
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 30 working days after payment.");
+                deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
 
             if (!selected)
                 Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();
-            else
+            else {
+                bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
                 bottomSheetDialog.show();
+            }
         });
 
 
@@ -318,6 +349,50 @@ public class CartFragment extends Fragment {
 
         getCartList();
 
+    }
+
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            updateLocation();
+        else
+            requestPermissions(new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
+                    1212);
+    }
+
+    private void updateLocation() {
+
+        LocationUtils locationUtils = new LocationUtils();
+        locationUtils.getLocation(getContext(), new LocationUtils.LocationResult() {
+            @Override
+            public void gotLocation(Location location) {
+                if (getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed())
+                    return;
+                if (getContext() == null || location == null)
+                    return;
+                if (location.getLatitude() == 0 || location.getLongitude() == 0)
+                    return;
+
+                CredentialManager.saveLongitude(String.valueOf(location.getLongitude()));
+                CredentialManager.saveLatitude(String.valueOf(location.getLatitude()));
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1212:
+                if (checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    updateLocation();
+                }
+                break;
+            case 0:
+                break;
+        }
     }
 
     public void uncheckSelectAllBtn(boolean isChecked) {
@@ -434,6 +509,11 @@ public class CartFragment extends Fragment {
         orderObejct.setContactNumber(contact_number.getText().toString());
         orderObejct.setCustomerAddress(customAddress.getText().toString());
         orderObejct.setOrderOrigin("app");
+
+        if (CredentialManager.getLatitude() != null && CredentialManager.getLongitude() != null) {
+            orderObejct.setDeliveryLatitude(CredentialManager.getLatitude());
+            orderObejct.setDeliveryLongitude(CredentialManager.getLongitude());
+        }
 
         orderObejct.setPaymentMethod("evaly_pay");
 

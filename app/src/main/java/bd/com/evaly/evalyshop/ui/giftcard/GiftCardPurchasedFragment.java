@@ -204,7 +204,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         HashMap<String, String> parameters = new HashMap<>();
         try {
             double a = Double.parseDouble(amountToPayView.getText().toString().trim());
-            parameters.put("amount", Utils.formatePrice(a));
+            parameters.put("amount", Utils.formatPrice(a));
         } catch (Exception e) {
             Toast.makeText(context, "Invalid amount, enter only numbers!", Toast.LENGTH_SHORT).show();
             return;
@@ -325,7 +325,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         cards.setOnClickListener(v -> {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             double amToPay = Double.parseDouble(amountToPayView.getText().toString());
-            addBalanceViaCard(giftCardInvoice, Utils.formatePrice(amToPay));
+            addBalanceViaCard(giftCardInvoice, Utils.formatPrice(amToPay));
         });
 
         bank.setOnClickListener(v -> {
@@ -344,7 +344,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         initializeBottomSheet();
 
         giftCardInvoice = item.getInvoiceNo();
-        amountToPayView.setText(Utils.formatePrice(item.getTotal()));
+        amountToPayView.setText(Utils.formatPrice(item.getTotal()));
         amount = item.getTotal() + "";
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetDialog.show();

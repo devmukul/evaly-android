@@ -37,8 +37,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -92,6 +95,10 @@ import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
@@ -99,7 +106,7 @@ import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 public class ViewProductActivity extends BaseActivity {
 
     private String slug = "", category = "", name = "", productImage = "";
-    private int productPrice;
+    private double productPrice;
     private ArrayList<Products> products;
     private ArrayList<AvailableShop> availableShops;
     private ArrayList<String> sliderImages;
@@ -128,6 +135,30 @@ public class ViewProductActivity extends BaseActivity {
     private boolean network_enabled = false;
     private LocationManager lm;
 
+    AppController mChatApp = AppController.getInstance();
+
+    XMPPHandler xmppHandler;
+    XMPPEventReceiver xmppEventReceiver;
+
+    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+        //On User Presence Changed
+        public void onLoggedIn() {
+            xmppHandler = AppController.getmService().xmpp;
+        }
+
+        public void onConnected() {
+            xmppHandler = AppController.getmService().xmpp;
+        }
+
+        public void onLoginFailed(String msg) {
+            if (msg.contains("already logged in")) {
+
+            }
+        }
+
+    };
+
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
 
         Window win = activity.getWindow();
@@ -144,6 +175,8 @@ public class ViewProductActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        xmppEventReceiver = mChatApp.getEventReceiver();
+
         binding = ActivityViewProductBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -157,8 +190,9 @@ public class ViewProductActivity extends BaseActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setTitle("View Product");
 
-        productPrice = getIntent().getIntExtra("product_price", -1);
+        productPrice = getIntent().getDoubleExtra("product_price", -1);
         productImage = getIntent().getStringExtra("product_image");
+        slug = getIntent().getStringExtra("slug");
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
         wishListDao = appDatabase.wishListDao();
@@ -363,6 +397,13 @@ public class ViewProductActivity extends BaseActivity {
                 });
             }
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        xmppEventReceiver.setListener(xmppCustomEventListener);
 
     }
 
@@ -865,7 +906,32 @@ public class ViewProductActivity extends BaseActivity {
 
     }
 
+    private void startXmppService() {
+        if (!XMPPService.isServiceRunning) {
+            Intent intent = new Intent(this, XMPPService.class);
+            mChatApp.UnbindService();
+            mChatApp.BindService(intent);
+        } else {
+            xmppHandler = AppController.getmService().xmpp;
+            if (!xmppHandler.isConnected()) {
+                xmppHandler.connect();
+            } else {
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+            }
+        }
+    }
+
     private void shareWithContacts() {
+
+        if (xmppHandler != null) {
+            if (!xmppHandler.isLoggedin() || !xmppHandler.isConnected()) {
+                startXmppService();
+            }
+        } else {
+            startXmppService();
+        }
+
         bottomSheetDialog = new BottomSheetDialog(ViewProductActivity.this, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.share_with_contact_view);
 
@@ -889,6 +955,7 @@ public class ViewProductActivity extends BaseActivity {
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
             }
         });
 
@@ -926,26 +993,44 @@ public class ViewProductActivity extends BaseActivity {
                 llSend.setOnClickListener(view -> {
                     ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
 
-                    if (AppController.getmService() != null) {
-                        if (AppController.getmService().xmpp.isLoggedin()) {
-                            try {
-                                for (RosterTable rosterTable : selectedRosterList) {
-                                    ChatItem chatItem = new ChatItem(new Gson().toJson(model), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
-                                    AppController.getmService().xmpp.sendMessage(chatItem);
+                    if (xmppHandler.isLoggedin()) {
+                        for (RosterTable rosterTable : selectedRosterList) {
+
+                                JSONObject jsonObject= new JSONObject();
+                                try {
+                                    jsonObject.put("p_slug", slug);
+                                    jsonObject.put("p_name", name);
+                                    jsonObject.put("p_image", productImage);
+                                    jsonObject.put("p_price", String.valueOf(productPrice));
+
+//                                    return jsonObject.toString();
+                                } catch (JSONException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                    return;
+//                                    return "";
                                 }
-                                for (int i = 0; i < rosterList.size(); i++) {
-                                    rosterList.get(i).isSelected = false;
-                                }
-                                contactShareAdapter.notifyDataSetChanged();
-                                selectedRosterList.clear();
-                                tvCount.setText("(" + selectedRosterList.size() + ") ");
-                                Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
+
+                            ChatItem chatItem = new ChatItem(jsonObject.toString(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
+                            chatItem.setReceiver_name(rosterTable.name);
+                            if (rosterTable.imageUrl != null && !rosterTable.imageUrl.isEmpty()){
+                                chatItem.setReceiver_image(rosterTable.imageUrl);
+                            }
+
+                                try {
+                                xmppHandler.sendMessage(chatItem);
                             } catch (SmackException e) {
                                 e.printStackTrace();
                             }
-                        } else {
-                            AppController.getmService().xmpp.connect();
                         }
+                        for (int i = 0; i < rosterList.size(); i++) {
+                            rosterList.get(i).isSelected = false;
+                        }
+                        contactShareAdapter.notifyDataSetChanged();
+                        selectedRosterList.clear();
+                        tvCount.setText("(" + selectedRosterList.size() + ") ");
+                        Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
+
                     }
                 });
 

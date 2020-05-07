@@ -13,7 +13,7 @@ public class UrlUtils {
     /* Prod, Dev Auto Switch */
 
     public static final String DOMAIN = BuildConfig.BASE_URL;
-    public static final String PRODUCT_BASE_URL = "https://evaly.com.bd/products/";
+    public static final String PRODUCT_BASE_URL = BuildConfig.WEB_URL + "products/";
     public static final String BASE_AUTH = "http://beta.gateway.evaly.com.bd/";
     public static final String DOMAIN_AUTH = DOMAIN+"auth/";
 

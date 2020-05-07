@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +43,7 @@ public class RoomWIthRxViewModel extends ViewModel {
                     List<RosterTable> tableList = new ArrayList<>();
                     for (RosterItemModel model : response.body()) {
                         if (!model.getJid().contains(Constants.EVALY_NUMBER)) {
-//                            Logger.e(model.getLast_message());
+
                             try {
                                 ChatItem chatItem = new Gson().fromJson(model.getLast_message(), ChatItem.class);
                                 if (!chatItem.isInvitation()) {
@@ -57,13 +58,17 @@ public class RoomWIthRxViewModel extends ViewModel {
                                                 if (name == null) {
                                                     name = "";
                                                 }
-                                                if (chatItem.getReceiver_name().replace(" ", "").isEmpty()) {
-                                                    table.name = name;
-                                                    table.nick_name = object.getString("NICKNAME");
-                                                } else {
-                                                    table.name = chatItem.getReceiver_name();
-                                                    table.nick_name = chatItem.getReceiver_name();
+
+                                                if (chatItem.getReceiver_name() != null){
+                                                    if (chatItem.getReceiver_name().replace(" ", "").isEmpty()) {
+                                                        table.name = name;
+                                                        table.nick_name = object.getString("NICKNAME");
+                                                    } else {
+                                                        table.name = chatItem.getReceiver_name();
+                                                        table.nick_name = chatItem.getReceiver_name();
+                                                    }
                                                 }
+
 
                                                 if (chatItem.getReceiver_image() != null && !chatItem.getReceiver_image().isEmpty()) {
                                                     table.imageUrl = chatItem.getReceiver_image();
@@ -80,6 +85,8 @@ public class RoomWIthRxViewModel extends ViewModel {
                                             table.unreadCount = model.getUnseen_messages();
                                             table.messageId = model.getLast_unread_message_id();
                                             tableList.add(table);
+                                            Logger.d(table);
+
                                         } else {
                                             table.id = model.getJid();
                                             table.lastMessage = model.getLast_message();
@@ -100,6 +107,8 @@ public class RoomWIthRxViewModel extends ViewModel {
                                                 table.imageUrl = chatItem.getReceiver_image();
                                             }
                                             tableList.add(table);
+                                            Logger.d(table);
+
                                         }
                                     } else {
                                         RosterTable table = new RosterTable();
@@ -134,6 +143,8 @@ public class RoomWIthRxViewModel extends ViewModel {
                                             table.unreadCount = model.getUnseen_messages();
                                             table.messageId = model.getLast_unread_message_id();
                                             tableList.add(table);
+                                            Logger.d(table);
+
                                         } else {
                                             table.id = model.getJid();
                                             table.lastMessage = model.getLast_message();
@@ -152,17 +163,20 @@ public class RoomWIthRxViewModel extends ViewModel {
                                                 table.imageUrl = chatItem.getImage();
                                             }
                                             tableList.add(table);
+                                            Logger.d(table);
                                         }
                                     }
                                 } else {
 
                                 }
                             } catch (Exception e) {
+                                Logger.e(model.getLast_message());
                                 e.printStackTrace();
                             }
                         }
                     }
                     rosterList.setValue(tableList);
+                    Logger.d("  =================   "+ tableList.size());
                 } else {
                     isSuccess.setValue(false);
                 }

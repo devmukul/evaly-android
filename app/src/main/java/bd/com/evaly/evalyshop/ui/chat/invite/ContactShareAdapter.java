@@ -169,13 +169,23 @@ public class ContactShareAdapter extends RecyclerView.Adapter<ContactShareAdapte
 //                    cbUsers.setChecked(!cbUsers.isChecked());
                 list.get(getLayoutPosition()).isSelected = !list.get(getLayoutPosition()).isSelected;
                 notifyItemChanged(getLayoutPosition());
-                listener.onUserSelected(list.get(getLayoutPosition()), list.get(getLayoutPosition()).isSelected);
+                RosterTable rosterTable = new RosterTable();
+                rosterTable.id = list.get(getLayoutPosition()).id;
+                rosterTable.name = tvName.getText().toString();
+                rosterTable.imageUrl = list.get(getLayoutPosition()).imageUrl;
+                rosterTable.status = 0;
+                listener.onUserSelected(rosterTable, list.get(getLayoutPosition()).isSelected);
             });
 
             cbUsers.setOnClickListener(view -> {
                 list.get(getLayoutPosition()).isSelected = !list.get(getLayoutPosition()).isSelected;
                 notifyItemChanged(getLayoutPosition());
-                listener.onUserSelected(list.get(getLayoutPosition()), list.get(getLayoutPosition()).isSelected);
+                RosterTable rosterTable = new RosterTable();
+                rosterTable.id = list.get(getLayoutPosition()).id;
+                rosterTable.name = tvName.getText().toString();
+                rosterTable.imageUrl = list.get(getLayoutPosition()).imageUrl;
+                rosterTable.status = 0;
+                listener.onUserSelected(rosterTable, list.get(getLayoutPosition()).isSelected);
             });
 
 //            llSend.setOnClickListener(new View.OnClickListener() {

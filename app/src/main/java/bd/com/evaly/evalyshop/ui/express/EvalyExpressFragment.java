@@ -26,8 +26,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -182,10 +180,11 @@ public class EvalyExpressFragment extends Fragment {
                 TextBottomSheetFragment fragment = TextBottomSheetFragment.newInstance(expressServiceDetailsModel.getDescription().replaceAll("\n", "<br>"));
                 fragment.show(getParentFragmentManager(), "terms");
             });
-            Glide.with(binding.getRoot())
-                    .load(expressServiceDetailsModel.getBannerImage())
-                    .placeholder(R.drawable.banner_skeleton_bg)
-                    .into(binding.sliderImage);
+//            Glide.with(binding.getRoot())
+//                    .load(expressServiceDetailsModel.getAppLogo())
+//                    .placeholder(R.drawable.banner_skeleton_bg)
+//                    .into(binding.image);
+//            binding.overly.setBackgroundColor(Color.parseColor(expressServiceDetailsModel.getAppBgColor()));
 
         });
 

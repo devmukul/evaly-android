@@ -48,7 +48,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
         else
             Glide.with(context).load(itemList.get(i).getImageUrl()).into(myViewHolder.iv);
 
-        myViewHolder.amount.setText("৳ " + Utils.formatePrice(itemList.get(i).getPrice()));
+        myViewHolder.amount.setText("৳ " + Utils.formatPrice(itemList.get(i).getPrice()));
         myViewHolder.button.setOnClickListener(v -> GiftCardListFragment.getInstance().toggleBottomSheet(itemList.get(i)));
 
     }
