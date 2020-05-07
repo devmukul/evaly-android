@@ -259,9 +259,9 @@ public class CartFragment extends Fragment {
             checkLocationPermission();
 
             if (isExpress)
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 3 days after payment.");
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
             else
-                deliveryDuration.setText("Delivery of the products will be completed within approximately 30 working days after payment.");
+                deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
 
             if (!selected)
                 Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();

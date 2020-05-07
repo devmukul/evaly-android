@@ -79,8 +79,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="no_internet_connection_found_nplease_check_your_network_settings">No internet connection found. \nPlease check your network settings.</string>
     <string name="ooops">Ooops!</string>
     <string name="retry">Retry</string>
-    <string name="invoice_no">INVOICE NO</string>
-    <string name="order_status">ORDER STATUS</string>
+    <string name="invoice_no">INVOICE</string>
+    <string name="order_status">ORDER TIMELINE</string>
     <string name="product">Product</string>
     <string name="rate_amp_qty"><![CDATA[Rate & Qty]]></string>
     <string name="amount">Amount</string>

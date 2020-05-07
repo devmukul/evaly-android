@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
+import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
@@ -433,5 +434,8 @@ public interface IApiClient {
                                                                         @Query("page") int page,
                                                                         @Query("limit") int limit,
                                                                         @Query("search") String search);
+
+    @GET(UrlUtils.BASE_URL + "delivery/orders/{invoice_no}/hero")
+    Call<DeliveryHeroResponse> getDeliveryHero(@Header("Authorization") String token, @Path("invoice_no") String invoice);
 
 }

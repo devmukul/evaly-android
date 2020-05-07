@@ -70,4 +70,10 @@ public class ViewDialog {
         }
     }
 
+    public boolean isShowing() {
+        if (dialog != null)
+            return dialog.isShowing();
+        else
+            return false;
+    }
 }
