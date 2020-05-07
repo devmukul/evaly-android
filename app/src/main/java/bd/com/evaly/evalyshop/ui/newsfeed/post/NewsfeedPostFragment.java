@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.newsfeed.post;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -47,6 +48,10 @@ import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.newsfeed.createPost.CreatePostBottomSheet;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
+import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 
 public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -63,6 +68,30 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
     private SkeletonScreen skeletonScreen;
     private boolean isFirstLoad = true;
 
+    AppController mChatApp = AppController.getInstance();
+
+    XMPPHandler xmppHandler;
+    XMPPEventReceiver xmppEventReceiver;
+
+    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+
+        //On User Presence Changed
+        public void onLoggedIn() {
+            xmppHandler = AppController.getmService().xmpp;
+        }
+
+        public void onConnected() {
+            xmppHandler = AppController.getmService().xmpp;
+        }
+
+        public void onLoginFailed(String msg) {
+            if (msg.contains("already logged in")) {
+
+            }
+        }
+
+    };
+
     public static NewsfeedPostFragment newInstance(String type) {
 
         NewsfeedPostFragment fragment = new NewsfeedPostFragment();
@@ -78,6 +107,25 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
 
         if (getArguments() != null) {
             type = getArguments().getString("type");
+        }
+
+        xmppEventReceiver = mChatApp.getEventReceiver();
+
+    }
+
+    private void startXmppService() {
+        if (!XMPPService.isServiceRunning) {
+            Intent intent = new Intent(getActivity(), XMPPService.class);
+            mChatApp.UnbindService();
+            mChatApp.BindService(intent);
+        } else {
+            xmppHandler = AppController.getmService().xmpp;
+            if (!xmppHandler.isConnected()) {
+                xmppHandler.connect();
+            } else {
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+            }
         }
     }
 
@@ -193,8 +241,21 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        xmppEventReceiver.setListener(xmppCustomEventListener);
+    }
 
     private void shareWithContacts(NewsfeedPost model) {
+
+        if (xmppHandler != null) {
+            if (!xmppHandler.isLoggedin() || !xmppHandler.isConnected()) {
+                startXmppService();
+            }
+        } else {
+            startXmppService();
+        }
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.share_with_contact_view);
@@ -253,11 +314,11 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
             llSend.setOnClickListener(view -> {
                 FeedShareModel feedShareModel = new FeedShareModel(model.getSlug(), model.getBody(), model.getAttachment(), model.getCommentsCount() + "", model.getFavoritesCount() + "", model.getAuthorFullName());
 
-                if (AppController.getmService().xmpp.isLoggedin()) {
+                if (xmppHandler.isLoggedin()) {
                     try {
                         for (RosterTable rosterTable : selectedRosterList) {
                             ChatItem chatItem = new ChatItem(new Gson().toJson(feedShareModel), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_FEED, true, "");
-                            AppController.getmService().xmpp.sendMessage(chatItem);
+                            xmppHandler.sendMessage(chatItem);
                         }
                         for (int i = 0; i < rosterTables.size(); i++) {
                             rosterTables.get(i).isSelected = false;
@@ -270,8 +331,6 @@ public class NewsfeedPostFragment extends Fragment implements SwipeRefreshLayout
                     } catch (SmackException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    AppController.getmService().xmpp.connect();
                 }
             });
 
