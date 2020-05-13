@@ -446,7 +446,7 @@ public class CartFragment extends Fragment {
                         totalPriceDouble += itemList.get(i).getPriceInt() * itemList.get(i).getQuantity();
                 }
 
-                tvTotalPrice.setText(String.format(Locale.ENGLISH, "৳%d", (int) totalPriceDouble));
+                tvTotalPrice.setText(String.format(Locale.ENGLISH, "৳ %d", (int) totalPriceDouble));
             }
         });
 
