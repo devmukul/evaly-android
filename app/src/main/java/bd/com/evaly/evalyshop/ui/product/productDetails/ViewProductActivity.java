@@ -29,7 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,7 +37,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.json.JSONException;
@@ -128,12 +127,14 @@ public class ViewProductActivity extends BaseActivity {
     private List<ProductSpecificationsItem> specificationsItemList = new ArrayList<>();
     private List<AttributesItem> productAttributesItemList;
     private List<ProductVariantsItem> productVariantsItemList;
-    private boolean isShopLoading = false;
     private int variantKey1 = 0, variantKey2 = 0;
     private int shopItemId = 0;
     private boolean gps_enabled = false;
     private boolean network_enabled = false;
     private LocationManager lm;
+
+    private String shopItem = null;
+    private String shopSlug = null;
 
     AppController mChatApp = AppController.getInstance();
 
@@ -176,13 +177,12 @@ public class ViewProductActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         xmppEventReceiver = mChatApp.getEventReceiver();
-
         binding = ActivityViewProductBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
-        viewModel = ViewModelProviders.of(this).get(ViewProductViewModel.class);
-        xmppViewModel = ViewModelProviders.of(this).get(RoomWIthRxViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ViewProductViewModel.class);
+        xmppViewModel = new ViewModelProvider(this).get(RoomWIthRxViewModel.class);
 
         context = this;
 
@@ -734,7 +734,6 @@ public class ViewProductActivity extends BaseActivity {
         binding.progressBarShop.setVisibility(View.VISIBLE);
         availableShops.clear();
         binding.availableShops.setAdapter(null);
-        isShopLoading = true;
         binding.empty.setVisibility(View.GONE);
 
         binding.tvShopType.setText("All");
@@ -742,8 +741,6 @@ public class ViewProductActivity extends BaseActivity {
         ProductApiHelper.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
-
-                isShopLoading = false;
 
                 AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
                 binding.availableShops.setAdapter(adapter);
@@ -776,13 +773,10 @@ public class ViewProductActivity extends BaseActivity {
 
         availableShops.clear();
         binding.availableShops.setAdapter(null);
-        isShopLoading = true;
 
         ProductApiHelper.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
-
-                isShopLoading = false;
 
                 AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
                 binding.availableShops.setAdapter(adapter);
