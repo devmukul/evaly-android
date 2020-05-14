@@ -62,7 +62,6 @@ import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
 import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
@@ -70,7 +69,6 @@ import bd.com.evaly.evalyshop.models.product.ProductShareModel;
 import bd.com.evaly.evalyshop.models.product.Products;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributeValuesItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributesItem;
-import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.Data;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductSpecificationsItem;
@@ -79,7 +77,6 @@ import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
@@ -101,8 +98,7 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
-
-public class ViewProductActivity extends BaseActivity {
+public class ViewProductOfShopActivity extends BaseActivity {
 
     private String slug = "", category = "", name = "", productImage = "";
     private double productPrice;
@@ -716,16 +712,6 @@ public class ViewProductActivity extends BaseActivity {
 
             }
         });
-//        if (binding.stickyScroll != null) {
-//            productGrid.setScrollView(binding.stickyScroll);
-//            binding.stickyScroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-//                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                    binding.progressBar.setVisibility(View.VISIBLE);
-//                    productGrid.loadNextPage();
-//                }
-//            });
-//
-//        }
     }
 
 
@@ -735,34 +721,18 @@ public class ViewProductActivity extends BaseActivity {
         availableShops.clear();
         binding.availableShops.setAdapter(null);
         binding.empty.setVisibility(View.GONE);
-
         binding.tvShopType.setText("All");
-
-        ProductApiHelper.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
-
-                AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
-                binding.availableShops.setAdapter(adapter);
-                binding.progressBarShop.setVisibility(View.GONE);
-
-                if (response.getData().size() < 1) {
-                    binding.empty.setVisibility(View.VISIBLE);
-                    binding.tvNoShop.setText("This product is currently \nnot available at any shop");
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
+        viewModel.availableShops.observe(this, response -> {
+            AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
+            binding.availableShops.setAdapter(adapter);
+            binding.progressBarShop.setVisibility(View.GONE);
+            if (response.getData().size() < 1) {
+                binding.empty.setVisibility(View.VISIBLE);
+                binding.tvNoShop.setText("This product is currently \nnot available at any shop");
             }
         });
 
+        viewModel.getAvailableShops(variationID);
     }
 
 
@@ -774,28 +744,14 @@ public class ViewProductActivity extends BaseActivity {
         availableShops.clear();
         binding.availableShops.setAdapter(null);
 
-        ProductApiHelper.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
+        viewModel.availableNearestShops.observe(this, response -> {
+            AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
+            binding.availableShops.setAdapter(adapter);
+            binding.progressBarShop.setVisibility(View.GONE);
 
-                AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
-                binding.availableShops.setAdapter(adapter);
-                binding.progressBarShop.setVisibility(View.GONE);
-
-                if (response.getData().size() < 1) {
-                    binding.empty.setVisibility(View.VISIBLE);
-                    binding.tvNoShop.setText("This product is currently not \navailable at any nearest shop");
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
+            if (response.getData().size() < 1) {
+                binding.empty.setVisibility(View.VISIBLE);
+                binding.tvNoShop.setText("This product is currently not \navailable at any nearest shop");
             }
         });
 
@@ -803,13 +759,13 @@ public class ViewProductActivity extends BaseActivity {
 
 
     private void shareToNewsFeed(String shareURL) {
-        newsfeedShareDialog = new BottomSheetDialog(ViewProductActivity.this, R.style.BottomSheetDialogTheme);
+        newsfeedShareDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         newsfeedShareDialog.setContentView(R.layout.share_to_newsfeed_view);
 
         View bottomSheetInternal = newsfeedShareDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         bottomSheetInternal.setPadding(0, 0, 0, 0);
 
-        new KeyboardUtil(ViewProductActivity.this, bottomSheetInternal);
+        new KeyboardUtil(this, bottomSheetInternal);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
@@ -926,13 +882,13 @@ public class ViewProductActivity extends BaseActivity {
             startXmppService();
         }
 
-        bottomSheetDialog = new BottomSheetDialog(ViewProductActivity.this, R.style.BottomSheetDialogTheme);
+        bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.share_with_contact_view);
 
         View bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         bottomSheetInternal.setPadding(0, 0, 0, 0);
 
-        new KeyboardUtil(ViewProductActivity.this, bottomSheetInternal);
+        new KeyboardUtil(this, bottomSheetInternal);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
@@ -960,28 +916,25 @@ public class ViewProductActivity extends BaseActivity {
         TextView tvCount = bottomSheetDialog.findViewById(R.id.tvCount);
         LinearLayout llSend = bottomSheetDialog.findViewById(R.id.llSend);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(ViewProductActivity.this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvContacts.setLayoutManager(layoutManager);
         runOnUiThread(() -> {
             xmppViewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
             xmppViewModel.rosterList.observe(this, rosterTables -> {
                 List<RosterTable> selectedRosterList = new ArrayList<>();
                 List<RosterTable> rosterList = rosterTables;
-                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(ViewProductActivity.this, rosterList, new ContactShareAdapter.OnUserSelectedListener() {
-                    @Override
-                    public void onUserSelected(Object object, boolean status) {
-                        RosterTable table = (RosterTable) object;
+                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(this, rosterList, (object, status) -> {
+                    RosterTable table = (RosterTable) object;
 
-                        if (status && !selectedRosterList.contains(table)) {
-                            selectedRosterList.add(table);
-                        } else {
-                            if (selectedRosterList.contains(table)) {
-                                selectedRosterList.remove(table);
-                            }
+                    if (status && !selectedRosterList.contains(table)) {
+                        selectedRosterList.add(table);
+                    } else {
+                        if (selectedRosterList.contains(table)) {
+                            selectedRosterList.remove(table);
                         }
-
-                        tvCount.setText("(" + selectedRosterList.size() + ") ");
                     }
+
+                    tvCount.setText("(" + selectedRosterList.size() + ") ");
                 });
 
                 llSend.setOnClickListener(view -> {
@@ -990,28 +943,28 @@ public class ViewProductActivity extends BaseActivity {
                     if (xmppHandler.isLoggedin()) {
                         for (RosterTable rosterTable : selectedRosterList) {
 
-                                JSONObject jsonObject= new JSONObject();
-                                try {
-                                    jsonObject.put("p_slug", slug);
-                                    jsonObject.put("p_name", name);
-                                    jsonObject.put("p_image", productImage);
-                                    jsonObject.put("p_price", String.valueOf(productPrice));
+                            JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("p_slug", slug);
+                                jsonObject.put("p_name", name);
+                                jsonObject.put("p_image", productImage);
+                                jsonObject.put("p_price", String.valueOf(productPrice));
 
 //                                    return jsonObject.toString();
-                                } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                    return;
+                            } catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                                return;
 //                                    return "";
-                                }
+                            }
 
                             ChatItem chatItem = new ChatItem(jsonObject.toString(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
                             chatItem.setReceiver_name(rosterTable.name);
-                            if (rosterTable.imageUrl != null && !rosterTable.imageUrl.isEmpty()){
+                            if (rosterTable.imageUrl != null && !rosterTable.imageUrl.isEmpty()) {
                                 chatItem.setReceiver_image(rosterTable.imageUrl);
                             }
 
-                                try {
+                            try {
                                 xmppHandler.sendMessage(chatItem);
                             } catch (SmackException e) {
                                 e.printStackTrace();
@@ -1082,3 +1035,4 @@ public class ViewProductActivity extends BaseActivity {
 
 
 }
+

@@ -443,7 +443,6 @@
 
                     </RelativeLayout>
 
-
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="10dp"
@@ -462,7 +461,7 @@
                             android:paddingLeft="15dp"
                             android:paddingTop="25dp"
                             android:paddingRight="15dp"
-                            android:paddingBottom="25dp">
+                            android:paddingBottom="15dp">
 
                             <ImageView
                                 android:id="@+id/logo"
@@ -500,7 +499,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="11dp"
                                 android:ellipsize="end"
-                                android:maxLines="1"
+                                android:maxLines="2"
                                 android:paddingEnd="20dp"
                                 android:singleLine="true"
                                 android:text="Shop Name"
@@ -539,66 +538,6 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
                                 app:layout_constraintStart_toEndOf="@+id/ratingBar"
                                 app:layout_constraintTop_toTopOf="@+id/ratingBar" />
-
-
-                            <LinearLayout
-                                android:id="@+id/follow_btn"
-                                android:layout_width="0dp"
-                                android:layout_height="34dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginEnd="10dp"
-                                android:background="@drawable/follow_btn_bg"
-                                android:clickable="true"
-                                android:gravity="center"
-                                android:orientation="horizontal"
-                                android:paddingLeft="10dp"
-                                android:paddingTop="7dp"
-                                android:paddingRight="15dp"
-                                android:paddingBottom="7dp"
-                                app:layout_constraintEnd_toStartOf="@+id/llInbox"
-                                app:layout_constraintStart_toStartOf="@+id/name"
-                                app:layout_constraintTop_toBottomOf="@+id/ratingBar">
-
-                                <ImageView
-                                    android:id="@+id/imageView21"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="16dp"
-                                    android:layout_weight="0"
-                                    android:tint="#FFF"
-                                    app:srcCompat="@drawable/ic_notification" />
-
-                                <TextView
-                                    android:id="@+id/follow_text"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0"
-                                    android:paddingLeft="5dp"
-                                    android:text="Follow"
-                                    android:textColor="#fff" />
-                            </LinearLayout>
-
-
-                            <LinearLayout
-                                android:id="@+id/llInbox"
-                                android:layout_width="47dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="26dp"
-                                android:background="@drawable/share_btn_bg"
-                                android:clickable="true"
-                                android:gravity="center"
-                                android:orientation="horizontal"
-                                android:paddingTop="7dp"
-                                android:paddingBottom="7dp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/follow_btn">
-
-                                <ImageView
-                                    android:layout_width="18dp"
-                                    android:layout_height="20dp"
-                                    android:tint="#333"
-                                    app:srcCompat="@drawable/ic_inbox" />
-
-                            </LinearLayout>
 
 
                         </androidx.constraintlayout.widget.ConstraintLayout>

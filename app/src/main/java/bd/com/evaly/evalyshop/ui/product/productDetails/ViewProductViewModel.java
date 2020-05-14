@@ -1,16 +1,35 @@
 package bd.com.evaly.evalyshop.ui.product.productDetails;
 
+import android.view.View;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.gson.JsonObject;
+
+import java.util.List;
+
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
+import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
+import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAdapter;
 
 public class ViewProductViewModel extends ViewModel {
 
-    private MutableLiveData<ProductDetailsModel> productDetailsModel = new MutableLiveData<>();
+    protected MutableLiveData<ProductDetailsModel> productDetailsModel = new MutableLiveData<>();
+    protected MutableLiveData<CommonDataResponse<List<ShopItem>>> productsVariantsOfShop = new MutableLiveData<>();
+    protected MutableLiveData<ShopDetailsModel> shopDetails = new MutableLiveData<>();
+    protected MutableLiveData<JsonObject> ratingSummary = new MutableLiveData<>();
+    protected MutableLiveData<CommonDataResponse<List<AvailableShopModel>>> availableShops = new MutableLiveData<>();
+    protected MutableLiveData<CommonDataResponse<List<AvailableShopModel>>> availableNearestShops = new MutableLiveData<>();
 
     public void getProductDetails(String slug){
 
@@ -32,8 +51,112 @@ public class ViewProductViewModel extends ViewModel {
         });
     }
 
-    public LiveData<ProductDetailsModel> observeProductDetails(){
-        return productDetailsModel;
+
+    public void getVariantsByShop(String shop_slug, String shop_item_slug) {
+
+        ProductApiHelper.getProductVariants(shop_slug, shop_item_slug, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<ShopItem>> response, int statusCode) {
+                productsVariantsOfShop.setValue(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+
+    public void loadRatings(String shopSlug) {
+
+        ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), shopSlug, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                ratingSummary.setValue(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    loadRatings(shopSlug);
+
+            }
+        });
+    }
+
+    public void loadShopDetails(String shopSlug, String campaignSlug) {
+
+        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, 1, 0, null, campaignSlug, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
+            @Override
+            public void onDataFetched(ShopDetailsModel response, int statusCode) {
+                shopDetails.setValue(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    loadShopDetails(shopSlug, campaignSlug);
+            }
+        });
+    }
+
+
+    public void getAvailableShops(int variationID) {
+
+        ProductApiHelper.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
+                availableShops.setValue(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+    }
+
+    public void getNearestAvailableShops(int variationID, double longitude, double latitude) {
+
+        ProductApiHelper.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
+                availableNearestShops.setValue(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
     }
 
 
