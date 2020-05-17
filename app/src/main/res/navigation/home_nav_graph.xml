@@ -228,6 +228,11 @@
             android:autoVerify="true"
             app:uri="https://evaly.com.bd/express" />
     </fragment>
+    <dialog
+        android:id="@+id/buyNowFragment"
+        android:name="bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment"
+        android:label="BuyNowFragment" />
+
 
     <!--    <activity-->
     <!--        android:id="@+id/orderDetailsActivity"-->

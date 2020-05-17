@@ -3,160 +3,173 @@ package bd.com.evaly.evalyshop.models.product.productDetails;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AvailableShopModel{
+import java.io.Serializable;
 
-	@SerializedName("price")
-	private Double price;
+public class AvailableShopModel implements Serializable {
 
-	@SerializedName("discount_value")
-	private double discountValue;
+    @SerializedName("price")
+    private Double price;
 
-	@SerializedName("shop_name")
-	private String shopName;
+    @SerializedName("discount_value")
+    private double discountValue;
 
-	@SerializedName("shop_image")
-	private String shopImage;
+    @SerializedName("shop_name")
+    private String shopName;
 
-	@SerializedName("discount_type")
-	private String discountType;
+    @SerializedName("shop_image")
+    private String shopImage;
 
-	@SerializedName("in_stock")
-	private int inStock;
+    @SerializedName("discount_type")
+    private String discountType;
 
-	@SerializedName("shop_owner")
-	private String shopOwner;
+    @SerializedName("in_stock")
+    private int inStock;
 
-	@SerializedName("shop_address")
-	private String shopAddress;
+    @SerializedName("shop_owner")
+    private String shopOwner;
 
-	@SerializedName("shop_item_id")
-	private int shopItemId;
+    @SerializedName("shop_address")
+    private String shopAddress;
 
-	@SerializedName("contact_number")
-	private String contactNumber;
+    @SerializedName("shop_item_id")
+    private int shopItemId;
 
-	@SerializedName("shop_slug")
-	private String shopSlug;
+    @SerializedName("contact_number")
+    private String contactNumber;
 
-	@SerializedName("discounted_price")
-	private Double discountedPrice;
+    @SerializedName("shop_slug")
+    private String shopSlug;
 
-	public void setPrice(double price){
-		this.price = price;
-	}
+    @SerializedName("discounted_price")
+    private Double discountedPrice;
 
-	public Double getPrice(){
-		if (price == null)
-			return 0.0;
-		return price;
-	}
+    @SerializedName("is_express_shop")
+    private boolean expressShop;
 
-	public void setDiscountValue(double discountValue){
-		this.discountValue = discountValue;
-	}
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
-	public double getDiscountValue(){
-		return discountValue;
-	}
+    public Double getPrice() {
+        if (price == null)
+            return 0.0;
+        return price;
+    }
 
-	public void setShopName(String shopName){
-		this.shopName = shopName;
-	}
+    public void setDiscountValue(double discountValue) {
+        this.discountValue = discountValue;
+    }
 
-	public String getShopName(){
-		return shopName;
-	}
+    public double getDiscountValue() {
+        return discountValue;
+    }
 
-	public void setShopImage(String shopImage){
-		this.shopImage = shopImage;
-	}
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
 
-	public String getShopImage(){
-		return shopImage;
-	}
+    public String getShopName() {
+        return shopName;
+    }
 
-	public void setDiscountType(String discountType){
-		this.discountType = discountType;
-	}
+    public void setShopImage(String shopImage) {
+        this.shopImage = shopImage;
+    }
 
-	public String getDiscountType(){
-		return discountType;
-	}
+    public String getShopImage() {
+        return shopImage;
+    }
 
-	public void setInStock(int inStock){
-		this.inStock = inStock;
-	}
+    public void setDiscountType(String discountType) {
+        this.discountType = discountType;
+    }
 
-	public int getInStock(){
-		return inStock;
-	}
+    public String getDiscountType() {
+        return discountType;
+    }
 
-	public void setShopOwner(String shopOwner){
-		this.shopOwner = shopOwner;
-	}
+    public void setInStock(int inStock) {
+        this.inStock = inStock;
+    }
 
-	public String getShopOwner(){
-		return shopOwner;
-	}
+    public int getInStock() {
+        return inStock;
+    }
 
-	public void setShopAddress(String shopAddress){
-		this.shopAddress = shopAddress;
-	}
+    public void setShopOwner(String shopOwner) {
+        this.shopOwner = shopOwner;
+    }
 
-	public String getShopAddress(){
-		return shopAddress;
-	}
+    public String getShopOwner() {
+        return shopOwner;
+    }
 
-	public void setShopItemId(int shopItemId){
-		this.shopItemId = shopItemId;
-	}
+    public void setShopAddress(String shopAddress) {
+        this.shopAddress = shopAddress;
+    }
 
-	public int getShopItemId(){
-		return shopItemId;
-	}
+    public String getShopAddress() {
+        return shopAddress;
+    }
 
-	public void setContactNumber(String contactNumber){
-		this.contactNumber = contactNumber;
-	}
+    public void setShopItemId(int shopItemId) {
+        this.shopItemId = shopItemId;
+    }
 
-	public String getContactNumber(){
-		return contactNumber;
-	}
+    public int getShopItemId() {
+        return shopItemId;
+    }
 
-	public void setShopSlug(String shopSlug){
-		this.shopSlug = shopSlug;
-	}
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
 
-	public String getShopSlug(){
-		return shopSlug;
-	}
+    public String getContactNumber() {
+        return contactNumber;
+    }
 
-	public void setDiscountedPrice(double discountedPrice){
-		this.discountedPrice = discountedPrice;
-	}
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
+    }
 
-	public Double getDiscountedPrice(){
-		if (discountedPrice == null)
-			return 0.0;
-		return discountedPrice;
-	}
+    public String getShopSlug() {
+        return shopSlug;
+    }
+
+    public void setDiscountedPrice(double discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
+
+    public Double getDiscountedPrice() {
+        if (discountedPrice == null)
+            return 0.0;
+        return discountedPrice;
+    }
+
+    public boolean isExpressShop() {
+        return expressShop;
+    }
+
+    public void setExpressShop(boolean expressShop) {
+        this.expressShop = expressShop;
+    }
 
 	@Override
- 	public String toString(){
-		return 
-			"AvailableShopModel{" + 
-			"price = '" + price + '\'' + 
-			",discount_value = '" + discountValue + '\'' + 
-			",shop_name = '" + shopName + '\'' + 
-			",shop_image = '" + shopImage + '\'' + 
-			",discount_type = '" + discountType + '\'' + 
-			",in_stock = '" + inStock + '\'' + 
-			",shop_owner = '" + shopOwner + '\'' + 
-			",shop_address = '" + shopAddress + '\'' + 
-			",shop_item_id = '" + shopItemId + '\'' + 
-			",contact_number = '" + contactNumber + '\'' + 
-			",shop_slug = '" + shopSlug + '\'' + 
-			",discounted_price = '" + discountedPrice + '\'' + 
-			"}";
-		}
+	public String toString() {
+		return
+				"AvailableShopModel{" +
+						"price = '" + price + '\'' +
+						",discount_value = '" + discountValue + '\'' +
+						",shop_name = '" + shopName + '\'' +
+						",shop_image = '" + shopImage + '\'' +
+						",discount_type = '" + discountType + '\'' +
+						",in_stock = '" + inStock + '\'' +
+						",shop_owner = '" + shopOwner + '\'' +
+						",shop_address = '" + shopAddress + '\'' +
+						",shop_item_id = '" + shopItemId + '\'' +
+						",contact_number = '" + contactNumber + '\'' +
+						",shop_slug = '" + shopSlug + '\'' +
+						",discounted_price = '" + discountedPrice + '\'' +
+						"}";
+	}
 }

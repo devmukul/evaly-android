@@ -31,6 +31,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.DialogFragmentNavigator;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -80,6 +84,7 @@ import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
@@ -134,6 +139,7 @@ public class ViewProductActivity extends BaseActivity {
     private LocationManager lm;
 
     private String shopSlug = null;
+    private AvailableShopModel toRemoveModel = null;
 
     AppController mChatApp = AppController.getInstance();
 
@@ -171,14 +177,19 @@ public class ViewProductActivity extends BaseActivity {
         win.setAttributes(winParams);
     }
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         xmppEventReceiver = mChatApp.getEventReceiver();
         binding = ActivityViewProductBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        setLightStatusBar(this);
 
         binding.selectedShopHolder.setVisibility(View.GONE);
 
@@ -206,18 +217,9 @@ public class ViewProductActivity extends BaseActivity {
 
         wishListItem = new WishList();
         cartItem = new CartEntity();
-
         shopMap = new HashMap<>();
 
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        //make fully Android Transparent Status bar
-        setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
-
-        setLightStatusBar(this);
-
         binding.specList.setLayoutManager(new LinearLayoutManager(this));
-
         specificationAdapter = new SpecificationAdapter(this, specificationsItemList);
         binding.specList.setAdapter(specificationAdapter);
 
@@ -270,7 +272,6 @@ public class ViewProductActivity extends BaseActivity {
                 isAddedToWishList = false;
 
             } else {
-
                 WishListEntity wishListEntity = new WishListEntity();
                 wishListEntity.setSlug(wishListItem.getProductSlug());
                 wishListEntity.setName(wishListItem.getName());
@@ -285,13 +286,10 @@ public class ViewProductActivity extends BaseActivity {
             }
         });
 
-
         binding.addToCart.setOnClickListener(v -> {
             binding.stickyScroll.postDelayed(() -> {
-
                 binding.appBar.setExpanded(false, true);
                 binding.stickyScroll.smoothScrollTo(0, getRelativeTop(binding.stickyScroll, binding.avlshop) - 50);
-
             }, 100);
         });
 
@@ -751,6 +749,12 @@ public class ViewProductActivity extends BaseActivity {
                 context.startActivity(intent);
                 snackBar.dismiss();
             });
+            snackBar.show();
+        });
+
+        binding.buyNow.setOnClickListener(view -> {
+            BuyNowFragment buyNowFragment = BuyNowFragment.createInstance(cartItem, toRemoveModel);
+            buyNowFragment.show(getSupportFragmentManager(), "Buy Now");
         });
     }
 
@@ -780,7 +784,6 @@ public class ViewProductActivity extends BaseActivity {
 
     private void inflateAvailableShops(CommonDataResponse<List<AvailableShopModel>> response, boolean isNearestShops) {
         List<AvailableShopModel> list = new ArrayList<>(response.getData());
-        AvailableShopModel toRemoveModel = null;
 
         if (shopSlug != null) {
             for (AvailableShopModel model : list) {

@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.models.cart;
 
-public class CartItem {
+import java.io.Serializable;
+
+public class CartItem implements Serializable {
 
     private String id,slug,name,image,sellerJson,shopSlug, productId;
     private int price = 0, quantity = 1;
