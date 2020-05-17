@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 public class AvailableShopModel{
 
 	@SerializedName("price")
-	private double price;
+	private Double price;
 
 	@SerializedName("discount_value")
 	private double discountValue;
@@ -39,13 +39,15 @@ public class AvailableShopModel{
 	private String shopSlug;
 
 	@SerializedName("discounted_price")
-	private double discountedPrice;
+	private Double discountedPrice;
 
 	public void setPrice(double price){
 		this.price = price;
 	}
 
-	public double getPrice(){
+	public Double getPrice(){
+		if (price == null)
+			return 0.0;
 		return price;
 	}
 
@@ -133,7 +135,9 @@ public class AvailableShopModel{
 		this.discountedPrice = discountedPrice;
 	}
 
-	public double getDiscountedPrice(){
+	public Double getDiscountedPrice(){
+		if (discountedPrice == null)
+			return 0.0;
 		return discountedPrice;
 	}
 

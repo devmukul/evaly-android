@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -33,8 +34,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -93,6 +96,7 @@ import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.LocationUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
@@ -133,7 +137,6 @@ public class ViewProductActivity extends BaseActivity {
     private boolean network_enabled = false;
     private LocationManager lm;
 
-    private String shopItem = null;
     private String shopSlug = null;
 
     AppController mChatApp = AppController.getInstance();
@@ -195,6 +198,9 @@ public class ViewProductActivity extends BaseActivity {
         productPrice = getIntent().getDoubleExtra("product_price", -1);
         productImage = getIntent().getStringExtra("product_image");
         slug = getIntent().getStringExtra("slug");
+
+        if (getIntent().hasExtra("shop_slug"))
+            shopSlug = getIntent().getStringExtra("shop_slug");
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
         wishListDao = appDatabase.wishListDao();
@@ -717,16 +723,84 @@ public class ViewProductActivity extends BaseActivity {
 
             }
         });
-//        if (binding.stickyScroll != null) {
-//            productGrid.setScrollView(binding.stickyScroll);
-//            binding.stickyScroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-//                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                    binding.progressBar.setVisibility(View.VISIBLE);
-//                    productGrid.loadNextPage();
-//                }
-//            });
-//
-//        }
+
+    }
+
+
+    private void inflateShopDetails(AvailableShopModel shop) {
+
+        binding.selectedShopHolder.setVisibility(View.VISIBLE);
+        binding.shopName.setText(shop.getShopName());
+
+        Glide.with(this)
+                .asBitmap()
+                .placeholder(R.drawable.ic_evaly_placeholder)
+                .load(shop.getShopImage())
+                .into(binding.shopLogo);
+
+        if (shop.getShopAddress() == null || shop.getShopAddress().equals(""))
+            binding.shopLocationHolder.setVisibility(View.GONE);
+        else
+            binding.shopLocation.setText(shop.getShopAddress());
+
+        if (shop.getContactNumber() == null || shop.getContactNumber().equals("") || shop.getContactNumber().equals("0"))
+            binding.shopPhoneHolder.setVisibility(View.GONE);
+        else
+            binding.shopPhone.setText(shop.getContactNumber());
+
+        binding.avlshop.setText(R.string.also_available_at);
+        productPrice = shop.getPrice();
+
+        if (shop.getDiscountedPrice() == null ||
+                shop.getDiscountedPrice() < 1 ||
+                shop.getDiscountedPrice() >= productPrice
+        ) {
+            binding.price.setText(Utils.formatPriceSymbol(shop.getPrice()));
+            binding.maxPrice.setVisibility(View.GONE);
+        } else {
+            productPrice = shop.getDiscountedPrice();
+            binding.maxPrice.setVisibility(View.VISIBLE);
+            binding.maxPrice.setText(Utils.formatPriceSymbol(shop.getPrice()));
+            binding.price.setText(Utils.formatPriceSymbol(shop.getDiscountedPrice()));
+            binding.maxPrice.setPaintFlags(binding.maxPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
+        binding.addCart.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            String price = Utils.formatPrice(shop.getPrice());
+
+            if (shop.getDiscountedPrice() != null)
+                if (shop.getDiscountedPrice() > 0)
+                    price = Utils.formatPrice(shop.getDiscountedPrice());
+
+            String sellerJson = new Gson().toJson(shop);
+
+            CartEntity cartEntity = new CartEntity();
+            cartEntity.setName(name);
+            cartEntity.setImage(productImage);
+            cartEntity.setPriceRound(price);
+            cartEntity.setTime(calendar.getTimeInMillis());
+            cartEntity.setShopJson(sellerJson);
+            cartEntity.setQuantity(1);
+            cartEntity.setShopSlug(shop.getShopSlug());
+            cartEntity.setSlug(slug);
+            cartEntity.setProductID(String.valueOf(shop.getShopItemId()));
+
+            Executors.newSingleThreadExecutor().execute(() -> {
+                List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
+                if (dbItem.size() == 0)
+                    cartDao.insert(cartEntity);
+                else
+                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
+            });
+
+            Snackbar snackBar = Snackbar.make(binding.rootView, "Added to cart", 1500);
+            snackBar.setAction("Go to Cart", view -> {
+                Intent intent = new Intent(context, CartActivity.class);
+                context.startActivity(intent);
+                snackBar.dismiss();
+            });
+        });
     }
 
 
@@ -736,18 +810,43 @@ public class ViewProductActivity extends BaseActivity {
         availableShops.clear();
         binding.availableShops.setAdapter(null);
         binding.empty.setVisibility(View.GONE);
-
-        binding.tvShopType.setText("All");
+        binding.tvShopType.setText(R.string.all);
 
         ProductApiHelper.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
 
-                AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
+                List<AvailableShopModel> list = new ArrayList<>(response.getData());
+                AvailableShopModel toRemoveModel = null;
+
+                if (shopSlug != null) {
+                    for (AvailableShopModel model : list) {
+                        if (model.getShopSlug().equals(shopSlug))
+                            toRemoveModel = model;
+                    }
+                    if (toRemoveModel != null) {
+                        list.remove(toRemoveModel);
+                        inflateShopDetails(toRemoveModel);
+                    } else {
+                        binding.selectedShopHolder.setVisibility(View.GONE);
+                        binding.avlshop.setText(R.string.available_at_shop);
+                    }
+                }
+
+                AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, list, cartDao, cartItem);
                 binding.availableShops.setAdapter(adapter);
                 binding.progressBarShop.setVisibility(View.GONE);
 
-                if (response.getData().size() < 1) {
+                if (shopSlug != null && toRemoveModel != null) {
+                    if (list.size() == 0)
+                        binding.availableShopsHolder.setVisibility(View.GONE);
+                    if (toRemoveModel.getDiscountedPrice() == 0 && toRemoveModel.getPrice() == 0) {
+                        binding.selectedShopHolder.setVisibility(View.GONE);
+                        binding.availableShopsHolder.setVisibility(View.VISIBLE);
+                        binding.empty.setVisibility(View.VISIBLE);
+                        binding.avlshop.setText(R.string.available_at_shop);
+                    }
+                } else if (response.getData().size() < 1) {
                     binding.empty.setVisibility(View.VISIBLE);
                     binding.tvNoShop.setText("This product is currently \nnot available at any shop");
                 }
@@ -763,9 +862,7 @@ public class ViewProductActivity extends BaseActivity {
 
             }
         });
-
     }
-
 
     public void getNearestAvailableShops(int variationID, double longitude, double latitude) {
 
@@ -799,7 +896,6 @@ public class ViewProductActivity extends BaseActivity {
 
             }
         });
-
     }
 
 
@@ -991,28 +1087,28 @@ public class ViewProductActivity extends BaseActivity {
                     if (xmppHandler.isLoggedin()) {
                         for (RosterTable rosterTable : selectedRosterList) {
 
-                                JSONObject jsonObject= new JSONObject();
-                                try {
-                                    jsonObject.put("p_slug", slug);
-                                    jsonObject.put("p_name", name);
-                                    jsonObject.put("p_image", productImage);
-                                    jsonObject.put("p_price", String.valueOf(productPrice));
+                            JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("p_slug", slug);
+                                jsonObject.put("p_name", name);
+                                jsonObject.put("p_image", productImage);
+                                jsonObject.put("p_price", String.valueOf(productPrice));
 
 //                                    return jsonObject.toString();
-                                } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                    return;
+                            } catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                                return;
 //                                    return "";
-                                }
+                            }
 
                             ChatItem chatItem = new ChatItem(jsonObject.toString(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
                             chatItem.setReceiver_name(rosterTable.name);
-                            if (rosterTable.imageUrl != null && !rosterTable.imageUrl.isEmpty()){
+                            if (rosterTable.imageUrl != null && !rosterTable.imageUrl.isEmpty()) {
                                 chatItem.setReceiver_image(rosterTable.imageUrl);
                             }
 
-                                try {
+                            try {
                                 xmppHandler.sendMessage(chatItem);
                             } catch (SmackException e) {
                                 e.printStackTrace();
