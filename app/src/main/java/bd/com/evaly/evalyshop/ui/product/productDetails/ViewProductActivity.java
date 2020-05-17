@@ -28,6 +28,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.ViewUtils;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -88,6 +89,7 @@ import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ColorButtonAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SizeButtonAdapter;
@@ -289,7 +291,7 @@ public class ViewProductActivity extends BaseActivity {
         binding.addToCart.setOnClickListener(v -> {
             binding.stickyScroll.postDelayed(() -> {
                 binding.appBar.setExpanded(false, true);
-                binding.stickyScroll.smoothScrollTo(0, getRelativeTop(binding.stickyScroll, binding.avlshop) - 50);
+                binding.stickyScroll.smoothScrollTo(0, getRelativeTop(binding.stickyScroll, binding.scrollToDivider) - 50);
             }, 100);
         });
 
@@ -506,7 +508,7 @@ public class ViewProductActivity extends BaseActivity {
             binding.descriptionRel.setVisibility(View.GONE);
             binding.descriptionView.setVisibility(View.GONE);
         } else
-            binding.tvDescription.setText(item.getProductDescription());
+            binding.tvDescription.setText(item.getProductDescription().trim());
 
         binding.sku.setText(item.getSku().toUpperCase());
 
@@ -714,6 +716,15 @@ public class ViewProductActivity extends BaseActivity {
             binding.maxPrice.setPaintFlags(binding.maxPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
+        binding.selectedShopClickHolder.setOnClickListener(view -> {
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra("type", 3);
+            intent.putExtra("shop_slug", shop.getShopSlug());
+            intent.putExtra("shop_name", shop.getShopName());
+            intent.putExtra("category", shop.getShopSlug());
+            context.startActivity(intent);
+        });
+
         binding.addCart.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             String price = Utils.formatPrice(shop.getPrice());
@@ -785,9 +796,9 @@ public class ViewProductActivity extends BaseActivity {
     private void inflateAvailableShops(CommonDataResponse<List<AvailableShopModel>> response, boolean isNearestShops) {
         List<AvailableShopModel> list = new ArrayList<>(response.getData());
 
-        if (shopSlug != null) {
+        if (shopSlug != null || response.getData().size() == 1) {
             for (AvailableShopModel model : list) {
-                if (model.getShopSlug().equals(shopSlug))
+                if (model.getShopSlug().equals(shopSlug) || list.size() == 1)
                     toRemoveModel = model;
             }
             if (toRemoveModel != null) {
@@ -803,14 +814,16 @@ public class ViewProductActivity extends BaseActivity {
         binding.availableShops.setAdapter(adapter);
         binding.progressBarShop.setVisibility(View.GONE);
 
-        if (shopSlug != null && toRemoveModel != null) {
+        if ((shopSlug != null || response.getData().size() == 1) && toRemoveModel != null) {
             if (list.size() == 0)
                 binding.availableShopsHolder.setVisibility(View.GONE);
             if (toRemoveModel.getDiscountedPrice() == 0 && toRemoveModel.getPrice() == 0) {
                 binding.selectedShopHolder.setVisibility(View.GONE);
-                binding.availableShopsHolder.setVisibility(View.VISIBLE);
-                binding.empty.setVisibility(View.VISIBLE);
                 binding.avlshop.setText(R.string.available_at_shop);
+                if (list.size() == 0) {
+                    binding.availableShopsHolder.setVisibility(View.VISIBLE);
+                    binding.empty.setVisibility(View.VISIBLE);
+                }
             }
         } else if (response.getData().size() < 1) {
             binding.empty.setVisibility(View.VISIBLE);
