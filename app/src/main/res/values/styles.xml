@@ -85,7 +85,6 @@
     </style>
 
     <style name="TransparentInputBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
-
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowFullscreen">false</item>
         <item name="bottomSheetStyle">@style/TransparentBottomSheet</item>

@@ -168,8 +168,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //bottom sheet round corners can be obtained but the while background appears to remove that we need to add this.
-        setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
+        setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
 
         Bundle args = getArguments();
         appDatabase = AppDatabase.getInstance(getContext());
