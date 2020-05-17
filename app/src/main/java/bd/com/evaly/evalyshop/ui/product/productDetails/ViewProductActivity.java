@@ -39,7 +39,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.jivesoftware.smack.SmackException;
 import org.json.JSONException;
@@ -63,7 +62,6 @@ import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListEntity;
 import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
 import bd.com.evaly.evalyshop.listener.ProductListener;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
@@ -81,8 +79,6 @@ import bd.com.evaly.evalyshop.models.product.productDetails.ProductVariantsItem;
 import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
@@ -336,7 +332,6 @@ public class ViewProductActivity extends BaseActivity {
             popup.show();
         });
 
-
         binding.availableShopsTypeHolder.setOnClickListener(v -> {
             String[] type = new String[]{"All", "Nearest"};
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -412,7 +407,6 @@ public class ViewProductActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         xmppEventReceiver.setListener(xmppCustomEventListener);
-
     }
 
     private void buildAlertMessageNoGps(Context context) {
@@ -426,7 +420,6 @@ public class ViewProductActivity extends BaseActivity {
         final AlertDialog alert = builder.create();
         alert.show();
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -458,7 +451,6 @@ public class ViewProductActivity extends BaseActivity {
             return;
         }
 
-        //binding.productName.setVisibility(View.VISIBLE);
         binding.sliderPager.setVisibility(View.VISIBLE);
         binding.collapsingToolbar.setVisibility(View.VISIBLE);
 
@@ -472,18 +464,12 @@ public class ViewProductActivity extends BaseActivity {
             if (!productSpecificationsItemList.get(i).getSpecificationName().equals(""))
                 specificationsItemList.add(productSpecificationsItemList.get(i));
         }
-
         specificationAdapter.notifyDataSetChanged();
-
         shareURL = "https://evaly.com.bd/products/" + slug;
-
         populateProductByVariant(firstProductVariantsItem);
 
-
         for (int i = 0; i < productVariantsItemList.size(); i++) {
-
             for (int j = 0; j < productVariantsItemList.get(i).getAttributeValues().size(); j++) {
-
                 int variantValue = productVariantsItemList.get(i).getAttributeValues().get(j);
                 for (int k = 0; k < productAttributesItemList.size(); k++) {
                     for (int l = 0; l < productAttributesItemList.get(k).getAttributeValues().size(); l++) {
@@ -495,7 +481,6 @@ public class ViewProductActivity extends BaseActivity {
                 }
             }
         }
-
 
         if (productAttributesItemList.size() > 0) {
             if (productAttributesItemList.get(0).getAttributeName().equalsIgnoreCase("Size"))
@@ -513,9 +498,7 @@ public class ViewProductActivity extends BaseActivity {
 
     }
 
-
     private void populateProductByVariant(ProductVariantsItem item) {
-
 
         name = item.getProductName();
         binding.productName.setText(name);
@@ -543,7 +526,6 @@ public class ViewProductActivity extends BaseActivity {
         getAvailableShops(item.getVariantId());
         getRelatedProducts(item.getCategorySlug());
 
-
         Executors.newSingleThreadExecutor().execute(() -> {
             int c = wishListDao.checkExists(slug);
             runOnUiThread(() -> {
@@ -567,7 +549,6 @@ public class ViewProductActivity extends BaseActivity {
         } catch (Exception ignored) {
 
         }
-
         wishListItem.setId("0");
         wishListItem.setName(name);
         wishListItem.setImage(item.getColorImage());
@@ -576,23 +557,18 @@ public class ViewProductActivity extends BaseActivity {
 
     }
 
-
     private void populateSizeOption(List<AttributeValuesItem> attribute_values) {
 
         if (attribute_values.size() > 0 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
             binding.variant1Holder.setVisibility(View.VISIBLE);
-
             for (int i = 0; i < attribute_values.size(); i++) {
                 if (productAttributesItemList.size() > 1 &&
                         productVariantsItemList.get(0).getAttributeValues().size() > 1) {
-
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) ||
                             attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
-
                         attribute_values.get(i).setSelected(true);
                         variantKey1 = attribute_values.get(i).getKey();
                     }
-
                 } else {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
                         attribute_values.get(i).setSelected(true);
@@ -603,19 +579,14 @@ public class ViewProductActivity extends BaseActivity {
         }
 
         SizeButtonAdapter adapter = new SizeButtonAdapter(attribute_values, this, object -> {
-
             AttributeValuesItem attributesValue = (AttributeValuesItem) object;
-
             if (productAttributesItemList.size() == 1) {
                 for (int i = 0; i < productVariantsItemList.size(); i++) {
                     ProductVariantsItem variantItem = productVariantsItemList.get(i);
-
                     for (int j = 0; j < variantItem.getAttributeValues().size(); j++) {
-
                         int attrValue = variantItem.getAttributeValues().get(j);
                         if (attrValue == attributesValue.getKey()) {
                             populateProductByVariant(productVariantsItemList.get(i));
-
                         }
                     }
                 }
@@ -623,18 +594,15 @@ public class ViewProductActivity extends BaseActivity {
 
                 for (int i = 0; i < productVariantsItemList.size(); i++) {
                     ProductVariantsItem variantItem = productVariantsItemList.get(i);
-
                     if (variantItem.getAttributeValues().size() > 1) {
                         int key1 = variantItem.getAttributeValues().get(0);
                         int key2 = variantItem.getAttributeValues().get(1);
-
                         if ((key1 == attributesValue.getKey() && key2 == variantKey2) ||
                                 (key2 == attributesValue.getKey() && key1 == variantKey2)) {
 
                             populateProductByVariant(productVariantsItemList.get(i));
                             variantKey1 = attributesValue.getKey();
                             break;
-
                         }
                     }
                 }
@@ -643,23 +611,17 @@ public class ViewProductActivity extends BaseActivity {
         binding.rvVariant1.setAdapter(adapter);
     }
 
-
     private void populateColorOption(List<AttributeValuesItem> attribute_values) {
-
-
         if (attribute_values.size() > 0 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
             binding.variant2Holder.setVisibility(View.VISIBLE);
-
             for (int i = 0; i < attribute_values.size(); i++) {
                 if (productAttributesItemList.size() > 1 && productVariantsItemList.get(0).getAttributeValues().size() > 1) {
 
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) ||
                             attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
-
                         attribute_values.get(i).setSelected(true);
                         variantKey2 = attribute_values.get(i).getKey();
                     }
-
                 } else {
                     if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
                         attribute_values.get(i).setSelected(true);
@@ -670,9 +632,7 @@ public class ViewProductActivity extends BaseActivity {
         }
 
         ColorButtonAdapter adapter = new ColorButtonAdapter(attribute_values, this, object -> {
-
             AttributeValuesItem attributesValue = (AttributeValuesItem) object;
-
             if (productAttributesItemList.size() == 1) {
                 for (int i = 0; i < productVariantsItemList.size(); i++) {
                     ProductVariantsItem variantItem = productVariantsItemList.get(i);
@@ -684,10 +644,8 @@ public class ViewProductActivity extends BaseActivity {
                     }
                 }
             } else if (productAttributesItemList.size() == 2) {
-
                 for (int i = 0; i < productVariantsItemList.size(); i++) {
                     ProductVariantsItem variantItem = productVariantsItemList.get(i);
-
                     if (variantItem.getAttributeValues().size() > 1) {
                         int key1 = variantItem.getAttributeValues().get(0);
                         int key2 = variantItem.getAttributeValues().get(1);
@@ -699,19 +657,14 @@ public class ViewProductActivity extends BaseActivity {
                             break;
                         }
                     }
-
                 }
-
             }
         });
         binding.rvVariant2.setAdapter(adapter);
     }
 
-
     private void getRelatedProducts(String categorySlug) {
-
         ProductGrid productGrid = new ProductGrid(context, binding.products, categorySlug, binding.progressBar);
-
         productGrid.setListener(new ProductListener() {
             @Override
             public void onSuccess(int count) {
@@ -723,9 +676,7 @@ public class ViewProductActivity extends BaseActivity {
 
             }
         });
-
     }
-
 
     private void inflateShopDetails(AvailableShopModel shop) {
 
@@ -812,90 +763,59 @@ public class ViewProductActivity extends BaseActivity {
         binding.empty.setVisibility(View.GONE);
         binding.tvShopType.setText(R.string.all);
 
-        ProductApiHelper.getAvailableShops(variationID, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
+        viewModel.availableShops.observe(this, response -> inflateAvailableShops(response, false));
+        viewModel.getAvailableShops(variationID);
 
-                List<AvailableShopModel> list = new ArrayList<>(response.getData());
-                AvailableShopModel toRemoveModel = null;
-
-                if (shopSlug != null) {
-                    for (AvailableShopModel model : list) {
-                        if (model.getShopSlug().equals(shopSlug))
-                            toRemoveModel = model;
-                    }
-                    if (toRemoveModel != null) {
-                        list.remove(toRemoveModel);
-                        inflateShopDetails(toRemoveModel);
-                    } else {
-                        binding.selectedShopHolder.setVisibility(View.GONE);
-                        binding.avlshop.setText(R.string.available_at_shop);
-                    }
-                }
-
-                AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, list, cartDao, cartItem);
-                binding.availableShops.setAdapter(adapter);
-                binding.progressBarShop.setVisibility(View.GONE);
-
-                if (shopSlug != null && toRemoveModel != null) {
-                    if (list.size() == 0)
-                        binding.availableShopsHolder.setVisibility(View.GONE);
-                    if (toRemoveModel.getDiscountedPrice() == 0 && toRemoveModel.getPrice() == 0) {
-                        binding.selectedShopHolder.setVisibility(View.GONE);
-                        binding.availableShopsHolder.setVisibility(View.VISIBLE);
-                        binding.empty.setVisibility(View.VISIBLE);
-                        binding.avlshop.setText(R.string.available_at_shop);
-                    }
-                } else if (response.getData().size() < 1) {
-                    binding.empty.setVisibility(View.VISIBLE);
-                    binding.tvNoShop.setText("This product is currently \nnot available at any shop");
-                }
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
     }
 
     public void getNearestAvailableShops(int variationID, double longitude, double latitude) {
-
         binding.progressBarShop.setVisibility(View.VISIBLE);
         binding.empty.setVisibility(View.GONE);
-
         availableShops.clear();
         binding.availableShops.setAdapter(null);
 
-        ProductApiHelper.getNearestAvailableShops(variationID, longitude, latitude, new ResponseListenerAuth<CommonDataResponse<List<AvailableShopModel>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<AvailableShopModel>> response, int statusCode) {
+        viewModel.availableNearestShops.observe(this, response -> inflateAvailableShops(response, true));
+        viewModel.getNearestAvailableShops(variationID, longitude, latitude);
+    }
 
-                AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
-                binding.availableShops.setAdapter(adapter);
-                binding.progressBarShop.setVisibility(View.GONE);
+    private void inflateAvailableShops(CommonDataResponse<List<AvailableShopModel>> response, boolean isNearestShops) {
+        List<AvailableShopModel> list = new ArrayList<>(response.getData());
+        AvailableShopModel toRemoveModel = null;
 
-                if (response.getData().size() < 1) {
-                    binding.empty.setVisibility(View.VISIBLE);
-                    binding.tvNoShop.setText("This product is currently not \navailable at any nearest shop");
-                }
+        if (shopSlug != null) {
+            for (AvailableShopModel model : list) {
+                if (model.getShopSlug().equals(shopSlug))
+                    toRemoveModel = model;
             }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
+            if (toRemoveModel != null) {
+                list.remove(toRemoveModel);
+                inflateShopDetails(toRemoveModel);
+            } else {
+                binding.selectedShopHolder.setVisibility(View.GONE);
+                binding.avlshop.setText(R.string.available_at_shop);
             }
+        }
 
-            @Override
-            public void onAuthError(boolean logout) {
+        AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, list, cartDao, cartItem);
+        binding.availableShops.setAdapter(adapter);
+        binding.progressBarShop.setVisibility(View.GONE);
 
+        if (shopSlug != null && toRemoveModel != null) {
+            if (list.size() == 0)
+                binding.availableShopsHolder.setVisibility(View.GONE);
+            if (toRemoveModel.getDiscountedPrice() == 0 && toRemoveModel.getPrice() == 0) {
+                binding.selectedShopHolder.setVisibility(View.GONE);
+                binding.availableShopsHolder.setVisibility(View.VISIBLE);
+                binding.empty.setVisibility(View.VISIBLE);
+                binding.avlshop.setText(R.string.available_at_shop);
             }
-        });
+        } else if (response.getData().size() < 1) {
+            binding.empty.setVisibility(View.VISIBLE);
+            if (isNearestShops)
+                binding.tvNoShop.setText("This product is currently not \navailable at any nearest shop");
+            else
+                binding.tvNoShop.setText("This product is currently \nnot available at any shop");
+        }
     }
 
 
@@ -950,9 +870,7 @@ public class ViewProductActivity extends BaseActivity {
             data.put("body", etBody.getText().toString());
             data.put("url", shareURL);
             data.put("type", "product");
-
             createPost(new Gson().toJson(data));
-
         });
 
         ivBack.setOnClickListener(view -> newsfeedShareDialog.dismiss());
@@ -970,31 +888,19 @@ public class ViewProductActivity extends BaseActivity {
         ViewDialog dialog = new ViewDialog(this);
         dialog.showDialog();
 
-        NewsfeedApiHelper.post(CredentialManager.getToken(), createPostModel, null, new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
+        if (!viewModel.createPostResponse.hasObservers())
+            viewModel.createPostResponse.observe(this, jsonObject -> {
 
-                dialog.hideDialog();
-                newsfeedShareDialog.cancel();
-                Toast.makeText(getApplicationContext(), "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-                dialog.hideDialog();
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-                if (!logout)
-                    createPost(postBody);
-            }
-        });
-
-
+                if (jsonObject == null) {
+                    dialog.hideDialog();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                } else {
+                    dialog.hideDialog();
+                    newsfeedShareDialog.cancel();
+                    Toast.makeText(getApplicationContext(), "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
+                }
+            });
+        viewModel.createPost(createPostModel);
     }
 
     private void startXmppService() {
@@ -1064,21 +970,18 @@ public class ViewProductActivity extends BaseActivity {
             xmppViewModel.rosterList.observe(this, rosterTables -> {
                 List<RosterTable> selectedRosterList = new ArrayList<>();
                 List<RosterTable> rosterList = rosterTables;
-                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(ViewProductActivity.this, rosterList, new ContactShareAdapter.OnUserSelectedListener() {
-                    @Override
-                    public void onUserSelected(Object object, boolean status) {
-                        RosterTable table = (RosterTable) object;
+                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(ViewProductActivity.this, rosterList, (object, status) -> {
+                    RosterTable table = (RosterTable) object;
 
-                        if (status && !selectedRosterList.contains(table)) {
-                            selectedRosterList.add(table);
-                        } else {
-                            if (selectedRosterList.contains(table)) {
-                                selectedRosterList.remove(table);
-                            }
+                    if (status && !selectedRosterList.contains(table)) {
+                        selectedRosterList.add(table);
+                    } else {
+                        if (selectedRosterList.contains(table)) {
+                            selectedRosterList.remove(table);
                         }
-
-                        tvCount.setText("(" + selectedRosterList.size() + ") ");
                     }
+
+                    tvCount.setText("(" + selectedRosterList.size() + ") ");
                 });
 
                 llSend.setOnClickListener(view -> {
@@ -1093,15 +996,10 @@ public class ViewProductActivity extends BaseActivity {
                                 jsonObject.put("p_name", name);
                                 jsonObject.put("p_image", productImage);
                                 jsonObject.put("p_price", String.valueOf(productPrice));
-
-//                                    return jsonObject.toString();
                             } catch (JSONException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                                 return;
-//                                    return "";
                             }
-
                             ChatItem chatItem = new ChatItem(jsonObject.toString(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
                             chatItem.setReceiver_name(rosterTable.name);
                             if (rosterTable.imageUrl != null && !rosterTable.imageUrl.isEmpty()) {
@@ -1169,8 +1067,8 @@ public class ViewProductActivity extends BaseActivity {
 
     private void setLightStatusBar(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = activity.getWindow().getDecorView().getSystemUiVisibility(); // get current flag
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;   // add LIGHT_STATUS_BAR to flag
+            int flags = activity.getWindow().getDecorView().getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             activity.getWindow().getDecorView().setSystemUiVisibility(flags);
         } else {
             activity.getWindow().setStatusBarColor(Color.BLACK);

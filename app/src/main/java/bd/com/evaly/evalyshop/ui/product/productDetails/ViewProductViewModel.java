@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.product.productDetails;
 
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -10,13 +11,16 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
@@ -30,6 +34,7 @@ public class ViewProductViewModel extends ViewModel {
     protected MutableLiveData<JsonObject> ratingSummary = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<AvailableShopModel>>> availableShops = new MutableLiveData<>();
     protected MutableLiveData<CommonDataResponse<List<AvailableShopModel>>> availableNearestShops = new MutableLiveData<>();
+    protected MutableLiveData<JsonObject> createPostResponse = new MutableLiveData<>();
 
     public void getProductDetails(String slug){
 
@@ -157,6 +162,27 @@ public class ViewProductViewModel extends ViewModel {
             }
         });
 
+    }
+
+
+    public void createPost(CreatePostModel createPostModel){
+        NewsfeedApiHelper.post(CredentialManager.getToken(), createPostModel, null, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                createPostResponse.setValue(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                createPostResponse.setValue(null);
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    createPost(createPostModel);
+            }
+        });
     }
 
 
