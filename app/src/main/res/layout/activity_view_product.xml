@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            android:visibility="gone">
+            tools:visibility="gone">
 
             <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbar"
@@ -455,129 +455,139 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="15dp"
-                            android:paddingTop="25dp"
+                            android:paddingLeft="20dp"
+                            android:paddingTop="20dp"
                             android:paddingRight="15dp"
-                            android:paddingBottom="15dp">
+                            android:orientation="horizontal">
 
                             <ImageView
                                 android:id="@+id/shopLogo"
                                 android:layout_width="90dp"
-                                android:layout_height="70dp"
-                                android:layout_marginLeft="14dp"
+                                android:layout_height="90dp"
                                 android:layout_marginTop="3dp"
+                                android:layout_marginEnd="20dp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:srcCompat="@drawable/ic_evaly_placeholder" />
 
-                            <TextView
-                                android:id="@+id/tvOffer"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/make_payment"
-                                android:clickable="true"
-                                android:gravity="center"
-                                android:maxLines="1"
-                                android:paddingLeft="4dp"
-                                android:paddingTop="1dp"
-                                android:paddingRight="4dp"
-                                android:paddingBottom="1dp"
-                                android:text="19:19"
-                                android:textColor="#fff"
-                                android:textSize="12sp"
-                                android:visibility="gone"
-                                tools:layout_editor_absoluteX="10dp"
-                                tools:layout_editor_absoluteY="15dp" />
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:paddingRight="20dp">
+
+                                <TextView
+                                    android:id="@+id/shopName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="2"
+                                    tools:text="Shop Name"
+                                    android:textAlignment="textStart"
+                                    android:textColor="#333"
+                                    android:textIsSelectable="true"
+                                    android:textSize="17sp"
+                                    android:paddingBottom="8dp"
+                                    android:fontFamily="sans-serif-medium"/>
+
+                                <LinearLayout
+                                    android:id="@+id/shopLocationHolder"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingBottom="5dp"
+                                    android:gravity="top">
+
+                                    <ImageView
+                                        android:layout_width="12dp"
+                                        android:layout_height="20dp"
+                                        android:tint="#555"
+                                        android:layout_marginEnd="6dp"
+                                        android:adjustViewBounds="true"
+                                        android:src="@drawable/ic_marker_filled"/>
+
+                                    <TextView
+                                        android:id="@+id/shopLocation"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:maxLines="2"
+                                        tools:text="Road 14, Dhanmondi 27, Dhaka"
+                                        android:textAlignment="textStart"
+                                        android:textColor="#555"
+                                        android:textIsSelectable="true"
+                                        android:textSize="14sp"/>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/shopPhoneHolder"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="12dp"
+                                        android:layout_height="20dp"
+                                        android:tint="#555"
+                                        android:layout_marginEnd="6dp"
+                                        android:adjustViewBounds="true"
+                                        android:src="@drawable/ic_call"/>
+
+                                    <TextView
+                                        android:id="@+id/shopPhone"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:maxLines="2"
+                                        tools:text="01758154554"
+                                        android:textAlignment="textStart"
+                                        android:textColor="#555"
+                                        android:textIsSelectable="true"
+                                        android:textSize="14sp"
+                                        android:autoLink="phone"
+                                        android:textColorLink="#555"/>
+                                </LinearLayout>
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    android:layout_marginTop="12dp"
+                                    android:layout_marginBottom="4dp"
+                                    android:background="#f1f3f4" />
+
+                                <LinearLayout
+                                    android:id="@+id/selectedShopPriceHolder"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:layout_marginTop="3dp">
+
+                                    <TextView
+                                        android:id="@+id/price"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:singleLine="true"
+                                        android:text=" ৳ 5000"
+                                        android:textColor="#f00"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:textSize="18sp" />
+
+                                    <TextView
+                                        android:id="@+id/max_price"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_weight="0"
+                                        android:text=" ৳ 6000"
+                                        android:textColor="#777"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+                            </LinearLayout>
 
 
-                            <TextView
-                                android:id="@+id/shopName"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="11dp"
-                                android:ellipsize="end"
-                                android:maxLines="2"
-                                android:paddingEnd="20dp"
-                                android:singleLine="true"
-                                android:text="Shop Name"
-                                android:textAlignment="textStart"
-                                android:textColor="#333"
-                                android:textIsSelectable="true"
-                                android:textSize="17sp"
-                                android:textStyle="bold"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/shopLogo"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-
-                            <RatingBar
-                                android:id="@+id/ratingBar"
-                                style="@android:style/Widget.Material.Light.RatingBar.Small"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:backgroundTint="#aaa"
-                                android:numStars="5"
-                                android:progressTint="#f8bd21"
-                                android:rating="0"
-                                android:stepSize="0.1"
-                                app:layout_constraintStart_toStartOf="@+id/shopName"
-                                app:layout_constraintTop_toBottomOf="@+id/shopName" />
-
-                            <TextView
-                                android:id="@+id/ratings_count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="5dp"
-                                android:text="(0)"
-                                android:textColor="#333"
-                                android:textSize="13sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
-                                app:layout_constraintStart_toEndOf="@+id/ratingBar"
-                                app:layout_constraintTop_toTopOf="@+id/ratingBar" />
-
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:background="#f1f3f4" />
-
-
-                        <LinearLayout
-                            android:id="@+id/selectedShopPriceHolder"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="15dp"
-                            android:orientation="horizontal"
-                            app:layout_constraintStart_toStartOf="parent">
-
-
-                            <TextView
-                                android:id="@+id/price"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:singleLine="true"
-                                android:text=" ৳ 5000"
-                                android:textColor="#f00"
-                                android:textSize="18sp" />
-
-                            <TextView
-                                android:id="@+id/max_price"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
-                                android:layout_weight="0"
-                                android:text=" ৳ 6000"
-                                android:textColor="#777"
-                                android:textSize="12sp" />
                         </LinearLayout>
 
 
@@ -585,10 +595,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="15dp"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
                             android:paddingBottom="20dp">
-
 
                             <Button
                                 android:id="@+id/add_cart"
@@ -601,6 +610,10 @@
                                 android:stateListAnimator="@null"
                                 android:text="@string/add_to_cart"
                                 android:textColor="#333"
+                                android:fontFamily="sans-serif"
+                                android:textAllCaps="false"
+                                android:textSize="14sp"
+                                android:paddingBottom="1dp"
                                 android:textStyle="normal" />
 
                             <Button
@@ -614,8 +627,11 @@
                                 android:stateListAnimator="@null"
                                 android:text="@string/buy_now"
                                 android:textColor="#fff"
+                                android:textAllCaps="false"
+                                android:textSize="14sp"
+                                android:fontFamily="sans-serif"
+                                android:paddingBottom="1dp"
                                 android:textStyle="normal" />
-
 
                         </LinearLayout>
 
@@ -630,13 +646,12 @@
 
 
                     <LinearLayout
+                        android:id="@+id/availableShopsHolder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingLeft="10dp"
                         android:paddingTop="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="0dp">
+                        android:paddingRight="10dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -647,7 +662,7 @@
                                 android:id="@+id/avlshop"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
+                                android:layout_marginLeft="20dp"
                                 android:layout_marginTop="3dp"
                                 android:layout_marginBottom="15dp"
                                 android:layout_weight="1"
@@ -706,6 +721,8 @@
                                 android:id="@+id/availableShops"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:paddingLeft="5dp"
+                                android:clipToPadding="false"
                                 android:nestedScrollingEnabled="false"
                                 android:orientation="horizontal"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -744,15 +761,14 @@
 
                         </LinearLayout>
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp"
+                            android:layout_marginTop="3dp"
+                            android:background="@color/separator_light" />
 
                     </LinearLayout>
 
-                    <View
-
-                        android:layout_width="match_parent"
-                        android:layout_height="10dp"
-                        android:layout_marginTop="3dp"
-                        android:background="@color/separator_light" />
 
                 </LinearLayout>
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -29,14 +30,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
@@ -66,7 +64,6 @@ import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
 import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
@@ -74,6 +71,7 @@ import bd.com.evaly.evalyshop.models.product.ProductShareModel;
 import bd.com.evaly.evalyshop.models.product.Products;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributeValuesItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributesItem;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.Data;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductSpecificationsItem;
@@ -90,14 +88,13 @@ import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAdapter;
-import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ColorButtonAdapter;
-import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SizeButtonAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.LocationUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
@@ -345,16 +342,14 @@ public class ViewProductOfShopActivity extends BaseActivity {
 
         });
 
-        viewModel.productsVariantsOfShop.observe(this, new Observer<CommonDataResponse<List<ShopItem>>>() {
-            @Override
-            public void onChanged(CommonDataResponse<List<ShopItem>> response) {
-                shopItemVariants = response.getData();
-                loadProductById(0);
-            }
+        viewModel.productsVariantsOfShop.observe(this, response -> {
+            shopItemVariants = response.getData();
+            loadProductById(0);
         });
 
         if (shopDetailsModel != null)
             inflateShopDetails();
+
 
     }
 
@@ -368,16 +363,25 @@ public class ViewProductOfShopActivity extends BaseActivity {
                 .load(shop.getLogoImage())
                 .into(binding.shopLogo);
 
+        if (shop.getAddress() == null || shop.getAddress().equals(""))
+            binding.shopLocationHolder.setVisibility(View.GONE);
+        else
+            binding.shopLocation.setText(shop.getAddress());
+
+        if (shop.getContactNumber() == null || shop.getContactNumber().equals("") || shop.getContactNumber().equals("0"))
+            binding.shopPhoneHolder.setVisibility(View.GONE);
+        else
+            binding.shopPhone.setText(shop.getContactNumber());
+
+        binding.avlshop.setText("Also available at");
 
         viewModel.getVariantsByShop(shop.getSlug(), slug);
-
     }
 
 
     private void loadProductById(int position) {
 
         ShopItem firstItem = shopItemVariants.get(position);
-
         productPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemPrice()));
 
 //        if (firstItem.getAttributes().size() > 0) {
@@ -388,8 +392,22 @@ public class ViewProductOfShopActivity extends BaseActivity {
 //        } else
 //            variationHolder.setVisibility(View.GONE);
 
-        binding.addCart.setOnClickListener(v -> {
+        if (firstItem.getShopItemDiscountedPrice() == null ||
+                firstItem.getShopItemDiscountedPrice().equals("0") ||
+                firstItem.getShopItemDiscountedPrice().equals("0.0") ||
+                Double.parseDouble(firstItem.getShopItemDiscountedPrice()) >= productPrice
+        ) {
+            binding.price.setText(Utils.formatPriceSymbol(firstItem.getShopItemPrice()));
+            binding.maxPrice.setVisibility(View.GONE);
+        } else {
+            productPrice = (int) Double.parseDouble(firstItem.getShopItemDiscountedPrice());
+            binding.maxPrice.setVisibility(View.VISIBLE);
+            binding.maxPrice.setText(Utils.formatPriceSymbol(firstItem.getShopItemPrice()));
+            binding.price.setText(Utils.formatPriceSymbol(firstItem.getShopItemDiscountedPrice()));
+            binding.maxPrice.setPaintFlags(binding.maxPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
 
+        binding.addCart.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             String price = firstItem.getShopItemPrice();
 
@@ -412,7 +430,6 @@ public class ViewProductOfShopActivity extends BaseActivity {
 
             Executors.newSingleThreadExecutor().execute(() -> {
                 List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
-
                 if (dbItem.size() == 0)
                     cartDao.insert(cartEntity);
                 else
@@ -420,9 +437,7 @@ public class ViewProductOfShopActivity extends BaseActivity {
             });
 
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
-
         });
-
     }
 
     public int getRelativeTop(View rootView, View childView) {
@@ -651,12 +666,24 @@ public class ViewProductOfShopActivity extends BaseActivity {
         binding.empty.setVisibility(View.GONE);
         binding.tvShopType.setText("All");
         viewModel.availableShops.observe(this, response -> {
-            AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, response.getData(), cartDao, cartItem);
+            String shopSlug = shopDetailsModel.getData().getShop().getSlug();
+            List<AvailableShopModel> list = new ArrayList<>(response.getData());
+
+            AvailableShopModel toRemoveModel = null;
+
+            for (AvailableShopModel model : list){
+                if (model.getShopSlug().equals(shopSlug))
+                    toRemoveModel = model;
+            }
+
+            if (toRemoveModel != null)
+                list.remove(toRemoveModel);
+
+            AvailableShopAdapter adapter = new AvailableShopAdapter(context, binding.rootView, list, cartDao, cartItem);
             binding.availableShops.setAdapter(adapter);
             binding.progressBarShop.setVisibility(View.GONE);
-            if (response.getData().size() < 1) {
-                binding.empty.setVisibility(View.VISIBLE);
-                binding.tvNoShop.setText("This product is currently \nnot available at any shop");
+            if (response.getData().size() < 2) {
+                binding.availableShopsHolder.setVisibility(View.GONE);
             }
         });
 

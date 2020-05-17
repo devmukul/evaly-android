@@ -168,6 +168,17 @@ public class Utils {
         return formatPrice(d);
     }
 
+    public static String formatPriceSymbol(String s){
+        if (s == null)
+            return "৳ 0";
+        return "৳ " + formatPrice(s);
+    }
+
+
+    public static String formatPriceSymbol(double s){
+        return "৳ " + formatPrice(s);
+    }
+
     public static float convertDpToPixel(float dp, Context context) {
         return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }

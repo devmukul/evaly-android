@@ -523,7 +523,6 @@ public class ViewProductActivity extends BaseActivity {
 
         binding.sku.setText(item.getSku().toUpperCase());
 
-
         sliderImages.clear();
         sliderImages.addAll(item.getProductImages());
         sliderAdapter.notifyDataSetChanged();
