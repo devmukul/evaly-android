@@ -223,102 +223,10 @@
                     android:background="#fff"
                     android:orientation="vertical">
 
-                    <LinearLayout
-                        android:id="@+id/variant1Holder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="20dp"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="10dp"
-                            android:background="@color/separator_light" />
-
-                        <TextView
-                            android:id="@+id/variant1Title"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="11dp"
-                            android:layout_marginBottom="15dp"
-                            android:text="Size"
-                            android:textColor="#555"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-
-                        <HorizontalScrollView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:scrollbars="none">
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvVariant1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="15dp"
-                                android:nestedScrollingEnabled="false"
-                                android:orientation="horizontal"
-                                android:paddingLeft="20dp"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                                tools:listitem="@layout/item_variation_image" />
-                        </HorizontalScrollView>
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/variant2Holder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="20dp"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="10dp"
-                            android:background="@color/separator_light" />
-
-                        <TextView
-                            android:id="@+id/variant2Title"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="11dp"
-                            android:layout_marginBottom="15dp"
-                            android:text="Color"
-                            android:textColor="#555"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-
-                        <HorizontalScrollView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:scrollbars="none">
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvVariant2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
-                                android:nestedScrollingEnabled="false"
-                                android:orientation="horizontal"
-                                android:paddingLeft="20dp"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                                tools:listitem="@layout/item_variation_image" />
-
-                        </HorizontalScrollView>
-
-                    </LinearLayout>
-
                     <View
                         android:id="@+id/view7"
                         android:layout_width="match_parent"
-                        android:layout_height="10dp"
+                        android:layout_height="8dp"
                         android:layout_marginTop="8dp"
                         android:background="@color/separator_light" />
 
@@ -328,7 +236,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:orientation="horizontal"
-                        android:padding="10dp">
+                        android:padding="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp">
 
                         <TextView
                             android:id="@+id/vouchers"
@@ -359,10 +269,104 @@
 
                     </RelativeLayout>
 
+                    <LinearLayout
+                        android:id="@+id/variant1Holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:background="@color/separator_light" />
+
+                        <TextView
+                            android:id="@+id/variant1Title"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:text="Size"
+                            android:textColor="#555"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbars="none">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvVariant1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingBottom="18dp"
+                                android:nestedScrollingEnabled="false"
+                                android:orientation="horizontal"
+                                android:paddingLeft="20dp"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                tools:listitem="@layout/item_variation_image" />
+                        </HorizontalScrollView>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/variant2Holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:background="@color/separator_light" />
+
+                        <TextView
+                            android:id="@+id/variant2Title"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:text="Color"
+                            android:textColor="#555"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbars="none">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvVariant2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingBottom="18dp"
+                                android:nestedScrollingEnabled="false"
+                                android:orientation="horizontal"
+                                android:paddingLeft="20dp"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                tools:listitem="@layout/item_variation_image" />
+
+                        </HorizontalScrollView>
+
+                    </LinearLayout>
+
                     <View
                         android:id="@+id/description_view"
                         android:layout_width="match_parent"
-                        android:layout_height="10dp"
+                        android:layout_height="8dp"
                         android:background="@color/separator_light" />
 
                     <RelativeLayout
@@ -377,7 +381,7 @@
                             android:id="@+id/spec"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
+                            android:layout_marginTop="5dp"
                             android:text="@string/description"
                             android:textColor="#555"
                             android:textSize="16sp"
@@ -399,7 +403,7 @@
                             android:layout_below="@+id/spec"
                             android:layout_marginTop="10dp"
                             android:layout_marginRight="5dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginBottom="8dp"
                             android:textColor="#000"
                             android:textSize="16sp" />
 
@@ -408,7 +412,7 @@
                     <View
                         android:id="@+id/spec_view"
                         android:layout_width="match_parent"
-                        android:layout_height="10dp"
+                        android:layout_height="8dp"
                         android:background="@color/separator_light" />
 
                     <RelativeLayout
@@ -423,7 +427,7 @@
                             android:id="@+id/specification"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
+                            android:layout_marginTop="5dp"
                             android:layout_marginBottom="8dp"
                             android:text="@string/specifications"
                             android:textColor="#555"
@@ -434,7 +438,7 @@
                             android:id="@+id/spec_list"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginTop="40dp"
+                            android:layout_below="@id/specification"
                             android:nestedScrollingEnabled="false"
                             tools:itemCount="4"
                             tools:listitem="@layout/specification_item">
@@ -445,7 +449,7 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="10dp"
+                        android:layout_height="8dp"
                         android:background="@color/separator_light" />
 
 
@@ -637,7 +641,7 @@
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="10dp"
+                            android:layout_height="8dp"
                             android:background="@color/separator_light" />
 
                     </LinearLayout>
@@ -650,7 +654,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingTop="10dp"
+                        android:paddingTop="15dp"
                         android:paddingRight="10dp">
 
                         <LinearLayout
@@ -663,7 +667,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="20dp"
-                                android:layout_marginTop="3dp"
                                 android:layout_marginBottom="15dp"
                                 android:layout_weight="1"
                                 android:text="@string/available_at_shop"
@@ -680,7 +683,7 @@
                                 android:clickable="true"
                                 android:gravity="center_vertical"
                                 android:paddingStart="12dp"
-                                android:paddingTop="5dp"
+                                android:paddingTop="2dp"
                                 android:paddingEnd="2dp"
                                 android:paddingBottom="5dp">
 
@@ -763,7 +766,7 @@
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="10dp"
+                            android:layout_height="8dp"
                             android:layout_marginTop="3dp"
                             android:background="@color/separator_light" />
 
@@ -779,9 +782,9 @@
                     android:layout_weight="0"
                     android:background="#fafafa"
                     android:paddingLeft="15dp"
-                    android:paddingTop="5dp"
+                    android:paddingTop="8dp"
                     android:paddingRight="15dp"
-                    android:paddingBottom="15dp"
+                    android:paddingBottom="18dp"
                     android:text="@string/explore_more_products"
                     android:textColor="#555"
                     android:textSize="18sp"

@@ -229,7 +229,7 @@ public class CartFragment extends Fragment {
 
                     JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
                     if (shopObject.has("is_express_shop")) {
-                        if (shopObject.get("is_express_shop").getAsInt() == 1)
+                        if (shopObject.get("is_express_shop").getAsBoolean())
                             isExpress = true;
 
                     } else {
