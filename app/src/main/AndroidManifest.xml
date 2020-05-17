@@ -178,10 +178,17 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.product.productDetails.ViewProductActivity"
+        android:name=".ui.product.productDetails.ViewProductActivity"
+        android:label="@string/title_activity_view_product"
+        android:screenOrientation="portrait"
+        android:theme="@style/AppThemeViewProduct" />
+
+        <activity
+            android:name=".ui.product.productDetails.ViewProductOfShopActivity"
             android:label="@string/title_activity_view_product"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeViewProduct" />
+
         <activity
             android:name=".ui.main.MainActivity"
             android:largeHeap="true"

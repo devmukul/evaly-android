@@ -2,9 +2,10 @@ package bd.com.evaly.evalyshop.models.shop.shopDetails;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ShopDetailsModel{
+public class ShopDetailsModel implements Serializable {
 
 	@SerializedName("data")
 	private Data data;

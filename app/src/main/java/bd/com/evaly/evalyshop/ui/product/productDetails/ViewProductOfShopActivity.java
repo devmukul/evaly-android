@@ -29,10 +29,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
@@ -62,6 +66,7 @@ import bd.com.evaly.evalyshop.databinding.ActivityViewProductBinding;
 import bd.com.evaly.evalyshop.listener.ProductListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
@@ -74,6 +79,9 @@ import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductSpecificationsItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductVariantsItem;
 import bd.com.evaly.evalyshop.models.shop.AvailableShop;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
+import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
@@ -129,8 +137,8 @@ public class ViewProductOfShopActivity extends BaseActivity {
     private boolean network_enabled = false;
     private LocationManager lm;
 
-    private String shopItem = null;
-    private String shopSlug = null;
+    private ShopDetailsModel shopDetailsModel;
+    private List<ShopItem> shopItemVariants;
 
     AppController mChatApp = AppController.getInstance();
 
@@ -171,17 +179,13 @@ public class ViewProductOfShopActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         xmppEventReceiver = mChatApp.getEventReceiver();
         binding = ActivityViewProductBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
         viewModel = new ViewModelProvider(this).get(ViewProductViewModel.class);
         xmppViewModel = new ViewModelProvider(this).get(RoomWIthRxViewModel.class);
-
         context = this;
-
         setSupportActionBar(binding.zToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setTitle("View Product");
@@ -189,6 +193,11 @@ public class ViewProductOfShopActivity extends BaseActivity {
         productPrice = getIntent().getDoubleExtra("product_price", -1);
         productImage = getIntent().getStringExtra("product_image");
         slug = getIntent().getStringExtra("slug");
+
+        if (getIntent().hasExtra("shop_details"))
+            shopDetailsModel = (ShopDetailsModel) getIntent().getSerializableExtra("shop_details");
+        else
+            binding.selectedShopHolder.setVisibility(View.GONE);
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
         wishListDao = appDatabase.wishListDao();
@@ -205,7 +214,6 @@ public class ViewProductOfShopActivity extends BaseActivity {
         //make fully Android Transparent Status bar
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
-
         setLightStatusBar(this);
 
         binding.specList.setLayoutManager(new LinearLayoutManager(this));
@@ -226,20 +234,15 @@ public class ViewProductOfShopActivity extends BaseActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-
             if (extras.containsKey("product_slug"))
                 slug = extras.getString("product_slug");
-
             if (extras.containsKey("product_name"))
                 name = extras.getString("product_name");
-
             // binding.productName.setVisibility(View.GONE);
-
             if (name != null) {
                 binding.productName.setText(Html.fromHtml(name));
                 binding.collapsingToolbar.setTitle(Html.fromHtml(name));
             }
-
             viewModel.getProductDetails(slug);
             binding.collapsingToolbar.setVisibility(View.INVISIBLE);
         }
@@ -255,14 +258,11 @@ public class ViewProductOfShopActivity extends BaseActivity {
         binding.addToWishlist.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             if (isAddedToWishList) {
-
                 binding.addToWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black));
                 Executors.newSingleThreadExecutor().execute(() -> wishListDao.deleteBySlug(wishListItem.getProductSlug()));
                 Toast.makeText(context, "Removed from wish list", Toast.LENGTH_SHORT).show();
                 isAddedToWishList = false;
-
             } else {
-
                 WishListEntity wishListEntity = new WishListEntity();
                 wishListEntity.setSlug(wishListItem.getProductSlug());
                 wishListEntity.setName(wishListItem.getName());
@@ -277,13 +277,10 @@ public class ViewProductOfShopActivity extends BaseActivity {
             }
         });
 
-
         binding.addToCart.setOnClickListener(v -> {
             binding.stickyScroll.postDelayed(() -> {
-
                 binding.appBar.setExpanded(false, true);
                 binding.stickyScroll.smoothScrollTo(0, getRelativeTop(binding.stickyScroll, binding.avlshop) - 50);
-
             }, 100);
         });
 
@@ -347,6 +344,85 @@ public class ViewProductOfShopActivity extends BaseActivity {
             builder.show();
 
         });
+
+        viewModel.productsVariantsOfShop.observe(this, new Observer<CommonDataResponse<List<ShopItem>>>() {
+            @Override
+            public void onChanged(CommonDataResponse<List<ShopItem>> response) {
+                shopItemVariants = response.getData();
+                loadProductById(0);
+            }
+        });
+
+        if (shopDetailsModel != null)
+            inflateShopDetails();
+
+    }
+
+    private void inflateShopDetails() {
+        Shop shop = shopDetailsModel.getData().getShop();
+        binding.shopName.setText(shop.getName());
+
+        Glide.with(this)
+                .asBitmap()
+                .placeholder(R.drawable.ic_evaly_placeholder)
+                .load(shop.getLogoImage())
+                .into(binding.shopLogo);
+
+
+        viewModel.getVariantsByShop(shop.getSlug(), slug);
+
+    }
+
+
+    private void loadProductById(int position) {
+
+        ShopItem firstItem = shopItemVariants.get(position);
+
+        productPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemPrice()));
+
+//        if (firstItem.getAttributes().size() > 0) {
+//            variationHolder.setVisibility(View.VISIBLE);
+//            bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem attributesItem = firstItem.getAttributes().get(0);
+//            String varName = attributesItem.getName();
+//            String varValue = attributesItem.getValue();
+//        } else
+//            variationHolder.setVisibility(View.GONE);
+
+        binding.addCart.setOnClickListener(v -> {
+
+            Calendar calendar = Calendar.getInstance();
+            String price = firstItem.getShopItemPrice();
+
+            if (firstItem.getShopItemDiscountedPrice() != null)
+                if (!(firstItem.getShopItemDiscountedPrice().trim().equals("0") || firstItem.getShopItemDiscountedPrice().trim().equals("0.0")))
+                    price = firstItem.getShopItemDiscountedPrice();
+
+            String sellerJson = new Gson().toJson(firstItem);
+
+            CartEntity cartEntity = new CartEntity();
+            cartEntity.setName(firstItem.getShopItemName());
+            cartEntity.setImage(firstItem.getShopItemImage());
+            cartEntity.setPriceRound(price);
+            cartEntity.setTime(calendar.getTimeInMillis());
+            cartEntity.setShopJson(sellerJson);
+            cartEntity.setQuantity(1);
+            cartEntity.setShopSlug(firstItem.getShopSlug());
+            cartEntity.setSlug(slug);
+            cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
+
+            Executors.newSingleThreadExecutor().execute(() -> {
+                List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
+
+                if (dbItem.size() == 0)
+                    cartDao.insert(cartEntity);
+                else
+                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
+            });
+
+            Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
+
+        });
+
     }
 
     public int getRelativeTop(View rootView, View childView) {
@@ -431,7 +507,8 @@ public class ViewProductOfShopActivity extends BaseActivity {
         }
     }
 
-    private void populateShopDetails(ProductDetailsModel productDetailsModel) {
+
+    public void populateShopDetails(ProductDetailsModel productDetailsModel) {
 
         Data data = productDetailsModel.getData();
         productAttributesItemList = data.getAttributes();
@@ -483,27 +560,10 @@ public class ViewProductOfShopActivity extends BaseActivity {
                 }
             }
         }
-
-
-        if (productAttributesItemList.size() > 0) {
-            if (productAttributesItemList.get(0).getAttributeName().equalsIgnoreCase("Size"))
-                populateSizeOption(productAttributesItemList.get(0).getAttributeValues());
-            else if (productAttributesItemList.get(0).getAttributeName().equalsIgnoreCase("Color"))
-                populateColorOption(productAttributesItemList.get(0).getAttributeValues());
-        }
-
-        if (productAttributesItemList.size() > 1) {
-            if (productAttributesItemList.get(1).getAttributeName().equalsIgnoreCase("Color"))
-                populateColorOption(productAttributesItemList.get(1).getAttributeValues());
-            else if (productAttributesItemList.get(1).getAttributeName().equalsIgnoreCase("Size"))
-                populateSizeOption(productAttributesItemList.get(1).getAttributeValues());
-        }
-
     }
 
 
     private void populateProductByVariant(ProductVariantsItem item) {
-
 
         name = item.getProductName();
         binding.productName.setText(name);
@@ -564,138 +624,6 @@ public class ViewProductOfShopActivity extends BaseActivity {
         wishListItem.setPrice(String.valueOf(price));
 
     }
-
-
-    private void populateSizeOption(List<AttributeValuesItem> attribute_values) {
-
-        if (attribute_values.size() > 0 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
-            binding.variant1Holder.setVisibility(View.VISIBLE);
-
-            for (int i = 0; i < attribute_values.size(); i++) {
-                if (productAttributesItemList.size() > 1 &&
-                        productVariantsItemList.get(0).getAttributeValues().size() > 1) {
-
-                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) ||
-                            attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
-
-                        attribute_values.get(i).setSelected(true);
-                        variantKey1 = attribute_values.get(i).getKey();
-                    }
-
-                } else {
-                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
-                        attribute_values.get(i).setSelected(true);
-                        variantKey1 = attribute_values.get(i).getKey();
-                    }
-                }
-            }
-        }
-
-        SizeButtonAdapter adapter = new SizeButtonAdapter(attribute_values, this, object -> {
-
-            AttributeValuesItem attributesValue = (AttributeValuesItem) object;
-
-            if (productAttributesItemList.size() == 1) {
-                for (int i = 0; i < productVariantsItemList.size(); i++) {
-                    ProductVariantsItem variantItem = productVariantsItemList.get(i);
-
-                    for (int j = 0; j < variantItem.getAttributeValues().size(); j++) {
-
-                        int attrValue = variantItem.getAttributeValues().get(j);
-                        if (attrValue == attributesValue.getKey()) {
-                            populateProductByVariant(productVariantsItemList.get(i));
-
-                        }
-                    }
-                }
-            } else if (productAttributesItemList.size() == 2) {
-
-                for (int i = 0; i < productVariantsItemList.size(); i++) {
-                    ProductVariantsItem variantItem = productVariantsItemList.get(i);
-
-                    if (variantItem.getAttributeValues().size() > 1) {
-                        int key1 = variantItem.getAttributeValues().get(0);
-                        int key2 = variantItem.getAttributeValues().get(1);
-
-                        if ((key1 == attributesValue.getKey() && key2 == variantKey2) ||
-                                (key2 == attributesValue.getKey() && key1 == variantKey2)) {
-
-                            populateProductByVariant(productVariantsItemList.get(i));
-                            variantKey1 = attributesValue.getKey();
-                            break;
-
-                        }
-                    }
-                }
-            }
-        });
-        binding.rvVariant1.setAdapter(adapter);
-    }
-
-
-    private void populateColorOption(List<AttributeValuesItem> attribute_values) {
-
-
-        if (attribute_values.size() > 0 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
-            binding.variant2Holder.setVisibility(View.VISIBLE);
-
-            for (int i = 0; i < attribute_values.size(); i++) {
-                if (productAttributesItemList.size() > 1 && productVariantsItemList.get(0).getAttributeValues().size() > 1) {
-
-                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) ||
-                            attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
-
-                        attribute_values.get(i).setSelected(true);
-                        variantKey2 = attribute_values.get(i).getKey();
-                    }
-
-                } else {
-                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
-                        attribute_values.get(i).setSelected(true);
-                        variantKey2 = attribute_values.get(i).getKey();
-                    }
-                }
-            }
-        }
-
-        ColorButtonAdapter adapter = new ColorButtonAdapter(attribute_values, this, object -> {
-
-            AttributeValuesItem attributesValue = (AttributeValuesItem) object;
-
-            if (productAttributesItemList.size() == 1) {
-                for (int i = 0; i < productVariantsItemList.size(); i++) {
-                    ProductVariantsItem variantItem = productVariantsItemList.get(i);
-                    for (int j = 0; j < variantItem.getAttributeValues().size(); j++) {
-                        int attrValue = variantItem.getAttributeValues().get(j);
-                        if (attrValue == attributesValue.getKey()) {
-                            populateProductByVariant(productVariantsItemList.get(i));
-                        }
-                    }
-                }
-            } else if (productAttributesItemList.size() == 2) {
-
-                for (int i = 0; i < productVariantsItemList.size(); i++) {
-                    ProductVariantsItem variantItem = productVariantsItemList.get(i);
-
-                    if (variantItem.getAttributeValues().size() > 1) {
-                        int key1 = variantItem.getAttributeValues().get(0);
-                        int key2 = variantItem.getAttributeValues().get(1);
-
-                        if ((key1 == attributesValue.getKey() && key2 == variantKey1) || (key2 == attributesValue.getKey() && key1 == variantKey1)) {
-                            populateProductByVariant(productVariantsItemList.get(i));
-
-                            variantKey2 = attributesValue.getKey();
-                            break;
-                        }
-                    }
-
-                }
-
-            }
-        });
-        binding.rvVariant2.setAdapter(adapter);
-    }
-
 
     private void getRelatedProducts(String categorySlug) {
 

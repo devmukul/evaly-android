@@ -181,6 +181,8 @@ public class ViewProductActivity extends BaseActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        binding.selectedShopHolder.setVisibility(View.GONE);
+
         viewModel = new ViewModelProvider(this).get(ViewProductViewModel.class);
         xmppViewModel = new ViewModelProvider(this).get(RoomWIthRxViewModel.class);
 
@@ -435,7 +437,7 @@ public class ViewProductActivity extends BaseActivity {
         }
     }
 
-    private void populateShopDetails(ProductDetailsModel productDetailsModel) {
+    public void populateShopDetails(ProductDetailsModel productDetailsModel) {
 
         Data data = productDetailsModel.getData();
         productAttributesItemList = data.getAttributes();

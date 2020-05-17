@@ -19,6 +19,7 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductOfShopActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopHeaderModel_;
@@ -91,10 +92,15 @@ public class ShopController extends EpoxyController {
                     .buyNowClickListener((model, parentView, clickedView, position) -> viewModel.setBuyNowLiveData(model.getModel().getSlug()))
                     .clickListener((model, parentView, clickedView, position) -> {
                         ProductItem item = model.getModel();
-                        Intent intent = new Intent(activity, ViewProductActivity.class);
+
+                        Intent intent = new Intent(activity, model.isShop() ? ViewProductOfShopActivity.class : ViewProductActivity.class);
                         intent.putExtra("product_slug", item.getSlug());
                         intent.putExtra("product_name", item.getName());
                         intent.putExtra("product_price", (int) Double.parseDouble(item.getMaxPrice()));
+
+                        if (model.isShop())
+                            intent.putExtra("shop_details", shopInfo);
+
                         if (item.getImageUrls().size() > 0)
                             intent.putExtra("product_image", item.getImageUrls().get(0));
                         activity.startActivity(intent);

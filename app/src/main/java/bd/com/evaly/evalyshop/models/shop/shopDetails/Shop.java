@@ -2,9 +2,10 @@ package bd.com.evaly.evalyshop.models.shop.shopDetails;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Shop{
+public class Shop implements Serializable {
 
 	@SerializedName("image")
 	private String image;
