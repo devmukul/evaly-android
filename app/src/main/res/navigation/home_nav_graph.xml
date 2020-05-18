@@ -232,6 +232,18 @@
         android:id="@+id/buyNowFragment"
         android:name="bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment"
         android:label="BuyNowFragment" />
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="bd.com.evaly.evalyshop.ui.payment.fragment.PaymentFragment"
+        android:label="PaymentFragment" />
+    <fragment
+        android:id="@+id/paymentBottomSheet"
+        android:name="bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheet"
+        android:label="PaymentBottomSheet" />
+    <activity
+        android:id="@+id/orderDetailsActivity"
+        android:name="bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity"
+        android:label="OrderDetailsActivity" />
 
 
     <!--    <activity-->
@@ -247,6 +259,9 @@
     <!--        android:id="@+id/orderListActivity"-->
     <!--        android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity"-->
     <!--        android:label="OrderListActivity" />-->
+
+
+
 
 
 </navigation>

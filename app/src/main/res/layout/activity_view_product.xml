@@ -259,10 +259,10 @@
                                 android:id="@+id/rvVariant1"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:paddingBottom="18dp"
                                 android:nestedScrollingEnabled="false"
                                 android:orientation="horizontal"
                                 android:paddingLeft="20dp"
+                                android:paddingBottom="18dp"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 tools:listitem="@layout/item_variation_image" />
                         </HorizontalScrollView>
@@ -306,10 +306,10 @@
                                 android:id="@+id/rvVariant2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:paddingBottom="18dp"
                                 android:nestedScrollingEnabled="false"
                                 android:orientation="horizontal"
                                 android:paddingLeft="20dp"
+                                android:paddingBottom="18dp"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 tools:listitem="@layout/item_variation_image" />
 
@@ -330,10 +330,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:orientation="horizontal"
-                        android:padding="10dp"
                         android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp">
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
 
                         <TextView
                             android:id="@+id/vouchers"
@@ -466,12 +466,12 @@
                             android:id="@+id/selectedShopClickHolder"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:longClickable="false"
+                            android:orientation="horizontal"
                             android:paddingLeft="20dp"
                             android:paddingTop="20dp"
-                            android:paddingRight="15dp"
-                            android:orientation="horizontal"
-                            android:clickable="true"
-                            android:longClickable="false">
+                            android:paddingRight="15dp">
 
                             <ImageView
                                 android:id="@+id/shopLogo"
@@ -495,30 +495,30 @@
                                     android:id="@+id/shopName"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:clickable="false"
                                     android:ellipsize="end"
+                                    android:fontFamily="sans-serif-medium"
                                     android:maxLines="5"
-                                    tools:text="Shop Name"
+                                    android:paddingBottom="8dp"
                                     android:textAlignment="textStart"
                                     android:textColor="#333"
                                     android:textSize="17sp"
-                                    android:paddingBottom="8dp"
-                                    android:clickable="false"
-                                    android:fontFamily="sans-serif-medium"/>
+                                    tools:text="Shop Name" />
 
                                 <LinearLayout
                                     android:id="@+id/shopLocationHolder"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:paddingBottom="5dp"
-                                    android:gravity="top">
+                                    android:gravity="top"
+                                    android:paddingBottom="5dp">
 
                                     <ImageView
                                         android:layout_width="12dp"
                                         android:layout_height="20dp"
-                                        android:tint="#555"
                                         android:layout_marginEnd="6dp"
                                         android:adjustViewBounds="true"
-                                        android:src="@drawable/ic_marker_filled"/>
+                                        android:src="@drawable/ic_marker_filled"
+                                        android:tint="#555" />
 
                                     <TextView
                                         android:id="@+id/shopLocation"
@@ -526,11 +526,11 @@
                                         android:layout_height="wrap_content"
                                         android:ellipsize="end"
                                         android:maxLines="2"
-                                        tools:text="Road 14, Dhanmondi 27, Dhaka"
                                         android:textAlignment="textStart"
                                         android:textColor="#555"
                                         android:textIsSelectable="true"
-                                        android:textSize="14sp"/>
+                                        android:textSize="14sp"
+                                        tools:text="Road 14, Dhanmondi 27, Dhaka" />
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -541,24 +541,24 @@
                                     <ImageView
                                         android:layout_width="12dp"
                                         android:layout_height="20dp"
-                                        android:tint="#555"
                                         android:layout_marginEnd="6dp"
                                         android:adjustViewBounds="true"
-                                        android:src="@drawable/ic_call"/>
+                                        android:src="@drawable/ic_call"
+                                        android:tint="#555" />
 
                                     <TextView
                                         android:id="@+id/shopPhone"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:autoLink="phone"
                                         android:ellipsize="end"
                                         android:maxLines="2"
-                                        tools:text="01758154554"
                                         android:textAlignment="textStart"
                                         android:textColor="#555"
+                                        android:textColorLink="#555"
                                         android:textIsSelectable="true"
                                         android:textSize="14sp"
-                                        android:autoLink="phone"
-                                        android:textColorLink="#555"/>
+                                        tools:text="01758154554" />
                                 </LinearLayout>
 
                                 <View
@@ -572,17 +572,17 @@
                                     android:id="@+id/selectedShopPriceHolder"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:layout_marginTop="3dp">
+                                    android:layout_marginTop="3dp"
+                                    android:orientation="horizontal">
 
                                     <TextView
                                         android:id="@+id/price"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
                                         android:singleLine="true"
                                         android:text=" ৳ 5000"
                                         android:textColor="#f00"
-                                        android:fontFamily="sans-serif-medium"
                                         android:textSize="18sp" />
 
                                     <TextView
@@ -618,13 +618,13 @@
                                 android:layout_marginRight="7dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_f1f3f4"
+                                android:fontFamily="sans-serif"
+                                android:paddingBottom="1dp"
                                 android:stateListAnimator="@null"
                                 android:text="@string/add_to_cart"
-                                android:textColor="#333"
-                                android:fontFamily="sans-serif"
                                 android:textAllCaps="false"
+                                android:textColor="#333"
                                 android:textSize="14sp"
-                                android:paddingBottom="1dp"
                                 android:textStyle="normal" />
 
                             <Button
@@ -635,13 +635,13 @@
                                 android:layout_marginTop="20dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_red"
-                                android:stateListAnimator="@null"
-                                android:text="@string/buy_now"
-                                android:textColor="#fff"
-                                android:textAllCaps="false"
-                                android:textSize="14sp"
                                 android:fontFamily="sans-serif"
                                 android:paddingBottom="1dp"
+                                android:stateListAnimator="@null"
+                                android:text="@string/buy_now"
+                                android:textAllCaps="false"
+                                android:textColor="#fff"
+                                android:textSize="14sp"
                                 android:textStyle="normal" />
 
                         </LinearLayout>
@@ -652,8 +652,6 @@
                             android:background="@color/separator_light" />
 
                     </LinearLayout>
-
-
 
 
                     <LinearLayout
@@ -731,10 +729,10 @@
                                 android:id="@+id/availableShops"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:paddingLeft="5dp"
                                 android:clipToPadding="false"
                                 android:nestedScrollingEnabled="false"
                                 android:orientation="horizontal"
+                                android:paddingLeft="5dp"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 tools:listitem="@layout/available_shop" />
 
