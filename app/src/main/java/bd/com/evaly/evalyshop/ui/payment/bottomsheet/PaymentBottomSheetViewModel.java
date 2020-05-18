@@ -1,4 +1,4 @@
-package bd.com.evaly.evalyshop.ui.payment;
+package bd.com.evaly.evalyshop.ui.payment.bottomsheet;
 
 import androidx.lifecycle.ViewModel;
 

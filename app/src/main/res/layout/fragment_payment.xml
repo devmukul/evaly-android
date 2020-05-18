@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <data>
-        <variable
-            name="viewModel"
-            type="bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheetViewModel" />
-    </data>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="5dp"
-        app:cardPreventCornerOverlap="true">
-
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/bottom_sheet"
@@ -24,10 +17,7 @@
             android:clickable="true"
             android:orientation="vertical"
             android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            app:behavior_hideable="true"
-            app:behavior_peekHeight="56dp"
-            app:layout_behavior="@string/bottom_sheet_behavior">
+            android:paddingRight="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -82,7 +72,8 @@
                 android:paddingBottom="10dp"
                 android:imeOptions="actionDone"
                 android:digits="1234567890."
-                android:longClickable="false"/>
+                android:longClickable="false"
+                android:drawableRight="@drawable/ic_edit_drawable"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -190,5 +181,24 @@
             </LinearLayout>
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
-</layout>
+
+        <Button
+            android:id="@+id/continueShopping"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/btn_red"
+            android:stateListAnimator="@null"
+            android:text="Continue Shopping"
+            android:textColor="#fff"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:paddingBottom="1dp"
+            android:textStyle="normal" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
