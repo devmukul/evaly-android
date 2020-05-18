@@ -40,7 +40,6 @@ import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private String slug = "", title = "", categoryString = "", imgUrl = "", categorySlug = "";
     private int currentPage = 1;
@@ -155,9 +154,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
             }
         });
-
         getProducts();
-
     }
 
 
@@ -170,7 +167,10 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         controller.showEmptyPage(false, false);
 
-        ProductApiHelper.getCategoryBrandProducts(currentPage, null, slug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
+        if (categorySlug != null && categorySlug.equals(""))
+            categorySlug = null;
+
+        ProductApiHelper.getCategoryBrandProducts(currentPage, categorySlug, slug, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override
             public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
 
