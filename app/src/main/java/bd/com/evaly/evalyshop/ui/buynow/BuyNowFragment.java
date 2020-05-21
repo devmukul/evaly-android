@@ -274,10 +274,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         productTotalPrice.setText(Utils.formatPriceSymbol(productPriceInt));
 
         Glide.with(getActivity())
-                    .load(cartItem.getImage())
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .apply(new RequestOptions().override(250, 250))
-                    .into(productImage);
+                .load(cartItem.getImage())
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .apply(new RequestOptions().override(250, 250))
+                .into(productImage);
 
         variationHolder.setVisibility(View.GONE);
 
@@ -593,7 +593,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     dialog.hideDialog();
 
                 dismissDialog();
-
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
