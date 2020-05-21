@@ -14,14 +14,28 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetBasicTextBinding;
+import bd.com.evaly.evalyshop.ui.basic.textBottomSheet.TextListController;
 
 public class TextBottomSheetFragment extends BottomSheetDialogFragment {
 
     private BottomSheetBasicTextBinding binding;
 
+    public static TextBottomSheetFragment newInstance(String title, String text) {
+        TextBottomSheetFragment fragment = new TextBottomSheetFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("text", text);
+        bundle.putString("title", title);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     public static TextBottomSheetFragment newInstance(String text) {
         TextBottomSheetFragment fragment = new TextBottomSheetFragment();
@@ -49,9 +63,33 @@ public class TextBottomSheetFragment extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null && getArguments().containsKey("text")) {
+
             String text = getArguments().getString("text");
-            binding.text.setText(Html.fromHtml(text));
+            try {
+                JsonArray jsonArray = JsonParser.parseString(text).getAsJsonArray();
+                binding.text.setVisibility(View.GONE);
+                binding.recyclerView.setVisibility(View.VISIBLE);
+
+                TextListController controller = new TextListController();
+                binding.recyclerView.setAdapter(controller.getAdapter());
+
+                List<String> list = new ArrayList<>();
+                for (int i=0; i<jsonArray.size(); i++)
+                    list.add( jsonArray.get(i).getAsString());
+                controller.setList(list);
+
+            } catch (Exception e) {
+                binding.text.setText(Html.fromHtml(text));
+                binding.text.setVisibility(View.VISIBLE);
+                binding.recyclerView.setVisibility(View.GONE);
+            }
+
         }
+
+        if (getArguments() != null && getArguments().containsKey("title"))
+            binding.title.setText(getArguments().getString("title"));
+        else
+            binding.title.setVisibility(View.GONE);
 
     }
 

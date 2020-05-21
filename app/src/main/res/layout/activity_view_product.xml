@@ -262,7 +262,7 @@
                                 android:nestedScrollingEnabled="false"
                                 android:orientation="horizontal"
                                 android:paddingLeft="20dp"
-                                android:paddingBottom="18dp"
+                                android:paddingBottom="15dp"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 tools:listitem="@layout/item_variation_image" />
                         </HorizontalScrollView>
@@ -309,7 +309,7 @@
                                 android:nestedScrollingEnabled="false"
                                 android:orientation="horizontal"
                                 android:paddingLeft="20dp"
-                                android:paddingBottom="18dp"
+                                android:paddingBottom="15dp"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 tools:listitem="@layout/item_variation_image" />
 

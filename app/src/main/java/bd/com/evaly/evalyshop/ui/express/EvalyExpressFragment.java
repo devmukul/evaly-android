@@ -177,14 +177,9 @@ public class EvalyExpressFragment extends Fragment {
                 binding.toolbar.setTitle(expressServiceDetailsModel.getName());
 
             binding.btnTerms.setOnClickListener(v -> {
-                TextBottomSheetFragment fragment = TextBottomSheetFragment.newInstance(expressServiceDetailsModel.getDescription().replaceAll("\n", "<br>"));
+                TextBottomSheetFragment fragment = TextBottomSheetFragment.newInstance("Terms & Conditions", expressServiceDetailsModel.getDescription().replaceAll("\n", "<br>"));
                 fragment.show(getParentFragmentManager(), "terms");
             });
-//            Glide.with(binding.getRoot())
-//                    .load(expressServiceDetailsModel.getAppLogo())
-//                    .placeholder(R.drawable.banner_skeleton_bg)
-//                    .into(binding.image);
-//            binding.overly.setBackgroundColor(Color.parseColor(expressServiceDetailsModel.getAppBgColor()));
 
         });
 
