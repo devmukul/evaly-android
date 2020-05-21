@@ -18,6 +18,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class ShopViewModel extends ViewModel {
 
@@ -27,7 +28,7 @@ public class ShopViewModel extends ViewModel {
     private MutableLiveData<JsonObject> ratingSummary = new MutableLiveData<>();
     private MutableLiveData<ShopDetailsModel> shopDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<TabsItem>> shopCategoryListLiveData = new MutableLiveData<>();
-    private MutableLiveData<String> buyNowLiveData = new MutableLiveData<>();
+    private SingleLiveEvent<String> buyNowLiveData = new SingleLiveEvent<>();
     private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
     private String categorySlug;
     private String campaignSlug;
@@ -109,7 +110,7 @@ public class ShopViewModel extends ViewModel {
         return shopCategoryListLiveData;
     }
 
-    public LiveData<String> getBuyNowLiveData() {
+    public SingleLiveEvent<String> getBuyNowLiveData() {
         return buyNowLiveData;
     }
 

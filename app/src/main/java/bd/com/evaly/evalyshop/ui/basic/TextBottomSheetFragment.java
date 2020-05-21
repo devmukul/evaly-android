@@ -86,8 +86,10 @@ public class TextBottomSheetFragment extends BottomSheetDialogFragment {
 
         }
 
-        if (getArguments() != null && getArguments().containsKey("title"))
+        if (getArguments() != null && getArguments().containsKey("title")) {
+            binding.title.setVisibility(View.VISIBLE);
             binding.title.setText(getArguments().getString("title"));
+        }
         else
             binding.title.setVisibility(View.GONE);
 

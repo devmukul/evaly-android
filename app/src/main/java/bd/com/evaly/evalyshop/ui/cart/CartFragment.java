@@ -31,6 +31,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,6 +63,7 @@ import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -97,6 +100,7 @@ public class CartFragment extends Fragment {
     private int paymentMethod = 2;
     private double totalPriceDouble = 0;
     private TextView tvTotalPrice;
+    private NavController navController;
 
     public CartFragment() {
         // Required empty public constructor
@@ -119,7 +123,6 @@ public class CartFragment extends Fragment {
         context = getContext();
         dialog = new ViewDialog(getActivity());
         userDetails = new UserDetails(context);
-
         appDatabase = AppDatabase.getInstance(getContext());
         cartDao = appDatabase.cartDao();
 
@@ -321,6 +324,9 @@ public class CartFragment extends Fragment {
         spinnerArrayID = new ArrayList<>();
         customAddress.setText(userDetails.getJsonAddress());
 
+        if (getActivity() instanceof MainActivity)
+            navController = NavHostFragment.findNavController(this);
+
 
         if (spinnerArray.size() < 1) {
             addressSwitch.setChecked(true);
@@ -477,9 +483,15 @@ public class CartFragment extends Fragment {
                         for (int i = 0; i < data.size(); i++) {
                             JsonObject item = data.get(i).getAsJsonObject();
                             String invoice = item.get("invoice_no").getAsString();
-                            Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
-                            intent.putExtra("orderID", invoice);
-                            startActivity(intent);
+                            if (getActivity() instanceof MainActivity) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("invoice_no", invoice);
+                                navController.navigate(R.id.paymentFragment, bundle);
+                            } else {
+                                Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+                                intent.putExtra("orderID", invoice);
+                                startActivity(intent);
+                            }
                         }
                     }
                 }

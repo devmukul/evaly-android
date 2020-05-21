@@ -23,6 +23,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,7 +54,6 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.cart.CartItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
@@ -62,6 +63,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
@@ -127,6 +129,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private boolean isExpress = false;
     private CartEntity cartItem;
     private AvailableShopModel shopItem;
+    private NavController navController;
 
     public static BuyNowFragment newInstance(String shopSlug, String productSlug) {
         BuyNowFragment f = new BuyNowFragment();
@@ -170,6 +173,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
 
+        navController = NavHostFragment.findNavController(this);
         Bundle args = getArguments();
         appDatabase = AppDatabase.getInstance(getContext());
         cartDao = appDatabase.cartDao();
@@ -584,10 +588,12 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                 if (bottomSheetDialog.isShowing())
                     bottomSheetDialog.dismiss();
+
                 if (dialog.isShowing())
                     dialog.hideDialog();
-                if (isVisible())
-                    dismiss();
+
+                dismissDialog();
+
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
@@ -599,9 +605,15 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                         for (int i = 0; i < data.size(); i++) {
                             JsonObject item = data.get(i).getAsJsonObject();
                             String invoice = item.get("invoice_no").getAsString();
-                            Intent intent = new Intent(context, OrderDetailsActivity.class);
-                            intent.putExtra("orderID", invoice);
-                            startActivity(intent);
+                            if (getActivity() instanceof MainActivity) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("invoice_no", invoice);
+                                navController.navigate(R.id.paymentFragment, bundle);
+                            } else {
+                                Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+                                intent.putExtra("orderID", invoice);
+                                startActivity(intent);
+                            }
                         }
                     }
                 }
@@ -633,10 +645,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
     @Override
     public void onDestroy() {
-
-//        if (getActivity() != null)
-//            Glide.with(getActivity().getApplicationContext()).pauseRequests();
-
         super.onDestroy();
     }
 

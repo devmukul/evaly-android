@@ -34,8 +34,6 @@ public class PaymentFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             invoice_no = getArguments().getString("invoice_no");
-            total_amount = getArguments().getDouble("total_amount");
-            paid_amount = getArguments().getDouble("paid_amount");
         }
     }
 
@@ -50,13 +48,17 @@ public class PaymentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getOrderDetails();
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        binding.toolbar.setNavigationOnClickListener(view1 -> {
+            if (getActivity() != null)
+                getActivity().onBackPressed();
+        });
 
         binding.makePayment.setOnClickListener(view1 -> {
             Bundle bundle = new Bundle();
             bundle.putString("invoice_no", invoice_no);
-            bundle.putDouble("invoice_no", total_amount);
-            bundle.putDouble("invoice_no", paid_amount);
+            bundle.putDouble("total_amount", total_amount);
+            bundle.putDouble("paid_amount", paid_amount);
             NavHostFragment.findNavController(this).navigate(R.id.paymentBottomSheet, bundle);
         });
 
@@ -71,6 +73,11 @@ public class PaymentFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getOrderDetails();
+    }
 
     public void getOrderDetails() {
 
@@ -78,9 +85,11 @@ public class PaymentFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataFetched(OrderDetailsModel response, int statusCode) {
+                total_amount = Double.parseDouble(response.getTotal());
+                paid_amount = Double.parseDouble(response.getPaidAmount());
                 binding.totalPrice.setText(String.format("৳ %s", Utils.formatPrice(response.getTotal())));
                 binding.paidAmount.setText(String.format("৳ %s", Utils.formatPrice(response.getPaidAmount())));
-                binding.paidAmount.setText(String.format(Locale.ENGLISH, "৳ %s",
+                binding.duePrice.setText(String.format(Locale.ENGLISH, "৳ %s",
                         Utils.formatPrice((Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount())))));
             }
 

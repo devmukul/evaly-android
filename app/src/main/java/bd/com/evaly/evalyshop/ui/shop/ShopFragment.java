@@ -165,7 +165,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
 
-
         binding.appBarLayout.homeSearch.setOnClickListener(view12 -> {
             Bundle bundle = new Bundle();
             bundle.putString("shop_slug", slug);

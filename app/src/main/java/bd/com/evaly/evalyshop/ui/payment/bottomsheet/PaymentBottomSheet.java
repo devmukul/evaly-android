@@ -54,12 +54,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         binding = DataBindingUtil.inflate(inflater, R.layout.payment_bottom_sheet_fragment, container, false);
         binding.setViewModel(viewModel);
 
-        if (getArguments() != null) {
-            invoice_no = getArguments().getString("invoice_no");
-            total_amount = getArguments().getDouble("total_amount");
-            paid_amount = getArguments().getDouble("paid_amount");
-        }
-
         return binding.getRoot();
     }
 
@@ -73,8 +67,14 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+        setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
         userDetails = new UserDetails(getContext());
+
+        if (getArguments() != null) {
+            invoice_no = getArguments().getString("invoice_no");
+            total_amount = getArguments().getDouble("total_amount");
+            paid_amount = getArguments().getDouble("paid_amount");
+        }
     }
 
     @NonNull
