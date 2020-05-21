@@ -162,7 +162,6 @@ public class AppController extends Application implements Application.ActivityLi
 
     @Override
     public void onActivityPaused(Activity activity) {
-//        Logger.d("PAUSED");
         try {
             if (mEventReceiver != null) unregisterReceiver(mEventReceiver);
         }catch (Exception e){
@@ -182,18 +181,15 @@ public class AppController extends Application implements Application.ActivityLi
 
 
     public static void logout(Activity context) {
-
         try {
             String email = CredentialManager.getUserName();
             String strNew = email.replaceAll("[^A-Za-z0-9]", "");
-
             FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.BUILD+"_"+strNew);
         }catch (Exception e){
             e.printStackTrace();
         }
 
         MyPreference.with(context).clearAll();
-//        getInstance().clearAppData();
         Logger.d(CredentialManager.getToken());
         if (xmppService != null && xmppService.xmpp != null) {
             xmppService.xmpp.disconnect();
@@ -205,16 +201,9 @@ public class AppController extends Application implements Application.ActivityLi
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                database.clearAllTables();
-//            }
-//        });
 
         ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getmContext());
         providerDatabase.userInfoDao().deleteAll();
-
 
         new Handler().postDelayed(() -> {
             context.stopService(new Intent(context, XMPPService.class));
@@ -223,7 +212,6 @@ public class AppController extends Application implements Application.ActivityLi
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
             context.finish();
         }, 300);
-
 
     }
 

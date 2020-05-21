@@ -2,8 +2,6 @@ package bd.com.evaly.evalyshop.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -12,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -42,8 +38,6 @@ import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.BuildConfig;
@@ -62,7 +56,6 @@ import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
-import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
 import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.menu.InviteEarn;
@@ -70,7 +63,6 @@ import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
@@ -118,13 +110,13 @@ public class MainActivity extends BaseActivity {
 
         public void onLoginFailed(String msg) {
             Logger.d(msg);
-            if (msg.contains("not-authorized")){
+            if (msg.contains("not-authorized")) {
                 AppController.logout(MainActivity.this);
             } else if (msg.contains("already logged in")) {
                 CredentialManager.saveUserRegistered(true);
                 disconnectXmpp();
 
-            }  else {
+            } else {
                 if (xmppHandler == null) {
                     if (AppController.getmService() != null)
                         if (AppController.getmService().xmpp != null)
@@ -177,8 +169,6 @@ public class MainActivity extends BaseActivity {
         navController.createDeepLink();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView userNameNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.userNameNavHeader);
-        TextView phoneNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.phone);
         userDetails = new UserDetails(this);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
@@ -196,8 +186,6 @@ public class MainActivity extends BaseActivity {
                             startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
                         return false;
                     } else if (item.getItemId() == R.id.homeFragment) {
-
-                        // navController.popBackStack(R.id.home_nav_graph, true);
                         navController.navigate(R.id.action_homeFragment_Pop);
                         return false;
                     } else
@@ -261,87 +249,17 @@ public class MainActivity extends BaseActivity {
 
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
 
-        if (!CredentialManager.getToken().equals(""))
+        if (!CredentialManager.getToken().equals("")) {
             FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_" + strNew));
-        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_all_user"));
-
-
-        if (userDetails.getToken().equals("")) {
-            binding.drawerLayout.removeView(binding.navView);
-            binding.navView2.setNavigationItemSelectedListener(menuItem -> {
-                switch (menuItem.getItemId()) {
-                    case R.id.nav_wishlist:
-                        navController.navigate(R.id.wishListFragment);
-                        break;
-                    case R.id.nav_contact:
-                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
-                        break;
-                    case R.id.nav_sign_in:
-                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                        break;
-                    case R.id.nav_home:
-                        finish();
-                        this.startActivity(getIntent());
-                        this.overridePendingTransition(0, 0);
-                        break;
-                }
-                new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
-                return true;
-            });
-
-        } else {
-
             FirebaseMessaging.getInstance().subscribeToTopic("USER." + userDetails.getUserName());
-
-            userNameNavHeader.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
-            phoneNavHeader.setText(userDetails.getUserName());
-            binding.drawerLayout.removeView(binding.navView2);
-            binding.navView.setNavigationItemSelectedListener(menuItem -> {
-                switch (menuItem.getItemId()) {
-                    case R.id.nav_wishlist:
-                        navController.navigate(R.id.wishListFragment);
-                        break;
-                    case R.id.nav_contact:
-                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
-                        break;
-                    case R.id.nav_home:
-                        finish();
-                        startActivity(getIntent());
-                        break;
-                    case R.id.nav_account:
-                        startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
-                        break;
-                    case R.id.nav_orders:
-                        startActivity(new Intent(MainActivity.this, OrderListActivity.class));
-                        break;
-                    case R.id.nav_cart:
-                        startActivity(new Intent(MainActivity.this, CartActivity.class));
-                        break;
-                    case R.id.nav_invite_ref:
-                        startActivity(new Intent(MainActivity.this, InviteEarn.class));
-                        break;
-                    case R.id.nav_voucher:
-                        startActivity(new Intent(MainActivity.this, VoucherActivity.class));
-                        break;
-                    case R.id.nav_messages:
-                        startActivity(new Intent(MainActivity.this, ChatListActivity.class));
-                        break;
-                    case R.id.nav_followed_shops:
-                        Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
-                        inf.putExtra("title", "Followed Shops");
-                        inf.putExtra("slug", "shop-subscriptions");
-                        startActivity(inf);
-                }
-                new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
-                return true;
-            });
         }
-
+        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_all_user"));
 
         viewModel.getBackOnClick().observe(this, aBoolean -> {
             if (aBoolean)
                 onBackPressed();
         });
+
         viewModel.getDrawerOnClick().observe(this, aBoolean -> {
             if (aBoolean)
                 binding.drawerLayout.openDrawer(Gravity.START);
@@ -442,13 +360,54 @@ public class MainActivity extends BaseActivity {
         super.onResume();
 
         mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-        if (binding.bottomNavigationView != null) {
-            Menu menu = binding.bottomNavigationView.getMenu();
-            MenuItem item = menu.getItem(0);
-            item.setChecked(true);
-        }
+        Menu menu = binding.bottomNavigationView.getMenu();
+        MenuItem item = menu.getItem(0);
+        item.setChecked(true);
 
-        if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()) {
+        setupDrawerMenu();
+
+    }
+
+
+    private void setupDrawerMenu() {
+
+        if (CredentialManager.getToken().equals("")) {
+            binding.drawerLayout.removeView(binding.navView);
+
+            binding.drawerLayout.removeView(binding.navView2);
+            binding.drawerLayout.addView(binding.navView2);
+            binding.navView2.setNavigationItemSelectedListener(menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_wishlist:
+                        navController.navigate(R.id.wishListFragment);
+                        break;
+                    case R.id.nav_contact:
+                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
+                        break;
+                    case R.id.nav_sign_in:
+                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
+                        break;
+                    case R.id.nav_home:
+                        finish();
+                        this.startActivity(getIntent());
+                        this.overridePendingTransition(0, 0);
+                        break;
+                }
+                new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
+                return true;
+            });
+
+        } else {
+            binding.drawerLayout.removeView(binding.navView2);
+
+            binding.drawerLayout.removeView(binding.navView);
+            binding.drawerLayout.addView(binding.navView);
+
+            TextView userNameNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.userNameNavHeader);
+            TextView phoneNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.phone);
+            userNameNavHeader.setText(String.format("%s %s", userDetails.getFirstName(), userDetails.getLastName()));
+            phoneNavHeader.setText(userDetails.getUserName());
+
             ImageView profilePicNav = binding.navView.getHeaderView(0).findViewById(R.id.profilePicNav);
             if (!userDetails.getProfilePictureSM().equals("null")) {
                 Glide.with(this)
@@ -461,21 +420,48 @@ public class MainActivity extends BaseActivity {
                         .apply(new RequestOptions().override(200, 200))
                         .into(profilePicNav);
             }
+
+            binding.navView.setNavigationItemSelectedListener(menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_wishlist:
+                        navController.navigate(R.id.wishListFragment);
+                        break;
+                    case R.id.nav_contact:
+                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
+                        break;
+                    case R.id.nav_home:
+                        finish();
+                        startActivity(getIntent());
+                        break;
+                    case R.id.nav_account:
+                        startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
+                        break;
+                    case R.id.nav_orders:
+                        startActivity(new Intent(MainActivity.this, OrderListActivity.class));
+                        break;
+                    case R.id.nav_cart:
+                        startActivity(new Intent(MainActivity.this, CartActivity.class));
+                        break;
+                    case R.id.nav_invite_ref:
+                        startActivity(new Intent(MainActivity.this, InviteEarn.class));
+                        break;
+                    case R.id.nav_voucher:
+                        startActivity(new Intent(MainActivity.this, VoucherActivity.class));
+                        break;
+                    case R.id.nav_messages:
+                        startActivity(new Intent(MainActivity.this, ChatListActivity.class));
+                        break;
+                    case R.id.nav_followed_shops:
+                        Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
+                        inf.putExtra("title", "Followed Shops");
+                        inf.putExtra("slug", "shop-subscriptions");
+                        startActivity(inf);
+                }
+                new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
+                return true;
+            });
         }
 
-    }
-
-    private void unCheckAllMenuItems(@NonNull final Menu menu) {
-        int size = menu.size();
-        for (int i = 0; i < size; i++) {
-            final MenuItem item = menu.getItem(i);
-            if (item.hasSubMenu()) {
-                // Un check sub menu items
-                unCheckAllMenuItems(item.getSubMenu());
-            } else {
-                item.setChecked(false);
-            }
-        }
     }
 
     @Override
@@ -584,7 +570,7 @@ public class MainActivity extends BaseActivity {
         builder.setPositiveButton("Update", (dialogInterface, i) -> {
             dialogInterface.dismiss();
             finish();
-            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+            final String appPackageName = getPackageName();
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
             } catch (android.content.ActivityNotFoundException anfe) {
