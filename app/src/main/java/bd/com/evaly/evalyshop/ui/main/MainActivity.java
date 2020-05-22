@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +34,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
@@ -83,6 +86,7 @@ public class MainActivity extends BaseActivity {
     private NavController navController;
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
         @Override
@@ -194,6 +198,7 @@ public class MainActivity extends BaseActivity {
 
 
         checkUpdate();
+        setupRemoteConfig();
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
         WishListDao wishListDao = appDatabase.wishListDao();
@@ -320,6 +325,46 @@ public class MainActivity extends BaseActivity {
                 })
                 .setNegativeButton("No", null);
         exitDialog = exitDialogBuilder.create();
+
+    }
+
+    private void setupRemoteConfig() {
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+        checkRemoteConfig();
+    }
+
+    private void checkRemoteConfig(){
+        mFirebaseRemoteConfig.fetchAndActivate()
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        boolean updated = task.getResult();
+
+                        Logger.d(mFirebaseRemoteConfig.getAll());
+
+                        boolean isForce = mFirebaseRemoteConfig.getBoolean("force_update");
+                        boolean shouldLogout = mFirebaseRemoteConfig.getBoolean("logout_on_force_update");
+
+                        int latestVersion = Integer.parseInt(mFirebaseRemoteConfig.getString("latest_version"));
+                        int versionCode = BuildConfig.VERSION_CODE;
+
+                        Logger.d(mFirebaseRemoteConfig.getString("latest_version"));
+
+                        if (versionCode < latestVersion && isForce) {
+                            if (shouldLogout) {
+                                userDetails.clearAll();
+                                MyPreference.with(MainActivity.this).clearAll();
+                            }
+                            update(false);
+                        } else if (versionCode < latestVersion)
+                            update(true);
+                    }
+                });
 
     }
 
