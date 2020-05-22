@@ -62,6 +62,7 @@ import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.menu.InviteEarn;
+import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
@@ -332,6 +333,7 @@ public class MainActivity extends BaseActivity {
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
                 .setMinimumFetchIntervalInSeconds(3600)
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
@@ -340,20 +342,25 @@ public class MainActivity extends BaseActivity {
     }
 
     private void checkRemoteConfig(){
-        mFirebaseRemoteConfig.fetchAndActivate()
+        mFirebaseRemoteConfig
+                .fetchAndActivate()
                 .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        boolean updated = task.getResult();
+                    if (task.isSuccessful()) {
+                        boolean isForce = mFirebaseRemoteConfig.getValue("force_update").asBoolean();
+                        boolean shouldLogout = mFirebaseRemoteConfig.getValue("logout_on_force_update").asBoolean();
+                        boolean isUnderMaintenance = mFirebaseRemoteConfig.getValue("under_maintenance").asBoolean();
+                        String underMaintenanceMessage = mFirebaseRemoteConfig.getValue("under_maintenance_message").asString();
 
-                        Logger.d(mFirebaseRemoteConfig.getAll());
-
-                        boolean isForce = mFirebaseRemoteConfig.getBoolean("force_update");
-                        boolean shouldLogout = mFirebaseRemoteConfig.getBoolean("logout_on_force_update");
-
-                        int latestVersion = Integer.parseInt(mFirebaseRemoteConfig.getString("latest_version"));
+                        int latestVersion = (int) mFirebaseRemoteConfig.getValue("latest_version").asLong();
                         int versionCode = BuildConfig.VERSION_CODE;
 
-                        Logger.d(mFirebaseRemoteConfig.getString("latest_version"));
+                        if (isUnderMaintenance){
+                            finishAffinity();
+                            Intent intent = new Intent(MainActivity.this, UnderMaintenanceActivity.class);
+                            intent.putExtra("text", underMaintenanceMessage);
+                            startActivity(intent);
+                            return;
+                        }
 
                         if (versionCode < latestVersion && isForce) {
                             if (shouldLogout) {

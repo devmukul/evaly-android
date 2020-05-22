@@ -36,17 +36,22 @@
 
         <meta-data
             android:name="asset_statements"
-            android:resource="@string/asset_statements"/>
+            android:resource="@string/asset_statements" />
 
         <provider
             android:name="bd.com.evaly.evalyshop.manager.TokenContentProvider"
             android:authorities="bd.com.evaly.econnect;bd.com.evaly.hero;com.evaly.ekhata;bd.com.evaly.merchant"
             android:enabled="true"
             android:exported="true"
-            android:multiprocess="true"
             android:grantUriPermissions="true"
+            android:multiprocess="true"
             android:readPermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._READ_PERMISSION"
-            android:writePermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._WRITE_PERMISSION"/>
+            android:writePermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._WRITE_PERMISSION" />
+
+
+        <activity
+            android:name=".ui.networkError.UnderMaintenanceActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.issue.IssuesActivity"
@@ -178,10 +183,10 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-        android:name=".ui.product.productDetails.ViewProductActivity"
-        android:label="@string/title_activity_view_product"
-        android:screenOrientation="portrait"
-        android:theme="@style/AppThemeViewProduct" />
+            android:name=".ui.product.productDetails.ViewProductActivity"
+            android:label="@string/title_activity_view_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeViewProduct" />
 
 
         <activity
@@ -235,9 +240,9 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_status_icon" />
         <!--
- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more.
-        -->
+     Set color used with incoming notification messages. This is used when no color is set for the incoming
+                 notification message. See README(https://goo.gl/6BKBk7) for more.
+            -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/evaly_color" />
