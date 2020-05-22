@@ -173,7 +173,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
 
-        navController = NavHostFragment.findNavController(this);
+        if (getActivity() instanceof MainActivity)
+            navController = NavHostFragment.findNavController(this);
         Bundle args = getArguments();
         appDatabase = AppDatabase.getInstance(getContext());
         cartDao = appDatabase.cartDao();
