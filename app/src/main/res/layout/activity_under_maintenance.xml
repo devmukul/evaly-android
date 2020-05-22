@@ -50,6 +50,6 @@
         android:background="@drawable/retry_btn"
         android:paddingLeft="100dp"
         android:paddingRight="100dp"
-        android:text="Close app"
+        android:text="Close This Dialog"
         android:textColor="#fff" />
 </LinearLayout>

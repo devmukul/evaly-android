@@ -197,8 +197,6 @@ public class MainActivity extends BaseActivity {
                         return onNavDestinationSelected(item, navController);
                 });
 
-
-        checkUpdate();
         setupRemoteConfig();
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
@@ -333,9 +331,10 @@ public class MainActivity extends BaseActivity {
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(BuildConfig.DEBUG)
-                .setMinimumFetchIntervalInSeconds(3600)
+                .setMinimumFetchIntervalInSeconds(800)
                 .build();
+        //.setDeveloperModeEnabled(BuildConfig.DEBUG)
+
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
 
         checkRemoteConfig();
@@ -346,16 +345,15 @@ public class MainActivity extends BaseActivity {
                 .fetchAndActivate()
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        boolean isForce = mFirebaseRemoteConfig.getValue("force_update").asBoolean();
-                        boolean shouldLogout = mFirebaseRemoteConfig.getValue("logout_on_force_update").asBoolean();
-                        boolean isUnderMaintenance = mFirebaseRemoteConfig.getValue("under_maintenance").asBoolean();
-                        String underMaintenanceMessage = mFirebaseRemoteConfig.getValue("under_maintenance_message").asString();
+                        boolean isForce = mFirebaseRemoteConfig.getBoolean("force_update");
+                        boolean shouldLogout = mFirebaseRemoteConfig.getBoolean("logout_on_force_update");
+                        boolean isUnderMaintenance = mFirebaseRemoteConfig.getBoolean("under_maintenance");
+                        String underMaintenanceMessage = mFirebaseRemoteConfig.getString("under_maintenance_message");
 
-                        int latestVersion = (int) mFirebaseRemoteConfig.getValue("latest_version").asLong();
+                        int latestVersion = (int) mFirebaseRemoteConfig.getLong("latest_version");
                         int versionCode = BuildConfig.VERSION_CODE;
 
                         if (isUnderMaintenance){
-                            finishAffinity();
                             Intent intent = new Intent(MainActivity.this, UnderMaintenanceActivity.class);
                             intent.putExtra("text", underMaintenanceMessage);
                             startActivity(intent);
@@ -581,38 +579,6 @@ public class MainActivity extends BaseActivity {
         return builder;
     }
 
-    private void checkUpdate() {
-
-        int versionCode = BuildConfig.VERSION_CODE;
-
-        AuthApiHelper.checkUpdate(new DataFetchingListener<Response<JsonObject>>() {
-            @Override
-            public void onDataFetched(Response<JsonObject> response) {
-                if (response.code() == 200 || response.code() == 201) {
-                    try {
-                        String version = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("version").getAsString();
-                        boolean isForce = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("force").getAsBoolean();
-                        int v = Integer.parseInt(version);
-
-                        if (versionCode < v && isForce) {
-                            userDetails.clearAll();
-                            MyPreference.with(MainActivity.this).clearAll();
-                            update(false);
-                        } else if (versionCode < v)
-                            update(true);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailed(int status) {
-
-            }
-        });
-    }
 
     private void update(boolean isCancelable) {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);

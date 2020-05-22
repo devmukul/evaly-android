@@ -25,7 +25,7 @@ public class UnderMaintenanceActivity extends AppCompatActivity {
         }
 
         button.setOnClickListener(v -> {
-            finishAffinity();
+            finish();
         });
     }
 }
