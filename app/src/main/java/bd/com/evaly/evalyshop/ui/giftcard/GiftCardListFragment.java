@@ -371,11 +371,12 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
                     total.setText(String.format("৳ %s", Utils.formatPrice(voucherAmount)));
                     cardValue.setText(String.format("৳ %d", item.getValue()));
 
-                    if (item.getImageUrl() == null)
-                        Glide.with(context).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(image);
-                    else
-                        Glide.with(context).load(item.getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(image);
-
+                    if (getContext() != null) {
+                        if (item.getImageUrl() == null)
+                            Glide.with(getContext()).load("https://beta.evaly.com.bd/static/images/gift-card.jpg").placeholder(R.drawable.ic_placeholder_small).into(image);
+                        else
+                            Glide.with(getContext()).load(item.getImageUrl()).placeholder(R.drawable.ic_placeholder_small).into(image);
+                    }
                     bottomSheetDialog.show();
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 

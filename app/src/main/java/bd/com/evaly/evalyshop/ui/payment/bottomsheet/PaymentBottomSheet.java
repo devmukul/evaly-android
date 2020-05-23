@@ -22,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.PaymentBottomSheetFragmentBinding;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaCard;
@@ -205,23 +206,27 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
 
         binding.evalyPay.setEnabled(true);
 
-        if (getContext() != null) {
-            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        if (getActivity() != null && !getActivity().isDestroyed() && !getActivity().isFinishing()) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             if (isVisible()) {
-                if (getActivity() != null) {
+                if (getActivity() instanceof OrderDetailsActivity)
                     ((OrderDetailsActivity) getActivity()).updatePage();
-                    dismiss();
+                else {
+                    Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+                    intent.putExtra("orderID", invoice_no);
+                    startActivity(intent);
                 }
+                dismiss();
             }
+
         }
     }
 
     @Override
     public void onPaymentFailed(String message) {
-
         binding.evalyPay.setEnabled(true);
         if (getContext() != null)
-            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(AppController.getmContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
