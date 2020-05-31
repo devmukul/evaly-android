@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -171,7 +172,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         });
 
         binding.card.setOnClickListener(v -> {
-
             try {
                 Double.parseDouble(binding.amountPay.getText().toString());
             } catch (Exception e) {
@@ -212,6 +212,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 if (getActivity() instanceof OrderDetailsActivity)
                     ((OrderDetailsActivity) getActivity()).updatePage();
                 else {
+                    NavHostFragment.findNavController(this).popBackStack(R.id.paymentFragment, true);
                     Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
                     intent.putExtra("orderID", invoice_no);
                     startActivity(intent);

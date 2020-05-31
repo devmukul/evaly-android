@@ -65,6 +65,7 @@ public class PaymentFragment extends Fragment {
         binding.viewDetails.setOnClickListener(view1 -> {
             Bundle bundle = new Bundle();
             bundle.putString("orderID", invoice_no);
+            NavHostFragment.findNavController(this).popBackStack();
             NavHostFragment.findNavController(this).navigate(R.id.orderDetailsActivity, bundle);
         });
 
@@ -89,8 +90,13 @@ public class PaymentFragment extends Fragment {
                 paid_amount = Double.parseDouble(response.getPaidAmount());
                 binding.totalPrice.setText(String.format("৳ %s", Utils.formatPrice(response.getTotal())));
                 binding.paidAmount.setText(String.format("৳ %s", Utils.formatPrice(response.getPaidAmount())));
+
+                double dueAmount = Double.parseDouble(response.getTotal()) - Double.parseDouble(response.getPaidAmount());
                 binding.duePrice.setText(String.format(Locale.ENGLISH, "৳ %s",
-                        Utils.formatPrice((Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount())))));
+                        Utils.formatPrice(dueAmount)));
+
+                if (dueAmount == 0)
+                    binding.makePayment.setVisibility(View.GONE);
             }
 
             @Override
@@ -105,6 +111,4 @@ public class PaymentFragment extends Fragment {
             }
         });
     }
-
-
 }

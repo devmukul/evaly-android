@@ -189,6 +189,7 @@
 
             </LinearLayout>
 
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
@@ -197,12 +198,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingRight="5dp"
                 android:paddingBottom="30dp">
 
 
                 <Button
                     android:id="@+id/continueShopping"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
@@ -220,10 +222,10 @@
 
                 <Button
                     android:id="@+id/makePayment"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_red"
                     android:fontFamily="sans-serif"
@@ -233,7 +235,7 @@
                     android:textAllCaps="false"
                     android:textColor="#fff"
                     android:textSize="14sp"
-                    android:textStyle="normal" />
+                    android:textStyle="normal"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
