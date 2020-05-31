@@ -94,6 +94,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class OrderDetailsActivity extends BaseActivity {
 
+    @BindView(R.id.hero)
+    ConstraintLayout heroHolder;
+    @BindView(R.id.heroName)
+    TextView heroName;
+    @BindView(R.id.heroPicture)
+    CircleImageView heroPicture;
+    @BindView(R.id.deliveryHeroStatus)
+    TextView heroStatus;
+    @BindView(R.id.btnToggleTimeline)
+    TextView btnToggleTimeline;
+    @BindView(R.id.heroCall)
+    ImageView heroCall;
     private double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
     private String shopSlug = "";
     private String invoice_no = "";
@@ -119,18 +131,6 @@ public class OrderDetailsActivity extends BaseActivity {
     private String imageUrl;
     private MenuItem cancelMenuItem;
     private MenuItem refundMenuItem;
-
-    @BindView(R.id.hero)
-    ConstraintLayout heroHolder;
-    @BindView(R.id.heroName)
-    TextView heroName;
-    @BindView(R.id.heroPicture)
-    CircleImageView heroPicture;
-    @BindView(R.id.deliveryHeroStatus)
-    TextView heroStatus;
-
-    @BindView(R.id.heroCall)
-    ImageView heroCall;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -259,6 +259,18 @@ public class OrderDetailsActivity extends BaseActivity {
         makePayment.setOnClickListener(v -> {
             PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
+        });
+
+        btnToggleTimeline.setOnClickListener(v -> {
+            if (adapter.isShowAll()) {
+                adapter.setShowAll(false);
+                btnToggleTimeline.setText("Show All");
+                adapter.notifyDataSetChanged();
+            } else {
+                adapter.setShowAll(true);
+                btnToggleTimeline.setText("Show Less");
+                adapter.notifyDataSetChanged();
+            }
         });
 
         payViaGiftCard = findViewById(R.id.payViaGiftCard);
@@ -948,6 +960,12 @@ public class OrderDetailsActivity extends BaseActivity {
 
                     adapter.notifyDataSetChanged();
                 }
+
+
+                if (list.size() > 4)
+                    btnToggleTimeline.setVisibility(View.VISIBLE);
+                else
+                    btnToggleTimeline.setVisibility(View.GONE);
             }
 
             @Override

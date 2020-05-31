@@ -179,7 +179,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginBottom="15dp"
                     android:orientation="horizontal">
 
@@ -192,6 +192,7 @@
                         android:text="@string/order_status"
                         android:textAllCaps="true"
                         android:textColor="#333"
+                        android:layout_marginTop="1dp"
                         android:textSize="18sp" />
 
                     <TextView
@@ -210,6 +211,25 @@
                         android:textSize="14sp"
                         android:visibility="gone" />
 
+                    <TextView
+                        android:id="@+id/btnToggleTimeline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/btn_show_more_order_timeline"
+                        android:drawablePadding="10dp"
+                        android:paddingStart="12dp"
+                        android:paddingTop="3dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="4dp"
+                        android:text="Show More"
+                        android:clickable="true"
+                        android:textColor="#333"
+                        android:textSize="14sp"
+                        android:visibility="gone"/>
+
+
                 </LinearLayout>
 
 
@@ -218,10 +238,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
+                    android:nestedScrollingEnabled="false"
                     android:paddingBottom="5dp"
-                    tools:itemCount="2"
+                    tools:itemCount="4"
                     tools:listitem="@layout/item_order_status">
 
                 </androidx.recyclerview.widget.RecyclerView>
@@ -276,6 +297,7 @@
                     android:id="@+id/product_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
                     android:paddingBottom="5dp"
                     tools:itemCount="2">
 

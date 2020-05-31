@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.auth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -14,7 +13,6 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
 
@@ -29,9 +27,6 @@ import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import retrofit2.Response;
 
 public class ChangePasswordActivity extends BaseActivity {
@@ -68,11 +63,11 @@ public class ChangePasswordActivity extends BaseActivity {
 
         showNew.setOnClickListener(v -> {
             if (!isNewShowing) {
-                isNewShowing = !isNewShowing;
+                isNewShowing = true;
                 newPassword.setInputType(InputType.TYPE_CLASS_TEXT);
                 showNew.setImageResource(R.drawable.ic_visibility_off);
             } else {
-                isNewShowing = !isNewShowing;
+                isNewShowing = false;
                 newPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 showNew.setImageResource(R.drawable.ic_visibility);
             }
@@ -138,6 +133,8 @@ public class ChangePasswordActivity extends BaseActivity {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
+                dialog.hideDialog();
+
                 Toast.makeText(ChangePasswordActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                 if (response.get("success").getAsBoolean()) {
                     CredentialManager.savePassword(newPassword.getText().toString());
@@ -145,11 +142,9 @@ public class ChangePasswordActivity extends BaseActivity {
                     data.put("user", CredentialManager.getUserName());
                     data.put("host", Constants.XMPP_HOST);
                     data.put("newpass", newPassword.getText().toString());
-                    Logger.d("===============");
                     AuthApiHelper.changeXmppPassword(data, new DataFetchingListener<Response<JsonPrimitive>>() {
                         @Override
                         public void onDataFetched(Response<JsonPrimitive> response) {
-//                        Logger.d(new Gson().toJson(response));
                             dialog.hideDialog();
                             if (response.code() == 200 || response.code() == 201) {
                                 Snackbar.make(newPassword, "Password change successfully, Please Login!", Snackbar.LENGTH_LONG).show();
@@ -161,7 +156,6 @@ public class ChangePasswordActivity extends BaseActivity {
 
                         @Override
                         public void onFailed(int status) {
-                            Logger.d("======-=-=-=-=-=-=");
                             dialog.hideDialog();
                             Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
 

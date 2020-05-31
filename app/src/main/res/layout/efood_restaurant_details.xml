@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -107,7 +105,7 @@
                         android:layout_height="15dp"
                         android:layout_below="@id/divider"
                         android:layout_marginTop="12dp"
-                        android:layout_toRightOf="@id/ivLogo"
+                        android:layout_toRightOf="@id/tvShopName"
                         android:src="@drawable/ic_star_filled" />
 
                     <TextView
@@ -246,50 +244,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:background="#fafafa" />
-
-                <LinearLayout
-                    android:id="@+id/layoutEmpty"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center_horizontal"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/ic_order_1" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:paddingLeft="15dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="15dp"
-                        android:paddingBottom="10dp"
-                        android:text="@string/products_listing_are_coming_soon"
-                        android:textColor="#152934"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:paddingLeft="15dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="15dp"
-                        android:paddingBottom="10dp"
-                        android:text="@string/shop_owner_didn_t_complete_product_listing_yet"
-                        android:textSize="14sp"
-                        android:textStyle="normal" />
-
-
-                </LinearLayout>
 
 
                 <androidx.recyclerview.widget.RecyclerView

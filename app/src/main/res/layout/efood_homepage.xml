@@ -53,8 +53,8 @@
                     android:layout_gravity="end"
                     android:layout_marginEnd="20dp"
                     android:tint="#5A6577"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_star" />
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/ic_marker_filled" />
 
             </androidx.appcompat.widget.Toolbar>
 
