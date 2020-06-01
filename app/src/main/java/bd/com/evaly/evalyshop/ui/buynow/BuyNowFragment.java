@@ -173,8 +173,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
 
-        if (getActivity() instanceof MainActivity)
-            navController = NavHostFragment.findNavController(this);
         Bundle args = getArguments();
         appDatabase = AppDatabase.getInstance(getContext());
         cartDao = appDatabase.cartDao();
@@ -274,7 +272,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         productQuantity.setText("1");
         productTotalPrice.setText(Utils.formatPriceSymbol(productPriceInt));
 
-        Glide.with(getActivity())
+        Glide.with(this)
                 .load(cartItem.getImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(250, 250))
@@ -333,6 +331,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         context = view.getContext();
         userDetails = new UserDetails(context);
 
+        if (getActivity() instanceof MainActivity)
+            navController = NavHostFragment.findNavController(this);
 
         skeleton = Skeleton.bind((LinearLayout) view.findViewById(R.id.linearLayout))
                 .load(R.layout.skeleton_buy_now_modal)
@@ -460,6 +460,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         bottomSheetDialog.setOnShowListener(dialog -> {
             BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
             FrameLayout bottomSheet = dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            assert bottomSheet != null;
             BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
             BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
             BottomSheetBehavior.from(bottomSheet).setHideable(true);
@@ -641,11 +642,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             if (isVisible() && isCancelable() && !getActivity().isDestroyed() && !getActivity().isFinishing())
                 dismissAllowingStateLoss();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
 }

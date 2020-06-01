@@ -5,13 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.bumptech.glide.Glide;
 
 import java.util.Locale;
 
@@ -21,6 +22,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class PaymentFragment extends Fragment {
@@ -48,6 +50,10 @@ public class PaymentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Glide.with(this)
+                .load(R.drawable.ic_successful_purchase_vector)
+                .into(binding.banner);
+
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         binding.toolbar.setNavigationOnClickListener(view1 -> {
             if (getActivity() != null)
@@ -65,7 +71,6 @@ public class PaymentFragment extends Fragment {
         binding.viewDetails.setOnClickListener(view1 -> {
             Bundle bundle = new Bundle();
             bundle.putString("orderID", invoice_no);
-            NavHostFragment.findNavController(this).popBackStack();
             NavHostFragment.findNavController(this).navigate(R.id.orderDetailsActivity, bundle);
         });
 
@@ -101,7 +106,7 @@ public class PaymentFragment extends Fragment {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                Toast.makeText(getContext(), "Error occurred!", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("Error occurred!");
             }
 
             @Override
