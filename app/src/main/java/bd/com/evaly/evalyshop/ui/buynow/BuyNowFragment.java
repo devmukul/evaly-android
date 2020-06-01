@@ -601,20 +601,17 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
 
                     if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
-                        dismissDialog();
                         JsonArray data = response.getAsJsonArray("data");
-                        for (int i = 0; i < data.size(); i++) {
-                            JsonObject item = data.get(i).getAsJsonObject();
-                            String invoice = item.get("invoice_no").getAsString();
-                            if (getActivity() instanceof MainActivity) {
-                                Bundle bundle = new Bundle();
-                                bundle.putString("invoice_no", invoice);
-                                navController.navigate(R.id.paymentFragment, bundle);
-                            } else {
-                                Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
-                                intent.putExtra("orderID", invoice);
-                                startActivity(intent);
-                            }
+                        JsonObject item = data.get(0).getAsJsonObject();
+                        String invoice = item.get("invoice_no").getAsString();
+                        if (getActivity() instanceof MainActivity) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("invoice_no", invoice);
+                            navController.navigate(R.id.paymentFragment, bundle);
+                        } else {
+                            Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+                            intent.putExtra("orderID", invoice);
+                            startActivity(intent);
                         }
                     }
                 }

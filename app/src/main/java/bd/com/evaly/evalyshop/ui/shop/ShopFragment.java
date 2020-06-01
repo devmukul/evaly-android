@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
@@ -70,6 +69,7 @@ import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
+    private ShopViewModelFactory viewModelFactory;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private String slug = "", campaign_slug = "", title = "";
     private String categorySlug = null;
@@ -81,7 +81,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private XMPPHandler xmppHandler;
     private List<String> rosterList;
     private ShopController controller;
-    private boolean isInitiated = false;
     private boolean clickFromCategory = false;
     private ShopViewModel viewModel;
     private FragmentShopBinding binding;
@@ -99,17 +98,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             xmppHandler = AppController.getmService().xmpp;
             rosterList = xmppHandler.rosterList;
-
-//            if (!shopDetailsModel.getOwnerName().equals("")) {
-//                try {
-//                    EntityBareJid jid = JidCreate.entityBareFrom(shopDetailsModel.getOwnerName() + "@"
-//                            + Constants.XMPP_HOST);
-//                    vCard = xmppHandler.getUserDetails(jid);
-//                    Logger.d(new Gson().toJson(vCard));
-//                } catch (XmppStringprepException e) {
-//                    e.printStackTrace();
-//                }
-//            }
         }
     };
 
@@ -141,10 +129,21 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        currentPage = 1;
-        totalCount = 0;
+        if (getArguments() == null) {
+            Toast.makeText(getContext(), "Shop not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
+        if (getArguments().containsKey("shop_name"))
+            title = getArguments().getString("shop_name");
+
+        if (getArguments().getString("campaign_slug") != null)
+            campaign_slug = getArguments().getString("campaign_slug");
+
+        slug = getArguments().getString("shop_slug");
+
+        viewModelFactory = new ShopViewModelFactory(categorySlug, campaign_slug, slug);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(ShopViewModel.class);
 
         binding.swipeRefresh.setOnRefreshListener(this);
 
@@ -174,26 +173,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
         binding.appBarLayout.homeSearch.setEnabled(false);
-
         binding.appBarLayout.searchTitle.setText("Search in this shop...");
 
-        if (getArguments() == null) {
-            Toast.makeText(getContext(), "Shop not available", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (getArguments().containsKey("shop_name"))
-            title = getArguments().getString("shop_name");
-
-        if (getArguments().getString("campaign_slug") != null)
-            campaign_slug = getArguments().getString("campaign_slug");
-
-        slug = getArguments().getString("shop_slug");
-
-        viewModel.setCampaignSlug(campaign_slug);
-
-        viewModel.setCategorySlug(categorySlug);
-        viewModel.setShopSlug(slug);
 
         binding.shimmer.startShimmer();
         controller = new ShopController();
@@ -233,6 +214,12 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
+        viewModelLiveDataObservers();
+
+    }
+
+    private void viewModelLiveDataObservers() {
+
         viewModel.getOnChatClickLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean)
                 setUpXmpp();
@@ -240,17 +227,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> loadShopDetails(shopDetailsModel));
 
-        viewModel.setCategoryCurrentPage(1);
-
-        if (isInitiated)
-            viewModel.setCurrentPage(2);
-        else
-            viewModel.setCurrentPage(1);
-
-        if (!isInitiated) {
-            isInitiated = true;
-            viewModel.loadShopProducts();
-        }
 
         viewModel.getBuyNowLiveData().observe(getViewLifecycleOwner(), s -> {
             if (getActivity() != null) {
@@ -272,8 +248,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             controller.clear();
             controller.setLoadingMore(true);
             viewModel.loadShopProducts();
-            AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
-            appBarLayout.setExpanded(false, true);
+            binding.appBarLayout.appBarLayout.setExpanded(false, true);
         });
 
         viewModel.getOnResetLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
@@ -287,6 +262,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 viewModel.loadShopProducts();
             }
         });
+
     }
 
     @Override
@@ -579,8 +555,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding.recyclerView.setAdapter(null);
-        disconnectXmpp();
+        // disconnectXmpp();
     }
 
 }

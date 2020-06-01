@@ -37,6 +37,18 @@ public class ShopViewModel extends ViewModel {
     private int categoryCurrentPage = 1;
 
 
+    public ShopViewModel(String categorySlug, String campaignSlug, String shopSlug) {
+        super();
+        this.categorySlug = categorySlug;
+        this.campaignSlug = campaignSlug;
+        this.shopSlug = shopSlug;
+
+        currentPage = 1;
+        categoryCurrentPage = 1;
+
+        loadShopProducts();
+    }
+
     public void clear() {
         currentPage = 2;
         categoryCurrentPage = 1;
