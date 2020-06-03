@@ -231,7 +231,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> loadShopDetails(shopDetailsModel));
 
-
         viewModel.getBuyNowLiveData().observe(getViewLifecycleOwner(), s -> {
             if (getActivity() != null) {
                 BuyNowFragment addPhotoBottomDialogFragment =

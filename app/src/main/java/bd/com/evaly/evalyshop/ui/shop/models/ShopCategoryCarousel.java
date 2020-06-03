@@ -16,8 +16,6 @@ public class ShopCategoryCarousel extends Carousel {
         setNestedScrollingEnabled(false);
     }
 
-
-
     @Nullable
     @Override
     protected SnapHelperFactory getSnapHelperFactory() {

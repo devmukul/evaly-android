@@ -26,7 +26,9 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryCarouselModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryItemModel_;
+import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopHeaderModel_;
+import bd.com.evaly.evalyshop.ui.shop.models.ShopProductTitleModel_;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class ShopController extends EpoxyController {
@@ -39,6 +41,12 @@ public class ShopController extends EpoxyController {
     NoProductModel_ noProductModel;
     @AutoModel
     ShopCategoryCarouselModel_ categoryCarouselModel;
+    @AutoModel
+    ShopCategoryTitleModel_ categoryTitleModel;
+    @AutoModel
+    ShopProductTitleModel_ productTitleModel;
+
+
     private AppCompatActivity activity;
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
@@ -65,8 +73,8 @@ public class ShopController extends EpoxyController {
             requestModelBuild();
     }
 
-    public void setAttr(ShopDetailsModel shopInfo) {
-        this.shopInfo = shopInfo;
+    public void setAttr(ShopDetailsModel info) {
+        this.shopInfo = info;
     }
 
     @Override
@@ -78,11 +86,18 @@ public class ShopController extends EpoxyController {
                 .viewModel(viewModel)
                 .addTo(this);
 
+        categoryTitleModel.addTo(this);
+
         List<ShopCategoryItemModel_> categoryModelList = new ArrayList<>();
         for (int i = 0; i < categoryItems.size(); i++) {
             categoryModelList.add(new ShopCategoryItemModel_()
                     .id("category_" + categoryItems.get(i))
-                    .model(categoryItems.get(i)));
+                    .model(categoryItems.get(i))
+                    .onBind((model, view, position) -> {
+                        if (position >= categoryItems.size() - 4)
+                            viewModel.loadShopCategories();
+                    })
+            );
         }
 
         categoryCarouselModel
@@ -107,6 +122,7 @@ public class ShopController extends EpoxyController {
                 .models(categoryModelList)
                 .addTo(this);
 
+        productTitleModel.addTo(this);
 
         for (ProductItem productItem : items) {
 
