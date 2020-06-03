@@ -449,6 +449,7 @@ public class OrderDetailsActivity extends BaseActivity {
                 heroName.setText(String.format("%s %s", response.getData().getUser().getFirstName(), response.getData().getUser().getLastName()));
                 Glide.with(OrderDetailsActivity.this)
                         .load(response.getData().getUser().getProfilePicUrl())
+                        .placeholder(R.drawable.user_image)
                         .into(heroPicture);
 
                 heroCall.setOnClickListener(v -> {
