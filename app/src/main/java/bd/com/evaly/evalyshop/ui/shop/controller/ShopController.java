@@ -2,11 +2,14 @@ package bd.com.evaly.evalyshop.ui.shop.controller;
 
 
 import android.content.Intent;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
+import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.EpoxyController;
 
 import java.util.ArrayList;
@@ -15,35 +18,35 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
-import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryModel_;
+import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryCarouselModel_;
+import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryItemModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopHeaderModel_;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class ShopController extends EpoxyController {
 
+    @AutoModel
+    ShopHeaderModel_ headerModel;
+    @AutoModel
+    LoadingModel_ loader;
+    @AutoModel
+    NoProductModel_ noProductModel;
+    @AutoModel
+    ShopCategoryCarouselModel_ categoryCarouselModel;
     private AppCompatActivity activity;
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
+    private List<TabsItem> categoryItems = new ArrayList<>();
+
     private ShopDetailsModel shopInfo;
     private int cashbackRate = 0;
     private ShopViewModel viewModel;
-
-    @AutoModel
-    ShopHeaderModel_ headerModel;
-
-    @AutoModel
-    LoadingModel_ loader;
-
-    @AutoModel
-    ShopCategoryModel_ categoryModel;
-
-    @AutoModel
-    NoProductModel_ noProductModel;
-
     private boolean loadingMore = true;
     private boolean emptyPage = false;
 
@@ -75,11 +78,35 @@ public class ShopController extends EpoxyController {
                 .viewModel(viewModel)
                 .addTo(this);
 
-        categoryModel
-                .viewModel(viewModel)
-                .activity(activity)
-                .fragment(fragment)
+        List<ShopCategoryItemModel_> categoryModelList = new ArrayList<>();
+        for (int i = 0; i < categoryItems.size(); i++) {
+            categoryModelList.add(new ShopCategoryItemModel_()
+                    .id("category_" + categoryItems.get(i))
+                    .model(categoryItems.get(i)));
+        }
+
+        categoryCarouselModel
+                .onBind((model, view, position) -> {
+                    if (view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+                        params.setFullSpan(true);
+                    } else {
+                        StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
+                        );
+                        params.setFullSpan(true);
+                        view.setLayoutParams(params);
+                    }
+                })
+                .padding(new Carousel.Padding(
+                        (int) Utils.convertDpToPixel(5, activity),
+                        (int) Utils.convertDpToPixel(5, activity), 50,
+                        (int) Utils.convertDpToPixel(20, activity),
+                        0))
+                .models(categoryModelList)
                 .addTo(this);
+
 
         for (ProductItem productItem : items) {
 
@@ -119,6 +146,11 @@ public class ShopController extends EpoxyController {
 
     public void addData(List<ProductItem> productItems) {
         this.items.addAll(productItems);
+        requestModelBuild();
+    }
+
+    public void addCategoryData(List<TabsItem> categoryItems) {
+        this.categoryItems.addAll(categoryItems);
         requestModelBuild();
     }
 

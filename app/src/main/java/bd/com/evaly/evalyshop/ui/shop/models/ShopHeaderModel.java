@@ -153,6 +153,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             });
 
             viewModel.loadRatings();
+            viewModel.loadShopCategories();
         }
 
     }

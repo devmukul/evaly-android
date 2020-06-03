@@ -220,6 +220,10 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void viewModelLiveDataObservers() {
 
+        viewModel.getShopCategoryListLiveData().observe(getViewLifecycleOwner(), categoryList -> {
+            controller.addCategoryData(categoryList);
+        });
+
         viewModel.getOnChatClickLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean)
                 setUpXmpp();
