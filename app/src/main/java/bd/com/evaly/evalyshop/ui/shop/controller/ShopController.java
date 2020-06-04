@@ -4,6 +4,7 @@ package bd.com.evaly.evalyshop.ui.shop.controller;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -98,7 +99,6 @@ public class ShopController extends EpoxyController {
                     .id("category_" + categoryItems.get(i))
                     .model(categoryItems.get(i))
                     .clickListener((model, parentView, clickedView, position) -> {
-                        setCategoryTitle("hm");
                         viewModel.setSelectedCategoryLiveData(model.getModel());
                     })
                     .onBind((model, view, position) -> {
@@ -110,20 +110,15 @@ public class ShopController extends EpoxyController {
 
         categoryCarouselModel
                 .onBind((model, view, position) -> {
-                    if (view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-                        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-                        params.setFullSpan(true);
-                    } else {
-                        StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                        );
-                        params.setFullSpan(true);
-                        view.setLayoutParams(params);
-                    }
+                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    params.setFullSpan(true);
+                    view.setLayoutParams(params);
                 })
                 .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(5, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
                         (int) Utils.convertDpToPixel(5, activity),
                         50,
                         (int) Utils.convertDpToPixel(5, activity),
@@ -178,7 +173,19 @@ public class ShopController extends EpoxyController {
                 .image(R.drawable.ic_empty_product)
                 .addIf(emptyPage, this);
 
-        loader.addIf(loadingMore, this);
+        loader
+                .onBind((model, view, position) -> {
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.itemView.getLayoutParams();
+                    params.setFullSpan(true);
+                    if (categoryTitle != null && items.size() == 0) {
+                        params.height = LinearLayout.LayoutParams.MATCH_PARENT;
+                        params.topMargin = 100;
+                    } else {
+                        params.topMargin = 0;
+                        params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                })
+                .addIf(loadingMore, this);
 
     }
 
@@ -187,9 +194,10 @@ public class ShopController extends EpoxyController {
         requestModelBuild();
     }
 
-    public void addCategoryData(List<TabsItem> categoryItems) {
+    public void addCategoryData(List<TabsItem> categoryItems, boolean build) {
         this.categoryItems.addAll(categoryItems);
-        requestModelBuild();
+        if (build)
+            requestModelBuild();
     }
 
     public void setActivity(AppCompatActivity activity) {

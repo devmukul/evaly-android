@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.epoxyModels;
 
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -22,15 +23,16 @@ public abstract class LoadingModel extends EpoxyModelWithHolder<LoadingModel.Hol
 
     }
 
-    static class Holder extends EpoxyHolder {
-
-        View itemView;
+    public static class Holder extends EpoxyHolder {
+        public View itemView;
+        public LinearLayout container;
 
         @Override
         protected void bindView(@NonNull View itemView) {
             this.itemView = itemView;
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) itemView.getLayoutParams();
             params.setFullSpan(true);
+            container = itemView.findViewById(R.id.container);
         }
     }
 

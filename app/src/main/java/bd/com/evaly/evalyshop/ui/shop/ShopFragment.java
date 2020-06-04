@@ -100,11 +100,12 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             rosterList = xmppHandler.rosterList;
         }
     };
+    private ShopDetailsModel fullShopDetailsModel;
+
 
     public ShopFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -175,12 +176,13 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.appBarLayout.homeSearch.setEnabled(false);
         binding.appBarLayout.searchTitle.setText("Search in this shop...");
 
-
         binding.shimmer.startShimmer();
         controller = new ShopController();
         controller.setActivity((AppCompatActivity) getActivity());
         controller.setFragment(this);
         controller.setViewModel(viewModel);
+        if (fullShopDetailsModel != null)
+            controller.setAttr(fullShopDetailsModel);
 
         int spanCount = 2;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -221,7 +223,10 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void viewModelLiveDataObservers() {
 
         viewModel.getShopCategoryListLiveData().observe(getViewLifecycleOwner(), categoryList -> {
-            controller.addCategoryData(categoryList);
+            if (fullShopDetailsModel == null)
+                controller.addCategoryData(categoryList, false);
+            else
+                controller.addCategoryData(categoryList, true);
         });
 
         viewModel.getOnChatClickLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
@@ -295,15 +300,15 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-
     private void disconnectXmpp() {
         if (xmppHandler != null)
             xmppHandler.disconnect();
         Objects.requireNonNull(getActivity()).stopService(new Intent(getActivity(), XMPPService.class));
     }
 
-
     public void loadShopDetails(ShopDetailsModel response) {
+
+        fullShopDetailsModel = response;
 
         isLoading = false;
 
@@ -370,8 +375,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         binding.shimmerHolder.setVisibility(View.GONE);
                     }
                 });
-
-
     }
 
     private void setUpXmpp() {

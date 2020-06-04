@@ -3,7 +3,6 @@ package bd.com.evaly.evalyshop.ui.shop.models;
 import android.content.Context;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.airbnb.epoxy.Carousel;
 import com.airbnb.epoxy.ModelView;
@@ -13,7 +12,6 @@ public class ShopCategoryCarousel extends Carousel {
 
     public ShopCategoryCarousel(Context context) {
         super(context);
-        setNestedScrollingEnabled(false);
     }
 
     @Nullable
@@ -21,11 +19,11 @@ public class ShopCategoryCarousel extends Carousel {
     protected SnapHelperFactory getSnapHelperFactory() {
         return null;
     }
-
-    @Nullable
-    @Override
-    public LayoutManager createLayoutManager() {
-        return new GridLayoutManager(getContext(), 2,
-                GridLayoutManager.HORIZONTAL, false);
-    }
+//
+////    @Nullable
+////    @Override
+////    public LayoutManager createLayoutManager() {
+////        return new Lin(getContext(), 1,
+////                GridLayoutManager.HORIZONTAL, false);
+////    }
 }

@@ -65,7 +65,7 @@ public abstract class ShopCategoryItemModel extends DataBindingEpoxyModel {
                 .into(binding.image);
 
         binding.text.setText(model.getTitle());
-        binding.image.setOnClickListener(clickListener);
+        binding.categoryItem.setOnClickListener(clickListener);
     }
 
 

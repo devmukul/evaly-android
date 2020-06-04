@@ -62,6 +62,9 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
 
+            if (shopInfo == null || shopInfo.getData() == null)
+                return;
+
             Shop shop = shopInfo.getData().getShop();
 
             binding.name.setText(shop.getName());
@@ -153,7 +156,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             });
 
             viewModel.loadRatings();
-            viewModel.loadShopCategories();
+
         }
 
     }

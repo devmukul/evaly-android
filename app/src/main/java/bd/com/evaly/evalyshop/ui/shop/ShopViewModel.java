@@ -35,6 +35,8 @@ public class ShopViewModel extends ViewModel {
     private String shopSlug;
     private int currentPage = 1;
     private int categoryCurrentPage = 1;
+    private Integer categoryCount = null;
+    private boolean isCategoryLoading = false;
 
 
     public ShopViewModel(String categorySlug, String campaignSlug, String shopSlug) {
@@ -47,6 +49,7 @@ public class ShopViewModel extends ViewModel {
         categoryCurrentPage = 1;
 
         loadShopProducts();
+        loadShopCategories();
     }
 
     public void clear() {
@@ -217,12 +220,24 @@ public class ShopViewModel extends ViewModel {
 
     public void loadShopCategories() {
 
+        if (isCategoryLoading)
+            return;
+
+        if (categoryCount == null || (shopCategoryListLiveData.getValue() != null && categoryCurrentPage * 15 < categoryCount)) {
+        } else
+            return;
+
+        isCategoryLoading = true;
+
         ProductApiHelper.getCategoriesOfShop(shopSlug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
+                isCategoryLoading = false;
 
                 List<TabsItem> itemList = new ArrayList<>();
                 JsonArray jsonArray = response.getAsJsonArray("data");
+
+                categoryCount = response.get("count").getAsInt();
 
                 for (int i = 0; i < jsonArray.size(); i++) {
                     JsonObject ob = jsonArray.get(i).getAsJsonObject();
