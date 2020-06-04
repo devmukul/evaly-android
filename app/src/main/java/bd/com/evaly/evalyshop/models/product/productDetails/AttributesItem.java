@@ -3,12 +3,13 @@ package bd.com.evaly.evalyshop.models.product.productDetails;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class AttributesItem{
 
+	@SerializedName("attribute_data")
+	private AttributeData attributeData;
+
 	@SerializedName("attribute_values")
-	private List<AttributeValuesItem> attributeValues;
+	private String attributeValues;
 
 	@SerializedName("attribute_slug")
 	private String attributeSlug;
@@ -16,12 +17,17 @@ public class AttributesItem{
 	@SerializedName("attribute_name")
 	private String attributeName;
 
-	public void setAttributeValues(List<AttributeValuesItem> attributeValues){
-		this.attributeValues = attributeValues;
+
+	public AttributeData getAttributeData() {
+		return attributeData;
 	}
 
-	public List<AttributeValuesItem> getAttributeValues(){
-		return attributeValues;
+	public void setAttributeData(AttributeData attributeData) {
+		this.attributeData = attributeData;
+	}
+
+	public void setAttributeValues(String attributeValues) {
+		this.attributeValues = attributeValues;
 	}
 
 	public void setAttributeSlug(String attributeSlug){

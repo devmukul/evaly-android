@@ -28,14 +28,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.ViewUtils;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.DialogFragmentNavigator;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -467,33 +462,33 @@ public class ViewProductActivity extends BaseActivity {
         specificationAdapter.notifyDataSetChanged();
         shareURL = "https://evaly.com.bd/products/" + slug;
         populateProductByVariant(firstProductVariantsItem);
-
-        for (int i = 0; i < productVariantsItemList.size(); i++) {
-            for (int j = 0; j < productVariantsItemList.get(i).getAttributeValues().size(); j++) {
-                int variantValue = productVariantsItemList.get(i).getAttributeValues().get(j);
-                for (int k = 0; k < productAttributesItemList.size(); k++) {
-                    for (int l = 0; l < productAttributesItemList.get(k).getAttributeValues().size(); l++) {
-                        AttributeValuesItem attributeValuesItem = productAttributesItemList.get(k).getAttributeValues().get(l);
-
-                        if (attributeValuesItem.getKey() == variantValue)
-                            attributeValuesItem.setColor_image(productVariantsItemList.get(i).getColorImage());
-                    }
-                }
-            }
-        }
+//
+//        for (int i = 0; i < productVariantsItemList.size(); i++) {
+//            for (int j = 0; j < productVariantsItemList.get(i).getAttributeValues().size(); j++) {
+//                int variantValue = productVariantsItemList.get(i).getAttributeValues().get(j);
+//                for (int k = 0; k < productAttributesItemList.size(); k++) {
+//                    for (int l = 0; l < productAttributesItemList.get(k).getAttributeValues().size(); l++) {
+//                        AttributeValuesItem attributeValuesItem = productAttributesItemList.get(k).getAttributeValues().get(l);
+//
+//                        if (attributeValuesItem.getKey() == variantValue)
+//                            attributeValuesItem.setColor_image(productVariantsItemList.get(i).getColorImage());
+//                    }
+//                }
+//            }
+//        }
 
         if (productAttributesItemList.size() > 0) {
-            if (productAttributesItemList.get(0).getAttributeName().equalsIgnoreCase("Size"))
-                populateSizeOption(productAttributesItemList.get(0).getAttributeValues());
+            if (productAttributesItemList.get(0).getAttributeData().getType().equalsIgnoreCase("Size"))
+                populateSizeOption(productAttributesItemList.get(0).getAttributeData().getValues());
             else if (productAttributesItemList.get(0).getAttributeName().equalsIgnoreCase("Color"))
-                populateColorOption(productAttributesItemList.get(0).getAttributeValues());
+                populateColorOption(productAttributesItemList.get(0).getAttributeData().getValues());
         }
 
         if (productAttributesItemList.size() > 1) {
-            if (productAttributesItemList.get(1).getAttributeName().equalsIgnoreCase("Color"))
-                populateColorOption(productAttributesItemList.get(1).getAttributeValues());
+            if (productAttributesItemList.get(1).getAttributeData().getType().equalsIgnoreCase("Color"))
+                populateColorOption(productAttributesItemList.get(1).getAttributeData().getValues());
             else if (productAttributesItemList.get(1).getAttributeName().equalsIgnoreCase("Size"))
-                populateSizeOption(productAttributesItemList.get(1).getAttributeValues());
+                populateSizeOption(productAttributesItemList.get(1).getAttributeData().getValues());
         }
 
     }
