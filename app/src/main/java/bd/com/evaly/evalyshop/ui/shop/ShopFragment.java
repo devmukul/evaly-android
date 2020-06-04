@@ -273,6 +273,32 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
+        viewModel.getProductListLiveData().observe(getViewLifecycleOwner(), shopItems -> {
+            binding.recyclerView.setVisibility(View.VISIBLE);
+
+            List<ProductItem> tempList = new ArrayList<>();
+
+            long timeInMill = Calendar.getInstance().getTimeInMillis();
+            for (int i = 0; i < shopItems.size(); i++) {
+                if (i == 0)
+                    currentPage++;
+
+                ItemsItem shopItem = shopItems.get(i);
+                ProductItem item = new ProductItem();
+                item.setImageUrls(shopItem.getItemImages());
+                item.setSlug(shopItem.getShopItemSlug());
+                item.setName(shopItem.getItemName());
+                item.setMaxPrice(String.valueOf(shopItem.getItemPrice()));
+                item.setMinPrice(String.valueOf(shopItem.getItemPrice()));
+                item.setMinDiscountedPrice(String.valueOf(shopItem.getDiscountedPrice()));
+                item.setUniqueId(item.getSlug());
+
+                tempList.add(item);
+            }
+
+            controller.addData(tempList);
+        });
+
     }
 
     @Override
@@ -321,10 +347,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             controller.setAttr(response);
             if (shopData.getMeta() != null)
                 controller.setCashbackRate(shopData.getMeta().get("cashback_rate").getAsInt());
-
             shopDetailsModel = shopDetails;
         }
-
 
         binding.appBarLayout.homeSearch.setEnabled(true);
 
@@ -332,33 +356,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         totalCount = response.getCount();
 
-        List<ItemsItem> shopItems = shopData.getItems();
-
-        binding.recyclerView.setVisibility(View.VISIBLE);
-
-        List<ProductItem> tempList = new ArrayList<>();
-
-        long timeInMill = Calendar.getInstance().getTimeInMillis();
-        for (int i = 0; i < shopItems.size(); i++) {
-            if (i == 0)
-                currentPage++;
-
-            ItemsItem shopItem = shopItems.get(i);
-            ProductItem item = new ProductItem();
-            item.setImageUrls(shopItem.getItemImages());
-            item.setSlug(shopItem.getShopItemSlug());
-            item.setName(shopItem.getItemName());
-            item.setMaxPrice(String.valueOf(shopItem.getItemPrice()));
-            item.setMinPrice(String.valueOf(shopItem.getItemPrice()));
-            item.setMinDiscountedPrice(String.valueOf(shopItem.getDiscountedPrice()));
-            item.setUniqueId(item.getSlug() + timeInMill);
-
-            tempList.add(item);
-        }
-
-        controller.addData(tempList);
-
-        if (totalCount == 0) controller.showEmptyPage(true, true);
+        if (totalCount == 0)
+            controller.showEmptyPage(true, true);
 
         if (clickFromCategory) {
             binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(4), 200);
@@ -555,6 +554,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.shimmer.startShimmer();
 
         controller.clear();
+        viewModel.clearProductList();
         viewModel.setCurrentPage(1);
         viewModel.loadShopProducts();
 

@@ -12,6 +12,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
@@ -28,6 +29,7 @@ public class ShopViewModel extends ViewModel {
     private MutableLiveData<JsonObject> ratingSummary = new MutableLiveData<>();
     private MutableLiveData<ShopDetailsModel> shopDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<TabsItem>> shopCategoryListLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ItemsItem>> productListLiveData = new MutableLiveData<>();
     private SingleLiveEvent<String> buyNowLiveData = new SingleLiveEvent<>();
     private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
     private String categorySlug;
@@ -37,6 +39,10 @@ public class ShopViewModel extends ViewModel {
     private int categoryCurrentPage = 1;
     private Integer categoryCount = null;
     private boolean isCategoryLoading = false;
+
+
+    private List<TabsItem> categoryArrayList = new ArrayList<>();
+    private List<ItemsItem> productArrayList = new ArrayList<>();
 
 
     public ShopViewModel(String categorySlug, String campaignSlug, String shopSlug) {
@@ -55,6 +61,14 @@ public class ShopViewModel extends ViewModel {
     public void clear() {
         currentPage = 2;
         categoryCurrentPage = 1;
+    }
+
+    public LiveData<List<ItemsItem>> getProductListLiveData() {
+        return productListLiveData;
+    }
+
+    public void setProductListLiveData(MutableLiveData<List<ItemsItem>> productListLiveData) {
+        this.productListLiveData = productListLiveData;
     }
 
     public int getCategoryCurrentPage() {
@@ -199,7 +213,11 @@ public class ShopViewModel extends ViewModel {
         ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
+
                 shopDetailsLiveData.setValue(response);
+
+                productArrayList.addAll(response.getData().getItems());
+                productListLiveData.setValue(productArrayList);
                 if (response.getCount() > 0)
                     currentPage++;
             }
@@ -248,7 +266,10 @@ public class ShopViewModel extends ViewModel {
                     tabsItem.setCategory(shopSlug);
                     itemList.add(tabsItem);
                 }
-                shopCategoryListLiveData.setValue(itemList);
+
+                categoryArrayList.addAll(itemList);
+                shopCategoryListLiveData.setValue(categoryArrayList);
+                // shopCategoryListLiveData.setValue(itemList);
                 categoryCurrentPage++;
             }
 
@@ -265,5 +286,7 @@ public class ShopViewModel extends ViewModel {
 
     }
 
-
+    public void clearProductList() {
+        productArrayList.clear();
+    }
 }

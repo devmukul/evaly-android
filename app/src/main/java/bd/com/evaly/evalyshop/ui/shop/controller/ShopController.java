@@ -190,12 +190,12 @@ public class ShopController extends EpoxyController {
     }
 
     public void addData(List<ProductItem> productItems) {
-        this.items.addAll(productItems);
+        this.items = productItems;
         requestModelBuild();
     }
 
     public void addCategoryData(List<TabsItem> categoryItems, boolean build) {
-        this.categoryItems.addAll(categoryItems);
+        this.categoryItems = categoryItems;
         if (build)
             requestModelBuild();
     }
