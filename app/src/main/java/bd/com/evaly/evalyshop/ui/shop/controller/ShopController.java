@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.shop.controller;
 
 
 import android.content.Intent;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ShopModelTitleProductBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -57,6 +59,7 @@ public class ShopController extends EpoxyController {
     private ShopViewModel viewModel;
     private boolean loadingMore = true;
     private boolean emptyPage = false;
+    private String categoryTitle = null;
 
     public ShopController() {
         setDebugLoggingEnabled(true);
@@ -86,13 +89,18 @@ public class ShopController extends EpoxyController {
                 .viewModel(viewModel)
                 .addTo(this);
 
-        categoryTitleModel.addTo(this);
+        categoryTitleModel
+                .addTo(this);
 
         List<ShopCategoryItemModel_> categoryModelList = new ArrayList<>();
         for (int i = 0; i < categoryItems.size(); i++) {
             categoryModelList.add(new ShopCategoryItemModel_()
                     .id("category_" + categoryItems.get(i))
                     .model(categoryItems.get(i))
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        setCategoryTitle("hm");
+                        viewModel.setSelectedCategoryLiveData(model.getModel());
+                    })
                     .onBind((model, view, position) -> {
                         if (position >= categoryItems.size() - 4)
                             viewModel.loadShopCategories();
@@ -116,13 +124,27 @@ public class ShopController extends EpoxyController {
                 })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(5, activity),
-                        (int) Utils.convertDpToPixel(5, activity), 50,
-                        (int) Utils.convertDpToPixel(20, activity),
+                        (int) Utils.convertDpToPixel(5, activity),
+                        50,
+                        (int) Utils.convertDpToPixel(5, activity),
                         0))
                 .models(categoryModelList)
                 .addTo(this);
 
-        productTitleModel.addTo(this);
+        productTitleModel
+                .title(categoryTitle)
+                .clickListener((model, parentView, clickedView, position) -> viewModel.setOnResetLiveData(true))
+                .onBind((model, view, position) -> {
+                    ShopModelTitleProductBinding binding = (ShopModelTitleProductBinding) view.getDataBinding();
+                    if (categoryTitle == null) {
+                        binding.categoryTitle.setText(R.string.all_products);
+                        binding.resetBtn.setVisibility(View.GONE);
+                    } else {
+                        binding.categoryTitle.setText(categoryTitle);
+                        binding.resetBtn.setVisibility(View.VISIBLE);
+                    }
+                })
+                .addTo(this);
 
         for (ProductItem productItem : items) {
 
@@ -200,6 +222,11 @@ public class ShopController extends EpoxyController {
 
     public ShopDetailsModel getShopInfo() {
         return shopInfo;
+    }
+
+    public void setCategoryTitle(String categoryTitle) {
+        this.categoryTitle = categoryTitle;
+        requestModelBuild();
     }
 }
 

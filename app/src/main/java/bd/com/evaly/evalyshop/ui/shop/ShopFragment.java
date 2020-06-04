@@ -246,6 +246,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             categorySlug = tabsItem.getSlug();
             viewModel.setCategorySlug(categorySlug);
             viewModel.setCurrentPage(1);
+            controller.setCategoryTitle(tabsItem.getTitle());
 
             currentPage = 1;
             controller.clear();
@@ -258,6 +259,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             if (aBoolean) {
                 viewModel.setCategorySlug(null);
                 viewModel.setCurrentPage(1);
+                controller.setCategoryTitle(null);
                 currentPage = 1;
                 controller.clear();
                 controller.setLoadingMore(true);
@@ -354,7 +356,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (totalCount == 0) controller.showEmptyPage(true, true);
 
         if (clickFromCategory) {
-            binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(2), 200);
+            binding.recyclerView.postDelayed(() -> binding.recyclerView.smoothScrollToPosition(4), 200);
             clickFromCategory = false;
         }
 
