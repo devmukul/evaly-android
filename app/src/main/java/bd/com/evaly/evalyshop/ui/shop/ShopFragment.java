@@ -223,6 +223,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void viewModelLiveDataObservers() {
 
         viewModel.getShopCategoryListLiveData().observe(getViewLifecycleOwner(), categoryList -> {
+            controller.setCategoriesLoading(false);
             if (fullShopDetailsModel == null)
                 controller.addCategoryData(categoryList, false);
             else

@@ -60,7 +60,16 @@ public class ShopController extends EpoxyController {
     private ShopViewModel viewModel;
     private boolean loadingMore = true;
     private boolean emptyPage = false;
+    private boolean categoriesLoading = false;
     private String categoryTitle = null;
+
+    public boolean isCategoriesLoading() {
+        return categoriesLoading;
+    }
+
+    public void setCategoriesLoading(boolean categoriesLoading) {
+        this.categoriesLoading = categoriesLoading;
+    }
 
     public ShopController() {
         setDebugLoggingEnabled(true);
@@ -91,7 +100,7 @@ public class ShopController extends EpoxyController {
                 .addTo(this);
 
         categoryTitleModel
-                .addTo(this);
+                .addIf(!categoriesLoading && categoryItems.size() > 0,this);
 
         List<ShopCategoryItemModel_> categoryModelList = new ArrayList<>();
         for (int i = 0; i < categoryItems.size(); i++) {
