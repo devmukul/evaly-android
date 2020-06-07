@@ -53,8 +53,6 @@ public abstract class SmallCategoryModel extends DataBindingEpoxyModel {
         super.bind(holder);
 
         ItemShopCategorySmallBinding binding = (ItemShopCategorySmallBinding) holder.getDataBinding();
-        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
-        params.setFullSpan(false);
 
         binding.text.setText(Html.fromHtml(model.getTitle()));
 

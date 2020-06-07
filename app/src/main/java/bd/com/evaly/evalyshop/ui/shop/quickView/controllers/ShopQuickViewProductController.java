@@ -22,6 +22,7 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
+import bd.com.evaly.evalyshop.ui.shop.quickView.ShopQuickViewModel;
 import bd.com.evaly.evalyshop.ui.shop.quickView.models.SmallProductGridModel_;
 
 public class ShopQuickViewProductController extends EpoxyController {
@@ -39,7 +40,7 @@ public class ShopQuickViewProductController extends EpoxyController {
 
     private ShopDetailsModel shopInfo;
     private int cashbackRate = 0;
-    private ShopViewModel viewModel;
+    private ShopQuickViewModel viewModel;
     private boolean loadingMore = true;
     private boolean emptyPage = false;
     private String categoryTitle = null;
@@ -143,7 +144,7 @@ public class ShopQuickViewProductController extends EpoxyController {
         this.cashbackRate = cashbackRate;
     }
 
-    public void setViewModel(ShopViewModel viewModel) {
+    public void setViewModel(ShopQuickViewModel viewModel) {
         this.viewModel = viewModel;
     }
 

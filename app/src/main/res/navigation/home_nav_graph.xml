@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/shopQuickViewFragment">
 
     <action
         android:id="@+id/action_homeFragment_Pop"
@@ -244,6 +244,10 @@
         android:id="@+id/orderDetailsActivity"
         android:name="bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity"
         android:label="OrderDetailsActivity" />
+    <fragment
+        android:id="@+id/shopQuickViewFragment"
+        android:name="bd.com.evaly.evalyshop.ui.shop.quickView.ShopQuickViewFragment"
+        android:label="ShopQuickViewFragment" />
 
 
     <!--    <activity-->

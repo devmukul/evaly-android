@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.HomeModelProductGridBinding;
+import bd.com.evaly.evalyshop.databinding.ItemShopProductSmallBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
@@ -50,7 +51,7 @@ public abstract class SmallProductGridModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
 
-        HomeModelProductGridBinding binding = (HomeModelProductGridBinding) holder.getDataBinding();
+        ItemShopProductSmallBinding binding = (ItemShopProductSmallBinding) holder.getDataBinding();
         StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
         params.setFullSpan(false);
 
