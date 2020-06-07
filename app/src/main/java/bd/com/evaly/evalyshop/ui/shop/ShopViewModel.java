@@ -54,8 +54,10 @@ public class ShopViewModel extends ViewModel {
         currentPage = 1;
         categoryCurrentPage = 1;
 
-        loadShopProducts();
-        loadShopCategories();
+        if (shopSlug != null) {
+            loadShopProducts();
+            loadShopCategories();
+        }
     }
 
     public void clear() {
