@@ -94,6 +94,7 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SizeButtonAdapte
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
+import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.LocationUtils;
@@ -377,14 +378,22 @@ public class ViewProductActivity extends BaseActivity {
                 summaryModel.getStar1(),
         };
 
-        binding.review.ratingAverage.setText(summaryModel.getAvgRating());
-        binding.review.ratingCounter.setText(summaryModel.getTotalRatings());
-        binding.review.ratingBar.setRating(summaryModel.getAvgRating());
+        binding.review.ratingAverage.setText(summaryModel.getAvgRating()+"");
+        binding.review.ratingCounter.setText(summaryModel.getTotalRatings()+"");
+        binding.review.ratingBar.setRating((float) summaryModel.getAvgRating());
 
         if (summaryModel.getTotalRatings() == 0)
             summaryModel.setTotalRatings(1);
 
         binding.review.ratingReviews.createRatingBars(summaryModel.getTotalRatings(), BarLabels.STYPE1, colors, raters);
+
+        binding.viewAllReviews.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ReviewsActivity.class);
+            intent.putExtra("ratingJson", jsonObject.toString());
+            intent.putExtra("item_value", slug);
+            intent.putExtra("type",  "product");
+            startActivity(intent);
+        });
     }
 
     public int getRelativeTop(View rootView, View childView) {

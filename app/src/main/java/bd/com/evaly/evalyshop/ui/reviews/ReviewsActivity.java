@@ -3,7 +3,6 @@ package bd.com.evaly.evalyshop.ui.reviews;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,24 +22,18 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -107,19 +100,21 @@ public class ReviewsActivity extends AppCompatActivity {
             item_value = data.getStringExtra("item_value");
             type = data.getStringExtra("type");
 
-            if (type.equals("shop")) {
-                getShopRatings(item_value);
-                getShopReviews(item_value);
-                checkShopEligibility(item_value);
-            } else
-                getReviews(item_value);
-        }
+            if (type.equals("shop"))
+                isShop = true;
+            else
+                isShop = false;
 
+            getRatings(item_value);
+            getReviews(item_value);
+
+            if (!CredentialManager.getToken().equals(""))
+                checkEligibility(item_value);
+        }
 
         loadRatingsToView(ratingJson);
 
         floatingActionButton.setOnClickListener(v -> {
-
             if (userDetails.getToken().equals("")) {
                 Toast.makeText(ReviewsActivity.this, "You need to login first to create review.", Toast.LENGTH_LONG).show();
                 return;
@@ -132,29 +127,21 @@ public class ReviewsActivity extends AppCompatActivity {
         nestedSV.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (v.getChildAt(v.getChildCount() - 1) != null) {
                 if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
-                        scrollY > oldScrollY) {
-                    getShopReviews(item_value);
-                }
+                        scrollY > oldScrollY)
+                    getReviews(item_value);
             }
         });
     }
 
 
     public void loadRatingsToView(String ratingJsonz) {
-
-
         try {
 
             JSONObject response = new JSONObject(ratingJsonz);
             int total_ratings = response.getInt("total_ratings");
             double avg_ratings = 0.0;
 
-            try {
-                avg_ratings = response.getDouble("avg_rating");
-            } catch (Exception e) {
-                avg_ratings = response.getDouble("avg_ratings");
-            }
-
+            avg_ratings = response.getDouble("avg_rating");
             int star_5 = response.getInt("star_5");
             int star_4 = response.getInt("star_4");
             int star_3 = response.getInt("star_3");
@@ -184,12 +171,10 @@ public class ReviewsActivity extends AppCompatActivity {
                 total_ratings = 1;
 
             ratingReviews.createRatingBars(total_ratings, BarLabels.STYPE1, colors, raters);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
 
     public void addReviewDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
@@ -199,7 +184,6 @@ public class ReviewsActivity extends AppCompatActivity {
         dialogBuilder.setView(dialogView);
 
         AlertDialog alertDialog = dialogBuilder.create();
-
         d_title = dialogView.findViewById(R.id.title);
         d_rating_bar = dialogView.findViewById(R.id.ratingBar);
         d_review_text = dialogView.findViewById(R.id.review_text);
@@ -208,43 +192,25 @@ public class ReviewsActivity extends AppCompatActivity {
         if (type.equals("shop"))
             d_title.setText("Rate the shop");
 
-        alertDialog.getWindow()
-                .setLayout(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
+        alertDialog.getWindow().setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
 
         alertDialog.show();
 
-
         d_submit.setOnClickListener(v -> {
-
             if (d_rating_bar.getRating() < 1) {
                 Toast.makeText(ReviewsActivity.this, "Please set star rating.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            if (type.equals("shop")) {
-                postShopReview(
-                        alertDialog,
-                        item_value,
-                        userDetails.getFirstName() + " " + userDetails.getLastName(),
-                        (int) d_rating_bar.getRating(),
-                        d_review_text.getText().toString()
-                );
-            } else {
-                postReview(
-                        alertDialog,
-                        item_value,
-                        userDetails.getFirstName() + " " + userDetails.getLastName(),
-                        String.valueOf(d_rating_bar.getRating()),
-                        d_review_text.getText().toString()
-                );
-            }
-
+            postReview(
+                    alertDialog,
+                    item_value,
+                    userDetails.getFirstName() + " " + userDetails.getLastName(),
+                    (int) d_rating_bar.getRating(),
+                    d_review_text.getText().toString());
         });
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -253,49 +219,38 @@ public class ReviewsActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onDestroy() {
-        // Glide.with(getApplicationContext()).pauseRequests();
         super.onDestroy();
     }
 
-
-    public void getShopReviews(String sku) {
+    public void getReviews(String slug) {
 
         progressBar.setVisibility(View.VISIBLE);
-
-        ReviewsApiHelper.getReviews(CredentialManager.getToken(), sku, currentPage, 20, isShop, new ResponseListenerAuth<CommonDataResponse<List<ReviewItem>>, String>() {
+        ReviewsApiHelper.getReviews(CredentialManager.getToken(), slug, currentPage, 20, isShop, new ResponseListenerAuth<CommonDataResponse<List<ReviewItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ReviewItem>> response, int statusCode) {
-
                 progressBar.setVisibility(View.INVISIBLE);
                 List<ReviewItem> list = response.getData();
 
                 if (list.size() == 0 && currentPage == 1) {
-
                     not.setVisibility(View.VISIBLE);
-
                     if (!isFinishing() && !isDestroyed())
                         Glide.with(getApplicationContext())
                                 .load(R.drawable.ic_reviews_vector)
                                 .apply(new RequestOptions().override(800, 800))
                                 .into((ImageView) findViewById(R.id.noImage));
-
                     recyclerView.setVisibility(View.GONE);
-
                 } else {
                     itemList.addAll(list);
                     adapter.notifyItemRangeChanged(itemList.size() - list.size(), list.size());
-
-                    if (currentPage == 1){
+                    if (currentPage == 1) {
                         recyclerView.setVisibility(View.VISIBLE);
                         not.setVisibility(View.GONE);
                     }
-
                     currentPage++;
                 }
             }
@@ -308,22 +263,17 @@ public class ReviewsActivity extends AppCompatActivity {
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
-                    getShopReviews(sku);
-
+                    getReviews(slug);
             }
         });
-
     }
 
-
-    public void getShopRatings(String sku) {
+    public void getRatings(String slug) {
 
         progressBar.setVisibility(View.VISIBLE);
-
-        ReviewsApiHelper.getReviewSummary(CredentialManager.getToken(), sku, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        ReviewsApiHelper.getReviewSummary(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
                 response = response.getAsJsonObject("data");
                 ratingJson = response.toString();
                 loadRatingsToView(ratingJson);
@@ -337,66 +287,62 @@ public class ReviewsActivity extends AppCompatActivity {
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
-                    getShopRatings(sku);
-
+                    getRatings(slug);
             }
         });
     }
 
 
-    public void postShopReview(AlertDialog alertDialog, String sku, String user_name, int rating_value, String rating_text) {
+    public void postReview(AlertDialog alertDialog, String slug, String user_name, int rating_value, String rating_text) {
 
         ViewDialog progressDialog = new ViewDialog(this);
         progressDialog.showDialog();
 
-
         JsonObject parameters = new JsonObject();
-
         parameters.addProperty("review_message", rating_text);
         parameters.addProperty("rating", rating_value);
 
-        ReviewsApiHelper.postReview(CredentialManager.getToken(), sku, parameters, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        ReviewsApiHelper.postReview(CredentialManager.getToken(), slug, parameters, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 progressDialog.hideDialog();
                 alertDialog.dismiss();
-                Toast.makeText(ReviewsActivity.this, response.get("message").getAsString(), Toast.LENGTH_SHORT).show();
-                getShopRatings(sku);
-                currentPage = 1;
+                if (statusCode == 201) {
+                    Toast.makeText(ReviewsActivity.this, "Your review has been submitted. It might take a while for approval.", Toast.LENGTH_LONG).show();
+                }
 
+                getRatings(slug);
+                currentPage = 1;
                 itemList.clear();
                 adapter.notifyDataSetChanged();
-                getShopReviews(sku);
-                checkShopEligibility(sku);
+                getReviews(slug);
+                checkEligibility(slug);
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 progressDialog.hideDialog();
                 alertDialog.dismiss();
                 Toast.makeText(ReviewsActivity.this, "Couldn't post review!", Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
-                    postShopReview(alertDialog, sku, user_name, rating_value, rating_text);
-
+                    postReview(alertDialog, slug, user_name, rating_value, rating_text);
             }
         });
-
     }
 
 
-    public void checkShopEligibility(String sku) {
+    public void checkEligibility(String slug) {
 
-
-        ReviewsApiHelper.checkReviewEligibility(CredentialManager.getToken(), sku, isShop, new ResponseListenerAuth<JsonObject, String>() {
+        ReviewsApiHelper.checkReviewEligibility(CredentialManager.getToken(), slug, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-                boolean isEligible = response.get("success").getAsBoolean();
+                boolean isEligible = false;
+                if (statusCode == 200)
+                    isEligible = true;
 
                 if (isEligible)
                     floatingActionButton.setVisibility(View.VISIBLE);
@@ -413,138 +359,8 @@ public class ReviewsActivity extends AppCompatActivity {
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
-                    checkShopEligibility(sku);
-
+                    checkEligibility(slug);
             }
         });
-
     }
-
-
-
-
-
-
-    // old codes for product reviews
-
-    public void postReview(AlertDialog alertDialog, String sku, String user_name, String rating_value, String rating_text) {
-
-        progressBar.setVisibility(View.VISIBLE);
-        String url = "https://nsuer.club/evaly/reviews/?sku=" + sku + "&phone=" + userDetails.getPhone() + "&user_name=" + user_name + "&rating_value=" + rating_value + "&rating_text=" + rating_text + "&type=" + type;
-
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, response -> {
-            Log.d("notifications_response", response.toString());
-            try {
-                alertDialog.dismiss();
-                Toast.makeText(ReviewsActivity.this, "Review submitted. It may take some time to show on the app.", Toast.LENGTH_LONG).show();
-                getProductRating(alertDialog);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, error -> Log.e("onErrorResponse", error.toString())) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-                return headers;
-            }
-        };
-        rq.add(request);
-    }
-
-
-    public void getProductRating(AlertDialog alertDialog) {
-
-        String url = "https://nsuer.club/evaly/reviews/?sku=" + item_value + "&type=" + type + "&isRating=true";
-        Log.d("json rating", url);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
-                response -> {
-                    ratingJson = response.toString();
-                    Intent intent = getIntent();
-                    intent.putExtra("ratingJson", ratingJson);
-                    finish();
-                    startActivity(getIntent());
-                }, Throwable::printStackTrace);
-
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        request.setShouldCache(false);
-        rq.getCache().clear();
-        rq.add(request);
-
-
-    }
-
-    public void getReviews(String sku) {
-
-
-        progressBar.setVisibility(View.VISIBLE);
-        String url = "https://nsuer.club/evaly/reviews/?sku=" + sku + "&type=" + type;
-
-        JSONObject parameters = new JSONObject();
-        try {
-            parameters.put("key", "value");
-        } catch (Exception e) {
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, response -> {
-            Log.d("notifications_response", response.toString());
-            try {
-
-                progressBar.setVisibility(View.INVISIBLE);
-
-                JSONArray jsonArray = response.getJSONArray("reviews");
-                if (jsonArray.length() == 0) {
-                    not.setVisibility(View.VISIBLE);
-
-                    Glide.with(ReviewsActivity.this)
-                            .load(R.drawable.ic_reviews_vector)
-                            .apply(new RequestOptions().override(800, 800))
-                            .into((ImageView) findViewById(R.id.noImage));
-
-
-                    recyclerView.setVisibility(View.GONE);
-                } else {
-                    not.setVisibility(View.GONE);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject ob = jsonArray.getJSONObject(i);
-                        ReviewItem item = new ReviewItem();
-
-                        item.setId(ob.getInt("id"));
-                        item.setUser_name(ob.getString("user_name"));
-                        item.setRating_value(ob.getInt("rating_value"));
-                        item.setRating_text(ob.getString("rating_text"));
-                        item.setTime(ob.getString("time"));
-                        item.setIs_approved(ob.getInt("is_approved"));
-
-                        itemList.add(item);
-
-                        adapter.notifyItemInserted(itemList.size());
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, error -> Log.e("onErrorResponse", error.toString())) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", CredentialManager.getToken());
-
-                return headers;
-            }
-        };
-
-        request.setRetryPolicy(new DefaultRetryPolicy(50000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        rq.add(request);
-    }
-
 }
