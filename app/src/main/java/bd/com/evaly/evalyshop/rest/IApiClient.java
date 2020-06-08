@@ -303,6 +303,7 @@ public interface IApiClient {
     @POST(UrlUtils.DOMAIN + "pay/bank_deposit/")
     Call<JsonObject> payViaBank(@Header("Authorization") String token, @Body HashMap<String, String> body);
 
+
     // reviews
     @GET(UrlUtils.BASE_URL + "reviews/shops/{slug}/")
     Call<CommonDataResponse<List<ReviewItem>>> getShopReviews(@Header("Authorization") String token, @Path("slug") String shopSlug, @Query("page") int page, @Query("limit") int limit);
@@ -310,10 +311,24 @@ public interface IApiClient {
     @POST(UrlUtils.BASE_URL + "add-review/{shopSlug}/")
     Call<JsonObject> postShopReview(@Header("Authorization") String token, @Path("shopSlug") String slug, @Body JsonObject body);
 
-
     @GET(UrlUtils.BASE_URL + "review-eligibility/{shopSlug}/")
     Call<JsonObject> checkShopReviewEligibility(@Header("Authorization") String token, @Path("shopSlug") String slug);
 
+
+
+    // product reviews
+
+    @GET(UrlUtils.BASE_URL + "public/product-review-summary/{sku}")
+    Call<JsonObject> getProductReviewSummary(@Header("Authorization") String token, @Path("sku") String sku);
+
+    @GET(UrlUtils.BASE_URL + "public/product-reviews/{slug}/")
+    Call<CommonDataResponse<List<ReviewItem>>> getProductReviews(@Header("Authorization") String token, @Path("slug") String shopSlug, @Query("page") int page, @Query("limit") int limit);
+
+    @POST(UrlUtils.BASE_URL + "add-product-review/{slug}/")
+    Call<JsonObject> postProductReview(@Header("Authorization") String token, @Path("slug") String slug, @Body JsonObject body);
+
+    @GET(UrlUtils.BASE_URL + "product-review-eligibility/{slug}")
+    Call<JsonObject> checkProductReviewEligibility(@Header("Authorization") String token, @Path("slug") String slug);
 
     // Newsfeed
 

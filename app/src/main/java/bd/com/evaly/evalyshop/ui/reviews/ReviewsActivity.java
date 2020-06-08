@@ -72,6 +72,7 @@ public class ReviewsActivity extends AppCompatActivity {
     private RequestQueue rq;
     private int currentPage;
     private RatingReviews ratingReviews;
+    private boolean isShop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,7 +268,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        ReviewsApiHelper.getShopReviews(CredentialManager.getToken(), sku, currentPage, 20, new ResponseListenerAuth<CommonDataResponse<List<ReviewItem>>, String>() {
+        ReviewsApiHelper.getReviews(CredentialManager.getToken(), sku, currentPage, 20, isShop, new ResponseListenerAuth<CommonDataResponse<List<ReviewItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<ReviewItem>> response, int statusCode) {
 
@@ -319,7 +320,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), sku, new ResponseListenerAuth<JsonObject, String>() {
+        ReviewsApiHelper.getReviewSummary(CredentialManager.getToken(), sku, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
@@ -354,7 +355,7 @@ public class ReviewsActivity extends AppCompatActivity {
         parameters.addProperty("review_message", rating_text);
         parameters.addProperty("rating", rating_value);
 
-        ReviewsApiHelper.postShopReview(CredentialManager.getToken(), sku, parameters, new ResponseListenerAuth<JsonObject, String>() {
+        ReviewsApiHelper.postReview(CredentialManager.getToken(), sku, parameters, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 progressDialog.hideDialog();
@@ -392,7 +393,7 @@ public class ReviewsActivity extends AppCompatActivity {
     public void checkShopEligibility(String sku) {
 
 
-        ReviewsApiHelper.checkShopReviewEligibility(CredentialManager.getToken(), sku, new ResponseListenerAuth<JsonObject, String>() {
+        ReviewsApiHelper.checkReviewEligibility(CredentialManager.getToken(), sku, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 boolean isEligible = response.get("success").getAsBoolean();

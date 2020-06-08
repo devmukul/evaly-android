@@ -43,6 +43,7 @@ public class ShopViewModel extends ViewModel {
 
     private List<TabsItem> categoryArrayList = new ArrayList<>();
     private List<ItemsItem> productArrayList = new ArrayList<>();
+    private boolean isShop = true;
 
 
     public ShopViewModel(String categorySlug, String campaignSlug, String shopSlug) {
@@ -190,7 +191,7 @@ public class ShopViewModel extends ViewModel {
 
     public void loadRatings() {
 
-        ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), shopSlug, new ResponseListenerAuth<JsonObject, String>() {
+        ReviewsApiHelper.getReviewSummary(CredentialManager.getToken(), shopSlug, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 ratingSummary.setValue(response);

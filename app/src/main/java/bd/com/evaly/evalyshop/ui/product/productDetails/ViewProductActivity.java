@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.jivesoftware.smack.SmackException;
 import org.json.JSONException;
@@ -76,6 +78,7 @@ import bd.com.evaly.evalyshop.models.product.productDetails.Data;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductSpecificationsItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductVariantsItem;
+import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
 import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
@@ -96,6 +99,7 @@ import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
@@ -231,6 +235,8 @@ public class ViewProductActivity extends BaseActivity {
 
         viewModel.productDetailsModel.observe(this, this::populateShopDetails);
 
+        viewModel.ratingSummary.observe(this, this::populateRatingsSummary);
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
 
@@ -248,6 +254,7 @@ public class ViewProductActivity extends BaseActivity {
             }
 
             viewModel.getProductDetails(slug);
+            viewModel.loadRatings(slug);
             binding.collapsingToolbar.setVisibility(View.INVISIBLE);
         }
 
@@ -349,6 +356,35 @@ public class ViewProductActivity extends BaseActivity {
             builder.show();
 
         });
+    }
+
+    private void populateRatingsSummary(JsonObject jsonObject) {
+
+        ReviewSummaryModel summaryModel = new Gson().fromJson(jsonObject.get("data").getAsJsonObject(), ReviewSummaryModel.class);
+
+        int colors[] = new int[]{
+                Color.parseColor("#0e9d58"),
+                Color.parseColor("#0e9d58"),
+                Color.parseColor("#a6ba5d"),
+                Color.parseColor("#ef7e14"),
+                Color.parseColor("#d36259")};
+
+        int raters[] = new int[]{
+                summaryModel.getStar5(),
+                summaryModel.getStar4(),
+                summaryModel.getStar3(),
+                summaryModel.getStar2(),
+                summaryModel.getStar1(),
+        };
+
+        binding.review.ratingAverage.setText(summaryModel.getAvgRating());
+        binding.review.ratingCounter.setText(summaryModel.getTotalRatings());
+        binding.review.ratingBar.setRating(summaryModel.getAvgRating());
+
+        if (summaryModel.getTotalRatings() == 0)
+            summaryModel.setTotalRatings(1);
+
+        binding.review.ratingReviews.createRatingBars(summaryModel.getTotalRatings(), BarLabels.STYPE1, colors, raters);
     }
 
     public int getRelativeTop(View rootView, View childView) {
