@@ -7,7 +7,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -375,10 +374,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void startXmppService() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            startForegroundService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
-        else
-            startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
+        startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
     }
 
     private void disconnectXmpp() {
@@ -389,8 +385,10 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         if (!isLaunchActivity) {
-            finish();
-            super.onBackPressed();
+            if (!(navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.shopQuickViewFragment)) {
+                finish();
+                super.onBackPressed();
+            }
         }
 
         if (navController.getCurrentDestination() != null) {

@@ -834,6 +834,9 @@ public class ViewProductActivity extends BaseActivity {
     }
 
     private void inflateAvailableShops(CommonDataResponse<List<AvailableShopModel>> response, boolean isNearestShops) {
+
+        toRemoveModel = null;
+
         List<AvailableShopModel> list = new ArrayList<>(response.getData());
 
         if (shopSlug != null || response.getData().size() == 1) {
