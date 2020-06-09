@@ -203,6 +203,8 @@ public class ShopQuickViewFragment extends Fragment {
         });
 
         viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopDetailsModel -> {
+            if (shopDetailsModel.getData().getMeta() != null)
+                productController.setCashbackRate(shopDetailsModel.getData().getMeta().get("cashback_rate").getAsInt());
             totalCount = shopDetailsModel.getCount();
             isLoading = false;
         });
