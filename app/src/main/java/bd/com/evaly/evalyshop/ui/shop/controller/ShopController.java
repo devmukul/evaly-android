@@ -2,12 +2,14 @@ package bd.com.evaly.evalyshop.ui.shop.controller;
 
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
@@ -54,6 +56,7 @@ public class ShopController extends EpoxyController {
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
     private List<TabsItem> categoryItems = new ArrayList<>();
+    private String campaignSlug;
 
     private ShopDetailsModel shopInfo;
     private int cashbackRate = 0;
@@ -100,6 +103,13 @@ public class ShopController extends EpoxyController {
                 .addTo(this);
 
         categoryTitleModel
+                .clickListener(view -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("shop_name", shopInfo.getData().getShop().getName());
+                    bundle.putString("shop_slug", shopInfo.getData().getShop().getSlug());
+                    bundle.putString("campaign_slug", campaignSlug);
+                    NavHostFragment.findNavController(fragment).navigate(R.id.shopQuickViewFragment, bundle);
+                })
                 .addIf(!categoriesLoading && categoryItems.size() > 0,this);
 
         List<ShopCategoryItemModel_> categoryModelList = new ArrayList<>();
@@ -244,6 +254,14 @@ public class ShopController extends EpoxyController {
     public void setCategoryTitle(String categoryTitle) {
         this.categoryTitle = categoryTitle;
         requestModelBuild();
+    }
+
+    public String getCampaignSlug() {
+        return campaignSlug;
+    }
+
+    public void setCampaignSlug(String campaignSlug) {
+        this.campaignSlug = campaignSlug;
     }
 }
 

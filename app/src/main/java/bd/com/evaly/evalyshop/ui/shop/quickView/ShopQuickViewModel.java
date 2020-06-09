@@ -81,6 +81,14 @@ public class ShopQuickViewModel extends ViewModel {
         return categorySlug;
     }
 
+    public Integer getCategoryCount() {
+        return categoryCount;
+    }
+
+    public void setCategoryCount(Integer categoryCount) {
+        this.categoryCount = categoryCount;
+    }
+
     public void setCategorySlug(String categorySlug) {
         this.categorySlug = categorySlug;
     }
@@ -161,13 +169,6 @@ public class ShopQuickViewModel extends ViewModel {
 
     public void loadShopCategories() {
 
-        if (isCategoryLoading)
-            return;
-
-        if (categoryCount == null || (shopCategoryListLiveData.getValue() != null && categoryCurrentPage * 15 < categoryCount)) {
-        } else
-            return;
-
         isCategoryLoading = true;
 
         ProductApiHelper.getCategoriesOfShop(shopSlug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<JsonObject, String>() {
@@ -192,7 +193,6 @@ public class ShopQuickViewModel extends ViewModel {
 
                 categoryArrayList.addAll(itemList);
                 shopCategoryListLiveData.setValue(categoryArrayList);
-                // shopCategoryListLiveData.setValue(itemList);
                 categoryCurrentPage++;
             }
 

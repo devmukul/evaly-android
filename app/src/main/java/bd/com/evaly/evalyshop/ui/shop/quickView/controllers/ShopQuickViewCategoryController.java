@@ -84,8 +84,8 @@ public class ShopQuickViewCategoryController extends EpoxyController {
                         } else
                             binding.selectedBrd.setVisibility(View.GONE);
 
-                        if (position >= categoryItems.size() - 4)
-                            viewModel.loadShopCategories();
+//                        if (position >= categoryItems.size() - 4)
+//                            viewModel.loadShopCategories();
                     })
                     .addTo(this);
         }
@@ -120,5 +120,11 @@ public class ShopQuickViewCategoryController extends EpoxyController {
         this.viewModel = viewModel;
     }
 
+    public void deselectCategory() {
+        for (int j = 0; j < categoryItems.size(); j++) {
+                categoryItems.get(j).setSelected(false);
+        }
+        requestModelBuild();
+    }
 }
 

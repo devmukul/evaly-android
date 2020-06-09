@@ -8,7 +8,7 @@
 
         <TextView
             android:id="@+id/ct"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:paddingLeft="20dp"
@@ -22,5 +22,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <LinearLayout
+            android:id="@+id/quickView"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="?selectableItemBackground"
+            android:layout_marginEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:paddingLeft="20dp"
+                android:text="Quick View"
+                android:textColor="#d82830"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:tint="#d82830"
+                app:srcCompat="@drawable/ic_keyboard_arrow_right" />
+
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
