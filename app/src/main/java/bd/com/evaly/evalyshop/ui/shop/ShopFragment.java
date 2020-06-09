@@ -183,6 +183,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         controller.setFragment(this);
         controller.setViewModel(viewModel);
         controller.setCampaignSlug(campaign_slug);
+        controller.setFilterDuplicates(true);
 
         if (fullShopDetailsModel != null)
             controller.setAttr(fullShopDetailsModel);

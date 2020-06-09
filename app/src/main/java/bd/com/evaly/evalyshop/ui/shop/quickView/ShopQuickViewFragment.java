@@ -76,6 +76,7 @@ public class ShopQuickViewFragment extends Fragment {
         categoryController.setActivity((AppCompatActivity) getActivity());
         categoryController.setFragment(this);
         categoryController.setViewModel(viewModel);
+        categoryController.setFilterDuplicates(true);
 
         productController = new ShopQuickViewProductController();
         productController.setActivity((AppCompatActivity) getActivity());
@@ -83,6 +84,7 @@ public class ShopQuickViewFragment extends Fragment {
         productController.setShopSlug(shopSlug);
         productController.setViewModel(viewModel);
         productController.setLoadingMore(true);
+        productController.setFilterDuplicates(true);
 
         binding.rvCategory.setAdapter(categoryController.getAdapter());
         binding.rvProducts.setAdapter(productController.getAdapter());

@@ -26,6 +26,16 @@ android {
         enabled = true
     }
 
+//    project.android.buildTypes.all { buildType ->
+//        buildType.javaCompileOptions.annotationProcessorOptions.arguments =
+//                [
+//                        // Validation is disabled in production to remove the runtime overhead
+//                        validateEpoxyModelUsage     : String.valueOf(buildType.name == 'debug'),
+//                        requireHashCodeInEpoxyModels: "true",
+//                        requireAbstractEpoxyModels  : "true",
+//                        implicitlyAddAutoModels     : "true"
+//                ]
+//    }
 
     buildTypes {
         release {
