@@ -138,7 +138,6 @@ public class ShopQuickViewModel extends ViewModel {
         ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
-
                 shopDetailsLiveData.setValue(response);
                 productArrayList.addAll(response.getData().getItems());
                 productListLiveData.setValue(productArrayList);

@@ -16,11 +16,9 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
 import bd.com.evaly.evalyshop.ui.shop.quickView.ShopQuickViewModel;
 import bd.com.evaly.evalyshop.ui.shop.quickView.models.SmallProductGridModel_;
@@ -38,11 +36,20 @@ public class ShopQuickViewProductController extends EpoxyController {
     private Fragment fragment;
     private List<ProductItem> items = new ArrayList<>();
 
-    private ShopDetailsModel shopInfo;
+    private String shopSlug;
     private int cashbackRate = 0;
     private ShopQuickViewModel viewModel;
     private boolean loadingMore = true;
     private boolean emptyPage = false;
+
+    public String getShopSlug() {
+        return shopSlug;
+    }
+
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
+    }
+
     private String categoryTitle = null;
 
     public ShopQuickViewProductController() {
@@ -54,15 +61,13 @@ public class ShopQuickViewProductController extends EpoxyController {
         requestModelBuild();
     }
 
+
     public void showEmptyPage(boolean emptyPage, boolean build) {
         this.emptyPage = emptyPage;
         if (build)
             requestModelBuild();
     }
 
-    public void setAttr(ShopDetailsModel info) {
-        this.shopInfo = info;
-    }
 
     @Override
     protected void buildModels() {
@@ -84,7 +89,7 @@ public class ShopQuickViewProductController extends EpoxyController {
                         intent.putExtra("product_price", (int) Double.parseDouble(item.getMaxPrice()));
 
                         if (model.isShop())
-                            intent.putExtra("shop_slug", shopInfo.getData().getShop().getSlug());
+                            intent.putExtra("shop_slug", shopSlug);
 
                         if (item.getImageUrls().size() > 0)
                             intent.putExtra("product_image", item.getImageUrls().get(0));
@@ -148,9 +153,6 @@ public class ShopQuickViewProductController extends EpoxyController {
         this.viewModel = viewModel;
     }
 
-    public ShopDetailsModel getShopInfo() {
-        return shopInfo;
-    }
 
     public void setCategoryTitle(String categoryTitle) {
         this.categoryTitle = categoryTitle;

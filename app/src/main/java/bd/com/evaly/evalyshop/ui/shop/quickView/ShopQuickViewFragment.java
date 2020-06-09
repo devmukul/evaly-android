@@ -10,9 +10,11 @@ import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -35,10 +37,11 @@ import bd.com.evaly.evalyshop.ui.shop.quickView.controllers.ShopQuickViewProduct
 public class ShopQuickViewFragment extends Fragment {
 
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private int pastVisiblesItems2, visibleItemCount2, totalItemCount2;
     private FragmentShopQuickCategoryBinding binding;
     private ShopViewModelFactory factory;
     private ShopQuickViewModel viewModel;
-    private String shopSlug = "chaldal", campaignSlug = null, categorySlug = null;
+    private String shopSlug = "chaldal", shopName, campaignSlug = null, categorySlug = null;
 
     private ShopQuickViewCategoryController categoryController;
     private ShopQuickViewProductController productController;
@@ -74,6 +77,7 @@ public class ShopQuickViewFragment extends Fragment {
         productController = new ShopQuickViewProductController();
         productController.setActivity((AppCompatActivity) getActivity());
         productController.setFragment(this);
+        productController.setShopSlug(shopSlug);
         productController.setViewModel(viewModel);
 
         binding.rvCategory.setAdapter(categoryController.getAdapter());
@@ -104,13 +108,53 @@ public class ShopQuickViewFragment extends Fragment {
                 }
             }
         });
+
+        LinearLayoutManager layoutManagerCategory = new LinearLayoutManager(getContext());
+        binding.rvCategory.setLayoutManager(layoutManagerCategory);
+
+        binding.rvProducts.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    visibleItemCount2 = layoutManagerCategory.getChildCount();
+                    totalItemCount2 = layoutManagerCategory.getItemCount();
+                    int[] firstVisibleItems = null;
+                    firstVisibleItems = layoutManagerCategory.findFirstVisibleItemPosition(null);
+                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
+                        pastVisiblesItems2 = firstVisibleItems[0];
+
+                    if (!isLoading2 && totalItemCount2 < totalCount2)
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            categoryController.setLoadingMore(true, true);
+                            viewModel.loadShopCategories();
+                            isLoading2 = true;
+                        }
+                }
+            }
+        });
         
     }
 
     private void inflateSearchMenu() {
         binding.toolbar.inflateMenu(R.menu.menu_search);
         MenuItem item = binding.toolbar.getMenu().findItem(R.id.action_search);
-        SearchView sv = (SearchView) item.getActionView();
+
+        binding.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_search:
+                        Bundle bundle = new Bundle();
+                        bundle.putString("shop_slug", shopSlug);
+                        bundle.putString("shop_name", shopName);
+                        bundle.putString("campaign_slug", campaignSlug);
+                        NavHostFragment.findNavController(ShopQuickViewFragment.this).navigate(R.id.shopSearchActivity, bundle);
+
+                }
+                return true;
+            }
+        });
+
     }
 
     private void viewModelLiveDataObservers() {

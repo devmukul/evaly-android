@@ -19,7 +19,6 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.HomeModelProductGridBinding;
 import bd.com.evaly.evalyshop.databinding.ItemShopProductSmallBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 

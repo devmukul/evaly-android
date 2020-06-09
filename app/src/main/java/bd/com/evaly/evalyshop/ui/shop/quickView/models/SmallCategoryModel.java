@@ -2,16 +2,13 @@ package bd.com.evaly.evalyshop.ui.shop.quickView.models;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.ViewDataBinding;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
@@ -24,12 +21,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
-import java.util.Locale;
-
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.HomeModelProductGridBinding;
 import bd.com.evaly.evalyshop.databinding.ItemShopCategorySmallBinding;
-import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -37,6 +30,15 @@ import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
 @EpoxyModelClass(layout = R.layout.item_shop_category_small)
 public abstract class SmallCategoryModel extends DataBindingEpoxyModel {
+
+    @EpoxyAttribute
+    String title;
+
+    @EpoxyAttribute
+    String image;
+
+    @EpoxyAttribute
+    boolean isSelected;
 
     @EpoxyAttribute
     public TabsItem model;
@@ -54,10 +56,10 @@ public abstract class SmallCategoryModel extends DataBindingEpoxyModel {
 
         ItemShopCategorySmallBinding binding = (ItemShopCategorySmallBinding) holder.getDataBinding();
 
-        binding.text.setText(Html.fromHtml(model.getTitle()));
+        binding.text.setText(Html.fromHtml(title));
 
         Glide.with(binding.getRoot())
-                .load(model.getImage())
+                .load(image)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -72,12 +74,19 @@ public abstract class SmallCategoryModel extends DataBindingEpoxyModel {
                     }
                 })
                 .skipMemoryCache(true)
-                .apply(new RequestOptions().override(260, 260))
+                .apply(new RequestOptions().override(160, 160))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_evaly_placeholder)
                 .into(binding.image);
 
         binding.categoryItem.setOnClickListener(clickListener);
+
+        binding.selectedBrd.bringToFront();
+
+        if (isSelected)
+            binding.selectedBrd.setVisibility(View.VISIBLE);
+        else
+            binding.selectedBrd.setVisibility(View.GONE);
     }
 
     @Override

@@ -63,16 +63,25 @@ public class ShopQuickViewCategoryController extends EpoxyController {
             new SmallCategoryModel_()
                     .id("category_" + categoryItems.get(i))
                     .model(categoryItems.get(i))
+                    .title(categoryItems.get(i).getTitle())
+                    .image(categoryItems.get(i).getImage())
+                    .isSelected(categoryItems.get(i).isSelected())
                     .clickListener((model, parentView, clickedView, position) -> {
-                        viewModel.setSelectedCategoryLiveData(model.getModel());
+                        TabsItem selectedCategory = model.getModel();
+                        for (int j = 0; j < categoryItems.size(); j++) {
+                            if (categoryItems.get(j).getSlug().equals(selectedCategory.getSlug()))
+                                categoryItems.get(j).setSelected(true);
+                            else
+                                categoryItems.get(j).setSelected(false);
+                        }
+                        viewModel.setSelectedCategoryLiveData(selectedCategory);
+                        requestModelBuild();
                     })
                     .onBind((model, view, position) -> {
                         ItemShopCategorySmallBinding binding = (ItemShopCategorySmallBinding) view.getDataBinding();
-                        String selectedCategorySlug = viewModel.getCategorySlug();
-                        if ((position == 0 && selectedCategorySlug == null) ||
-                                (selectedCategorySlug != null && selectedCategorySlug.equalsIgnoreCase(model.getModel().getSlug())))
+                        if (model.getModel().isSelected()) {
                             binding.selectedBrd.setVisibility(View.VISIBLE);
-                        else
+                        } else
                             binding.selectedBrd.setVisibility(View.GONE);
 
                         if (position >= categoryItems.size() - 4)

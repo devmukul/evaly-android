@@ -6,25 +6,11 @@ public class TabsItem {
     private String title;
     private String image;
     private String slug;
-
     private String category;
-
     private String campaignSlug = "";
+    private boolean isSelected;
 
-
-    //    private String categoryTitle;
-    //    private String brandTitle;
-    //    private String shopTitle;
-    //
-    //    private String categoryImage;
-    //    private String brandImage;
-    //    private String shopImage;
-    //
-    //    private String categorySlug;
-    //    private String brandSlug;
-    //    private String shopSlug;
-
-    public TabsItem(){
+    public TabsItem() {
 
     }
 
@@ -35,7 +21,6 @@ public class TabsItem {
     public void setTitle(String title) {
         this.title = title;
     }
-
 
 
     public int getType() {
@@ -70,12 +55,19 @@ public class TabsItem {
         this.category = previousCategory;
     }
 
-
     public String getCampaignSlug() {
         return campaignSlug;
     }
 
     public void setCampaignSlug(String campaignSlug) {
         this.campaignSlug = campaignSlug;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

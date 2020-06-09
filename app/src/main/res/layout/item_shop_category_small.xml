@@ -6,7 +6,7 @@
         android:id="@+id/category_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/menu_box"
+        android:foreground="?selectableItemBackground"
         android:gravity="top|center_horizontal"
         android:orientation="vertical">
 
@@ -28,8 +28,8 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
