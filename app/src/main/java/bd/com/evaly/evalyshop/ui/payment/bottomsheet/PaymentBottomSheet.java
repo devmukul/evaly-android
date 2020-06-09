@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.payment.bottomsheet;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.fragment.NavHostFragment;
@@ -28,6 +30,7 @@ import bd.com.evaly.evalyshop.databinding.PaymentBottomSheetFragmentBinding;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaCard;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class PaymentBottomSheet extends BottomSheetDialogFragment implements PaymentBottomSheetNavigator {
@@ -37,6 +40,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     private String invoice_no;
     private double total_amount = 0, paid_amount = 0.0;
     private UserDetails userDetails;
+    private AppCompatActivity activityInstance;
 
     public static PaymentBottomSheet newInstance(String invoiceNo, double totalAmount, double paidAmount) {
         PaymentBottomSheet instance = new PaymentBottomSheet();
@@ -99,6 +103,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        activityInstance = (AppCompatActivity) getActivity();
 
         if ((total_amount % 1) == 0)
             binding.amountPay.setText(String.format("%d", (int) (total_amount - paid_amount)));
@@ -209,7 +215,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         if (getActivity() != null && !getActivity().isDestroyed() && !getActivity().isFinishing()) {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             if (isVisible()) {
-                if (getActivity() instanceof OrderDetailsActivity)
+                if (activityInstance != null && activityInstance instanceof OrderDetailsActivity && !activityInstance.isDestroyed() && !activityInstance.isFinishing())
                     ((OrderDetailsActivity) getActivity()).updatePage();
                 else {
                     NavHostFragment.findNavController(this).popBackStack(R.id.paymentFragment, true);
@@ -226,8 +232,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     @Override
     public void onPaymentFailed(String message) {
         binding.evalyPay.setEnabled(true);
-        if (getContext() != null)
-            Toast.makeText(AppController.getmContext(), message, Toast.LENGTH_SHORT).show();
+        ToastUtils.show(message);
     }
 
     @Override

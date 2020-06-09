@@ -7,10 +7,10 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,7 +36,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
@@ -50,10 +49,8 @@ import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
@@ -72,7 +69,6 @@ import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
-import retrofit2.Response;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
@@ -340,7 +336,7 @@ public class MainActivity extends BaseActivity {
         checkRemoteConfig();
     }
 
-    private void checkRemoteConfig(){
+    private void checkRemoteConfig() {
         mFirebaseRemoteConfig
                 .fetchAndActivate()
                 .addOnCompleteListener(this, task -> {
@@ -353,7 +349,7 @@ public class MainActivity extends BaseActivity {
                         int latestVersion = (int) mFirebaseRemoteConfig.getLong("latest_version");
                         int versionCode = BuildConfig.VERSION_CODE;
 
-                        if (isUnderMaintenance){
+                        if (isUnderMaintenance) {
                             Intent intent = new Intent(MainActivity.this, UnderMaintenanceActivity.class);
                             intent.putExtra("text", underMaintenanceMessage);
                             startActivity(intent);
@@ -379,7 +375,10 @@ public class MainActivity extends BaseActivity {
     }
 
     private void startXmppService() {
-        startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            startForegroundService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
+        else
+            startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
     }
 
     private void disconnectXmpp() {
@@ -600,7 +599,8 @@ public class MainActivity extends BaseActivity {
             builder.setNegativeButton("No", ((dialogInterface, i) -> dialogInterface.dismiss()));
 
         android.app.AlertDialog dialog = builder.create();
-        dialog.show();
+        if (!isFinishing() && !isDestroyed())
+            dialog.show();
 
     }
 }

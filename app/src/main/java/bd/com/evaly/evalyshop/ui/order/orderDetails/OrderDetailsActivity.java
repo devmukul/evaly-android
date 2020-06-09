@@ -447,10 +447,12 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onDataFetched(DeliveryHeroResponse response, int statusCode) {
                 heroHolder.setVisibility(View.VISIBLE);
                 heroName.setText(String.format("%s %s", response.getData().getUser().getFirstName(), response.getData().getUser().getLastName()));
-                Glide.with(OrderDetailsActivity.this)
-                        .load(response.getData().getUser().getProfilePicUrl())
-                        .placeholder(R.drawable.user_image)
-                        .into(heroPicture);
+
+                if (!isFinishing() && !isDestroyed())
+                    Glide.with(OrderDetailsActivity.this)
+                            .load(response.getData().getUser().getProfilePicUrl())
+                            .placeholder(R.drawable.user_image)
+                            .into(heroPicture);
 
                 heroCall.setOnClickListener(v -> {
                     Intent intent = new Intent(Intent.ACTION_DIAL);

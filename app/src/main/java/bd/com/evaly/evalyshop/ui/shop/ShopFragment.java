@@ -49,6 +49,7 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.xmpp.PresenceModel;
+import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
@@ -249,13 +250,13 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
         viewModel.getSelectedCategoryLiveData().observe(getViewLifecycleOwner(), tabsItem -> {
-
+            ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
+            viewModel.clearProductList();
             clickFromCategory = true;
             categorySlug = tabsItem.getSlug();
             viewModel.setCategorySlug(categorySlug);
             viewModel.setCurrentPage(1);
             controller.setCategoryTitle(tabsItem.getTitle());
-
             currentPage = 1;
             controller.clear();
             controller.setLoadingMore(true);
@@ -265,6 +266,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         viewModel.getOnResetLiveData().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
+                ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
+                viewModel.clearProductList();
                 viewModel.setCategorySlug(null);
                 viewModel.setCurrentPage(1);
                 controller.setCategoryTitle(null);

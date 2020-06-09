@@ -60,7 +60,7 @@ public abstract class SmallProductGridModel extends DataBindingEpoxyModel {
                 .asBitmap()
                 .skipMemoryCache(true)
                 .apply(new RequestOptions().override(260, 260))
-                .load(model.getImageUrls().get(0))
+                .load(model.getImageUrls().size() > 0 ? model.getImageUrls().get(0) : R.drawable.ic_evaly_placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_evaly_placeholder)
                 .into(binding.image);

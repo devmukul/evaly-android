@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentShopQuickCategoryBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
+import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModelFactory;
 import bd.com.evaly.evalyshop.ui.shop.quickView.controllers.ShopQuickViewCategoryController;
@@ -190,11 +191,12 @@ public class ShopQuickViewFragment extends Fragment {
         });
 
         binding.allCategories.setOnClickListener(view -> {
+            ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
+            productController.clear();
             viewModel.setCategorySlug(null);
             viewModel.setCurrentPage(1);
             productController.setCategoryTitle(null);
             currentPage = 1;
-            productController.clear();
             productController.setLoadingMore(true);
             viewModel.clearProductList();
             viewModel.loadShopProducts();
