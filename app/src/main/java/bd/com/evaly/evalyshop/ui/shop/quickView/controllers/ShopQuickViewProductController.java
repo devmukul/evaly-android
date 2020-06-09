@@ -108,7 +108,7 @@ public class ShopQuickViewProductController extends EpoxyController {
                 .onBind((model, view, position) -> {
                     StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.itemView.getLayoutParams();
                     params.setFullSpan(true);
-                    if (categoryTitle != null && items.size() == 0) {
+                    if (items.size() == 0) {
                         params.height = LinearLayout.LayoutParams.MATCH_PARENT;
                         params.topMargin = 100;
                     } else {

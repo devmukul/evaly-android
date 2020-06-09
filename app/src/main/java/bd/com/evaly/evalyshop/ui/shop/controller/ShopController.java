@@ -14,12 +14,15 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.OnModelBoundListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ShopModelTitleCategoryBinding;
 import bd.com.evaly.evalyshop.databinding.ShopModelTitleProductBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
@@ -109,6 +112,12 @@ public class ShopController extends EpoxyController {
                     bundle.putString("shop_slug", shopInfo.getData().getShop().getSlug());
                     bundle.putString("campaign_slug", campaignSlug);
                     NavHostFragment.findNavController(fragment).navigate(R.id.shopQuickViewFragment, bundle);
+                })
+                .onBind((model, view, position) -> {
+                    if (categoriesLoading && categoryItems.size() == 1) {
+                        ShopModelTitleCategoryBinding binding = (ShopModelTitleCategoryBinding) view.getDataBinding();
+                        binding.quickView.setVisibility(View.GONE);
+                    }
                 })
                 .addIf(!categoriesLoading && categoryItems.size() > 0,this);
 

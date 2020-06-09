@@ -81,6 +81,7 @@ public class ShopQuickViewFragment extends Fragment {
         productController.setFragment(this);
         productController.setShopSlug(shopSlug);
         productController.setViewModel(viewModel);
+        productController.setLoadingMore(true);
 
         binding.rvCategory.setAdapter(categoryController.getAdapter());
         binding.rvProducts.setAdapter(productController.getAdapter());

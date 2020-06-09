@@ -27,27 +27,30 @@
             android:id="@+id/quickView"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:gravity="center_vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="15dp"
             android:background="?selectableItemBackground"
-            android:layout_marginEnd="15dp">
+            android:gravity="center_vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
+                android:fontFamily="sans-serif-medium"
                 android:paddingLeft="20dp"
                 android:text="Quick View"
                 android:textColor="#d82830"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="3dp"
+                android:adjustViewBounds="true"
                 android:tint="#d82830"
-                app:srcCompat="@drawable/ic_keyboard_arrow_right" />
+                app:srcCompat="@drawable/ic_forward" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
