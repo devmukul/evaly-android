@@ -14,6 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.EfoodItemRestaurantHorizontalBinding;
+import bd.com.evaly.evalyshop.databinding.EfoodItemRestaurantVerticalBinding;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -39,7 +40,7 @@ public abstract class RestaurantVerticalModel extends DataBindingEpoxyModel {
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
-        EfoodItemRestaurantHorizontalBinding binding = (EfoodItemRestaurantHorizontalBinding) holder.getDataBinding();
+        EfoodItemRestaurantVerticalBinding binding = (EfoodItemRestaurantVerticalBinding) holder.getDataBinding();
 
         Glide.with(binding.ivRestaurantBanner.getContext())
                 .asBitmap()

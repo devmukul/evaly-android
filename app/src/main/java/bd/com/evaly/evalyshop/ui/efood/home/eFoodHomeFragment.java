@@ -1,49 +1,50 @@
 package bd.com.evaly.evalyshop.ui.efood.home;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import bd.com.evaly.evalyshop.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import bd.com.evaly.evalyshop.databinding.EfoodHomepageBinding;
+import bd.com.evaly.evalyshop.ui.efood.home.controller.eFoodHomeController;
+import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 
 
 public class eFoodHomeFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
+    private EfoodHomepageBinding binding;
+    private eFoodHomeController controller;
 
     public eFoodHomeFragment() {
-        // Required empty public constructor
-    }
-    public static eFoodHomeFragment newInstance(String param1, String param2) {
-        eFoodHomeFragment fragment = new eFoodHomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.efood_fragment_home, container, false);
+        binding = EfoodHomepageBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        controller = new eFoodHomeController();
+
+        binding.recyclerView.setAdapter(controller.getAdapter());
+
+        controller.requestModelBuild();
+
     }
 }
