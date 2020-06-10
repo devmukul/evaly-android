@@ -10,4 +10,9 @@
         android:name="bd.com.evaly.evalyshop.ui.efood.home.eFoodHomeFragment"
         android:label="fragment_efood_home"
         tools:layout="@layout/efood_fragment_home" />
+    <fragment
+        android:id="@+id/eFoodRestaurantFragment"
+        android:name="bd.com.evaly.evalyshop.ui.efood.restaurant.eFoodRestaurantFragment"
+        android:label="eFoodRestaurantFragment" />
+
 </navigation>
