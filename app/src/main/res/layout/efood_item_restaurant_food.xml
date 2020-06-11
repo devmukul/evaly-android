@@ -1,91 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginLeft="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginBottom="10dp"
-    android:background="#fff"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+<layout>
 
-    <TextView
-        android:id="@+id/tvFoodName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
-        android:paddingRight="10dp"
-        android:textColor="#000"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/cardView2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="BBQ Temptation" />
-
-    <TextView
-        android:id="@+id/tvFoodInfo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvFoodName"
-        android:ellipsize="end"
-        android:paddingRight="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="#444"
-        android:textSize="14sp"
-        android:layout_marginTop="3dp"
-        app:layout_constraintEnd_toStartOf="@+id/cardView2"
-        app:layout_constraintTop_toBottomOf="@id/tvFoodName"
-        tools:text="Spicy chicken marinated in BBQ sauce, onions, capsicums, tomatoes, green chiles." />
-
-
-    <TextView
-        android:id="@+id/etFoodPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvFoodInfo"
-        android:backgroundTint="#ddd"
-        android:enabled="false"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_vertical"
-        android:inputType="none"
-        android:maxLength="8"
-        android:paddingRight="5dp"
-        android:textColor="#F57224"
-        android:textSize="16sp"
-        android:layout_marginTop="3dp"
-        android:textStyle="normal"
-        tools:text="৳ 500" />
-
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:id="@+id/foodImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/pizza_image"
-            android:adjustViewBounds="true" />
-
-    </androidx.cardview.widget.CardView>
-
-
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        app:layout_constraintTop_toBottomOf="@id/etFoodPrice"
-        android:layout_marginTop="15dp"
-        android:background="#fafafa" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="#fff"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/tvFoodName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:paddingRight="10dp"
+            android:textColor="#000"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/cardView2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="BBQ Temptation" />
+
+        <TextView
+            android:id="@+id/tvFoodInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvFoodName"
+            android:layout_marginTop="3dp"
+            android:ellipsize="end"
+            android:paddingRight="10dp"
+            android:textColor="#444"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/cardView2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvFoodName"
+            tools:text="Spicy chicken marinated in BBQ sauce, onions, capsicums, tomatoes, green chiles." />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/etFoodPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:backgroundTint="#ddd"
+            android:enabled="false"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:inputType="none"
+            android:maxLength="8"
+            android:paddingRight="5dp"
+            android:textColor="#F57224"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            app:layout_constraintTop_toBottomOf="@id/tvFoodInfo"
+            tools:text="৳ 500" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/foodImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:src="@drawable/pizza_image" />
+
+        </androidx.cardview.widget.CardView>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="15dp"
+            android:background="#fafafa"
+            app:layout_constraintTop_toBottomOf="@id/etFoodPrice" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
