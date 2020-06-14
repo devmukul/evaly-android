@@ -51,6 +51,7 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
+import bd.com.evaly.evalyshop.databinding.FragmentBuyNowBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -76,37 +77,7 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class BuyNowFragment extends BottomSheetDialogFragment implements VariationAdapter.ClickListenerVariation {
 
-
-    @BindView(R.id.shop)
-    TextView shopName;
-    @BindView(R.id.product_name)
-    TextView productName;
-    @BindView(R.id.product_image)
-    ImageView productImage;
-    @BindView(R.id.minus)
-    ImageView minus;
-    @BindView(R.id.plus)
-    ImageView plus;
-    @BindView(R.id.price)
-    TextView productPrice;
-    @BindView(R.id.priceTotal)
-    TextView productTotalPrice;
-    @BindView(R.id.wholeSalePrice)
-    TextView productWholesalePrice;
-    @BindView(R.id.quantity)
-    EditText productQuantity;
-    @BindView(R.id.variation_title)
-    TextView variationTitle;
-    @BindView(R.id.add_to_cart)
-    TextView addToCartBtn;
-    @BindView(R.id.buy_now)
-    TextView checkOutBtn;
-    @BindView(R.id.variationHolder)
-    LinearLayout variationHolder;
-    @BindView(R.id.recyclerViewVariation)
-    RecyclerView recyclerVariation;
-
-    // checkout bottomsheet
+    private FragmentBuyNowBinding binding;
     private Button btnBottomSheet;
     private EditText customAddress, contact_number;
     private BottomSheetDialog bottomSheetDialog;
@@ -193,9 +164,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_buy_now, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        binding = FragmentBuyNowBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
     }
 
     private void checkLocationPermission() {
@@ -261,26 +232,32 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         if (shopItem.getDiscountedPrice() != null)
             if (shopItem.getDiscountedPrice() > 0) {
                 double disPrice = shopItem.getDiscountedPrice();
-                productPrice.setText(String.format("%s x 1", Utils.formatPriceSymbol(disPrice)));
-                productTotalPrice.setText(Utils.formatPriceSymbol(disPrice));
+                binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(disPrice)));
+                binding.priceTotal.setText(Utils.formatPriceSymbol(disPrice));
                 productPriceInt = disPrice;
             }
 
-        productName.setText(cartItem.getName());
-        shopName.setText(String.format("Seller: %s", shopItem.getShopName()));
-        productPrice.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
-        productQuantity.setText("1");
-        productTotalPrice.setText(Utils.formatPriceSymbol(productPriceInt));
+        binding.productName.setText(cartItem.getName());
+        binding.shopName.setText(String.format("Seller: %s", shopItem.getShopName()));
+        binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
+        binding.quantity.setText("1");
+        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
 
         Glide.with(this)
                 .load(cartItem.getImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(new RequestOptions().override(250, 250))
-                .into(productImage);
+                .into(binding.productImage);
 
-        variationHolder.setVisibility(View.GONE);
+        binding.variationHolder.setVisibility(View.GONE);
 
-        addToCartBtn.setOnClickListener(v -> {
+        binding.addToCart.setOnClickListener(v -> {
+
+            int quantity = 1;
+            try {
+                quantity = Integer.parseInt(binding.quantity.getText().toString());
+            } catch (Exception ignore) {
+            }
 
             Calendar calendar = Calendar.getInstance();
             String price = Utils.formatPrice(shopItem.getPrice());
@@ -297,7 +274,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             cartEntity.setPriceRound(price);
             cartEntity.setTime(calendar.getTimeInMillis());
             cartEntity.setShopJson(sellerJson);
-            cartEntity.setQuantity(1);
+            cartEntity.setQuantity(quantity);
             cartEntity.setShopSlug(shopItem.getShopSlug());
             cartEntity.setSlug(cartItem.getImage());
             cartEntity.setProductID(String.valueOf(shopItem.getShopItemId()));
@@ -307,7 +284,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 if (dbItem.size() == 0)
                     cartDao.insert(cartEntity);
                 else
-                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
+                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + quantityCount);
             });
 
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
@@ -318,9 +295,9 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
     @SuppressLint("DefaultLocale")
     private void inflateQuantity() {
-        productQuantity.setText(String.format("%d", quantityCount));
-        productPrice.setText(String.format("%s x %d", Utils.formatPriceSymbol(productPriceInt), quantityCount));
-        productTotalPrice.setText(Utils.formatPriceSymbol(productPriceInt * quantityCount));
+        binding.quantity.setText(String.format("%d", quantityCount));
+        binding.price.setText(String.format("%s x %d", Utils.formatPriceSymbol(productPriceInt), quantityCount));
+        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt * quantityCount));
     }
 
     @SuppressLint("DefaultLocale")
@@ -343,17 +320,17 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         adapterVariation = new VariationAdapter(itemsList, context, this);
 
         LinearLayoutManager managerVariation = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        recyclerVariation.setLayoutManager(managerVariation);
-        recyclerVariation.setAdapter(adapterVariation);
+        binding.recyclerViewVariation.setLayoutManager(managerVariation);
+        binding.recyclerViewVariation.setAdapter(adapterVariation);
 
-        minus.setOnClickListener(view1 -> {
+        binding.minus.setOnClickListener(view1 -> {
             if (quantityCount > 1) {
                 quantityCount--;
                 inflateQuantity();
             }
         });
 
-        plus.setOnClickListener(view1 -> {
+        binding.plus.setOnClickListener(view1 -> {
             quantityCount++;
             inflateQuantity();
         });
@@ -406,7 +383,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             }
 
             OrderItemsItem item = new OrderItemsItem();
-            item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
+            item.setQuantity(Integer.parseInt(binding.quantity.getText().toString()));
             item.setShopItemId(shop_item_id);
 
             int minOrderValue = 500;
@@ -431,7 +408,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         TextView deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
 
-        checkOutBtn.setOnClickListener(view1 -> {
+        binding.buyNow.setOnClickListener(view1 -> {
             if (userDetails.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
@@ -512,17 +489,17 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         if (firstItem.getShopItemDiscountedPrice() != null)
             if (!(firstItem.getShopItemDiscountedPrice().equals("0.0") || firstItem.getShopItemDiscountedPrice().equals("0"))) {
                 int disPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
-                productPrice.setText(String.format("%s x 1", Utils.formatPriceSymbol(disPrice)));
-                productTotalPrice.setText(Utils.formatPriceSymbol(disPrice));
+                binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(disPrice)));
+                binding.priceTotal.setText(Utils.formatPriceSymbol(disPrice));
                 productPriceInt = disPrice;
             }
 
-        productName.setText(firstItem.getShopItemName());
-        shopName.setText(String.format("Seller: %s", firstItem.getShopName()));
-        productPrice.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
-        productTotalPrice.setText(Utils.formatPriceSymbol(productPriceInt));
-        productQuantity.setText("1");
-        productTotalPrice.setText(Utils.formatPriceSymbol(productPriceInt));
+        binding.productName.setText(firstItem.getShopItemName());
+        binding.shopName.setText(String.format("Seller: %s", firstItem.getShopName()));
+        binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
+        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
+        binding.quantity.setText("1");
+        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
 
         shop_item_id = firstItem.getShopItemId();
 
@@ -531,18 +508,18 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     .load(firstItem.getShopItemImage())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(250, 250))
-                    .into(productImage);
+                    .into(binding.productImage);
 
         if (firstItem.getAttributes().size() > 0) {
-            variationHolder.setVisibility(View.VISIBLE);
+            binding.variationHolder.setVisibility(View.VISIBLE);
             AttributesItem attributesItem = firstItem.getAttributes().get(0);
             String varName = attributesItem.getName();
             String varValue = attributesItem.getValue();
             // variationTitle.setText(varName + ": " + varValue);
         } else
-            variationHolder.setVisibility(View.GONE);
+            binding.variationHolder.setVisibility(View.GONE);
 
-        addToCartBtn.setOnClickListener(v -> {
+        binding.addToCart.setOnClickListener(v -> {
 
             Calendar calendar = Calendar.getInstance();
             String price = firstItem.getShopItemPrice();
@@ -559,7 +536,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             cartEntity.setPriceRound(price);
             cartEntity.setTime(calendar.getTimeInMillis());
             cartEntity.setShopJson(sellerJson);
-            cartEntity.setQuantity(1);
+            cartEntity.setQuantity(quantityCount);
             cartEntity.setShopSlug(firstItem.getShopSlug());
             cartEntity.setSlug(shop_item_slug);
             cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
@@ -569,7 +546,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                 if (dbItem.size() == 0)
                     cartDao.insert(cartEntity);
                 else
-                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
+                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + quantityCount);
             });
 
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();

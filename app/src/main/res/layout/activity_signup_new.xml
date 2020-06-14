@@ -108,6 +108,7 @@
         android:paddingBottom="15dp"
         android:textColorHint="#666"
         android:textSize="16sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/textView42"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -118,6 +119,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/textView42"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@+id/referral"
@@ -133,6 +135,7 @@
         android:text="@string/leave_empty_if_you_don_t_have_invitation_code"
         android:textColor="#666"
         android:textSize="15sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/privacyText"
         app:layout_constraintStart_toEndOf="@+id/imageView19" />
 
