@@ -3,10 +3,12 @@ package bd.com.evaly.evalyshop.ui.home.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
@@ -17,10 +19,13 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.databinding.HomeModelTabsBinding;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
+import bd.com.evaly.evalyshop.ui.home.listener.BindListener;
 import bd.com.evaly.evalyshop.ui.home.model.HomeCarouselModelModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressItemModel_;
@@ -55,6 +60,7 @@ public class HomeController extends EpoxyController {
 
     private AppCompatActivity activity;
     private Fragment fragment;
+    private HomeViewModel homeViewModel;
     private List<ProductItem> items = new ArrayList<>();
     private List<ExpressServiceModel> itemsExpress = new ArrayList<>();
     private AppDatabase appDatabase;
@@ -99,36 +105,14 @@ public class HomeController extends EpoxyController {
             expressDummyItemModels.add(new HomeExpressSkeletonModel_()
                     .id("express_dummy" + i));
         }
-//
-//        expressCarouselModel_
-//                .onBind((model, view, position) -> {
-//                    if (view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-//                        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-//                        params.setFullSpan(true);
-//                    } else {
-//                        StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-//                                ViewGroup.LayoutParams.MATCH_PARENT,
-//                                ViewGroup.LayoutParams.WRAP_CONTENT
-//                        );
-//                        params.setFullSpan(true);
-//                        view.setLayoutParams(params);
-//                    }
-//                    view.setBackgroundColor(Color.WHITE);
-//                })
-//                .padding(new Carousel.Padding(
-//                        (int) Utils.convertDpToPixel(5, activity),
-//                        (int) Utils.convertDpToPixel(5, activity), 50,
-//                        (int) Utils.convertDpToPixel(20, activity),
-//                        0))
-//                .models(expressItemModels)
-//                .addTo(this);
 
-
-        //   dividerModel_.addTo(this);
-
-        tabsModel
-                .activity(activity)
+        tabsModel.activity(activity)
                 .fragmentInstance(fragment)
+                .viewModel(homeViewModel)
+                .bindListener(viewPager -> {
+                    if (homeViewModel.getTabPosition() > 0)
+                        viewPager.setCurrentItem(homeViewModel.getTabPosition());
+                })
                 .addTo(this);
 
 
@@ -177,6 +161,14 @@ public class HomeController extends EpoxyController {
 
     public void setFragment(Fragment fragment) {
         this.fragment = fragment;
+    }
+
+    public HomeViewModel getHomeViewModel() {
+        return homeViewModel;
+    }
+
+    public void setHomeViewModel(HomeViewModel homeViewModel) {
+        this.homeViewModel = homeViewModel;
     }
 }
 

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.airbnb.epoxy.EpoxyAttribute;
@@ -31,7 +32,10 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.TabsViewModel;
 import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
+import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
 import bd.com.evaly.evalyshop.ui.home.controller.ExpressController;
+import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
+import bd.com.evaly.evalyshop.ui.home.listener.BindListener;
 import bd.com.evaly.evalyshop.util.Utils;
 
 @EpoxyModelClass(layout = R.layout.home_model_tabs)
@@ -41,6 +45,10 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
     public Fragment fragmentInstance;
     @EpoxyAttribute
     AppCompatActivity activity;
+    @EpoxyAttribute
+    public HomeViewModel viewModel;
+    @EpoxyAttribute
+    public BindListener bindListener;
 
     private ExpressController expressController;
 
@@ -55,12 +63,14 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
         holder.itemView = null;
     }
 
-    class HomeTabsHolder extends EpoxyHolder {
+    public class HomeTabsHolder extends EpoxyHolder {
 
-        View itemView;
+        public View itemView;
         private FragmentTabPagerAdapter pager;
         private AppDatabase appDatabase;
         private ExpressServiceDao expressServiceDao;
+        private int tabPosition = -1;
+        public ViewPager2 viewPager;
 
         @Override
         protected void bindView(@NonNull View itemView) {
@@ -72,7 +82,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
 
             appDatabase = AppDatabase.getInstance(activity);
             expressServiceDao = appDatabase.expressServiceDao();
-
             expressController = new ExpressController();
             expressController.setFragment(fragmentInstance);
             expressController.setSpanCount(2);
@@ -81,6 +90,7 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
 
             pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
+            viewPager = binding.viewPager;
             binding.viewPager.setOffscreenPageLimit(3);
             binding.viewPager.setAdapter(pager);
             binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -99,7 +109,11 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                 public void onPageSelected(int position) {
                     super.onPageSelected(position);
 
+                    tabPosition = position;
+                    viewModel.setTabPosition(position);
+
                     TabsViewModel viewModel = pager.getViewModel(position);
+
                     if (viewModel != null) {
                         if (viewModel.getItemCount().hasActiveObservers())
                             viewModel.getItemCount().removeObservers(fragmentInstance.getViewLifecycleOwner());
@@ -108,7 +122,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                             ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
                             int row = (int) (Math.ceil(integer == 0 ? 1 : integer / 3.0));
                             params1.height = (int) ((row * (boxHeight + 1)) + barHeight);
-
                             binding.viewPager.post(() -> binding.viewPager.setLayoutParams(params1));
                         });
                     }
@@ -125,6 +138,11 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                 pager.addFragment(shopFragment, AppController.getmContext().getResources().getString(R.string.shops));
                 pager.notifyDataSetChanged();
             }
+
+            bindListener.onBindFinished(binding.viewPager);
+
+            if (tabPosition > 0)
+                binding.viewPager.setCurrentItem(tabPosition);
 
             expressServiceDao.getAll().observe(fragmentInstance.getViewLifecycleOwner(), expressServiceModels -> {
                 expressController.reAddData(expressServiceModels);

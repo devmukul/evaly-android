@@ -66,6 +66,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private HomeController homeController;
     private AppDatabase appDatabase;
     private ExpressServiceDao expressServiceDao;
+    private HomeViewModel viewModel;
 
     public HomeFragment() {
 
@@ -91,6 +92,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         activity = (MainActivity) getActivity();
         context = getContext();
+        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         appDatabase = AppDatabase.getInstance(getActivity());
 
         binding.swipeRefresh.setOnRefreshListener(this);
@@ -133,6 +135,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         homeController = new HomeController();
         homeController.setActivity((AppCompatActivity) getActivity());
         homeController.setFragment(this);
+        homeController.setHomeViewModel(viewModel);
 
         binding.recyclerView.setAdapter(homeController.getAdapter());
 
@@ -291,9 +294,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
-        binding.recyclerView.setAdapter(null);
-        binding = null;
     }
 
 
