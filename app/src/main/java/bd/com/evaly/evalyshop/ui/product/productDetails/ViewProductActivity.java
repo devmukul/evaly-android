@@ -22,7 +22,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +92,7 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ColorButtonAdapt
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SizeButtonAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
+import bd.com.evaly.evalyshop.ui.product.productDetails.bottomsheet.SkuBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.util.Constants;
@@ -378,8 +378,8 @@ public class ViewProductActivity extends BaseActivity {
                 summaryModel.getStar1(),
         };
 
-        binding.review.ratingAverage.setText(summaryModel.getAvgRating()+"");
-        binding.review.ratingCounter.setText(summaryModel.getTotalRatings()+"");
+        binding.review.ratingAverage.setText(summaryModel.getAvgRating() + "");
+        binding.review.ratingCounter.setText(summaryModel.getTotalRatings() + "");
         binding.review.ratingBar.setRating((float) summaryModel.getAvgRating());
 
         if (summaryModel.getTotalRatings() == 0)
@@ -391,7 +391,7 @@ public class ViewProductActivity extends BaseActivity {
             Intent intent = new Intent(this, ReviewsActivity.class);
             intent.putExtra("ratingJson", jsonObject.toString());
             intent.putExtra("item_value", slug);
-            intent.putExtra("type",  "product");
+            intent.putExtra("type", "product");
             startActivity(intent);
         });
     }
@@ -551,6 +551,10 @@ public class ViewProductActivity extends BaseActivity {
             binding.tvDescription.setText(item.getProductDescription().trim());
 
         binding.sku.setText(item.getSku().toUpperCase());
+        binding.skuHolder.setOnClickListener(view -> {
+            SkuBottomSheetFragment fragment = SkuBottomSheetFragment.newInstance(item.getSku().toUpperCase());
+            fragment.show(getSupportFragmentManager(), "SKU");
+        });
 
         sliderImages.clear();
         sliderImages.addAll(item.getProductImages());
