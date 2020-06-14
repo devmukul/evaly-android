@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.OnModelBoundListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
@@ -108,11 +110,7 @@ public class HomeController extends EpoxyController {
 
         tabsModel.activity(activity)
                 .fragmentInstance(fragment)
-                .viewModel(homeViewModel)
-                .bindListener(viewPager -> {
-                    if (homeViewModel.getTabPosition() > 0)
-                        viewPager.setCurrentItem(homeViewModel.getTabPosition());
-                })
+                .homeViewModel(homeViewModel)
                 .addTo(this);
 
 

@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.airbnb.epoxy.EpoxyAttribute;
@@ -34,8 +33,6 @@ import bd.com.evaly.evalyshop.ui.browseProduct.tabs.TabsViewModel;
 import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
 import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
 import bd.com.evaly.evalyshop.ui.home.controller.ExpressController;
-import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
-import bd.com.evaly.evalyshop.ui.home.listener.BindListener;
 import bd.com.evaly.evalyshop.util.Utils;
 
 @EpoxyModelClass(layout = R.layout.home_model_tabs)
@@ -46,9 +43,7 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
     @EpoxyAttribute
     AppCompatActivity activity;
     @EpoxyAttribute
-    public HomeViewModel viewModel;
-    @EpoxyAttribute
-    public BindListener bindListener;
+    public HomeViewModel homeViewModel;
 
     private ExpressController expressController;
 
@@ -69,8 +64,9 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
         private FragmentTabPagerAdapter pager;
         private AppDatabase appDatabase;
         private ExpressServiceDao expressServiceDao;
-        private int tabPosition = -1;
         public ViewPager2 viewPager;
+        private boolean isSelected = false;
+
 
         @Override
         protected void bindView(@NonNull View itemView) {
@@ -103,17 +99,20 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
             final float boxHeight = AppController.getmContext().getResources().getDimension(R.dimen.tab_height);
             final float barHeight = Utils.convertDpToPixel(65, AppController.getmContext());
 
-            binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
 
+            binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
                 public void onPageSelected(int position) {
                     super.onPageSelected(position);
 
-                    tabPosition = position;
-                    viewModel.setTabPosition(position);
+                    if (isSelected && homeViewModel.getTabPosition() > 0) {
+                        binding.viewPager.setCurrentItem(homeViewModel.getTabPosition(), true);
+                        isSelected = false;
+                    } else {
+                        homeViewModel.setTabPosition(position);
+                    }
 
                     TabsViewModel viewModel = pager.getViewModel(position);
-
                     if (viewModel != null) {
                         if (viewModel.getItemCount().hasActiveObservers())
                             viewModel.getItemCount().removeObservers(fragmentInstance.getViewLifecycleOwner());
@@ -139,10 +138,24 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                 pager.notifyDataSetChanged();
             }
 
-            bindListener.onBindFinished(binding.viewPager);
 
-            if (tabPosition > 0)
-                binding.viewPager.setCurrentItem(tabPosition);
+            if (homeViewModel.getTabPosition() > 0 && !isSelected) {
+
+                binding.viewPager.setCurrentItem(homeViewModel.getTabPosition(), false);
+
+                TabsViewModel viewModel = pager.getViewModel(homeViewModel.getTabPosition());
+
+                if (viewModel != null) {
+                    int integer = viewModel.getIntCount();
+                    ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
+                    int row = (int) (Math.ceil(integer == 0 ? 1 : integer / 3.0));
+                    params1.height = (int) ((row * (boxHeight + 1)) + barHeight);
+                    binding.viewPager.post(() -> binding.viewPager.setLayoutParams(params1));
+                }
+
+            }
+
+            isSelected = true;
 
             expressServiceDao.getAll().observe(fragmentInstance.getViewLifecycleOwner(), expressServiceModels -> {
                 expressController.reAddData(expressServiceModels);
