@@ -64,7 +64,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
         private FragmentTabPagerAdapter pager;
         private AppDatabase appDatabase;
         private ExpressServiceDao expressServiceDao;
-        public ViewPager2 viewPager;
         private boolean isSelected = false;
 
 
@@ -86,7 +85,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
 
             pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
-            viewPager = binding.viewPager;
             binding.viewPager.setOffscreenPageLimit(3);
             binding.viewPager.setAdapter(pager);
             binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -98,7 +96,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
 
             final float boxHeight = AppController.getmContext().getResources().getDimension(R.dimen.tab_height);
             final float barHeight = Utils.convertDpToPixel(65, AppController.getmContext());
-
 
             binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override

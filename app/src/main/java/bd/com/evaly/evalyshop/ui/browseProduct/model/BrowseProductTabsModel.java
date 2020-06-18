@@ -19,6 +19,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.BrowseProductModelTabsBinding;
 import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
+import bd.com.evaly.evalyshop.ui.browseProduct.BrowseProductViewModel;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.SubTabsFragment;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.TabsViewModel;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -30,6 +31,8 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
     public Fragment fragmentInstance;
     @EpoxyAttribute
     public String category;
+    @EpoxyAttribute
+    public BrowseProductViewModel browseProductViewModel;
 
     @Override
     public void bind(@NonNull HomeTabsHolder holder) {
@@ -42,6 +45,7 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
         private FragmentTabPagerAdapter pager;
         private BrowseProductModelTabsBinding binding;
         private boolean firstTime;
+        private boolean isSelected = false;
 
         @Override
         protected void bindView(@NonNull View itemView) {
@@ -74,6 +78,13 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
                 public void onPageSelected(int position) {
                     super.onPageSelected(position);
 
+                    if (!isSelected && browseProductViewModel.getTabPosition() > 0) {
+                        binding.tabLayout.selectTab(binding.tabLayout.getTabAt(browseProductViewModel.getTabPosition()));
+                        isSelected = true;
+                    } else {
+                        browseProductViewModel.setTabPosition(position);
+                    }
+
                     TabsViewModel viewModel = pager.getViewModel(position);
 
                     if (viewModel != null) {
@@ -94,7 +105,7 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
                             binding.viewPager.post(() -> {
                                 binding.viewPager.setLayoutParams(params1);
                                 if (integer == 0 && firstTime) {
-                                    if (binding != null && binding.tabLayout.getTabCount() > 0)
+                                    if (binding != null && binding.tabLayout.getTabCount() > 0 && !isSelected)
                                         binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
                                 }
                             });
@@ -111,7 +122,7 @@ public abstract class BrowseProductTabsModel extends EpoxyModelWithHolder<Browse
             pager.addFragment(categoryFragment, AppController.getmContext().getResources().getString(R.string.categories));
             pager.addFragment(brandFragment, AppController.getmContext().getResources().getString(R.string.brands));
             pager.addFragment(shopFragment, AppController.getmContext().getResources().getString(R.string.shops));
-            
+
             pager.notifyDataSetChanged();
         }
 

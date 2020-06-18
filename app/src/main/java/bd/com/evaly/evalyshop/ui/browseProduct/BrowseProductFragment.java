@@ -46,6 +46,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     private boolean isLoading = false;
     private BrowseProductController controller;
     private FragmentBrowseProductBinding binding;
+    private BrowseProductViewModel viewModel;
 
     public BrowseProductFragment() {
 
@@ -62,6 +63,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        viewModel = new ViewModelProvider(this).get(BrowseProductViewModel.class);
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "browse", mainViewModel);
@@ -100,6 +102,7 @@ public class BrowseProductFragment extends Fragment implements SwipeRefreshLayou
         controller.setActivity((AppCompatActivity) getActivity());
         controller.setFragment(this);
         controller.setCategorySlug(slug);
+        controller.setBrowseProductViewModel(viewModel);
 
         binding.recyclerView.setAdapter(controller.getAdapter());
 
