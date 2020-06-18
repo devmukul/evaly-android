@@ -63,6 +63,10 @@ public class OrderApiHelper extends BaseApiHelper {
         getiApiClient().cancelOrder(token, invoiceNo, hashMap).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void confirmDelivery(String token, String invoiceNo,  ResponseListenerAuth<JsonObject, String> listener){
+        getiApiClient().confirmDelivery(token, invoiceNo).enqueue(getResponseCallBackDefault(listener));
+    }
+
     public static void requestRefund(String token, HashMap<String, String> body, ResponseListenerAuth<CommonDataResponse<String>, String> listener){
         getiApiClient().postRequestRefund(token, body).enqueue(getResponseCallBackDefault(listener));
     }

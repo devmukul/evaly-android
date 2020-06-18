@@ -222,6 +222,9 @@ public interface IApiClient {
     @PUT(UrlUtils.BASE_URL + "orders/customer/cancel-order/{invoice_no}/")
     Call<JsonObject> cancelOrder(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo, @Body HashMap<String, String> body);
 
+    @PUT(UrlUtils.BASE_URL + "orders/customer/deliver-order/{invoice_no}/")
+    Call<JsonObject> confirmDelivery(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo);
+
 
     // brand
 

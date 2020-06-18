@@ -1,7 +1,10 @@
 package bd.com.evaly.evalyshop.ui.order.orderDetails;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,6 +43,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -57,9 +61,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -84,6 +90,7 @@ import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -102,8 +109,12 @@ public class OrderDetailsActivity extends BaseActivity {
     CircleImageView heroPicture;
     @BindView(R.id.deliveryHeroStatus)
     TextView heroStatus;
+    @BindView(R.id.confirmDelivery)
+    TextView confirmDelivery;
     @BindView(R.id.btnToggleTimeline)
     TextView btnToggleTimeline;
+    @BindView(R.id.btnToggleTimelineHolder)
+    LinearLayout btnToggleTimelineHolder;
     @BindView(R.id.heroCall)
     ImageView heroCall;
     private double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
@@ -278,6 +289,68 @@ public class OrderDetailsActivity extends BaseActivity {
 
         getDeliveryHero();
 
+        confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
+
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void confirmDeliveryDialog() {
+        final Dialog dialog = new Dialog(this, R.style.FullWidthTransparentDialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        final DialogConfirmDeliveryBinding dialogConfirmDeliveryBinding = DataBindingUtil.inflate(LayoutInflater.from(OrderDetailsActivity.this), R.layout.dialog_confirm_delivery, null, false);
+
+        Random rand = new Random();
+        String captchaCode = String.format(Locale.ENGLISH, "%04d", rand.nextInt(10000));
+        dialogConfirmDeliveryBinding.captchaCode.setText(captchaCode);
+
+        dialogConfirmDeliveryBinding.verify.setOnClickListener(v -> {
+            if (dialogConfirmDeliveryBinding.code.getText().toString().trim().equals(""))
+                ToastUtils.show("Please enter captcha code");
+            else if (!dialogConfirmDeliveryBinding.code.getText().toString().trim().equals(captchaCode))
+                ToastUtils.show("You have entered wrong captcha code");
+            else
+                requestConfirmDelivery(dialog);
+        });
+
+        dialog.setContentView(dialogConfirmDeliveryBinding.getRoot());
+        dialog.show();
+    }
+
+    private void requestConfirmDelivery(Dialog alertDialog) {
+
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("Confirming delivery...");
+        dialog.show();
+
+        OrderApiHelper.confirmDelivery(CredentialManager.getToken(), invoice_no, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                dialog.dismiss();
+
+                if (response.has("message"))
+                    ToastUtils.show(response.get("message").getAsString());
+
+                if (response.has("success") && response.get("success").getAsBoolean() && alertDialog != null && alertDialog.isShowing())
+                    alertDialog.dismiss();
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                dialog.dismiss();
+                ToastUtils.show("Error occurred! Try again later");
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    requestConfirmDelivery(alertDialog);
+
+            }
+        });
+
+
     }
 
     @OnClick(R.id.tvViewIssue)
@@ -366,6 +439,8 @@ public class OrderDetailsActivity extends BaseActivity {
         bottomSheetDialog.show();
 
         ivClose.setOnClickListener(view -> bottomSheetDialog.dismiss());
+
+
     }
 
     private void submitIssue(OrderIssueModel model, BottomSheetDialog bottomSheetDialog) {
@@ -767,6 +842,13 @@ public class OrderDetailsActivity extends BaseActivity {
                     heroStatus.setText("Delivered the products");
                 }
 
+                if (orderStatus.equals("processing") ||
+                        orderStatus.equals("picked") ||
+                        orderStatus.equals("shipped"))
+                    confirmDelivery.setVisibility(View.VISIBLE);
+                else
+                    confirmDelivery.setVisibility(View.GONE);
+
                 if (!response.isDeliveryConfirmed() && response.isDeliveryConfirmationRequired())
                     deliveryConfirmationDialog();
 
@@ -964,11 +1046,10 @@ public class OrderDetailsActivity extends BaseActivity {
                     adapter.notifyDataSetChanged();
                 }
 
-
                 if (list.size() > 4)
-                    btnToggleTimeline.setVisibility(View.VISIBLE);
+                    btnToggleTimelineHolder.setVisibility(View.VISIBLE);
                 else
-                    btnToggleTimeline.setVisibility(View.GONE);
+                    btnToggleTimelineHolder.setVisibility(View.GONE);
             }
 
             @Override

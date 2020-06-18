@@ -27,7 +27,7 @@
         <View
             android:id="@+id/lineTop"
             android:layout_width="3dp"
-            android:layout_height="6dp"
+            android:layout_height="5dp"
             android:layout_weight="0"
             android:background="#eee" />
 
