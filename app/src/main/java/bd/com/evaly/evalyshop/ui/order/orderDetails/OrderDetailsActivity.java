@@ -331,8 +331,10 @@ public class OrderDetailsActivity extends BaseActivity {
                 if (response.has("message"))
                     ToastUtils.show(response.get("message").getAsString());
 
-                if (response.has("success") && response.get("success").getAsBoolean() && alertDialog != null && alertDialog.isShowing())
+                if (response.has("success") && response.get("success").getAsBoolean() && alertDialog != null && alertDialog.isShowing()) {
+                    updatePage();
                     alertDialog.dismiss();
+                }
 
             }
 
