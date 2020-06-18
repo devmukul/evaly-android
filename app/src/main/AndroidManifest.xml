@@ -47,14 +47,14 @@ package="bd.com.evaly.evalyshop">
         android:readPermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._READ_PERMISSION"
         android:writePermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._WRITE_PERMISSION" />
 
-    <activity
-        android:theme="@style/AppTheme.NoActionBar"
-        android:name="bd.com.evaly.evalyshop.ui.efood.activity.eFoodActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+<!--    <activity-->
+<!--        android:theme="@style/AppTheme.NoActionBar"-->
+<!--        android:name="bd.com.evaly.evalyshop.ui.efood.activity.eFoodActivity">-->
+<!--        <intent-filter>-->
+<!--            <action android:name="android.intent.action.MAIN" />-->
+<!--            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--        </intent-filter>-->
+<!--    </activity>-->
 
     <activity
         android:name=".ui.networkError.UnderMaintenanceActivity"
