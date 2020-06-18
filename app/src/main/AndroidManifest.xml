@@ -39,7 +39,7 @@ package="bd.com.evaly.evalyshop">
 
     <provider
         android:name="bd.com.evaly.evalyshop.manager.TokenContentProvider"
-        android:authorities="bd.com.evaly.econnect;bd.com.evaly.hero;com.evaly.ekhata;bd.com.evaly.merchant"
+        android:authorities="bd.com.evaly.econnect;bd.com.evaly.hero;com.evaly.ekhata;bd.com.evaly.merchant;bd.com.evaly.ebazar;"
         android:enabled="true"
         android:exported="true"
         android:grantUriPermissions="true"
