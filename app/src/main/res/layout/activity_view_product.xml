@@ -327,6 +327,7 @@
 
 
                     <RelativeLayout
+                        android:id="@+id/skuHolder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -351,7 +352,6 @@
                             android:layout_toLeftOf="@id/arrow2"
                             android:layout_toRightOf="@+id/vouchers"
                             android:textColor="#f00"
-                            android:textIsSelectable="true"
                             android:textSize="16sp" />
 
                         <ImageView

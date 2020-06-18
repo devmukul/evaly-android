@@ -125,6 +125,7 @@
                         android:paddingRight="10dp"
                         android:textColor="#000"
                         android:textSize="19sp"
+                        android:maxLines="1"
                         app:layout_constraintBottom_toTopOf="@+id/barrier"
                         app:layout_constraintEnd_toStartOf="@+id/heroCall"
                         app:layout_constraintStart_toEndOf="@id/heroPicture"

@@ -59,7 +59,7 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
         Glide.with(binding.getRoot())
                 .asBitmap()
                 .skipMemoryCache(true)
-                .apply(new RequestOptions().override(260, 260))
+                .apply(new RequestOptions().override(300, 300))
                 .load(model.getImageUrls().get(0))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_evaly_placeholder)

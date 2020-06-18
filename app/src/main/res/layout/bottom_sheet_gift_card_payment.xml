@@ -67,7 +67,7 @@
         android:paddingRight="15dp"
         android:paddingBottom="10dp"
         android:imeOptions="actionDone"
-        android:digits="1234567890."
+        android:digits="1234567890"
         android:drawableRight="@drawable/ic_edit_drawable"/>
 
     <TextView

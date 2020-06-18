@@ -14,6 +14,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.ui.browseProduct.BrowseProductViewModel;
 import bd.com.evaly.evalyshop.ui.browseProduct.model.BrowseProductTabsModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
@@ -26,6 +27,15 @@ public class BrowseProductController extends EpoxyController {
     private List<ProductItem> items = new ArrayList<>();
     private AppDatabase appDatabase;
     private String categorySlug;
+    private BrowseProductViewModel browseProductViewModel;
+
+    public BrowseProductViewModel getBrowseProductViewModel() {
+        return browseProductViewModel;
+    }
+
+    public void setBrowseProductViewModel(BrowseProductViewModel browseProductViewModel) {
+        this.browseProductViewModel = browseProductViewModel;
+    }
 
     @AutoModel
     BrowseProductTabsModel_ tabsModel;
@@ -46,6 +56,7 @@ public class BrowseProductController extends EpoxyController {
         tabsModel
                 .fragmentInstance(fragment)
                 .category(categorySlug)
+                .browseProductViewModel(browseProductViewModel)
                 .addTo(this);
 
         for (ProductItem productItem: items) {
