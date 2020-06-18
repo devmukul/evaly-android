@@ -105,9 +105,9 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                 public void onPageSelected(int position) {
                     super.onPageSelected(position);
 
-                    if (isSelected && homeViewModel.getTabPosition() > 0) {
-                        binding.viewPager.setCurrentItem(homeViewModel.getTabPosition(), true);
-                        isSelected = false;
+                    if (!isSelected && homeViewModel.getTabPosition() > 0) {
+                        binding.viewPager.setCurrentItem(homeViewModel.getTabPosition());
+                        isSelected = true;
                     } else {
                         homeViewModel.setTabPosition(position);
                     }
@@ -137,25 +137,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                 pager.addFragment(shopFragment, AppController.getmContext().getResources().getString(R.string.shops));
                 pager.notifyDataSetChanged();
             }
-
-
-            if (homeViewModel.getTabPosition() > 0 && !isSelected) {
-
-                binding.viewPager.setCurrentItem(homeViewModel.getTabPosition(), false);
-
-                TabsViewModel viewModel = pager.getViewModel(homeViewModel.getTabPosition());
-
-                if (viewModel != null) {
-                    int integer = viewModel.getIntCount();
-                    ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
-                    int row = (int) (Math.ceil(integer == 0 ? 1 : integer / 3.0));
-                    params1.height = (int) ((row * (boxHeight + 1)) + barHeight);
-                    binding.viewPager.post(() -> binding.viewPager.setLayoutParams(params1));
-                }
-
-            }
-
-            isSelected = true;
 
             expressServiceDao.getAll().observe(fragmentInstance.getViewLifecycleOwner(), expressServiceModels -> {
                 expressController.reAddData(expressServiceModels);
