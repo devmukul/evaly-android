@@ -59,6 +59,7 @@ import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.shop.controller.ShopController;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
@@ -451,8 +452,9 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                             @Override
                             public void onFailed(int status) {
-                                dialog.hideDialog();
-                                Toast.makeText(getContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                                if (dialog.isShowing())
+                                    dialog.hideDialog();
+                                ToastUtils.show(R.string.something_wrong);
                             }
                         });
                     }
