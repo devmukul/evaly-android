@@ -53,7 +53,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.orhanobut.logger.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -69,14 +68,18 @@ import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
+import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
+import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
+import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
-import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
@@ -87,7 +90,6 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheet;
 import bd.com.evaly.evalyshop.util.Balance;
-import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -142,6 +144,8 @@ public class OrderDetailsActivity extends BaseActivity {
     private String imageUrl;
     private MenuItem cancelMenuItem;
     private MenuItem refundMenuItem;
+    private List<IssueCategoryModel> categoryList;
+    private OrderDetailsModel orderDetailsModel;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -362,7 +366,7 @@ public class OrderDetailsActivity extends BaseActivity {
 
     @OnClick(R.id.tvReport)
     void report() {
-        OrderIssueModel model = new OrderIssueModel();
+        IssueCreateBody model = new IssueCreateBody();
 
         bottomSheetDialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.report_view);
@@ -375,23 +379,40 @@ public class OrderDetailsActivity extends BaseActivity {
 
         List<String> options = new ArrayList<>();
 
-        List<OrderIssueModel> list;
-        if (orderStatus.equals("pending"))
-            list = Constants.getIssueListPending();
-        else
-            list = Constants.getDelivaryIssueList();
-
-        for (int i = 0; i < list.size(); i++) {
-            options.add(list.get(i).getDescription());
-        }
 
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, options);
         spinner.setAdapter(adapter);
 
+        dialog.showDialog();
+
+        IssueApiHelper.getCategories(new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<IssueCategoryModel>> response, int statusCode) {
+
+                dialog.hideDialog();
+                categoryList = response.getData();
+                for (IssueCategoryModel item : categoryList) {
+                    options.add(item.getName());
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                dialog.hideDialog();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                model.setIssue_type(list.get(i).getIssue_type());
+                model.setCategory(categoryList.get(i).getId());
             }
 
             @Override
@@ -407,9 +428,20 @@ public class OrderDetailsActivity extends BaseActivity {
                 etDescription.setError("Required");
                 return;
             }
-            model.setDescription(etDescription.getText().toString());
+            model.setAdditionalInfo(etDescription.getText().toString());
+            model.setChannel("customer_app");
+            model.setContext("order");
+            model.setCustomer(CredentialManager.getUserName());
+            model.setInvoiceNumber(invoice_no);
+            model.setPriority("urgent");
+            model.setSeller(orderDetailsModel.getShop().getName());
+            model.setShop(orderDetailsModel.getShop().getSlug());
 
-            model.setAttachment(imageUrl);
+            if (imageUrl != null && !imageUrl.equals("")) {
+                List<String> imageUrls = new ArrayList<>();
+                imageUrls.add(imageUrl);
+                model.setAttachments(imageUrls);
+            }
             dialog.showDialog();
             submitIssue(model, bottomSheetDialog);
             imageUrl = "";
@@ -437,7 +469,6 @@ public class OrderDetailsActivity extends BaseActivity {
             }
         });
         bottomSheetDialog.setCancelable(false);
-
         bottomSheetDialog.show();
 
         ivClose.setOnClickListener(view -> bottomSheetDialog.dismiss());
@@ -445,25 +476,27 @@ public class OrderDetailsActivity extends BaseActivity {
 
     }
 
-    private void submitIssue(OrderIssueModel model, BottomSheetDialog bottomSheetDialog) {
-        AuthApiHelper.submitIssue(model, invoice_no, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+    private void submitIssue(IssueCreateBody model, BottomSheetDialog bottomSheetDialog) {
+
+        IssueApiHelper.createIssue(model, new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
             @Override
-            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+            public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
+
                 dialog.hideDialog();
-                if (response.code() == 200 || response.code() == 201) {
-                    Toast.makeText(getApplicationContext(), "Your issue has been submitted, you will be notified shortly", Toast.LENGTH_LONG).show();
-                    bottomSheetDialog.dismiss();
-                } else if (response.code() == 401) {
-                    submitIssue(model, bottomSheetDialog);
-                } else {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                }
+                Toast.makeText(getApplicationContext(), "Your issue has been submitted, you will be notified shortly", Toast.LENGTH_LONG).show();
+                bottomSheetDialog.dismiss();
             }
 
             @Override
-            public void onFailed(int status) {
+            public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    submitIssue(model, bottomSheetDialog);
 
             }
         });
@@ -553,7 +586,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
     }
 
-
     public void dialogGiftCardPayment() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
 
@@ -602,7 +634,6 @@ public class OrderDetailsActivity extends BaseActivity {
         });
     }
 
-
     public void makePaymentViaGiftCard(String giftCode, String invoice, String amount) {
 
         HashMap<String, String> payload = new HashMap<>();
@@ -642,7 +673,6 @@ public class OrderDetailsActivity extends BaseActivity {
         });
     }
 
-
     private void giftCardSuccessDialog() {
 
         new AlertDialog.Builder(context)
@@ -657,7 +687,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
     }
-
 
     @Override
     public void onResume() {
@@ -675,7 +704,6 @@ public class OrderDetailsActivity extends BaseActivity {
         getOrderDetails();
 
     }
-
 
     public void checkCardBalance() {
 
@@ -700,7 +728,6 @@ public class OrderDetailsActivity extends BaseActivity {
             }
         });
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -743,8 +770,6 @@ public class OrderDetailsActivity extends BaseActivity {
                     }
 
                     dialog.showDialog();
-
-                    Logger.d("+_+_+_+_+_+");
 
                     AuthApiHelper.uploadImage(this, bitmap, new ImageUploadView() {
                         @Override
@@ -797,6 +822,8 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onDataFetched(OrderDetailsModel response, int statusCode) {
 
                 dialog.hideDialog();
+
+                orderDetailsModel = response;
 
                 orderStatus = response.getOrderStatus().toLowerCase();
                 paymentMethod = response.getPaymentMethod();

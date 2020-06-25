@@ -114,7 +114,8 @@
                                     android:paddingBottom="4dp"
                                     android:text="Pending"
                                     android:textColor="#fff"
-                                    android:textSize="12sp" />
+                                    android:textSize="12sp"
+                                    android:visibility="gone"/>
 
                                 <TextView
                                     android:id="@+id/tvIssueStatus"

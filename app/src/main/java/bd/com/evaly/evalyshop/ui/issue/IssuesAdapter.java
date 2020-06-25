@@ -14,7 +14,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
-import bd.com.evaly.evalyshop.models.issue.IssuesModel;
+import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.util.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,10 +22,10 @@ import butterknife.ButterKnife;
 public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesViewHolder> {
 
     private Activity context;
-    private List<IssuesModel> list;
+    private List<IssueListModel> list;
     private RecyclerViewOnItemClickListener listener;
 
-    public IssuesAdapter(Activity context, List<IssuesModel> list, RecyclerViewOnItemClickListener listener) {
+    public IssuesAdapter(Activity context, List<IssueListModel> list, RecyclerViewOnItemClickListener listener) {
         this.context = context;
         this.list = list;
         this.listener = listener;
@@ -39,10 +39,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
 
     @Override
     public void onBindViewHolder(@NonNull IssuesViewHolder holder, int i) {
-        IssuesModel model = list.get(i);
+        IssueListModel model = list.get(i);
 
-        holder.tvIssueType.setText(Utils.toFirstCharUpperAll(model.getIssue_type()));
-        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss", "", model.getCreated_at())));
+        holder.tvIssueType.setText(Utils.toFirstCharUpperAll(model.getCategory().getName()));
+        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd HH:mm:ss.SSS", "", model.getCreatedAt())));
 
         holder.tvIssueStatus.setText(Utils.toFirstCharUpperAll(model.getStatus()));
 
@@ -52,12 +52,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<IssuesAdapter.IssuesView
             holder.tvIssueStatus.setBackgroundColor(Color.parseColor("#33d274"));
         }
 
-        int comment = model.getIssue_replies().size();
-        String commentString = comment + " Comments";
-        if (comment == 1)
-            commentString = comment + " Comment";
-
-        holder.tvCommentCount.setText(commentString);
+        holder.tvCommentCount.setText(Utils.truncateText(model.getAdditionalInfo(),100, "..."));
     }
 
     @Override

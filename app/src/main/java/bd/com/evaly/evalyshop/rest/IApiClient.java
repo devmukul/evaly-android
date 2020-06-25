@@ -26,6 +26,11 @@ import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
+import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
+import bd.com.evaly.evalyshop.models.issueNew.comment.IssueCommentBody;
+import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
+import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
+import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
@@ -60,6 +65,30 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+    // issue ticket
+
+    @GET(UrlUtils.DOMAIN + "issue/api/v1/users/categories")
+    Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
+                                                                              @Query("limit") int limit);
+
+    @GET(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
+    Call<CommonDataResponse<List<IssueListModel>>> getIssueTicketList(@Header("Authorization") String token,
+                                                                      @Query("invoice_number") String invoice);
+
+    @POST(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
+    Call<CommonDataResponse<IssueListModel>> createIssueTicket(@Header("Authorization") String token,
+                                                                     @Body IssueCreateBody body);
+
+    @GET(UrlUtils.DOMAIN + "issue/api/v1/common/comments")
+    Call<CommonDataResponse<List<IssueTicketCommentModel>>> getIssueTicketComment(@Header("Authorization") String token,
+                                                                                  @Query("ticket_id") int ticketId);
+
+    @POST(UrlUtils.DOMAIN + "issue/api/v1/common/comments")
+    Call<CommonDataResponse<IssueTicketCommentModel>> createIssueTicketComment(@Header("Authorization") String token,
+                                                                                     @Body IssueCommentBody body,
+                                                                                     @Query("ticket_id") String tickerId);
+
 
     @POST(UrlUtils.SET_PASSWORD)
     Call<JsonObject> setPassword(@Body HashMap<String, String> setPasswordModel);
@@ -288,7 +317,7 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN + "cpn/gift-cards/retrieve/{slug}")
     Call<JsonObject> getGiftCardDetails(@Path("slug") String slug);
 
-    @GET(UrlUtils.DOMAIN +"cpn/gift-card-orders")
+    @GET(UrlUtils.DOMAIN + "cpn/gift-card-orders")
     Call<CommonDataResponse<List<GiftCardListPurchasedItem>>> getPurchasedGiftCardList(@Header("Authorization") String token, @Query("show") String show, @Query("page") int page);
 
     @POST(UrlUtils.DOMAIN + "cpn/gift-card-orders/gift-code/retrieve")
@@ -316,7 +345,6 @@ public interface IApiClient {
 
     @GET(UrlUtils.BASE_URL + "review-eligibility/{shopSlug}/")
     Call<JsonObject> checkShopReviewEligibility(@Header("Authorization") String token, @Path("shopSlug") String slug);
-
 
 
     // product reviews

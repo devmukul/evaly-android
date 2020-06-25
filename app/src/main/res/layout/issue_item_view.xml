@@ -68,10 +68,12 @@
         android:layout_below="@id/tvIssueType"
         android:layout_marginTop="13dp"
         android:clickable="false"
-        android:text="0 Comments"
+        android:text="Here is additional info Here is additional info Here is additional info Here is additional info Here is additional info Here is additional info Here is additional info"
         android:textColor="#777"
         android:layout_marginLeft="18dp"
         android:layout_marginRight="18dp"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@id/tvDate"
         android:textSize="14sp" />
 
     <TextView
@@ -91,7 +93,7 @@
         android:id="@+id/view11"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/tvDate"
+        android:layout_below="@id/tvCommentCount"
         android:layout_marginTop="23dp"
         android:layout_marginBottom="5dp"
         android:background="#f8f8f8"
