@@ -374,7 +374,10 @@ public class MainActivity extends BaseActivity {
     }
 
     private void startXmppService() {
-        startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
+        try {
+            startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
+        } catch (Exception ignore) {
+        }
     }
 
     private void disconnectXmpp() {

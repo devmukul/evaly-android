@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.payment.bottomsheet;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +24,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.PaymentBottomSheetFragmentBinding;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaCard;
@@ -223,7 +221,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                     intent.putExtra("orderID", invoice_no);
                     startActivity(intent);
                 }
-                dismiss();
+                dismissAllowingStateLoss();
             }
 
         }
