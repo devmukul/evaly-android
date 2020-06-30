@@ -51,6 +51,7 @@ import com.badoualy.stepperindicator.StepperIndicator;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -383,6 +384,7 @@ public class OrderDetailsActivity extends BaseActivity {
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, options);
         spinner.setAdapter(adapter);
 
+
         dialog.showDialog();
 
         IssueApiHelper.getCategories(new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
@@ -390,11 +392,15 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onDataFetched(CommonDataResponse<List<IssueCategoryModel>> response, int statusCode) {
 
                 dialog.hideDialog();
+
+                bottomSheetDialog.show();
+
                 categoryList = response.getData();
                 for (IssueCategoryModel item : categoryList) {
                     options.add(item.getName());
                 }
                 adapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -413,6 +419,12 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 model.setCategory(categoryList.get(i).getId());
+
+                String catName = categoryList.get(i).getName().toLowerCase();
+                if (catName.contains("payment") || catName.contains("bank") || catName.contains("cashback") || catName.contains("return"))
+                    model.setPriority("urgent");
+                else
+                    model.setPriority("medium");
             }
 
             @Override
@@ -433,7 +445,7 @@ public class OrderDetailsActivity extends BaseActivity {
             model.setContext("order");
             model.setCustomer(CredentialManager.getUserName());
             model.setInvoiceNumber(invoice_no);
-            model.setPriority("urgent");
+
             model.setSeller(orderDetailsModel.getShop().getName());
             model.setShop(orderDetailsModel.getShop().getSlug());
 
@@ -469,7 +481,6 @@ public class OrderDetailsActivity extends BaseActivity {
             }
         });
         bottomSheetDialog.setCancelable(false);
-        bottomSheetDialog.show();
 
         ivClose.setOnClickListener(view -> bottomSheetDialog.dismiss());
 
@@ -490,7 +501,12 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                try {
+                    CommonDataResponse jsonObject = new Gson().fromJson(errorBody, CommonDataResponse.class);
+                    ToastUtils.show(jsonObject.getMessage());
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
