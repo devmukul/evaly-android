@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.ui.user;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -333,10 +334,29 @@ public class UserDashboardActivity extends BaseActivity {
 
     @OnClick(R.id.llMessage)
     void gotoMessage() {
-        if (!CredentialManager.getToken().equals("") && !userDetails.getToken().equals("")) {
-            startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
+//        if (!CredentialManager.getToken().equals("") && !userDetails.getToken().equals("")) {
+//            startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
+//        } else {
+//            Toast.makeText(getApplicationContext(), "Please login to see messages", Toast.LENGTH_LONG).show();
+//        }
+        Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
+        if (launchIntent != null) {
+            launchIntent.putExtra("to", "OPEN_CHAT_LIST");
+            launchIntent.putExtra("user", CredentialManager.getUserName());
+            launchIntent.putExtra("password", CredentialManager.getPassword());
+            startActivity(launchIntent);
+            finish();
         } else {
-            Toast.makeText(getApplicationContext(), "Please login to see messages", Toast.LENGTH_LONG).show();
+//            launchIntent = new Intent(Intent.ACTION_VIEW);
+//            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            launchIntent.setData(Uri.parse("market://details?id=" + "bd.com.evaly.econnect"));
+//            startActivity(launchIntent);
+
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+            }
         }
     }
 
