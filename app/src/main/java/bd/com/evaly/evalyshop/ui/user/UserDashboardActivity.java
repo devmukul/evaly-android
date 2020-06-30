@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.user;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import androidx.appcompat.view.menu.MenuBuilder;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
@@ -340,24 +342,25 @@ public class UserDashboardActivity extends BaseActivity {
 //            Toast.makeText(getApplicationContext(), "Please login to see messages", Toast.LENGTH_LONG).show();
 //        }
         Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
-        if (launchIntent != null) {
-            launchIntent.putExtra("to", "OPEN_CHAT_LIST");
-            launchIntent.putExtra("user", CredentialManager.getUserName());
-            launchIntent.putExtra("password", CredentialManager.getPassword());
-            startActivity(launchIntent);
-            finish();
-        } else {
-//            launchIntent = new Intent(Intent.ACTION_VIEW);
-//            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            launchIntent.setData(Uri.parse("market://details?id=" + "bd.com.evaly.econnect"));
-//            startActivity(launchIntent);
-
+        try {
+            if (launchIntent != null) {
+                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
+                launchIntent.putExtra("user", CredentialManager.getUserName());
+                launchIntent.putExtra("password", CredentialManager.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+//                launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(launchIntent);
+//                finish();
+            }
+        }catch (ActivityNotFoundException e){
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
             } catch (android.content.ActivityNotFoundException anfe) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
             }
         }
+
+
     }
 
 

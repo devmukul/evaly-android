@@ -1,8 +1,9 @@
 package bd.com.evaly.evalyshop.models.user;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserModel {
+public class UserModel implements Serializable {
     private int id;
     private String last_login;
     private String image_sm;
