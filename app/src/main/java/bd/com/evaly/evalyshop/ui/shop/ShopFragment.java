@@ -360,7 +360,12 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     Logger.d(new Gson().toJson(shopDetailsModel));
                     RosterTable rosterTable = new RosterTable();
                     rosterTable.name = shopDetailsModel.getName();
-                    rosterTable.id = shopDetailsModel.getOwnerName() +"@"+Constants.XMPP_HOST;
+                    if (shopDetailsModel.getOwnerName() == null || shopDetailsModel.getOwnerName().isEmpty()){
+                        rosterTable.id = shopDetailsModel.getContactNumber() +"@"+Constants.XMPP_HOST;
+                    }else{
+                        rosterTable.id = shopDetailsModel.getOwnerName() +"@"+Constants.XMPP_HOST;
+                    }
+
                     rosterTable.imageUrl = shopDetailsModel.getLogoImage();
                     rosterTable.status = 0;
                     rosterTable.lastMessage = "";
