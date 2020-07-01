@@ -41,7 +41,7 @@ public class IssueListModel implements Serializable {
 	private int id;
 
 	@SerializedName("category")
-	private Category category;
+	private String category;
 
 	@SerializedName("invoice_number")
 	private String invoiceNumber;
@@ -143,11 +143,11 @@ public class IssueListModel implements Serializable {
 		return id;
 	}
 
-	public void setCategory(Category category){
+	public void setCategory(String category){
 		this.category = category;
 	}
 
-	public Category getCategory(){
+	public String getCategory(){
 		return category;
 	}
 
