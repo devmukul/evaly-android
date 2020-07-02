@@ -1,11 +1,8 @@
 package bd.com.evaly.evalyshop.ui.shop;
 
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,12 +78,29 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private int totalCount = 0;
     private boolean isLoading = false;
     private VCard vCard;
+    private AppController mChatApp = AppController.getInstance();
+    private XMPPHandler xmppHandler;
     private List<String> rosterList;
     private ShopController controller;
     private boolean clickFromCategory = false;
     private ShopViewModel viewModel;
     private FragmentShopBinding binding;
     private Shop shopDetailsModel;
+    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
+        public void onPresenceChanged(PresenceModel presenceModel) {
+        }
+
+        public void onConnected() {
+            if (shopDetailsModel == null)
+                return;
+
+            if (AppController.getmService() == null)
+                return;
+
+            xmppHandler = AppController.getmService().xmpp;
+            rosterList = xmppHandler.rosterList;
+        }
+    };
     private ShopDetailsModel fullShopDetailsModel;
 
 
@@ -98,8 +112,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        if (!CredentialManager.getToken().equals(""))
-//            Executors.newSingleThreadExecutor().execute(() -> startXmppService());
+        if (!CredentialManager.getToken().equals(""))
+            Executors.newSingleThreadExecutor().execute(() -> startXmppService());
     }
 
     @Override
@@ -297,6 +311,32 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onResume() {
         super.onResume();
+        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
+    }
+
+    private void startXmppService() {
+        if (getActivity() == null || getActivity().isFinishing())
+            return;
+
+        if (!XMPPService.isServiceRunning) {
+            Intent intent = new Intent(getActivity(), XMPPService.class);
+            mChatApp.UnbindService();
+            mChatApp.BindService(intent);
+        } else {
+            xmppHandler = AppController.getmService().xmpp;
+            if (!xmppHandler.isConnected()) {
+                xmppHandler.connect();
+            } else {
+                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
+                xmppHandler.login();
+            }
+        }
+    }
+
+    private void disconnectXmpp() {
+        if (xmppHandler != null)
+            xmppHandler.disconnect();
+        Objects.requireNonNull(getActivity()).stopService(new Intent(getActivity(), XMPPService.class));
     }
 
     public void loadShopDetails(ShopDetailsModel response) {
@@ -348,113 +388,79 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (shopDetailsModel == null)
             return;
 
+        ViewDialog dialog = new ViewDialog(getActivity());
+        dialog.showDialog();
+
         if (CredentialManager.getToken().equals("")) {
             startActivity(new Intent(getActivity(), SignInActivity.class));
             Objects.requireNonNull(getActivity()).finish();
         } else {
 
-            Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
-            try {
-                if (launchIntent != null) {
+            if (xmppHandler != null && xmppHandler.isConnected()) {
+                String jid = getContactFromRoster(shopDetailsModel.getOwnerName());
+                if (!CredentialManager.getUserName().equalsIgnoreCase(shopDetailsModel.getOwnerName())) {
+                    if (jid != null) {
+                        dialog.hideDialog();
+                        VCard vCard;
+                        try {
+                            vCard = xmppHandler.getUserDetails(JidCreate.entityBareFrom(jid));
+                            if (vCard != null) {
+                                if (vCard.getFrom() != null) {
+                                    RosterTable rosterTable = new RosterTable();
+                                    rosterTable.name = shopDetailsModel.getName();
+                                    rosterTable.id = vCard.getFrom().asUnescapedString();
+                                    rosterTable.imageUrl = shopDetailsModel.getLogoImage();
+                                    rosterTable.status = 0;
+                                    rosterTable.lastMessage = "";
+                                    rosterTable.nick_name = vCard.getNickName();
+                                    rosterTable.time = 0;
+                                    Logger.d(new Gson().toJson(rosterTable));
+                                    startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
+                                } else {
+                                    Toast.makeText(getContext(), "Can't send message", Toast.LENGTH_SHORT).show();
+                                }
+                            }
 
-                    Logger.d(new Gson().toJson(shopDetailsModel));
-                    RosterTable rosterTable = new RosterTable();
-                    rosterTable.name = shopDetailsModel.getName();
-                    if (shopDetailsModel.getOwnerName() == null || shopDetailsModel.getOwnerName().isEmpty()){
-                        rosterTable.id = shopDetailsModel.getContactNumber() +"@"+Constants.XMPP_HOST;
-                    }else{
-                        rosterTable.id = shopDetailsModel.getOwnerName() +"@"+Constants.XMPP_HOST;
+                        } catch (XmppStringprepException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+
+                        dialog.hideDialog();
+
+                        HashMap<String, String> data1 = new HashMap<>();
+                        data1.put("localuser", CredentialManager.getUserName());
+                        data1.put("localserver", Constants.XMPP_HOST);
+                        data1.put("user", shopDetailsModel.getOwnerName());
+                        data1.put("server", Constants.XMPP_HOST);
+                        data1.put("nick", shopDetailsModel.getName());
+                        data1.put("subs", "both");
+                        data1.put("group", "evaly");
+
+                        AuthApiHelper.addRoster(data1, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonPrimitive> response1) {
+
+                                dialog.hideDialog();
+
+                                if (response1.code() == 200 || response1.code() == 201)
+                                    addRosterByOther();
+                                else
+                                    Toast.makeText(getContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onFailed(int status) {
+                                if (dialog.isShowing())
+                                    dialog.hideDialog();
+                                ToastUtils.show(R.string.something_wrong);
+                            }
+                        });
                     }
-
-                    rosterTable.imageUrl = shopDetailsModel.getLogoImage();
-                    rosterTable.status = 0;
-                    rosterTable.lastMessage = "";
-                    rosterTable.time = 0;
-                    Logger.d(new Gson().toJson(rosterTable));
-
-                    launchIntent.putExtra("to", "OPEN_CHAT_DETAILS");
-                    launchIntent.putExtra("from", "shop");
-                    launchIntent.putExtra("user", CredentialManager.getUserName());
-                    launchIntent.putExtra("password", CredentialManager.getPassword());
-                    launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
-                    launchIntent.putExtra("roster", new Gson().toJson(rosterTable));
-
-                    startActivity(launchIntent);
-                }
-            }catch (ActivityNotFoundException e){
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
-                } catch (android.content.ActivityNotFoundException anfe) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
-                }
-            }
-
-
-//            if (xmppHandler != null && xmppHandler.isConnected()) {
-//                String jid = getContactFromRoster(shopDetailsModel.getOwnerName());
-//                if (!CredentialManager.getUserName().equalsIgnoreCase(shopDetailsModel.getOwnerName())) {
-//                    if (jid != null) {
-//                        dialog.hideDialog();
-//                        VCard vCard;
-//                        try {
-//                            vCard = xmppHandler.getUserDetails(JidCreate.entityBareFrom(jid));
-//                            if (vCard != null) {
-//                                if (vCard.getFrom() != null) {
-//                                    RosterTable rosterTable = new RosterTable();
-//                                    rosterTable.name = shopDetailsModel.getName();
-//                                    rosterTable.id = vCard.getFrom().asUnescapedString();
-//                                    rosterTable.imageUrl = shopDetailsModel.getLogoImage();
-//                                    rosterTable.status = 0;
-//                                    rosterTable.lastMessage = "";
-//                                    rosterTable.nick_name = vCard.getNickName();
-//                                    rosterTable.time = 0;
-//                                    Logger.d(new Gson().toJson(rosterTable));
-//                                    startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
-//                                } else {
-//                                    Toast.makeText(getContext(), "Can't send message", Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//
-//                        } catch (XmppStringprepException e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//
-//                        dialog.hideDialog();
-//
-//                        HashMap<String, String> data1 = new HashMap<>();
-//                        data1.put("localuser", CredentialManager.getUserName());
-//                        data1.put("localserver", Constants.XMPP_HOST);
-//                        data1.put("user", shopDetailsModel.getOwnerName());
-//                        data1.put("server", Constants.XMPP_HOST);
-//                        data1.put("nick", shopDetailsModel.getName());
-//                        data1.put("subs", "both");
-//                        data1.put("group", "evaly");
-//
-//                        AuthApiHelper.addRoster(data1, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
-//                            @Override
-//                            public void onDataFetched(retrofit2.Response<JsonPrimitive> response1) {
-//
-//                                dialog.hideDialog();
-//
-//                                if (response1.code() == 200 || response1.code() == 201)
-//                                    addRosterByOther();
-//                                else
-//                                    Toast.makeText(getContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-//                            }
-//
-//                            @Override
-//                            public void onFailed(int status) {
-//                                if (dialog.isShowing())
-//                                    dialog.hideDialog();
-//                                ToastUtils.show(R.string.something_wrong);
-//                            }
-//                        });
-//                    }
-//                } else
-//                    Toast.makeText(getContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
-//            } else
-//                Executors.newSingleThreadExecutor().execute(() -> startXmppService());
+                } else
+                    Toast.makeText(getContext(), "You can't invite yourself!", Toast.LENGTH_LONG).show();
+            } else
+                Executors.newSingleThreadExecutor().execute(() -> startXmppService());
         }
     }
 
@@ -469,78 +475,79 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         return roasterModel;
     }
 
-//    private void addRosterByOther() {
-//
-//        if (CredentialManager.getUserData() != null) {
-//            ViewDialog dialog = new ViewDialog(getActivity());
-//            dialog.showDialog();
-//
-//            if (CredentialManager.getUserData().getFirst_name() == null)
-//                CredentialManager.getUserData().setFirst_name("");
-//
-//            HashMap<String, String> data = new HashMap<>();
-//            data.put("localuser", shopDetailsModel.getName());
-//            data.put("localserver", Constants.XMPP_HOST);
-//            data.put("user", CredentialManager.getUserName());
-//            data.put("server", Constants.XMPP_HOST);
-//            data.put("nick", CredentialManager.getUserData().getFirst_name());
-//            data.put("subs", "both");
-//            data.put("group", "evaly");
-//            AuthApiHelper.addRoster(data, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
-//                @Override
-//                public void onDataFetched(retrofit2.Response<JsonPrimitive> response) {
-//                    dialog.hideDialog();
-//                    try {
-//                        EntityBareJid jid = JidCreate.entityBareFrom(shopDetailsModel.getOwnerName() + "@"
-//                                + Constants.XMPP_HOST);
-//                        HashMap<String, String> data1 = new HashMap<>();
-//                        data1.put("phone_number", shopDetailsModel.getOwnerName());
-//                        data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.evalyshop");
-//
-//                        Logger.d(response.body());
-//
-//                        if (mVCard.getFirstName() == null) {
-//                            dialog.hideDialog();
-//                            RosterTable table = new RosterTable();
-//                            table.id = jid.asUnescapedString();
-//                            table.rosterName = shopDetailsModel.getName();
-//                            table.name = shopDetailsModel.getName();
-//                            table.status = 0;
-//                            table.unreadCount = 0;
-//                            table.nick_name = "";
-//                            table.imageUrl = shopDetailsModel.getLogoImage();
-//                            table.lastMessage = "";
-//
-//                            startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", table));
-//                        } else {
-//                            dialog.hideDialog();
-//                            RosterTable rosterTable = new RosterTable();
-//                            rosterTable.name = shopDetailsModel.getName();
-//                            rosterTable.id = mVCard.getFrom().asUnescapedString();
-//                            rosterTable.imageUrl = shopDetailsModel.getLogoImage();
-//                            rosterTable.status = 0;
-//                            rosterTable.lastMessage = "";
-//                            rosterTable.nick_name = mVCard.getNickName();
-//                            rosterTable.time = 0;
-//                            startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
-//
-//                        }
-//                    } catch (XmppStringprepException e) {
-//                        e.printStackTrace();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailed(int status) {
-//
-//                    dialog.hideDialog();
-//
-//                }
-//            });
-//        }
-//    }
+    private void addRosterByOther() {
+
+        if (CredentialManager.getUserData() != null) {
+            ViewDialog dialog = new ViewDialog(getActivity());
+            dialog.showDialog();
+
+            if (CredentialManager.getUserData().getFirst_name() == null)
+                CredentialManager.getUserData().setFirst_name("");
+
+            HashMap<String, String> data = new HashMap<>();
+            data.put("localuser", shopDetailsModel.getName());
+            data.put("localserver", Constants.XMPP_HOST);
+            data.put("user", CredentialManager.getUserName());
+            data.put("server", Constants.XMPP_HOST);
+            data.put("nick", CredentialManager.getUserData().getFirst_name());
+            data.put("subs", "both");
+            data.put("group", "evaly");
+            AuthApiHelper.addRoster(data, new DataFetchingListener<retrofit2.Response<JsonPrimitive>>() {
+                @Override
+                public void onDataFetched(retrofit2.Response<JsonPrimitive> response) {
+                    dialog.hideDialog();
+                    try {
+                        EntityBareJid jid = JidCreate.entityBareFrom(shopDetailsModel.getOwnerName() + "@"
+                                + Constants.XMPP_HOST);
+                        VCard mVCard = xmppHandler.getUserDetails(jid);
+                        HashMap<String, String> data1 = new HashMap<>();
+                        data1.put("phone_number", shopDetailsModel.getOwnerName());
+                        data1.put("text", "You are invited to \n https://play.google.com/store/apps/details?id=bd.com.evaly.evalyshop");
+
+                        Logger.d(response.body());
+
+                        if (mVCard.getFirstName() == null) {
+                            dialog.hideDialog();
+                            RosterTable table = new RosterTable();
+                            table.id = jid.asUnescapedString();
+                            table.rosterName = shopDetailsModel.getName();
+                            table.name = shopDetailsModel.getName();
+                            table.status = 0;
+                            table.unreadCount = 0;
+                            table.nick_name = "";
+                            table.imageUrl = shopDetailsModel.getLogoImage();
+                            table.lastMessage = "";
+
+                            startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", table));
+                        } else {
+                            dialog.hideDialog();
+                            RosterTable rosterTable = new RosterTable();
+                            rosterTable.name = shopDetailsModel.getName();
+                            rosterTable.id = mVCard.getFrom().asUnescapedString();
+                            rosterTable.imageUrl = shopDetailsModel.getLogoImage();
+                            rosterTable.status = 0;
+                            rosterTable.lastMessage = "";
+                            rosterTable.nick_name = mVCard.getNickName();
+                            rosterTable.time = 0;
+                            startActivity(new Intent(getActivity(), ChatDetailsActivity.class).putExtra("roster", rosterTable));
+
+                        }
+                    } catch (XmppStringprepException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailed(int status) {
+
+                    dialog.hideDialog();
+
+                }
+            });
+        }
+    }
 
     @Override
     public void onRefresh() {
