@@ -119,6 +119,9 @@ public interface IApiClient {
     @POST(UrlUtils.CHANGE_XMPP_PASSWORD)
     Call<JsonPrimitive> changeXmppPassword(@Body HashMap<String, String> data);
 
+    @POST(UrlUtils.XMPP_REGISTER)
+    Call<JsonObject> registerXmpp(@Header("Authorization") String token, @Body HashMap<String, String> data);
+
     @POST(UrlUtils.ADD_ROSTER)
     Call<JsonPrimitive> addRoster(@Body HashMap<String, String> data);
 

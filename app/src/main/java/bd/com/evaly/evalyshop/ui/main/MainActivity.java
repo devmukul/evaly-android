@@ -24,6 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -77,67 +78,10 @@ public class MainActivity extends BaseActivity {
     private AlertDialog exitDialog;
     private AlertDialog.Builder exitDialogBuilder;
     private UserDetails userDetails;
-    private AppController mChatApp = AppController.getInstance();
-    private XMPPHandler xmppHandler;
     private NavController navController;
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
-
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-        @Override
-        public void onConnected() {
-            if (AppController.getmService() != null) {
-                xmppHandler = AppController.getmService().xmpp;
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-            }
-        }
-
-        public void onLoggedIn() {
-            if (xmppHandler != null) {
-                CredentialManager.saveUserRegistered(true);
-                if (xmppHandler.isLoggedin()) {
-                    VCard vCard = xmppHandler.mVcard;
-                    if (CredentialManager.getUserData() != null) if (vCard != null) {
-                        if (vCard.getFirstName() == null || vCard.getLastName() == null)
-                            xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                        disconnectXmpp();
-                    }
-                }
-            }
-        }
-
-        public void onLoginFailed(String msg) {
-            Logger.d(msg);
-            if (msg.contains("not-authorized")) {
-                AppController.logout(MainActivity.this);
-            } else if (msg.contains("already logged in")) {
-                CredentialManager.saveUserRegistered(true);
-                disconnectXmpp();
-
-            } else {
-                if (xmppHandler == null) {
-                    if (AppController.getmService() != null)
-                        if (AppController.getmService().xmpp != null)
-                            xmppHandler = AppController.getmService().xmpp;
-                } else {
-                    if (xmppHandler.isConnected())
-                        xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
-                }
-            }
-        }
-
-        public void onSignupSuccess() {
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-            disconnectXmpp();
-        }
-
-        public void onSignupFailed(String msg) {
-
-        }
-    };
 
     public void changeLanguage(String lang) {
         Locale myLocale;
@@ -174,6 +118,11 @@ public class MainActivity extends BaseActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
         });
+
+        if (!CredentialManager.getToken().isEmpty() && !CredentialManager.isUserRegistered()){
+            Logger.e(CredentialManager.isUserRegistered()+"");
+            viewModel.registerXMPP();
+        }
 
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
@@ -409,7 +358,6 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
         Menu menu = binding.bottomNavigationView.getMenu();
         MenuItem item = menu.getItem(0);
         item.setChecked(true);

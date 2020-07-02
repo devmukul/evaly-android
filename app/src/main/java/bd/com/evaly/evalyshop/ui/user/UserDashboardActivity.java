@@ -67,104 +67,6 @@ public class UserDashboardActivity extends BaseActivity {
     Map<String, String> map;
     String from = "";
     ViewDialog alert;
-    boolean isFromSignup;
-    XMPPEventReceiver xmppEventReceiver;
-    private AppController mChatApp = AppController.getInstance();
-    private XMPPHandler xmppHandler;
-
-    //    private SessionManager sessionManager;
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-
-        @Override
-        public void onConnected() {
-            if (AppController.getmService() == null)
-                return;
-
-            xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-        }
-
-        //Event Listeners
-        public void onLoggedIn() {
-
-            if (xmppHandler == null) {
-                xmppHandler = AppController.getmService().xmpp;
-            }
-
-            if (xmppHandler != null) {
-
-                VCard vCard = xmppHandler.mVcard;
-                if (CredentialManager.getUserData() != null)
-                    if (vCard == null) {
-                        xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                    } else if (vCard.getLastName() == null || vCard.getFirstName() == null) {
-                        xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                    }
-            }
-
-        }
-
-        public void onLoginFailed(String msg) {
-//            Logger.d(msg);
-            alert.hideDialog();
-            if (!msg.contains("already logged in")) {
-                if (CredentialManager.getPassword() != null && !CredentialManager.getPassword().equals("")) {
-//                    alert.showDialog();
-                    try {
-                        xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
-                    } catch (Exception ignored) {
-                    }
-                }
-            }
-//            xmppHandler.disconnect();
-//            Toast.makeText(getApplicationContext(), getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
-        }
-
-        //        //Event Listeners
-        public void onSignupSuccess() {
-            Logger.d("Signup success");
-
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-
-        }
-
-        //
-        public void onSignupFailed(String error) {
-            Logger.d(error);
-            if (error.contains("User already exist")) {
-                HashMap<String, String> data = new HashMap<>();
-                data.put("user", CredentialManager.getUserName());
-                data.put("host", Constants.XMPP_HOST);
-                data.put("newpass", CredentialManager.getPassword());
-                Logger.d("===============");
-                AuthApiHelper.changeXmppPassword(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-                    @Override
-                    public void onDataFetched(Response<JsonPrimitive> response) {
-                        alert.hideDialog();
-//                        Logger.d(new Gson().toJson(response));
-                        if (response.code() == 200 || response.code() == 201) {
-                            onPasswordChanged();
-                        } else {
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-                        alert.hideDialog();
-                        Logger.d("======-=-=-=-=-=-=");
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-
-                    }
-                });
-
-            }
-        }
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,14 +90,6 @@ public class UserDashboardActivity extends BaseActivity {
             from = extras.getString("from");
         }
 
-        if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered()) {
-            AsyncTask.execute(() -> {
-                Logger.e("==========");
-                startXmppService();
-            });
-        }
-
-        xmppEventReceiver = mChatApp.getEventReceiver();
 
         name = findViewById(R.id.name);
         balance = findViewById(R.id.balance);
@@ -316,24 +210,6 @@ public class UserDashboardActivity extends BaseActivity {
 
     }
 
-    private void startXmppService() {
-
-        //Start XMPP Service (if not running already)
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(this, XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-        } else {
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
-            } else {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-            }
-        }
-    }
-
     @OnClick(R.id.llMessage)
     void gotoMessage() {
 //        if (!CredentialManager.getToken().equals("") && !userDetails.getToken().equals("")) {
@@ -359,18 +235,12 @@ public class UserDashboardActivity extends BaseActivity {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
             }
         }
-
-
     }
 
 
     @Override
     public void onResume() {
-
         super.onResume();
-
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-        xmppEventReceiver.setListener(xmppCustomEventListener);
 
         // Balance.update(this, balance);
 

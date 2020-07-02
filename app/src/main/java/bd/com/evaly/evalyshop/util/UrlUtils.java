@@ -36,6 +36,7 @@ public class UrlUtils {
     public static final String LOGIN = BASE_URL_AUTH_API + "login/";
     public static final String SEND_CUSTOM_MESSAGE = BASE_URL_AUTH + "custom-message/";
     public static final String CHANGE_XMPP_PASSWORD = "/api/change_password";
+    public static final String XMPP_REGISTER = "/rest/users/new-user/";
     public static final String ADD_ROSTER = "api/add_rosteritem";
     public static final String INVITATION_LIST = "rest/messages/invitations/";
     public static final String ROSTER_LIST = "rest/messages/user/last-messages/";
