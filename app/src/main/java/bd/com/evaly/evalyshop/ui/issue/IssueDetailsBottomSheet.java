@@ -223,7 +223,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
             binding.tvIssueStatus.setBackgroundColor(Color.parseColor("#33d274"));
         }
 
-        binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getCategory().getName()));
+        binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getCategory()));
 
         binding.postImage.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ImagePreview.class);

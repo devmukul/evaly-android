@@ -21,6 +21,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,7 +87,7 @@ public class IssuesActivity extends BaseActivity implements RecyclerViewOnItemCl
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                ToastUtils.show(errorBody);
             }
 
             @Override
