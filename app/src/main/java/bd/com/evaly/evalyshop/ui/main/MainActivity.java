@@ -186,9 +186,7 @@ public class MainActivity extends BaseActivity {
             if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals(""))
                 AppController.logout(MainActivity.this);
             else {
-                if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered())
-                    if (AppController.getInstance().isNetworkConnected())
-                        AsyncTask.execute(() -> startXmppService());
+
             }
         }
 

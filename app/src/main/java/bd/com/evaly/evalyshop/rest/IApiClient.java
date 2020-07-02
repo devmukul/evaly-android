@@ -113,6 +113,9 @@ public interface IApiClient {
     @PUT(UrlUtils.BASE_URL_AUTH + "user-info-update/")
     Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
+    @POST(UrlUtils.UPDATE_VCARD)
+    Call<JsonObject> setUserDataToXmpp(@Header("Authorization") String token, @Body HashMap<String, String> data);
+
     @POST(UrlUtils.REFRESH_TOKEN)
     Call<JsonObject> refreshToken(@Body HashMap<String, String> data);
 

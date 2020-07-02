@@ -496,6 +496,11 @@ public class AuthApiHelper extends BaseApiHelper {
         getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void setUserDataToXmpp(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
+        IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
+        iApiClient.setUserDataToXmpp(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
     // balance, transaction
     public static void getTransactionHistory(String token, String username, int page, ResponseListenerAuth<CommonDataResponse<List<TransactionItem>>, String> listener) {
         getiApiClient().getTransactionHistory(token, username, page).enqueue(getResponseCallBackDefault(listener));

@@ -40,6 +40,7 @@ import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.AddressBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.ContactInfoBottomSheet;
 import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.PersonalInfoBottomSheet;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
@@ -50,30 +51,8 @@ import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 public class EditProfileActivity extends BaseActivity {
 
     private Context context;
-    private AppController mChatApp = AppController.getInstance();
-    private XMPPHandler xmppHandler;
     private ActivityEditProfileBinding binding;
     private EditProfileViewModel viewModel;
-
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-        public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-        }
-
-        public void onLoggedIn() {
-            xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.updateUserInfo(CredentialManager.getUserData());
-        }
-
-        public void onUpdateUserSuccess() {
-        }
-
-        public void onUpdateUserFailed(String error) {
-            xmppHandler.disconnect();
-            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-        }
-
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,8 +93,6 @@ public class EditProfileActivity extends BaseActivity {
 
         viewModel.getInfoSavedStatus().observe(this, aBoolean -> {
             if (aBoolean) {
-                mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-                startXmppService();
                 viewModel.setInfoSavedStatus(false);
                 updateProfileData();
                 Toast.makeText(EditProfileActivity.this, "Profile updated!", Toast.LENGTH_SHORT).show();
@@ -265,6 +242,14 @@ public class EditProfileActivity extends BaseActivity {
                 body.put("profile_pic_url", response.getData().getUrl());
                 viewModel.setUserData(body);
 
+                HashMap<String, String> data = new HashMap<>();
+                body.put("user", CredentialManager.getUserName());
+                body.put("host", Constants.XMPP_HOST);
+                body.put("name", "IMAGE_URL");
+                body.put("content", response.getData().getUrl());
+
+                viewModel.updateToXMPP(data);
+
                 setProfilePic();
             }
 
@@ -282,21 +267,6 @@ public class EditProfileActivity extends BaseActivity {
             }
         });
 
-    }
-
-    private void startXmppService() {
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(this, XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-        } else {
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
-            } else {
-                xmppHandler.updateUserInfo(CredentialManager.getUserData());
-            }
-        }
     }
 
     @Override
