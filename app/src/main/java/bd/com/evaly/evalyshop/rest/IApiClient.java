@@ -114,7 +114,7 @@ public interface IApiClient {
     Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
     @POST(UrlUtils.UPDATE_VCARD)
-    Call<JsonObject> setUserDataToXmpp(@Header("Authorization") String token, @Body HashMap<String, String> data);
+    Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.REFRESH_TOKEN)
     Call<JsonObject> refreshToken(@Body HashMap<String, String> data);

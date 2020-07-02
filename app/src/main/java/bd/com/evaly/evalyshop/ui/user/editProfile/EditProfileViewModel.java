@@ -53,7 +53,7 @@ public class EditProfileViewModel extends ViewModel {
 
     public void updateToXMPP(HashMap<String, String> userInfo) {
 
-        AuthApiHelper.setUserDataToXmpp(CredentialManager.getToken(), userInfo, new ResponseListenerAuth<JsonObject, String>() {
+        AuthApiHelper.setUserDataToXmpp(userInfo, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
