@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.payment.bottomsheet.model;
 
+import android.graphics.Color;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -47,6 +48,11 @@ public abstract class PaymentMothodItemModel extends DataBindingEpoxyModel {
 
         binding.container.setOnClickListener(clickListener);
         binding.radioButton.setChecked(isSelected);
+
+        if (isSelected)
+            binding.container.setBackgroundColor(Color.parseColor("#fafafa"));
+        else
+            binding.container.setBackgroundColor(Color.parseColor("#ffffff"));
     }
 
 

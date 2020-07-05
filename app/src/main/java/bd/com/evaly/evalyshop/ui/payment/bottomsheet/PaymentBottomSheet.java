@@ -5,8 +5,10 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -14,31 +16,40 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.PaymentBottomSheetFragmentBinding;
+import bd.com.evaly.evalyshop.databinding.BottomSheetPaymentBinding;
+import bd.com.evaly.evalyshop.models.payment.PaymentMethodModel;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaCard;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.ui.payment.bottomsheet.controller.PaymentMethodController;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.ViewDialog;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class PaymentBottomSheet extends BottomSheetDialogFragment implements PaymentBottomSheetNavigator {
 
     private PaymentBottomSheetViewModel viewModel;
-    private PaymentBottomSheetFragmentBinding binding;
+    private BottomSheetPaymentBinding binding;
     private String invoice_no;
     private double total_amount = 0, paid_amount = 0.0;
     private UserDetails userDetails;
     private AppCompatActivity activityInstance;
+    private PaymentMethodController controller;
+    private ViewDialog dialog;
 
     public static PaymentBottomSheet newInstance(String invoiceNo, double totalAmount, double paidAmount) {
         PaymentBottomSheet instance = new PaymentBottomSheet();
@@ -55,8 +66,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.payment_bottom_sheet_fragment, container, false);
-        binding.setViewModel(viewModel);
+        binding = DataBindingUtil.inflate(inflater, R.layout.bottom_sheet_payment, container, false);
+        // binding.setViewModel(viewModel);
 
         return binding.getRoot();
     }
@@ -64,7 +75,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(PaymentBottomSheetViewModel.class);
+        viewModel = new ViewModelProvider(this).get(PaymentBottomSheetViewModel.class);
         viewModel.setNavigator(this);
     }
 
@@ -102,93 +113,53 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        dialog = new ViewDialog(getActivity());
         activityInstance = (AppCompatActivity) getActivity();
+        controller = new PaymentMethodController();
+        controller.setActivity(activityInstance);
+        binding.recyclerView.setAdapter(controller.getAdapter());
+
+        List<PaymentMethodModel> methodList = new ArrayList<>();
+        methodList.add(new PaymentMethodModel(
+                "Evaly Balance",
+                "You can pay up to 60% of the order amount \nusing Evaly Balance.", R.drawable.payment_icon_evaly,
+                false));
+
+        methodList.add(new PaymentMethodModel(
+                "bKash",
+                "Pay from your bKash account using \nbKash payment gateway.", R.drawable.payment_bkash_square,
+                false));
+
+        methodList.add(new PaymentMethodModel(
+                "Cards",
+                "Pay from your debit/visa/master card using \nSSL payment gateway.", R.drawable.payment_cards,
+                false));
+
+        controller.loadData(methodList, true);
 
         if ((total_amount % 1) == 0)
             binding.amountPay.setText(String.format("%d", (int) (total_amount - paid_amount)));
         else
             binding.amountPay.setText(String.format("%s", total_amount - paid_amount));
 
-        // evaly pay
-        binding.evalyPay.setOnClickListener(v -> {
 
-            try {
-                Double.parseDouble(binding.amountPay.getText().toString());
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "Please enter valid amount.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (binding.amountPay.getText().toString().trim().equals("")) {
-                Toast.makeText(getContext(), "Please enter an amount", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (Double.parseDouble(binding.amountPay.getText().toString()) > Double.parseDouble(binding.amountPay.getText().toString())) {
-                Toast.makeText(getContext(), "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (binding.amountPay.getText().toString().equals("0")) {
-                Toast.makeText(getContext(), "Amount can't be zero", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (Double.parseDouble(binding.amountPay.getText().toString()) > Double.parseDouble(userDetails.getBalance())) {
-                Toast.makeText(getContext(), "Insufficient Evaly Balance (৳ " + userDetails.getBalance() + ")", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            binding.evalyPay.setEnabled(false);
-
-            viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
-
-        });
-
-        binding.bkash.setOnClickListener(v -> {
-
-            try {
-                Double.parseDouble(binding.amountPay.getText().toString());
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "Please enter valid amount.", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        binding.confirm.setOnClickListener(view1 -> {
 
             double amountToPay = total_amount - paid_amount;
+            String enteredAmount = binding.amountPay.getText().toString().trim();
+            double enteredAmountDouble = 0;
 
-            if (binding.amountPay.getText().toString().trim().equals("")) {
-                Toast.makeText(getContext(), "Please enter an amount", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (Double.parseDouble(binding.amountPay.getText().toString()) > amountToPay) {
-                Toast.makeText(getContext(), "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
-                return;
-            } else if (binding.amountPay.getText().toString().equals("0")) {
-                Toast.makeText(getContext(), "Amount can't be zero", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            binding.bkash.setEnabled(false);
-            dismiss();
-            Toast.makeText(getContext(), "Opening bKash payment gateway!", Toast.LENGTH_SHORT).show();
-
-            Intent intent = new Intent(getActivity(), PayViaBkashActivity.class);
-            intent.putExtra("amount", binding.amountPay.getText().toString());
-            intent.putExtra("invoice_no", invoice_no);
-            intent.putExtra("context", "order_payment");
-
-            Objects.requireNonNull(getActivity()).startActivityForResult(intent, 10002);
-
-        });
-
-        binding.card.setOnClickListener(v -> {
             try {
-                Double.parseDouble(binding.amountPay.getText().toString());
+                enteredAmountDouble = Double.parseDouble(enteredAmount);
             } catch (Exception e) {
                 Toast.makeText(getContext(), "Please enter valid amount.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            double amountToPay = total_amount - paid_amount;
-
-            if (binding.amountPay.getText().toString().trim().equals("")) {
+            if (enteredAmount.equals("")) {
                 Toast.makeText(getContext(), "Please enter an amount", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (Double.parseDouble(binding.amountPay.getText().toString()) > amountToPay) {
+            } else if (enteredAmountDouble > amountToPay) {
                 Toast.makeText(getContext(), "Your entered amount is larger than the due amount", Toast.LENGTH_SHORT).show();
                 return;
             } else if (binding.amountPay.getText().toString().equals("0")) {
@@ -196,21 +167,42 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 return;
             }
 
-            binding.card.setEnabled(false);
-            double amToPay = Double.parseDouble(binding.amountPay.getText().toString());
+            PaymentMethodModel method = controller.getSelectedMethod();
 
-            Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
-            viewModel.payViaCard(invoice_no, String.valueOf((int) amToPay));
-
+            if (method == null) {
+                ToastUtils.show("Please select a payment method");
+                return;
+            }
+            if (method.getName().equals("Evaly Balance")) {
+                if (Double.parseDouble(binding.amountPay.getText().toString()) > Double.parseDouble(userDetails.getBalance())) {
+                    Toast.makeText(getContext(), "Insufficient Evaly Balance (৳ " + userDetails.getBalance() + ")", Toast.LENGTH_SHORT).show();
+                    dialog.hideDialog();
+                    return;
+                }
+                dialog.showDialog();
+                viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
+            } else if (method.getName().equalsIgnoreCase("bKash")) {
+                dismiss();
+                Toast.makeText(getContext(), "Opening bKash payment gateway!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), PayViaBkashActivity.class);
+                intent.putExtra("amount", enteredAmount);
+                intent.putExtra("invoice_no", invoice_no);
+                intent.putExtra("context", "order_payment");
+                Objects.requireNonNull(getActivity()).startActivityForResult(intent, 10002);
+            } else if (method.getName().equalsIgnoreCase("Cards")) {
+                Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
+                viewModel.payViaCard(invoice_no, enteredAmount);
+            } else {
+                ToastUtils.show("Payment is not possible, please try again");
+            }
         });
+
     }
 
     @Override
     public void onPaymentSuccess(String message) {
-
-        binding.evalyPay.setEnabled(true);
-
         if (getActivity() != null && !getActivity().isDestroyed() && !getActivity().isFinishing()) {
+            dialog.hideDialog();
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             if (isVisible()) {
                 if (activityInstance != null && activityInstance instanceof OrderDetailsActivity && !activityInstance.isDestroyed() && !activityInstance.isFinishing())
@@ -223,13 +215,12 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 }
                 dismissAllowingStateLoss();
             }
-
         }
     }
 
     @Override
     public void onPaymentFailed(String message) {
-        binding.evalyPay.setEnabled(true);
+        dialog.hideDialog();
         ToastUtils.show(message);
     }
 
@@ -250,4 +241,5 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             }
         }
     }
+
 }
