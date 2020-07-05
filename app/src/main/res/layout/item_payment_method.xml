@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fff"
-        android:paddingStart="15dp"
+        android:paddingStart="13dp"
         android:paddingTop="17dp"
         android:paddingEnd="15dp"
         android:paddingBottom="18dp">
@@ -20,6 +20,7 @@
             android:clickable="false"
             android:text="Evaly Balance"
             android:textColor="#333"
+            android:paddingLeft="5dp"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
-            android:paddingLeft="32dp"
+            android:paddingLeft="37dp"
             android:text="You can pay up to 60% of the order amount using Evaly Balance."
             android:textColor="#555"
             android:textSize="14sp"
