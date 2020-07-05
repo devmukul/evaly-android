@@ -41,7 +41,7 @@ public class IssueListModel implements Serializable {
 	private int id;
 
 	@SerializedName("category")
-	private String category;
+	private Category category;
 
 	@SerializedName("invoice_number")
 	private String invoiceNumber;
@@ -143,11 +143,11 @@ public class IssueListModel implements Serializable {
 		return id;
 	}
 
-	public void setCategory(String category){
+	public void setCategory(Category category){
 		this.category = category;
 	}
 
-	public String getCategory(){
+	public Category getCategory(){
 		return category;
 	}
 
@@ -184,25 +184,25 @@ public class IssueListModel implements Serializable {
 	}
 
 	@Override
- 	public String toString(){
-		return 
-			"Response{" + 
-			"shop = '" + shop + '\'' + 
-			",attachments = '" + attachments + '\'' + 
-			",channel = '" + channel + '\'' + 
-			",created_at = '" + createdAt + '\'' + 
-			",priority = '" + priority + '\'' + 
-			",created_by = '" + createdBy + '\'' + 
-			",updated_at = '" + updatedAt + '\'' + 
-			",additional_info = '" + additionalInfo + '\'' + 
-			",context = '" + context + '\'' + 
-			",updated_by = '" + updatedBy + '\'' + 
-			",id = '" + id + '\'' + 
-			",category = '" + category + '\'' + 
-			",invoice_number = '" + invoiceNumber + '\'' + 
-			",status = '" + status + '\'' + 
-			",customer = '" + customer + '\'' + 
-			",assigned_to = '" + assignedTo + '\'' + 
-			"}";
-		}
+	public String toString(){
+		return
+				"Response{" +
+						"shop = '" + shop + '\'' +
+						",attachments = '" + attachments + '\'' +
+						",channel = '" + channel + '\'' +
+						",created_at = '" + createdAt + '\'' +
+						",priority = '" + priority + '\'' +
+						",created_by = '" + createdBy + '\'' +
+						",updated_at = '" + updatedAt + '\'' +
+						",additional_info = '" + additionalInfo + '\'' +
+						",context = '" + context + '\'' +
+						",updated_by = '" + updatedBy + '\'' +
+						",id = '" + id + '\'' +
+						",category = '" + category + '\'' +
+						",invoice_number = '" + invoiceNumber + '\'' +
+						",status = '" + status + '\'' +
+						",customer = '" + customer + '\'' +
+						",assigned_to = '" + assignedTo + '\'' +
+						"}";
+	}
 }

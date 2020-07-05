@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.databinding.ItemPaymentMethodBinding;
+import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
 import bd.com.evaly.evalyshop.models.payment.PaymentMethodModel;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.model.PaymentMothodItemModel_;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class PaymentMethodController extends EpoxyController {
 
@@ -29,6 +29,8 @@ public class PaymentMethodController extends EpoxyController {
     public void setActivity(AppCompatActivity activity) {
         this.activity = activity;
     }
+
+    private RecyclerViewOnItemClickListener<Void> focusListener;
 
     @Override
     protected void buildModels() {
@@ -53,9 +55,7 @@ public class PaymentMethodController extends EpoxyController {
                         for (PaymentMethodModel item : list)
                             item.setSelected(item.getName().equals(title));
                         requestModelBuild();
-                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(
-                                Activity.INPUT_METHOD_SERVICE);
-                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                        focusListener.onRecyclerViewItemClicked(null);
                     })
                     .addTo(this);
         }
@@ -73,5 +73,9 @@ public class PaymentMethodController extends EpoxyController {
                 return item;
         }
         return null;
+    }
+
+    public void setFocusListener(RecyclerViewOnItemClickListener<Void> focusListener) {
+        this.focusListener = focusListener;
     }
 }
