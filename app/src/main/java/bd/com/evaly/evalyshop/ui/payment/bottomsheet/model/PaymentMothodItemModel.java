@@ -50,7 +50,7 @@ public abstract class PaymentMothodItemModel extends DataBindingEpoxyModel {
         binding.radioButton.setChecked(isSelected);
 
         if (isSelected)
-            binding.container.setBackgroundColor(Color.parseColor("#fafafa"));
+            binding.container.setBackgroundColor(Color.parseColor("#f9f9f9"));
         else
             binding.container.setBackgroundColor(Color.parseColor("#ffffff"));
     }

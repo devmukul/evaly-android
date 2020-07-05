@@ -46,7 +46,7 @@ public class PaymentMethodController extends EpoxyController {
                         ItemPaymentMethodBinding binding = (ItemPaymentMethodBinding) view.getDataBinding();
                         binding.radioButton.setChecked(model12.isSelected());
                         if (model12.isSelected())
-                            binding.container.setBackgroundColor(Color.parseColor("#fafafa"));
+                            binding.container.setBackgroundColor(Color.parseColor("#f9f9f9"));
                         else
                             binding.container.setBackgroundColor(Color.parseColor("#ffffff"));
                     })
