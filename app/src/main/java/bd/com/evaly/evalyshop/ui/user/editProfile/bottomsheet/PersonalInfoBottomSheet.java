@@ -23,6 +23,7 @@ import bd.com.evaly.evalyshop.databinding.BottomSheetEditPersonalInfoBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileViewModel;
+import bd.com.evaly.evalyshop.util.Constants;
 
 public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
 
@@ -117,6 +118,13 @@ public class PersonalInfoBottomSheet extends BottomSheetDialogFragment {
             body.put("gender", gender);
 
             viewModel.setUserData(body);
+
+            HashMap<String, String> data = new HashMap<>();
+            body.put("user", CredentialManager.getUserName());
+            body.put("host", Constants.XMPP_HOST);
+            body.put("name", "FN");
+            body.put("content", firstName+" "+lastName);
+            viewModel.updateToXMPP(data);
             dismiss();
         });
 

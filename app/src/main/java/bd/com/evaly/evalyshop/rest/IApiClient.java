@@ -113,11 +113,17 @@ public interface IApiClient {
     @PUT(UrlUtils.BASE_URL_AUTH + "user-info-update/")
     Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
+    @POST(UrlUtils.UPDATE_VCARD)
+    Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
+
     @POST(UrlUtils.REFRESH_TOKEN)
     Call<JsonObject> refreshToken(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.CHANGE_XMPP_PASSWORD)
     Call<JsonPrimitive> changeXmppPassword(@Body HashMap<String, String> data);
+
+    @POST(UrlUtils.XMPP_REGISTER)
+    Call<JsonObject> registerXmpp(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
     @POST(UrlUtils.ADD_ROSTER)
     Call<JsonPrimitive> addRoster(@Body HashMap<String, String> data);

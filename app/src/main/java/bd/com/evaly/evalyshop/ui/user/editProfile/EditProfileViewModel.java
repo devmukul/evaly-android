@@ -51,6 +51,38 @@ public class EditProfileViewModel extends ViewModel {
 
     }
 
+    public void updateToXMPP(HashMap<String, String> userInfo) {
+
+        AuthApiHelper.setUserDataToXmpp(userInfo, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+                JsonObject ob = response.getAsJsonObject("data");
+                UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
+                if (ob.get("first_name").isJsonNull())
+                    userModel.setFirst_name("");
+
+                if (ob.get("last_name").isJsonNull())
+                    userModel.setLast_name("");
+                CredentialManager.saveUserData(userModel);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+                if (!logout)
+                    updateToXMPP(userInfo);
+
+            }
+        });
+
+    }
+
     public LiveData<Boolean> getInfoSavedStatus() {
         return infoSavedStatus;
     }
