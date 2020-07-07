@@ -1,12 +1,12 @@
 package bd.com.evaly.evalyshop.ui.main;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -24,7 +24,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -36,9 +35,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
-
-import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import java.util.Locale;
 
@@ -50,13 +48,10 @@ import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
-import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
-import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.menu.InviteEarn;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
@@ -64,11 +59,9 @@ import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
@@ -119,8 +112,8 @@ public class MainActivity extends BaseActivity {
 
         });
 
-        if (!CredentialManager.getToken().isEmpty() && !CredentialManager.isUserRegistered()){
-            Logger.e(CredentialManager.isUserRegistered()+"");
+        if (!CredentialManager.getToken().isEmpty() && !CredentialManager.isUserRegistered()) {
+            Logger.e(CredentialManager.isUserRegistered() + "");
             viewModel.registerXMPP();
         }
 
@@ -428,7 +421,11 @@ public class MainActivity extends BaseActivity {
                         startActivity(new Intent(MainActivity.this, VoucherActivity.class));
                         break;
                     case R.id.nav_messages:
-                        startActivity(new Intent(MainActivity.this, ChatListActivity.class));
+                        //startActivity(new Intent(MainActivity.this, ChatListActivity.class));
+
+                        openEconnect();
+
+
                         break;
                     case R.id.nav_followed_shops:
                         Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
@@ -439,6 +436,27 @@ public class MainActivity extends BaseActivity {
                 new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
                 return true;
             });
+        }
+    }
+
+    private void openEconnect() {
+        Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
+        try {
+            if (launchIntent != null) {
+                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
+                launchIntent.putExtra("user", CredentialManager.getUserName());
+                launchIntent.putExtra("password", CredentialManager.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+                startActivity(launchIntent);
+            }
+        } catch (ActivityNotFoundException e) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+            } catch (Exception e4) {
+                ToastUtils.show("Please install eConnect app from Playstore");
+            }
         }
     }
 
