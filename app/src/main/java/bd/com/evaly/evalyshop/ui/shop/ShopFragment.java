@@ -50,12 +50,12 @@ import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.shop.controller.ShopController;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 
 public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-
 
     private ShopViewModelFactory viewModelFactory;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
@@ -73,17 +73,13 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private Shop shopDetailsModel;
     private ShopDetailsModel fullShopDetailsModel;
 
-
     public ShopFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        if (!CredentialManager.getToken().equals(""))
-//            Executors.newSingleThreadExecutor().execute(() -> startXmppService());
     }
 
     @Override
@@ -105,18 +101,14 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             Toast.makeText(getContext(), "Shop not available", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (getArguments().containsKey("shop_name"))
             title = getArguments().getString("shop_name");
-
         if (getArguments().getString("campaign_slug") != null)
             campaign_slug = getArguments().getString("campaign_slug");
 
         slug = getArguments().getString("shop_slug");
-
         viewModelFactory = new ShopViewModelFactory(categorySlug, campaign_slug, slug);
         viewModel = new ViewModelProvider(this, viewModelFactory).get(ShopViewModel.class);
-
         binding.swipeRefresh.setOnRefreshListener(this);
 
         if (!Utils.isNetworkAvailable(getContext()))
@@ -135,7 +127,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "shop", mainViewModel);
-
         binding.appBarLayout.homeSearch.setOnClickListener(view12 -> {
             Bundle bundle = new Bundle();
             bundle.putString("shop_slug", slug);
@@ -189,9 +180,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 }
             }
         });
-
         viewModelLiveDataObservers();
-
     }
 
     private void viewModelLiveDataObservers() {
@@ -254,12 +243,10 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             binding.recyclerView.setVisibility(View.VISIBLE);
 
             List<ProductItem> tempList = new ArrayList<>();
-
             long timeInMill = Calendar.getInstance().getTimeInMillis();
             for (int i = 0; i < shopItems.size(); i++) {
                 if (i == 0)
                     currentPage++;
-
                 ItemsItem shopItem = shopItems.get(i);
                 ProductItem item = new ProductItem();
                 item.setImageUrls(shopItem.getItemImages());
@@ -269,7 +256,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 item.setMinPrice(String.valueOf(shopItem.getItemPrice()));
                 item.setMinDiscountedPrice(String.valueOf(shopItem.getDiscountedPrice()));
                 item.setUniqueId(item.getSlug());
-
                 tempList.add(item);
             }
 
@@ -370,6 +356,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
                 } catch (android.content.ActivityNotFoundException anfe) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+                } catch (Exception e2){
+                    ToastUtils.show("Please install eConnect app from Google Play Store");
                 }
             }
         }
@@ -408,7 +396,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // disconnectXmpp();
     }
 
 }

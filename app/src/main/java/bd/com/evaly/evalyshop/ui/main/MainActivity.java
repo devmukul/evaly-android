@@ -316,20 +316,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public UserDetails getUserDetails() {
-
         return userDetails;
-    }
-
-    private void startXmppService() {
-        try {
-            startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
-        } catch (Exception ignore) {
-        }
-    }
-
-    private void disconnectXmpp() {
-        XMPPHandler.disconnect();
-        stopService(new Intent(MainActivity.this, XMPPService.class));
     }
 
     @Override
@@ -355,15 +342,11 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         Menu menu = binding.bottomNavigationView.getMenu();
         MenuItem item = menu.getItem(0);
         item.setChecked(true);
-
         setupDrawerMenu();
-
     }
-
 
     private void setupDrawerMenu() {
 
@@ -457,13 +440,11 @@ public class MainActivity extends BaseActivity {
                 return true;
             });
         }
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
         if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
@@ -474,10 +455,7 @@ public class MainActivity extends BaseActivity {
         if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
-
-        disconnectXmpp();
         super.onDestroy();
-
     }
 
     public boolean isConnected(Context context) {
@@ -524,7 +502,6 @@ public class MainActivity extends BaseActivity {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         return builder;
     }
-
 
     private void update(boolean isCancelable) {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
