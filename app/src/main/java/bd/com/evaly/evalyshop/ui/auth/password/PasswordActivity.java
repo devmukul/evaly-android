@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.ui.auth.password;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -11,10 +13,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.orhanobut.logger.Logger;
+
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
+import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -45,7 +54,6 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     private String name;
     private SetPasswordPresenter presenter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,42 +76,32 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin1Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (pin1Et.getText().toString().length() == size) {
+                if (pin1Et.getText().toString().length() == size)
                     pin2Et.requestFocus();
-                }
             }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-
             }
 
             public void afterTextChanged(Editable s) {
-
             }
-
         });
 
         pin2Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (pin2Et.getText().toString().length() == size) {
+                if (pin2Et.getText().toString().length() == size)
                     pin3Et.requestFocus();
-                }
             }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-
             }
 
             public void afterTextChanged(Editable s) {
-
-                if (pin2Et.getText().toString().trim().length() == 0) {
+                if (pin2Et.getText().toString().trim().length() == 0)
                     pin1Et.requestFocus();
-                }
             }
 
         });
@@ -111,22 +109,17 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin3Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (pin3Et.getText().toString().length() == size) {
+                if (pin3Et.getText().toString().length() == size)
                     pin4Et.requestFocus();
-                }
             }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-
             }
 
             public void afterTextChanged(Editable s) {
-
-                if (pin3Et.getText().toString().trim().length() == 0) {
+                if (pin3Et.getText().toString().trim().length() == 0)
                     pin2Et.requestFocus();
-                }
             }
 
         });
@@ -134,25 +127,18 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin4Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (pin4Et.getText().toString().length() == size) {
+                if (pin4Et.getText().toString().length() == size)
                     pin5Et.requestFocus();
-                }
             }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-
-
             }
 
             public void afterTextChanged(Editable s) {
-
-                if (pin4Et.getText().toString().trim().length() == 0) {
+                if (pin4Et.getText().toString().trim().length() == 0)
                     pin3Et.requestFocus();
-                }
             }
-
         });
 
         pin5Et.addTextChangedListener(new TextWatcher() {
@@ -166,12 +152,9 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             }
 
             public void afterTextChanged(Editable s) {
-
-                if (pin5Et.getText().toString().trim().length() == 0) {
+                if (pin5Et.getText().toString().trim().length() == 0)
                     pin4Et.requestFocus();
-                }
             }
-
         });
 
     }
@@ -218,7 +201,6 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     @Override
     public void onOTPEmpty() {
         dialog.hideDialog();
-
         Toast.makeText(PasswordActivity.this, "Please input your OTP verification code", Toast.LENGTH_SHORT).show();
     }
 
@@ -237,9 +219,7 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     @Override
     public void onPasswordMismatch() {
         dialog.hideDialog();
-
         Toast.makeText(PasswordActivity.this, "Confirmed password is not matched!", Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
@@ -247,7 +227,26 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         password = etPassword.getText().toString();
         CredentialManager.saveUserName(phoneNumber);
         CredentialManager.savePassword(password);
+        dialog.hideDialog();
+        Toast.makeText(PasswordActivity.this, "Password set Successfully, Please login!", Toast.LENGTH_SHORT).show();
+        AppController.logout(PasswordActivity.this);
 
+        MyPreference.with(this).clearAll();
+        Logger.d(CredentialManager.getToken());
+
+        UserDetails userDetails = new UserDetails(this);
+        userDetails.clearAll();
+
+        ProviderDatabase providerDatabase = ProviderDatabase.getInstance(this);
+        providerDatabase.userInfoDao().deleteAll();
+
+        new Handler().postDelayed(() -> {
+            startActivity(new Intent(this, SignInActivity.class)
+                    .putExtra("phone", phoneNumber)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            finish();
+        }, 300);
     }
 
     @Override
