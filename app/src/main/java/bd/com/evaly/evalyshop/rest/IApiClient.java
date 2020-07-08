@@ -49,6 +49,7 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -66,10 +67,13 @@ import retrofit2.http.Url;
 
 public interface IApiClient {
 
+
+    // chat
+
+    @GET("https://"+Constants.XMPP_DOMAIN + "messages/unread-messages/count/{username}")
+    Call<CommonDataResponse<String>> getUnreadedMessageCount();
+
     // issue ticket
-
-
-
     @GET(UrlUtils.DOMAIN + "issue/api/v1/users/categories")
     Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
                                                                               @Query("limit") int limit);

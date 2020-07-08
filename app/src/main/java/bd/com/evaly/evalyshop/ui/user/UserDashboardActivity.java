@@ -5,10 +5,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,49 +20,41 @@ import androidx.appcompat.view.menu.MenuBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
-import com.google.gson.JsonPrimitive;
-import com.orhanobut.logger.Logger;
 
-import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.transaction.TransactionHistory;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
-import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Response;
 
 public class UserDashboardActivity extends BaseActivity {
 
     Context context;
-    TextView name, balance, address;
+    TextView name, balance, address, messageCount;
     UserDetails userDetails;
     Map<String, String> map;
     String from = "";
@@ -84,16 +76,15 @@ public class UserDashboardActivity extends BaseActivity {
             finish();
         }
 
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             from = extras.getString("from");
         }
 
-
         name = findViewById(R.id.name);
         balance = findViewById(R.id.balance);
         address = findViewById(R.id.address);
+        messageCount = findViewById(R.id.messageCount);
         userDetails = new UserDetails(this);
         alert = new ViewDialog(UserDashboardActivity.this);
         // getAddress();
@@ -106,47 +97,35 @@ public class UserDashboardActivity extends BaseActivity {
         else
             address.setText(userDetails.getJsonAddress());
 
-
         LinearLayout orders = findViewById(R.id.order);
         orders.setOnClickListener(view -> {
             Intent intent = new Intent(context, OrderListActivity.class);
             startActivity(intent);
         });
 
-
         LinearLayout notification = findViewById(R.id.notification);
         notification.setOnClickListener(view -> {
-
             Intent intent = new Intent(context, NotificationActivity.class);
             startActivity(intent);
-
         });
-
 
         LinearLayout addBalance = findViewById(R.id.addBalance);
         addBalance.setOnClickListener(view -> {
-
             Intent intent = new Intent(context, PayViaBkashActivity.class);
             startActivity(intent);
-
         });
-
 
         LinearLayout transactionHistory = findViewById(R.id.transaction_history);
         transactionHistory.setOnClickListener(view -> {
-
             Intent intent = new Intent(context, TransactionHistory.class);
             startActivity(intent);
-
         });
-
 
         LinearLayout editProfile = findViewById(R.id.editProfile);
         editProfile.setOnClickListener(view -> {
             Intent intent = new Intent(context, EditProfileActivity.class);
             startActivity(intent);
         });
-
 
         LinearLayout editAddress = findViewById(R.id.addressClick);
         editAddress.setOnClickListener(view -> {
@@ -179,7 +158,6 @@ public class UserDashboardActivity extends BaseActivity {
                     CredentialManager.setLanguage("EN");
                     myLocale = new Locale("EN");
                 }
-
                 Locale.setDefault(myLocale);
                 android.content.res.Configuration config = new android.content.res.Configuration();
                 config.locale = myLocale;
@@ -190,23 +168,18 @@ public class UserDashboardActivity extends BaseActivity {
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 finish();
-
             });
             adb.setNegativeButton(R.string.cancel, null);
             adb.setTitle(R.string.select_language);
             adb.show();
         });
 
-
         balance.setOnClickListener(view -> {
-
-
             BalanceFragment balanceFragment = BalanceFragment.newInstance();
-
             balanceFragment.show(getSupportFragmentManager(), "balance");
-
-
         });
+
+        getMessageCount();
 
     }
 
@@ -228,7 +201,7 @@ public class UserDashboardActivity extends BaseActivity {
                 startActivity(launchIntent);
 //                finish();
             }
-        }catch (ActivityNotFoundException e){
+        } catch (ActivityNotFoundException e) {
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
             } catch (android.content.ActivityNotFoundException anfe) {
@@ -237,6 +210,31 @@ public class UserDashboardActivity extends BaseActivity {
         }
     }
 
+    private void getMessageCount() {
+
+        ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
+                if (response.getCount() > 0) {
+                    messageCount.setVisibility(View.VISIBLE);
+                    messageCount.setText(response.getCount());
+                } else {
+                    messageCount.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+    }
 
     @Override
     public void onResume() {
