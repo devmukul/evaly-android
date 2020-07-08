@@ -70,8 +70,9 @@ public interface IApiClient {
 
     // chat
 
-    @GET("https://"+Constants.XMPP_DOMAIN + "messages/unread-messages/count/{username}")
-    Call<CommonDataResponse<String>> getUnreadedMessageCount();
+    @GET("https://"+Constants.XMPP_DOMAIN + "/rest/messages/unread-messages/count/{username}")
+    Call<CommonDataResponse<String>> getUnreadedMessageCount(@Header("Authorization") String token,
+                                                             @Path("username") String username);
 
     // issue ticket
     @GET(UrlUtils.DOMAIN + "issue/api/v1/users/categories")

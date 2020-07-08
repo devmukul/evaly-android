@@ -179,7 +179,7 @@ public class UserDashboardActivity extends BaseActivity {
             balanceFragment.show(getSupportFragmentManager(), "balance");
         });
 
-        getMessageCount();
+
 
     }
 
@@ -217,7 +217,7 @@ public class UserDashboardActivity extends BaseActivity {
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 if (response.getCount() > 0) {
                     messageCount.setVisibility(View.VISIBLE);
-                    messageCount.setText(response.getCount());
+                    messageCount.setText(String.format("%d", response.getCount()));
                 } else {
                     messageCount.setVisibility(View.VISIBLE);
                 }
@@ -241,7 +241,7 @@ public class UserDashboardActivity extends BaseActivity {
         super.onResume();
 
         // Balance.update(this, balance);
-
+        getMessageCount();
         ImageView profilePicNav = findViewById(R.id.picture);
 
 
