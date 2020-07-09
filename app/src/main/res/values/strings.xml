@@ -421,5 +421,9 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="what_is_it">What is it?</string>
     <string name="also_available_at">Also available at</string>
     <string name="not_available">Not Available</string>
+    <string name="bkash_payment">bKash Payment</string>
+    <string name="pay_via_card">Pay Via Card</string>
+    <string name="payment_success_message">Payment successful! If your order\'s payment status doesn\'t get updated within 5 minutes, please contact support.</string>
+    <string name="payment_error_message">Something went wrong. Please try again later.</string>
 
 </resources>

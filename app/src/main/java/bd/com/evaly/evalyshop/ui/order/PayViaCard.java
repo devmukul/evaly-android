@@ -87,14 +87,10 @@ public class PayViaCard extends AppCompatActivity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
                 if (url.contains("evaly.com.bd")) {
-
                     Toast.makeText(PayViaCard.this, "Payment successful! If your order's payment status doesn't get updated within 5 minutes, please contact support.", Toast.LENGTH_LONG);
-
                     setResult(Activity.RESULT_OK);
                     finish();
-
                     return;
                 }
 
