@@ -63,7 +63,6 @@
     </style>
 
 
-
     <style name="BottomSheetDialogDarker" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">true</item>
         <item name="bottomSheetStyle">@style/BottomSheetDarker</item>
