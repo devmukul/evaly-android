@@ -242,7 +242,7 @@ public interface IApiClient {
     // campaign APIs
 
     @GET(UrlUtils.CAMPAIGNS)
-    Call<CommonDataResponse<List<CampaignItem>>> getCampaigns();
+    Call<CommonDataResponse<List<CampaignItem>>> getCampaigns(@Query("page") int page);
 
     @GET(UrlUtils.CAMPAIGNS + "/{group}/shops")
     Call<CommonDataResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);

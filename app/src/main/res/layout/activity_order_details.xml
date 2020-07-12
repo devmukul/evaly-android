@@ -342,7 +342,8 @@
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
                     android:paddingBottom="5dp"
-                    tools:itemCount="2">
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_order_details_products">
 
                 </androidx.recyclerview.widget.RecyclerView>
 

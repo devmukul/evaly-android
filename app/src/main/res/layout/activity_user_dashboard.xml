@@ -154,9 +154,9 @@
                     android:paddingEnd="6dp"
                     android:paddingBottom="2dp"
                     android:text="0"
-                    android:textSize="14sp"
                     android:textColor="#fff"
-                    android:visibility="gone"/>
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
             </LinearLayout>
         </LinearLayout>
