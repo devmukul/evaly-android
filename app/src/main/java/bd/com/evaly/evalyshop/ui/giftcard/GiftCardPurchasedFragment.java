@@ -446,14 +446,15 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
     public void onPaymentRedirect(String url, String amount, String invoice_no) {
         String successURL;
+        PurchaseRequestInfo purchaseRequestInfo = null;
         if (url.equals(BuildConfig.BKASH_URL)) {
             successURL = Constants.BKASH_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.bkash_payment));
+            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no);
         } else {
             successURL = Constants.SSL_SUCCESS_URL;
             paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
         }
-        PurchaseRequestInfo purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no);
         paymentWebBuilder.loadPaymentURL(url, successURL, purchaseRequestInfo);
     }
 

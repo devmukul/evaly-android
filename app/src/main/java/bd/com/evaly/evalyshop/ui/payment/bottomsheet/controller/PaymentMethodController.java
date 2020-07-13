@@ -1,8 +1,6 @@
 package bd.com.evaly.evalyshop.ui.payment.bottomsheet.controller;
 
-import android.app.Activity;
 import android.graphics.Color;
-import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,13 +12,14 @@ import java.util.List;
 import bd.com.evaly.evalyshop.databinding.ItemPaymentMethodBinding;
 import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
 import bd.com.evaly.evalyshop.models.payment.PaymentMethodModel;
-import bd.com.evaly.evalyshop.ui.payment.bottomsheet.model.PaymentMothodItemModel_;
+import bd.com.evaly.evalyshop.ui.payment.bottomsheet.model.PaymentMethodItemModel_;
 
 
 public class PaymentMethodController extends EpoxyController {
 
     private List<PaymentMethodModel> list = new ArrayList<>();
     private AppCompatActivity activity;
+    private RecyclerViewOnItemClickListener<Void> focusListener;
 
     public AppCompatActivity getActivity() {
         return activity;
@@ -30,13 +29,11 @@ public class PaymentMethodController extends EpoxyController {
         this.activity = activity;
     }
 
-    private RecyclerViewOnItemClickListener<Void> focusListener;
-
     @Override
     protected void buildModels() {
 
         for (PaymentMethodModel model : list) {
-            new PaymentMothodItemModel_()
+            new PaymentMethodItemModel_()
                     .id(model.getName())
                     .title(model.getName())
                     .description(model.getDescription())

@@ -52,10 +52,14 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
 
         mWebView.setListener(this, this);
         try {
-            String postData = "?token=" + URLEncoder.encode(PaymentWebBuilder.getPurchaseInformation().getAuthToken(), "UTF-8")
-                    + "&amount=" + URLEncoder.encode(String.valueOf(PaymentWebBuilder.getPurchaseInformation().getAmount()), "UTF-8")
-                    + "&invoice_no=" + URLEncoder.encode(PaymentWebBuilder.getPurchaseInformation().getInvoiceNo(), "UTF-8");
-            mWebView.loadUrl(PaymentWebBuilder.getRequestURL().concat(postData));
+            if (PaymentWebBuilder.getPurchaseInformation() != null) {
+                String postData = "?token=" + URLEncoder.encode(PaymentWebBuilder.getPurchaseInformation().getAuthToken(), "UTF-8")
+                        + "&amount=" + URLEncoder.encode(String.valueOf(PaymentWebBuilder.getPurchaseInformation().getAmount()), "UTF-8")
+                        + "&invoice_no=" + URLEncoder.encode(PaymentWebBuilder.getPurchaseInformation().getInvoiceNo(), "UTF-8");
+                mWebView.loadUrl(PaymentWebBuilder.getRequestURL().concat(postData));
+            } else {
+                mWebView.loadUrl(PaymentWebBuilder.getRequestURL());
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

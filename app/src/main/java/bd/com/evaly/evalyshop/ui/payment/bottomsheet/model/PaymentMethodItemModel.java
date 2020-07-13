@@ -17,7 +17,7 @@ import bd.com.evaly.evalyshop.databinding.ItemPaymentMethodBinding;
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
 @EpoxyModelClass(layout = R.layout.item_payment_method)
-public abstract class PaymentMothodItemModel extends DataBindingEpoxyModel {
+public abstract class PaymentMethodItemModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
     String title;
