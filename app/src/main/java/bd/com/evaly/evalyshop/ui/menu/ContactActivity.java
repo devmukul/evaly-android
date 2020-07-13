@@ -53,29 +53,6 @@ public class ContactActivity extends BaseActivity {
     ViewDialog dialog;
     private List<String> rosterList;
 
-    AppController mChatApp = AppController.getInstance();
-
-    XMPPHandler xmppHandler;
-    XMPPEventReceiver xmppEventReceiver;
-
-    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-        public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-        }
-
-        public void onLoggedIn() {
-            AsyncTask.execute(() -> {
-                xmppHandler = AppController.getmService().xmpp;
-                rosterList = xmppHandler.rosterList;
-
-//              Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
-            });
-        }
-
-    };
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,8 +67,6 @@ public class ContactActivity extends BaseActivity {
         //make fully Android Transparent Status bar
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
-
-        xmppEventReceiver = mChatApp.getEventReceiver();
 
         ImageView mapImage = findViewById(R.id.mapImage);
 
@@ -161,13 +136,19 @@ public class ContactActivity extends BaseActivity {
                 roasterModel.imageUrl = Constants.EVALY_LOGO;
 
                 launchIntent.putExtra("to", "OPEN_CHAT_DETAILS");
-                launchIntent.putExtra("from", "shop");
+                launchIntent.putExtra("from", "contact");
                 launchIntent.putExtra("user", CredentialManager.getUserName());
                 launchIntent.putExtra("password", CredentialManager.getPassword());
                 launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
                 launchIntent.putExtra("roster", new Gson().toJson(roasterModel));
 
+//                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
+//                launchIntent.putExtra("user", CredentialManager.getUserName());
+//                launchIntent.putExtra("password", CredentialManager.getPassword());
+//                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+//                launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(launchIntent);
+
             } catch (ActivityNotFoundException e) {
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
