@@ -218,9 +218,8 @@ public class UserDashboardActivity extends BaseActivity {
                 if (response.getCount() > 0) {
                     messageCount.setVisibility(View.VISIBLE);
                     messageCount.setText(String.format("%d", response.getCount()));
-                } else {
-                    messageCount.setVisibility(View.VISIBLE);
-                }
+                } else
+                    messageCount.setVisibility(View.GONE);
             }
 
             @Override

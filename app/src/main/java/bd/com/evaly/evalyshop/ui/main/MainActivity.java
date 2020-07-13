@@ -47,7 +47,10 @@ import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
@@ -308,6 +311,32 @@ public class MainActivity extends BaseActivity {
 
     }
 
+
+    private void getMessageCount(TextView messageCount) {
+
+        ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
+                if (response.getCount() > 0) {
+                    messageCount.setVisibility(View.VISIBLE);
+                    messageCount.setText(String.format("%d", response.getCount()));
+                } else
+                    messageCount.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+    }
+
     public UserDetails getUserDetails() {
         return userDetails;
     }
@@ -371,7 +400,6 @@ public class MainActivity extends BaseActivity {
 
         } else {
             binding.drawerLayout.removeView(binding.navView2);
-
             binding.drawerLayout.removeView(binding.navView);
             binding.drawerLayout.addView(binding.navView);
 
@@ -392,6 +420,10 @@ public class MainActivity extends BaseActivity {
                         .apply(new RequestOptions().override(200, 200))
                         .into(profilePicNav);
             }
+
+
+            TextView tvMessageCount = binding.navView.getMenu().findItem(R.id.nav_messages).getActionView().findViewById(R.id.count);
+            getMessageCount(tvMessageCount);
 
             binding.navView.setNavigationItemSelectedListener(menuItem -> {
                 switch (menuItem.getItemId()) {
