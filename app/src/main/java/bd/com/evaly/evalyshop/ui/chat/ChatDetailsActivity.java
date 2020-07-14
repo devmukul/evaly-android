@@ -362,7 +362,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 }
             }
 
-            if (rosterTable.status == 1) {
+            if (rosterTable.status == 1 || rosterTable.id.contains(Constants.EVALY_NUMBER)) {
                 tvOnlineStatus.setVisibility(View.VISIBLE);
                 tvOnlineStatus.setText("Online");
                 llOnlineStatus.setVisibility(View.VISIBLE);
@@ -370,6 +370,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 tvOnlineStatus.setVisibility(View.GONE);
                 llOnlineStatus.setVisibility(View.GONE);
             }
+
 
             if (rosterTable != null && rosterTable.imageUrl != null && rosterTable.imageUrl.equalsIgnoreCase("evaly")){
                 ivProfileImage.setImageResource(R.mipmap.ic_launcher);

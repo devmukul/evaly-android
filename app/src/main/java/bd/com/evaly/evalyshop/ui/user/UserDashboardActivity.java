@@ -3,9 +3,11 @@ package bd.com.evaly.evalyshop.ui.user;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import androidx.appcompat.view.menu.MenuBuilder;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -25,12 +28,14 @@ import java.util.Map;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
@@ -48,10 +53,11 @@ import butterknife.OnClick;
 public class UserDashboardActivity extends BaseActivity {
 
     Context context;
-    TextView name, balance, address;
+    TextView name, balance, address, messageCount;
     Map<String, String> map;
     String from = "";
     ViewDialog alert;
+
     boolean isFromSignup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +75,6 @@ public class UserDashboardActivity extends BaseActivity {
             finish();
         }
 
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             from = extras.getString("from");
@@ -78,6 +83,7 @@ public class UserDashboardActivity extends BaseActivity {
         name = findViewById(R.id.name);
         balance = findViewById(R.id.balance);
         address = findViewById(R.id.address);
+        messageCount = findViewById(R.id.messageCount);
         alert = new ViewDialog(UserDashboardActivity.this);
 
         name.setText(String.format("%s %s", CredentialManager.getUserData().getFirst_name(), CredentialManager.getUserData().getLast_name()));
@@ -86,7 +92,6 @@ public class UserDashboardActivity extends BaseActivity {
             address.setText("Add an address");
         else
             address.setText(CredentialManager.getUserData().getAddresses());
-
 
         LinearLayout orders = findViewById(R.id.order);
         orders.setOnClickListener(view -> {
@@ -100,13 +105,11 @@ public class UserDashboardActivity extends BaseActivity {
             startActivity(intent);
         });
 
-
         LinearLayout addBalance = findViewById(R.id.addBalance);
         addBalance.setOnClickListener(view -> {
             Intent intent = new Intent(context, PayViaBkashActivity.class);
             startActivity(intent);
         });
-
 
         LinearLayout transactionHistory = findViewById(R.id.transaction_history);
         transactionHistory.setOnClickListener(view -> {
@@ -114,13 +117,11 @@ public class UserDashboardActivity extends BaseActivity {
             startActivity(intent);
         });
 
-
         LinearLayout editProfile = findViewById(R.id.editProfile);
         editProfile.setOnClickListener(view -> {
             Intent intent = new Intent(context, EditProfileActivity.class);
             startActivity(intent);
         });
-
 
         LinearLayout editAddress = findViewById(R.id.addressClick);
         editAddress.setOnClickListener(view -> {
@@ -153,7 +154,6 @@ public class UserDashboardActivity extends BaseActivity {
                     CredentialManager.setLanguage("EN");
                     myLocale = new Locale("EN");
                 }
-
                 Locale.setDefault(myLocale);
                 android.content.res.Configuration config = new android.content.res.Configuration();
                 config.locale = myLocale;
@@ -164,50 +164,72 @@ public class UserDashboardActivity extends BaseActivity {
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 finish();
-
             });
             adb.setNegativeButton(R.string.cancel, null);
             adb.setTitle(R.string.select_language);
             adb.show();
         });
 
-
         balance.setOnClickListener(view -> {
             BalanceFragment balanceFragment = BalanceFragment.newInstance();
             balanceFragment.show(getSupportFragmentManager(), "balance");
         });
 
+
+
     }
 
     @OnClick(R.id.llMessage)
     void gotoMessage() {
-        if (!CredentialManager.getToken().equals("")) {
-            startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
-        } else {
-            Toast.makeText(getApplicationContext(), "Please login to see messages", Toast.LENGTH_LONG).show();
-        }
-//        Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
-//        try {
-//            if (launchIntent != null) {
-//                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
-//                launchIntent.putExtra("user", CredentialManager.getUserName());
-//                launchIntent.putExtra("password", CredentialManager.getPassword());
-//                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
-////                launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivity(launchIntent);
-////                finish();
-//            }
-//        }catch (ActivityNotFoundException e){
-//            try {
-//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
-//            } catch (android.content.ActivityNotFoundException anfe) {
-//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
-//            }
+//        if (!CredentialManager.getToken().equals("") && !userDetails.getToken().equals("")) {
+//            startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
+//        } else {
+//            Toast.makeText(getApplicationContext(), "Please login to see messages", Toast.LENGTH_LONG).show();
 //        }
-
-
+        Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
+        try {
+            if (launchIntent != null) {
+                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
+                launchIntent.putExtra("user", CredentialManager.getUserName());
+                launchIntent.putExtra("password", CredentialManager.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+//                launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(launchIntent);
+//                finish();
+            }
+        } catch (ActivityNotFoundException e) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+            }
+        }
     }
 
+    private void getMessageCount() {
+
+        ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
+                if (response.getCount() > 0) {
+                    messageCount.setVisibility(View.VISIBLE);
+                    messageCount.setText(String.format("%d", response.getCount()));
+                } else
+                    messageCount.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+    }
 
     @Override
     public void onResume() {
@@ -215,6 +237,8 @@ public class UserDashboardActivity extends BaseActivity {
 
         Balance.update(this, false);
 
+        // Balance.update(this, balance);
+        getMessageCount();
         ImageView profilePicNav = findViewById(R.id.picture);
 
         if (!CredentialManager.getUserData().getImage_sm().equals("null")) {

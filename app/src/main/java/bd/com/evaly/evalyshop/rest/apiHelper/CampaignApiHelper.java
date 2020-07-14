@@ -10,9 +10,9 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 public class CampaignApiHelper extends BaseApiHelper {
 
 
-    public static void getCampaigns(ResponseListenerAuth<CommonDataResponse<List<CampaignItem>>, String> listener) {
+    public static void getCampaigns(int page, ResponseListenerAuth<CommonDataResponse<List<CampaignItem>>, String> listener) {
 
-        getiApiClient().getCampaigns().enqueue(getResponseCallBackDefault(listener));
+        getiApiClient().getCampaigns(page).enqueue(getResponseCallBackDefault(listener));
     }
 
 

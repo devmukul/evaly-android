@@ -183,7 +183,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
             binding.postImage.setVisibility(View.GONE);
 
         binding.text.setText(postModel.getAdditionalInfo());
-        binding.date.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd HH:mm:ss.SSS", "", postModel.getCreatedAt())));
+        binding.date.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMTIssue("yyyy-MM-dd HH:mm:ss.SSS", "", postModel.getCreatedAt())));
 
         String orderStatus = postModel.getStatus();
 
@@ -223,7 +223,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
             binding.tvIssueStatus.setBackgroundColor(Color.parseColor("#33d274"));
         }
 
-        binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getCategory()));
+        binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getCategory().getName()));
 
         binding.postImage.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ImagePreview.class);

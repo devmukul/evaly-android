@@ -187,19 +187,13 @@ public class PayViaBkashActivity extends BaseActivity {
                 super.onPageStarted(view, url, favicon);
 
                 if (url.contains("success.html")) {
-
                     Toast.makeText(PayViaBkashActivity.this, "Payment successful! If your order's payment status doesn't get updated within 5 minutes, please contact support.", Toast.LENGTH_LONG).show();
-
                     setResult(Activity.RESULT_OK);
                     finish();
-
                     return;
-
                 }
 
-
                 loadingFinished = false;
-
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setProgress(0);
 

@@ -676,6 +676,37 @@ public class Utils {
 
     }
 
+    public static long formattedDateFromStringToTimestampGMTIssue(String inputFormat, String outputFormat, String inputDate) {
+        if (inputFormat.equals("")) { // if inputFormat = "", set a default input format.
+            inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        }
+        if (outputFormat.equals("")) {
+            outputFormat = "EEEE d',' MMMM  yyyy"; // if inputFormat = "", set a default output format.
+        }
+        Date parsed = null;
+        long outputDate = 0;
+
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
+      //  df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
+
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
+        df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+
+
+        // You can set a different Locale, This example set a locale of Country Mexico.
+        //SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, new Locale("es", "MX"));
+        //SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, new Locale("es", "MX"));
+
+        try {
+            parsed = df_input.parse(inputDate);
+            outputDate = parsed.getTime();
+        } catch (Exception e) {
+            Log.e("formattedDateFromString", "Exception in formateDateFromstring(): " + e.getMessage());
+        }
+        return outputDate;
+
+    }
+
 
     public static String titleBeautify(String str) {
 

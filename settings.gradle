@@ -1,1 +1,2 @@
+include ':evalyPaymentLibrary'
 include ':app', ':richlinkpreview'

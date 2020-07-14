@@ -1,12 +1,12 @@
 package bd.com.evaly.evalyshop.ui.main;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -35,9 +35,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
-
-import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import java.util.Locale;
 
@@ -48,14 +47,14 @@ import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
-import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
-import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.menu.InviteEarn;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
@@ -63,10 +62,9 @@ import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ToastUtils;
+import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
@@ -77,65 +75,11 @@ public class MainActivity extends BaseActivity {
     private AlertDialog.Builder exitDialogBuilder;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
+    private UserDetails userDetails;
     private NavController navController;
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
-
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-        @Override
-        public void onConnected() {
-            if (AppController.getmService() != null) {
-                xmppHandler = AppController.getmService().xmpp;
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-            }
-        }
-
-        public void onLoggedIn() {
-            if (xmppHandler != null) {
-                CredentialManager.saveUserRegistered(true);
-                if (xmppHandler.isLoggedin()) {
-                    VCard vCard = xmppHandler.mVcard;
-                    if (CredentialManager.getUserData() != null) if (vCard != null) {
-                        if (vCard.getFirstName() == null || vCard.getLastName() == null)
-                            xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                        disconnectXmpp();
-                    }
-                }
-            }
-        }
-
-        public void onLoginFailed(String msg) {
-            Logger.d(msg);
-            if (msg.contains("not-authorized")) {
-                AppController.logout(MainActivity.this);
-            } else if (msg.contains("already logged in")) {
-                CredentialManager.saveUserRegistered(true);
-                disconnectXmpp();
-
-            } else {
-                if (xmppHandler == null) {
-                    if (AppController.getmService() != null)
-                        if (AppController.getmService().xmpp != null)
-                            xmppHandler = AppController.getmService().xmpp;
-                } else {
-                    if (xmppHandler.isConnected())
-                        xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
-                }
-            }
-        }
-
-        public void onSignupSuccess() {
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-            disconnectXmpp();
-        }
-
-        public void onSignupFailed(String msg) {
-
-        }
-    };
 
     public void changeLanguage(String lang) {
         Locale myLocale;
@@ -170,6 +114,11 @@ public class MainActivity extends BaseActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
         });
+
+        if (!CredentialManager.getToken().isEmpty() && !CredentialManager.isUserRegistered()) {
+            Logger.e(CredentialManager.isUserRegistered() + "");
+            viewModel.registerXMPP();
+        }
 
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
@@ -233,9 +182,7 @@ public class MainActivity extends BaseActivity {
             if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals(""))
                 AppController.logout(MainActivity.this);
             else {
-                if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered())
-                    if (AppController.getInstance().isNetworkConnected())
-                        AsyncTask.execute(() -> startXmppService());
+
             }
         }
 
@@ -375,6 +322,36 @@ public class MainActivity extends BaseActivity {
         stopService(new Intent(MainActivity.this, XMPPService.class));
     }
 
+
+    private void getMessageCount(TextView messageCount) {
+
+        ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
+                if (response.getCount() > 0) {
+                    messageCount.setVisibility(View.VISIBLE);
+                    messageCount.setText(String.format("%d", response.getCount()));
+                } else
+                    messageCount.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+    }
+
+    public UserDetails getUserDetails() {
+        return userDetails;
+    }
+
     @Override
     public void onBackPressed() {
         if (!isLaunchActivity) {
@@ -398,16 +375,11 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
         Menu menu = binding.bottomNavigationView.getMenu();
         MenuItem item = menu.getItem(0);
         item.setChecked(true);
-
         setupDrawerMenu();
-
     }
-
 
     private void setupDrawerMenu() {
 
@@ -439,7 +411,6 @@ public class MainActivity extends BaseActivity {
 
         } else {
             binding.drawerLayout.removeView(binding.navView2);
-
             binding.drawerLayout.removeView(binding.navView);
             binding.drawerLayout.addView(binding.navView);
 
@@ -460,6 +431,10 @@ public class MainActivity extends BaseActivity {
                         .apply(new RequestOptions().override(200, 200))
                         .into(profilePicNav);
             }
+
+
+            TextView tvMessageCount = binding.navView.getMenu().findItem(R.id.nav_messages).getActionView().findViewById(R.id.count);
+            getMessageCount(tvMessageCount);
 
             binding.navView.setNavigationItemSelectedListener(menuItem -> {
                 switch (menuItem.getItemId()) {
@@ -489,7 +464,11 @@ public class MainActivity extends BaseActivity {
                         startActivity(new Intent(MainActivity.this, VoucherActivity.class));
                         break;
                     case R.id.nav_messages:
-                        startActivity(new Intent(MainActivity.this, ChatListActivity.class));
+                        //startActivity(new Intent(MainActivity.this, ChatListActivity.class));
+
+                        openEconnect();
+
+
                         break;
                     case R.id.nav_followed_shops:
                         Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
@@ -501,13 +480,32 @@ public class MainActivity extends BaseActivity {
                 return true;
             });
         }
+    }
 
+    private void openEconnect() {
+        Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
+        try {
+            if (launchIntent != null) {
+                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
+                launchIntent.putExtra("user", CredentialManager.getUserName());
+                launchIntent.putExtra("password", CredentialManager.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+                startActivity(launchIntent);
+            }
+        } catch (ActivityNotFoundException e) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+            } catch (Exception e4) {
+                ToastUtils.show("Please install eConnect app from Playstore");
+            }
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
         if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
@@ -518,10 +516,7 @@ public class MainActivity extends BaseActivity {
         if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
-
-        disconnectXmpp();
         super.onDestroy();
-
     }
 
     public boolean isConnected(Context context) {
@@ -568,7 +563,6 @@ public class MainActivity extends BaseActivity {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         return builder;
     }
-
 
     private void update(boolean isCancelable) {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);

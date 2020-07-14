@@ -170,6 +170,33 @@ public class AuthApiHelper extends BaseApiHelper {
 
     }
 
+    public static void registerXMPP(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {
+
+        IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
+        Call<JsonObject> call = iApiClient.registerXmpp(CredentialManager.getToken(), data);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.code() == 201) {
+                    CredentialManager.saveUserRegistered(true);
+                    listener.onDataFetched(response);
+                } else if (response.code() == 200) {
+                    CredentialManager.saveUserRegistered(true);
+                    listener.onDataFetched(response);
+                } else
+                    listener.onFailed(0);
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Logger.d(t.getMessage());
+                listener.onFailed(0);
+            }
+        });
+
+    }
+
     public static void addRoster(HashMap<String, String> data, DataFetchingListener<Response<JsonPrimitive>> listener) {
 
         IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
@@ -459,6 +486,11 @@ public class AuthApiHelper extends BaseApiHelper {
 
     public static void setUserData(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().setUserData(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void setUserDataToXmpp(HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
+        IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
+        iApiClient.setUserDataToXmpp(body).enqueue(getResponseCallBackDefault(listener));
     }
 
     // balance, transaction

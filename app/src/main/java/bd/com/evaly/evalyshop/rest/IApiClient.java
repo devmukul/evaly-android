@@ -49,6 +49,7 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -66,10 +67,14 @@ import retrofit2.http.Url;
 
 public interface IApiClient {
 
+
+    // chat
+
+    @GET("https://"+Constants.XMPP_DOMAIN + "/rest/messages/unread-messages/count/{username}")
+    Call<CommonDataResponse<String>> getUnreadedMessageCount(@Header("Authorization") String token,
+                                                             @Path("username") String username);
+
     // issue ticket
-
-
-
     @GET(UrlUtils.DOMAIN + "issue/api/v1/users/categories")
     Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
                                                                               @Query("limit") int limit);
@@ -113,11 +118,17 @@ public interface IApiClient {
     @PUT(UrlUtils.BASE_URL_AUTH + "user-info-update/")
     Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
+    @POST(UrlUtils.UPDATE_VCARD)
+    Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
+
     @POST(UrlUtils.REFRESH_TOKEN)
     Call<JsonObject> refreshToken(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.CHANGE_XMPP_PASSWORD)
     Call<JsonPrimitive> changeXmppPassword(@Body HashMap<String, String> data);
+
+    @POST(UrlUtils.XMPP_REGISTER)
+    Call<JsonObject> registerXmpp(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
     @POST(UrlUtils.ADD_ROSTER)
     Call<JsonPrimitive> addRoster(@Body HashMap<String, String> data);
@@ -231,7 +242,7 @@ public interface IApiClient {
     // campaign APIs
 
     @GET(UrlUtils.CAMPAIGNS)
-    Call<CommonDataResponse<List<CampaignItem>>> getCampaigns();
+    Call<CommonDataResponse<List<CampaignItem>>> getCampaigns(@Query("page") int page);
 
     @GET(UrlUtils.CAMPAIGNS + "/{group}/shops")
     Call<CommonDataResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);

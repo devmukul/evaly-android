@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
@@ -91,17 +92,21 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheet;
 import bd.com.evaly.evalyshop.util.Balance;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
+import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
+import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class OrderDetailsActivity extends BaseActivity {
+public class OrderDetailsActivity extends BaseActivity implements PaymentBottomSheet.PaymentOptionListener, PaymentListener {
 
     @BindView(R.id.hero)
     ConstraintLayout heroHolder;
@@ -146,11 +151,13 @@ public class OrderDetailsActivity extends BaseActivity {
     private List<IssueCategoryModel> categoryList;
     private OrderDetailsModel orderDetailsModel;
 
+    private PaymentWebBuilder paymentWebBuilder;
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.order_details_menu, menu);
-
         cancelMenuItem = menu.findItem(R.id.action_cancel);
         refundMenuItem = menu.findItem(R.id.action_refund);
 
@@ -193,13 +200,13 @@ public class OrderDetailsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details);
         ButterKnife.bind(this);
-
+        // For Payment Listener
+        paymentWebBuilder = new PaymentWebBuilder(OrderDetailsActivity.this);
+        paymentWebBuilder.setPaymentListener(this);
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle(R.string.order_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         context = this;
-
         tvPaymentStatus = findViewById(R.id.paymentStatus);
         cancelBtn = findViewById(R.id.cancelBtn);
         campaignRuleHolder = findViewById(R.id.campaignRuleHolder);
@@ -270,7 +277,7 @@ public class OrderDetailsActivity extends BaseActivity {
         payParially = findViewById(R.id.payPartially);
 
         makePayment.setOnClickListener(v -> {
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount);
+            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount, this);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
@@ -365,23 +372,16 @@ public class OrderDetailsActivity extends BaseActivity {
     @OnClick(R.id.tvReport)
     void report() {
         IssueCreateBody model = new IssueCreateBody();
-
         bottomSheetDialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.report_view);
-
         Spinner spinner = bottomSheetDialog.findViewById(R.id.spnDelivery);
         EditText etDescription = bottomSheetDialog.findViewById(R.id.etDescription);
         Button btnSubmit = bottomSheetDialog.findViewById(R.id.btnSubmit);
         ImageView ivClose = bottomSheetDialog.findViewById(R.id.ivClose);
         LinearLayout addPhoto = bottomSheetDialog.findViewById(R.id.addPhoto);
-
         List<String> options = new ArrayList<>();
-
-
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, options);
         spinner.setAdapter(adapter);
-
-
         dialog.showDialog();
 
         IssueApiHelper.getCategories(new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
@@ -1143,5 +1143,38 @@ public class OrderDetailsActivity extends BaseActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
 
+    }
+
+    @Override
+    public void onPaymentRedirect(String url, String amount, String invoice_no) {
+        String successURL;
+        PurchaseRequestInfo purchaseRequestInfo = null;
+
+        if (url.equals(BuildConfig.BKASH_URL)) {
+            successURL = Constants.BKASH_SUCCESS_URL;
+            paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.bkash_payment));
+            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no);
+        } else {
+            successURL = Constants.SSL_SUCCESS_URL;
+            paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
+        }
+
+        paymentWebBuilder.loadPaymentURL(url, successURL, purchaseRequestInfo);
+    }
+
+    @Override
+    public void onPaymentSuccess(HashMap<String, String> values) {
+
+    }
+
+    @Override
+    public void onPaymentFailure(HashMap<String, String> values) {
+        Toast.makeText(this, R.string.payment_error_message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPaymentSuccess(String message) {
+        getOrderDetails();
+        Toast.makeText(this, R.string.payment_success_message, Toast.LENGTH_LONG).show();
     }
 }

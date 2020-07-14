@@ -13,27 +13,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
-
-import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
+import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Response;
 
 public class PasswordActivity extends BaseActivity implements SetPasswordView {
 
@@ -60,100 +53,6 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     private String phoneNumber, password;
     private String name;
     private SetPasswordPresenter presenter;
-    private AppController mChatApp = AppController.getInstance();
-    private XMPPHandler xmppHandler;
-
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-        //Event Listeners
-        public void onConnected() {
-            Logger.d("======   CONNECTED  -========");
-            xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.autoLogin = false;
-            if (password == null) {
-                xmppHandler.Signup(new SignupModel(phoneNumber, etPassword.getText().toString(), etPassword.getText().toString()));
-            } else {
-                xmppHandler.Signup(new SignupModel(phoneNumber, password, password));
-            }
-
-        }
-
-        public void onSignupSuccess() {
-            Logger.d("SIGNUP SUCCESS");
-            xmppHandler.autoLogin = true;
-            CredentialManager.savePassword(password);
-            xmppHandler.setUserPassword(phoneNumber, password);
-            xmppHandler.login();
-
-        }
-
-        public void onLoggedIn() {
-            Logger.d("LOGIN");
-            xmppHandler.changePassword(etPassword.getText().toString());
-            xmppHandler.disconnect();
-            Toast.makeText(PasswordActivity.this, "Password set Successfully, Please login!", Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(() -> AppController.logout(PasswordActivity.this), 2000);
-        }
-
-        public void onLoginFailed(String msg) {
-            Logger.d(msg);
-            if (!msg.contains("already logged in")) {
-                HashMap<String, String> data = new HashMap<>();
-                data.put("user", phoneNumber);
-                data.put("host", Constants.XMPP_HOST);
-                data.put("newpass", etPassword.getText().toString());
-                Logger.d("===============");
-                AuthApiHelper.changeXmppPassword(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-                    @Override
-                    public void onDataFetched(Response<JsonPrimitive> response) {
-//                        Logger.d(new Gson().toJson(response));
-                        dialog.hideDialog();
-                        if (response.code() == 200 || response.code() == 201) {
-                            onPasswordChanged();
-                        } else {
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-                        Logger.d("======-=-=-=-=-=-=");
-                        dialog.hideDialog();
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-
-                    }
-                });
-            }
-        }
-
-        public void onSignupFailed(String error) {
-            Logger.d(error);
-            if (Constants.SIGNUP_ERR_CONFLICT.equalsIgnoreCase(error)) {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-                return;
-            }
-            xmppHandler.disconnect();
-            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-        }
-
-        public void onPasswordChanged() {
-            dialog.hideDialog();
-
-            Toast.makeText(PasswordActivity.this, "Password set Successfully, Please login!", Toast.LENGTH_SHORT).show();
-            xmppHandler.disconnect();
-            AppController.logout(PasswordActivity.this);
-
-//            xmppHandler.disconnect();
-        }
-
-        public void onPasswordChangeFailed(String msg) {
-            dialog.hideDialog();
-            Logger.d(msg);
-            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-        }
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,42 +76,32 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin1Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (pin1Et.getText().toString().length() == size) {
+                if (pin1Et.getText().toString().length() == size)
                     pin2Et.requestFocus();
-                }
             }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-
             }
 
             public void afterTextChanged(Editable s) {
-
             }
-
         });
 
         pin2Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (pin2Et.getText().toString().length() == size) {
+                if (pin2Et.getText().toString().length() == size)
                     pin3Et.requestFocus();
-                }
             }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-
             }
 
             public void afterTextChanged(Editable s) {
-
-                if (pin2Et.getText().toString().trim().length() == 0) {
+                if (pin2Et.getText().toString().trim().length() == 0)
                     pin1Et.requestFocus();
-                }
             }
 
         });
@@ -220,22 +109,17 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin3Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (pin3Et.getText().toString().length() == size) {
+                if (pin3Et.getText().toString().length() == size)
                     pin4Et.requestFocus();
-                }
             }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-
             }
 
             public void afterTextChanged(Editable s) {
-
-                if (pin3Et.getText().toString().trim().length() == 0) {
+                if (pin3Et.getText().toString().trim().length() == 0)
                     pin2Et.requestFocus();
-                }
             }
 
         });
@@ -243,25 +127,18 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         pin4Et.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (pin4Et.getText().toString().length() == size) {
+                if (pin4Et.getText().toString().length() == size)
                     pin5Et.requestFocus();
-                }
             }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-
-
             }
 
             public void afterTextChanged(Editable s) {
-
-                if (pin4Et.getText().toString().trim().length() == 0) {
+                if (pin4Et.getText().toString().trim().length() == 0)
                     pin3Et.requestFocus();
-                }
             }
-
         });
 
         pin5Et.addTextChangedListener(new TextWatcher() {
@@ -275,12 +152,9 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
             }
 
             public void afterTextChanged(Editable s) {
-
-                if (pin5Et.getText().toString().trim().length() == 0) {
+                if (pin5Et.getText().toString().trim().length() == 0)
                     pin4Et.requestFocus();
-                }
             }
-
         });
 
     }
@@ -294,27 +168,9 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         presenter.setPassword(otp, etPassword.getText().toString().trim(), etConfirmPassword.getText().toString().trim(), phoneNumber);
     }
 
-    private void startXmppService() {
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(this, XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-            Logger.d("++++++++++");
-        } else {
-            Logger.d("---------");
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
-            } else {
-                xmppHandler.Signup(new SignupModel(phoneNumber, password, password));
-            }
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
     }
 
     @Override
@@ -345,7 +201,6 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     @Override
     public void onOTPEmpty() {
         dialog.hideDialog();
-
         Toast.makeText(PasswordActivity.this, "Please input your OTP verification code", Toast.LENGTH_SHORT).show();
     }
 
@@ -364,17 +219,34 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
     @Override
     public void onPasswordMismatch() {
         dialog.hideDialog();
-
         Toast.makeText(PasswordActivity.this, "Confirmed password is not matched!", Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
     public void onPasswordSetSuccess() {
         password = etPassword.getText().toString();
         CredentialManager.saveUserName(phoneNumber);
-        startXmppService();
+        CredentialManager.savePassword(password);
+        dialog.hideDialog();
+        Toast.makeText(PasswordActivity.this, "Password set Successfully, Please login!", Toast.LENGTH_SHORT).show();
+        AppController.logout(PasswordActivity.this);
 
+        MyPreference.with(this).clearAll();
+        Logger.d(CredentialManager.getToken());
+
+        UserDetails userDetails = new UserDetails(this);
+        userDetails.clearAll();
+
+        ProviderDatabase providerDatabase = ProviderDatabase.getInstance(this);
+        providerDatabase.userInfoDao().deleteAll();
+
+        new Handler().postDelayed(() -> {
+            startActivity(new Intent(this, SignInActivity.class)
+                    .putExtra("phone", phoneNumber)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            finish();
+        }, 300);
     }
 
     @Override
