@@ -27,6 +27,10 @@ public class UserModel implements Serializable {
         return image_sm;
     }
 
+    public void setImage_sm(String image_sm) {
+        this.image_sm = image_sm;
+    }
+
     public List<String> getGroups() {
         return groups;
     }
@@ -75,8 +79,8 @@ public class UserModel implements Serializable {
         this.last_name = last_name;
     }
 
-    public String getFullName(){
-        return first_name  + " " + last_name;
+    public String getFullName() {
+        return first_name + " " + last_name;
     }
 
     public String getCreated_at() {
@@ -104,7 +108,10 @@ public class UserModel implements Serializable {
     }
 
     public String getAddresses() {
-        return address;
+        if (address == null)
+            return "";
+        else
+            return address;
     }
 
     public void setAddresses(String addresses) {
@@ -165,9 +172,5 @@ public class UserModel implements Serializable {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
-    }
-
-    public void setImage_sm(String image_sm) {
-        this.image_sm = image_sm;
     }
 }

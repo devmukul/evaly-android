@@ -21,7 +21,6 @@ import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import butterknife.BindView;
@@ -234,8 +233,6 @@ public class PasswordActivity extends BaseActivity implements SetPasswordView {
         MyPreference.with(this).clearAll();
         Logger.d(CredentialManager.getToken());
 
-        UserDetails userDetails = new UserDetails(this);
-        userDetails.clearAll();
 
         ProviderDatabase providerDatabase = ProviderDatabase.getInstance(this);
         providerDatabase.userInfoDao().deleteAll();

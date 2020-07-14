@@ -51,6 +51,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
+import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
@@ -63,8 +64,9 @@ import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
+import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
@@ -74,8 +76,6 @@ public class MainActivity extends BaseActivity {
     private AlertDialog exitDialog;
     private AlertDialog.Builder exitDialogBuilder;
     private AppController mChatApp = AppController.getInstance();
-    private XMPPHandler xmppHandler;
-    private UserDetails userDetails;
     private NavController navController;
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
@@ -346,10 +346,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-    }
-
-    public UserDetails getUserDetails() {
-        return userDetails;
     }
 
     @Override

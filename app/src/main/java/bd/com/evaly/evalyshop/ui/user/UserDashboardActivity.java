@@ -59,6 +59,7 @@ public class UserDashboardActivity extends BaseActivity {
     ViewDialog alert;
 
     boolean isFromSignup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,16 +177,11 @@ public class UserDashboardActivity extends BaseActivity {
         });
 
 
-
     }
 
     @OnClick(R.id.llMessage)
     void gotoMessage() {
-//        if (!CredentialManager.getToken().equals("") && !userDetails.getToken().equals("")) {
-//            startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
-//        } else {
-//            Toast.makeText(getApplicationContext(), "Please login to see messages", Toast.LENGTH_LONG).show();
-//        }
+
         Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
         try {
             if (launchIntent != null) {
@@ -193,11 +189,9 @@ public class UserDashboardActivity extends BaseActivity {
                 launchIntent.putExtra("user", CredentialManager.getUserName());
                 launchIntent.putExtra("password", CredentialManager.getPassword());
                 launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
-//                launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(launchIntent);
-//                finish();
             }
-        } catch (ActivityNotFoundException e) {
+        } catch (android.content.ActivityNotFoundException e) {
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
             } catch (android.content.ActivityNotFoundException anfe) {

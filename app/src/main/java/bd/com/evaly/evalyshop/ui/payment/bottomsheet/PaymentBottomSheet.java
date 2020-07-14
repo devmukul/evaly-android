@@ -30,11 +30,11 @@ import java.util.List;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetPaymentBinding;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.payment.PaymentMethodModel;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.controller.PaymentMethodController;
 import bd.com.evaly.evalyshop.util.ToastUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class PaymentBottomSheet extends BottomSheetDialogFragment implements PaymentBottomSheetNavigator {
@@ -44,7 +44,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     private BottomSheetPaymentBinding binding;
     private String invoice_no, enteredAmount;
     private double total_amount = 0, paid_amount = 0.0;
-    private UserDetails userDetails;
     private AppCompatActivity activityInstance;
     private PaymentMethodController controller;
     private ViewDialog dialog;
@@ -52,8 +51,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     public static PaymentBottomSheet newInstance(String invoiceNo,
                                                  double totalAmount,
                                                  double paidAmount,
-                                                 PaymentOptionListener paymentOptionListener
-    ) {
+                                                 PaymentOptionListener paymentOptionListener) {
         PaymentBottomSheet instance = new PaymentBottomSheet();
         paymentOptionRedirceListener = paymentOptionListener;
         Bundle bundle = new Bundle();
@@ -84,7 +82,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
-        userDetails = new UserDetails(getContext());
 
         if (getArguments() != null) {
             invoice_no = getArguments().getString("invoice_no");
@@ -173,8 +170,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             return;
         }
         if (method.getName().equals("Evaly Balance")) {
-            if (Double.parseDouble(binding.amountPay.getText().toString()) > Double.parseDouble(userDetails.getBalance())) {
-                Toast.makeText(getContext(), "Insufficient Evaly Balance (৳ " + userDetails.getBalance() + ")", Toast.LENGTH_SHORT).show();
+            if (Double.parseDouble(binding.amountPay.getText().toString()) > CredentialManager.getBalance()) {
+                Toast.makeText(getContext(), "Insufficient Evaly Balance (৳ " + CredentialManager.getBalance() + ")", Toast.LENGTH_SHORT).show();
                 dialog.hideDialog();
                 return;
             }
