@@ -50,48 +50,38 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
-import bd.com.evaly.evalyshop.ui.voucher.adapter.MyVoucherAdapter;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.voucher.MyVoucherInfo;
 import bd.com.evaly.evalyshop.models.voucher.VoucherDetails;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
+import bd.com.evaly.evalyshop.ui.voucher.adapter.MyVoucherAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
 import static android.app.Activity.RESULT_OK;
 
 
-
-
-
 public class VoucherMyListFragment extends Fragment {
 
+    static VoucherMyListFragment instance;
     RecyclerView voucherList;
     View view;
     ArrayList<MyVoucherInfo> myVoucherInfos;
     ArrayList<VoucherDetails> voucherDetails;
     MyVoucherAdapter adapter;
-    UserDetails userDetails;
     RequestQueue rq;
-    ImageView bkash,bank,card;
+    ImageView bkash, bank, card;
     BottomSheetBehavior sheetBehavior;
     View mViewBg;
     LinearLayout layoutBottomSheet;
-    static VoucherMyListFragment instance;
-    EditText amountPay,amountET,transactionID;
-    String orderID="",slug="",bankDepositImage="";
-
+    EditText amountPay, amountET, transactionID;
+    String orderID = "", slug = "", bankDepositImage = "";
     LinearLayout noItem;
-
     ProgressBar progressBar;
-
     int attempt = 0;
-
-
     Context context;
     String userAgent;
 
@@ -106,11 +96,14 @@ public class VoucherMyListFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static VoucherMyListFragment getInstance() {
+        return instance;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_voucher_my_list, container, false);
-        voucherList=view.findViewById(R.id.voucher_list);
+        voucherList = view.findViewById(R.id.voucher_list);
 
         context = getContext();
         try {
@@ -120,22 +113,21 @@ public class VoucherMyListFragment extends Fragment {
         }
 
         voucherList.setLayoutManager(new LinearLayoutManager(context));
-        userDetails=new UserDetails(context);
         rq = Volley.newRequestQueue(context);
-        myVoucherInfos=new ArrayList<>();
-        voucherDetails=new ArrayList<>();
-        adapter=new MyVoucherAdapter(context,myVoucherInfos);
+        myVoucherInfos = new ArrayList<>();
+        voucherDetails = new ArrayList<>();
+        adapter = new MyVoucherAdapter(context, myVoucherInfos);
         voucherList.setAdapter(adapter);
         balance = view.findViewById(R.id.balance);
 
         layoutBottomSheet = view.findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-        amountPay=view.findViewById(R.id.amountPay);
-        bkash=view.findViewById(R.id.bkash);
-        bank=view.findViewById(R.id.bank);
-        card=view.findViewById(R.id.card);
+        amountPay = view.findViewById(R.id.amountPay);
+        bkash = view.findViewById(R.id.bkash);
+        bank = view.findViewById(R.id.bank);
+        card = view.findViewById(R.id.card);
         mViewBg = view.findViewById(R.id.bg);
-        instance=this;
+        instance = this;
         noItem = view.findViewById(R.id.noItem);
 
         progressBar = view.findViewById(R.id.progressBar);
@@ -148,7 +140,6 @@ public class VoucherMyListFragment extends Fragment {
                 mViewBg.setVisibility(View.GONE);
             }
         });
-
 
 
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -197,53 +188,31 @@ public class VoucherMyListFragment extends Fragment {
             }
         });
 
-        bank.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        bank.setOnClickListener(v -> {
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.ic_upload_image_large);
 
-
-               // Toast.makeText(context, "Uploading Bank Receipt system is coming in next update.", Toast.LENGTH_LONG).show();
-
-
-//                return;
-
-                Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.ic_upload_image_large);
-
-                buildBankDialog(bitmap);
-
-
-
-            }
+            buildBankDialog(bitmap);
         });
 
         balance.setText(Html.fromHtml("Holding balance: <b>Updating</b>"));
 
-
-
-        if (userDetails.getToken().equals("")){
-
-
+        if (CredentialManager.getToken().equals("")) {
             noItem.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-
-
             ((TextView) view.findViewById(R.id.noText)).setText("Please login first to see your claimed vouchers");
-
         } else {
             getVoucherInfo("1");
             holdingAmount();
         }
-
-
         //holdingAmount();
         return view;
     }
 
-    public void toggleBottomSheet(String a,String b,int amount) {
-        orderID=a;
-        slug=b;
-        amountPay.setText(amount+"");
+    public void toggleBottomSheet(String a, String b, int amount) {
+        orderID = a;
+        slug = b;
+        amountPay.setText(amount + "");
         if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             mViewBg.setVisibility(View.VISIBLE);
@@ -253,12 +222,8 @@ public class VoucherMyListFragment extends Fragment {
         }
     }
 
-    public static VoucherMyListFragment getInstance() {
-        return instance;
-    }
-
-    public void getVoucherInfo(String page){
-        String url="https://api.evaly.com.bd/pay/voucher-orders/?page="+page;
+    public void getVoucherInfo(String page) {
+        String url = "https://api.evaly.com.bd/pay/voucher-orders/?page=" + page;
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
@@ -269,26 +234,26 @@ public class VoucherMyListFragment extends Fragment {
         Log.d("voucher_response", url);
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("voucher_response",response.toString());
+                Log.d("voucher_response", response.toString());
 
                 progressBar.setVisibility(View.GONE);
 
 
                 try {
-                    if(response.getInt("count")==0){
+                    if (response.getInt("count") == 0) {
                         voucherList.setVisibility(View.GONE);
                         noItem.setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         JSONArray jsonArray = response.getJSONArray("results");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject ob = jsonArray.getJSONObject(i);
-                            MyVoucherInfo info=new MyVoucherInfo();
+                            MyVoucherInfo info = new MyVoucherInfo();
                             info.setInvoiceNumber(ob.getString("invoice_no"));
                             info.setCustomerNumber(ob.getString("customer"));
-                            JSONObject variant=ob.getJSONObject("voucher_variant");
+                            JSONObject variant = ob.getJSONObject("voucher_variant");
                             info.setVoucherName(variant.getString("name"));
                             info.setVoucherDescription(variant.getString("description"));
                             info.setVoucherImage(variant.getString("thumnail_image"));
@@ -296,7 +261,7 @@ public class VoucherMyListFragment extends Fragment {
                             info.setValue(variant.getInt("value"));
                             info.setAmount(variant.getInt("amount"));
                             info.setStatus(variant.getString("status"));
-                            JSONObject voucher=ob.getJSONObject("voucher");
+                            JSONObject voucher = ob.getJSONObject("voucher");
                             info.setApplicableDate(voucher.getString("applicable_date"));
                             info.setStartDate(voucher.getString("start_date"));
                             info.setEndDate(voucher.getString("end_date"));
@@ -313,21 +278,18 @@ public class VoucherMyListFragment extends Fragment {
                             adapter.notifyItemInserted(myVoucherInfos.size());
                         }
 
-                        if(response.getInt("count") > 10 && page.equals("1")){
+                        if (response.getInt("count") > 10 && page.equals("1")) {
 
 
                             getVoucherInfo("2");
-                        } else if(response.getInt("count") > 20 && page.equals("2")){
+                        } else if (response.getInt("count") > 20 && page.equals("2")) {
 
 
                             getVoucherInfo("3");
                         }
 
 
-
-
-
-                    if(myVoucherInfos.size() < 1){
+                        if (myVoucherInfos.size() < 1) {
 
                             noItem.setVisibility(View.VISIBLE);
 
@@ -342,15 +304,13 @@ public class VoucherMyListFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", error.toString());
+        }, error -> {
+            Log.e("onErrorResponse", error.toString());
 
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401) {
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -366,26 +326,26 @@ public class VoucherMyListFragment extends Fragment {
 
                     return;
 
-                }}
+                }
+            }
 
 
-                if(page.equals("1")) {
+            if (page.equals("1")) {
 
-                    if (attempt < 3) {
-                        attempt++;
-                        getVoucherInfo(page);
-                    } else {
+                if (attempt < 3) {
+                    attempt++;
+                    getVoucherInfo(page);
+                } else {
 
 
-                        try {
+                    try {
 
-                            Toast.makeText(context, "Server error, try again", Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {
-                        }
+                        Toast.makeText(context, "Server error, try again", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
                     }
                 }
-
             }
+
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -409,19 +369,19 @@ public class VoucherMyListFragment extends Fragment {
         rq.add(request);
     }
 
-    public void paymentViaCard(){
-        String url="https://api-prod.evaly.com.bd/pay/pg";
+    public void paymentViaCard() {
+        String url = "https://api-prod.evaly.com.bd/pay/pg";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
-            int a=Integer.parseInt(amountPay.getText().toString());
-            parameters.put("amount",a);
-            parameters.put("context","voucher_payment");
-            parameters.put("context_reference",orderID);
+            int a = Integer.parseInt(amountPay.getText().toString());
+            parameters.put("amount", a);
+            parameters.put("context", "voucher_payment");
+            parameters.put("context_reference", orderID);
         } catch (Exception e) {
 
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -431,17 +391,15 @@ public class VoucherMyListFragment extends Fragment {
                     Utils.CustomTab(purl, context);
 
 
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        }, error -> {
 
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+            NetworkResponse response = error.networkResponse;
+            if (response != null && response.data != null) {
+                if (error.networkResponse.statusCode == 401) {
 
                     AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                         @Override
@@ -457,10 +415,10 @@ public class VoucherMyListFragment extends Fragment {
 
                     return;
 
-                }}
-
-                Log.e("onErrorResponse", error.toString());
+                }
             }
+
+            Log.e("onErrorResponse", error.toString());
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -479,16 +437,14 @@ public class VoucherMyListFragment extends Fragment {
         rq.add(request);
     }
 
-    public void paymentViaBank(String image){
-
+    public void paymentViaBank(String image) {
 
 
         ProgressDialog dialog = ProgressDialog.show(context, "",
                 "Updating data...", true);
 
-        String url="https://api-prod.evaly.com.bd/pay/bank_deposit/";
+        String url = "https://api-prod.evaly.com.bd/pay/bank_deposit/";
         JSONObject parameters = new JSONObject();
-
 
 
         try {
@@ -496,16 +452,16 @@ public class VoucherMyListFragment extends Fragment {
             int a = Integer.parseInt(amount);
 
             parameters.put("amount", amount);
-        } catch (Exception e){
+        } catch (Exception e) {
 
             Toast.makeText(context, "Invalid amount, enter only numbers!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         try {
-            parameters.put("context","voucher_payment");
-            parameters.put("context_reference",orderID);
-            parameters.put("bank_receipt_copy",image);        //put image url
+            parameters.put("context", "voucher_payment");
+            parameters.put("context_reference", orderID);
+            parameters.put("bank_receipt_copy", image);        //put image url
         } catch (Exception e) {
 
             Toast.makeText(context, "Error occured!", Toast.LENGTH_SHORT).show();
@@ -516,13 +472,13 @@ public class VoucherMyListFragment extends Fragment {
 
         Log.d("json param", parameters.toString());
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                try{
+                try {
 
                     dialog.dismiss();
-                    Log.d("json set image",response.toString());
+                    Log.d("json set image", response.toString());
 
                     Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
 
@@ -533,7 +489,7 @@ public class VoucherMyListFragment extends Fragment {
                     startActivity(getActivity().getIntent());
 
 
-                }catch(Exception e){
+                } catch (Exception e) {
 
                 }
             }
@@ -544,23 +500,24 @@ public class VoucherMyListFragment extends Fragment {
 
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    if (error.networkResponse.statusCode == 401) {
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            paymentViaBank(image);
-                        }
+                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                paymentViaBank(image);
+                            }
 
-                        @Override
-                        public void onFailed(int status) {
+                            @Override
+                            public void onFailed(int status) {
 
-                        }
-                    });
+                            }
+                        });
 
-                    return;
+                        return;
 
-                }}
+                    }
+                }
 
             }
         }) {
@@ -580,29 +537,29 @@ public class VoucherMyListFragment extends Fragment {
         rq.add(request);
     }
 
-    public void paymentViaBkash(){
-        String url="https://api-prod.evaly.com.bd/pay/bkash_transaction/";
+    public void paymentViaBkash() {
+        String url = "https://api-prod.evaly.com.bd/pay/bkash_transaction/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
-            int a=Integer.parseInt(amountET.getText().toString());
-            parameters.put("amount",a);
-            parameters.put("context","voucher_payment");
-            parameters.put("context_reference",orderID);
-            parameters.put("bkash_payment_id",transactionID.getText().toString());
+            int a = Integer.parseInt(amountET.getText().toString());
+            parameters.put("amount", a);
+            parameters.put("context", "voucher_payment");
+            parameters.put("context_reference", orderID);
+            parameters.put("bkash_payment_id", transactionID.getText().toString());
         } catch (Exception e) {
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                try{
-                    if(response.getBoolean("success")){
+                try {
+                    if (response.getBoolean("success")) {
                         Toast.makeText(context, "Voucher payment completed successfully", Toast.LENGTH_SHORT).show();
-                    }else{
-                        if(!response.getString("message").equals("")){
+                    } else {
+                        if (!response.getString("message").equals("")) {
                             String cap = response.getString("message").substring(0, 1).toUpperCase() + response.getString("message").substring(1);
-                            Toast.makeText(context,cap, Toast.LENGTH_LONG).show();
-                        }else{
+                            Toast.makeText(context, cap, Toast.LENGTH_LONG).show();
+                        } else {
                             Toast.makeText(context, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -610,7 +567,7 @@ public class VoucherMyListFragment extends Fragment {
                     getActivity().finish();
                     startActivity(getActivity().getIntent());
 
-                }catch(Exception e){
+                } catch (Exception e) {
 
                 }
             }
@@ -621,23 +578,24 @@ public class VoucherMyListFragment extends Fragment {
 
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    if (error.networkResponse.statusCode == 401) {
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            paymentViaBkash();
-                        }
+                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                paymentViaBkash();
+                            }
 
-                        @Override
-                        public void onFailed(int status) {
+                            @Override
+                            public void onFailed(int status) {
 
-                        }
-                    });
+                            }
+                        });
 
-                    return;
+                        return;
 
-                }}
+                    }
+                }
 
             }
         }) {
@@ -657,16 +615,16 @@ public class VoucherMyListFragment extends Fragment {
         rq.add(request);
     }
 
-    public void buildDialog(){
+    public void buildDialog() {
         final AlertDialog dialogBuilder = new AlertDialog.Builder(context).create();
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_voucher_payment, null);
-        amountET =  dialogView.findViewById(R.id.amount);
+        amountET = dialogView.findViewById(R.id.amount);
         amountET.setText(amountPay.getText().toString());
-        transactionID =  dialogView.findViewById(R.id.transaction);
-        Button submit =  dialogView.findViewById(R.id.buttonSubmit);
-        Button cancel =  dialogView.findViewById(R.id.buttonCancel);
-        TextView howBkash  =dialogView.findViewById(R.id.howBkash);
+        transactionID = dialogView.findViewById(R.id.transaction);
+        Button submit = dialogView.findViewById(R.id.buttonSubmit);
+        Button cancel = dialogView.findViewById(R.id.buttonCancel);
+        TextView howBkash = dialogView.findViewById(R.id.howBkash);
 
 
         howBkash.setPaintFlags(howBkash.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -697,36 +655,32 @@ public class VoucherMyListFragment extends Fragment {
     }
 
 
-
-
-
-    public void buildBankDialog(Bitmap bitmap){
+    public void buildBankDialog(Bitmap bitmap) {
         final AlertDialog dialogBuilder = new AlertDialog.Builder(context).create();
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_bank_receipt, null);
-        amountET =  dialogView.findViewById(R.id.amount);
+        amountET = dialogView.findViewById(R.id.amount);
         amountET.setText(amountPay.getText().toString());
 
 
-        transactionID =  dialogView.findViewById(R.id.transaction);
-        Button submit =  dialogView.findViewById(R.id.buttonSubmit);
-        Button cancel =  dialogView.findViewById(R.id.buttonCancel);
+        transactionID = dialogView.findViewById(R.id.transaction);
+        Button submit = dialogView.findViewById(R.id.buttonSubmit);
+        Button cancel = dialogView.findViewById(R.id.buttonCancel);
 
         ImageView selectImage = dialogView.findViewById(R.id.upload);
 
-        if(isImageSelected)
+        if (isImageSelected)
             selectImage.setImageBitmap(bitmap);
-
 
 
         selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent();
+                Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Bank Deposit Photo"),1000);
+                startActivityForResult(Intent.createChooser(intent, "Select Bank Deposit Photo"), 1000);
                 dialogBuilder.dismiss();
 
             }
@@ -743,7 +697,7 @@ public class VoucherMyListFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (!isImageSelected){
+                if (!isImageSelected) {
 
                     Toast.makeText(context, "Please select your bank receipt image", Toast.LENGTH_LONG).show();
                     return;
@@ -753,8 +707,7 @@ public class VoucherMyListFragment extends Fragment {
 
                 amount = amountPay.getText().toString();
 
-                if (amount.equals(""))
-                {
+                if (amount.equals("")) {
                     Toast.makeText(context, "Please enter amount.", Toast.LENGTH_LONG).show();
                     return;
 
@@ -771,23 +724,23 @@ public class VoucherMyListFragment extends Fragment {
     }
 
 
-    public void holdingAmount(){
-        String url= UrlUtils.BASE_URL_AUTH+"user-info-pay/"+userDetails.getUserName();
+    public void holdingAmount() {
+        String url = UrlUtils.BASE_URL_AUTH + "user-info-pay/" + CredentialManager.getUserName();
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
         } catch (Exception e) {
 
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                try{
+                try {
 
 
-                     JSONObject data = response.getJSONObject("data");
+                    JSONObject data = response.getJSONObject("data");
 
-                    Log.d("holding_balance",data.toString());
+                    Log.d("holding_balance", data.toString());
 
                     int bala = 0;
 
@@ -799,12 +752,12 @@ public class VoucherMyListFragment extends Fragment {
 
                     }
 
-                    balance.setText(Html.fromHtml("Holding balance: <b>৳ " +bala +"</b>"));
+                    balance.setText(Html.fromHtml("Holding balance: <b>৳ " + bala + "</b>"));
 
 
                     balance.setVisibility(View.VISIBLE);
 
-                }catch(Exception e){
+                } catch (Exception e) {
 
                     balance.setVisibility(View.GONE);
                 }
@@ -816,23 +769,24 @@ public class VoucherMyListFragment extends Fragment {
 
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                    if (error.networkResponse.statusCode == 401) {
 
-                    AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
-                        @Override
-                        public void onDataFetched(retrofit2.Response<JsonObject> response) {
-                            holdingAmount();
-                        }
+                        AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+                            @Override
+                            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+                                holdingAmount();
+                            }
 
-                        @Override
-                        public void onFailed(int status) {
+                            @Override
+                            public void onFailed(int status) {
 
-                        }
-                    });
+                            }
+                        });
 
-                    return;
+                        return;
 
-                }}
+                    }
+                }
 
             }
         }) {
@@ -853,20 +807,20 @@ public class VoucherMyListFragment extends Fragment {
         rq.add(request);
     }
 
-    public void claimVoucher(String invoiceNumber){
-        String url="https://api-prod.evaly.com.bd/pay/transactions/apply/order/voucher/";
+    public void claimVoucher(String invoiceNumber) {
+        String url = "https://api-prod.evaly.com.bd/pay/transactions/apply/order/voucher/";
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("key", "value");
-            parameters.put("invoice_no",invoiceNumber);
+            parameters.put("invoice_no", invoiceNumber);
         } catch (Exception e) {
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                try{
-                    Log.d("claim_amount_check",response.toString());
-                }catch(Exception e){
+                try {
+                    Log.d("claim_amount_check", response.toString());
+                } catch (Exception e) {
 
                 }
             }
@@ -896,13 +850,12 @@ public class VoucherMyListFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1000 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-            try{
+        if (requestCode == 1000 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
 
 
                 isImageSelected = true;
-
 
 
                 buildBankDialog(bitmap);
@@ -920,15 +873,11 @@ public class VoucherMyListFragment extends Fragment {
 
                 //uploadBankDepositImage(bankDepositImage);
 
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
         }
     }
-
-
-
-
 
 
     private void uploadBankDepositImage(final Bitmap bitmap) {
@@ -937,24 +886,24 @@ public class VoucherMyListFragment extends Fragment {
                 "Uploading image...", true);
 
         RequestQueue rQueue;
-        String url="https://api-prod.evaly.com.bd/api/evaly_images/"; // dev mode, don't use it
+        String url = "https://api-prod.evaly.com.bd/api/evaly_images/"; // dev mode, don't use it
 
-            VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
-                    new Response.Listener<NetworkResponse>() {
-                        @Override
-                        public void onResponse(NetworkResponse response) {
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
 
-                            dialog.dismiss();
+                        dialog.dismiss();
 
-                            Log.d("json image",new String(response.data));
+                        Log.d("json image", new String(response.data));
 
 
-                            try {
-                                JSONObject jsonObject = new JSONObject(new String(response.data));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new String(response.data));
 
-                                String image = jsonObject.getString("image");
+                            String image = jsonObject.getString("image");
 
-                                paymentViaBank(image);
+                            paymentViaBank(image);
 
 
 //                                Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
@@ -962,18 +911,18 @@ public class VoucherMyListFragment extends Fragment {
 //                                jsonObject.toString().replace("\\\\","");
 
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
-                            NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    if (error.networkResponse.statusCode == 401){
+                        NetworkResponse response = error.networkResponse;
+                        if (response != null && response.data != null) {
+                            if (error.networkResponse.statusCode == 401) {
 
                                 AuthApiHelper.refreshToken(getActivity(), new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                                     @Override
@@ -982,75 +931,69 @@ public class VoucherMyListFragment extends Fragment {
                                     }
 
                                     @Override
-                        public void onFailed(int status) {
+                                    public void onFailed(int status) {
 
+                                    }
+                                });
+
+                                return;
+
+                            }
                         }
-                    });
 
-                    return;
-
-                }}
-
-                            dialog.dismiss();
-                            Toast.makeText(context, "Image upload error", Toast.LENGTH_SHORT).show();
-                        }
-                    }) {
+                        dialog.dismiss();
+                        Toast.makeText(context, "Image upload error", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
 
 
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<>();
-                    // params.put("tags", "ccccc");  add string parameters
-                    return params;
-                }
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // params.put("tags", "ccccc");  add string parameters
+                return params;
+            }
 
 
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<>();
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
 
-                    headers.put("Authorization", CredentialManager.getToken());
-                    // headers.put("Host", "api-prod.evaly.com.bd");
-                    headers.put("Origin", "https://evaly.com.bd");
-                    headers.put("Referer", "https://evaly.com.bd/");
-                    headers.put("User-Agent", userAgent);
+                headers.put("Authorization", CredentialManager.getToken());
+                // headers.put("Host", "api-prod.evaly.com.bd");
+                headers.put("Origin", "https://evaly.com.bd");
+                headers.put("Referer", "https://evaly.com.bd/");
+                headers.put("User-Agent", userAgent);
 
-                    return headers;
-                }
+                return headers;
+            }
 
-                /*
-                 *pass files using below method
-                 * */
-                @Override
-                protected Map<String, DataPart> getByteData() {
-                    Map<String, DataPart> params = new HashMap<>();
-                    long imagename = System.currentTimeMillis();
-                    params.put("image", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
-                    return params;
-                }
-            };
-
-
-            volleyMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
-                    0,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            rQueue = Volley.newRequestQueue(context);
-            rQueue.add(volleyMultipartRequest);
-        }
-
-        public byte[] getFileDataFromDrawable(Bitmap bitmap) {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
-            return byteArrayOutputStream.toByteArray();
-        }
+            /*
+             *pass files using below method
+             * */
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                long imagename = System.currentTimeMillis();
+                params.put("image", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
+                return params;
+            }
+        };
 
 
+        volleyMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        rQueue = Volley.newRequestQueue(context);
+        rQueue.add(volleyMultipartRequest);
+    }
 
-
-
-
-
+    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
 
 
 }

@@ -25,11 +25,11 @@ import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.PaymentBottomSheetFragmentBinding;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaCard;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.ToastUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class PaymentBottomSheet extends BottomSheetDialogFragment implements PaymentBottomSheetNavigator {
 
@@ -37,7 +37,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     private PaymentBottomSheetFragmentBinding binding;
     private String invoice_no;
     private double total_amount = 0, paid_amount = 0.0;
-    private UserDetails userDetails;
     private AppCompatActivity activityInstance;
 
     public static PaymentBottomSheet newInstance(String invoiceNo, double totalAmount, double paidAmount) {
@@ -72,7 +71,6 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
-        userDetails = new UserDetails(getContext());
 
         if (getArguments() != null) {
             invoice_no = getArguments().getString("invoice_no");
@@ -129,8 +127,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 Toast.makeText(getContext(), "Amount can't be zero", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (Double.parseDouble(binding.amountPay.getText().toString()) > Double.parseDouble(userDetails.getBalance())) {
-                Toast.makeText(getContext(), "Insufficient Evaly Balance (৳ " + userDetails.getBalance() + ")", Toast.LENGTH_SHORT).show();
+            if (Double.parseDouble(binding.amountPay.getText().toString()) > CredentialManager.getBalance()) {
+                Toast.makeText(getContext(), "Insufficient Evaly Balance (৳ " + CredentialManager.getBalance() + ")", Toast.LENGTH_SHORT).show();
                 return;
             }
 

@@ -35,14 +35,12 @@ import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.notification.adapter.NotificationAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class NotificationActivity extends BaseActivity {
 
     RecyclerView recyclerView;
     NotificationAdapter adapter;
     ArrayList<Notifications> notifications;
-    UserDetails userDetails;
     LinearLayout not;
 
 
@@ -62,7 +60,6 @@ public class NotificationActivity extends BaseActivity {
         notifications = new ArrayList<>();
         adapter = new NotificationAdapter(notifications, this);
         recyclerView.setAdapter(adapter);
-        userDetails = new UserDetails(this);
         getNotifications();
 
     }

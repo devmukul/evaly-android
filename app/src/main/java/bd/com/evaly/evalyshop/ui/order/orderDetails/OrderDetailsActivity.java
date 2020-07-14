@@ -51,9 +51,9 @@ import com.badoualy.stepperindicator.StepperIndicator;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -94,7 +94,6 @@ import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.ToastUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import butterknife.BindView;
@@ -124,7 +123,6 @@ public class OrderDetailsActivity extends BaseActivity {
     private String shopSlug = "";
     private String invoice_no = "";
     private String orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
-    private UserDetails userDetails;
     private StepperIndicator indicator;
     private TextView tvPaymentStatus, shopName, shopAddress, shopnumber, username, userAddress, userNumber, totalPriceTextView, paidAmountTextView, duePriceTextView, tvCampaignRule;
     private TextView orderNumber, orderDate, paymentMethods, balance;
@@ -228,7 +226,6 @@ public class OrderDetailsActivity extends BaseActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         orderList.setLayoutManager(new LinearLayoutManager(this));
-        userDetails = new UserDetails(this);
         orderStatuses = new ArrayList<>();
         adapter = new OrderStatusAdapter(orderStatuses, this);
         recyclerView.setAdapter(adapter);
@@ -259,7 +256,7 @@ public class OrderDetailsActivity extends BaseActivity {
             orderNumber.setText("#" + invoice_no);
             getOrderDetails();
         }
-        balance.setText(Html.fromHtml(getString(R.string.balance) + ": <b>৳ " + userDetails.getBalance() + "</b>"));
+        balance.setText(Html.fromHtml(getString(R.string.balance) + ": <b>৳ " + CredentialManager.getBalance() + "</b>"));
 
         getOrderHistory();
 
@@ -481,9 +478,7 @@ public class OrderDetailsActivity extends BaseActivity {
             }
         });
         bottomSheetDialog.setCancelable(false);
-
         ivClose.setOnClickListener(view -> bottomSheetDialog.dismiss());
-
 
     }
 
@@ -492,7 +487,6 @@ public class OrderDetailsActivity extends BaseActivity {
         IssueApiHelper.createIssue(model, new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
-
                 dialog.hideDialog();
                 Toast.makeText(getApplicationContext(), "Your issue has been submitted, you will be notified shortly", Toast.LENGTH_LONG).show();
                 bottomSheetDialog.dismiss();
@@ -502,9 +496,11 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
                 try {
-                    CommonDataResponse jsonObject = new Gson().fromJson(errorBody, CommonDataResponse.class);
-                    ToastUtils.show(jsonObject.getMessage());
+                    Log.e("json parse error", errorBody);
+                    JsonObject jsonObject = JsonParser.parseString(errorBody).getAsJsonObject();
+                    ToastUtils.show(jsonObject.get("message").getAsString());
                 } catch (Exception e) {
+                    Log.e("json parse error", e.toString());
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                 }
             }
@@ -513,7 +509,6 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onAuthError(boolean logout) {
                 if (!logout)
                     submitIssue(model, bottomSheetDialog);
-
             }
         });
     }

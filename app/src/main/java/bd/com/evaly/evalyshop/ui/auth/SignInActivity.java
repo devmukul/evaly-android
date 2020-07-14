@@ -25,7 +25,6 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Balance;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class SignInActivity extends BaseActivity {
@@ -37,7 +36,6 @@ public class SignInActivity extends BaseActivity {
     Button signIn;
     String token = "", userNamePhone = "", passwordValue = "";
     boolean isShowing = false;
-    UserDetails userDetails;
     ViewDialog alert;
     String userAgent;
 
@@ -50,7 +48,6 @@ public class SignInActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in_new);
 
-
         signUp = findViewById(R.id.sign_up);
         close = findViewById(R.id.closeBtn);
         phoneNumber = findViewById(R.id.phone_number);
@@ -58,13 +55,11 @@ public class SignInActivity extends BaseActivity {
         signIn = findViewById(R.id.sign_in);
         showPassword = findViewById(R.id.show_pass);
         forgot = findViewById(R.id.forgot);
-        userDetails = new UserDetails(this);
         alert = new ViewDialog(this);
 
         queue = Volley.newRequestQueue(SignInActivity.this);
 
         close.setOnClickListener(v -> onBackPressed());
-
 
         Intent data = getIntent();
 
@@ -123,12 +118,6 @@ public class SignInActivity extends BaseActivity {
                 Toast.makeText(SignInActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
             } else {
                 alert.showDialog();
-//                    AsyncTask.execute(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            AppController.database.clearAllTables();
-//                        }
-//                    });
                 signInUser();
             }
         });
@@ -160,10 +149,6 @@ public class SignInActivity extends BaseActivity {
                         CredentialManager.saveRefreshToken(response.get("refresh").getAsString());
                         CredentialManager.saveUserName(phoneNumber.getText().toString());
                         CredentialManager.savePassword(password.getText().toString());
-
-                        userDetails.setUserName(phoneNumber.getText().toString());
-                        userDetails.setToken(token);
-                        userDetails.setRefreshToken(response.get("refresh").getAsString());
 
                         Balance.update(SignInActivity.this, true);
 

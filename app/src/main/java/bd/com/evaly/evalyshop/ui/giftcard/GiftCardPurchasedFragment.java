@@ -48,7 +48,6 @@ import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.PayViaCard;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -66,7 +65,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     private BottomSheetBehavior sheetBehavior;
     private LinearLayout layoutBottomSheet;
     private ViewDialog dialog;
-    private UserDetails userDetails;
     private String giftCardInvoice = "";
     private String amount;
     private LinearLayout noItem;
@@ -116,8 +114,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         context = getContext();
         rq = Volley.newRequestQueue(context);
-        userDetails = new UserDetails(context);
-
         progressContainer = view.findViewById(R.id.progressContainer);
         progressBar = view.findViewById(R.id.progressBar);
         currentPage = 1;

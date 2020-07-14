@@ -161,9 +161,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ui.order.AddBalanceActivity"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".ui.auth.ChangePasswordActivity"
             android:theme="@style/AppTheme" />
         <activity

@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +25,6 @@ import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -67,11 +65,8 @@ import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
@@ -85,7 +80,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private View bottomSheetView;
     private SkeletonScreen skeleton;
     private Context context;
-    private UserDetails userDetails;
     private ArrayList<ShopItem> itemsList;
     private String shop_slug = "tvs-bangladesh";
     private String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
@@ -306,7 +300,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         super.onViewCreated(view, savedInstanceState);
 
         context = view.getContext();
-        userDetails = new UserDetails(context);
 
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(this);
@@ -344,8 +337,8 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
         contact_number = bottomSheetView.findViewById(R.id.contact_number);
         customAddress = bottomSheetView.findViewById(R.id.customAddress);
-        contact_number.setText(userDetails.getPhone());
-        customAddress.setText(userDetails.getJsonAddress());
+        contact_number.setText(CredentialManager.getUserData().getContacts());
+        customAddress.setText(CredentialManager.getUserData().getAddresses());
         checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
 
@@ -353,7 +346,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         btnBottomSheet.setOnClickListener(view12 -> {
 
-            if (userDetails.getToken().equals("")) {
+            if (CredentialManager.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
@@ -409,7 +402,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         TextView deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
 
         binding.buyNow.setOnClickListener(view1 -> {
-            if (userDetails.getToken().equals("")) {
+            if (CredentialManager.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }

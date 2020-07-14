@@ -3,14 +3,15 @@ package bd.com.evaly.evalyshop.ui.newsfeed.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -19,9 +20,10 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.Author;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
+import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment;
 import bd.com.evaly.evalyshop.util.Utils;
 
 
@@ -104,7 +106,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
 
         myViewHolder.view.setOnLongClickListener(
                 view -> {
-                    if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
+                    if (!CredentialManager.getUserData().getGroups().toString().contains("EvalyEmployee"))
                         return false;
 
                     new AlertDialog.Builder(context)
@@ -116,8 +118,6 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.MyViewHolder
                     return false;
                 }
         );
-
-
     }
 
     @Override

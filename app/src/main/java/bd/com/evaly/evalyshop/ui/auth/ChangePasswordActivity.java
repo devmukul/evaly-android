@@ -24,7 +24,6 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import retrofit2.Response;
@@ -35,7 +34,6 @@ public class ChangePasswordActivity extends BaseActivity {
     ViewDialog dialog;
     private EditText oldPassword, newPassword, confirmPassword;
     private Button changePassword;
-    private UserDetails userDetails;
     private ImageView showCurrent, showNew, showNewConfirm;
     private boolean isCurrentShowing, isNewShowing, isNewConfirmShowing;
 
@@ -55,9 +53,7 @@ public class ChangePasswordActivity extends BaseActivity {
         showCurrent = findViewById(R.id.show_current_pass);
         showNew = findViewById(R.id.show_new_pass);
         showNewConfirm = findViewById(R.id.show_new_pass_confirm);
-        userDetails = new UserDetails(this);
 
-        Log.d("token", userDetails.getToken());
 
         dialog = new ViewDialog(this);
 
@@ -98,7 +94,6 @@ public class ChangePasswordActivity extends BaseActivity {
         });
 
         changePassword.setOnClickListener(v -> {
-            System.out.println(userDetails.getToken());
             Log.d("old_password", oldPassword.getText().toString());
             Log.d("new_password", newPassword.getText().toString());
             if (oldPassword.getText().toString().equals("")) {

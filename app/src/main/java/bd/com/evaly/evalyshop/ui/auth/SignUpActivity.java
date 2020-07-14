@@ -19,13 +19,12 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 
-import bd.com.evaly.evalyshop.data.pref.ReferPref;
-import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
+import bd.com.evaly.evalyshop.data.pref.ReferPref;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class SignUpActivity extends BaseActivity {
@@ -34,7 +33,6 @@ public class SignUpActivity extends BaseActivity {
     private Button signUp;
     private LinearLayout signIn;
     private ImageView close;
-    private UserDetails userDetails;
     private ReferPref referPref;
 
 
@@ -50,7 +48,6 @@ public class SignUpActivity extends BaseActivity {
         signUp = findViewById(R.id.sign_up);
         signIn = findViewById(R.id.signinHolder);
         close = findViewById(R.id.close);
-        userDetails = new UserDetails(this);
         referPref = new ReferPref(this);
         TextView privacyText = findViewById(R.id.privacyText);
 
@@ -58,7 +55,6 @@ public class SignUpActivity extends BaseActivity {
         privacyText.setMovementMethod(LinkMovementMethod.getInstance());
 
         CheckBox checkBox = findViewById(R.id.checkBox);
-
 
         signUp.setOnClickListener(v -> {
             if (TextUtils.isEmpty(firstName.getText().toString())) {

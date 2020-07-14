@@ -75,6 +75,10 @@ public class UserModel implements Serializable {
         this.last_name = last_name;
     }
 
+    public String getFullName(){
+        return first_name  + " " + last_name;
+    }
+
     public String getCreated_at() {
         return created_at;
     }

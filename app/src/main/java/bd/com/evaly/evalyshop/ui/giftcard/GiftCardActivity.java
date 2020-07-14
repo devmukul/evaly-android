@@ -18,7 +18,6 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseViewPagerAdapter;
-import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class GiftCardActivity extends AppCompatActivity {
 
@@ -27,7 +26,6 @@ public class GiftCardActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private BaseViewPagerAdapter pager;
     private TextView balance;
-    private UserDetails userDetails;
 
 
 
@@ -40,7 +38,6 @@ public class GiftCardActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.gift_cards);
 
-        userDetails = new UserDetails(this);
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.viewpager);
@@ -49,7 +46,7 @@ public class GiftCardActivity extends AppCompatActivity {
         pager = new BaseViewPagerAdapter(getSupportFragmentManager());
         pager.addFragment(new GiftCardListFragment(),"STORE");
 
-        if (!userDetails.getToken().equals("")) {
+        if (!CredentialManager.getToken().equals("")) {
             pager.addFragment(new GiftCardMyFragment(), "MY GIFTS");
             pager.addFragment(new GiftCardPurchasedFragment(), "PURCHASED");
         }
@@ -80,7 +77,7 @@ public class GiftCardActivity extends AppCompatActivity {
     public void updateBalance() {
 
 
-        AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), userDetails.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+        AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 response = response.getAsJsonObject("data");

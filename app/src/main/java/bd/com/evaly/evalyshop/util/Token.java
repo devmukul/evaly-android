@@ -21,11 +21,6 @@ public class Token {
 
     public static void logout(Activity context, DataFetchingListener<JSONObject> listener){
 
-        UserDetails userDetails = new UserDetails(context);
-
-        if(userDetails.getToken().equals(""))
-            return;
-
         String url = UrlUtils.BASE_URL_AUTH_API+"logout/";
         JSONObject parameters = new JSONObject();
 

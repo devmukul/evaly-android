@@ -1,11 +1,8 @@
 package bd.com.evaly.evalyshop.ui.user;
 
 import android.annotation.SuppressLint;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,14 +16,9 @@ import androidx.appcompat.view.menu.MenuBuilder;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
-import com.google.gson.JsonPrimitive;
-import com.orhanobut.logger.Logger;
 
-import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -34,8 +26,6 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.ChangePasswordActivity;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.balance.BalanceFragment;
@@ -47,125 +37,22 @@ import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.transaction.TransactionHistory;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
-import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Token;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Response;
 
 public class UserDashboardActivity extends BaseActivity {
 
     Context context;
     TextView name, balance, address;
-    UserDetails userDetails;
     Map<String, String> map;
     String from = "";
     ViewDialog alert;
     boolean isFromSignup;
-    XMPPEventReceiver xmppEventReceiver;
-    private AppController mChatApp = AppController.getInstance();
-    private XMPPHandler xmppHandler;
-
-    //    private SessionManager sessionManager;
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-
-        @Override
-        public void onConnected() {
-            if (AppController.getmService() == null)
-                return;
-
-            xmppHandler = AppController.getmService().xmpp;
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-        }
-
-        //Event Listeners
-        public void onLoggedIn() {
-
-            if (xmppHandler == null) {
-                xmppHandler = AppController.getmService().xmpp;
-            }
-
-            if (xmppHandler != null) {
-
-                VCard vCard = xmppHandler.mVcard;
-                if (CredentialManager.getUserData() != null)
-                    if (vCard == null) {
-                        xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                    } else if (vCard.getLastName() == null || vCard.getFirstName() == null) {
-                        xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                    }
-            }
-
-        }
-
-        public void onLoginFailed(String msg) {
-//            Logger.d(msg);
-            alert.hideDialog();
-            if (!msg.contains("already logged in")) {
-                if (CredentialManager.getPassword() != null && !CredentialManager.getPassword().equals("")) {
-//                    alert.showDialog();
-                    try {
-                        xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
-                    } catch (Exception ignored) {
-                    }
-                }
-            }
-//            xmppHandler.disconnect();
-//            Toast.makeText(getApplicationContext(), getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
-        }
-
-        //        //Event Listeners
-        public void onSignupSuccess() {
-            Logger.d("Signup success");
-
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-
-        }
-
-        //
-        public void onSignupFailed(String error) {
-            Logger.d(error);
-            if (error.contains("User already exist")) {
-                HashMap<String, String> data = new HashMap<>();
-                data.put("user", CredentialManager.getUserName());
-                data.put("host", Constants.XMPP_HOST);
-                data.put("newpass", CredentialManager.getPassword());
-                Logger.d("===============");
-                AuthApiHelper.changeXmppPassword(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-                    @Override
-                    public void onDataFetched(Response<JsonPrimitive> response) {
-                        alert.hideDialog();
-//                        Logger.d(new Gson().toJson(response));
-                        if (response.code() == 200 || response.code() == 201) {
-                            onPasswordChanged();
-                        } else {
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailed(int status) {
-                        alert.hideDialog();
-                        Logger.d("======-=-=-=-=-=-=");
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-
-                    }
-                });
-
-            }
-        }
-    };
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -188,29 +75,17 @@ public class UserDashboardActivity extends BaseActivity {
             from = extras.getString("from");
         }
 
-        if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered()) {
-            AsyncTask.execute(() -> {
-                Logger.e("==========");
-                startXmppService();
-            });
-        }
-
-        xmppEventReceiver = mChatApp.getEventReceiver();
-
         name = findViewById(R.id.name);
         balance = findViewById(R.id.balance);
         address = findViewById(R.id.address);
-        userDetails = new UserDetails(this);
         alert = new ViewDialog(UserDashboardActivity.this);
-        // getAddress();
 
-        name.setText(String.format("%s %s", userDetails.getFirstName(), userDetails.getLastName()));
-//        balance.setText(String.format("৳ %s", userDetails.getBalance()));
+        name.setText(String.format("%s %s", CredentialManager.getUserData().getFirst_name(), CredentialManager.getUserData().getLast_name()));
 
-        if (userDetails.getJsonAddress().equals("null"))
+        if (CredentialManager.getUserData().getAddresses().equals("null"))
             address.setText("Add an address");
         else
-            address.setText(userDetails.getJsonAddress());
+            address.setText(CredentialManager.getUserData().getAddresses());
 
 
         LinearLayout orders = findViewById(R.id.order);
@@ -219,31 +94,24 @@ public class UserDashboardActivity extends BaseActivity {
             startActivity(intent);
         });
 
-
         LinearLayout notification = findViewById(R.id.notification);
         notification.setOnClickListener(view -> {
-
             Intent intent = new Intent(context, NotificationActivity.class);
             startActivity(intent);
-
         });
 
 
         LinearLayout addBalance = findViewById(R.id.addBalance);
         addBalance.setOnClickListener(view -> {
-
             Intent intent = new Intent(context, PayViaBkashActivity.class);
             startActivity(intent);
-
         });
 
 
         LinearLayout transactionHistory = findViewById(R.id.transaction_history);
         transactionHistory.setOnClickListener(view -> {
-
             Intent intent = new Intent(context, TransactionHistory.class);
             startActivity(intent);
-
         });
 
 
@@ -305,38 +173,15 @@ public class UserDashboardActivity extends BaseActivity {
 
 
         balance.setOnClickListener(view -> {
-
-
             BalanceFragment balanceFragment = BalanceFragment.newInstance();
-
             balanceFragment.show(getSupportFragmentManager(), "balance");
-
-
         });
 
     }
 
-    private void startXmppService() {
-
-        //Start XMPP Service (if not running already)
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(this, XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-        } else {
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
-            } else {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-            }
-        }
-    }
-
     @OnClick(R.id.llMessage)
     void gotoMessage() {
-        if (!CredentialManager.getToken().equals("") && !userDetails.getToken().equals("")) {
+        if (!CredentialManager.getToken().equals("")) {
             startActivity(new Intent(UserDashboardActivity.this, ChatListActivity.class));
         } else {
             Toast.makeText(getApplicationContext(), "Please login to see messages", Toast.LENGTH_LONG).show();
@@ -366,22 +211,17 @@ public class UserDashboardActivity extends BaseActivity {
 
     @Override
     public void onResume() {
-
         super.onResume();
 
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-        xmppEventReceiver.setListener(xmppCustomEventListener);
-
-        // Balance.update(this, balance);
+        Balance.update(this, false);
 
         ImageView profilePicNav = findViewById(R.id.picture);
 
-
-        if (!userDetails.getProfilePictureSM().equals("null")) {
+        if (!CredentialManager.getUserData().getImage_sm().equals("null")) {
 
             Glide.with(this)
                     .asBitmap()
-                    .load(userDetails.getProfilePictureSM())
+                    .load(CredentialManager.getUserData().getImage_sm())
                     .skipMemoryCache(true)
                     .fitCenter()
                     .placeholder(R.drawable.user_image)
@@ -390,9 +230,8 @@ public class UserDashboardActivity extends BaseActivity {
                     .into(profilePicNav);
         }
 
-        name.setText(String.format("%s %s", userDetails.getFirstName(), userDetails.getLastName()));
-        address.setText(userDetails.getJsonAddress());
-
+        name.setText(CredentialManager.getUserData().getFullName());
+        address.setText(CredentialManager.getUserData().getAddresses());
 
     }
 
@@ -455,6 +294,5 @@ public class UserDashboardActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
 
     }
-
 
 }

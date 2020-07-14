@@ -45,7 +45,6 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListAdapter;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -60,7 +59,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
     private RequestQueue rq;
     private ViewDialog dialog;
     private ImageView image, plus, minus;
-    private UserDetails userDetails;
     private TextView details, name, amount, total, cardValue;
     private EditText quantity, phoneNumber;
     private int voucherAmount = 0;
@@ -113,7 +111,6 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
         context = getContext();
         rq = Volley.newRequestQueue(context);
-        userDetails = new UserDetails(context);
 
         progressContainer = view.findViewById(R.id.progressContainer);
         progressBar = view.findViewById(R.id.progressBar);
@@ -244,7 +241,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
         placeOrder.setOnClickListener(v -> {
 
-            if (phoneNumber.getText().toString().equals(userDetails.getUserName())) {
+            if (phoneNumber.getText().toString().equals(CredentialManager.getUserName())) {
                 Toast.makeText(context, "You can't buy gift cards for yourself", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -344,7 +341,7 @@ public class GiftCardListFragment extends Fragment implements SwipeRefreshLayout
 
     public void getGiftCardDetails(String slug) {
 
-        if (userDetails.getToken().equals("")) {
+        if (CredentialManager.getToken().equals("")) {
             Toast.makeText(context, "You need to login first", Toast.LENGTH_SHORT).show();
             return;
         }

@@ -42,7 +42,6 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
 import bd.com.evaly.evalyshop.ui.reviews.adapter.ReviewsAdapter;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;
@@ -56,7 +55,6 @@ public class ReviewsActivity extends AppCompatActivity {
     private ReviewsAdapter adapter;
     private ArrayList<ReviewItem> itemList;
     private LinearLayout not;
-    private UserDetails userDetails;
     private ProgressBar progressBar;
     private FloatingActionButton floatingActionButton;
     private TextView d_title;
@@ -85,7 +83,6 @@ public class ReviewsActivity extends AppCompatActivity {
         itemList = new ArrayList<>();
         adapter = new ReviewsAdapter(itemList, this);
         recyclerView.setAdapter(adapter);
-        userDetails = new UserDetails(this);
         rq = Volley.newRequestQueue(this);
 
         currentPage = 1;
@@ -115,7 +112,7 @@ public class ReviewsActivity extends AppCompatActivity {
         loadRatingsToView(ratingJson);
 
         floatingActionButton.setOnClickListener(v -> {
-            if (userDetails.getToken().equals("")) {
+            if (CredentialManager.getToken().equals("")) {
                 Toast.makeText(ReviewsActivity.this, "You need to login first to create review.", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -206,7 +203,7 @@ public class ReviewsActivity extends AppCompatActivity {
             postReview(
                     alertDialog,
                     item_value,
-                    userDetails.getFirstName() + " " + userDetails.getLastName(),
+                    CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(),
                     (int) d_rating_bar.getRating(),
                     d_review_text.getText().toString());
         });

@@ -23,29 +23,41 @@ import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.xmpp.LocalBinder;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 
-public class AppController extends Application implements Application.ActivityLifecycleCallbacks{
+public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
 
     public static AppController mAppController;
     public static Context mContext;
     public static boolean allDataLoaded;
-    private final String TAG = getClass().getSimpleName();
-//    public static AlertDialog dialog;
-
     public static XMPPService xmppService;
+//    public static AlertDialog dialog;
+    private final String TAG = getClass().getSimpleName();
     public Boolean mBounded = false;
 //    public static AppDatabase database;
+    private final ServiceConnection mConnection = new ServiceConnection() {
 
-    static UserDetails userDetails;
+        @SuppressWarnings("unchecked")
+        @Override
+        public void onServiceConnected(final ComponentName name,
+                                       final IBinder service) {
+            xmppService = ((LocalBinder<XMPPService>) service).getService();
+            mBounded = true;
+            Log.d(TAG, "onServiceConnected");
+        }
+
+        @Override
+        public void onServiceDisconnected(final ComponentName name) {
+            xmppService = null;
+            mBounded = false;
+            Log.d(TAG, "onServiceDisconnected");
+        }
+    };
     IntentFilter intentFilter;
-
-
     //Our broadCast receive to update us on various events
     private XMPPEventReceiver mEventReceiver;
 
@@ -53,19 +65,54 @@ public class AppController extends Application implements Application.ActivityLi
         return mContext;
     }
 
+    public static synchronized AppController getInstance() {
+        return mAppController;
+    }
+
+    public static XMPPService getmService() {
+        return xmppService;
+    }
+
+    public static void logout(Activity context) {
+        try {
+            String email = CredentialManager.getUserName();
+            String strNew = email.replaceAll("[^A-Za-z0-9]", "");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.BUILD + "_" + strNew);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        MyPreference.with(context).clearAll();
+        Logger.d(CredentialManager.getToken());
+        if (xmppService != null && xmppService.xmpp != null) {
+            xmppService.xmpp.disconnect();
+        }
+        try {
+            getInstance().UnbindService();
+            XMPPHandler.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getmContext());
+        providerDatabase.userInfoDao().deleteAll();
+
+        new Handler().postDelayed(() -> {
+            context.stopService(new Intent(context, XMPPService.class));
+            context.startActivity(new Intent(context, SignInActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            context.finish();
+        }, 300);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         mAppController = this;
         mContext = getApplicationContext();
-
 //        database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "evalyDB").build();
-
-        userDetails = new UserDetails(this);
-
         EmojiManager.install(new GoogleEmojiProvider());
-
-
 //        internetConnectionDialog();
         Logger.addLogAdapter(new AndroidLogAdapter());
 
@@ -92,36 +139,11 @@ public class AppController extends Application implements Application.ActivityLi
         intentFilter.addAction(Constants.EVT_REQUEST_SUBSCRIBE);
 
         registerReceiver(mEventReceiver, intentFilter);
-
         registerActivityLifecycleCallbacks(this);
     }
 
-    private final ServiceConnection mConnection = new ServiceConnection() {
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void onServiceConnected(final ComponentName name,
-                                       final IBinder service) {
-            xmppService = ((LocalBinder<XMPPService>) service).getService();
-            mBounded = true;
-            Log.d(TAG, "onServiceConnected");
-        }
-
-        @Override
-        public void onServiceDisconnected(final ComponentName name) {
-            xmppService = null;
-            mBounded = false;
-            Log.d(TAG, "onServiceDisconnected");
-        }
-    };
-
     public XMPPEventReceiver getEventReceiver() {
         return mEventReceiver;
-    }
-
-
-    public static synchronized AppController getInstance() {
-        return mAppController;
     }
 
     public void BindService(Intent intent) {
@@ -133,10 +155,6 @@ public class AppController extends Application implements Application.ActivityLi
             unbindService(mConnection);
             mBounded = false;
         }
-    }
-
-    public static XMPPService getmService() {
-        return xmppService;
     }
 
     @Override
@@ -151,7 +169,6 @@ public class AppController extends Application implements Application.ActivityLi
 
     @Override
     public void onActivityResumed(Activity activity) {
-//        Logger.d("RESUMED");
         registerReceiver(mEventReceiver, intentFilter);
     }
 
@@ -164,7 +181,7 @@ public class AppController extends Application implements Application.ActivityLi
     public void onActivityPaused(Activity activity) {
         try {
             if (mEventReceiver != null) unregisterReceiver(mEventReceiver);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -176,42 +193,6 @@ public class AppController extends Application implements Application.ActivityLi
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-
-    }
-
-
-    public static void logout(Activity context) {
-        try {
-            String email = CredentialManager.getUserName();
-            String strNew = email.replaceAll("[^A-Za-z0-9]", "");
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.BUILD+"_"+strNew);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        MyPreference.with(context).clearAll();
-        Logger.d(CredentialManager.getToken());
-        if (xmppService != null && xmppService.xmpp != null) {
-            xmppService.xmpp.disconnect();
-        }
-        try {
-            userDetails.clearAll();
-            getInstance().UnbindService();
-            XMPPHandler.disconnect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getmContext());
-        providerDatabase.userInfoDao().deleteAll();
-
-        new Handler().postDelayed(() -> {
-            context.stopService(new Intent(context, XMPPService.class));
-            context.startActivity(new Intent(context, SignInActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            context.finish();
-        }, 300);
 
     }
 

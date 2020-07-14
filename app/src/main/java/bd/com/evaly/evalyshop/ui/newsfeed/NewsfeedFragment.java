@@ -72,7 +72,6 @@ import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
@@ -88,7 +87,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ArrayList<NewsfeedItem> itemsList;
     private Context context;
     private NewsfeedActivity activity;
-    private UserDetails userDetails;
     private LinearLayout not, progressContainer;
     // newfeed scroller
     private boolean loading = true;
@@ -181,21 +179,14 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-    public UserDetails getUserDetails() {
-        return userDetails;
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        userDetails = new UserDetails(context);
         maxCountNewfeed = -1;
         maxCountComment = -1;
         maxCountReply = -1;
-
-        // Reply bottom sheet
-
         currentReplyPage = 1;
 
         viewModel = ViewModelProviders.of(activity).get(RoomWIthRxViewModel.class);
@@ -274,7 +265,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         submitReply = replyDialog.findViewById(R.id.submitComment);
         reloadReply = replyDialog.findViewById(R.id.refresh);
 
-        if (userDetails.getToken().equals("")) {
+        if (CredentialManager.getToken().equals("")) {
 
             replyInput.setText(R.string.you_need_to_login_to_create_reply);
             replyInput.setEnabled(false);
@@ -376,7 +367,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         submitComment = commentDialog.findViewById(R.id.submitComment);
         reloadComment = commentDialog.findViewById(R.id.refresh);
 
-        if (userDetails.getToken().equals("")) {
+        if (CredentialManager.getToken().equals("")) {
 
             commentInput.setEnabled(false);
             commentInput.setText(R.string.login_to_comment);

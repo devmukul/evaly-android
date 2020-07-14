@@ -36,7 +36,6 @@ import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
 import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -123,7 +122,6 @@ public class AuthApiHelper extends BaseApiHelper {
 
     public static void refreshToken(Activity context, DataFetchingListener<Response<JsonObject>> listener) {
 
-        UserDetails userDetails = new UserDetails(context);
 
         IApiClient iApiClient = getiApiClient();
         HashMap<String, String> data = new HashMap<>();
@@ -140,12 +138,6 @@ public class AuthApiHelper extends BaseApiHelper {
                     String refresh = response.body().get("refresh").getAsString();
                     CredentialManager.saveToken(token);
                     CredentialManager.saveRefreshToken(refresh);
-                    try {
-                        userDetails.setToken(token);
-                        userDetails.setRefreshToken(refresh);
-                    } catch (Exception e) {
-
-                    }
                     listener.onDataFetched(response);
                 }
             }

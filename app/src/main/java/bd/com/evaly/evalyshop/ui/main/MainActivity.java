@@ -63,7 +63,6 @@ import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
 import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
@@ -76,7 +75,6 @@ public class MainActivity extends BaseActivity {
     public boolean isLaunchActivity = true;
     private AlertDialog exitDialog;
     private AlertDialog.Builder exitDialogBuilder;
-    private UserDetails userDetails;
     private AppController mChatApp = AppController.getInstance();
     private XMPPHandler xmppHandler;
     private NavController navController;
@@ -169,8 +167,6 @@ public class MainActivity extends BaseActivity {
         navController.createDeepLink();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        userDetails = new UserDetails(this);
-
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
         });
@@ -180,7 +176,7 @@ public class MainActivity extends BaseActivity {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
                     if (item.getItemId() == R.id.userDashboardActivity) {
-                        if (userDetails.getToken().equals(""))
+                        if (CredentialManager.getToken().equals(""))
                             startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         else
                             startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
@@ -250,7 +246,7 @@ public class MainActivity extends BaseActivity {
 
         if (!CredentialManager.getToken().equals("")) {
             FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_" + strNew));
-            FirebaseMessaging.getInstance().subscribeToTopic("USER." + userDetails.getUserName());
+            FirebaseMessaging.getInstance().subscribeToTopic("USER." + CredentialManager.getUserName());
         }
         FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_all_user"));
 
@@ -357,7 +353,6 @@ public class MainActivity extends BaseActivity {
 
                         if (versionCode < latestVersion && isForce) {
                             if (shouldLogout) {
-                                userDetails.clearAll();
                                 MyPreference.with(MainActivity.this).clearAll();
                             }
                             update(false);
@@ -366,11 +361,6 @@ public class MainActivity extends BaseActivity {
                     }
                 });
 
-    }
-
-    public UserDetails getUserDetails() {
-
-        return userDetails;
     }
 
     private void startXmppService() {
@@ -455,14 +445,14 @@ public class MainActivity extends BaseActivity {
 
             TextView userNameNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.userNameNavHeader);
             TextView phoneNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.phone);
-            userNameNavHeader.setText(String.format("%s %s", userDetails.getFirstName(), userDetails.getLastName()));
-            phoneNavHeader.setText(userDetails.getUserName());
+            userNameNavHeader.setText(String.format("%s %s", CredentialManager.getUserData().getFirst_name(), CredentialManager.getUserData().getLast_name()));
+            phoneNavHeader.setText(CredentialManager.getUserName());
 
             ImageView profilePicNav = binding.navView.getHeaderView(0).findViewById(R.id.profilePicNav);
-            if (!userDetails.getProfilePictureSM().equals("null")) {
+            if (!CredentialManager.getUserData().getImage_sm().equals("null")) {
                 Glide.with(this)
                         .asBitmap()
-                        .load(userDetails.getProfilePictureSM())
+                        .load(CredentialManager.getUserData().getImage_sm())
                         .skipMemoryCache(true)
                         .placeholder(R.drawable.user_image)
                         .fitCenter()
