@@ -901,7 +901,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
 
                 if (response.getOrderStatus().toLowerCase().equals("cancel")) {
-
                     StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);
                     indicatorCancelled.setVisibility(View.VISIBLE);
                     indicatorCancelled.setCurrentStep(6);
@@ -910,9 +909,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
-
-                } else if (response.getOrderStatus().toLowerCase().equals("delivered")) {
-
+                } else if (response.getOrderStatus().toLowerCase().equals("delivered") || response.getOrderStatus().toLowerCase().equals("refund_requested")) {
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
