@@ -12,15 +12,6 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
-    <color name="app_bg">#FFFFFF</color>
-
-    <color name="app_bg_2nd">#FAFAFA</color>
-
-
-    <color name="menu_bg">#F1F3F4</color>
-
-
-    <color name="grey_text">#555555</color>
 
     <color name="border_color">#eee</color>
 
@@ -31,11 +22,7 @@
     <color name="eee">#eee</color>
     <color name="ddd">#ddd</color>
 
-    <color name="c666">#666</color>
-
     <color name="c777">#777</color>
-
-    <color name="marked_text">#74B876</color>
 
 
     <color name="separator">#F1F3F4</color>
@@ -47,22 +34,10 @@
     <color name="separator_light">#FAFAFA</color>
 
 
-    <color name="separator_lighter">#FEFEFE</color>
-
-
     <color name="evaly_color">#bd1f26</color>
     <color name="transaction_color">#666ee4</color>
 
-    <color name="self_chat_color">#4196af</color>
-
-    <color name="self_chat_color_clicked">#2F6C7E</color>
-    <color name="dark_green">#2B794F</color>
     <color name="green">#38A169</color>
-    <color name="light_gray">#EBEBEB</color>
-    <color name="dark_gray">#C5C5C5</color>
-    <color name="light_black">#333</color>
-    <color name="light_black_">#80333333</color>
-    <color name="gray_border">#eff1f3</color>
     <color name="red_app">#d21034</color>
 
     <color name="color1">#FCBC5A</color>
@@ -77,21 +52,7 @@
     <color name="color10">#EAC4C4</color>
 
 
-    <color name="barColor1">#4f81bc</color>
-    <color name="barColor2">#269EA9</color>
-    <color name="barColor3">#9bbb58</color>
-    <color name="barColor4">#3698db</color>
     <color name="barColor5">#db9803</color>
-    <color name="barColor6">#4eb950</color>
-    <color name="barColor7">#d9534f</color>
-
-    <color name="barColorPending">#4f81bc</color>
-    <color name="barColorConfirmed">#269EA9</color>
-    <color name="barColorProcessing">#9bbb58</color>
-    <color name="barColorPicked">#3698db</color>
-    <color name="barColorShipped">#3facc6</color>
-    <color name="barColorDelivered">#55b263</color>
-    <color name="barColorCancelled">#d9534f</color>
 
 
 </resources>
