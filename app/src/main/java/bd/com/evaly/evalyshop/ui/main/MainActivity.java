@@ -51,7 +51,6 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
-import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
@@ -65,8 +64,6 @@ import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
@@ -310,17 +307,6 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void startXmppService() {
-        try {
-            startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
-        } catch (Exception ignore) {
-        }
-    }
-
-    private void disconnectXmpp() {
-        XMPPHandler.disconnect();
-        stopService(new Intent(MainActivity.this, XMPPService.class));
-    }
 
 
     private void getMessageCount(TextView messageCount) {

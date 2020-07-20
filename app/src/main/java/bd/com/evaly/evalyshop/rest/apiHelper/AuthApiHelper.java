@@ -32,10 +32,8 @@ import bd.com.evaly.evalyshop.models.auth.SetPasswordResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
-import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
-import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -233,22 +231,6 @@ public class AuthApiHelper extends BaseApiHelper {
         });
     }
 
-    public static void getRosterList(String phone, int page, int limit, DataFetchingListener<Response<List<RosterItemModel>>> listener) {
-        IApiClient iApiClient = ApiClient.getXmppClient().create(IApiClient.class);
-        Call<List<RosterItemModel>> call = iApiClient.getRosterList(CredentialManager.getToken(), phone, page, limit);
-        call.enqueue(new Callback<List<RosterItemModel>>() {
-            @Override
-            public void onResponse(Call<List<RosterItemModel>> call, Response<List<RosterItemModel>> response) {
-                listener.onDataFetched(response);
-            }
-
-            @Override
-            public void onFailure(Call<List<RosterItemModel>> call, Throwable t) {
-                Logger.d(t.getMessage());
-                listener.onFailed(0);
-            }
-        });
-    }
 
     public static void sendCustomMessage(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {
 
@@ -394,74 +376,6 @@ public class AuthApiHelper extends BaseApiHelper {
         });
 
     }
-
-    public static void uploadImage(final Context context, Bitmap profileImg, ImageUploadView view) {
-        IApiClient iApiClient = getiApiClient();
-
-        File f = new File(context.getCacheDir(), "image.jpg");
-        try {
-            f.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Logger.d(e.getMessage());
-        }
-
-        Bitmap bm = profileImg;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 80 /*ignored for PNG*/, bos);
-        byte[] bitmapdata = bos.toByteArray();
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(f);
-            fos.write(bitmapdata);
-            fos.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            Logger.d(e.getMessage());
-            e.printStackTrace();
-        } catch (IOException e) {
-            Logger.d(e.getMessage());
-            e.printStackTrace();
-        }
-        Logger.d("============");
-
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), f);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("image", f.getName(), requestFile);
-
-        Call<JsonObject> call = iApiClient.imageUpload(CredentialManager.getToken(), "multipart/form-data", body);
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Logger.d(response.body());
-                if (response.code() == 201) {
-                    try {
-                        if (view != null) {
-                            String img = response.body().getAsJsonObject("data").get("url").getAsString();
-                            String smImg = response.body().getAsJsonObject("data").get("url_sm").getAsString();
-                            view.onImageUploadSuccess(img, smImg);
-                        }
-
-                    } catch (Exception e) {
-                        Logger.d(e.getMessage());
-                    }
-                } else {
-                    if (view != null) {
-                        view.onImageUploadFailed("Something went wrong, please try again");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Logger.d(t.getMessage());
-                if (view != null) {
-                    view.onImageUploadFailed("Something went wrong, please try again");
-                }
-            }
-        });
-    }
-
 
     // user info pay
 

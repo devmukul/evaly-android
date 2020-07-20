@@ -41,7 +41,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.jivesoftware.smack.SmackException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,12 +79,9 @@ import bd.com.evaly.evalyshop.models.product.productDetails.ProductVariantsItem;
 import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
-import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
-import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
-import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ColorButtonAdapter;
@@ -95,16 +91,11 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSlide
 import bd.com.evaly.evalyshop.ui.product.productDetails.bottomsheet.SkuBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
-import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
@@ -119,7 +110,6 @@ public class ViewProductActivity extends BaseActivity {
     private ViewProductSliderAdapter sliderAdapter;
     private Map<String, String> map, shopMap;
     private CartEntity cartItem;
-    private RoomWIthRxViewModel xmppViewModel;
     private Context context;
     private WishList wishListItem;
     private boolean isAddedToWishList;
@@ -145,27 +135,6 @@ public class ViewProductActivity extends BaseActivity {
 
     AppController mChatApp = AppController.getInstance();
 
-    XMPPHandler xmppHandler;
-    XMPPEventReceiver xmppEventReceiver;
-
-    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-        //On User Presence Changed
-        public void onLoggedIn() {
-            xmppHandler = AppController.getmService().xmpp;
-        }
-
-        public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-        }
-
-        public void onLoginFailed(String msg) {
-            if (msg.contains("already logged in")) {
-
-            }
-        }
-
-    };
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
 
@@ -183,7 +152,6 @@ public class ViewProductActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        xmppEventReceiver = mChatApp.getEventReceiver();
         binding = ActivityViewProductBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -196,7 +164,6 @@ public class ViewProductActivity extends BaseActivity {
         binding.selectedShopHolder.setVisibility(View.GONE);
 
         viewModel = new ViewModelProvider(this).get(ViewProductViewModel.class);
-        xmppViewModel = new ViewModelProvider(this).get(RoomWIthRxViewModel.class);
 
         context = this;
 
@@ -304,13 +271,13 @@ public class ViewProductActivity extends BaseActivity {
             popup.getMenuInflater().inflate(R.menu.share_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
-                    case R.id.action_share_contacts:
-                        if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
-                            Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
-                        } else {
-                            shareWithContacts();
-                        }
-                        break;
+//                    case R.id.action_share_contacts:
+//                        if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
+//                            Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
+//                        } else {
+//                            shareWithContacts();
+//                        }
+//                        break;
                     case R.id.action_share_newsfeed:
                         if (CredentialManager.getUserName().equals("") && CredentialManager.getPassword().equalsIgnoreCase("")) {
                             Toast.makeText(getApplicationContext(), "Please login to share products", Toast.LENGTH_LONG).show();
@@ -446,7 +413,6 @@ public class ViewProductActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        xmppEventReceiver.setListener(xmppCustomEventListener);
     }
 
     private void buildAlertMessageNoGps(Context context) {
@@ -966,153 +932,7 @@ public class ViewProductActivity extends BaseActivity {
         viewModel.createPost(createPostModel);
     }
 
-    private void startXmppService() {
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(this, XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-        } else {
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
-            } else {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-            }
-        }
-    }
 
-    private void shareWithContacts() {
-
-        if (xmppHandler != null) {
-            if (!xmppHandler.isLoggedin() || !xmppHandler.isConnected()) {
-                startXmppService();
-            }
-        } else {
-            startXmppService();
-        }
-
-        bottomSheetDialog = new BottomSheetDialog(ViewProductActivity.this, R.style.BottomSheetDialogTheme);
-        bottomSheetDialog.setContentView(R.layout.share_with_contact_view);
-
-        View bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        bottomSheetInternal.setPadding(0, 0, 0, 0);
-
-        new KeyboardUtil(ViewProductActivity.this, bottomSheetInternal);
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetInternal);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-
-                    bottomSheet.post(() -> bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED));
-
-                } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_HALF_EXPANDED)
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
-        bottomSheetDialog.setCanceledOnTouchOutside(false);
-        RecyclerView rvContacts = bottomSheetDialog.findViewById(R.id.rvContacts);
-        ImageView ivBack = bottomSheetDialog.findViewById(R.id.back);
-        EditText etSearch = bottomSheetDialog.findViewById(R.id.etSearch);
-        TextView tvCount = bottomSheetDialog.findViewById(R.id.tvCount);
-        LinearLayout llSend = bottomSheetDialog.findViewById(R.id.llSend);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(ViewProductActivity.this);
-        rvContacts.setLayoutManager(layoutManager);
-        runOnUiThread(() -> {
-            xmppViewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
-            xmppViewModel.rosterList.observe(this, rosterTables -> {
-                List<RosterTable> selectedRosterList = new ArrayList<>();
-                List<RosterTable> rosterList = rosterTables;
-                ContactShareAdapter contactShareAdapter = new ContactShareAdapter(ViewProductActivity.this, rosterList, (object, status) -> {
-                    RosterTable table = (RosterTable) object;
-
-                    if (status && !selectedRosterList.contains(table)) {
-                        selectedRosterList.add(table);
-                    } else {
-                        if (selectedRosterList.contains(table)) {
-                            selectedRosterList.remove(table);
-                        }
-                    }
-
-                    tvCount.setText("(" + selectedRosterList.size() + ") ");
-                });
-
-                llSend.setOnClickListener(view -> {
-                    ProductShareModel model = new ProductShareModel(slug, name, productImage, String.valueOf(productPrice));
-
-                    if (xmppHandler.isLoggedin()) {
-                        for (RosterTable rosterTable : selectedRosterList) {
-
-                            JSONObject jsonObject = new JSONObject();
-                            try {
-                                jsonObject.put("p_slug", slug);
-                                jsonObject.put("p_name", name);
-                                jsonObject.put("p_image", productImage);
-                                jsonObject.put("p_price", String.valueOf(productPrice));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                return;
-                            }
-                            ChatItem chatItem = new ChatItem(jsonObject.toString(), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_PRODUCT, true, "");
-                            chatItem.setReceiver_name(rosterTable.name);
-                            if (rosterTable.imageUrl != null && !rosterTable.imageUrl.isEmpty()) {
-                                chatItem.setReceiver_image(rosterTable.imageUrl);
-                            }
-
-                            try {
-                                xmppHandler.sendMessage(chatItem);
-                            } catch (SmackException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        for (int i = 0; i < rosterList.size(); i++) {
-                            rosterList.get(i).isSelected = false;
-                        }
-                        contactShareAdapter.notifyDataSetChanged();
-                        selectedRosterList.clear();
-                        tvCount.setText("(" + selectedRosterList.size() + ") ");
-                        Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_LONG).show();
-
-                    }
-                });
-
-                rvContacts.setAdapter(contactShareAdapter);
-                etSearch.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        rvContacts.getRecycledViewPool().clear();
-                        contactShareAdapter.getFilter().filter(charSequence);
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        rvContacts.getRecycledViewPool().clear();
-                        contactShareAdapter.getFilter().filter(charSequence);
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-
-                    }
-                });
-            });
-
-        });
-
-        ivBack.setOnClickListener(view -> bottomSheetDialog.dismiss());
-
-        bottomSheetDialog.show();
-    }
 
     public void hideProductHolder() {
         binding.productInfo.setVisibility(View.GONE);

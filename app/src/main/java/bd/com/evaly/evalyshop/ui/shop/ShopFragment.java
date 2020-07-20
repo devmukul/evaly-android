@@ -25,7 +25,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
-import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,7 +63,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private int currentPage;
     private int totalCount = 0;
     private boolean isLoading = false;
-    private VCard vCard;
     private List<String> rosterList;
     private ShopController controller;
     private boolean clickFromCategory = false;

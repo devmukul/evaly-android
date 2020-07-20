@@ -43,9 +43,6 @@ import bd.com.evaly.evalyshop.ui.user.editProfile.bottomsheet.PersonalInfoBottom
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 
 
 public class EditProfileActivity extends BaseActivity {

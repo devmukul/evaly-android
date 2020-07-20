@@ -134,12 +134,6 @@ dependencies {
     implementation "com.ethanhua:skeleton:$rootProject.skeleton_version"
     implementation "io.supercharge:shimmerlayout:$rootProject.shimmerlayout_version"
 
-    implementation "org.igniterealtime.smack:smack-android-extensions:$rootProject.smack_version"
-    implementation "org.igniterealtime.smack:smack-tcp:$rootProject.smack_version"
-    implementation "org.igniterealtime.smack:smack-extensions:$rootProject.smack_version"
-    implementation "org.igniterealtime.smack:smack-android:$rootProject.smack_version"
-    implementation "org.igniterealtime.smack:smack-experimental:$rootProject.smack_version"
-
     implementation "com.vanniktech:emoji:$rootProject.emoji_version"
     implementation "com.vanniktech:emoji-google:$rootProject.emoji_version"
     implementation "com.amulyakhare:com.amulyakhare.textdrawable:$rootProject.text_drawable_version"

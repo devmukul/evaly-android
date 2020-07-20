@@ -48,7 +48,6 @@ import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
-import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
@@ -136,8 +135,6 @@ public interface IApiClient {
     @GET(UrlUtils.INVITATION_LIST + "{phone}/")
     Call<JsonArray> getInvitationList(@Header("Authorization") String token, @Path("phone") String phone);
 
-    @GET(UrlUtils.ROSTER_LIST + "{phone}/")
-    Call<List<RosterItemModel>> getRosterList(@Header("Authorization") String token, @Path("phone") String phone, @Query("page") int page, @Query("limit") int limit);
 
     @POST(UrlUtils.SEND_CUSTOM_MESSAGE)
     Call<JsonObject> sendCustomMessage(@Header("Authorization") String token, @Body HashMap<String, String> data);

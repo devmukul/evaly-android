@@ -45,8 +45,6 @@ import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -261,17 +259,12 @@ public class UserDashboardActivity extends BaseActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             } else {
-                disconnectXmpp();
                 super.onBackPressed();
             }
         else
             super.onBackPressed();
     }
 
-    private void disconnectXmpp() {
-        XMPPHandler.disconnect();
-        stopService(new Intent(UserDashboardActivity.this, XMPPService.class));
-    }
 
     @SuppressLint("RestrictedApi")
     @Override

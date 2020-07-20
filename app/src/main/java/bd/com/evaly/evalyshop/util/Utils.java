@@ -19,7 +19,6 @@ import androidx.core.content.ContextCompat;
 
 import com.orhanobut.logger.Logger;
 
-import org.jivesoftware.smackx.chatstates.ChatState;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -309,25 +308,6 @@ public class Utils {
         }
     }
 
-    public static String getChatMode(ChatState mode) {
-        String mChatMode = "";
-        switch (mode) {
-            case composing:
-                mChatMode = Constants.CHAT_MODE_TYPING;
-                break;
-            case gone:
-                mChatMode = Constants.CHAT_MODE_LEFT;
-                break;
-            case paused:
-                mChatMode = Constants.CHAT_MODE_PAUSED;
-                break;
-            case active:
-                mChatMode = Constants.CHAT_MODE_ACTIVE;
-                break;
-        }
-
-        return mChatMode;
-    }
 
     public static String truncateText(String text, int maxLength, String endWith) {
         if (text == null)

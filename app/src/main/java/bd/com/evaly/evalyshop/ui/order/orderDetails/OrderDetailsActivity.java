@@ -72,6 +72,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
+import bd.com.evaly.evalyshop.models.image.ImageDataModel;
 import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
 import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
 import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
@@ -81,10 +82,10 @@ import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
@@ -782,20 +783,25 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
                     dialog.showDialog();
 
-                    AuthApiHelper.uploadImage(this, bitmap, new ImageUploadView() {
+                    ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
                         @Override
-                        public void onImageUploadSuccess(String img, String smImg) {
+                        public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
                             dialog.hideDialog();
-                            imageUrl = img;
+                            imageUrl = response.getData().getUrl();
                             setPostPic();
                         }
 
                         @Override
-                        public void onImageUploadFailed(String msg) {
-                            dialog.hideDialog();
-                            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+                        public void onFailed(String errorBody, int errorCode) {
+
+                        }
+
+                        @Override
+                        public void onAuthError(boolean logout) {
+
                         }
                     });
+
 
                 } catch (Exception e) {
 
