@@ -909,7 +909,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
-                } else if (response.getOrderStatus().toLowerCase().equals("delivered") || response.getOrderStatus().toLowerCase().equals("refund_requested")) {
+                } else if (response.getOrderStatus().toLowerCase().equals("delivered") || response.getPaymentStatus().toLowerCase().equals("refund_requested")) {
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);

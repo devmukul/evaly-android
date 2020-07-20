@@ -78,7 +78,7 @@ public interface IApiClient {
     Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
                                                                               @Query("limit") int limit);
 
-    @GET(UrlUtils.DOMAIN + "issue/api/v2/common/tickets")
+    @GET(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
     Call<CommonDataResponse<List<IssueListModel>>> getIssueTicketList(@Header("Authorization") String token,
                                                                       @Query("invoice_number") String invoice);
 

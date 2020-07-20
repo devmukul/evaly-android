@@ -8,7 +8,7 @@ import java.util.List;
 public class IssueListModel implements Serializable {
 
 	@SerializedName("shop")
-	private String shop;
+	private Shop shop;
 
 	@SerializedName("attachments")
 	private List<String> attachments;
@@ -55,11 +55,11 @@ public class IssueListModel implements Serializable {
 	@SerializedName("assigned_to")
 	private String assignedTo;
 
-	public void setShop(String shop){
+	public void setShop(Shop shop){
 		this.shop = shop;
 	}
 
-	public String getShop(){
+	public Shop getShop(){
 		return shop;
 	}
 

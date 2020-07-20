@@ -24,7 +24,10 @@ public class UserModel implements Serializable {
     private boolean verified;
 
     public String getImage_sm() {
-        return image_sm;
+        if (image_sm == null)
+            return "";
+        else
+            return image_sm;
     }
 
     public void setImage_sm(String image_sm) {
