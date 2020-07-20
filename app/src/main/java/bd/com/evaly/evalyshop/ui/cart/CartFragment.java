@@ -68,6 +68,7 @@ import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class CartFragment extends Fragment {
@@ -478,6 +479,11 @@ public class CartFragment extends Fragment {
                             if (getActivity() instanceof MainActivity) {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("invoice_no", invoice);
+                                try {
+                                    bundle.putString("shop_slug", item.get("shop").getAsJsonObject().get("slug").getAsString());
+                                } catch (Exception ignored) {
+
+                                }
                                 navController.navigate(R.id.paymentFragment, bundle);
                             } else {
                                 Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);

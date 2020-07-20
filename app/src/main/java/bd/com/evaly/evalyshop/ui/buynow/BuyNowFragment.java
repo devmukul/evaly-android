@@ -576,6 +576,11 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                         if (getActivity() instanceof MainActivity) {
                             Bundle bundle = new Bundle();
                             bundle.putString("invoice_no", invoice);
+                            try {
+                                bundle.putString("shop_slug", item.get("shop").getAsJsonObject().get("slug").getAsString());
+                            } catch (Exception ignored) {
+
+                            }
                             if (navController != null)
                                 navController.navigate(R.id.paymentFragment, bundle);
                         } else {

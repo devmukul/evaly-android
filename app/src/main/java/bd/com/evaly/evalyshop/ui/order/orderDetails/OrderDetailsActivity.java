@@ -278,7 +278,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         payParially = findViewById(R.id.payPartially);
 
         makePayment.setOnClickListener(v -> {
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount, this);
+            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount, shopSlug.contains("food"), this);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 

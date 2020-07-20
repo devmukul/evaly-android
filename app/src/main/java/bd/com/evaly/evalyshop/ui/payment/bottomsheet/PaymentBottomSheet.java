@@ -47,10 +47,12 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     private AppCompatActivity activityInstance;
     private PaymentMethodController controller;
     private ViewDialog dialog;
+    private boolean isFood = false;
 
     public static PaymentBottomSheet newInstance(String invoiceNo,
                                                  double totalAmount,
                                                  double paidAmount,
+                                                 boolean isFood,
                                                  PaymentOptionListener paymentOptionListener) {
         PaymentBottomSheet instance = new PaymentBottomSheet();
         paymentOptionRedirceListener = paymentOptionListener;
@@ -58,6 +60,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         bundle.putString("invoice_no", invoiceNo);
         bundle.putDouble("total_amount", totalAmount);
         bundle.putDouble("paid_amount", paidAmount);
+        bundle.putBoolean("is_food", isFood);
         instance.setArguments(bundle);
         return instance;
     }
@@ -87,6 +90,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             invoice_no = getArguments().getString("invoice_no");
             total_amount = getArguments().getDouble("total_amount");
             paid_amount = getArguments().getDouble("paid_amount");
+            isFood = getArguments().getBoolean("is_food");
         }
     }
 
@@ -199,9 +203,15 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
 
     private void setPaymentMethodViewData() {
         List<PaymentMethodModel> methodList = new ArrayList<>();
+
+        String balanceText = "You can pay up to 60% of the order amount using Evaly Balance.";
+        if (isFood)
+            balanceText = "For express food shops, you can pay up to 100% of the order amount using Evaly Balance.";
+
         methodList.add(new PaymentMethodModel(
                 "Evaly Balance",
-                "You can pay up to 60% of the order amount \nusing Evaly Balance.", R.drawable.payment_icon_evaly,
+                balanceText,
+                R.drawable.payment_icon_evaly,
                 false));
 
         methodList.add(new PaymentMethodModel(

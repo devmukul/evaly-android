@@ -30,12 +30,15 @@ public class PaymentFragment extends Fragment {
     private FragmentPaymentBinding binding;
     private String invoice_no;
     private double total_amount = 0, paid_amount = 0.0;
+    private String shopSlug = "";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             invoice_no = getArguments().getString("invoice_no");
+            if (getArguments().containsKey("shop_slug"))
+                shopSlug = getArguments().getString("shop_slug");
         }
     }
 
@@ -65,6 +68,7 @@ public class PaymentFragment extends Fragment {
             bundle.putString("invoice_no", invoice_no);
             bundle.putDouble("total_amount", total_amount);
             bundle.putDouble("paid_amount", paid_amount);
+            bundle.putBoolean("is_food", shopSlug.contains("food"));
             NavHostFragment.findNavController(this).navigate(R.id.paymentBottomSheet, bundle);
         });
 
