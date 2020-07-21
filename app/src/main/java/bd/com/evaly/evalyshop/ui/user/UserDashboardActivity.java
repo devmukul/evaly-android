@@ -74,6 +74,11 @@ public class UserDashboardActivity extends BaseActivity {
             finish();
         }
 
+        if (!CredentialManager.getToken().equals("") && CredentialManager.getUserData() == null) {
+            AppController.logout(this);
+            return;
+        }
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             from = extras.getString("from");
@@ -85,7 +90,8 @@ public class UserDashboardActivity extends BaseActivity {
         messageCount = findViewById(R.id.messageCount);
         alert = new ViewDialog(UserDashboardActivity.this);
 
-        name.setText(String.format("%s %s", CredentialManager.getUserData().getFirst_name(), CredentialManager.getUserData().getLast_name()));
+        if (CredentialManager.getUserData() != null)
+            name.setText(String.format("%s %s", CredentialManager.getUserData().getFirst_name(), CredentialManager.getUserData().getLast_name()));
 
         if (CredentialManager.getUserData().getAddresses().equals("null"))
             address.setText("Add an address");
@@ -226,15 +232,11 @@ public class UserDashboardActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-
         Balance.update(this, false);
-
-        // Balance.update(this, balance);
         getMessageCount();
         ImageView profilePicNav = findViewById(R.id.picture);
 
-        if (!CredentialManager.getUserData().getImage_sm().equals("null")) {
-
+        if (CredentialManager.getUserData().getImage_sm() != null) {
             Glide.with(this)
                     .asBitmap()
                     .load(CredentialManager.getUserData().getImage_sm())
@@ -245,10 +247,8 @@ public class UserDashboardActivity extends BaseActivity {
                     .apply(new RequestOptions().override(200, 200))
                     .into(profilePicNav);
         }
-
         name.setText(CredentialManager.getUserData().getFullName());
         address.setText(CredentialManager.getUserData().getAddresses());
-
     }
 
     @Override

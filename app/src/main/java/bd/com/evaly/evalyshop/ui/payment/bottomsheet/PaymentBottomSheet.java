@@ -185,7 +185,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         } else if (method.getName().equalsIgnoreCase("bKash")) {
             dismiss();
             Toast.makeText(getContext(), "Opening bKash payment gateway!", Toast.LENGTH_SHORT).show();
-            paymentOptionRedirceListener.onPaymentRedirect(BuildConfig.BKASH_URL, enteredAmount, invoice_no);
+            if (invoice_no != null && !enteredAmount.equals(""))
+                paymentOptionRedirceListener.onPaymentRedirect(BuildConfig.BKASH_URL, enteredAmount, invoice_no);
         } else if (method.getName().equalsIgnoreCase("Cards")) {
             Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaCard(invoice_no, enteredAmount);
@@ -261,7 +262,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                 Toast.makeText(getContext(), "Unable to make payment!", Toast.LENGTH_SHORT).show();
             else {
                 if (isVisible() && !isRemoving() && !isDetached())
-                    dismiss();
+                    dismissAllowingStateLoss();
                 if (getActivity() != null) {
                     paymentOptionRedirceListener.onPaymentRedirect(url, enteredAmount, invoice_no);
                 }
