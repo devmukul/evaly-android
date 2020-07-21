@@ -312,14 +312,16 @@ public class CartFragment extends Fragment {
         addressSwitch = bottomSheetView.findViewById(R.id.addressSwitch);
         customAddress = bottomSheetView.findViewById(R.id.customAddress);
         addressSpinner = bottomSheetView.findViewById(R.id.spinner);
-        contact_number.setText(CredentialManager.getUserData().getContacts());
         spinnerArray = new ArrayList<>();
         spinnerArrayID = new ArrayList<>();
-        customAddress.setText(CredentialManager.getUserData().getAddresses());
+
+        if (CredentialManager.getUserData() != null) {
+            contact_number.setText(CredentialManager.getUserData().getContacts());
+            customAddress.setText(CredentialManager.getUserData().getAddresses());
+        }
 
         if (getActivity() instanceof MainActivity)
             navController = NavHostFragment.findNavController(this);
-
 
         if (spinnerArray.size() < 1) {
             addressSwitch.setChecked(true);

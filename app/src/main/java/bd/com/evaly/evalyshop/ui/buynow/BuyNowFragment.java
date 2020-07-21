@@ -299,6 +299,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         context = view.getContext();
 
         if (getActivity() instanceof MainActivity)
@@ -337,8 +338,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
         contact_number = bottomSheetView.findViewById(R.id.contact_number);
         customAddress = bottomSheetView.findViewById(R.id.customAddress);
-        contact_number.setText(CredentialManager.getUserData().getContacts());
-        customAddress.setText(CredentialManager.getUserData().getAddresses());
+        if (CredentialManager.getUserData() != null) {
+            contact_number.setText(CredentialManager.getUserData().getContacts());
+            customAddress.setText(CredentialManager.getUserData().getAddresses());
+        }
         checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
 

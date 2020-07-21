@@ -90,7 +90,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             invoice_no = getArguments().getString("invoice_no");
             total_amount = getArguments().getDouble("total_amount");
             paid_amount = getArguments().getDouble("paid_amount");
-            isFood = getArguments().getBoolean("is_food");
+            if (getArguments().containsKey("is_food"))
+                isFood = getArguments().getBoolean("is_food");
         }
     }
 
@@ -256,7 +257,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     public void payViaCard(String url) {
 
         if (getContext() != null) {
-            if (url.equals(""))
+            if (url == null || url.equals(""))
                 Toast.makeText(getContext(), "Unable to make payment!", Toast.LENGTH_SHORT).show();
             else {
                 if (isVisible() && !isRemoving() && !isDetached())

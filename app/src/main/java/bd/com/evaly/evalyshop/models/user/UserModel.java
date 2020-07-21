@@ -67,6 +67,8 @@ public class UserModel implements Serializable {
     }
 
     public String getFirst_name() {
+        if (first_name == null)
+            return "";
         return first_name;
     }
 
@@ -75,6 +77,8 @@ public class UserModel implements Serializable {
     }
 
     public String getLast_name() {
+        if (last_name == null)
+            return "";
         return last_name;
     }
 
@@ -83,7 +87,7 @@ public class UserModel implements Serializable {
     }
 
     public String getFullName() {
-        return first_name + " " + last_name;
+        return getFirst_name() + " " + getLast_name();
     }
 
     public String getCreated_at() {
@@ -138,6 +142,8 @@ public class UserModel implements Serializable {
     }
 
     public String getContacts() {
+        if (contact == null)
+            return "";
         return contact;
     }
 
