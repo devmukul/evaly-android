@@ -102,6 +102,11 @@ public class MainActivity extends BaseActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        if (!CredentialManager.getToken().equals("") && CredentialManager.getUserData() == null) {
+            AppController.logout(this);
+            return;
+        }
+
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
@@ -308,7 +313,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
     private void getMessageCount(TextView messageCount) {
 
         ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
@@ -365,7 +369,7 @@ public class MainActivity extends BaseActivity {
 
     private void setupDrawerMenu() {
 
-        if (CredentialManager.getToken().equals("")) {
+        if (CredentialManager.getToken().equals("") || CredentialManager.getUserData() == null) {
             binding.drawerLayout.removeView(binding.navView);
 
             binding.drawerLayout.removeView(binding.navView2);
