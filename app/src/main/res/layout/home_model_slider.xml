@@ -51,6 +51,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginStart="40dp"
                     android:layout_marginEnd="40dp"
+                    android:background="@color/transparent"
                     app:layout_constraintBottom_toBottomOf="@id/sliderPager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

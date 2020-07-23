@@ -85,28 +85,28 @@ public class HomeController extends EpoxyController {
                 .activity(activity)
                 .addTo(this);
 
-        //express services carousel
-        expressHeaderModel_
-                .activity(activity)
-                .addTo(this);
-
-        List<DataBindingEpoxyModel> expressItemModels = new ArrayList<>();
-        for (ExpressServiceModel model : itemsExpress) {
-            expressItemModels.add(new HomeExpressItemModel_()
-                    .clickListener((model1, parentView, clickedView, position) -> {
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("model", model1.getModel());
-                        NavHostFragment.findNavController(fragment).navigate(R.id.evalyExpressFragment, bundle);
-                    })
-                    .id(model.getSlug())
-                    .model(model));
-        }
-
-        List<HomeExpressSkeletonModel_> expressDummyItemModels = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            expressDummyItemModels.add(new HomeExpressSkeletonModel_()
-                    .id("express_dummy" + i));
-        }
+//        //express services carousel
+//        expressHeaderModel_
+//                .activity(activity)
+//                .addTo(this);
+//
+//        List<DataBindingEpoxyModel> expressItemModels = new ArrayList<>();
+//        for (ExpressServiceModel model : itemsExpress) {
+//            expressItemModels.add(new HomeExpressItemModel_()
+//                    .clickListener((model1, parentView, clickedView, position) -> {
+//                        Bundle bundle = new Bundle();
+//                        bundle.putSerializable("model", model1.getModel());
+//                        NavHostFragment.findNavController(fragment).navigate(R.id.evalyExpressFragment, bundle);
+//                    })
+//                    .id(model.getSlug())
+//                    .model(model));
+//        }
+//
+//        List<HomeExpressSkeletonModel_> expressDummyItemModels = new ArrayList<>();
+//        for (int i = 0; i < 6; i++) {
+//            expressDummyItemModels.add(new HomeExpressSkeletonModel_()
+//                    .id("express_dummy" + i));
+//        }
 
         tabsModel.activity(activity)
                 .fragmentInstance(fragment)

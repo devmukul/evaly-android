@@ -164,7 +164,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="reviews">Reviews</string>
     <string name="categories">Categories</string>
     <string name="all_products">All Products</string>
-    <string name="wish_list">Wish List</string>
+    <string name="wish_list">Wishlist</string>
     <string name="comment">Comment</string>
     <string name="reply">Reply</string>
     <string name="buy">BUY</string>
@@ -354,5 +354,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="pay_via_card">Pay Via Card</string>
     <string name="payment_success_message">Payment successful! If your order\'s payment status doesn\'t get updated within 5 minutes, please contact support.</string>
     <string name="payment_error_message">Something went wrong. Please try again later.</string>
+    <string name="express">Express</string>
 
 </resources>

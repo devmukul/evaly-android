@@ -124,20 +124,20 @@ public class MainActivity extends BaseActivity {
 
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
-        binding.bottomNavigationView.setOnNavigationItemSelectedListener(
-                item -> {
-                    if (item.getItemId() == R.id.userDashboardActivity) {
-                        if (CredentialManager.getToken().equals(""))
-                            startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                        else
-                            startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
-                        return false;
-                    } else if (item.getItemId() == R.id.homeFragment) {
-                        navController.navigate(R.id.action_homeFragment_Pop);
-                        return false;
-                    } else
-                        return onNavDestinationSelected(item, navController);
-                });
+//        binding.bottomNavigationView.setOnNavigationItemSelectedListener(
+//                item -> {
+//                    if (item.getItemId() == R.id.userDashboardActivity) {
+//                        if (CredentialManager.getToken().equals(""))
+//                            startActivity(new Intent(MainActivity.this, SignInActivity.class));
+//                        else
+//                            startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
+//                        return false;
+//                    } else if (item.getItemId() == R.id.homeFragment) {
+//                        navController.navigate(R.id.action_homeFragment_Pop);
+//                        return false;
+//                    } else
+//                        return onNavDestinationSelected(item, navController);
+//                });
 
         setupRemoteConfig();
 
@@ -145,31 +145,31 @@ public class MainActivity extends BaseActivity {
         WishListDao wishListDao = appDatabase.wishListDao();
         CartDao cartDao = appDatabase.cartDao();
 
-        BottomNavigationItemView itemView = binding.bottomNavigationView.findViewById(R.id.wishListFragment);
-        View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
-        TextView wishListCount = wishListBadge.findViewById(R.id.notification);
-        itemView.addView(wishListBadge);
-
-        wishListDao.getLiveCount().observe(this, integer -> {
-            wishListCount.setText(String.format(Locale.ENGLISH, "%d", integer));
-            if (integer == 0)
-                wishListBadge.setVisibility(View.GONE);
-            else
-                wishListBadge.setVisibility(View.VISIBLE);
-        });
-
-        BottomNavigationItemView itemView2 = binding.bottomNavigationView.findViewById(R.id.cartFragment);
-        View cartBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
-        TextView cartCount = cartBadge.findViewById(R.id.notification);
-        itemView2.addView(cartBadge);
-
-        cartDao.getLiveCount().observe(this, integer -> {
-            cartCount.setText(String.format(Locale.ENGLISH, "%d", integer));
-            if (integer == 0)
-                cartBadge.setVisibility(View.GONE);
-            else
-                cartBadge.setVisibility(View.VISIBLE);
-        });
+//        BottomNavigationItemView itemView = binding.bottomNavigationView.findViewById(R.id.wishListFragment);
+//        View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
+//        TextView wishListCount = wishListBadge.findViewById(R.id.notification);
+//        itemView.addView(wishListBadge);
+//
+//        wishListDao.getLiveCount().observe(this, integer -> {
+//            wishListCount.setText(String.format(Locale.ENGLISH, "%d", integer));
+//            if (integer == 0)
+//                wishListBadge.setVisibility(View.GONE);
+//            else
+//                wishListBadge.setVisibility(View.VISIBLE);
+//        });
+//
+//        BottomNavigationItemView itemView2 = binding.bottomNavigationView.findViewById(R.id.cartFragment);
+//        View cartBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
+//        TextView cartCount = cartBadge.findViewById(R.id.notification);
+//        itemView2.addView(cartBadge);
+//
+//        cartDao.getLiveCount().observe(this, integer -> {
+//            cartCount.setText(String.format(Locale.ENGLISH, "%d", integer));
+//            if (integer == 0)
+//                cartBadge.setVisibility(View.GONE);
+//            else
+//                cartBadge.setVisibility(View.VISIBLE);
+//        });
 
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

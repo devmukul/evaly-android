@@ -74,14 +74,14 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
             HomeModelTabsBinding binding = HomeModelTabsBinding.bind(itemView);
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
-
-            appDatabase = AppDatabase.getInstance(activity);
-            expressServiceDao = appDatabase.expressServiceDao();
-            expressController = new ExpressController();
-            expressController.setFragment(fragmentInstance);
-            expressController.setSpanCount(2);
-            binding.expressServiceList.setAdapter(expressController.getAdapter());
-            expressController.requestModelBuild();
+//
+//            appDatabase = AppDatabase.getInstance(activity);
+//            expressServiceDao = appDatabase.expressServiceDao();
+//            expressController = new ExpressController();
+//            expressController.setFragment(fragmentInstance);
+//            expressController.setSpanCount(2);
+//            binding.expressServiceList.setAdapter(expressController.getAdapter());
+//            expressController.requestModelBuild();
 
             pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
@@ -135,11 +135,10 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                 pager.notifyDataSetChanged();
             }
 
-            expressServiceDao.getAll().observe(fragmentInstance.getViewLifecycleOwner(), expressServiceModels -> {
-                expressController.reAddData(expressServiceModels);
-            });
+//            expressServiceDao.getAll().observe(fragmentInstance.getViewLifecycleOwner(), expressServiceModels -> {
+//                expressController.reAddData(expressServiceModels);
+//            });
 
-            getExpressShops();
         }
 
         private void getExpressShops() {
