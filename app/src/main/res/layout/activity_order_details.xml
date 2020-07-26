@@ -76,6 +76,7 @@
                     app:stpi_doneIconDrawable="@drawable/ic_tick"
                     app:stpi_indicatorColor="#4cb81a"
                     app:stpi_labelMarginTop="7dp"
+                    app:stpi_labelSize="11sp"
                     app:stpi_labels="@array/orderTrackingStepLabels"
                     app:stpi_lineColor="#ddd"
                     app:stpi_lineDoneColor="#4cb81a"
@@ -93,11 +94,11 @@
                     app:stpi_doneIconDrawable="@drawable/ic_close_smallest"
                     app:stpi_indicatorColor="#e51614"
                     app:stpi_labelMarginTop="7dp"
+                    app:stpi_labelSize="11sp"
                     app:stpi_labels="@array/orderTrackingStepLabels"
                     app:stpi_lineColor="#ddd"
                     app:stpi_lineDoneColor="#e51614"
                     app:stpi_stepCount="6" />
-
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -111,7 +112,8 @@
                     android:background="@drawable/bg_profile"
                     android:orientation="vertical"
                     android:paddingLeft="20dp"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
 
                     <TextView
@@ -120,9 +122,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="18dp"
                         android:fontFamily="sans-serif-medium"
+                        android:paddingRight="10dp"
                         android:textColor="#000"
                         android:textSize="19sp"
-                        android:paddingRight="10dp"
+                        android:maxLines="1"
                         app:layout_constraintBottom_toTopOf="@+id/barrier"
                         app:layout_constraintEnd_toStartOf="@+id/heroCall"
                         app:layout_constraintStart_toEndOf="@id/heroPicture"
@@ -133,9 +136,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
+                        android:paddingRight="10dp"
                         android:textColor="#333"
                         android:textSize="14sp"
-                        android:paddingRight="10dp"
                         app:layout_constraintEnd_toStartOf="@+id/heroCall"
                         app:layout_constraintStart_toStartOf="@+id/heroName"
                         app:layout_constraintTop_toBottomOf="@+id/barrier"
@@ -146,7 +149,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        app:layout_constraintGuide_begin="50dp" />
+                        app:layout_constraintGuide_end="50dp" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/heroPicture"
@@ -165,11 +168,11 @@
                         android:layout_marginEnd="18dp"
                         android:background="@drawable/circle_bg"
                         android:padding="10dp"
-                        app:srcCompat="@drawable/ic_hero_call"
                         android:tint="#555"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_hero_call" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -178,7 +181,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginBottom="15dp"
                     android:orientation="horizontal">
 
@@ -187,6 +190,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
+                        android:layout_marginTop="1dp"
                         android:layout_weight="1"
                         android:text="@string/order_status"
                         android:textAllCaps="true"
@@ -209,6 +213,26 @@
                         android:textSize="14sp"
                         android:visibility="gone" />
 
+                    <TextView
+                        android:id="@+id/confirmDelivery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/btn_show_more_order_timeline"
+                        android:clickable="true"
+                        android:drawablePadding="10dp"
+                        android:paddingStart="12dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="5dp"
+                        android:text="Confirm Delivery"
+                        android:textColor="#333"
+                        android:textSize="14sp"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
+
                 </LinearLayout>
 
 
@@ -217,13 +241,54 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
+                    android:nestedScrollingEnabled="false"
                     android:paddingBottom="5dp"
-                    tools:listitem="@layout/item_order_status"
-                    tools:itemCount="2">
+                    tools:itemCount="4"
+                    tools:listitem="@layout/item_order_status">
 
                 </androidx.recyclerview.widget.RecyclerView>
+
+
+                <LinearLayout
+                    android:id="@+id/btnToggleTimelineHolder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_marginTop="-15dp"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/btnToggleTimeline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:drawablePadding="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingStart="12dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="4dp"
+                        android:text="Show More"
+                        android:textColor="@color/evaly_color"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:id="@+id/toggleIcon"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="5dp"
+                        android:adjustViewBounds="true"
+                        android:padding="1dp"
+                        android:src="@drawable/ic_up_down"
+                        android:tint="@color/evaly_color" />
+
+                </LinearLayout>
 
 
                 <View
@@ -275,8 +340,10 @@
                     android:id="@+id/product_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
                     android:paddingBottom="5dp"
-                    tools:itemCount="2">
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_order_details_products">
 
                 </androidx.recyclerview.widget.RecyclerView>
 

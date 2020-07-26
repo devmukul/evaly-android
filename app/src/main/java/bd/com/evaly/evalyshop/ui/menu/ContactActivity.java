@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.menu;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
@@ -24,20 +26,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.db.RosterTable;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPEventReceiver;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
 import retrofit2.Response;
 
 import static bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity.setWindowFlag;
@@ -48,29 +45,6 @@ public class ContactActivity extends BaseActivity {
 
     ViewDialog dialog;
     private List<String> rosterList;
-
-    AppController mChatApp = AppController.getInstance();
-
-    XMPPHandler xmppHandler;
-    XMPPEventReceiver xmppEventReceiver;
-
-    public XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-
-        public void onConnected() {
-            xmppHandler = AppController.getmService().xmpp;
-        }
-
-        public void onLoggedIn() {
-            AsyncTask.execute(() -> {
-                xmppHandler = AppController.getmService().xmpp;
-                rosterList = xmppHandler.rosterList;
-
-//              Logger.d(new Gson().toJson(AppController.database.taskDao().getAllRoster()));
-            });
-        }
-
-    };
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,8 +61,6 @@ public class ContactActivity extends BaseActivity {
         setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
 
-        xmppEventReceiver = mChatApp.getEventReceiver();
-
         ImageView mapImage = findViewById(R.id.mapImage);
 
         Glide.with(this).load(R.drawable.map_high_res).into(mapImage);
@@ -100,46 +72,24 @@ public class ContactActivity extends BaseActivity {
             startActivity(intent);
         });
 
-        if (!CredentialManager.getToken().equals("")){
-            if (AppController.getmService() != null && AppController.getmService().xmpp != null && AppController.getmService().xmpp.isConnected()) {
-                xmppHandler = AppController.getmService().xmpp;
-                AsyncTask.execute(() -> rosterList = xmppHandler.rosterList);
-            } else {
-                startXmppService();
-            }
-        }
 
         LinearLayout emailBox = findViewById(R.id.emailBox);
         emailBox.setOnClickListener(v -> {
-
-
             if (CredentialManager.getToken().equals("")) {
                 Toast.makeText(getApplicationContext(), "Please login to send message", Toast.LENGTH_LONG).show();
-            } else {
-
-                RosterTable roasterModel = new RosterTable();
-                roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
-                roasterModel.rosterName = "Evaly";
-                roasterModel.imageUrl = Constants.EVALY_LOGO;
-                startActivity(new Intent(ContactActivity.this, ChatDetailsActivity.class)
-                        .putExtra("roster", (Serializable) roasterModel));
-
-            }
+            } else
+               setUpXmpp();
         });
-
 
         LinearLayout facebookBox = findViewById(R.id.facebookBox);
         facebookBox.setOnClickListener(v -> {
-
             try {
                 getPackageManager().getPackageInfo("com.facebook.katana", 0);
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/1567333923329329")));
             } catch (Exception e) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/evaly.com.bd/")));
             }
-
         });
-
 
         View.OnClickListener openMaps = v -> {
             Uri gmmIntentUri = Uri.parse("geo:23.754241,90.3726478?q=" + Uri.encode("Evaly.com.bd"));
@@ -153,7 +103,6 @@ public class ContactActivity extends BaseActivity {
             }
         };
 
-
         LinearLayout mapsBox = findViewById(R.id.mapsBox);
         mapsBox.setOnClickListener(openMaps);
 
@@ -163,60 +112,46 @@ public class ContactActivity extends BaseActivity {
         ImageView back = findViewById(R.id.backArrow);
         back.setOnClickListener(v -> finish());
 
-
-    }
-
-    private void addRosterByOther() {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("localuser", Constants.EVALY_NUMBER);
-        data.put("localserver", Constants.XMPP_HOST);
-        data.put("user", CredentialManager.getUserName());
-        data.put("server", Constants.XMPP_HOST);
-        data.put("nick", CredentialManager.getUserData().getFirst_name());
-        data.put("subs", "both");
-        data.put("group", "evaly");
-        AuthApiHelper.addRoster(data, new DataFetchingListener<Response<JsonPrimitive>>() {
-            @Override
-            public void onDataFetched(Response<JsonPrimitive> response) {
-
-            }
-
-            @Override
-            public void onFailed(int status) {
-
-            }
-        });
-    }
-
-    private void startXmppService() {
-        if (!XMPPService.isServiceRunning) {
-            Intent intent = new Intent(this, XMPPService.class);
-            mChatApp.UnbindService();
-            mChatApp.BindService(intent);
-            Logger.d("++++++++++");
-        } else {
-            Logger.d("---------");
-            xmppHandler = AppController.getmService().xmpp;
-            if (!xmppHandler.isConnected()) {
-                xmppHandler.connect();
-            } else {
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-            }
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-
-        AsyncTask.execute(() -> {
-            if (xmppHandler != null){
-                rosterList = xmppHandler.rosterList;
-            }
-        });
     }
 
+    private void setUpXmpp() {
+
+            Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
+            try {
+                RosterTable roasterModel = new RosterTable();
+                roasterModel.id = Constants.EVALY_NUMBER + "@" + Constants.XMPP_HOST;
+                roasterModel.rosterName = "Evaly";
+                roasterModel.imageUrl = Constants.EVALY_LOGO;
+
+                launchIntent.putExtra("to", "OPEN_CHAT_DETAILS");
+                launchIntent.putExtra("from", "contact");
+                launchIntent.putExtra("user", CredentialManager.getUserName());
+                launchIntent.putExtra("password", CredentialManager.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+                launchIntent.putExtra("roster", new Gson().toJson(roasterModel));
+
+//                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
+//                launchIntent.putExtra("user", CredentialManager.getUserName());
+//                launchIntent.putExtra("password", CredentialManager.getPassword());
+//                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+//                launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(launchIntent);
+
+            } catch (ActivityNotFoundException e) {
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+                } catch (Exception e2) {
+                    ToastUtils.show("Please install eConnect app for live chat");
+                }
+
+        }
+    }
 
 }

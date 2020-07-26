@@ -60,7 +60,6 @@ public class BrandController extends EpoxyController {
     @Override
     protected void buildModels() {
 
-
         headerModel_
                 .brandName(brandName)
                 .brandLogo(brandLogo)
@@ -83,7 +82,6 @@ public class BrandController extends EpoxyController {
                     })
                     .addTo(this);
         }
-
 
         noProductModel
                 .text("No Products Available")

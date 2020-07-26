@@ -28,7 +28,6 @@ import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedPendingAdapter;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -39,7 +38,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
     private ArrayList<NewsfeedItem> itemsList;
     private Context context;
     private MainActivity activity;
-    private UserDetails userDetails;
     private LinearLayout not, progressContainer;
     private boolean loading = true;
     private int currentPage;
@@ -87,26 +85,17 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         getPosts(currentPage);
 
         try {
-
             ((NewsfeedActivity) getActivity()).getNotificationCount();
-
         } catch (Exception e) {
 
         }
-
     }
 
-    public UserDetails getUserDetails() {
-        return userDetails;
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        userDetails = new UserDetails(context);
-
-        // pull to refresh
         swipeLayout = view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
 

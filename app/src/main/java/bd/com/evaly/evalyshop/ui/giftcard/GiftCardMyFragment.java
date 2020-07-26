@@ -30,18 +30,17 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
 public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-
 
     static GiftCardMyFragment instance;
     private View view;
@@ -52,7 +51,6 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
     private BottomSheetBehavior sheetBehavior;
     private LinearLayout layoutBottomSheet;
     private ViewDialog dialog;
-    private UserDetails userDetails;
     private String giftCardInvoice = "";
     private LinearLayout noItem;
     private Context context;
@@ -97,7 +95,6 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
 
         context = getContext();
         rq = Volley.newRequestQueue(context);
-        userDetails = new UserDetails(context);
 
         progressContainer = view.findViewById(R.id.progressContainer);
         progressBar = view.findViewById(R.id.progressBar);
@@ -114,22 +111,17 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) //check for scroll down
-                {
+                if (dy > 0) {
                     visibleItemCount = manager.getChildCount();
                     totalItemCount = manager.getItemCount();
                     pastVisiblesItems = manager.findFirstVisibleItemPosition();
-
                     if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
                             getGiftCardList();
-                        }
                     }
                 }
             }
         });
-
 
         getGiftCardList();
 
@@ -156,26 +148,23 @@ public class GiftCardMyFragment extends Fragment implements SwipeRefreshLayout.O
         EditText email = bottomSheetDialog.findViewById(R.id.email);
         TextView details = bottomSheetDialog.findViewById(R.id.details);
 
-        email.setText(userDetails.getEmail());
+        email.setText(CredentialManager.getUserData().getEmail());
 
-        if (userDetails.getEmail().equals(""))
+        if (CredentialManager.getUserData().getEmail().equals(""))
             button.setText("ADD EMAIL FIRST");
         else
             button.setText("REDEEM");
 
         button.setOnClickListener(view1 -> {
-
-            if (userDetails.getEmail().equals("")) {
+            if (CredentialManager.getUserData().getEmail().equals("")) {
                 context.startActivity(new Intent(context, EditProfileActivity.class));
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             } else
                 redeemCard(giftCardInvoice);
         });
 
-
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetDialog.show();
-
     }
 
     public void getGiftCardList() {

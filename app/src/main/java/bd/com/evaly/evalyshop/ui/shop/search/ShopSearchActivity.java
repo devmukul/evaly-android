@@ -7,7 +7,6 @@ import android.text.TextWatcher;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,14 +22,18 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
+import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
+import bd.com.evaly.evalyshop.ui.shop.ShopViewModelFactory;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 
-public class ShopSearchActivity extends AppCompatActivity {
+public class ShopSearchActivity extends BaseActivity {
 
+
+    private ShopViewModelFactory viewModelFactory;
     private FragmentShopSearchBinding binding;
     private ShopSearchAdapter adapter;
     private List<ItemsItem> itemList;
@@ -51,24 +54,26 @@ public class ShopSearchActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
 
         Intent bundle = getIntent();
         shopSlug = bundle.getStringExtra("shop_slug");
         campaignSlug = bundle.getStringExtra("campaign_slug");
         shopName = bundle.getStringExtra("shop_name");
-
-
         binding = DataBindingUtil.setContentView(this, R.layout.fragment_shop_search);
+
+
+        viewModelFactory = new ShopViewModelFactory(null, null, null);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(ShopViewModel.class);
 
         if (shopName != null && !shopName.equals(""))
             binding.search.setHint("Search in " + shopName + "...");
         else
             binding.search.setHint("Search in store...");
 
-
         itemList = new ArrayList<>();
-        adapter = new ShopSearchAdapter(this, itemList, this, null, viewModel);
+        adapter = new ShopSearchAdapter(this, itemList, null, viewModel);
+        adapter.setCampaignSlug(campaignSlug);
+        adapter.setShopSlug(shopSlug);
         binding.recyclerView.setAdapter(adapter);
 
         binding.back.setOnClickListener(v -> finish());
@@ -109,13 +114,12 @@ public class ShopSearchActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
 
-
                 if (!binding.search.getText().toString().trim().equals("")) {
-
                     performSearch(binding.search.getText().toString().trim());
                     query = binding.search.getText().toString().trim();
+                    binding.searchAction.setImageDrawable(getDrawable(R.drawable.ic_close_small));
                 } else {
-
+                    binding.searchAction.setImageDrawable(getDrawable(R.drawable.ic_search));
                     binding.noItem.setVisibility(View.VISIBLE);
                     itemList.clear();
                     adapter.notifyDataSetChanged();
@@ -124,6 +128,14 @@ public class ShopSearchActivity extends AppCompatActivity {
                 }
 
             }
+        });
+
+        binding.searchAction.setOnClickListener(view -> {
+            if (!binding.search.getText().toString().trim().equals("")) {
+                binding.search.setText("");
+                binding.searchAction.setImageDrawable(getDrawable(R.drawable.ic_search));
+            }
+
         });
 
         viewModel.getBuyNowLiveData().observe(this, s -> {
@@ -137,13 +149,8 @@ public class ShopSearchActivity extends AppCompatActivity {
 
     }
 
-    // https://api-prod.evaly.com.bd/api/categories/?search=phone&page=1
-
-
     public String getQuery() {
-
         return query;
-
     }
 
 
@@ -152,39 +159,27 @@ public class ShopSearchActivity extends AppCompatActivity {
         binding.searchTitle.setText("Search result for \"" + query + "\"");
         binding.progressContainer.setVisibility(View.VISIBLE);
         binding.noItem.setVisibility(View.GONE);
-
         itemList.clear();
         adapter.notifyDataSetChanged();
         binding.searchTitle.setVisibility(View.GONE);
-
         binding.noItem.setVisibility(View.GONE);
-
         isLoading = true;
-
         this.query = query;
-
         currentPage = 1;
-
         getShopProducts(currentPage);
     }
 
     public void getShopProducts(int page) {
-
-
         binding.noItem.setVisibility(View.GONE);
-
         isLoading = true;
         binding.progressContainer.setVisibility(View.VISIBLE);
 
         if (currentPage > 1)
             binding.bottomProgressBar.setVisibility(View.VISIBLE);
 
-
         ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, page, 21, null, campaignSlug, query, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
-
-
                 if (binding.search.getText().toString().length() > 0)
                     binding.searchTitle.setVisibility(View.VISIBLE);
 

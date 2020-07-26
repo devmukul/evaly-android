@@ -31,6 +31,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.ui.adapters.FragmentTabPagerAdapter;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.TabsViewModel;
 import bd.com.evaly.evalyshop.ui.home.HomeTabsFragment;
+import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
 import bd.com.evaly.evalyshop.ui.home.controller.ExpressController;
 import bd.com.evaly.evalyshop.util.Utils;
 
@@ -41,6 +42,8 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
     public Fragment fragmentInstance;
     @EpoxyAttribute
     AppCompatActivity activity;
+    @EpoxyAttribute
+    public HomeViewModel homeViewModel;
 
     private ExpressController expressController;
 
@@ -55,12 +58,14 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
         holder.itemView = null;
     }
 
-    class HomeTabsHolder extends EpoxyHolder {
+    public class HomeTabsHolder extends EpoxyHolder {
 
-        View itemView;
+        public View itemView;
         private FragmentTabPagerAdapter pager;
         private AppDatabase appDatabase;
         private ExpressServiceDao expressServiceDao;
+        private boolean isSelected = false;
+
 
         @Override
         protected void bindView(@NonNull View itemView) {
@@ -69,15 +74,14 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
             HomeModelTabsBinding binding = HomeModelTabsBinding.bind(itemView);
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
-
-            appDatabase = AppDatabase.getInstance(activity);
-            expressServiceDao = appDatabase.expressServiceDao();
-
-            expressController = new ExpressController();
-            expressController.setFragment(fragmentInstance);
-            expressController.setSpanCount(2);
-            binding.expressServiceList.setAdapter(expressController.getAdapter());
-            expressController.requestModelBuild();
+//
+//            appDatabase = AppDatabase.getInstance(activity);
+//            expressServiceDao = appDatabase.expressServiceDao();
+//            expressController = new ExpressController();
+//            expressController.setFragment(fragmentInstance);
+//            expressController.setSpanCount(2);
+//            binding.expressServiceList.setAdapter(expressController.getAdapter());
+//            expressController.requestModelBuild();
 
             pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
@@ -94,10 +98,16 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
             final float barHeight = Utils.convertDpToPixel(65, AppController.getmContext());
 
             binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-
                 @Override
                 public void onPageSelected(int position) {
                     super.onPageSelected(position);
+
+                    if (!isSelected && homeViewModel.getTabPosition() > 0) {
+                        binding.viewPager.setCurrentItem(homeViewModel.getTabPosition());
+                        isSelected = true;
+                    } else {
+                        homeViewModel.setTabPosition(position);
+                    }
 
                     TabsViewModel viewModel = pager.getViewModel(position);
                     if (viewModel != null) {
@@ -108,7 +118,6 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                             ViewGroup.LayoutParams params1 = binding.viewPager.getLayoutParams();
                             int row = (int) (Math.ceil(integer == 0 ? 1 : integer / 3.0));
                             params1.height = (int) ((row * (boxHeight + 1)) + barHeight);
-
                             binding.viewPager.post(() -> binding.viewPager.setLayoutParams(params1));
                         });
                     }
@@ -126,11 +135,10 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                 pager.notifyDataSetChanged();
             }
 
-            expressServiceDao.getAll().observe(fragmentInstance.getViewLifecycleOwner(), expressServiceModels -> {
-                expressController.reAddData(expressServiceModels);
-            });
+//            expressServiceDao.getAll().observe(fragmentInstance.getViewLifecycleOwner(), expressServiceModels -> {
+//                expressController.reAddData(expressServiceModels);
+//            });
 
-            getExpressShops();
         }
 
         private void getExpressShops() {

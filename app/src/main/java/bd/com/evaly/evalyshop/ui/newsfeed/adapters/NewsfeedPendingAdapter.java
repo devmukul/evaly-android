@@ -32,7 +32,6 @@ import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedPendingFragment;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
@@ -43,13 +42,11 @@ public class NewsfeedPendingAdapter extends RecyclerView.Adapter<NewsfeedPending
     ArrayList<NewsfeedItem> itemsList;
     Context context;
     NewsfeedPendingFragment fragment;
-    UserDetails userDetails;
 
     public NewsfeedPendingAdapter(ArrayList<NewsfeedItem> itemsList, Context context, NewsfeedPendingFragment fragment) {
         this.itemsList = itemsList;
         this.context = context;
         this.fragment = fragment;
-        this.userDetails = fragment.getUserDetails();
     }
 
     @NonNull

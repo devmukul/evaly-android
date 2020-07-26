@@ -19,7 +19,6 @@ import androidx.core.content.ContextCompat;
 
 import com.orhanobut.logger.Logger;
 
-import org.jivesoftware.smackx.chatstates.ChatState;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -168,6 +167,17 @@ public class Utils {
         return formatPrice(d);
     }
 
+    public static String formatPriceSymbol(String s){
+        if (s == null)
+            return "৳ 0";
+        return "৳ " + formatPrice(s);
+    }
+
+
+    public static String formatPriceSymbol(double s){
+        return "৳ " + formatPrice(s);
+    }
+
     public static float convertDpToPixel(float dp, Context context) {
         return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
@@ -298,25 +308,6 @@ public class Utils {
         }
     }
 
-    public static String getChatMode(ChatState mode) {
-        String mChatMode = "";
-        switch (mode) {
-            case composing:
-                mChatMode = Constants.CHAT_MODE_TYPING;
-                break;
-            case gone:
-                mChatMode = Constants.CHAT_MODE_LEFT;
-                break;
-            case paused:
-                mChatMode = Constants.CHAT_MODE_PAUSED;
-                break;
-            case active:
-                mChatMode = Constants.CHAT_MODE_ACTIVE;
-                break;
-        }
-
-        return mChatMode;
-    }
 
     public static String truncateText(String text, int maxLength, String endWith) {
         if (text == null)
@@ -646,6 +637,37 @@ public class Utils {
 
         SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
         df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
+
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
+        df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+
+
+        // You can set a different Locale, This example set a locale of Country Mexico.
+        //SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, new Locale("es", "MX"));
+        //SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, new Locale("es", "MX"));
+
+        try {
+            parsed = df_input.parse(inputDate);
+            outputDate = parsed.getTime();
+        } catch (Exception e) {
+            Log.e("formattedDateFromString", "Exception in formateDateFromstring(): " + e.getMessage());
+        }
+        return outputDate;
+
+    }
+
+    public static long formattedDateFromStringToTimestampGMTIssue(String inputFormat, String outputFormat, String inputDate) {
+        if (inputFormat.equals("")) { // if inputFormat = "", set a default input format.
+            inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        }
+        if (outputFormat.equals("")) {
+            outputFormat = "EEEE d',' MMMM  yyyy"; // if inputFormat = "", set a default output format.
+        }
+        Date parsed = null;
+        long outputDate = 0;
+
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
+      //  df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
 
         SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
         df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));

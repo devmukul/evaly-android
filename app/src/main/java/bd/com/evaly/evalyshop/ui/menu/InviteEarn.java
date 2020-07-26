@@ -38,7 +38,7 @@ import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.pref.ReferPref;
-import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 public class InviteEarn extends AppCompatActivity {
@@ -46,7 +46,6 @@ public class InviteEarn extends AppCompatActivity {
     private TextView referText, message, statistics;
     private ViewDialog dialog;
     private NestedScrollView scrollView;
-    private UserDetails userDetails;
     private Context context;
     private ReferPref referPref;
 
@@ -63,8 +62,6 @@ public class InviteEarn extends AppCompatActivity {
         referText = findViewById(R.id.ref_code);
         statistics = findViewById(R.id.statistics);
         scrollView = findViewById(R.id.scrollView);
-
-        userDetails = new UserDetails(this);
         referPref = new ReferPref(this);
         dialog = new ViewDialog(this);
         getReferralInfo();
@@ -72,7 +69,7 @@ public class InviteEarn extends AppCompatActivity {
         context = this;
 
         message.setText(referPref.getRefMessage());
-        referText.setText("EVALY-" + userDetails.getUserName());
+        referText.setText("EVALY-" + CredentialManager.getUserName());
         statistics.setText(Html.fromHtml(referPref.getRefStatistics()));
 
         Button rate = findViewById(R.id.rate);
@@ -108,7 +105,7 @@ public class InviteEarn extends AppCompatActivity {
 
         // scrollView.setVisibility(View.GONE);
 
-        String url = "https://nsuer.club/evaly/referral/info.php?username=" + userDetails.getUserName();
+        String url = "https://nsuer.club/evaly/referral/info.php?username=" + CredentialManager.getUserName();
         JSONObject parameters = new JSONObject();
 
 
@@ -256,7 +253,7 @@ public class InviteEarn extends AppCompatActivity {
             public Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
 
-                params.put("token", userDetails.getToken().trim());
+                params.put("token", CredentialManager.getToken().trim());
 
                 return params;
             }

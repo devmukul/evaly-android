@@ -19,12 +19,16 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.ActivityExpressProductSearchBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
@@ -45,6 +49,7 @@ public class ExpressProductSearchFragment extends Fragment {
     private String query;
     private boolean firstLoad = true;
     private ExpressProductController expressProductController;
+    private ExpressServiceDao expressServiceDao;
 
     public ExpressProductSearchFragment() {
 
@@ -67,19 +72,14 @@ public class ExpressProductSearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        expressServiceDao = AppDatabase.getInstance(getContext()).expressServiceDao();
         currentPage = 1;
         itemList = new ArrayList<>();
-
         expressProductController = new ExpressProductController();
-
         expressProductController.setActivity((AppCompatActivity) getActivity());
         expressProductController.setFragment(this);
-
         binding.recyclerView.setAdapter(expressProductController.getAdapter());
-
         binding.back.setOnClickListener(v -> getActivity().onBackPressed());
-
 
         int spanCount = 2;
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -110,23 +110,17 @@ public class ExpressProductSearchFragment extends Fragment {
             }
         });
 
-
         binding.progressContainer.setVisibility(View.VISIBLE);
-        getShopProducts();
-
+       // getShopProducts();
 
         binding.search.setOnEditorActionListener((v, actionId, event) -> {
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
-
                 if (!binding.search.getText().toString().trim().equals("")) {
-
                     ApiClient.getUnsafeOkHttpClient().dispatcher().cancelAll();
                     performSearch(binding.search.getText().toString().trim());
                     query = binding.search.getText().toString().trim();
                     binding.searchClear.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_close));
-
                 } else {
-
                     // binding.noItem.setVisibility(View.VISIBLE);
                     expressProductController.clear();
                     binding.searchTitle.setVisibility(View.GONE);
@@ -145,7 +139,6 @@ public class ExpressProductSearchFragment extends Fragment {
         });
 
         binding.searchClear.setOnClickListener(v -> {
-
             if (!binding.search.getText().toString().trim().equals("")) {
                 binding.searchClear.setImageDrawable(AppController.getmContext().getDrawable(R.drawable.ic_search));
                 binding.search.setText("");
@@ -156,38 +149,60 @@ public class ExpressProductSearchFragment extends Fragment {
                 binding.progressContainer.setVisibility(View.VISIBLE);
                 getShopProducts();
             }
-
         });
 
+        expressServiceDao.getAll().observe(getViewLifecycleOwner(), expressServiceModels -> {
+            expressProductController.setItemsExpress(expressServiceModels);
+        });
+        getExpressServices();
+    }
+
+    private void getExpressServices() {
+        ExpressApiHelper.getServicesList(new ResponseListenerAuth<List<ExpressServiceModel>, String>() {
+            @Override
+            public void onDataFetched(List<ExpressServiceModel> response, int statusCode) {
+                Executors.newFixedThreadPool(4).execute(() -> {
+                    expressServiceDao.insertList(response);
+
+                    List<String> slugs = new ArrayList<>();
+                    for (ExpressServiceModel item : response)
+                        slugs.add(item.getSlug());
+
+                    if (slugs.size() > 0)
+                        expressServiceDao.deleteOld(slugs);
+                });
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public String getQuery() {
-
         return query;
-
     }
 
-
     public void performSearch(String query) {
-
         expressProductController.setTitle("Search result for \"" + query + "\"");
         binding.progressContainer.setVisibility(View.VISIBLE);
         expressProductController.clear();
         binding.searchTitle.setVisibility(View.GONE);
-
         isLoading = true;
-
         this.query = query;
-
         currentPage = 1;
-
         getShopProducts();
     }
 
     public void getShopProducts() {
 
         isLoading = true;
-
         expressProductController.showEmptyPage(false, false);
 
         if (currentPage > 1)
@@ -223,11 +238,9 @@ public class ExpressProductSearchFragment extends Fragment {
                 if (response.getCount() > 0)
                     currentPage++;
 
-
-                if (response.getCount() == 0) {
+                if (response.getCount() == 0)
                     expressProductController.showEmptyPage(true, true);
 
-                }
                 if (binding.search.getText().toString().length() == 0 && !firstLoad) {
                     firstLoad = false;
                     expressProductController.clear();

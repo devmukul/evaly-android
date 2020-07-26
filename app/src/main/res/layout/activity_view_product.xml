@@ -20,7 +20,8 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            tools:visibility="gone">
 
             <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbar"
@@ -228,11 +229,12 @@
                         android:layout_height="wrap_content"
                         android:minHeight="20dp"
                         android:orientation="vertical"
-                        android:visibility="gone">
+                        android:visibility="gone"
+                        tools:visibility="visible">
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="10dp"
+                            android:layout_height="8dp"
                             android:background="@color/separator_light" />
 
                         <TextView
@@ -240,7 +242,7 @@
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
-                            android:layout_marginTop="11dp"
+                            android:layout_marginTop="15dp"
                             android:layout_marginBottom="15dp"
                             android:text="Size"
                             android:textColor="#555"
@@ -257,10 +259,10 @@
                                 android:id="@+id/rvVariant1"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="15dp"
                                 android:nestedScrollingEnabled="false"
                                 android:orientation="horizontal"
                                 android:paddingLeft="20dp"
+                                android:paddingBottom="15dp"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 tools:listitem="@layout/item_variation_image" />
                         </HorizontalScrollView>
@@ -274,11 +276,12 @@
                         android:layout_height="wrap_content"
                         android:minHeight="20dp"
                         android:orientation="vertical"
-                        android:visibility="gone">
+                        android:visibility="gone"
+                        tools:visibility="visible">
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="10dp"
+                            android:layout_height="8dp"
                             android:background="@color/separator_light" />
 
                         <TextView
@@ -286,7 +289,7 @@
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
-                            android:layout_marginTop="11dp"
+                            android:layout_marginTop="15dp"
                             android:layout_marginBottom="15dp"
                             android:text="Color"
                             android:textColor="#555"
@@ -303,10 +306,10 @@
                                 android:id="@+id/rvVariant2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
                                 android:nestedScrollingEnabled="false"
                                 android:orientation="horizontal"
                                 android:paddingLeft="20dp"
+                                android:paddingBottom="15dp"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 tools:listitem="@layout/item_variation_image" />
 
@@ -314,18 +317,22 @@
 
                     </LinearLayout>
 
+
                     <View
                         android:id="@+id/view7"
                         android:layout_width="match_parent"
-                        android:layout_height="10dp"
+                        android:layout_height="8dp"
                         android:layout_marginTop="8dp"
                         android:background="@color/separator_light" />
 
 
                     <RelativeLayout
+                        android:id="@+id/skuHolder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:orientation="horizontal"
                         android:padding="10dp">
 
@@ -345,7 +352,6 @@
                             android:layout_toLeftOf="@id/arrow2"
                             android:layout_toRightOf="@+id/vouchers"
                             android:textColor="#f00"
-                            android:textIsSelectable="true"
                             android:textSize="16sp" />
 
                         <ImageView
@@ -358,10 +364,11 @@
 
                     </RelativeLayout>
 
+
                     <View
                         android:id="@+id/description_view"
                         android:layout_width="match_parent"
-                        android:layout_height="10dp"
+                        android:layout_height="8dp"
                         android:background="@color/separator_light" />
 
                     <RelativeLayout
@@ -376,7 +383,7 @@
                             android:id="@+id/spec"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
+                            android:layout_marginTop="5dp"
                             android:text="@string/description"
                             android:textColor="#555"
                             android:textSize="16sp"
@@ -398,7 +405,7 @@
                             android:layout_below="@+id/spec"
                             android:layout_marginTop="10dp"
                             android:layout_marginRight="5dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginBottom="8dp"
                             android:textColor="#000"
                             android:textSize="16sp" />
 
@@ -407,7 +414,7 @@
                     <View
                         android:id="@+id/spec_view"
                         android:layout_width="match_parent"
-                        android:layout_height="10dp"
+                        android:layout_height="8dp"
                         android:background="@color/separator_light" />
 
                     <RelativeLayout
@@ -422,8 +429,8 @@
                             android:id="@+id/specification"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="12dp"
                             android:text="@string/specifications"
                             android:textColor="#555"
                             android:textSize="16sp"
@@ -433,27 +440,226 @@
                             android:id="@+id/spec_list"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginTop="40dp"
-                            android:nestedScrollingEnabled="false">
+                            android:layout_below="@id/specification"
+                            android:nestedScrollingEnabled="false"
+                            tools:itemCount="4"
+                            tools:listitem="@layout/specification_item">
 
                         </androidx.recyclerview.widget.RecyclerView>
 
                     </RelativeLayout>
 
                     <View
+                        android:id="@+id/scrollToDivider"
                         android:layout_width="match_parent"
-                        android:layout_height="10dp"
+                        android:layout_height="8dp"
                         android:background="@color/separator_light" />
 
 
                     <LinearLayout
+                        android:id="@+id/selectedShopHolder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/selectedShopClickHolder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:longClickable="false"
+                            android:orientation="horizontal"
+                            android:paddingLeft="20dp"
+                            android:paddingTop="20dp"
+                            android:paddingRight="15dp">
+
+                            <ImageView
+                                android:id="@+id/shopLogo"
+                                android:layout_width="90dp"
+                                android:layout_height="90dp"
+                                android:layout_marginTop="3dp"
+                                android:layout_marginEnd="20dp"
+                                android:adjustViewBounds="true"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/ic_evaly_placeholder" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:paddingRight="20dp">
+
+                                <TextView
+                                    android:id="@+id/shopName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:clickable="false"
+                                    android:ellipsize="end"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:maxLines="5"
+                                    android:paddingBottom="8dp"
+                                    android:textAlignment="textStart"
+                                    android:textColor="#333"
+                                    android:textSize="17sp"
+                                    tools:text="Shop Name" />
+
+                                <LinearLayout
+                                    android:id="@+id/shopLocationHolder"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="top"
+                                    android:paddingBottom="5dp">
+
+                                    <ImageView
+                                        android:layout_width="12dp"
+                                        android:layout_height="20dp"
+                                        android:layout_marginEnd="6dp"
+                                        android:adjustViewBounds="true"
+                                        android:src="@drawable/ic_marker_filled"
+                                        android:tint="#555" />
+
+                                    <TextView
+                                        android:id="@+id/shopLocation"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:maxLines="2"
+                                        android:textAlignment="textStart"
+                                        android:textColor="#555"
+                                        android:textIsSelectable="true"
+                                        android:textSize="14sp"
+                                        tools:text="Road 14, Dhanmondi 27, Dhaka" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/shopPhoneHolder"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_width="12dp"
+                                        android:layout_height="20dp"
+                                        android:layout_marginEnd="6dp"
+                                        android:adjustViewBounds="true"
+                                        android:src="@drawable/ic_call"
+                                        android:tint="#555" />
+
+                                    <TextView
+                                        android:id="@+id/shopPhone"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:autoLink="phone"
+                                        android:ellipsize="end"
+                                        android:maxLines="2"
+                                        android:textAlignment="textStart"
+                                        android:textColor="#555"
+                                        android:textColorLink="#555"
+                                        android:textIsSelectable="true"
+                                        android:textSize="14sp"
+                                        tools:text="01758154554" />
+                                </LinearLayout>
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    android:layout_marginTop="12dp"
+                                    android:layout_marginBottom="4dp"
+                                    android:background="#f1f3f4" />
+
+                                <LinearLayout
+                                    android:id="@+id/selectedShopPriceHolder"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/price"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:singleLine="true"
+                                        android:text=" ৳ 5000"
+                                        android:textColor="#f00"
+                                        android:textSize="18sp" />
+
+                                    <TextView
+                                        android:id="@+id/max_price"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_weight="0"
+                                        android:text=" ৳ 6000"
+                                        android:textColor="#777"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:paddingBottom="20dp">
+
+                            <Button
+                                android:id="@+id/add_cart"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginRight="7dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/btn_f1f3f4"
+                                android:fontFamily="sans-serif"
+                                android:paddingBottom="1dp"
+                                android:stateListAnimator="@null"
+                                android:text="@string/add_to_cart"
+                                android:textAllCaps="false"
+                                android:textColor="#333"
+                                android:textSize="14sp"
+                                android:textStyle="normal" />
+
+                            <Button
+                                android:id="@+id/buy_now"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:layout_marginLeft="7dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/btn_red"
+                                android:fontFamily="sans-serif"
+                                android:paddingBottom="1dp"
+                                android:stateListAnimator="@null"
+                                android:text="@string/buy_now"
+                                android:textAllCaps="false"
+                                android:textColor="#fff"
+                                android:textSize="14sp"
+                                android:textStyle="normal" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:background="@color/separator_light" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/availableShopsHolder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingLeft="10dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="0dp">
+                        android:paddingTop="15dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -464,8 +670,7 @@
                                 android:id="@+id/avlshop"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginTop="3dp"
+                                android:layout_marginLeft="20dp"
                                 android:layout_marginBottom="15dp"
                                 android:layout_weight="1"
                                 android:text="@string/available_at_shop"
@@ -482,7 +687,7 @@
                                 android:clickable="true"
                                 android:gravity="center_vertical"
                                 android:paddingStart="12dp"
-                                android:paddingTop="5dp"
+                                android:paddingTop="2dp"
                                 android:paddingEnd="2dp"
                                 android:paddingBottom="5dp">
 
@@ -508,7 +713,8 @@
                             android:layout_height="130dp"
                             android:layout_weight="0"
                             android:paddingTop="40dp"
-                            android:paddingBottom="60dp" />
+                            android:paddingBottom="60dp"
+                            tools:visibility="gone" />
 
                         <LinearLayout
                             android:id="@+id/shopScroller"
@@ -517,14 +723,17 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/availableShops"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:clipToPadding="false"
                                 android:nestedScrollingEnabled="false"
                                 android:orientation="horizontal"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                                android:paddingStart="6dp"
+                                android:paddingEnd="10dp"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                tools:listitem="@layout/available_shop" />
 
                         </LinearLayout>
 
@@ -558,15 +767,74 @@
 
                         </LinearLayout>
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:layout_marginTop="3dp"
+                            android:background="@color/separator_light" />
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="0dp">
+
+                        <TextView
+                            android:id="@+id/rateTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="Reviews &amp; Ratings"
+                            android:textColor="#555"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <include
+                            android:id="@+id/review"
+                            layout="@layout/layout_review_bar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginBottom="15dp"
+                            android:paddingRight="0dp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:background="@drawable/half_dp_bg_light" />
+
+                        <TextView
+                            android:id="@+id/viewAllReviews"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="17dp"
+                            android:text="View all or write a review"
+                            android:textAlignment="center"
+                            android:textColor="#f68b01"
+                            android:textSize="16sp" />
+
+
+                    </LinearLayout>
+
 
                     <View
 
                         android:layout_width="match_parent"
                         android:layout_height="10dp"
-                        android:layout_marginTop="3dp"
                         android:background="@color/separator_light" />
+
 
                 </LinearLayout>
 
@@ -577,9 +845,9 @@
                     android:layout_weight="0"
                     android:background="#fafafa"
                     android:paddingLeft="15dp"
-                    android:paddingTop="5dp"
+                    android:paddingTop="8dp"
                     android:paddingRight="15dp"
-                    android:paddingBottom="15dp"
+                    android:paddingBottom="18dp"
                     android:text="@string/explore_more_products"
                     android:textColor="#555"
                     android:textSize="18sp"

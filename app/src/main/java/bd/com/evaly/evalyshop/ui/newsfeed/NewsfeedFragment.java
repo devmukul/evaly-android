@@ -41,7 +41,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
-import org.jivesoftware.smack.SmackException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,10 +59,7 @@ import bd.com.evaly.evalyshop.models.newsfeed.FeedShareModel;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
-import bd.com.evaly.evalyshop.models.xmpp.ChatItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
-import bd.com.evaly.evalyshop.ui.chat.invite.ContactShareAdapter;
-import bd.com.evaly.evalyshop.ui.chat.viewmodel.RoomWIthRxViewModel;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedAdapter;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.ReplyAdapter;
@@ -72,7 +68,6 @@ import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
@@ -88,7 +83,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ArrayList<NewsfeedItem> itemsList;
     private Context context;
     private NewsfeedActivity activity;
-    private UserDetails userDetails;
     private LinearLayout not, progressContainer;
     // newfeed scroller
     private boolean loading = true;
@@ -131,7 +125,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private int maxCountComment;
     private int maxCountReply;
     private BottomSheetDialog bottomSheetDialog;
-    private RoomWIthRxViewModel viewModel;
 
     public NewsfeedFragment() {
         // Required empty public constructor
@@ -181,24 +174,16 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-    public UserDetails getUserDetails() {
-        return userDetails;
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        userDetails = new UserDetails(context);
         maxCountNewfeed = -1;
         maxCountComment = -1;
         maxCountReply = -1;
-
-        // Reply bottom sheet
-
         currentReplyPage = 1;
 
-        viewModel = ViewModelProviders.of(activity).get(RoomWIthRxViewModel.class);
 
         replyDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
         replyDialog.setContentView(R.layout.alert_replies);
@@ -274,7 +259,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         submitReply = replyDialog.findViewById(R.id.submitComment);
         reloadReply = replyDialog.findViewById(R.id.refresh);
 
-        if (userDetails.getToken().equals("")) {
+        if (CredentialManager.getToken().equals("")) {
 
             replyInput.setText(R.string.you_need_to_login_to_create_reply);
             replyInput.setEnabled(false);
@@ -376,7 +361,7 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         submitComment = commentDialog.findViewById(R.id.submitComment);
         reloadComment = commentDialog.findViewById(R.id.refresh);
 
-        if (userDetails.getToken().equals("")) {
+        if (CredentialManager.getToken().equals("")) {
 
             commentInput.setEnabled(false);
             commentInput.setText(R.string.login_to_comment);
@@ -1161,69 +1146,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         assert rvContacts != null;
         rvContacts.setLayoutManager(layoutManager);
-        viewModel.loadRosterList(CredentialManager.getUserName(), 1, 10000);
-        viewModel.rosterList.observe(this, rosterTables -> {
-            List<RosterTable> selectedRosterList = new ArrayList<>();
-            ContactShareAdapter contactShareAdapter = new ContactShareAdapter(getActivity(), rosterTables, (object, status) -> {
-                RosterTable table = (RosterTable) object;
-
-                if (status && !selectedRosterList.contains(table)) {
-                    selectedRosterList.add(table);
-                } else {
-                    selectedRosterList.remove(table);
-                }
-
-                assert tvCount != null;
-                tvCount.setText(String.format(Locale.ENGLISH, "(%d) ", selectedRosterList.size()));
-            });
-
-            assert llSend != null;
-            llSend.setOnClickListener(view -> {
-                FeedShareModel feedShareModel = new FeedShareModel(model.getSlug(), model.getBody(), model.getAttachment(), model.getCommentsCount() + "", model.getFavoriteCount() + "", model.getAuthorFullName());
-
-                if (AppController.getmService().xmpp.isLoggedin()) {
-                    try {
-                        for (RosterTable rosterTable : selectedRosterList) {
-                            ChatItem chatItem = new ChatItem(new Gson().toJson(feedShareModel), CredentialManager.getUserData().getFirst_name() + " " + CredentialManager.getUserData().getLast_name(), CredentialManager.getUserData().getImage_sm(), CredentialManager.getUserData().getFirst_name(), System.currentTimeMillis(), CredentialManager.getUserName() + "@" + Constants.XMPP_HOST, rosterTable.id, Constants.TYPE_FEED, true, "");
-                            AppController.getmService().xmpp.sendMessage(chatItem);
-                        }
-                        for (int i = 0; i < rosterTables.size(); i++) {
-                            rosterTables.get(i).isSelected = false;
-                        }
-                        contactShareAdapter.notifyDataSetChanged();
-                        selectedRosterList.clear();
-                        assert tvCount != null;
-                        tvCount.setText(String.format(Locale.ENGLISH, "(%d) ", selectedRosterList.size()));
-                        Toast.makeText(getActivity(), "Sent!", Toast.LENGTH_LONG).show();
-                    } catch (SmackException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    AppController.getmService().xmpp.connect();
-                }
-            });
-
-            rvContacts.setAdapter(contactShareAdapter);
-            assert etSearch != null;
-            etSearch.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    rvContacts.getRecycledViewPool().clear();
-                    contactShareAdapter.getFilter().filter(charSequence);
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    rvContacts.getRecycledViewPool().clear();
-                    contactShareAdapter.getFilter().filter(charSequence);
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-
-                }
-            });
-        });
 
         assert ivBack != null;
         ivBack.setOnClickListener(view -> bottomSheetDialog.dismiss());

@@ -24,7 +24,7 @@ public class ShopApiHelper extends BaseApiHelper {
         IApiClient iApiClient = getiApiClient();
         Call<ShopDetailsModel> call;
 
-        if (!campaignSlug.equals(""))
+        if (campaignSlug != null && !campaignSlug.equals(""))
             call = iApiClient.getCampaignShopDetails(token, campaignSlug, shopSlug, page, limit, categorySlug, search);
         else
             call = iApiClient.getShopDetails(token, shopSlug, page, limit, categorySlug, search);

@@ -3,11 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -24,7 +23,7 @@
                 android:elevation="0dp"
                 android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:layout_scrollFlags="enterAlwaysCollapsed|scroll|exitUntilCollapsed"
                 app:titleEnabled="false">
 
                 <LinearLayout
@@ -114,8 +113,11 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
+                    android:background="#fff"
                     android:elevation="0dp"
                     android:fitsSystemWindows="true"
+                    android:paddingRight="15dp"
+                    app:layout_collapseMode="pin"
                     app:title="Campaign Details" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -127,7 +129,8 @@
         <bd.com.evaly.evalyshop.views.StickyScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fafafa">
+            android:background="#fafafa"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <LinearLayout
                 android:id="@+id/bottom_sheet"
@@ -156,7 +159,7 @@
                     android:paddingLeft="10dp"
                     android:paddingTop="10dp"
                     android:paddingRight="10dp"
-                    android:paddingBottom="25dp"
+                    android:paddingBottom="35dp"
                     app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                     app:spanCount="2"
                     tools:itemCount="7" />
@@ -190,5 +193,5 @@
             </LinearLayout>
         </bd.com.evaly.evalyshop.views.StickyScrollView>
 
-    </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

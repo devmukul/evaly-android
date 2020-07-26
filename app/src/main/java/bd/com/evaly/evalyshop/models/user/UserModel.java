@@ -1,8 +1,9 @@
 package bd.com.evaly.evalyshop.models.user;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserModel {
+public class UserModel implements Serializable {
     private int id;
     private String last_login;
     private String image_sm;
@@ -23,7 +24,14 @@ public class UserModel {
     private boolean verified;
 
     public String getImage_sm() {
-        return image_sm;
+        if (image_sm == null)
+            return "";
+        else
+            return image_sm;
+    }
+
+    public void setImage_sm(String image_sm) {
+        this.image_sm = image_sm;
     }
 
     public List<String> getGroups() {
@@ -59,6 +67,8 @@ public class UserModel {
     }
 
     public String getFirst_name() {
+        if (first_name == null)
+            return "";
         return first_name;
     }
 
@@ -67,11 +77,17 @@ public class UserModel {
     }
 
     public String getLast_name() {
+        if (last_name == null)
+            return "";
         return last_name;
     }
 
     public void setLast_name(String last_name) {
         this.last_name = last_name;
+    }
+
+    public String getFullName() {
+        return getFirst_name() + " " + getLast_name();
     }
 
     public String getCreated_at() {
@@ -99,7 +115,10 @@ public class UserModel {
     }
 
     public String getAddresses() {
-        return address;
+        if (address == null)
+            return "";
+        else
+            return address;
     }
 
     public void setAddresses(String addresses) {
@@ -123,6 +142,8 @@ public class UserModel {
     }
 
     public String getContacts() {
+        if (contact == null)
+            return "";
         return contact;
     }
 
@@ -160,9 +181,5 @@ public class UserModel {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
-    }
-
-    public void setImage_sm(String image_sm) {
-        this.image_sm = image_sm;
     }
 }

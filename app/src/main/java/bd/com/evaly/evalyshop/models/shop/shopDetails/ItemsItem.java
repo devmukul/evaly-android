@@ -2,9 +2,10 @@ package bd.com.evaly.evalyshop.models.shop.shopDetails;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ItemsItem{
+public class ItemsItem implements Serializable {
 
 	@SerializedName("item_price")
 	private double itemPrice;

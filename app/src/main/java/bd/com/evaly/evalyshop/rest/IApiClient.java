@@ -26,6 +26,11 @@ import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListPurchasedItem;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
 import bd.com.evaly.evalyshop.models.image.ImageDataModel;
+import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
+import bd.com.evaly.evalyshop.models.issueNew.comment.IssueCommentBody;
+import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
+import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
+import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
@@ -43,7 +48,7 @@ import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
-import bd.com.evaly.evalyshop.models.xmpp.RosterItemModel;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -60,6 +65,36 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+
+    // chat
+
+    @GET("https://"+Constants.XMPP_DOMAIN + "/rest/messages/unread-messages/count/{username}")
+    Call<CommonDataResponse<String>> getUnreadedMessageCount(@Header("Authorization") String token,
+                                                             @Path("username") String username);
+
+    // issue ticket
+    @GET(UrlUtils.DOMAIN + "issue/api/v1/users/categories")
+    Call<CommonDataResponse<List<IssueCategoryModel>>> getIssueTicketCategory(@Header("Authorization") String token,
+                                                                              @Query("limit") int limit);
+
+    @GET(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
+    Call<CommonDataResponse<List<IssueListModel>>> getIssueTicketList(@Header("Authorization") String token,
+                                                                      @Query("invoice_number") String invoice);
+
+    @POST(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
+    Call<CommonDataResponse<IssueListModel>> createIssueTicket(@Header("Authorization") String token,
+                                                                     @Body IssueCreateBody body);
+
+    @GET(UrlUtils.DOMAIN + "issue/api/v1/common/comments")
+    Call<CommonDataResponse<List<IssueTicketCommentModel>>> getIssueTicketComment(@Header("Authorization") String token,
+                                                                                  @Query("ticket_id") int ticketId);
+
+    @POST(UrlUtils.DOMAIN + "issue/api/v1/common/comments")
+    Call<CommonDataResponse<IssueTicketCommentModel>> createIssueTicketComment(@Header("Authorization") String token,
+                                                                                     @Body IssueCommentBody body,
+                                                                                     @Query("ticket_id") String tickerId);
+
 
     @POST(UrlUtils.SET_PASSWORD)
     Call<JsonObject> setPassword(@Body HashMap<String, String> setPasswordModel);
@@ -82,11 +117,17 @@ public interface IApiClient {
     @PUT(UrlUtils.BASE_URL_AUTH + "user-info-update/")
     Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
+    @POST(UrlUtils.UPDATE_VCARD)
+    Call<JsonObject> setUserDataToXmpp(@Body HashMap<String, String> data);
+
     @POST(UrlUtils.REFRESH_TOKEN)
     Call<JsonObject> refreshToken(@Body HashMap<String, String> data);
 
     @POST(UrlUtils.CHANGE_XMPP_PASSWORD)
     Call<JsonPrimitive> changeXmppPassword(@Body HashMap<String, String> data);
+
+    @POST(UrlUtils.XMPP_REGISTER)
+    Call<JsonObject> registerXmpp(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
     @POST(UrlUtils.ADD_ROSTER)
     Call<JsonPrimitive> addRoster(@Body HashMap<String, String> data);
@@ -94,8 +135,6 @@ public interface IApiClient {
     @GET(UrlUtils.INVITATION_LIST + "{phone}/")
     Call<JsonArray> getInvitationList(@Header("Authorization") String token, @Path("phone") String phone);
 
-    @GET(UrlUtils.ROSTER_LIST + "{phone}/")
-    Call<List<RosterItemModel>> getRosterList(@Header("Authorization") String token, @Path("phone") String phone, @Query("page") int page, @Query("limit") int limit);
 
     @POST(UrlUtils.SEND_CUSTOM_MESSAGE)
     Call<JsonObject> sendCustomMessage(@Header("Authorization") String token, @Body HashMap<String, String> data);
@@ -200,7 +239,7 @@ public interface IApiClient {
     // campaign APIs
 
     @GET(UrlUtils.CAMPAIGNS)
-    Call<CommonDataResponse<List<CampaignItem>>> getCampaigns();
+    Call<CommonDataResponse<List<CampaignItem>>> getCampaigns(@Query("page") int page);
 
     @GET(UrlUtils.CAMPAIGNS + "/{group}/shops")
     Call<CommonDataResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);
@@ -221,6 +260,9 @@ public interface IApiClient {
 
     @PUT(UrlUtils.BASE_URL + "orders/customer/cancel-order/{invoice_no}/")
     Call<JsonObject> cancelOrder(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo, @Body HashMap<String, String> body);
+
+    @PUT(UrlUtils.BASE_URL + "orders/customer/deliver-order/{invoice_no}/")
+    Call<JsonObject> confirmDelivery(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo);
 
 
     // brand
@@ -285,7 +327,7 @@ public interface IApiClient {
     @GET(UrlUtils.DOMAIN + "cpn/gift-cards/retrieve/{slug}")
     Call<JsonObject> getGiftCardDetails(@Path("slug") String slug);
 
-    @GET(UrlUtils.DOMAIN +"cpn/gift-card-orders")
+    @GET(UrlUtils.DOMAIN + "cpn/gift-card-orders")
     Call<CommonDataResponse<List<GiftCardListPurchasedItem>>> getPurchasedGiftCardList(@Header("Authorization") String token, @Query("show") String show, @Query("page") int page);
 
     @POST(UrlUtils.DOMAIN + "cpn/gift-card-orders/gift-code/retrieve")
@@ -303,6 +345,7 @@ public interface IApiClient {
     @POST(UrlUtils.DOMAIN + "pay/bank_deposit/")
     Call<JsonObject> payViaBank(@Header("Authorization") String token, @Body HashMap<String, String> body);
 
+
     // reviews
     @GET(UrlUtils.BASE_URL + "reviews/shops/{slug}/")
     Call<CommonDataResponse<List<ReviewItem>>> getShopReviews(@Header("Authorization") String token, @Path("slug") String shopSlug, @Query("page") int page, @Query("limit") int limit);
@@ -310,10 +353,23 @@ public interface IApiClient {
     @POST(UrlUtils.BASE_URL + "add-review/{shopSlug}/")
     Call<JsonObject> postShopReview(@Header("Authorization") String token, @Path("shopSlug") String slug, @Body JsonObject body);
 
-
     @GET(UrlUtils.BASE_URL + "review-eligibility/{shopSlug}/")
     Call<JsonObject> checkShopReviewEligibility(@Header("Authorization") String token, @Path("shopSlug") String slug);
 
+
+    // product reviews
+
+    @GET(UrlUtils.BASE_URL + "public/product-review-summary/{sku}")
+    Call<JsonObject> getProductReviewSummary(@Header("Authorization") String token, @Path("sku") String sku);
+
+    @GET(UrlUtils.BASE_URL + "public/product-reviews/{slug}/")
+    Call<CommonDataResponse<List<ReviewItem>>> getProductReviews(@Header("Authorization") String token, @Path("slug") String shopSlug, @Query("page") int page, @Query("limit") int limit);
+
+    @POST(UrlUtils.BASE_URL + "add-product-review/{slug}/")
+    Call<JsonObject> postProductReview(@Header("Authorization") String token, @Path("slug") String slug, @Body JsonObject body);
+
+    @GET(UrlUtils.BASE_URL + "product-review-eligibility/{slug}/")
+    Call<JsonObject> checkProductReviewEligibility(@Header("Authorization") String token, @Path("slug") String slug);
 
     // Newsfeed
 
@@ -396,6 +452,9 @@ public interface IApiClient {
     // refund
     @POST(UrlUtils.BASE_URL + "/orders/request-refund")
     Call<CommonDataResponse<String>> postRequestRefund(@Header("Authorization") String token, @Body HashMap<String, String> body);
+
+    @POST(UrlUtils.BASE_URL + "confirm/refund-request/{invoice}")
+    Call<CommonDataResponse<String>> postRequestRefundConfirmOTP(@Header("Authorization") String token, @Body HashMap<String, Integer> body, @Path("invoice") String slug);
 
     // auth 2.0
 

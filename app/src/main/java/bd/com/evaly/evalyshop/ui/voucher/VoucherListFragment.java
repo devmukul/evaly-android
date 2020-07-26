@@ -43,10 +43,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.ui.voucher.adapter.VoucherDetailsAdapter;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.voucher.VoucherDetails;
-import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.ui.voucher.adapter.VoucherDetailsAdapter;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 
@@ -63,19 +62,14 @@ public class VoucherListFragment extends Fragment {
     View mViewBg;
     ViewDialog dialog;
     ImageView voucher1,voucher2,image,plus,minus;
-    UserDetails userDetails;
     RelativeLayout rel1,rel2;
     TextView details,name,amount,total;
     EditText quantity;
     int voucherAmount=0;
     Button placeOrder;
     String voucherSlug="";
-
     LinearLayout noItem;
-
-
     Context context;
-
     int attempt = 0;
     String userAgent;
 
@@ -123,16 +117,11 @@ public class VoucherListFragment extends Fragment {
         placeOrder=view.findViewById(R.id.place_order);
         voucherDetails2=new ArrayList<>();
         rq = Volley.newRequestQueue(context);
-        userDetails=new UserDetails(context);
         noItem = view.findViewById(R.id.noItem);
 
-
-        mViewBg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                mViewBg.setVisibility(View.GONE);
-            }
+        mViewBg.setOnClickListener(v -> {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            mViewBg.setVisibility(View.GONE);
         });
 
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -12,21 +13,28 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetRefundRequestBinding;
+import bd.com.evaly.evalyshop.databinding.ConfirmOtpViewBinding;
+import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -178,18 +186,67 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         OrderApiHelper.requestRefund(CredentialManager.getToken(), body, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
-                if (getContext() != null) {
-                    dialog.hideDialog();
-                    Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
-                    if (response.getSuccess())
-                        onSuccess();
+                Logger.d(statusCode);
+                dialog.hideDialog();
+                if (statusCode == 202){
+                    final Dialog alert = new Dialog(getActivity(), R.style.FullWidthTransparentDialog);
+                    alert.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    alert.setCancelable(true);
+                    final ConfirmOtpViewBinding dialogConfirmDeliveryBinding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.confirm_otp_view, null, false);
+
+                    dialogConfirmDeliveryBinding.verify.setOnClickListener(v -> {
+                        if (dialogConfirmDeliveryBinding.code.getText().toString().trim().equals("")) {
+                            ToastUtils.show("Please enter captcha code");
+                        } else{
+                            dialog.showDialog();
+                            HashMap<String, Integer> otpBody = new HashMap<>();
+                            otpBody.put("otp_token", Integer.parseInt(dialogConfirmDeliveryBinding.code.getText().toString()));
+                            OrderApiHelper.requestRefundConfirmOTP(CredentialManager.getToken(), invoice_no.toUpperCase(), otpBody, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+                                @Override
+                                public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
+                                    if (!response.getSuccess()){
+                                        Toast.makeText(getActivity().getApplicationContext(), response.getMessage(), Toast.LENGTH_LONG).show();
+                                    }else{
+                                        Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                    dialog.hideDialog();
+                                    alert.dismiss();
+                                }
+
+                                @Override
+                                public void onFailed(String errorBody, int errorCode) {
+                                    dialog.hideDialog();
+                                    alert.dismiss();
+                                    Toast.makeText(getActivity().getApplicationContext(), R.string.something_wrong, Toast.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void onAuthError(boolean logout) {
+
+                                }
+                            });
+                        }
+
+
+                    });
+
+                    alert.setContentView(dialogConfirmDeliveryBinding.getRoot());
+                    alert.show();
+                }else {
+                    if (getContext() != null) {
+                        dialog.hideDialog();
+                        Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (response.getSuccess())
+                            onSuccess();
+                    }
                 }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                Logger.d(errorBody);
                 if (getContext() != null) {
+                    Logger.d(errorBody);
                     dialog.hideDialog();
                     Toast.makeText(getContext(), "Couldn't request refund, try again later", Toast.LENGTH_SHORT).show();
                 }

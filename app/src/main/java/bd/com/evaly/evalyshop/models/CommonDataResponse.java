@@ -31,6 +31,18 @@ public class CommonDataResponse<T> {
     @Expose
     private JsonObject meta;
 
+    @SerializedName("meta_info")
+    @Expose
+    private MetaInfo metaInfo;
+
+    public MetaInfo getMetaInfo() {
+        return metaInfo;
+    }
+
+    public void setMetaInfo(MetaInfo metaInfo) {
+        this.metaInfo = metaInfo;
+    }
+
     public JsonObject getMeta() {
         return meta;
     }

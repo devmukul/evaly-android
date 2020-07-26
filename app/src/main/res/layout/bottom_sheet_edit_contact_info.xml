@@ -41,6 +41,7 @@
             android:singleLine="true"
             android:imeOptions="actionGo"
             android:paddingLeft="15dp"
+            android:inputType="numberDecimal"
             android:textSize="16sp" />
 
 

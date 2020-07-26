@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel;
 
 public class TabsViewModel extends ViewModel {
 
+
+    private int tabPosition = -1;
+
     private MutableLiveData<Integer> itemCount = new MutableLiveData<>();
 
     public LiveData<Integer> getItemCount() {
@@ -21,5 +24,13 @@ public class TabsViewModel extends ViewModel {
             return 0;
         else
             return itemCount.getValue();
+    }
+
+    public int getTabPosition() {
+        return tabPosition;
+    }
+
+    public void setTabPosition(int tabPosition) {
+        this.tabPosition = tabPosition;
     }
 }

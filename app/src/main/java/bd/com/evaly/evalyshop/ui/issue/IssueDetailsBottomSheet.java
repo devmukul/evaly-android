@@ -21,8 +21,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,25 +28,25 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.BottomSheetIssueDetailsBinding;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
-import bd.com.evaly.evalyshop.models.issue.IssueBodyModel;
-import bd.com.evaly.evalyshop.models.issue.IssuesModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
+import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
+import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
 import bd.com.evaly.evalyshop.util.Utils;
-import retrofit2.Response;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
 
     private BottomSheetIssueDetailsBinding binding;
-    private IssuesModel issueModel;
+    private IssueListModel issueModel;
     private IssueReplyAdapter adapter;
-    private List<IssuesModel.ReplyModel> itemList = new ArrayList<>();
+    private List<IssueTicketCommentModel> itemList = new ArrayList<>();
 
-    public static IssueDetailsBottomSheet newInstance(IssuesModel issueModel) {
+    public static IssueDetailsBottomSheet newInstance(IssueListModel issueModel) {
         IssueDetailsBottomSheet bottomSheet = new IssueDetailsBottomSheet();
         Bundle bundle = new Bundle();
         bundle.putSerializable("model", issueModel);
@@ -64,7 +62,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         if (getArguments() == null)
             dismiss();
         else {
-            issueModel = (IssuesModel) getArguments().getSerializable("model");
+            issueModel = (IssueListModel) getArguments().getSerializable("model");
         }
     }
 
@@ -104,14 +102,33 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void loadReplies() {
-        binding.progressContainer.setVisibility(View.GONE);
-        itemList.addAll(issueModel.getIssue_replies());
-        adapter.notifyDataSetChanged();
 
-        if (itemList.size() == 0)
-            binding.not.setVisibility(View.VISIBLE);
-        else
-            binding.not.setVisibility(View.GONE);
+
+        IssueApiHelper.getIssueCommentList(issueModel.getId(), new ResponseListenerAuth<CommonDataResponse<List<IssueTicketCommentModel>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<IssueTicketCommentModel>> response, int statusCode) {
+                binding.progressContainer.setVisibility(View.GONE);
+                itemList.addAll(response.getData());
+                adapter.notifyDataSetChanged();
+
+                if (itemList.size() == 0)
+                    binding.not.setVisibility(View.VISIBLE);
+                else
+                    binding.not.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+
     }
 
 
@@ -129,50 +146,46 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
         ProgressDialog dialog = new ProgressDialog(getContext());
         dialog.show();
 
-        IssueBodyModel model = new IssueBodyModel();
-        model.setBody(binding.commentInput.getText().toString());
-
-        AuthApiHelper.replyIssue(binding.commentInput.getText().toString(), issueModel.getId() + "", new DataFetchingListener<Response<JsonObject>>() {
+        IssueApiHelper.createIssueComment(issueModel.getId(), binding.commentInput.getText().toString(), new ResponseListenerAuth<CommonDataResponse<IssueTicketCommentModel>, String>() {
             @Override
-            public void onDataFetched(Response<JsonObject> response) {
+            public void onDataFetched(CommonDataResponse<IssueTicketCommentModel> response, int statusCode) {
                 binding.commentInput.setText("");
                 dialog.dismiss();
-                if (response.code() == 200 || response.code() == 201) {
-                    binding.not.setVisibility(View.GONE);
-                    IssuesModel.ReplyModel replyModel = new Gson().fromJson(response.body(), IssuesModel.ReplyModel.class);
-                    itemList.add(replyModel);
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(getContext(), AppController.getmContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-                }
+                if (response.getData() != null)
+                    itemList.add(response.getData());
+                adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onFailed(int status) {
+            public void onFailed(String errorBody, int errorCode) {
                 dialog.dismiss();
                 Toast.makeText(getContext(), AppController.getmContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
             }
-        });
 
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
 
     }
 
-    private void initCommentHeader(IssuesModel postModel) {
+    private void initCommentHeader(IssueListModel postModel) {
 
-        binding.orderId.setText(issueModel.getOrder_invoice());
+        binding.orderId.setText(issueModel.getInvoiceNumber());
 
-        if (issueModel.getAttachment() != null) {
+        if (issueModel.getAttachments().size() > 0) {
             Glide.with(binding.getRoot())
-                    .load(postModel.getAttachment())
+                    .load(postModel.getAttachments().get(0))
                     .into(binding.postImage);
             binding.postImage.setVisibility(View.VISIBLE);
         } else
             binding.postImage.setVisibility(View.GONE);
 
-        binding.text.setText(postModel.getDescription());
-        binding.date.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss", "", postModel.getCreated_at())));
+        binding.text.setText(postModel.getAdditionalInfo());
+        binding.date.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMTIssue("yyyy-MM-dd HH:mm:ss.SSS", "", postModel.getCreatedAt())));
 
-        String orderStatus = postModel.getOrder_status();
+        String orderStatus = postModel.getStatus();
 
         if (orderStatus.toLowerCase().equalsIgnoreCase("cancel")) {
             binding.tvStatus.setBackgroundColor(Color.parseColor("#d9534f"));
@@ -210,11 +223,11 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
             binding.tvIssueStatus.setBackgroundColor(Color.parseColor("#33d274"));
         }
 
-        binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getIssue_type()));
+        binding.issueType.setText(Utils.toFirstCharUpperAll(postModel.getCategory().getName()));
 
         binding.postImage.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ImagePreview.class);
-            intent.putExtra("image", postModel.getAttachment());
+            intent.putExtra("image", postModel.getAttachments().get(0));
             startActivity(intent);
         });
     }

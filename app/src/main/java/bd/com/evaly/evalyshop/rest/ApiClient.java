@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.rest;
 
 import androidx.annotation.Nullable;
 
-import org.jivesoftware.smack.util.TLSUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -109,7 +108,6 @@ public class ApiClient {
 
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             okHttpClient = okHttpClient.newBuilder()
-                    .sslSocketFactory(sslSocketFactory, new TLSUtils.AcceptAllTrustManager())
                     .connectTimeout(1, TimeUnit.MINUTES)
                     .readTimeout(2, TimeUnit.MINUTES)
                     .writeTimeout(2, TimeUnit.MINUTES)

@@ -26,44 +26,15 @@ public class Balance {
 
     public static void update(Activity context, boolean openDashboard) {
 
-        UserDetails userDetails = new UserDetails(context);
 
         AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
 
                 JsonObject data = response.getAsJsonObject("data");
-
-                userDetails.setBalance(data.get("balance").getAsString());
+                CredentialManager.setBalance(data.get("balance").getAsDouble());
 
                 JsonObject ob = data.getAsJsonObject("user");
-
-                if (ob.has("groups"))
-                    userDetails.setGroup(ob.getAsJsonArray("groups").toString());
-
-                userDetails.setUserName(ob.get("username").getAsString());
-
-                if (!ob.get("first_name").isJsonNull())
-                    userDetails.setFirstName(ob.get("first_name").getAsString());
-
-                if (!ob.get("last_name").isJsonNull())
-                    userDetails.setLastName(ob.get("last_name").getAsString());
-
-                if (!ob.get("email").isJsonNull())
-                    userDetails.setEmail(ob.get("email").getAsString());
-
-                if (!ob.get("contact").isJsonNull())
-                    userDetails.setPhone(ob.get("contact").getAsString());
-
-                if (!ob.get("address").isJsonNull())
-                    userDetails.setJsonAddress(ob.get("address").getAsString());
-
-                if (!ob.get("profile_pic_url").isJsonNull())
-                    userDetails.setProfilePicture(ob.get("profile_pic_url").getAsString());
-
-                if (!ob.get("image_sm").isJsonNull())
-                    userDetails.setProfilePictureSM(ob.get("image_sm").getAsString());
-
                 UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
 
                 if (ob.get("first_name").isJsonNull())
@@ -105,7 +76,6 @@ public class Balance {
                 });
 
                 if (openDashboard) {
-                    // Toast.makeText(context, "Successfully signed in", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, UserDashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("from", "signin");
                     context.startActivity(intent);
@@ -132,13 +102,12 @@ public class Balance {
 
     public static void update(Activity context, TextView textView) {
 
-        UserDetails userDetails = new UserDetails(context);
 
         AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 response = response.getAsJsonObject("data");
-                userDetails.setBalance(response.get("balance").getAsString());
+                CredentialManager.setBalance(response.get("balance").getAsDouble());
 
                 if (context instanceof OrderDetailsActivity)
                     textView.setText(Html.fromHtml(String.format(Locale.ENGLISH, "Balance: <b>৳ %s</b>", response.get("balance").getAsString())));

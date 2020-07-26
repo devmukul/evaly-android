@@ -1,18 +1,15 @@
 package bd.com.evaly.evalyshop.ui.main;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -37,13 +33,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.JsonObject;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
-import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-
-import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.BuildConfig;
@@ -53,30 +47,23 @@ import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.wishlist.WishListDao;
 import bd.com.evaly.evalyshop.databinding.ActivityMainBinding;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.xmpp.SignupModel;
-import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
-import bd.com.evaly.evalyshop.service.XmppConnectionIntentService;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
-import bd.com.evaly.evalyshop.ui.chat.ChatDetailsActivity;
-import bd.com.evaly.evalyshop.ui.chat.ChatListActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
 import bd.com.evaly.evalyshop.ui.menu.InviteEarn;
+import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
 import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
-import bd.com.evaly.evalyshop.util.LocationUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPHandler;
-import bd.com.evaly.evalyshop.util.xmpp.XMPPService;
-import bd.com.evaly.evalyshop.util.xmpp.XmppCustomEventListener;
-import retrofit2.Response;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
@@ -85,67 +72,11 @@ public class MainActivity extends BaseActivity {
     public boolean isLaunchActivity = true;
     private AlertDialog exitDialog;
     private AlertDialog.Builder exitDialogBuilder;
-    private UserDetails userDetails;
     private AppController mChatApp = AppController.getInstance();
-    private XMPPHandler xmppHandler;
     private NavController navController;
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
-
-    private XmppCustomEventListener xmppCustomEventListener = new XmppCustomEventListener() {
-        @Override
-        public void onConnected() {
-            if (AppController.getmService() != null) {
-                xmppHandler = AppController.getmService().xmpp;
-                xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-                xmppHandler.login();
-            }
-        }
-
-        public void onLoggedIn() {
-            if (xmppHandler != null) {
-                CredentialManager.saveUserRegistered(true);
-                if (xmppHandler.isLoggedin()) {
-                    VCard vCard = xmppHandler.mVcard;
-                    if (CredentialManager.getUserData() != null) if (vCard != null) {
-                        if (vCard.getFirstName() == null || vCard.getLastName() == null)
-                            xmppHandler.updateUserInfo(CredentialManager.getUserData());
-                        disconnectXmpp();
-                    }
-                }
-            }
-        }
-
-        public void onLoginFailed(String msg) {
-            Logger.d(msg);
-            if (msg.contains("not-authorized")){
-                AppController.logout(MainActivity.this);
-            } else if (msg.contains("already logged in")) {
-                CredentialManager.saveUserRegistered(true);
-                disconnectXmpp();
-
-            }  else {
-                if (xmppHandler == null) {
-                    if (AppController.getmService() != null)
-                        if (AppController.getmService().xmpp != null)
-                            xmppHandler = AppController.getmService().xmpp;
-                } else {
-                    if (xmppHandler.isConnected())
-                        xmppHandler.Signup(new SignupModel(CredentialManager.getUserName(), CredentialManager.getPassword(), CredentialManager.getPassword()));
-                }
-            }
-        }
-
-        public void onSignupSuccess() {
-            xmppHandler.setUserPassword(CredentialManager.getUserName(), CredentialManager.getPassword());
-            xmppHandler.login();
-            disconnectXmpp();
-        }
-
-        public void onSignupFailed(String msg) {
-
-        }
-    };
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     public void changeLanguage(String lang) {
         Locale myLocale;
@@ -171,45 +102,51 @@ public class MainActivity extends BaseActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        if (!CredentialManager.getToken().equals("") && CredentialManager.getUserData() == null) {
+            AppController.logout(this);
+            return;
+        }
+
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
         navController.createDeepLink();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView userNameNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.userNameNavHeader);
-        TextView phoneNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.phone);
-        userDetails = new UserDetails(this);
-
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
         });
+
+        if (!CredentialManager.getToken().isEmpty() && !CredentialManager.isUserRegistered()) {
+            Logger.e(CredentialManager.isUserRegistered() + "");
+            viewModel.registerXMPP();
+        }
 
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
                     if (item.getItemId() == R.id.userDashboardActivity) {
-                        if (userDetails.getToken().equals(""))
+                        if (CredentialManager.getToken().equals(""))
                             startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         else
                             startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
                         return false;
                     } else if (item.getItemId() == R.id.homeFragment) {
-
-                        // navController.popBackStack(R.id.home_nav_graph, true);
                         navController.navigate(R.id.action_homeFragment_Pop);
                         return false;
                     } else
                         return onNavDestinationSelected(item, navController);
                 });
 
-
-        checkUpdate();
+        setupRemoteConfig();
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
         WishListDao wishListDao = appDatabase.wishListDao();
         CartDao cartDao = appDatabase.cartDao();
+
+
+        binding.fabCreate.setOnClickListener(view -> navController.navigate(R.id.expressProductSearchFragment));
 
         BottomNavigationItemView itemView = binding.bottomNavigationView.findViewById(R.id.wishListFragment);
         View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
@@ -250,9 +187,7 @@ public class MainActivity extends BaseActivity {
             if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals(""))
                 AppController.logout(MainActivity.this);
             else {
-                if (!CredentialManager.getToken().equals("") && !CredentialManager.isUserRegistered())
-                    if (AppController.getInstance().isNetworkConnected())
-                        AsyncTask.execute(() -> startXmppService());
+
             }
         }
 
@@ -261,87 +196,17 @@ public class MainActivity extends BaseActivity {
 
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
 
-        if (!CredentialManager.getToken().equals(""))
+        if (!CredentialManager.getToken().equals("")) {
             FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_" + strNew));
-        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_all_user"));
-
-
-        if (userDetails.getToken().equals("")) {
-            binding.drawerLayout.removeView(binding.navView);
-            binding.navView2.setNavigationItemSelectedListener(menuItem -> {
-                switch (menuItem.getItemId()) {
-                    case R.id.nav_wishlist:
-                        navController.navigate(R.id.wishListFragment);
-                        break;
-                    case R.id.nav_contact:
-                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
-                        break;
-                    case R.id.nav_sign_in:
-                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                        break;
-                    case R.id.nav_home:
-                        finish();
-                        this.startActivity(getIntent());
-                        this.overridePendingTransition(0, 0);
-                        break;
-                }
-                new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
-                return true;
-            });
-
-        } else {
-
-            FirebaseMessaging.getInstance().subscribeToTopic("USER." + userDetails.getUserName());
-
-            userNameNavHeader.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
-            phoneNavHeader.setText(userDetails.getUserName());
-            binding.drawerLayout.removeView(binding.navView2);
-            binding.navView.setNavigationItemSelectedListener(menuItem -> {
-                switch (menuItem.getItemId()) {
-                    case R.id.nav_wishlist:
-                        navController.navigate(R.id.wishListFragment);
-                        break;
-                    case R.id.nav_contact:
-                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
-                        break;
-                    case R.id.nav_home:
-                        finish();
-                        startActivity(getIntent());
-                        break;
-                    case R.id.nav_account:
-                        startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
-                        break;
-                    case R.id.nav_orders:
-                        startActivity(new Intent(MainActivity.this, OrderListActivity.class));
-                        break;
-                    case R.id.nav_cart:
-                        startActivity(new Intent(MainActivity.this, CartActivity.class));
-                        break;
-                    case R.id.nav_invite_ref:
-                        startActivity(new Intent(MainActivity.this, InviteEarn.class));
-                        break;
-                    case R.id.nav_voucher:
-                        startActivity(new Intent(MainActivity.this, VoucherActivity.class));
-                        break;
-                    case R.id.nav_messages:
-                        startActivity(new Intent(MainActivity.this, ChatListActivity.class));
-                        break;
-                    case R.id.nav_followed_shops:
-                        Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
-                        inf.putExtra("title", "Followed Shops");
-                        inf.putExtra("slug", "shop-subscriptions");
-                        startActivity(inf);
-                }
-                new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
-                return true;
-            });
+            FirebaseMessaging.getInstance().subscribeToTopic("USER." + CredentialManager.getUserName());
         }
-
+        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_all_user"));
 
         viewModel.getBackOnClick().observe(this, aBoolean -> {
             if (aBoolean)
                 onBackPressed();
         });
+
         viewModel.getDrawerOnClick().observe(this, aBoolean -> {
             if (aBoolean)
                 binding.drawerLayout.openDrawer(Gravity.START);
@@ -405,25 +270,84 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    public UserDetails getUserDetails() {
+    private void setupRemoteConfig() {
 
-        return userDetails;
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(800)
+                .build();
+        //.setDeveloperModeEnabled(BuildConfig.DEBUG)
+
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+        checkRemoteConfig();
     }
 
-    private void startXmppService() {
-        startService(new Intent(MainActivity.this, XmppConnectionIntentService.class));
+    private void checkRemoteConfig() {
+        mFirebaseRemoteConfig
+                .fetchAndActivate()
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        boolean isForce = mFirebaseRemoteConfig.getBoolean("force_update");
+                        boolean shouldLogout = mFirebaseRemoteConfig.getBoolean("logout_on_force_update");
+                        boolean isUnderMaintenance = mFirebaseRemoteConfig.getBoolean("under_maintenance");
+                        String underMaintenanceMessage = mFirebaseRemoteConfig.getString("under_maintenance_message");
+
+                        int latestVersion = (int) mFirebaseRemoteConfig.getLong("latest_version");
+                        int versionCode = BuildConfig.VERSION_CODE;
+
+                        if (isUnderMaintenance) {
+                            Intent intent = new Intent(MainActivity.this, UnderMaintenanceActivity.class);
+                            intent.putExtra("text", underMaintenanceMessage);
+                            startActivity(intent);
+                            return;
+                        }
+
+                        if (versionCode < latestVersion && isForce) {
+                            if (shouldLogout) {
+                                MyPreference.with(MainActivity.this).clearAll();
+                            }
+                            update(false);
+                        } else if (versionCode < latestVersion)
+                            update(true);
+                    }
+                });
+
     }
 
-    private void disconnectXmpp() {
-        XMPPHandler.disconnect();
-        stopService(new Intent(MainActivity.this, XMPPService.class));
+
+    private void getMessageCount(TextView messageCount) {
+
+        ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
+                if (response.getCount() > 0) {
+                    messageCount.setVisibility(View.VISIBLE);
+                    messageCount.setText(String.format("%d", response.getCount()));
+                } else
+                    messageCount.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
     }
 
     @Override
     public void onBackPressed() {
         if (!isLaunchActivity) {
-            finish();
-            super.onBackPressed();
+            if (!(navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.shopQuickViewFragment)) {
+                finish();
+                super.onBackPressed();
+            }
         }
 
         if (navController.getCurrentDestination() != null) {
@@ -440,20 +364,55 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Menu menu = binding.bottomNavigationView.getMenu();
+        MenuItem item = menu.getItem(0);
+        item.setChecked(true);
+        setupDrawerMenu();
+    }
 
-        mChatApp.getEventReceiver().setListener(xmppCustomEventListener);
-        if (binding.bottomNavigationView != null) {
-            Menu menu = binding.bottomNavigationView.getMenu();
-            MenuItem item = menu.getItem(0);
-            item.setChecked(true);
-        }
+    private void setupDrawerMenu() {
 
-        if (userDetails.getToken() != null || !userDetails.getToken().isEmpty()) {
+        if (CredentialManager.getToken().equals("") || CredentialManager.getUserData() == null) {
+            binding.drawerLayout.removeView(binding.navView);
+
+            binding.drawerLayout.removeView(binding.navView2);
+            binding.drawerLayout.addView(binding.navView2);
+            binding.navView2.setNavigationItemSelectedListener(menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_wishlist:
+                        navController.navigate(R.id.wishListFragment);
+                        break;
+                    case R.id.nav_contact:
+                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
+                        break;
+                    case R.id.nav_sign_in:
+                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
+                        break;
+                    case R.id.nav_home:
+                        finish();
+                        this.startActivity(getIntent());
+                        this.overridePendingTransition(0, 0);
+                        break;
+                }
+                new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
+                return true;
+            });
+
+        } else {
+            binding.drawerLayout.removeView(binding.navView2);
+            binding.drawerLayout.removeView(binding.navView);
+            binding.drawerLayout.addView(binding.navView);
+
+            TextView userNameNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.userNameNavHeader);
+            TextView phoneNavHeader = binding.navView.getHeaderView(0).findViewById(R.id.phone);
+            userNameNavHeader.setText(String.format("%s %s", CredentialManager.getUserData().getFirst_name(), CredentialManager.getUserData().getLast_name()));
+            phoneNavHeader.setText(CredentialManager.getUserName());
+
             ImageView profilePicNav = binding.navView.getHeaderView(0).findViewById(R.id.profilePicNav);
-            if (!userDetails.getProfilePictureSM().equals("null")) {
+            if (!CredentialManager.getUserData().getImage_sm().equals("null")) {
                 Glide.with(this)
                         .asBitmap()
-                        .load(userDetails.getProfilePictureSM())
+                        .load(CredentialManager.getUserData().getImage_sm())
                         .skipMemoryCache(true)
                         .placeholder(R.drawable.user_image)
                         .fitCenter()
@@ -461,19 +420,74 @@ public class MainActivity extends BaseActivity {
                         .apply(new RequestOptions().override(200, 200))
                         .into(profilePicNav);
             }
-        }
 
+
+            TextView tvMessageCount = binding.navView.getMenu().findItem(R.id.nav_messages).getActionView().findViewById(R.id.count);
+            getMessageCount(tvMessageCount);
+
+            binding.navView.setNavigationItemSelectedListener(menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_wishlist:
+                        navController.navigate(R.id.wishListFragment);
+                        break;
+                    case R.id.nav_contact:
+                        startActivity(new Intent(MainActivity.this, ContactActivity.class));
+                        break;
+                    case R.id.nav_home:
+                        finish();
+                        startActivity(getIntent());
+                        break;
+                    case R.id.nav_account:
+                        startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
+                        break;
+                    case R.id.nav_orders:
+                        startActivity(new Intent(MainActivity.this, OrderListActivity.class));
+                        break;
+                    case R.id.nav_cart:
+                        startActivity(new Intent(MainActivity.this, CartActivity.class));
+                        break;
+                    case R.id.nav_invite_ref:
+                        startActivity(new Intent(MainActivity.this, InviteEarn.class));
+                        break;
+                    case R.id.nav_voucher:
+                        startActivity(new Intent(MainActivity.this, VoucherActivity.class));
+                        break;
+                    case R.id.nav_messages:
+                        //startActivity(new Intent(MainActivity.this, ChatListActivity.class));
+
+                        openEconnect();
+
+
+                        break;
+                    case R.id.nav_followed_shops:
+                        Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
+                        inf.putExtra("title", "Followed Shops");
+                        inf.putExtra("slug", "shop-subscriptions");
+                        startActivity(inf);
+                }
+                new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
+                return true;
+            });
+        }
     }
 
-    private void unCheckAllMenuItems(@NonNull final Menu menu) {
-        int size = menu.size();
-        for (int i = 0; i < size; i++) {
-            final MenuItem item = menu.getItem(i);
-            if (item.hasSubMenu()) {
-                // Un check sub menu items
-                unCheckAllMenuItems(item.getSubMenu());
-            } else {
-                item.setChecked(false);
+    private void openEconnect() {
+        Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
+        try {
+            if (launchIntent != null) {
+                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
+                launchIntent.putExtra("user", CredentialManager.getUserName());
+                launchIntent.putExtra("password", CredentialManager.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+                startActivity(launchIntent);
+            }
+        } catch (ActivityNotFoundException e) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+            } catch (Exception e4) {
+                ToastUtils.show("Please install eConnect app from Playstore");
             }
         }
     }
@@ -481,7 +495,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
@@ -492,10 +505,7 @@ public class MainActivity extends BaseActivity {
         if (exitDialog != null && exitDialog.isShowing()) {
             exitDialog.cancel();
         }
-
-        disconnectXmpp();
         super.onDestroy();
-
     }
 
     public boolean isConnected(Context context) {
@@ -543,39 +553,6 @@ public class MainActivity extends BaseActivity {
         return builder;
     }
 
-    private void checkUpdate() {
-
-        int versionCode = BuildConfig.VERSION_CODE;
-
-        AuthApiHelper.checkUpdate(new DataFetchingListener<Response<JsonObject>>() {
-            @Override
-            public void onDataFetched(Response<JsonObject> response) {
-                if (response.code() == 200 || response.code() == 201) {
-                    try {
-                        String version = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("version").getAsString();
-                        boolean isForce = response.body().getAsJsonObject("data").getAsJsonObject("Evaly Android").get("force").getAsBoolean();
-                        int v = Integer.parseInt(version);
-
-                        if (versionCode < v && isForce) {
-                            userDetails.clearAll();
-                            MyPreference.with(MainActivity.this).clearAll();
-                            update(false);
-                        } else if (versionCode < v)
-                            update(true);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailed(int status) {
-
-            }
-        });
-    }
-
     private void update(boolean isCancelable) {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
         builder.setTitle("New update available!");
@@ -584,7 +561,7 @@ public class MainActivity extends BaseActivity {
         builder.setPositiveButton("Update", (dialogInterface, i) -> {
             dialogInterface.dismiss();
             finish();
-            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+            final String appPackageName = getPackageName();
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
             } catch (android.content.ActivityNotFoundException anfe) {
@@ -596,7 +573,7 @@ public class MainActivity extends BaseActivity {
             builder.setNegativeButton("No", ((dialogInterface, i) -> dialogInterface.dismiss()));
 
         android.app.AlertDialog dialog = builder.create();
-        dialog.show();
-
+        if (!isFinishing() && !isDestroyed())
+            dialog.show();
     }
 }

@@ -1,7 +1,10 @@
 package bd.com.evaly.evalyshop.ui.order.orderDetails;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,6 +43,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,7 +53,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.orhanobut.logger.Logger;
+import com.google.gson.JsonParser;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -57,48 +61,74 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.hero.DeliveryHeroResponse;
+import bd.com.evaly.evalyshop.models.image.ImageDataModel;
+import bd.com.evaly.evalyshop.models.issueNew.category.IssueCategoryModel;
+import bd.com.evaly.evalyshop.models.issueNew.create.IssueCreateBody;
+import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
-import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
-import bd.com.evaly.evalyshop.ui.chat.viewmodel.ImageUploadView;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
-import bd.com.evaly.evalyshop.ui.payment.PaymentBottomSheet;
+import bd.com.evaly.evalyshop.ui.payment.bottomsheet.PaymentBottomSheet;
 import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
-import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
+import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
+import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class OrderDetailsActivity extends BaseActivity {
+public class OrderDetailsActivity extends BaseActivity implements PaymentBottomSheet.PaymentOptionListener, PaymentListener {
 
+    @BindView(R.id.hero)
+    ConstraintLayout heroHolder;
+    @BindView(R.id.heroName)
+    TextView heroName;
+    @BindView(R.id.heroPicture)
+    CircleImageView heroPicture;
+    @BindView(R.id.deliveryHeroStatus)
+    TextView heroStatus;
+    @BindView(R.id.confirmDelivery)
+    TextView confirmDelivery;
+    @BindView(R.id.btnToggleTimeline)
+    TextView btnToggleTimeline;
+    @BindView(R.id.btnToggleTimelineHolder)
+    LinearLayout btnToggleTimelineHolder;
+    @BindView(R.id.heroCall)
+    ImageView heroCall;
     private double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
     private String shopSlug = "";
     private String invoice_no = "";
     private String orderStatus = "pending", paymentStatus = "unpaid", paymentMethod = "";
-    private UserDetails userDetails;
     private StepperIndicator indicator;
     private TextView tvPaymentStatus, shopName, shopAddress, shopnumber, username, userAddress, userNumber, totalPriceTextView, paidAmountTextView, duePriceTextView, tvCampaignRule;
     private TextView orderNumber, orderDate, paymentMethods, balance;
@@ -119,24 +149,16 @@ public class OrderDetailsActivity extends BaseActivity {
     private String imageUrl;
     private MenuItem cancelMenuItem;
     private MenuItem refundMenuItem;
+    private List<IssueCategoryModel> categoryList;
+    private OrderDetailsModel orderDetailsModel;
 
-    @BindView(R.id.hero)
-    ConstraintLayout heroHolder;
-    @BindView(R.id.heroName)
-    TextView heroName;
-    @BindView(R.id.heroPicture)
-    CircleImageView heroPicture;
-    @BindView(R.id.deliveryHeroStatus)
-    TextView heroStatus;
+    private PaymentWebBuilder paymentWebBuilder;
 
-    @BindView(R.id.heroCall)
-    ImageView heroCall;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.order_details_menu, menu);
-
         cancelMenuItem = menu.findItem(R.id.action_cancel);
         refundMenuItem = menu.findItem(R.id.action_refund);
 
@@ -179,13 +201,13 @@ public class OrderDetailsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details);
         ButterKnife.bind(this);
-
+        // For Payment Listener
+        paymentWebBuilder = new PaymentWebBuilder(OrderDetailsActivity.this);
+        paymentWebBuilder.setPaymentListener(this);
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setTitle(R.string.order_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         context = this;
-
         tvPaymentStatus = findViewById(R.id.paymentStatus);
         cancelBtn = findViewById(R.id.cancelBtn);
         campaignRuleHolder = findViewById(R.id.campaignRuleHolder);
@@ -212,7 +234,6 @@ public class OrderDetailsActivity extends BaseActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         orderList.setLayoutManager(new LinearLayoutManager(this));
-        userDetails = new UserDetails(this);
         orderStatuses = new ArrayList<>();
         adapter = new OrderStatusAdapter(orderStatuses, this);
         recyclerView.setAdapter(adapter);
@@ -243,7 +264,7 @@ public class OrderDetailsActivity extends BaseActivity {
             orderNumber.setText("#" + invoice_no);
             getOrderDetails();
         }
-        balance.setText(Html.fromHtml(getString(R.string.balance) + ": <b>৳ " + userDetails.getBalance() + "</b>"));
+        balance.setText(Html.fromHtml(getString(R.string.balance) + ": <b>৳ " + CredentialManager.getBalance() + "</b>"));
 
         getOrderHistory();
 
@@ -257,14 +278,90 @@ public class OrderDetailsActivity extends BaseActivity {
         payParially = findViewById(R.id.payPartially);
 
         makePayment.setOnClickListener(v -> {
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount);
+            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount, shopSlug.contains("food"), this);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
+        });
+
+        btnToggleTimeline.setOnClickListener(v -> {
+            if (adapter.isShowAll()) {
+                adapter.setShowAll(false);
+                btnToggleTimeline.setText("Show All");
+                adapter.notifyDataSetChanged();
+            } else {
+                adapter.setShowAll(true);
+                btnToggleTimeline.setText("Show Less");
+                adapter.notifyDataSetChanged();
+            }
         });
 
         payViaGiftCard = findViewById(R.id.payViaGiftCard);
         payViaGiftCard.setOnClickListener(v -> dialogGiftCardPayment());
 
         getDeliveryHero();
+
+        confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
+
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void confirmDeliveryDialog() {
+        final Dialog dialog = new Dialog(this, R.style.FullWidthTransparentDialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        final DialogConfirmDeliveryBinding dialogConfirmDeliveryBinding = DataBindingUtil.inflate(LayoutInflater.from(OrderDetailsActivity.this), R.layout.dialog_confirm_delivery, null, false);
+
+        Random rand = new Random();
+        String captchaCode = String.format(Locale.ENGLISH, "%04d", rand.nextInt(10000));
+        dialogConfirmDeliveryBinding.captchaCode.setText(captchaCode);
+
+        dialogConfirmDeliveryBinding.verify.setOnClickListener(v -> {
+            if (dialogConfirmDeliveryBinding.code.getText().toString().trim().equals(""))
+                ToastUtils.show("Please enter captcha code");
+            else if (!dialogConfirmDeliveryBinding.code.getText().toString().trim().equals(captchaCode))
+                ToastUtils.show("You have entered wrong captcha code");
+            else
+                requestConfirmDelivery(dialog);
+        });
+
+        dialog.setContentView(dialogConfirmDeliveryBinding.getRoot());
+        dialog.show();
+    }
+
+    private void requestConfirmDelivery(Dialog alertDialog) {
+
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("Confirming delivery...");
+        dialog.show();
+
+        OrderApiHelper.confirmDelivery(CredentialManager.getToken(), invoice_no, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                dialog.dismiss();
+
+                if (response.has("message"))
+                    ToastUtils.show(response.get("message").getAsString());
+
+                if (response.has("success") && response.get("success").getAsBoolean() && alertDialog != null && alertDialog.isShowing()) {
+                    updatePage();
+                    alertDialog.dismiss();
+                }
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                dialog.dismiss();
+                ToastUtils.show("Error occurred! Try again later");
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    requestConfirmDelivery(alertDialog);
+
+            }
+        });
+
 
     }
 
@@ -275,36 +372,57 @@ public class OrderDetailsActivity extends BaseActivity {
 
     @OnClick(R.id.tvReport)
     void report() {
-        OrderIssueModel model = new OrderIssueModel();
-
+        IssueCreateBody model = new IssueCreateBody();
         bottomSheetDialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.report_view);
-
         Spinner spinner = bottomSheetDialog.findViewById(R.id.spnDelivery);
         EditText etDescription = bottomSheetDialog.findViewById(R.id.etDescription);
         Button btnSubmit = bottomSheetDialog.findViewById(R.id.btnSubmit);
         ImageView ivClose = bottomSheetDialog.findViewById(R.id.ivClose);
         LinearLayout addPhoto = bottomSheetDialog.findViewById(R.id.addPhoto);
-
         List<String> options = new ArrayList<>();
-
-        List<OrderIssueModel> list;
-        if (orderStatus.equals("pending"))
-            list = Constants.getIssueListPending();
-        else
-            list = Constants.getDelivaryIssueList();
-
-        for (int i = 0; i < list.size(); i++) {
-            options.add(list.get(i).getDescription());
-        }
-
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, options);
         spinner.setAdapter(adapter);
+        dialog.showDialog();
+
+        IssueApiHelper.getCategories(new ResponseListenerAuth<CommonDataResponse<List<IssueCategoryModel>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<IssueCategoryModel>> response, int statusCode) {
+
+                dialog.hideDialog();
+
+                bottomSheetDialog.show();
+
+                categoryList = response.getData();
+                for (IssueCategoryModel item : categoryList) {
+                    options.add(item.getName());
+                }
+                adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                dialog.hideDialog();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                model.setIssue_type(list.get(i).getIssue_type());
+                model.setCategory(categoryList.get(i).getId());
+
+                String catName = categoryList.get(i).getName().toLowerCase();
+                if (catName.contains("payment") || catName.contains("bank") || catName.contains("cashback") || catName.contains("return"))
+                    model.setPriority("urgent");
+                else
+                    model.setPriority("medium");
             }
 
             @Override
@@ -320,9 +438,20 @@ public class OrderDetailsActivity extends BaseActivity {
                 etDescription.setError("Required");
                 return;
             }
-            model.setDescription(etDescription.getText().toString());
+            model.setAdditionalInfo(etDescription.getText().toString());
+            model.setChannel("customer_app");
+            model.setContext("order");
+            model.setCustomer(CredentialManager.getUserName());
+            model.setInvoiceNumber(invoice_no);
 
-            model.setAttachment(imageUrl);
+            model.setSeller(orderDetailsModel.getShop().getName());
+            model.setShop(orderDetailsModel.getShop().getSlug());
+
+            if (imageUrl != null && !imageUrl.equals("")) {
+                List<String> imageUrls = new ArrayList<>();
+                imageUrls.add(imageUrl);
+                model.setAttachments(imageUrls);
+            }
             dialog.showDialog();
             submitIssue(model, bottomSheetDialog);
             imageUrl = "";
@@ -350,32 +479,37 @@ public class OrderDetailsActivity extends BaseActivity {
             }
         });
         bottomSheetDialog.setCancelable(false);
-
-        bottomSheetDialog.show();
-
         ivClose.setOnClickListener(view -> bottomSheetDialog.dismiss());
+
     }
 
-    private void submitIssue(OrderIssueModel model, BottomSheetDialog bottomSheetDialog) {
-        AuthApiHelper.submitIssue(model, invoice_no, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+    private void submitIssue(IssueCreateBody model, BottomSheetDialog bottomSheetDialog) {
+
+        IssueApiHelper.createIssue(model, new ResponseListenerAuth<CommonDataResponse<IssueListModel>, String>() {
             @Override
-            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+            public void onDataFetched(CommonDataResponse<IssueListModel> response, int statusCode) {
                 dialog.hideDialog();
-                if (response.code() == 200 || response.code() == 201) {
-                    Toast.makeText(getApplicationContext(), "Your issue has been submitted, you will be notified shortly", Toast.LENGTH_LONG).show();
-                    bottomSheetDialog.dismiss();
-                } else if (response.code() == 401) {
-                    submitIssue(model, bottomSheetDialog);
-                } else {
+                Toast.makeText(getApplicationContext(), "Your issue has been submitted, you will be notified shortly", Toast.LENGTH_LONG).show();
+                bottomSheetDialog.dismiss();
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                dialog.hideDialog();
+                try {
+                    Log.e("json parse error", errorBody);
+                    JsonObject jsonObject = JsonParser.parseString(errorBody).getAsJsonObject();
+                    ToastUtils.show(jsonObject.get("message").getAsString());
+                } catch (Exception e) {
+                    Log.e("json parse error", e.toString());
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailed(int status) {
-                dialog.hideDialog();
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
-
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    submitIssue(model, bottomSheetDialog);
             }
         });
     }
@@ -435,9 +569,12 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onDataFetched(DeliveryHeroResponse response, int statusCode) {
                 heroHolder.setVisibility(View.VISIBLE);
                 heroName.setText(String.format("%s %s", response.getData().getUser().getFirstName(), response.getData().getUser().getLastName()));
-                Glide.with(OrderDetailsActivity.this)
-                        .load(response.getData().getUser().getProfilePicUrl())
-                        .into(heroPicture);
+
+                if (!isFinishing() && !isDestroyed())
+                    Glide.with(OrderDetailsActivity.this)
+                            .load(response.getData().getUser().getProfilePicUrl())
+                            .placeholder(R.drawable.user_image)
+                            .into(heroPicture);
 
                 heroCall.setOnClickListener(v -> {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -460,7 +597,6 @@ public class OrderDetailsActivity extends BaseActivity {
         });
 
     }
-
 
     public void dialogGiftCardPayment() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
@@ -510,7 +646,6 @@ public class OrderDetailsActivity extends BaseActivity {
         });
     }
 
-
     public void makePaymentViaGiftCard(String giftCode, String invoice, String amount) {
 
         HashMap<String, String> payload = new HashMap<>();
@@ -550,7 +685,6 @@ public class OrderDetailsActivity extends BaseActivity {
         });
     }
 
-
     private void giftCardSuccessDialog() {
 
         new AlertDialog.Builder(context)
@@ -565,7 +699,6 @@ public class OrderDetailsActivity extends BaseActivity {
 
 
     }
-
 
     @Override
     public void onResume() {
@@ -583,7 +716,6 @@ public class OrderDetailsActivity extends BaseActivity {
         getOrderDetails();
 
     }
-
 
     public void checkCardBalance() {
 
@@ -608,7 +740,6 @@ public class OrderDetailsActivity extends BaseActivity {
             }
         });
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -652,22 +783,25 @@ public class OrderDetailsActivity extends BaseActivity {
 
                     dialog.showDialog();
 
-                    Logger.d("+_+_+_+_+_+");
-
-                    AuthApiHelper.uploadImage(this, bitmap, new ImageUploadView() {
+                    ImageApiHelper.uploadImage(bitmap, new ResponseListenerAuth<CommonDataResponse<ImageDataModel>, String>() {
                         @Override
-                        public void onImageUploadSuccess(String img, String smImg) {
+                        public void onDataFetched(CommonDataResponse<ImageDataModel> response, int statusCode) {
                             dialog.hideDialog();
-                            imageUrl = img;
+                            imageUrl = response.getData().getUrl();
                             setPostPic();
                         }
 
                         @Override
-                        public void onImageUploadFailed(String msg) {
-                            dialog.hideDialog();
-                            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+                        public void onFailed(String errorBody, int errorCode) {
+
+                        }
+
+                        @Override
+                        public void onAuthError(boolean logout) {
+
                         }
                     });
+
 
                 } catch (Exception e) {
 
@@ -705,6 +839,8 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onDataFetched(OrderDetailsModel response, int statusCode) {
 
                 dialog.hideDialog();
+
+                orderDetailsModel = response;
 
                 orderStatus = response.getOrderStatus().toLowerCase();
                 paymentMethod = response.getPaymentMethod();
@@ -752,13 +888,19 @@ public class OrderDetailsActivity extends BaseActivity {
                     heroStatus.setText("Delivered the products");
                 }
 
+                if (orderStatus.equals("processing") ||
+                        orderStatus.equals("picked") ||
+                        orderStatus.equals("shipped"))
+                    confirmDelivery.setVisibility(View.VISIBLE);
+                else
+                    confirmDelivery.setVisibility(View.GONE);
+
                 if (!response.isDeliveryConfirmed() && response.isDeliveryConfirmationRequired())
                     deliveryConfirmationDialog();
 
                 orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
 
                 if (response.getOrderStatus().toLowerCase().equals("cancel")) {
-
                     StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);
                     indicatorCancelled.setVisibility(View.VISIBLE);
                     indicatorCancelled.setCurrentStep(6);
@@ -767,9 +909,7 @@ public class OrderDetailsActivity extends BaseActivity {
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
-
-                } else if (response.getOrderStatus().toLowerCase().equals("delivered")) {
-
+                } else if (response.getOrderStatus().toLowerCase().equals("delivered") || response.getPaymentStatus().toLowerCase().equals("refund_requested")) {
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
@@ -778,8 +918,8 @@ public class OrderDetailsActivity extends BaseActivity {
                 username.setText(String.format("%s %s", response.getCustomer().getFirstName(), response.getCustomer().getLastName()));
                 userAddress.setText(response.getCustomerAddress());
                 userNumber.setText(response.getContactNumber());
-                totalPriceTextView.setText(String.format("৳%s", Utils.formatPrice(response.getTotal())));
-                paidAmountTextView.setText(String.format("৳%s", Utils.formatPrice(response.getPaidAmount())));
+                totalPriceTextView.setText(String.format("৳ %s", Utils.formatPrice(response.getTotal())));
+                paidAmountTextView.setText(String.format("৳ %s", Utils.formatPrice(response.getPaidAmount())));
                 duePriceTextView.setText(String.format(Locale.ENGLISH, "৳ %s", Utils.formatPrice((Double.parseDouble(response.getTotal())) - Math.round(Double.parseDouble(response.getPaidAmount())))));
 
                 if (response.getCustomerNote() != null && !response.getCustomerNote().equals("")) {
@@ -948,6 +1088,11 @@ public class OrderDetailsActivity extends BaseActivity {
 
                     adapter.notifyDataSetChanged();
                 }
+
+                if (list.size() > 4)
+                    btnToggleTimelineHolder.setVisibility(View.VISIBLE);
+                else
+                    btnToggleTimelineHolder.setVisibility(View.GONE);
             }
 
             @Override
@@ -1001,5 +1146,38 @@ public class OrderDetailsActivity extends BaseActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
 
+    }
+
+    @Override
+    public void onPaymentRedirect(String url, String amount, String invoice_no) {
+        String successURL;
+        PurchaseRequestInfo purchaseRequestInfo = null;
+
+        if (url.equals(BuildConfig.BKASH_URL)) {
+            successURL = Constants.BKASH_SUCCESS_URL;
+            paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.bkash_payment));
+            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no);
+        } else {
+            successURL = Constants.SSL_SUCCESS_URL;
+            paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
+        }
+
+        paymentWebBuilder.loadPaymentURL(url, successURL, purchaseRequestInfo);
+    }
+
+    @Override
+    public void onPaymentSuccess(HashMap<String, String> values) {
+
+    }
+
+    @Override
+    public void onPaymentFailure(HashMap<String, String> values) {
+        Toast.makeText(this, R.string.payment_error_message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPaymentSuccess(String message) {
+        getOrderDetails();
+        Toast.makeText(this, R.string.payment_success_message, Toast.LENGTH_LONG).show();
     }
 }

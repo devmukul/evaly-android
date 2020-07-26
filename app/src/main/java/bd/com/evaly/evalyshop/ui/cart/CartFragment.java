@@ -31,6 +31,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,14 +63,13 @@ import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.cart.adapter.CartAdapter;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
-
 
 public class CartFragment extends Fragment {
 
@@ -83,7 +84,6 @@ public class CartFragment extends Fragment {
     private Spinner addressSpinner;
     private List<String> spinnerArray;
     private List<Integer> spinnerArrayID;
-    private UserDetails userDetails;
     private ViewDialog dialog;
     private boolean cartItem = false;
     private ViewDialog alert;
@@ -97,6 +97,7 @@ public class CartFragment extends Fragment {
     private int paymentMethod = 2;
     private double totalPriceDouble = 0;
     private TextView tvTotalPrice;
+    private NavController navController;
 
     public CartFragment() {
         // Required empty public constructor
@@ -115,14 +116,10 @@ public class CartFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         context = getContext();
         dialog = new ViewDialog(getActivity());
-        userDetails = new UserDetails(context);
-
         appDatabase = AppDatabase.getInstance(getContext());
         cartDao = appDatabase.cartDao();
-
     }
 
     @Override
@@ -203,7 +200,7 @@ public class CartFragment extends Fragment {
         TextView deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
         checkout.setOnClickListener(v -> {
 
-            if (userDetails.getToken().equals("")) {
+            if (CredentialManager.getToken().equals("")) {
                 Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -229,7 +226,7 @@ public class CartFragment extends Fragment {
 
                     JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
                     if (shopObject.has("is_express_shop")) {
-                        if (shopObject.get("is_express_shop").getAsInt() == 1)
+                        if (shopObject.get("is_express_shop").getAsBoolean())
                             isExpress = true;
 
                     } else {
@@ -254,7 +251,6 @@ public class CartFragment extends Fragment {
                     return;
                 }
             }
-
 
             checkLocationPermission();
 
@@ -291,7 +287,7 @@ public class CartFragment extends Fragment {
 
         btnBottomSheet.setOnClickListener(v -> {
 
-            if (userDetails.getToken().equals("")) {
+            if (CredentialManager.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
@@ -316,11 +312,16 @@ public class CartFragment extends Fragment {
         addressSwitch = bottomSheetView.findViewById(R.id.addressSwitch);
         customAddress = bottomSheetView.findViewById(R.id.customAddress);
         addressSpinner = bottomSheetView.findViewById(R.id.spinner);
-        contact_number.setText(userDetails.getPhone());
         spinnerArray = new ArrayList<>();
         spinnerArrayID = new ArrayList<>();
-        customAddress.setText(userDetails.getJsonAddress());
 
+        if (CredentialManager.getUserData() != null) {
+            contact_number.setText(CredentialManager.getUserData().getContacts());
+            customAddress.setText(CredentialManager.getUserData().getAddresses());
+        }
+
+        if (getActivity() instanceof MainActivity)
+            navController = NavHostFragment.findNavController(this);
 
         if (spinnerArray.size() < 1) {
             addressSwitch.setChecked(true);
@@ -446,7 +447,7 @@ public class CartFragment extends Fragment {
                         totalPriceDouble += itemList.get(i).getPriceInt() * itemList.get(i).getQuantity();
                 }
 
-                tvTotalPrice.setText(String.format(Locale.ENGLISH, "৳%d", (int) totalPriceDouble));
+                tvTotalPrice.setText(String.format(Locale.ENGLISH, "৳ %d", (int) totalPriceDouble));
             }
         });
 
@@ -477,9 +478,20 @@ public class CartFragment extends Fragment {
                         for (int i = 0; i < data.size(); i++) {
                             JsonObject item = data.get(i).getAsJsonObject();
                             String invoice = item.get("invoice_no").getAsString();
-                            Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
-                            intent.putExtra("orderID", invoice);
-                            startActivity(intent);
+                            if (getActivity() instanceof MainActivity) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("invoice_no", invoice);
+                                try {
+                                    bundle.putString("shop_slug", item.get("shop").getAsJsonObject().get("slug").getAsString());
+                                } catch (Exception ignored) {
+
+                                }
+                                navController.navigate(R.id.paymentFragment, bundle);
+                            } else {
+                                Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+                                intent.putExtra("orderID", invoice);
+                                startActivity(intent);
+                            }
                         }
                     }
                 }

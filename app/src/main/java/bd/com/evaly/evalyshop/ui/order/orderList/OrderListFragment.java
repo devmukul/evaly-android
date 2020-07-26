@@ -28,11 +28,9 @@ import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.order.orderList.adapter.OrderAdapter;
-import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class OrderListFragment extends Fragment {
 
-    private UserDetails userDetails;
     private RecyclerView recyclerView;
     private ArrayList<OrderListItem> orders;
     private OrderAdapter adapter;
@@ -84,7 +82,6 @@ public class OrderListFragment extends Fragment {
         orders = new ArrayList<>();
         adapter = new OrderAdapter(context, orders);
         recyclerView.setAdapter(adapter);
-        userDetails = new UserDetails(context);
 
         showProgressView();
 

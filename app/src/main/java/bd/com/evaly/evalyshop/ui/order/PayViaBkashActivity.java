@@ -19,16 +19,13 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class PayViaBkashActivity extends BaseActivity {
 
     WebView webView;
     ProgressDialog prDialog;
-
     ProgressBar progressBar;
-    UserDetails userDetails;
     String amount = "0.0", context = "order_payment", context_reference = "", paymentID = "";
     private boolean loadingFinished = false;
     private boolean redirect = false;
@@ -58,9 +55,6 @@ public class PayViaBkashActivity extends BaseActivity {
 
         webView = findViewById(R.id.webView);
         progressBar = findViewById(R.id.progressBar);
-
-        userDetails = new UserDetails(this);
-
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -102,7 +96,7 @@ public class PayViaBkashActivity extends BaseActivity {
                 "                type: 'POST'," +
                 "                contentType: 'application/json'," +
                 "                headers: {" +
-                "                    \"Authorization\": \"Bearer " + userDetails.getToken() + "\"," +
+                "                    \"Authorization\": \"Bearer " + CredentialManager.getToken() + "\"," +
                 "                }," +
                 "                data: JSON.stringify(request)," +
                 "                success: function(data) {" +
@@ -193,19 +187,13 @@ public class PayViaBkashActivity extends BaseActivity {
                 super.onPageStarted(view, url, favicon);
 
                 if (url.contains("success.html")) {
-
                     Toast.makeText(PayViaBkashActivity.this, "Payment successful! If your order's payment status doesn't get updated within 5 minutes, please contact support.", Toast.LENGTH_LONG).show();
-
                     setResult(Activity.RESULT_OK);
                     finish();
-
                     return;
-
                 }
 
-
                 loadingFinished = false;
-
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setProgress(0);
 

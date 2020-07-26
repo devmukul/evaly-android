@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedActivity;
 import bd.com.evaly.evalyshop.ui.newsfeed.NewsfeedFragment;
@@ -178,7 +179,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
         myViewHolder.likeHolder.setOnClickListener(v -> {
 
-            if (fragment.getUserDetails().getToken().equals("")) {
+            if (CredentialManager.getToken().equals("")) {
                 Toast.makeText(context, R.string.you_need_to_login_first, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -212,7 +213,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
 
             PopupMenu popup = new PopupMenu(context, myViewHolder.menuIcon);
 
-            if (fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
+            if (CredentialManager.getUserData().getGroups().toString().contains("EvalyEmployee"))
                 popup.getMenuInflater().inflate(R.menu.newsfeed_menu_super, popup.getMenu());
             else
                 popup.getMenuInflater().inflate(R.menu.newsfeed_menu_user, popup.getMenu());
@@ -227,7 +228,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.MyView
                         context.startActivity(Intent.createChooser(in, "Share Post"));
                         break;
                     case R.id.action_delete:
-                        if (!fragment.getUserDetails().getGroups().contains("EvalyEmployee"))
+                        if (!CredentialManager.getUserData().getGroups().toString().contains("EvalyEmployee"))
                             break;
                         new AlertDialog.Builder(context)
                                 .setMessage("Are you sure you want to delete?")

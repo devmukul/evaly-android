@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.buynow;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +15,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,8 +22,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -48,60 +49,30 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
+import bd.com.evaly.evalyshop.databinding.FragmentBuyNowBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.order.placeOrder.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.placeOrder.PlaceOrderItem;
+import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.AttributesItem;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.adapter.VariationAdapter;
+import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.util.LocationUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class BuyNowFragment extends BottomSheetDialogFragment implements VariationAdapter.ClickListenerVariation {
 
-
-    @BindView(R.id.shop)
-    TextView shopName;
-    @BindView(R.id.product_name)
-    TextView productName;
-    @BindView(R.id.product_image)
-    ImageView productImage;
-    @BindView(R.id.minus)
-    ImageView minus;
-    @BindView(R.id.plus)
-    ImageView plus;
-    @BindView(R.id.price)
-    TextView productPrice;
-    @BindView(R.id.priceTotal)
-    TextView productTotalPrice;
-    @BindView(R.id.wholeSalePrice)
-    TextView productWholesalePrice;
-    @BindView(R.id.quantity)
-    EditText productQuantity;
-    @BindView(R.id.variation_title)
-    TextView variationTitle;
-    @BindView(R.id.add_to_cart)
-    TextView addToCartBtn;
-    @BindView(R.id.buy_now)
-    TextView checkOutBtn;
-    @BindView(R.id.variationHolder)
-    LinearLayout variationHolder;
-    @BindView(R.id.recyclerViewVariation)
-    RecyclerView recyclerVariation;
-
-    // checkout bottomsheet
+    private FragmentBuyNowBinding binding;
     private Button btnBottomSheet;
     private EditText customAddress, contact_number;
     private BottomSheetDialog bottomSheetDialog;
@@ -109,19 +80,21 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private View bottomSheetView;
     private SkeletonScreen skeleton;
     private Context context;
-    private UserDetails userDetails;
     private ArrayList<ShopItem> itemsList;
     private String shop_slug = "tvs-bangladesh";
     private String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
     private int shop_item_id;
     private int quantityCount = 1;
-    private int productPriceInt = 0;
+    private double productPriceInt = 0;
     private AppDatabase appDatabase;
     private CartDao cartDao;
     private VariationAdapter adapterVariation;
     private ViewDialog dialog;
     private List<OrderItemsItem> list;
     private boolean isExpress = false;
+    private CartEntity cartItem;
+    private AvailableShopModel shopItem;
+    private NavController navController;
 
     public static BuyNowFragment newInstance(String shopSlug, String productSlug) {
         BuyNowFragment f = new BuyNowFragment();
@@ -129,7 +102,15 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         args.putString("shopSlug", shopSlug);
         args.putString("productSlug", productSlug);
         f.setArguments(args);
+        return f;
+    }
 
+    public static BuyNowFragment createInstance(CartEntity cartItem, AvailableShopModel shopItemModel) {
+        BuyNowFragment f = new BuyNowFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("cartItem", cartItem);
+        args.putSerializable("shopItem", shopItemModel);
+        f.setArguments(args);
         return f;
     }
 
@@ -139,7 +120,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         for (int i = 0; i < itemsList.size(); i++) {
             if (i == position) {
                 itemsList.get(i).setSelected(true);
-
                 if (itemsList.get(i).getAttributes().size() > 0) {
                     AttributesItem attributesItem = itemsList.get(i).getAttributes().get(0);
                     String varName = attributesItem.getName();
@@ -156,26 +136,31 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //bottom sheet round corners can be obtained but the while background appears to remove that we need to add this.
-        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+        setStyle(STYLE_NORMAL, R.style.TransparentInputBottomSheetDialog);
 
         Bundle args = getArguments();
         appDatabase = AppDatabase.getInstance(getContext());
         cartDao = appDatabase.cartDao();
         dialog = new ViewDialog(getActivity());
-        shop_slug = args.getString("shopSlug");
-        shop_item_slug = args.getString("productSlug");
 
+        if (args.containsKey("shopSlug"))
+            shop_slug = args.getString("shopSlug");
+        if (args.containsKey("productSlug"))
+            shop_item_slug = args.getString("productSlug");
 
+        if (args.containsKey("shopItem"))
+            shopItem = (AvailableShopModel) args.getSerializable("shopItem");
+        if (args.containsKey("cartItem"))
+            cartItem = (CartEntity) args.getSerializable("cartItem");
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_buy_now, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        binding = FragmentBuyNowBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
     }
 
     private void checkLocationPermission() {
@@ -222,42 +207,126 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         }
     }
 
+    private void inflateFromApi() {
+        skeleton.show();
+        getProductDetails();
+    }
+
+
+    public void inflateFromModel() {
+        skeleton.hide();
+
+        shop_item_id = shopItem.getShopItemId();
+        isExpress = shopItem.isExpressShop();
+        shop_item_slug = cartItem.getSlug();
+        shop_slug = shopItem.getShopSlug();
+        isExpress = shopItem.isExpressShop();
+        productPriceInt = shopItem.getPrice();
+
+        if (shopItem.getDiscountedPrice() != null)
+            if (shopItem.getDiscountedPrice() > 0) {
+                double disPrice = shopItem.getDiscountedPrice();
+                binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(disPrice)));
+                binding.priceTotal.setText(Utils.formatPriceSymbol(disPrice));
+                productPriceInt = disPrice;
+            }
+
+        binding.productName.setText(cartItem.getName());
+        binding.shopName.setText(String.format("Seller: %s", shopItem.getShopName()));
+        binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
+        binding.quantity.setText("1");
+        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
+
+        Glide.with(this)
+                .load(cartItem.getImage())
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .apply(new RequestOptions().override(250, 250))
+                .into(binding.productImage);
+
+        binding.variationHolder.setVisibility(View.GONE);
+
+        binding.addToCart.setOnClickListener(v -> {
+
+            int quantity = 1;
+            try {
+                quantity = Integer.parseInt(binding.quantity.getText().toString());
+            } catch (Exception ignore) {
+            }
+
+            Calendar calendar = Calendar.getInstance();
+            String price = Utils.formatPrice(shopItem.getPrice());
+
+            if (shopItem.getDiscountedPrice() != null)
+                if (shopItem.getDiscountedPrice() > 0)
+                    price = Utils.formatPrice(shopItem.getDiscountedPrice());
+
+            String sellerJson = new Gson().toJson(shopItem);
+
+            CartEntity cartEntity = new CartEntity();
+            cartEntity.setName(cartItem.getName());
+            cartEntity.setImage(cartItem.getImage());
+            cartEntity.setPriceRound(price);
+            cartEntity.setTime(calendar.getTimeInMillis());
+            cartEntity.setShopJson(sellerJson);
+            cartEntity.setQuantity(quantity);
+            cartEntity.setShopSlug(shopItem.getShopSlug());
+            cartEntity.setSlug(cartItem.getImage());
+            cartEntity.setProductID(String.valueOf(shopItem.getShopItemId()));
+
+            Executors.newSingleThreadExecutor().execute(() -> {
+                List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
+                if (dbItem.size() == 0)
+                    cartDao.insert(cartEntity);
+                else
+                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + quantityCount);
+            });
+
+            Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
+            dismiss();
+
+        });
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void inflateQuantity() {
+        binding.quantity.setText(String.format("%d", quantityCount));
+        binding.price.setText(String.format("%s x %d", Utils.formatPriceSymbol(productPriceInt), quantityCount));
+        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt * quantityCount));
+    }
+
+    @SuppressLint("DefaultLocale")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         context = view.getContext();
-        userDetails = new UserDetails(context);
+
+        if (getActivity() instanceof MainActivity)
+            navController = NavHostFragment.findNavController(this);
 
         skeleton = Skeleton.bind((LinearLayout) view.findViewById(R.id.linearLayout))
                 .load(R.layout.skeleton_buy_now_modal)
                 .color(R.color.ddd)
-                .shimmer(true)
-                .show();
+                .shimmer(true).show();
 
         itemsList = new ArrayList<>();
         adapterVariation = new VariationAdapter(itemsList, context, this);
 
         LinearLayoutManager managerVariation = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        recyclerVariation.setLayoutManager(managerVariation);
-        recyclerVariation.setAdapter(adapterVariation);
+        binding.recyclerViewVariation.setLayoutManager(managerVariation);
+        binding.recyclerViewVariation.setAdapter(adapterVariation);
 
-        getProductDetails();
-
-        minus.setOnClickListener(view1 -> {
+        binding.minus.setOnClickListener(view1 -> {
             if (quantityCount > 1) {
                 quantityCount--;
-                productQuantity.setText(quantityCount + "");
-                productPrice.setText("৳ " + productPriceInt + " x " + quantityCount);
-                productTotalPrice.setText("৳ " + productPriceInt * quantityCount);
+                inflateQuantity();
             }
         });
 
-        plus.setOnClickListener(view1 -> {
+        binding.plus.setOnClickListener(view1 -> {
             quantityCount++;
-            productQuantity.setText(quantityCount + "");
-            productPrice.setText("৳ " + productPriceInt + " x " + quantityCount);
-            productTotalPrice.setText("৳ " + productPriceInt * quantityCount);
+            inflateQuantity();
         });
 
         // bottom sheet
@@ -269,8 +338,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         btnBottomSheet = bottomSheetView.findViewById(R.id.bs_button);
         contact_number = bottomSheetView.findViewById(R.id.contact_number);
         customAddress = bottomSheetView.findViewById(R.id.customAddress);
-        contact_number.setText(userDetails.getPhone());
-        customAddress.setText(userDetails.getJsonAddress());
+        if (CredentialManager.getUserData() != null) {
+            contact_number.setText(CredentialManager.getUserData().getContacts());
+            customAddress.setText(CredentialManager.getUserData().getAddresses());
+        }
         checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
 
@@ -278,7 +349,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         btnBottomSheet.setOnClickListener(view12 -> {
 
-            if (userDetails.getToken().equals("")) {
+            if (CredentialManager.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
@@ -308,7 +379,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             }
 
             OrderItemsItem item = new OrderItemsItem();
-            item.setQuantity(Integer.parseInt(productQuantity.getText().toString()));
+            item.setQuantity(Integer.parseInt(binding.quantity.getText().toString()));
             item.setShopItemId(shop_item_id);
 
             int minOrderValue = 500;
@@ -333,13 +404,11 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         TextView deliveryDuration = bottomSheetView.findViewById(R.id.deliveryDuration);
 
-        checkOutBtn.setOnClickListener(view1 -> {
-
-            if (userDetails.getToken().equals("")) {
+        binding.buyNow.setOnClickListener(view1 -> {
+            if (CredentialManager.getToken().equals("")) {
                 startActivity(new Intent(context, SignInActivity.class));
                 return;
             }
-
             if (shop_slug.contains("evaly-express"))
                 deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
             else
@@ -351,6 +420,11 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         });
 
 
+        if (shopItem == null)
+            inflateFromApi();
+        else
+            inflateFromModel();
+
     }
 
     @Override
@@ -359,6 +433,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         bottomSheetDialog.setOnShowListener(dialog -> {
             BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
             FrameLayout bottomSheet = dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            assert bottomSheet != null;
             BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
             BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
             BottomSheetBehavior.from(bottomSheet).setHideable(true);
@@ -394,9 +469,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
             }
         });
-
     }
-
 
     private void loadProductById(int position) {
 
@@ -404,7 +477,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         try {
             productPriceInt = (int) Math.round(Double.parseDouble(firstItem.getShopItemPrice()));
-
         } catch (Exception ignored) {
         }
 
@@ -413,16 +485,17 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         if (firstItem.getShopItemDiscountedPrice() != null)
             if (!(firstItem.getShopItemDiscountedPrice().equals("0.0") || firstItem.getShopItemDiscountedPrice().equals("0"))) {
                 int disPrice = (int) Math.round(Double.parseDouble(firstItem.getShopItemDiscountedPrice()));
-                productPrice.setText("৳ " + disPrice + " x 1");
-                productTotalPrice.setText("৳ " + disPrice);
+                binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(disPrice)));
+                binding.priceTotal.setText(Utils.formatPriceSymbol(disPrice));
                 productPriceInt = disPrice;
             }
 
-        productName.setText(firstItem.getShopItemName());
-        shopName.setText("Seller: " + firstItem.getShopName());
-        productPrice.setText("৳ " + productPriceInt + " x 1");
-        productQuantity.setText("1");
-        productTotalPrice.setText("৳ " + productPriceInt);
+        binding.productName.setText(firstItem.getShopItemName());
+        binding.shopName.setText(String.format("Seller: %s", firstItem.getShopName()));
+        binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
+        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
+        binding.quantity.setText("1");
+        binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
 
         shop_item_id = firstItem.getShopItemId();
 
@@ -431,18 +504,18 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                     .load(firstItem.getShopItemImage())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .apply(new RequestOptions().override(250, 250))
-                    .into(productImage);
+                    .into(binding.productImage);
 
         if (firstItem.getAttributes().size() > 0) {
-            variationHolder.setVisibility(View.VISIBLE);
+            binding.variationHolder.setVisibility(View.VISIBLE);
             AttributesItem attributesItem = firstItem.getAttributes().get(0);
             String varName = attributesItem.getName();
             String varValue = attributesItem.getValue();
             // variationTitle.setText(varName + ": " + varValue);
         } else
-            variationHolder.setVisibility(View.GONE);
+            binding.variationHolder.setVisibility(View.GONE);
 
-        addToCartBtn.setOnClickListener(v -> {
+        binding.addToCart.setOnClickListener(v -> {
 
             Calendar calendar = Calendar.getInstance();
             String price = firstItem.getShopItemPrice();
@@ -459,18 +532,17 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             cartEntity.setPriceRound(price);
             cartEntity.setTime(calendar.getTimeInMillis());
             cartEntity.setShopJson(sellerJson);
-            cartEntity.setQuantity(1);
+            cartEntity.setQuantity(quantityCount);
             cartEntity.setShopSlug(firstItem.getShopSlug());
             cartEntity.setSlug(shop_item_slug);
             cartEntity.setProductID(String.valueOf(firstItem.getShopItemId()));
 
             Executors.newSingleThreadExecutor().execute(() -> {
                 List<CartEntity> dbItem = cartDao.checkExistsEntity(cartEntity.getProductID());
-
                 if (dbItem.size() == 0)
                     cartDao.insert(cartEntity);
                 else
-                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + 1);
+                    cartDao.updateQuantity(cartEntity.getProductID(), dbItem.get(0).getQuantity() + quantityCount);
             });
 
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();
@@ -490,37 +562,43 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             public void onDataFetched(JsonObject response, int statusCode) {
 
                 if (bottomSheetDialog.isShowing())
-                    bottomSheetDialog.hide();
+                    bottomSheetDialog.dismiss();
+
                 if (dialog.isShowing())
                     dialog.hideDialog();
-                if (isVisible())
-                    dismiss();
+
+                dismissDialog();
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
                     Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-
                     if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
-                        dismissDialog();
                         JsonArray data = response.getAsJsonArray("data");
-                        for (int i = 0; i < data.size(); i++) {
-                            JsonObject item = data.get(i).getAsJsonObject();
-                            String invoice = item.get("invoice_no").getAsString();
-                            Intent intent = new Intent(context, OrderDetailsActivity.class);
+                        JsonObject item = data.get(0).getAsJsonObject();
+                        String invoice = item.get("invoice_no").getAsString();
+                        if (getActivity() instanceof MainActivity) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("invoice_no", invoice);
+                            try {
+                                bundle.putString("shop_slug", item.get("shop").getAsJsonObject().get("slug").getAsString());
+                            } catch (Exception ignored) {
+
+                            }
+                            if (navController != null)
+                                navController.navigate(R.id.paymentFragment, bundle);
+                        } else {
+                            Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
                             intent.putExtra("orderID", invoice);
                             startActivity(intent);
                         }
                     }
-
                 }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
                 dialog.hideDialog();
                 Toast.makeText(context, "Couldn't place order, try again later.", Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
@@ -539,15 +617,6 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             if (isVisible() && isCancelable() && !getActivity().isDestroyed() && !getActivity().isFinishing())
                 dismissAllowingStateLoss();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-
-//        if (getActivity() != null)
-//            Glide.with(getActivity().getApplicationContext()).pauseRequests();
-
-        super.onDestroy();
     }
 
 }

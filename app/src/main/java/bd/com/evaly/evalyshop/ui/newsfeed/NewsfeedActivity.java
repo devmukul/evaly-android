@@ -66,7 +66,6 @@ import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.VolleyMultipartRequest;
 
@@ -80,7 +79,6 @@ public class NewsfeedActivity extends AppCompatActivity {
     private Context context;
     private String selectedImage = "";
     private BottomSheetDialog createPostDialog;
-    private UserDetails userDetails;
     private String postType = "CEO";
     private String postBody = "";
     private String postSlug = "";
@@ -103,7 +101,6 @@ public class NewsfeedActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.newsfeed);
         context = this;
-        userDetails = new UserDetails(context);
 
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tab_layout);
@@ -169,7 +166,7 @@ public class NewsfeedActivity extends AppCompatActivity {
         RelativeLayout postImageHolder = createPostDialog.findViewById(R.id.postImageHolder);
         ImageView cancelPostImage = createPostDialog.findViewById(R.id.cancelImage);
 
-        if (!userDetails.getGroups().contains("EvalyEmployee"))
+        if (!CredentialManager.getUserData().getGroups().toString().contains("EvalyEmployee"))
             spinnerHolder.setVisibility(View.GONE);
 
 
@@ -226,7 +223,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         });
 
-        if (userDetails.getToken().equals(""))
+        if (CredentialManager.getToken().equals(""))
             createBtn.setVisibility(View.GONE);
 
         NewsfeedFragment publicFragment = NewsfeedFragment.newInstance("public");
@@ -240,13 +237,13 @@ public class NewsfeedActivity extends AppCompatActivity {
         pager.addFragment(ceoFragment, getString(R.string.ceo_cap));
 
 
-        if (!userDetails.getToken().equals("")) {
+        if (!CredentialManager.getToken().equals("")) {
 
             NewsfeedFragment myFragment = NewsfeedFragment.newInstance("my");
             pager.addFragment(myFragment, getString(R.string.my_post));
         }
 
-        if (userDetails.getGroups().contains("EvalyEmployee")) {
+        if (CredentialManager.getUserData().getGroups().toString().contains("EvalyEmployee")) {
             NewsfeedPendingFragment pendingFragment = NewsfeedPendingFragment.newInstance("pending");
             pager.addFragment(pendingFragment, getString(R.string.pending));
         }
@@ -277,7 +274,7 @@ public class NewsfeedActivity extends AppCompatActivity {
         ui_hot.setVisibility(View.INVISIBLE);
         menu_hotlist.setOnClickListener(viw -> startActivityForResult(new Intent(NewsfeedActivity.this, NewsfeedNotification.class), 1));
 
-        if (userDetails.getToken().equals(""))
+        if (CredentialManager.getToken().equals(""))
             return false;
         else
             return true;
@@ -439,7 +436,7 @@ public class NewsfeedActivity extends AppCompatActivity {
             parameters.put("title", "null");
 
 
-            if (userDetails.getGroups().contains("EvalyEmployee") && postSlug.equals(""))
+            if (CredentialManager.getUserData().getGroups().toString().contains("EvalyEmployee") && postSlug.equals(""))
                 parameters.put("type", postType);
 
             parameters.put("body", postBody);
@@ -464,7 +461,7 @@ public class NewsfeedActivity extends AppCompatActivity {
             createBtn.setEnabled(true);
             try {
 
-                if (!userDetails.getGroups().contains("EvalyEmployee"))
+                if (!CredentialManager.getUserData().getGroups().toString().contains("EvalyEmployee"))
                     Toast.makeText(context, "Your post has successfully posted. It may take few hours to get approved.", Toast.LENGTH_LONG).show();
 
                 //JSONArray jsonArray = response.getJSONObject("data");
@@ -506,7 +503,7 @@ public class NewsfeedActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                if (!userDetails.getToken().equals(""))
+                if (!CredentialManager.getToken().equals(""))
                     headers.put("Authorization", CredentialManager.getToken());
                 headers.put("Content-Type", "application/json");
                 return headers;

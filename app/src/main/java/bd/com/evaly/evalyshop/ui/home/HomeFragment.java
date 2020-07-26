@@ -35,6 +35,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
@@ -47,7 +48,6 @@ import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
@@ -55,7 +55,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private MainActivity activity;
-    private UserDetails userDetails;
     private Context context;
     private int currentPage = 1;
     private List<ProductItem> productItemList;
@@ -66,6 +65,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private HomeController homeController;
     private AppDatabase appDatabase;
     private ExpressServiceDao expressServiceDao;
+    private HomeViewModel viewModel;
 
     public HomeFragment() {
 
@@ -91,6 +91,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         activity = (MainActivity) getActivity();
         context = getContext();
+        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         appDatabase = AppDatabase.getInstance(getActivity());
 
         binding.swipeRefresh.setOnRefreshListener(this);
@@ -117,8 +118,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onViewCreated(view, savedInstanceState);
         navController = NavHostFragment.findNavController(this);
         networkCheck();
-
-        userDetails = new UserDetails(context);
         referPref = new ReferPref(context);
 
         expressServiceDao = appDatabase.expressServiceDao();
@@ -133,6 +132,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         homeController = new HomeController();
         homeController.setActivity((AppCompatActivity) getActivity());
         homeController.setFragment(this);
+        homeController.setHomeViewModel(viewModel);
 
         binding.recyclerView.setAdapter(homeController.getAdapter());
 
@@ -253,7 +253,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (!referPref.getRef().equals("")) {
 
             HashMap<String, String> params = new HashMap<>();
-            params.put("token", userDetails.getToken().trim());
+            params.put("token", CredentialManager.getToken().trim());
             params.put("referred_by", referPref.getRef().trim());
             params.put("device_id", Utils.getDeviceID(context).trim());
 
@@ -291,9 +291,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
-        binding.recyclerView.setAdapter(null);
-        binding = null;
     }
 
 

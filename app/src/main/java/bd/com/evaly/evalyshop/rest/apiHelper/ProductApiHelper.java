@@ -98,7 +98,7 @@ public class ProductApiHelper extends BaseApiHelper {
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call;
 
-        if (campaign.equals(""))
+        if (campaign == null || campaign.equals(""))
             call = iApiClient.getCategoriesofShop(shopSlug, page);
         else
             call = iApiClient.getCategoriesOfCampaignShop(campaign, shopSlug, page);

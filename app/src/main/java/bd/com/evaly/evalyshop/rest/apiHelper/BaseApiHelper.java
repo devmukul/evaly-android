@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.JsonObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -93,8 +94,15 @@ public class BaseApiHelper {
                 } else {
                     if (response.body() != null)
                         dataFetchingListener.onFailed(response.toString(), response.code());
-                    else
-                        dataFetchingListener.onFailed("error", response.code());
+                    else {
+                        try {
+                            dataFetchingListener.onFailed(response.errorBody().string(), response.code());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+
+                            dataFetchingListener.onFailed("Error occurred", response.code());
+                        }
+                    }
                 }
             }
 

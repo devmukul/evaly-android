@@ -10,12 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.models.issue.IssuesModel;
+import bd.com.evaly.evalyshop.models.issueNew.comment.IssueTicketCommentModel;
 import bd.com.evaly.evalyshop.util.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,9 +21,9 @@ import butterknife.ButterKnife;
 public class IssueReplyAdapter extends RecyclerView.Adapter<IssueReplyAdapter.IssueReplyViewHolder> {
 
     private Activity context;
-    private List<IssuesModel.ReplyModel> list;
+    private List<IssueTicketCommentModel> list;
 
-    public IssueReplyAdapter(Activity context, List<IssuesModel.ReplyModel> list) {
+    public IssueReplyAdapter(Activity context, List<IssueTicketCommentModel> list) {
         this.context = context;
         this.list = list;
     }
@@ -38,14 +36,14 @@ public class IssueReplyAdapter extends RecyclerView.Adapter<IssueReplyAdapter.Is
 
     @Override
     public void onBindViewHolder(@NonNull IssueReplyViewHolder holder, int i) {
-        IssuesModel.ReplyModel model = list.get(i);
-        holder.tvReply.setText(model.getBody());
-        holder.tvName.setText(model.getReply_by().getFirst_name()+" "+model.getReply_by().getLast_name());
-        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss","",model.getCreated_at())));
+        IssueTicketCommentModel model = list.get(i);
+        holder.tvReply.setText(model.getComment());
+        holder.tvName.setText(model.getCommentedBy().getFirstName() + " " + model.getCommentedBy().getLastName());
+        holder.tvDate.setText(Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMTIssue("yyyy-MM-dd HH:mm:ss.SSS", "", model.getCreatedAt())));
 
-        if (model.getUser_profile_image() != null)
-            Glide.with(context)
-                    .load(model.getUser_profile_image()).into(holder.picture);
+//        if (model.getTicket().getAttachments() != null)
+//            Glide.with(context)
+//                    .load(model.getProfilePicture()).into(holder.picture);
     }
 
     @Override

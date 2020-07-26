@@ -33,7 +33,6 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.notification.Notifications;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.util.UrlUtils;
-import bd.com.evaly.evalyshop.util.UserDetails;
 
 public class NewsfeedNotification extends AppCompatActivity {
 
@@ -41,7 +40,6 @@ public class NewsfeedNotification extends AppCompatActivity {
     RecyclerView recyclerView;
     NotificationNewsfeedAdapter adapter;
     ArrayList<Notifications> notifications;
-    UserDetails userDetails;
     LinearLayout not, progressContainer;
     int hot_number;
     TextView hotlist_hot;
@@ -76,7 +74,6 @@ public class NewsfeedNotification extends AppCompatActivity {
         notifications = new ArrayList<>();
         adapter = new NotificationNewsfeedAdapter(notifications, this);
         recyclerView.setAdapter(adapter);
-        userDetails = new UserDetails(this);
 
         getNotifications();
 

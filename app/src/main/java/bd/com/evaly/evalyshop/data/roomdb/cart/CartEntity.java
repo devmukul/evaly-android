@@ -4,8 +4,12 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
 @Entity(tableName = "cart_table")
-public class CartEntity {
+public class CartEntity implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;

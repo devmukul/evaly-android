@@ -127,7 +127,7 @@ public class NewsfeedPostAdapter extends PagedListAdapter<NewsfeedPost, Recycler
             if (model.getAuthorFullName().trim().equals(""))
                 myViewHolder.binding.userName.setText("User");
 
-            String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringTimestamp("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", model.getCreatedAt()));
+            String timeAgo = Utils.getTimeAgo(Utils.formattedDateFromStringToTimestampGMT("yyyy-MM-dd'T'HH:mm:ss.SSS", "hh:mm aa - d',' MMMM", model.getCreatedAt()));
 
             if (model.getAuthorIsAdmin() == 1) {
 

@@ -30,7 +30,6 @@ import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 import bd.com.evaly.evalyshop.ui.browseProduct.tabs.adapter.TabsAdapter;
 import bd.com.evaly.evalyshop.util.ImagePreview;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.views.StickyScrollView;
 
@@ -47,7 +46,6 @@ public class CampaignShopActivity extends AppCompatActivity {
     private String title = "19.19 Shops";
     private String slug = "evaly1919";
     private LinearLayout not, layoutImageHolder;
-    private UserDetails userDetails;
     private ImageView cover;
     
     @Override
@@ -63,7 +61,6 @@ public class CampaignShopActivity extends AppCompatActivity {
         title = intent.getStringExtra("title");
         slug = intent.getStringExtra("slug");
 
-        userDetails = new UserDetails(this);
 
         getSupportActionBar().setTitle(title);
 

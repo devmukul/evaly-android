@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
@@ -30,9 +32,11 @@ import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignShopAdapter;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 public class CampaignShopFragment extends Fragment {
 
+    private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private CampaignShopAdapter adapter;
     private ArrayList<TabsItem> itemList;
     private int page = 1;
@@ -85,8 +89,29 @@ public class CampaignShopFragment extends Fragment {
 
         binding.recyclerView.setAdapter(adapter);
 
-        getCampaignShops(1);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
+        // binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, spacing, true));
+        binding.recyclerView.setLayoutManager(layoutManager);
 
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    int[] firstVisibleItems = null;
+                    firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
+                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
+                        pastVisiblesItems = firstVisibleItems[0];
+                    if (!isLoading)
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                            getCampaignShops(page);
+                }
+            }
+        });
+
+        getCampaignShops(page);
     }
 
     private void loadCampaignDetails() {
@@ -124,12 +149,14 @@ public class CampaignShopFragment extends Fragment {
 
     public void getCampaignShops(int p) {
 
+        isLoading = true;
         binding.progressBar.setVisibility(View.VISIBLE);
 
         CampaignApiHelper.getCampaignShops(model.getSlug(), p, new ResponseListenerAuth<CommonDataResponse<List<CampaignShopItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignShopItem>> response, int statusCode) {
 
+                isLoading = false;
                 binding.progressBar.setVisibility(View.GONE);
 
                 JsonObject meta = response.getMeta();
@@ -165,9 +192,8 @@ public class CampaignShopFragment extends Fragment {
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-
+                isLoading = false;
                 binding.progressBar.setVisibility(View.GONE);
-
             }
 
             @Override

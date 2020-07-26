@@ -11,8 +11,9 @@ public class AttributeValuesItem{
 	@SerializedName("key")
 	private int key;
 
-
+	@SerializedName("color_image")
 	private String color_image;
+
 	private boolean isSelected;
 
 	public String getColor_image() {

@@ -42,7 +42,7 @@ public abstract class ShopCategoryModel extends EpoxyModelWithHolder<ShopCategor
 
         View itemView;
 
-        private int currentPage = 1;
+        private int currentPage = viewModel.getCategoryCurrentPage();
         private boolean isLoading = false;
         private ArrayList<TabsItem> itemList;
         private ShopCategoryAdapter adapter;

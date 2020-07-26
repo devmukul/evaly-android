@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.transaction;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -27,14 +26,13 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.transaction.adapter.TransactionHistoryAdapter;
-import bd.com.evaly.evalyshop.util.UserDetails;
+import bd.com.evaly.evalyshop.util.Utils;
 
 public class TransactionHistory extends AppCompatActivity {
 
     RecyclerView recyclerView;
     TransactionHistoryAdapter adapter;
     ArrayList<TransactionItem> itemList;
-    UserDetails userDetails;
     LinearLayout not;
     ProgressBar progressBar;
     int currentPage = 0;
@@ -62,9 +60,7 @@ public class TransactionHistory extends AppCompatActivity {
         itemList = new ArrayList<>();
         adapter = new TransactionHistoryAdapter(itemList, this);
         recyclerView.setAdapter(adapter);
-        userDetails = new UserDetails(this);
-
-        balance.setText("৳ " + userDetails.getBalance());
+        balance.setText(Utils.formatPriceSymbol(CredentialManager.getBalance()));
 
 
         getBalance();
@@ -127,7 +123,7 @@ public class TransactionHistory extends AppCompatActivity {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 response = response.getAsJsonObject("data");
-                userDetails.setBalance(response.get("balance").getAsString());
+                CredentialManager.setBalance(response.get("balance").getAsDouble());
                 balance.setText(String.format(Locale.ENGLISH, "৳ %s", response.get("balance").getAsString()));
             }
 

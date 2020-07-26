@@ -16,19 +16,16 @@ import java.util.ArrayList;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder> {
 
     ArrayList<OrderListItem> orders;
     Context context;
-    UserDetails userDetails;
 
     public OrderAdapter(Context context, ArrayList<OrderListItem> orders) {
         this.context = context;
         this.orders = orders;
-        userDetails = new UserDetails(context);
     }
 
     @NonNull

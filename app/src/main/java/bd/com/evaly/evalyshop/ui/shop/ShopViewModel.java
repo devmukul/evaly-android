@@ -12,12 +12,14 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class ShopViewModel extends ViewModel {
 
@@ -27,18 +29,49 @@ public class ShopViewModel extends ViewModel {
     private MutableLiveData<JsonObject> ratingSummary = new MutableLiveData<>();
     private MutableLiveData<ShopDetailsModel> shopDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<TabsItem>> shopCategoryListLiveData = new MutableLiveData<>();
-    private MutableLiveData<String> buyNowLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ItemsItem>> productListLiveData = new MutableLiveData<>();
+    private SingleLiveEvent<String> buyNowLiveData = new SingleLiveEvent<>();
     private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
     private String categorySlug;
     private String campaignSlug;
     private String shopSlug;
     private int currentPage = 1;
     private int categoryCurrentPage = 1;
+    private Integer categoryCount = null;
+    private boolean isCategoryLoading = false;
 
+
+    private List<TabsItem> categoryArrayList = new ArrayList<>();
+    private List<ItemsItem> productArrayList = new ArrayList<>();
+    private boolean isShop = true;
+
+
+    public ShopViewModel(String categorySlug, String campaignSlug, String shopSlug) {
+        super();
+        this.categorySlug = categorySlug;
+        this.campaignSlug = campaignSlug;
+        this.shopSlug = shopSlug;
+
+        currentPage = 1;
+        categoryCurrentPage = 1;
+
+        if (shopSlug != null) {
+            loadShopProducts();
+            loadShopCategories();
+        }
+    }
 
     public void clear() {
         currentPage = 2;
         categoryCurrentPage = 1;
+    }
+
+    public LiveData<List<ItemsItem>> getProductListLiveData() {
+        return productListLiveData;
+    }
+
+    public void setProductListLiveData(MutableLiveData<List<ItemsItem>> productListLiveData) {
+        this.productListLiveData = productListLiveData;
     }
 
     public int getCategoryCurrentPage() {
@@ -109,7 +142,7 @@ public class ShopViewModel extends ViewModel {
         return shopCategoryListLiveData;
     }
 
-    public LiveData<String> getBuyNowLiveData() {
+    public SingleLiveEvent<String> getBuyNowLiveData() {
         return buyNowLiveData;
     }
 
@@ -158,7 +191,7 @@ public class ShopViewModel extends ViewModel {
 
     public void loadRatings() {
 
-        ReviewsApiHelper.getShopRatings(CredentialManager.getToken(), shopSlug, new ResponseListenerAuth<JsonObject, String>() {
+        ReviewsApiHelper.getReviewSummary(CredentialManager.getToken(), shopSlug, isShop, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 ratingSummary.setValue(response);
@@ -183,7 +216,11 @@ public class ShopViewModel extends ViewModel {
         ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
+
                 shopDetailsLiveData.setValue(response);
+
+                productArrayList.addAll(response.getData().getItems());
+                productListLiveData.setValue(productArrayList);
                 if (response.getCount() > 0)
                     currentPage++;
             }
@@ -204,12 +241,24 @@ public class ShopViewModel extends ViewModel {
 
     public void loadShopCategories() {
 
+        if (isCategoryLoading)
+            return;
+
+        if (categoryCount == null || (shopCategoryListLiveData.getValue() != null && categoryCurrentPage * 15 < categoryCount)) {
+        } else
+            return;
+
+        isCategoryLoading = true;
+
         ProductApiHelper.getCategoriesOfShop(shopSlug, campaignSlug, categoryCurrentPage, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
+                isCategoryLoading = false;
 
                 List<TabsItem> itemList = new ArrayList<>();
                 JsonArray jsonArray = response.getAsJsonArray("data");
+
+                categoryCount = response.get("count").getAsInt();
 
                 for (int i = 0; i < jsonArray.size(); i++) {
                     JsonObject ob = jsonArray.get(i).getAsJsonObject();
@@ -220,7 +269,10 @@ public class ShopViewModel extends ViewModel {
                     tabsItem.setCategory(shopSlug);
                     itemList.add(tabsItem);
                 }
-                shopCategoryListLiveData.setValue(itemList);
+
+                categoryArrayList.addAll(itemList);
+                shopCategoryListLiveData.setValue(categoryArrayList);
+                // shopCategoryListLiveData.setValue(itemList);
                 categoryCurrentPage++;
             }
 
@@ -237,5 +289,7 @@ public class ShopViewModel extends ViewModel {
 
     }
 
-
+    public void clearProductList() {
+        productArrayList.clear();
+    }
 }

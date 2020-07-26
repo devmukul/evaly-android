@@ -1,31 +1,16 @@
 <resources>
     <string name="app_name" translatable="false">Evaly</string>
-    <string name="title_activity_home" translatable="false">HomeActivity</string>
 
 
     <string name="facebook_app_id" translatable="false">701695696956139</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb701695696956139</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
-    <string name="action_settings" translatable="false">Settings</string>
-    <string name="title_activity_shop" translatable="false">ShopActivity</string>
-    <string name="title_activity_browse_product" translatable="false">Browse Product Activity</string>
     <string name="title_activity_view_product" translatable="false">ViewProductActivity</string>
 
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
     <string name="rating_and_reviews"><![CDATA[Rating & Reviews]]></string>
 
     <string name="title_activity_user_profile" translatable="false">UserProfile</string>
-    <string name="contact" translatable="false">
-
-        E-valy.com ltd.\n
-
-        House #8 (1st Floor), Road # 14,\n
-        Dhanmondi, Dhaka-1209\n
-
-        Contact no: +8801927111666, +88029125760, +88029125713
-
-    </string>
     <string name="about" translatable="false">
         E-valy is an e-commerce site which will be capable of providing every kind of goods and products from every sector to every consumer located in Bangladesh. The world’s market place will be only finger-tips away for any customer in possession of a smartphone/computer and an internet connection. They will be able to purchase everything; from a safety-pin to an apartment building from our website. We have gathered the brightest minds of Bangladesh and given them the platform to perform to their fullest extent. All the data-mining and optimization has been done in-house and no outsourcing from any organization has taken place. We are utilizing 100% Bangladeshi personnel and resources and keeping the flow of cash within our borders.
 
@@ -33,18 +18,11 @@ It is a platform where people can purchase all kinds of goods from a single webs
     </string>
 
 
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="reset_password">Reset Password</string>
     <string name="required">Required</string>
     <string name="something_wrong">Something went wrong, please try again!</string>
-    <string name="create_post">Create post</string>
-    <string name="inbox">Inbox</string>
-    <string name="conversations">Conversations</string>
     <string name="default_notification_channel_id" translatable="false">notification_ch_1</string>
     <string name="mark_as_read">Mark as Read</string>
-    <string name="no_products_found_in_this_shop">No products found in this shop.</string>
-    <string name="invite_friends_to_start_messaging">Invite friends to start messaging</string>
-    <string name="report_details">Report Details</string>
     <string name="need_help">Need help with this order?</string>
     <string name="evaly_wallet">Evaly Wallet</string>
     <string name="taka" translatable="false">৳</string>
@@ -57,8 +35,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="current_password">Current Password</string>
     <string name="new_password">New Password</string>
     <string name="confirm_new_password">Confirm New Password</string>
-    <string name="write_your_message_here">Write your message here...</string>
-    <string name="online">Online</string>
     <string name="contact_us">Contact us</string>
     <string name="support">Support</string>
     <string name="maps">Maps</string>
@@ -81,14 +57,10 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="retry">Retry</string>
     <string name="invoice_no">INVOICE</string>
     <string name="order_status">ORDER TIMELINE</string>
-    <string name="product">Product</string>
     <string name="rate_amp_qty"><![CDATA[Rate & Qty]]></string>
     <string name="amount">Amount</string>
-    <string name="payment_methods">Payment Methods</string>
     <string name="evaly_pay">Evaly Pay</string>
     <string name="balance_colon">Balance:</string>
-    <string name="paid">Paid</string>
-    <string name="due">Due</string>
     <string name="make_payment">Make Payment</string>
     <string name="pay_via_gift_card">Pay via Gift Card</string>
     <string name="report_issue">Report Issue</string>
@@ -99,7 +71,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="please_input_at_least_one_special_character">* Please input at least one special character</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="set_password">Set Password</string>
-    <string name="no_invitation_requests_yet">No invitation requests yet</string>
     <string name="forgot_your_password">Forgot your password?</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="sign_up">Sign Up</string>
@@ -181,16 +152,9 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="verify_bkash_payment">Verify bKash Payment</string>
     <string name="how_to_make_bkash_payment">How to make bKash payment?</string>
     <string name="bkash_transaction_id_trxid">bKash Transaction ID (trxID)</string>
-    <string name="sort_by">Sort By</string>
-    <string name="min">Min</string>
-    <string name="brand">Brand</string>
-    <string name="max">Max</string>
-    <string name="shop">Shop</string>
-    <string name="filters">Filters</string>
     <string name="products">Products</string>
     <string name="seller_unknown">Seller: Unknown</string>
     <string name="shopping_cart">Shopping Cart</string>
-    <string name="free_shipping">FREE SHIPPING</string>
     <string name="show_more">SHOW MORE</string>
     <string name="no_post_yet">No post yet</string>
     <string name="no_orders_found">No orders found</string>
@@ -200,32 +164,17 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="reviews">Reviews</string>
     <string name="categories">Categories</string>
     <string name="all_products">All Products</string>
-    <string name="wish_list">Wish List</string>
-    <string name="invite">Invite</string>
-    <string name="invited">Invited</string>
-    <string name="name">Name</string>
+    <string name="wish_list">Wishlist</string>
     <string name="comment">Comment</string>
-    <string name="enter_address_here">Enter Address Here</string>
-    <string name="add_address">Add Address</string>
-    <string name="flat_no_house_no_road_block_sector_village_area_union_district" translatable="false">Flat no, House no, Road, Block/Sector/Village, Area/Union, District</string>
-    <string name="example_colon">Example:</string>
     <string name="reply">Reply</string>
-    <string name="edit_address">Edit Address</string>
-    <string name="update_address">Update Address</string>
     <string name="buy">BUY</string>
     <string name="pay">PAY</string>
-    <string name="price">Price:</string>
-    <string name="from">From</string>
-    <string name="to">To</string>
     <string name="buy_now">Buy Now</string>
     <string name="payment_status">Payment Status</string>
     <string name="order_date">Order Date</string>
     <string name="applicable_date">Applicable Date</string>
     <string name="amount_bdt">Amount (BDT)</string>
     <string name="choose_payment_method">Choose Payment Method:</string>
-    <string name="minimum_price">Minimum Price</string>
-    <string name="maximum_price">Maximum Price</string>
-    <string name="apply_filters">Apply Filters</string>
     <string name="issue_type">ISSUE TYPE</string>
     <string name="description_cap">DESCRIPTION</string>
     <string name="write_your_issue_here">Write your issue here...</string>
@@ -283,7 +232,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="show_prev_1_reply">Show previous 1 more reply</string>
     <string name="show_previous">Show previous</string>
     <string name="more_replies">more replies</string>
-    <string name="payment">Payment</string>
     <string name="evaly_express">Evaly Express</string>
     <string name="total">Total</string>
     <string name="subtotal">Subtotal</string>
@@ -291,22 +239,11 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="due_amount">Due Amount</string>
     <string name="order_summary">Order Summary</string>
 
-    <string-array name="search_categories">
-        <item>All Categories</item>
-    </string-array>
     <string-array name="search_type">
         <item>Products</item>
         <item>Shops</item>
         <item>Brands</item>
 
-    </string-array>
-    <string-array name="sort">
-        <item>Default</item>
-        <item>Name(A - Z)</item>
-        <item>Name(Z - A)</item>
-        <item>Price(Low > High)</item>
-        <item>Price(High > Low)</item>
-        <item>Ratings</item>
     </string-array>
     <string-array name="post_type">
         <item>CEO</item>
@@ -320,14 +257,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
         <item>Bajaj</item>
         <item>Yamaha</item>
         <item>Sony</item>
-    </string-array>
-    <string-array name="shops">
-        <item>All Shops</item>
-        <item>Star Tech</item>
-        <item>M.K. Electronics</item>
-        <item>Evaly Store</item>
-        <item>Fortuna</item>
-        <item>Kidz</item>
     </string-array>
 
 
@@ -419,5 +348,12 @@ It is a platform where people can purchase all kinds of goods from a single webs
 
     <string name="asset_statements" translatable="false">[{\"include\": \"https://evaly.com.bd/.well-known/assetlinks.json\"}]</string>
     <string name="what_is_it">What is it?</string>
+    <string name="also_available_at">Also available at</string>
+    <string name="not_available">Not Available</string>
+    <string name="bkash_payment">bKash Payment</string>
+    <string name="pay_via_card">Pay Via Card</string>
+    <string name="payment_success_message">Payment successful! If your order\'s payment status doesn\'t get updated within 5 minutes, please contact support.</string>
+    <string name="payment_error_message">Something went wrong. Please try again later.</string>
+    <string name="express">Express</string>
 
 </resources>

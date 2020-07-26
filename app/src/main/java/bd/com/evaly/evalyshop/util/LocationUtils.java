@@ -78,14 +78,16 @@ public class LocationUtils {
         }
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            try {
+                if (gps_enabled)
+                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
 
-            if (gps_enabled)
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
+                if (network_enabled)
+                    lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
+            } catch (Exception ignore) {
 
-            if (network_enabled)
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
-        } else
-        {
+            }
+        } else {
             Toast.makeText(context, "GPS permission not found", Toast.LENGTH_SHORT).show();
             return false;
         }

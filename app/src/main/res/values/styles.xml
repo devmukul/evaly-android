@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
+
+    <!-- Base application theme. Theme.AppCompat.Light -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@android:color/white</item>
@@ -29,10 +30,6 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 
-    <style name="nonBold" parent="TextAppearance.AppCompat">
-        <item name="android:textStyle">normal</item>
-    </style>
-
     <style name="TabLayoutStyle" parent="Widget.Design.TabLayout">
         <item name="android:background">@color/colorPrimary</item>
         <item name="tabIndicator">@drawable/bg_tab_feed</item>
@@ -49,12 +46,6 @@
 
     // rounded bottom sheet fragment
 
-    <style name="BottomSheetDarker" parent="@style/Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/round_border_bottom_sheet_darker</item>
-        <item name="android:statusBarColor">@color/eee</item>
-        <item name="android:navigationBarColor">@color/white</item>
-    </style>
-
     <!-- set the rounded drawable as background to your bottom sheet -->
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/round_border_bottom_sheet</item>
@@ -62,12 +53,6 @@
         <item name="android:navigationBarColor">@color/white</item>
     </style>
 
-
-
-    <style name="BottomSheetDialogDarker" parent="@style/Theme.Design.Light.BottomSheetDialog">
-        <item name="android:windowIsFloating">true</item>
-        <item name="bottomSheetStyle">@style/BottomSheetDarker</item>
-    </style>
 
     <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">true</item>
@@ -80,12 +65,15 @@
     </style>
 
     <style name="TransparentBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
-        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowFullscreen">false</item>
         <item name="bottomSheetStyle">@style/TransparentBottomSheet</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowTranslucentStatus">false</item>
     </style>
 
     <style name="TransparentInputBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
-
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowFullscreen">false</item>
         <item name="bottomSheetStyle">@style/TransparentBottomSheet</item>
@@ -97,25 +85,9 @@
 
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
 
-    <style name="OrderListTabItem" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:maxLines">1</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="variation_button" parent="Base.Widget.AppCompat.Button.Borderless">
-        <item name="android:clickable">true</item>
-        <item name="android:background">@drawable/variation_button</item>
-        <item name="android:layout_marginTop">5dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
-        <item name="android:textStyle">normal</item>
-
     </style>
 
     <style name="AppThemeViewProduct" parent="Theme.AppCompat.Light.NoActionBar">
@@ -127,11 +99,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-    </style>
-
-    <style name="AddBalanceTabs" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="CollapsingToolbarLayoutExpandedTextStyle" parent="@android:style/TextAppearance">
@@ -146,8 +113,6 @@
         <item name="android:textSize">17sp</item>
         <item name="android:textStyle">bold</item>
     </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
@@ -171,17 +136,6 @@
     </style>
 
 
-    <style name="WideDialogComments" parent="android:Theme.Material.Light.Dialog">
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
-        <item name="android:windowMinWidthMajor">100%</item>
-        <item name="android:windowMinWidthMinor">100%</item>
-        <item name="android:windowSwipeToDismiss">true</item>
-    </style>
-
     <style name="TransparentDialog" parent="Base.Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowMinWidthMajor">100%</item>
@@ -193,6 +147,20 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
 
+    </style>
+
+
+    <style name="FullWidthDialog" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+
+    <style name="FullWidthTransparentDialog" parent="FullWidthDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout.Colored">
+        <item name="tabIndicatorColor">@color/colorAccent</item>
     </style>
 
 </resources>

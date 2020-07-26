@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -33,14 +31,12 @@ import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 
 public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
-    private static final int TYPE_PROGRESS = 2;
-    private Fragment fragmentInstance;
-    private AppCompatActivity activityInstance;
-    private NavController navController;
     private Context context;
     private List<ItemsItem> productsList;
+    private String shopSlug;
+    private String campaignSlug;
+
     View.OnClickListener itemViewListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -50,6 +46,8 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             intent.putExtra("product_slug", productsList.get(position).getShopItemSlug());
             intent.putExtra("product_name", productsList.get(position).getItemName());
             intent.putExtra("product_price", productsList.get(position).getItemPrice());
+            if (shopSlug != null)
+                intent.putExtra("shop_slug", shopSlug);
             if (productsList.get(position).getItemImages().size() > 0)
                 intent.putExtra("product_image", productsList.get(position).getItemImages().get(0));
             context.startActivity(intent);
@@ -61,10 +59,9 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private ShopDetailsModel shopDetails;
     private int cashback_rate = 0;
 
-    public ShopSearchAdapter(Context context, List<ItemsItem> a, AppCompatActivity activityInstance, HashMap<String, String> data, ShopViewModel viewModel) {
+    public ShopSearchAdapter(Context context, List<ItemsItem> a, HashMap<String, String> data, ShopViewModel viewModel) {
         this.context = context;
         productsList = a;
-        this.activityInstance = activityInstance;
         this.data = data;
         this.viewModel = viewModel;
     }
@@ -88,7 +85,7 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderz, int position) {
-         if (holderz instanceof ShopSearchAdapter.VHItem) {
+        if (holderz instanceof ShopSearchAdapter.VHItem) {
 
             ShopSearchAdapter.VHItem holder = (ShopSearchAdapter.VHItem) holderz;
             ItemsItem model = productsList.get(position);
@@ -161,6 +158,21 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return TYPE_ITEM;
     }
 
+    public String getShopSlug() {
+        return shopSlug;
+    }
+
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
+    }
+
+    public String getCampaignSlug() {
+        return campaignSlug;
+    }
+
+    public void setCampaignSlug(String campaignSlug) {
+        this.campaignSlug = campaignSlug;
+    }
 
     class VHItem extends RecyclerView.ViewHolder {
         TextView textViewAndroid, price, priceDiscount, buyNow, tvCashback;

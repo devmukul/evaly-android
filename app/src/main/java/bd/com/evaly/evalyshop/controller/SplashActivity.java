@@ -15,7 +15,6 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import retrofit2.Response;
 
@@ -28,8 +27,6 @@ public class SplashActivity extends AppCompatActivity {
 
         int versionCode = BuildConfig.VERSION_CODE;
 
-        UserDetails userDetails = new UserDetails(this);
-
         AuthApiHelper.checkUpdate(new DataFetchingListener<Response<JsonObject>>() {
             @Override
             public void onDataFetched(Response<JsonObject> response) {
@@ -41,7 +38,6 @@ public class SplashActivity extends AppCompatActivity {
                         Logger.d(v+"      "+isForce+"     "+versionCode);
 
                         if (versionCode < v && isForce){
-                            userDetails.clearAll();
                             MyPreference.with(SplashActivity.this).clearAll();
                             update();
                         }else {

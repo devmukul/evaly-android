@@ -33,8 +33,8 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -45,17 +45,18 @@ import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.PaymentApiHelper;
 import bd.com.evaly.evalyshop.ui.giftcard.adapter.GiftCardListPurchasedAdapter;
-import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
-import bd.com.evaly.evalyshop.ui.order.PayViaCard;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
-import bd.com.evaly.evalyshop.util.UserDetails;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
+import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
+import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
 
 import static android.app.Activity.RESULT_OK;
 
 
-public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, PaymentListener {
 
     public static GiftCardPurchasedFragment instance;
     private View view;
@@ -66,7 +67,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     private BottomSheetBehavior sheetBehavior;
     private LinearLayout layoutBottomSheet;
     private ViewDialog dialog;
-    private UserDetails userDetails;
     private String giftCardInvoice = "";
     private String amount;
     private LinearLayout noItem;
@@ -83,6 +83,8 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     private SwipeRefreshLayout swipeLayout;
     private boolean loading = true;
     private boolean isImageSelected = false;
+
+    private PaymentWebBuilder paymentWebBuilder;
 
 
     public GiftCardPurchasedFragment() {
@@ -106,7 +108,8 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_giftcard_list, container, false);
-
+        paymentWebBuilder = new PaymentWebBuilder(getActivity());
+        paymentWebBuilder.setPaymentListener(this);
         recyclerView = view.findViewById(R.id.recyclerView);
         swipeLayout = view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
@@ -116,8 +119,6 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         context = getContext();
         rq = Volley.newRequestQueue(context);
-        userDetails = new UserDetails(context);
-
         progressContainer = view.findViewById(R.id.progressContainer);
         progressBar = view.findViewById(R.id.progressBar);
         currentPage = 1;
@@ -277,7 +278,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
         if (requestCode == 1000 && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), data.getData());
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), data.getData());
                 isImageSelected = true;
                 buildBankDialog(bitmap);
             } catch (Exception ignore) {
@@ -315,11 +316,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
         bkash.setOnClickListener(v -> {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            Intent intent = new Intent(context, PayViaBkashActivity.class);
-            intent.putExtra("amount", amountToPayView.getText().toString());
-            intent.putExtra("invoice_no", giftCardInvoice);
-            intent.putExtra("context", "gift_card_order_payment");
-            startActivityForResult(intent, 10003);
+            onPaymentRedirect(BuildConfig.BKASH_URL, amount, giftCardInvoice);
         });
 
         cards.setOnClickListener(v -> {
@@ -426,9 +423,7 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
                 dialog.hideDialog();
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 String purl = response.get("payment_gateway_url").getAsString();
-                Intent intent = new Intent(context, PayViaCard.class);
-                intent.putExtra("url", purl);
-                startActivityForResult(intent, 10003);
+                onPaymentRedirect(purl, amount, giftCardInvoice);
             }
 
             @Override
@@ -443,5 +438,38 @@ public class GiftCardPurchasedFragment extends Fragment implements SwipeRefreshL
 
             }
         });
+    }
+
+    public void onPaymentRedirect(String url, String amount, String invoice_no) {
+        String successURL;
+        PurchaseRequestInfo purchaseRequestInfo = null;
+        if (url.equals(BuildConfig.BKASH_URL)) {
+            successURL = Constants.BKASH_SUCCESS_URL;
+            paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.bkash_payment));
+            purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no);
+        } else {
+            successURL = Constants.SSL_SUCCESS_URL;
+            paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
+        }
+        paymentWebBuilder.loadPaymentURL(url, successURL, purchaseRequestInfo);
+    }
+
+    @Override
+    public void onPaymentSuccess(HashMap<String, String> values) {
+
+    }
+
+    @Override
+    public void onPaymentFailure(HashMap<String, String> values) {
+
+    }
+
+    @Override
+    public void onPaymentSuccess(String message) {
+        Toast.makeText(getActivity(), R.string.payment_success_message, Toast.LENGTH_LONG).show();
+        itemList.clear();
+        adapter.notifyDataSetChanged();
+        currentPage = 1;
+        getGiftCardList();
     }
 }

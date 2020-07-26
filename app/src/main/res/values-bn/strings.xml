@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="no_products_found_in_this_shop">এই দোকানে কোন পণ্য পাওয়া যায় নি।</string>
-    <string name="invite_friends_to_start_messaging">মেসেজ করতে আপনার বন্ধুকে আমন্ত্রণ করুন</string>
     <string name="submit">জমা দিন</string>
     <string name="mark_as_read">পঠিত হিসেবে চিহ্নিত করুন</string>
-    <string name="report_details">রিপোর্ট বিবরণ</string>
     <string name="need_help">এই অর্ডার নিয়ে সাহায্য প্রয়োজন?</string>
     <string name="evaly_wallet">ইভ্যালি ওয়ালেট</string>
     <string name="cashback">ক্যাশব্যাক</string>
@@ -16,8 +13,6 @@
     <string name="new_password">নতুন পাসওয়ার্ড</string>
     <string name="confirm_new_password">নতুন পাসওয়ার্ড নিশ্চিত করুন</string>
     <string name="change_password">পাসওয়ার্ড পরিবর্তন</string>
-    <string name="write_your_message_here">এখানে আপনার মেসেজ লিখুন...</string>
-    <string name="online">অনলাইন</string>
     <string name="messages">মেসেজ</string>
     <string name="contact_us">আমাদের সাথে যোগাযোগ করুন</string>
     <string name="call">কল</string>
@@ -42,14 +37,10 @@
     <string name="retry">পুনরায় চেষ্টা করুন</string>
     <string name="invoice_no">ইনভয়েস নং</string>
     <string name="order_status">অর্ডারের অবস্থা</string>
-    <string name="product">পণ্য</string>
     <string name="rate_amp_qty">মূল্য এবং পরিমাণ</string>
     <string name="amount">মূল্য ও পরিমাণ</string>
-    <string name="payment_methods">পেমেন্ট মেথড</string>
     <string name="evaly_pay">ইভ্যালি পে</string>
     <string name="balance_colon">ব্যালেন্স:</string>
-    <string name="paid">মূল্য পরিশোধিত</string>
-    <string name="due">মূল্য অপরিশোধিত</string>
     <string name="make_payment">পেমেন্ট করুন</string>
     <string name="pay_via_gift_card">গিফট কার্ড দিয়ে পেমেন্ট করুন</string>
     <string name="report_issue">সমস্যা রিপোর্ট করুন</string>
@@ -60,7 +51,6 @@
     <string name="please_input_at_least_one_special_character">* দয়া করে কমপক্ষে একটি স্পেশাল ক্যারেক্টার প্রবেশ করুন</string>
     <string name="confirm_password">পাসওয়ার্ড নিশ্চিত করুন</string>
     <string name="set_password">পাসওয়ার্ড সেট করুন</string>
-    <string name="no_invitation_requests_yet">এখনও কোন আমন্ত্রণের পাননি</string>
     <string name="reviews">রিভিউ</string>
     <string name="forgot_your_password">আপনি কি পাসওয়ার্ড ভুলে গেছেন?</string>
     <string name="sign_in">লগইন</string>
@@ -92,9 +82,6 @@
     <string name="share">শেয়ার করুন</string>
     <string name="use_gift_card">গিফট কার্ড ব্যবহার করুন</string>
     <string name="something_wrong">কিছু ভুল হয়েছে আবার চেষ্টা করুন!</string>
-    <string name="inbox">ইনবক্স</string>
-    <string name="create_post">পোস্ট তৈরি করুন</string>
-    <string name="conversations">কথোপকথন</string>
     <string name="rating_and_reviews">রেটিং ও রিভিউ</string>
     <string name="required">অবশ্যক</string>
     <string name="invite_your_friends_amp_earn_money">"বন্ধুদের ইনভাইট করে টাকা আয় করুন "</string>
@@ -141,7 +128,6 @@
     <string name="redeem">রেডিম করুন</string>
     <string name="reset_password">পাসওয়ার্ড রিসেট করুন</string>
     <string name="gift_card">গিফট কার্ড</string>
-    <string name="price">দাম</string>
     <string name="price_colon">দাম:</string>
     <string name="value_colon">ভ্যালু</string>
     <string name="gift_card_will_be_sent_to_this_number">এই নম্বরটিতে গিফট কার্ড পাঠানো হবে</string>
@@ -154,16 +140,9 @@
     <string name="verify_bkash_payment">বিকাশ পেমেন্ট যাচাই করুন</string>
     <string name="how_to_make_bkash_payment">বিকাশ পেমেন্ট কিভাবে করবেন?</string>
     <string name="bkash_transaction_id_trxid">বিকাশ লেনদেন আইডি (txID)</string>
-    <string name="sort_by">ক্রমানুসার</string>
-    <string name="min">সর্বনিম্ন</string>
-    <string name="brand">সর্বনিম্ন</string>
-    <string name="max">সর্বোচ্চ</string>
-    <string name="shop">সর্বোচ্চ</string>
-    <string name="filters">ফিল্টার</string>
     <string name="products">পণ্য</string>
     <string name="seller_unknown">"সেলার: "</string>
     <string name="shopping_cart">শপিং কার্ট</string>
-    <string name="free_shipping">বিনামূল্যে বিতরণ</string>
     <string name="search_categories">ক্যাটাগরি অনুসন্ধান করুন</string>
     <string name="show_more">আরো দেখুন</string>
     <string name="no_post_yet">কোন পোস্ট নেই</string>
@@ -173,27 +152,14 @@
     <string name="categories">বিভাগ</string>
     <string name="all_products">সব প্রোডাক্ট</string>
     <string name="wish_list">ইচ্ছা তালিকা</string>
-    <string name="invite">ইনভাইট করুন</string>
-    <string name="invited">ইনভাইট করা হয়েছে</string>
-    <string name="name">নাম</string>
     <string name="comment">মন্তব্য</string>
-    <string name="enter_address_here">এখানে ঠিকানা লিখুন</string>
-    <string name="add_address">ঠিকানা যোগ করুন</string>
-    <string name="example_colon">উদাহরণ</string>
     <string name="reply">জবাব</string>
-    <string name="edit_address">ঠিকানা সম্পাদনা করুন</string>
-    <string name="update_address">ঠিকানা পরিবর্তন করুন</string>
     <string name="pay">পে</string>
-    <string name="from">যার থেকে</string>
-    <string name="to">যার জন্য</string>
     <string name="pending">পেন্ডিং</string>
     <string name="buy_now">এখনই কিনুন</string>
     <string name="payment_status">পেমেন্টের অবস্থা</string>
     <string name="order_date">অর্ডারের তারিখ</string>
     <string name="applicable_date">প্রযোজ্য তারিখ</string>
-    <string name="minimum_price">সর্বনিম্ন মূল্য</string>
-    <string name="maximum_price">সর্বোচ্চ মূল্য</string>
-    <string name="apply_filters">ফিল্টার প্রয়োগ করুন</string>
     <string name="issue_type">সমস্যার ধরণ</string>
     <string name="description_cap">বিবরণ</string>
     <string name="write_your_issue_here">এখানে আপনার সমস্যা লিখুন</string>
@@ -247,7 +213,6 @@
     <string name="show_prev_1_reply">আগের আরো ১ টি রিপ্লে দেখুন</string>
     <string name="show_previous">"আগের আরো "</string>
     <string name="more_replies">টি রিপ্লে দেখুন</string>
-    <string name="payment">পেমেন্ট</string>
     <string name="evaly_express">ইভ্যালি এক্সপ্রেস</string>
     <string name="total">মোট</string>
     <string name="subtotal">মোট</string>
@@ -255,4 +220,10 @@
     <string name="due_amount">বাকি রয়েছে</string>
     <string name="order_summary">অর্ডার সংক্ষিপ্তসার</string>
     <string name="what_is_it">এটা কি?</string>
+    <string name="also_available_at">Also available at</string>
+    <string name="not_available">Not Available</string>
+    <string name="bkash_payment">bKash Payment</string>
+    <string name="pay_via_card">Pay Via Card</string>
+    <string name="payment_success_message">Payment successful! If your order\'s payment status doesn\'t get updated within 5 minutes, please contact support.</string>
+    <string name="payment_error_message">Something went wrong. Please try again later.</string>
 </resources>

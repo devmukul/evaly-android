@@ -66,7 +66,7 @@ public abstract class HomeExpressItemModel extends DataBindingEpoxyModel {
 
         binding.image.setPadding(0, 0, 0, 0);
 
-        binding.title.setText(name);
+        binding.title.setText(name.replace("\\n", "\n"));
         binding.overly.setOnClickListener(clickListener);
     }
 
