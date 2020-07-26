@@ -454,7 +454,7 @@ public interface IApiClient {
     Call<CommonDataResponse<String>> postRequestRefund(@Header("Authorization") String token, @Body HashMap<String, String> body);
 
     @POST(UrlUtils.BASE_URL + "confirm/refund-request/{invoice}")
-    Call<CommonDataResponse<String>> postRequestRefundConfirmOTP(@Header("Authorization") String token, @Body HashMap<String, String> body, @Path("invoice") String slug);
+    Call<CommonDataResponse<String>> postRequestRefundConfirmOTP(@Header("Authorization") String token, @Body HashMap<String, Integer> body, @Path("invoice") String slug);
 
     // auth 2.0
 

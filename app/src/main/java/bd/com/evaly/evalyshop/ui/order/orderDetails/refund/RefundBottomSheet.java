@@ -199,8 +199,8 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                             ToastUtils.show("Please enter captcha code");
                         } else{
                             dialog.showDialog();
-                            HashMap<String, String> otpBody = new HashMap<>();
-                            otpBody.put("otp_token", dialogConfirmDeliveryBinding.code.getText().toString());
+                            HashMap<String, Integer> otpBody = new HashMap<>();
+                            otpBody.put("otp_token", Integer.parseInt(dialogConfirmDeliveryBinding.code.getText().toString()));
                             OrderApiHelper.requestRefundConfirmOTP(CredentialManager.getToken(), invoice_no.toUpperCase(), otpBody, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
                                 @Override
                                 public void onDataFetched(CommonDataResponse<String> response, int statusCode) {

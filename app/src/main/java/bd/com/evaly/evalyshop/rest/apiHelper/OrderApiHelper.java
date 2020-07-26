@@ -71,7 +71,7 @@ public class OrderApiHelper extends BaseApiHelper {
         getiApiClient().postRequestRefund(token, body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void requestRefundConfirmOTP(String token, String invoice, HashMap<String, String> body, ResponseListenerAuth<CommonDataResponse<String>, String> listener){
+    public static void requestRefundConfirmOTP(String token, String invoice, HashMap<String, Integer> body, ResponseListenerAuth<CommonDataResponse<String>, String> listener){
         getiApiClient().postRequestRefundConfirmOTP(token, body, invoice).enqueue(getResponseCallBackDefault(listener));
     }
 
