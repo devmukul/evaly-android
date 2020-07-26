@@ -2,34 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        app:showAsAction="ifRoom"
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_home"
-        android:title="@string/home"/>
+        android:title="@string/home"
+        app:showAsAction="ifRoom" />
 
     <item
-        app:showAsAction="ifRoom"
-        android:enabled="true"
         android:id="@+id/wishListFragment"
+        android:enabled="true"
         android:icon="@drawable/ic_favorite"
-        android:title="@string/wish_list"/>
+        android:title="@string/wish_list"
+        app:showAsAction="ifRoom" />
 
     <item
-        app:showAsAction="ifRoom"
         android:id="@+id/expressProductSearchFragment"
-        android:title="@string/express"/>
+        android:title="@string/express"
+        android:enabled="false"
+        app:showAsAction="ifRoom" />
 
     <item
-        app:showAsAction="ifRoom"
         android:id="@+id/cartFragment"
         android:icon="@drawable/ic_cart"
-        android:title="@string/cart"/>
-
+        android:title="@string/cart"
+        app:showAsAction="ifRoom" />
 
     <item
-        app:showAsAction="ifRoom"
         android:id="@+id/userDashboardActivity"
         android:icon="@drawable/ic_user_nav_menu"
-        android:title="@string/dashboard"/>
-
+        android:title="@string/dashboard"
+        app:showAsAction="ifRoom" />
 </menu>

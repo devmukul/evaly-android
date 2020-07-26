@@ -2,19 +2,20 @@ package bd.com.evaly.evalyshop.util;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
-import bd.com.evaly.evalyshop.models.notification.NotificationCount;
-import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -50,7 +51,8 @@ public class InitializeActionBar {
             if (CredentialManager.getToken().equals("")) {
                 context.startActivity(new Intent(context, SignInActivity.class));
             } else {
-                context.startActivity(new Intent(context, NotificationActivity.class));
+                openEconnect();
+              //  context.startActivity(new Intent(context, NotificationActivity.class));
             }
         });
 
@@ -60,7 +62,7 @@ public class InitializeActionBar {
             getNotificationCount();
     }
 
-    public void getNotificationCount(){
+    public void getNotificationCount() {
 
         ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
@@ -77,8 +79,7 @@ public class InitializeActionBar {
             public void onAuthError(boolean logout) {
                 if (!logout)
                     getNotificationCount();
-                else
-                if (context != null) AppController.logout(context);
+                else if (context != null) AppController.logout(context);
             }
         });
 
@@ -91,12 +92,32 @@ public class InitializeActionBar {
         if (new_hot_number == 0)
             ui_hot.setVisibility(View.INVISIBLE);
         else {
+            ui_hot.setVisibility(View.VISIBLE);
             if (new_hot_number > 99)
                 ui_hot.setText("99");
             else
                 ui_hot.setText(String.format("%d", new_hot_number));
         }
 
+    }
+
+    private void openEconnect(){
+        Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
+        try {
+            if (launchIntent != null) {
+                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
+                launchIntent.putExtra("user", CredentialManager.getUserName());
+                launchIntent.putExtra("password", CredentialManager.getPassword());
+                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+                context.startActivity(launchIntent);
+            }
+        } catch (android.content.ActivityNotFoundException e) {
+            try {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+            }
+        }
     }
 
 }
