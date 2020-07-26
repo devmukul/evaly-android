@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:nestedScrollingEnabled="false"
-                android:paddingBottom="15dp"
+                android:paddingBottom="40dp"
                 tools:listitem="@layout/item_wishlist">
 
             </androidx.recyclerview.widget.RecyclerView>

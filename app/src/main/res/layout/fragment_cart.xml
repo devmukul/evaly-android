@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:background="#fafafa"
                     android:nestedScrollingEnabled="false"
-                    android:paddingBottom="8dp">
+                    android:paddingBottom="40dp">
 
                 </androidx.recyclerview.widget.RecyclerView>
 

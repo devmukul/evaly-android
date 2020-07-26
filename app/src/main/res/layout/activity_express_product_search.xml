@@ -83,7 +83,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="64dp"
-            android:background="#fafafa"
+            android:background="#fff"
+            android:visibility="gone"
             android:fillViewport="true">
 
             <LinearLayout
@@ -129,7 +130,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
-            android:background="#fafafa"
+            android:background="#fff"
             android:clipToPadding="false"
             android:paddingBottom="90dp"
             android:paddingStart="5dp"
