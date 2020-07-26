@@ -12,8 +12,10 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.notification.NotificationCount;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
@@ -60,9 +62,9 @@ public class InitializeActionBar {
 
     public void getNotificationCount(){
 
-        GeneralApiHelper.getNotificationCount(CredentialManager.getToken(), "core", new ResponseListenerAuth<NotificationCount, String>() {
+        ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
-            public void onDataFetched(NotificationCount response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 updateHotCount(response.getCount());
             }
 
@@ -73,12 +75,10 @@ public class InitializeActionBar {
 
             @Override
             public void onAuthError(boolean logout) {
-
                 if (!logout)
                     getNotificationCount();
                 else
-                    if (context != null) AppController.logout(context);
-
+                if (context != null) AppController.logout(context);
             }
         });
 
