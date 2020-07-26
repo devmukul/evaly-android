@@ -183,10 +183,10 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             dialog.showDialog();
             viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
         } else if (method.getName().equalsIgnoreCase("bKash")) {
-            dismiss();
             Toast.makeText(getContext(), "Opening bKash payment gateway!", Toast.LENGTH_SHORT).show();
-            if (invoice_no != null && !enteredAmount.equals(""))
+            if (paymentOptionRedirceListener != null && invoice_no != null && !enteredAmount.equals(""))
                 paymentOptionRedirceListener.onPaymentRedirect(BuildConfig.BKASH_URL, enteredAmount, invoice_no);
+            dismissAllowingStateLoss();
         } else if (method.getName().equalsIgnoreCase("Cards")) {
             Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaCard(invoice_no, enteredAmount);
@@ -258,14 +258,14 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     public void payViaCard(String url) {
 
         if (getContext() != null) {
-            if (url == null || url.equals(""))
-                Toast.makeText(getContext(), "Unable to make payment!", Toast.LENGTH_SHORT).show();
+            if (paymentOptionRedirceListener == null || url == null || invoice_no == null || invoice_no.equals("") || url.equals(""))
+                Toast.makeText(getContext(), "Unable to make payment, try again later!", Toast.LENGTH_SHORT).show();
             else {
-                if (isVisible() && !isRemoving() && !isDetached())
-                    dismissAllowingStateLoss();
                 if (getActivity() != null) {
                     paymentOptionRedirceListener.onPaymentRedirect(url, enteredAmount, invoice_no);
                 }
+                if (isVisible() && !isRemoving() && !isDetached())
+                    dismissAllowingStateLoss();
             }
         }
     }

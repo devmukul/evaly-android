@@ -188,13 +188,11 @@ public class UserDashboardActivity extends BaseActivity {
 
         Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
         try {
-            if (launchIntent != null) {
-                launchIntent.putExtra("to", "OPEN_CHAT_LIST");
-                launchIntent.putExtra("user", CredentialManager.getUserName());
-                launchIntent.putExtra("password", CredentialManager.getPassword());
-                launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
-                startActivity(launchIntent);
-            }
+            launchIntent.putExtra("to", "OPEN_CHAT_LIST");
+            launchIntent.putExtra("user", CredentialManager.getUserName());
+            launchIntent.putExtra("password", CredentialManager.getPassword());
+            launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
+            startActivity(launchIntent);
         } catch (android.content.ActivityNotFoundException e) {
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
@@ -234,6 +232,15 @@ public class UserDashboardActivity extends BaseActivity {
         super.onResume();
         Balance.update(this, false);
         getMessageCount();
+
+        if (!CredentialManager.getToken().equals("") && CredentialManager.getUserData() == null) {
+            AppController.logout(this);
+            return;
+        }
+
+        if (CredentialManager.getUserData() == null)
+            return;
+
         ImageView profilePicNav = findViewById(R.id.picture);
 
         if (CredentialManager.getUserData().getImage_sm() != null) {

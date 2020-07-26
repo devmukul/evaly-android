@@ -24,6 +24,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignAdapter;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignFragment extends Fragment implements CampaignNavigator {
 
@@ -123,7 +124,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         });
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -135,21 +135,15 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         super.onDetach();
     }
 
-
     @Override
     public void onListLoaded(List<CampaignItem> list) {
-
 
     }
 
     @Override
     public void onListFailed(String errorBody, int errorCode) {
-
-        Toast.makeText(mRootView.getContext(), "Error occurred", Toast.LENGTH_SHORT).show();
+        ToastUtils.show("Error occurred!");
         binding.progressBar.setVisibility(View.INVISIBLE);
-
     }
-
-
 }
 
