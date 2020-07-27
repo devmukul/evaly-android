@@ -515,9 +515,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void setPostPic() {
-
-        if (imageUrl != null && bottomSheetDialog.isShowing()) {
-
+        if (imageUrl != null && bottomSheetDialog != null && bottomSheetDialog.isShowing()) {
             bottomSheetDialog.findViewById(R.id.postImage).setVisibility(View.VISIBLE);
             Glide.with(this)
                     .asBitmap()
@@ -528,7 +526,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     .placeholder(R.drawable.half_dp_bg_light)
                     .into((ImageView) bottomSheetDialog.findViewById(R.id.postImage));
         }
-
     }
 
     private void openSelector() {

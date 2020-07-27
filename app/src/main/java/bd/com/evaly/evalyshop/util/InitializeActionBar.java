@@ -19,7 +19,6 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.token.ChatApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
-import bd.com.evaly.evalyshop.ui.notification.NotificationActivity;
 
 public class InitializeActionBar {
 
@@ -52,7 +51,7 @@ public class InitializeActionBar {
                 context.startActivity(new Intent(context, SignInActivity.class));
             } else {
                 openEconnect();
-              //  context.startActivity(new Intent(context, NotificationActivity.class));
+                //  context.startActivity(new Intent(context, NotificationActivity.class));
             }
         });
 
@@ -101,7 +100,7 @@ public class InitializeActionBar {
 
     }
 
-    private void openEconnect(){
+    private void openEconnect() {
         Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
         try {
             if (launchIntent != null) {
@@ -109,7 +108,8 @@ public class InitializeActionBar {
                 launchIntent.putExtra("user", CredentialManager.getUserName());
                 launchIntent.putExtra("password", CredentialManager.getPassword());
                 launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
-                context.startActivity(launchIntent);
+                if (context != null && !context.isFinishing())
+                    context.startActivity(launchIntent);
             }
         } catch (android.content.ActivityNotFoundException e) {
             try {

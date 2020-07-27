@@ -142,6 +142,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     @Override
     public void onListFailed(String errorBody, int errorCode) {
+        if (getActivity() == null || getActivity().isFinishing() || binding == null)
+            return;
         ToastUtils.show("Error occurred!");
         binding.progressBar.setVisibility(View.INVISIBLE);
     }
