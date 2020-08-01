@@ -9,8 +9,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 225
-        versionName "2.2.5"
+        versionCode 226
+        versionName "2.2.6"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -54,7 +54,6 @@ android {
             buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
             buildConfigField "String", 'BUILD', "\"dev\""
-
             buildConfigField "String", 'BKASH_URL', "\"https://beta.evaly.com.bd/bkash_payment\""
 
             //  ext.enableCrashlytics = false

@@ -90,13 +90,13 @@ public class UserDashboardActivity extends BaseActivity {
         messageCount = findViewById(R.id.messageCount);
         alert = new ViewDialog(UserDashboardActivity.this);
 
-        if (CredentialManager.getUserData() != null)
+        if (CredentialManager.getUserData() != null) {
             name.setText(String.format("%s %s", CredentialManager.getUserData().getFirst_name(), CredentialManager.getUserData().getLast_name()));
-
-        if (CredentialManager.getUserData().getAddresses().equals("null"))
-            address.setText("Add an address");
-        else
-            address.setText(CredentialManager.getUserData().getAddresses());
+            if (CredentialManager.getUserData().getAddresses() == null)
+                address.setText("Add an address");
+            else
+                address.setText(CredentialManager.getUserData().getAddresses());
+        }
 
         LinearLayout orders = findViewById(R.id.order);
         orders.setOnClickListener(view -> {

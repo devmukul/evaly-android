@@ -92,7 +92,6 @@ public class ApiClient {
                 return chain.proceed(request);
             });
 
-            // httpClient.addInterceptor(new TokenInterceptor());
 
             // Install the all-trusting trust manager
             final SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -105,9 +104,9 @@ public class ApiClient {
             OkHttpClient okHttpClient = new OkHttpClient();
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
 
-
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             okHttpClient = okHttpClient.newBuilder()
+                    .sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0])
                     .connectTimeout(1, TimeUnit.MINUTES)
                     .readTimeout(2, TimeUnit.MINUTES)
                     .writeTimeout(2, TimeUnit.MINUTES)
