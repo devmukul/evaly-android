@@ -157,7 +157,7 @@ public class Utils {
         if (d == (int) d)
             return String.format(Locale.ENGLISH, "%d", (int) d);
         else
-            return String.format(Locale.ENGLISH, "%s", d);
+            return String.format(Locale.ENGLISH, "%.2f", d);
     }
 
     public static String formatPrice(String s) {

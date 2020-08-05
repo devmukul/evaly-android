@@ -12,6 +12,12 @@
         app:popUpToInclusive="true" />
 
     <action
+        android:id="@+id/action_expressFragment_Pop"
+        app:destination="@id/expressProductSearchFragment"
+        app:popUpTo="@id/expressProductSearchFragment"
+        app:popUpToInclusive="true" />
+
+    <action
         android:id="@+id/action_to_browseProduct_Pop"
         app:destination="@id/browseProductFragment"
         app:popUpTo="@id/homeFragment"

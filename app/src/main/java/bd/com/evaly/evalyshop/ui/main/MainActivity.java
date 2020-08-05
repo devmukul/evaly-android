@@ -122,6 +122,8 @@ public class MainActivity extends BaseActivity {
             viewModel.registerXMPP();
         }
 
+        setupRemoteConfig();
+
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -139,14 +141,11 @@ public class MainActivity extends BaseActivity {
                         return onNavDestinationSelected(item, navController);
                 });
 
-        setupRemoteConfig();
+        binding.fabCreate.setOnClickListener(view -> navController.navigate(R.id.action_expressFragment_Pop));
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
         WishListDao wishListDao = appDatabase.wishListDao();
         CartDao cartDao = appDatabase.cartDao();
-
-
-        binding.fabCreate.setOnClickListener(view -> navController.navigate(R.id.expressProductSearchFragment));
 
         BottomNavigationItemView itemView = binding.bottomNavigationView.findViewById(R.id.wishListFragment);
         View wishListBadge = LayoutInflater.from(MainActivity.this).inflate(R.layout.bottom_navigation_notification, binding.bottomNavigationView, false);
