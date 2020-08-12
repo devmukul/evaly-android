@@ -54,7 +54,7 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
                 .load(model.getBannerImage())
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .apply(new RequestOptions().override(3000, 900))
+                .placeholder(R.drawable.bg_fafafa_round)
                 .into(holder.ivCover);
 
         Date startDate = Utils.getCampaignDate( model.getStartDate());
