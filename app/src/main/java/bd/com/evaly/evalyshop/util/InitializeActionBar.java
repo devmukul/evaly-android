@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.util.Calendar;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -63,10 +65,17 @@ public class InitializeActionBar {
 
     public void getNotificationCount() {
 
+        if (Calendar.getInstance().getTimeInMillis() - CredentialManager.getMessageCounterLastUpdated() < 600000){
+            updateHotCount(CredentialManager.getMessageCount());
+            return;
+        }
+
         ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 updateHotCount(response.getCount());
+                CredentialManager.setMessageCounterLastUpdated();
+                CredentialManager.setMessageCount(response.getCount());
             }
 
             @Override

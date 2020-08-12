@@ -38,6 +38,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.BuildConfig;
@@ -317,14 +318,17 @@ public class MainActivity extends BaseActivity {
 
     private void getMessageCount(TextView messageCount) {
 
+        if (Calendar.getInstance().getTimeInMillis() - CredentialManager.getMessageCounterLastUpdated() < 600000) {
+            updateHotCount(messageCount, CredentialManager.getMessageCount());
+            return;
+        }
+
         ChatApiHelper.getMessageCount(new ResponseListenerAuth<CommonDataResponse<String>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
-                if (response.getCount() > 0) {
-                    messageCount.setVisibility(View.VISIBLE);
-                    messageCount.setText(String.format("%d", response.getCount()));
-                } else
-                    messageCount.setVisibility(View.GONE);
+                updateHotCount(messageCount, response.getCount());
+                CredentialManager.setMessageCounterLastUpdated();
+                CredentialManager.setMessageCount(response.getCount());
             }
 
             @Override
@@ -338,6 +342,14 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+    }
+
+    private void updateHotCount(TextView messageCount, int count) {
+        if (count > 0) {
+            messageCount.setVisibility(View.VISIBLE);
+            messageCount.setText(String.format("%d", count));
+        } else
+            messageCount.setVisibility(View.GONE);
     }
 
     @Override

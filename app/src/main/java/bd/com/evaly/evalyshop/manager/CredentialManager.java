@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.manager;
 
+import java.util.Calendar;
+
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.models.user.UserModel;
 import bd.com.evaly.evalyshop.util.ConstantUtils;
@@ -108,6 +110,23 @@ public class CredentialManager {
 
     public static String getBalanceString() {
         return Utils.formatPrice((double) MyPreference.with(AppController.mContext).getFloat("balance", 0.0f));
+    }
+
+    public static long getMessageCounterLastUpdated() {
+        return MyPreference.with(AppController.mContext).getLong("message_counter_last_updated", 0);
+    }
+
+    public static void setMessageCounterLastUpdated() {
+        Calendar calendar = Calendar.getInstance();
+        MyPreference.with(AppController.mContext).addLong("message_counter_last_updated", calendar.getTimeInMillis()).save();
+    }
+
+    public static int getMessageCount() {
+        return MyPreference.with(AppController.mContext).getInt("message_counter", 0);
+    }
+
+    public static void setMessageCount(int count) {
+        MyPreference.with(AppController.mContext).addInt("message_counter", count).save();
     }
 
 }
