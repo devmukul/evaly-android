@@ -9,8 +9,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 226
-        versionName "2.2.6"
+        versionCode 227
+        versionName "2.2.7"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -18,22 +18,10 @@ android {
 
     android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
-    // for new build feature.
-    buildFeatures{
+    buildFeatures {
         dataBinding = true
-         viewBinding = true
+        viewBinding = true
     }
-
-//    project.android.buildTypes.all { buildType ->
-//        buildType.javaCompileOptions.annotationProcessorOptions.arguments =
-//                [
-//                        // Validation is disabled in production to remove the runtime overhead
-//                        validateEpoxyModelUsage     : String.valueOf(buildType.name == 'debug'),
-//                        requireHashCodeInEpoxyModels: "true",
-//                        requireAbstractEpoxyModels  : "true",
-//                        implicitlyAddAutoModels     : "true"
-//                ]
-//    }
 
     buildTypes {
         release {
@@ -45,7 +33,6 @@ android {
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111666\""
             buildConfigField "String", 'BUILD', "\"prod\""
             buildConfigField "String", 'BKASH_URL', "\"https://evaly.com.bd/bkash_payment\""
-
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -55,9 +42,6 @@ android {
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
             buildConfigField "String", 'BUILD', "\"dev\""
             buildConfigField "String", 'BKASH_URL', "\"https://beta.evaly.com.bd/bkash_payment\""
-
-            //  ext.enableCrashlytics = false
-
         }
 
         lintOptions {
@@ -83,23 +67,18 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
     implementation "se.emilsjolander:StickyScrollViewItems:$rootProject.StickyScrollViewItemsVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constrainlayout_version"
-
     implementation "com.google.firebase:firebase-analytics:$rootProject.firebase_core_version"
     implementation "com.google.firebase:firebase-messaging:$rootProject.firebase_messaging_version"
     implementation "com.crashlytics.sdk.android:crashlytics:$rootProject.crashlytics_version"
     implementation "com.google.firebase:firebase-analytics:$rootProject.firebase_core_version"
     implementation "com.google.firebase:firebase-config:$rootProject.firebase_config"
-
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofit_version"
     implementation "com.google.code.gson:gson:$rootProject.gson_version"
     implementation "com.squareup.okhttp3:okhttp:$rootProject.okhttp_version"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofit_converter_version"
     implementation "com.squareup.retrofit2:converter-scalars:$rootProject.retrofit_converter_version"
-
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttp_version"
-
     implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofit_version"
-
     implementation "com.jakewharton:butterknife:$rootProject.butterknife_version"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterknife_version"
 
@@ -111,38 +90,29 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:$rootProject.legacy_support_version"
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerview_version"
     implementation "com.android.volley:volley:$rootProject.volley_version"
-
     implementation "com.github.bumptech.glide:glide:$rootProject.glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.glide_version"
     implementation "com.facebook.shimmer:shimmer:$rootProject.facebook_shimmer_version"
     implementation "androidx.gridlayout:gridlayout:$rootProject.grid_layout_version"
     implementation "com.github.badoualy:stepper-indicator:$rootProject.stepper_indicator"
     implementation "androidx.browser:browser:$rootProject.browser_version"
-
     implementation "com.github.MikeOrtiz:TouchImageView:$rootProject.touch_imageview_version"
     implementation "com.orhanobut:logger:$rootProject.orhanobut_logger"
     implementation "androidx.multidex:multidex:$rootProject.multidex_version"
-
     implementation "com.google.dagger:dagger:$rootProject.dagger2Version"
     annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2Version"
     annotationProcessor "com.google.dagger:dagger-android-processor:$rootProject.dagger2Version"
     implementation "com.google.dagger:dagger-android-support:$rootProject.dagger2Version"
-
     implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.lifecycleVersion"
     implementation "com.ethanhua:skeleton:$rootProject.skeleton_version"
     implementation "io.supercharge:shimmerlayout:$rootProject.shimmerlayout_version"
-
     implementation "com.vanniktech:emoji:$rootProject.emoji_version"
     implementation "com.vanniktech:emoji-google:$rootProject.emoji_version"
     implementation "com.amulyakhare:com.amulyakhare.textdrawable:$rootProject.text_drawable_version"
-
     implementation "de.hdodenhof:circleimageview:$rootProject.circle_image_view_version"
-
     implementation "org.jsoup:jsoup:$rootProject.jsoup_version"
     implementation "com.squareup.picasso:picasso:$rootProject.picasso_version"
-
-
     implementation "androidx.room:room-runtime:$rootProject.room_version"
     annotationProcessor "androidx.room:room-compiler:$rootProject.room_version"
 
@@ -160,7 +130,6 @@ dependencies {
     implementation "com.google.android.material:material:$rootProject.material_version"
     implementation "androidx.transition:transition:$rootProject.transition_version"
     implementation "androidx.paging:paging-runtime:$rootProject.paging_version"
-
     implementation project(":evalyPaymentLibrary")
     implementation project(path: ':richlinkpreview')
 
