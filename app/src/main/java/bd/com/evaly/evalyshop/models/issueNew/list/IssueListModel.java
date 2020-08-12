@@ -53,7 +53,7 @@ public class IssueListModel implements Serializable {
 	private String customer;
 
 	@SerializedName("assigned_to")
-	private String assignedTo;
+	private AssignedTo assignedTo;
 
 	public void setShop(Shop shop){
 		this.shop = shop;
@@ -175,11 +175,11 @@ public class IssueListModel implements Serializable {
 		return customer;
 	}
 
-	public void setAssignedTo(String assignedTo){
+	public void setAssignedTo(AssignedTo assignedTo){
 		this.assignedTo = assignedTo;
 	}
 
-	public String getAssignedTo(){
+	public AssignedTo getAssignedTo(){
 		return assignedTo;
 	}
 

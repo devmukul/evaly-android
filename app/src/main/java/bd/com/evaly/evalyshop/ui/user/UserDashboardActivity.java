@@ -192,7 +192,8 @@ public class UserDashboardActivity extends BaseActivity {
             launchIntent.putExtra("user", CredentialManager.getUserName());
             launchIntent.putExtra("password", CredentialManager.getPassword());
             launchIntent.putExtra("userInfo", new Gson().toJson(CredentialManager.getUserData()));
-            startActivity(launchIntent);
+            if (launchIntent.getPackage() != null)
+                startActivity(launchIntent);
         } catch (android.content.ActivityNotFoundException e) {
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
