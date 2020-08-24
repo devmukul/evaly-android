@@ -24,7 +24,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="default_notification_channel_id" translatable="false">notification_ch_1</string>
     <string name="mark_as_read">Mark as Read</string>
     <string name="need_help">Need help with this order?</string>
-    <string name="evaly_wallet">Evaly Wallet</string>
+    <string name="evaly_account">Evaly Account</string>
     <string name="taka" translatable="false">৳</string>
     <string name="cashback">Cashback</string>
     <string name="what_would_you_like_to_buy">What would you like to buy?</string>
@@ -60,7 +60,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="rate_amp_qty"><![CDATA[Rate & Qty]]></string>
     <string name="amount">Amount</string>
     <string name="evaly_pay">Evaly Pay</string>
-    <string name="balance_colon">Balance:</string>
+    <string name="bal_colon">Account:</string>
     <string name="make_payment">Make Payment</string>
     <string name="pay_via_gift_card">Pay via Gift Card</string>
     <string name="report_issue">Report Issue</string>
@@ -80,9 +80,9 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_in">Sign In</string>
     <string name="recent_transactions">Recent Transactions</string>
-    <string name="check_balance">Check Balance</string>
+    <string name="check_account">Check Account</string>
     <string name="notifications">Notifications</string>
-    <string name="transaction_history">Transaction History</string>
+    <string name="transaction_history">Payment History</string>
     <string name="edit_personal_info">Edit Personal Info</string>
     <string name="change_password">Change Password</string>
     <string name="messages">Messages</string>
@@ -110,9 +110,9 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="write_a_review_optional">Write a review (optional)</string>
     <string name="submit_review">Submit Review</string>
     <string name="add_to_cart">Add to Cart</string>
-    <string name="balance">Balance</string>
-    <string name="holding_balance">Holding Balance</string>
-    <string name="gift_card_balance">Gift Card Balance</string>
+    <string name="evaly_bal">Account</string>
+    <string name="holding_bal">Holding</string>
+    <string name="gift_card_bal">Gift Card</string>
     <string name="claim">Claim</string>
     <string name="campaigns">Campaigns</string>
     <string name="no_campaign_is_available_right_now">No campaign is available right now.</string>
@@ -145,7 +145,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="total_price">Total Price</string>
     <string name="i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"><![CDATA[I agree to the Terms & Conditions and Purchasing Policy of Evaly.]]></string>
     <string name="partial_pay">Partial Pay</string>
-    <string name="evaly_balance">Evaly Balance</string>
     <string name="upload_bank_receipt">Upload Bank Receipt</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>

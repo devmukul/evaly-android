@@ -119,7 +119,7 @@ public class GiftCardListPurchasedAdapter extends RecyclerView.Adapter<GiftCardL
                 myViewHolder.status.setText("Used");
                 myViewHolder.status.setBackground(context.getResources().getDrawable(R.drawable.gift_pending_bg));
                 myViewHolder.button.setOnClickListener(view -> {
-                    Toast.makeText(context, "This gift card's balance is already used", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "This gift card is already used", Toast.LENGTH_LONG).show();
                     return;
                 });
 

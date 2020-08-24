@@ -213,7 +213,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:text="Balance: "
+                        android:text="Account: "
                         android:textColor="#666"
                         android:textSize="16sp" />
 
@@ -226,12 +226,7 @@
                         android:textColor="#f57224"
                         android:textSize="16sp"
                         android:textStyle="bold" />
-
-
-
                 </LinearLayout>
-
-
 
             </LinearLayout>
 

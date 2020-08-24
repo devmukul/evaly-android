@@ -3,7 +3,7 @@
     <string name="submit">জমা দিন</string>
     <string name="mark_as_read">পঠিত হিসেবে চিহ্নিত করুন</string>
     <string name="need_help">এই অর্ডার নিয়ে সাহায্য প্রয়োজন?</string>
-    <string name="evaly_wallet">ইভ্যালি ওয়ালেট</string>
+    <string name="evaly_account">ইভ্যালি একাউন্ট</string>
     <string name="cashback">ক্যাশব্যাক</string>
     <string name="what_would_you_like_to_buy">এখানে অনুসন্ধান করুন...</string>
     <string name="you_haven_t_received_any_notification">আপনি কোন নোটিফিকেশন পাননি</string>
@@ -40,7 +40,7 @@
     <string name="rate_amp_qty">মূল্য এবং পরিমাণ</string>
     <string name="amount">মূল্য ও পরিমাণ</string>
     <string name="evaly_pay">ইভ্যালি পে</string>
-    <string name="balance_colon">ব্যালেন্স:</string>
+    <string name="bal_colon">একাউন্ট:</string>
     <string name="make_payment">পেমেন্ট করুন</string>
     <string name="pay_via_gift_card">গিফট কার্ড দিয়ে পেমেন্ট করুন</string>
     <string name="report_issue">সমস্যা রিপোর্ট করুন</string>
@@ -61,11 +61,11 @@
     <string name="i_agree_to_the_privacy_policy_and_terms_amp_conditions_of_evaly">আমি ইভ্যালি গোপনীয়তা নীতি এবং শর্তাবলীর সাথে সম্মত</string>
     <string name="already_have_an_account">ইতিমধ্যে আপনার একাউন্ট আছে?</string>
     <string name="recent_transactions">সাম্প্রতিক লেনদেন</string>
-    <string name="evaly_balance">ইভ্যালি ব্যালেন্স</string>
-    <string name="check_balance">ব্যালেন্স দেখুন</string>
+    <string name="evaly_balance">ইভ্যালি একাউন্ট</string>
+    <string name="check_account">একাউন্ট দেখুন</string>
     <string name="orders">অর্ডার</string>
     <string name="notifications">নোটিফিকেশন</string>
-    <string name="transaction_history">লেনদেনের হিস্ট্রি</string>
+    <string name="transaction_history">পেমেন্ট হিস্ট্রি</string>
     <string name="edit_personal_info">ব্যক্তিগত তথ্য পরিবর্তন</string>
     <string name="sku">SKU</string>
     <string name="description">বিবরণ</string>
@@ -96,9 +96,9 @@
     <string name="write_a_review_optional">একটি পর্যালোচনা লিখুন</string>
     <string name="submit_review">পর্যালোচনা জমা দিন</string>
     <string name="add_to_cart">কার্টে যোগ করুন</string>
-    <string name="balance">ব্যালেন্স</string>
-    <string name="holding_balance">হোল্ডিং ব্যালেন্স</string>
-    <string name="gift_card_balance">গিফট কার্ড ব্যালেন্স</string>
+    <string name="evaly_bal">একাউন্ট</string>
+    <string name="holding_bal">হোল্ডিং</string>
+    <string name="gift_card_bal">গিফট কার্ড</string>
     <string name="claim">ক্লেইম করুন</string>
     <string name="campaigns">ক্যাম্পেইন</string>
     <string name="no_campaign_is_available_right_now">এখন কোন ক্যাম্পেইন নেই</string>

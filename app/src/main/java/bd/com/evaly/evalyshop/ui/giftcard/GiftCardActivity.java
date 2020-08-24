@@ -81,7 +81,7 @@ public class GiftCardActivity extends AppCompatActivity {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
                 response = response.getAsJsonObject("data");
-                balance.setText(String.format("Gift Card Balance: ৳ %s", response.get("gift_card_balance").getAsString()));
+                balance.setText(String.format("Gift Card: ৳ %s", response.get("gift_card_balance").getAsString()));
                 balance.setVisibility(View.VISIBLE);
             }
 

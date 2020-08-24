@@ -535,7 +535,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="@string/balance_colon"
+                            android:text="@string/bal_colon"
                             android:textColor="#444" />
 
 

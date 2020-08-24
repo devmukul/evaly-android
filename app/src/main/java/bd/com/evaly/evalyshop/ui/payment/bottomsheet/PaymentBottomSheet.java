@@ -174,9 +174,9 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             ToastUtils.show("Please select a payment method");
             return;
         }
-        if (method.getName().equals("Evaly Balance")) {
+        if (method.getName().equals("Evaly Account")) {
             if (Double.parseDouble(binding.amountPay.getText().toString()) > CredentialManager.getBalance()) {
-                Toast.makeText(getContext(), "Insufficient Evaly Balance (৳ " + CredentialManager.getBalance() + ")", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Insufficient Evaly Account (৳ " + CredentialManager.getBalance() + ")", Toast.LENGTH_SHORT).show();
                 dialog.hideDialog();
                 return;
             }
@@ -206,12 +206,12 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     private void setPaymentMethodViewData() {
         List<PaymentMethodModel> methodList = new ArrayList<>();
 
-        String balanceText = "You can pay up to 60% of the order amount using Evaly Balance.";
+        String balanceText = "You can pay up to 60% of the order amount from Evaly Account.";
         if (isFood)
-            balanceText = "For express food shops, you can pay up to 100% of the order amount using Evaly Balance.";
+            balanceText = "For express food shops, you can pay up to 100% of the order amount from Evaly Account.";
 
         methodList.add(new PaymentMethodModel(
-                "Evaly Balance",
+                "Evaly Account",
                 balanceText,
                 R.drawable.payment_icon_evaly,
                 false));

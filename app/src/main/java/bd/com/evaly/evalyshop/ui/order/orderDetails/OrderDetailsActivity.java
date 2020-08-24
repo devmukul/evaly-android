@@ -264,7 +264,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             orderNumber.setText("#" + invoice_no);
             getOrderDetails();
         }
-        balance.setText(Html.fromHtml(getString(R.string.balance) + ": <b>৳ " + CredentialManager.getBalance() + "</b>"));
+        balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + CredentialManager.getBalance() + "</b>"));
 
         getOrderHistory();
 
@@ -723,7 +723,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
                 if (response.get("gift_card_balance").getAsDouble() < 1)
                     payViaGiftCard.setVisibility(View.GONE);
-                balance.setText(Html.fromHtml(getString(R.string.balance) + ": <b>৳ " + response.get("balance").getAsString() + "</b>"));
+                balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + response.get("balance").getAsString() + "</b>"));
             }
 
             @Override
@@ -934,7 +934,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 else {
 
                     payMethod = payMethod.replaceAll("card", "Card");
-                    payMethod = payMethod.replaceAll("balance", "Balance");
+                    payMethod = payMethod.replaceAll("balance", "Evaly Account");
                     payMethod = payMethod.replaceAll("bank", "Bank Account");
                     payMethod = payMethod.replaceAll("gift_code", "Gift Code");
                     payMethod = payMethod.replaceAll(",", ", ");

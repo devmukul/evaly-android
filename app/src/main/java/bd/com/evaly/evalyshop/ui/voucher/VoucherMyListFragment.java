@@ -195,7 +195,7 @@ public class VoucherMyListFragment extends Fragment {
             buildBankDialog(bitmap);
         });
 
-        balance.setText(Html.fromHtml("Holding balance: <b>Updating</b>"));
+        balance.setText(Html.fromHtml("Holding: <b>Updating</b>"));
 
         if (CredentialManager.getToken().equals("")) {
             noItem.setVisibility(View.VISIBLE);

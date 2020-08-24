@@ -46,7 +46,7 @@ public class TransactionHistory extends AppCompatActivity {
         setContentView(R.layout.activity_transaction_history);
 
         getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle("Transaction History");
+        getSupportActionBar().setTitle(getString(R.string.transaction_history));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         balance = findViewById(R.id.balance);

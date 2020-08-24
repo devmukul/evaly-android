@@ -34,7 +34,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/evaly_wallet"
+                android:text="@string/evaly_account"
                 android:textSize="16sp"
                 android:textColor="#333"
                 android:layout_marginStart="20dp"
@@ -71,7 +71,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/balance"
+                        android:text="@string/evaly_bal"
                         android:textColor="#444"
                         android:textSize="14sp" />
 
@@ -98,7 +98,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/holding_balance"
+                        android:text="@string/holding_bal"
                         android:textColor="#444"
                         android:textSize="14sp" />
 
@@ -137,7 +137,7 @@
                         android:id="@+id/textView58"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/gift_card_balance"
+                        android:text="@string/gift_card_bal"
                         android:textColor="#444"
                         android:textSize="14sp" />
 

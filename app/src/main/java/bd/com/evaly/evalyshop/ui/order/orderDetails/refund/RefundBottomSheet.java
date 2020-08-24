@@ -84,7 +84,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), R.layout.item_spinner_default);
 
-        spinnerAdapter.add("Evaly Balance");
+        spinnerAdapter.add("Evaly Account");
         spinnerAdapter.add("bKash");
         spinnerAdapter.add("Bank");
 

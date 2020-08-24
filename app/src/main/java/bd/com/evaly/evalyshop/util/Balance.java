@@ -110,7 +110,7 @@ public class Balance {
                 CredentialManager.setBalance(response.get("balance").getAsDouble());
 
                 if (context instanceof OrderDetailsActivity)
-                    textView.setText(Html.fromHtml(String.format(Locale.ENGLISH, "Balance: <b>৳ %s</b>", response.get("balance").getAsString())));
+                    textView.setText(Html.fromHtml(String.format(Locale.ENGLISH, "Account: <b>৳ %s</b>", response.get("balance").getAsString())));
                 else
                     textView.setText(String.format(Locale.ENGLISH, "৳ %s", response.get("balance").getAsString()));
 
