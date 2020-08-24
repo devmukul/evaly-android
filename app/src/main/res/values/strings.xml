@@ -79,7 +79,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="i_agree_to_the_privacy_policy_and_terms_amp_conditions_of_evaly"><![CDATA[I agree to the Privacy Policy and Terms & Conditions of Evaly.]]></string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_in">Sign In</string>
-    <string name="recent_transactions">Recent Transactions</string>
+    <string name="recent_transactions">Recent Payments</string>
     <string name="check_account">Check Account</string>
     <string name="notifications">Notifications</string>
     <string name="transaction_history">Payment History</string>

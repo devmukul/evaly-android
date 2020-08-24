@@ -60,7 +60,7 @@
     <string name="leave_empty_if_you_don_t_have_invitation_code">আপনার কাছে ইনভাইট কোড না থাকলে ফাঁকা রাখুন</string>
     <string name="i_agree_to_the_privacy_policy_and_terms_amp_conditions_of_evaly">আমি ইভ্যালি গোপনীয়তা নীতি এবং শর্তাবলীর সাথে সম্মত</string>
     <string name="already_have_an_account">ইতিমধ্যে আপনার একাউন্ট আছে?</string>
-    <string name="recent_transactions">সাম্প্রতিক লেনদেন</string>
+    <string name="recent_transactions">সাম্প্রতিক পেমেন্ট</string>
     <string name="evaly_balance">ইভ্যালি একাউন্ট</string>
     <string name="check_account">একাউন্ট দেখুন</string>
     <string name="orders">অর্ডার</string>
