@@ -126,7 +126,6 @@ public class MainActivity extends BaseActivity {
         setupRemoteConfig();
 
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
-
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
                     if (item.getItemId() == R.id.userDashboardActivity) {
@@ -271,15 +270,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setupRemoteConfig() {
-
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(800)
                 .build();
-        //.setDeveloperModeEnabled(BuildConfig.DEBUG)
-
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-
         checkRemoteConfig();
     }
 

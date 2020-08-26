@@ -8,6 +8,7 @@
     <permission
         android:name="android.permission.INTERACT_ACROSS_USERS_FULL"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -51,15 +52,6 @@
             android:readPermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._READ_PERMISSION"
             android:writePermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._WRITE_PERMISSION" />
 
-        <!--    <activity-->
-        <!--        android:theme="@style/AppTheme.NoActionBar"-->
-        <!--        android:name="bd.com.evaly.evalyshop.ui.efood.activity.eFoodActivity">-->
-        <!--        <intent-filter>-->
-        <!--            <action android:name="android.intent.action.MAIN" />-->
-        <!--            <category android:name="android.intent.category.LAUNCHER" />-->
-        <!--        </intent-filter>-->
-        <!--    </activity>-->
-
         <activity
             android:name=".ui.networkError.UnderMaintenanceActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -72,13 +64,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.chat.invite.InviteActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.chat.RequestListActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".controller.SplashActivity"
             android:screenOrientation="portrait"
@@ -101,18 +87,7 @@
         <activity
             android:name=".ui.order.PayViaCard"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".ui.chat.ChatListActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.chat.ChatDetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="OPEN_CHAT_DETAILS" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".ui.transaction.TransactionHistory"
             android:theme="@style/ThemeTransaction" />
@@ -148,11 +123,6 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.networkError.NetworkErrorActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="sensor"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity android:name=".ui.reviews.ReviewsActivity" />
@@ -247,10 +217,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_status_icon" />
-        <!--
-         Set color used with incoming notification messages. This is used when no color is set for the incoming
-                     notification message. See README(https://goo.gl/6BKBk7) for more.
-                -->
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/evaly_color" />
@@ -259,9 +226,6 @@
             android:value="@string/default_notification_channel_id" />
 
         <service
-            android:name=".util.xmpp.XMPPService"
-            android:enabled="true" />
-        <service
             android:name=".service.MyFirebaseMessagingService"
             android:exported="true">
             <intent-filter>
@@ -269,8 +233,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".service.XmppConnectionIntentService" />
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
