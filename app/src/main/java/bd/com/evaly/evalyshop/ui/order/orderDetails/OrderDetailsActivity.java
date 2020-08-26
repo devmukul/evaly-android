@@ -598,29 +598,24 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     public void dialogGiftCardPayment() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.WideDialog));
 
-        LayoutInflater inflater = this.getLayoutInflater();
+        LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_pay_with_gift_card, null);
+        if (dialogView == null)
+            return;
         dialogBuilder.setView(dialogView);
-
         AlertDialog alertDialog = dialogBuilder.create();
-
         Button d_submit = dialogView.findViewById(R.id.submit);
         final EditText amount = dialogView.findViewById(R.id.amount);
         final EditText code = dialogView.findViewById(R.id.code);
         ImageView closeBtn = dialogView.findViewById(R.id.closeBtn);
-
         amount.setText((int) due_amount + "");
-
         closeBtn.setOnClickListener(view -> alertDialog.dismiss());
-
         alertDialog.getWindow()
                 .setLayout(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
-
         alertDialog.show();
-
         d_submit.setOnClickListener(v -> {
             if (amount.getText().toString().equals("")) {
                 Toast.makeText(context, "Please enter an amount.", Toast.LENGTH_SHORT).show();
@@ -635,9 +630,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 Toast.makeText(context, "You have entered an amount that is larger than your due amount.", Toast.LENGTH_LONG).show();
                 return;
             }
-
             makePaymentViaGiftCard(code.getText().toString(), invoice_no, String.valueOf((int) partial_amount));
-
             alertDialog.dismiss();
 
         });
@@ -646,7 +639,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     public void makePaymentViaGiftCard(String giftCode, String invoice, String amount) {
 
         HashMap<String, String> payload = new HashMap<>();
-
         payload.put("invoice_no", invoice);
         payload.put("gift_code", giftCode);
         payload.put("amount", amount);
@@ -693,8 +685,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     startActivity(getIntent());
                 })
                 .show();
-
-
     }
 
     @Override
@@ -706,7 +696,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     public void updatePage() {
-
         scrollView.postDelayed(() -> scrollView.fullScroll(View.FOCUS_UP), 50);
         getOrderHistory();
         Balance.update(this, balance);
@@ -1043,10 +1032,10 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             OrderApiHelper.cancelOrder(CredentialManager.getToken(), invoice_no, reason, new ResponseListenerAuth<JsonObject, String>() {
                 @Override
                 public void onDataFetched(JsonObject response, int statusCode) {
-
                     updatePage();
                     cancelBtn.setVisibility(View.GONE);
-                    dialog.dismiss();
+                    if (dialog.isShowing())
+                        dialog.dismiss();
                 }
 
                 @Override

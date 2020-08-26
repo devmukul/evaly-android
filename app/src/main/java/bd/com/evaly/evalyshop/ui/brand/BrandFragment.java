@@ -106,9 +106,10 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             if (getArguments().containsKey("category"))
                 categorySlug = getArguments().getString("category");
 
-            if (categorySlug.equals("root"))
+            if (categorySlug == null || categorySlug.equals("root")) {
+                categorySlug = "root";
                 categoryString = getString(R.string.all_categories);
-            else {
+            } else {
                 categoryString = categorySlug.replace('-', ' ');
                 categoryString = Utils.capitalize(categoryString);
                 categoryString = categoryString.replaceAll("\\w+$", "");

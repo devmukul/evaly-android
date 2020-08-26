@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.BottomSheetIssueDetailsBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -35,6 +34,7 @@ import bd.com.evaly.evalyshop.models.issueNew.list.IssueListModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.IssueApiHelper;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -159,7 +159,7 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.dismiss();
-                Toast.makeText(getContext(), AppController.getmContext().getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                ToastUtils.show(R.string.something_wrong);
             }
 
             @Override
