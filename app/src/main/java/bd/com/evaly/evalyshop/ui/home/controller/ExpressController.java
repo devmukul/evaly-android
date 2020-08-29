@@ -1,6 +1,8 @@
 package bd.com.evaly.evalyshop.ui.home.controller;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,9 +37,17 @@ public class ExpressController extends EpoxyController {
         for (ExpressServiceModel model : itemsExpress) {
             new HomeExpressItemModel_()
                     .clickListener((model1, parentView, clickedView, position) -> {
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("model", model1.getModel());
-                        NavHostFragment.findNavController(fragment).navigate(R.id.evalyExpressFragment, bundle);
+                        if (model1.getModel().getName().toLowerCase().contains("food")) {
+                            try {
+                                activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=bd.com.evaly.efood")));
+                            } catch (android.content.ActivityNotFoundException anfe) {
+                                activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=d.com.evaly.efood")));
+                            }
+                        } else {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("model", model1.getModel());
+                            NavHostFragment.findNavController(fragment).navigate(R.id.evalyExpressFragment, bundle);
+                        }
                     })
                     .id(model.getSlug())
                     .model(model)

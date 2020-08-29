@@ -1,5 +1,8 @@
 package bd.com.evaly.evalyshop.ui.express.products.controller;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +28,7 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeExpressItemModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class ExpressProductController extends EpoxyController {
 
@@ -73,11 +77,6 @@ public class ExpressProductController extends EpoxyController {
 
     @Override
     protected void buildModels() {
-//
-//        expressHeaderModel
-//                .addTo(this);
-
-        List<HomeExpressSkeletonModel_> skeletons = new ArrayList<>();
 
         for (int i = 0; i < 6; i++) {
             new HomeExpressSkeletonModel_()
@@ -85,76 +84,39 @@ public class ExpressProductController extends EpoxyController {
                     .addIf(isExpressLoading && itemsExpress.size() == 0, this);
         }
 
-        List<HomeExpressItemModel_> expressServiceModels = new ArrayList<>();
         for (ExpressServiceModel model : itemsExpress) {
             new HomeExpressItemModel_()
                     .clickListener((model1, parentView, clickedView, position) -> {
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("model", model1.getModel());
-                        NavHostFragment.findNavController(fragment).navigate(R.id.evalyExpressFragment, bundle);
+                        if (model1.getModel().getName().toLowerCase().contains("food")) {
+                            Intent launchIntent = activity.getPackageManager().getLaunchIntentForPackage("bd.com.evaly.efood");
+                            try {
+                                if (launchIntent != null)
+                                    activity.startActivity(launchIntent);
+                                else
+                                    openEfoodPlaystore();
+                            } catch (ActivityNotFoundException e) {
+                                openEfoodPlaystore();
+                            }
+                        } else {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("model", model1.getModel());
+                            NavHostFragment.findNavController(fragment).navigate(R.id.evalyExpressFragment, bundle);
+                        }
                     })
                     .id(model.getSlug())
                     .model(model)
                     .addTo(this);
         }
+    }
 
-//        expressCarousel
-//                .onBind((model, view, position) -> {
-//                    if (view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-//                        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-//                        params.setFullSpan(true);
-//                    } else {
-//                        StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-//                                ViewGroup.LayoutParams.MATCH_PARENT,
-//                                ViewGroup.LayoutParams.WRAP_CONTENT
-//                        );
-//                        params.setFullSpan(true);
-//                        view.setLayoutParams(params);
-//                    }
-//                    view.setBackgroundColor(Color.WHITE);
-//                })
-//                .padding(new Carousel.Padding(
-//                        (int) Utils.convertDpToPixel(5, activity),
-//                        (int) Utils.convertDpToPixel(5, activity), 20,
-//                        (int) Utils.convertDpToPixel(20, activity),
-//                        0))
-//                .models(isExpressLoading && expressServiceModels.size() == 0 ? skeletons : expressServiceModels)
-//                .addTo(this);
-
-//        expressModel
-//                .fragment(fragment)
-//                .activity(activity)
-//                .appDatabase(appDatabase)
-//                .addTo(this);
-
-//        titleModel
-//                .title(title)
-//                .addTo(this);
-//
-//        for (ProductItem productItem : items) {
-//            new HomeProductGridModel_()
-//                    .id(productItem.getUniqueId())
-//                    .model(productItem)
-//                    .clickListener((model, parentView, clickedView, position) -> {
-//                        ProductItem item = model.getModel();
-//                        Intent intent = new Intent(activity, ViewProductActivity.class);
-//                        intent.putExtra("product_slug", item.getSlug());
-//                        intent.putExtra("product_name", item.getName());
-//                        intent.putExtra("product_price", item.getMaxPrice());
-//                        if (item.getImageUrls().size() > 0)
-//                            intent.putExtra("product_image", item.getImageUrls().get(0));
-//                        activity.startActivity(intent);
-//                    })
-//                    .addTo(this);
-//        }
-//
-//
-//        noProductModel
-//                .text("No Products Found")
-//                .image(R.drawable.ic_empty_product)
-//                .addIf(emptyPage, this);
-//
-//        loader.addIf(loadingMore, this);
+    private void openEfoodPlaystore() {
+        try {
+            activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.efood")));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.efood")));
+        } catch (Exception e4) {
+            ToastUtils.show("Please install eFood app from Playstore");
+        }
     }
 
     public void setItemsExpress(List<ExpressServiceModel> itemsExpress) {
