@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.Logger;
 
 import bd.com.evaly.evalyshop.data.roomdb.ProviderDatabase;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
@@ -43,6 +45,7 @@ public class AppController extends Application implements Application.ActivityLi
 
         MyPreference.with(context).clearAll();
 
+
         ProviderDatabase providerDatabase = ProviderDatabase.getInstance(getmContext());
         providerDatabase.userInfoDao().deleteAll();
 
@@ -59,6 +62,9 @@ public class AppController extends Application implements Application.ActivityLi
         super.onCreate();
         mAppController = this;
         mContext = getApplicationContext();
+
+        Logger.addLogAdapter(new AndroidLogAdapter());
+
     }
 
 

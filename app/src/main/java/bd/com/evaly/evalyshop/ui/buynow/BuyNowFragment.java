@@ -584,8 +584,11 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                             } catch (Exception ignored) {
 
                             }
-                            if (navController != null)
-                                navController.navigate(R.id.paymentFragment, bundle);
+                            Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+                            intent.putExtra("orderID", invoice);
+                            startActivity(intent);
+//                            if (navController != null)
+//                                navController.navigate(R.id.paymentFragment, bundle);
                         } else {
                             Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
                             intent.putExtra("orderID", invoice);

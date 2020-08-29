@@ -17,6 +17,11 @@ public class Constants {
     public static final String XMPP_RESOURCE = "xmppdemo";
     public static final boolean XMPP_DEBUG = true;
 
+    public static final String CASH_ON_DELIVERY = "Cash on Delivery";
+    public static final String EVALY_ACCOUNT = "Evaly Account";
+    public static final String BKASH = "bKash";
+    public static final String CARD = "Card";
+    public static final String BALANCE_WITH_CASH = "Evaly Account + Cash on Delivery";
     // Event specific constants
     public static final String EVT_SIGNUP_SUC = "xmpp_signup_success";
     public static final String EVT_PASSWORD_CHANGE_SUC = "xmpp_password_change_success";

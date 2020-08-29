@@ -244,7 +244,7 @@ public class UserDashboardActivity extends BaseActivity {
     public void onResume() {
         super.onResume();
         Balance.update(this, false);
-        getMessageCount();
+
 
         if (!CredentialManager.getToken().equals("") && CredentialManager.getUserData() == null) {
             AppController.logout(this);
@@ -254,6 +254,7 @@ public class UserDashboardActivity extends BaseActivity {
         if (CredentialManager.getUserData() == null)
             return;
 
+        getMessageCount();
         ImageView profilePicNav = findViewById(R.id.picture);
 
         if (CredentialManager.getUserData().getImage_sm() != null) {

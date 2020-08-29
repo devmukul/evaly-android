@@ -23,6 +23,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.payment.PaymentMethodModel;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.controller.PaymentMethodController;
+import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
@@ -48,11 +50,15 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     private PaymentMethodController controller;
     private ViewDialog dialog;
     private boolean isFood = false;
+    private String[] paymentMethods;
+    private String balanceText;
 
     public static PaymentBottomSheet newInstance(String invoiceNo,
                                                  double totalAmount,
                                                  double paidAmount,
                                                  boolean isFood,
+                                                 String [] paymentMethods,
+                                                 String balanceText,
                                                  PaymentOptionListener paymentOptionListener) {
         PaymentBottomSheet instance = new PaymentBottomSheet();
         paymentOptionRedirceListener = paymentOptionListener;
@@ -61,6 +67,9 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         bundle.putDouble("total_amount", totalAmount);
         bundle.putDouble("paid_amount", paidAmount);
         bundle.putBoolean("is_food", isFood);
+        Logger.d(paymentMethods);
+        bundle.putStringArray("payment_methods", paymentMethods);
+        bundle.putString("balance_text", balanceText);
         instance.setArguments(bundle);
         return instance;
     }
@@ -92,6 +101,15 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             paid_amount = getArguments().getDouble("paid_amount");
             if (getArguments().containsKey("is_food"))
                 isFood = getArguments().getBoolean("is_food");
+            if (getArguments().getStringArray("payment_methods") != null) {
+                paymentMethods = getArguments().getStringArray("payment_methods");
+            }
+            if (getArguments().getString("balance_text") != null) {
+                balanceText = getArguments().getString("balance_text");
+            }
+
+            Logger.d(paymentMethods);
+            Logger.d(getArguments().getString("payment_methods"));
         }
     }
 
@@ -174,7 +192,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             ToastUtils.show("Please select a payment method");
             return;
         }
-        if (method.getName().equals("Evaly Account")) {
+        if (method.getName().equals(Constants.EVALY_ACCOUNT)) {
             if (Double.parseDouble(binding.amountPay.getText().toString()) > CredentialManager.getBalance()) {
                 Toast.makeText(getContext(), "Insufficient Evaly Account (৳ " + CredentialManager.getBalance() + ")", Toast.LENGTH_SHORT).show();
                 dialog.hideDialog();
@@ -182,12 +200,20 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             }
             dialog.showDialog();
             viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
-        } else if (method.getName().equalsIgnoreCase("bKash")) {
+        } else if (method.getName().equalsIgnoreCase(Constants.CASH_ON_DELIVERY)) {
+            if (paymentOptionRedirceListener != null && invoice_no != null && !enteredAmount.equals(""))
+                viewModel.makeCashOnDelivery(invoice_no);
+            dismissAllowingStateLoss();
+        }else if (method.getName().equalsIgnoreCase(Constants.BKASH)) {
             Toast.makeText(getContext(), "Opening bKash payment gateway!", Toast.LENGTH_SHORT).show();
             if (paymentOptionRedirceListener != null && invoice_no != null && !enteredAmount.equals(""))
                 paymentOptionRedirceListener.onPaymentRedirect(BuildConfig.BKASH_URL, enteredAmount, invoice_no);
             dismissAllowingStateLoss();
-        } else if (method.getName().equalsIgnoreCase("Cards")) {
+        }else if (method.getName().equalsIgnoreCase(Constants.BALANCE_WITH_CASH)) {
+            if (paymentOptionRedirceListener != null && invoice_no != null && !enteredAmount.equals(""))
+                viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
+            dismissAllowingStateLoss();
+        } else if (method.getName().equalsIgnoreCase(Constants.CARD)) {
             Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaCard(invoice_no, enteredAmount);
         } else {
@@ -196,35 +222,64 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     }
 
     private void setAmountText() {
-        if ((total_amount % 1) == 0)
-            binding.amountPay.setText(String.format("%d", (int) (total_amount - paid_amount)));
-        else
-            binding.amountPay.setText(String.format("%s", total_amount - paid_amount));
+        if ((total_amount % 1) == 0){
+            double amount = (total_amount - paid_amount) * .3;
+            binding.amountPay.setText(String.format("%d", (int) (amount)));
+
+        } else{
+            double amount = (total_amount - paid_amount) * .3;
+            binding.amountPay.setText(String.format("%s", (int)(amount)));
+
+        }
 
     }
 
     private void setPaymentMethodViewData() {
         List<PaymentMethodModel> methodList = new ArrayList<>();
 
-        String balanceText = "You can pay up to 60% of the order amount from Evaly Account.";
         if (isFood)
             balanceText = "For express food shops, you can pay up to 100% of the order amount from Evaly Account.";
 
-        methodList.add(new PaymentMethodModel(
-                "Evaly Account",
-                balanceText,
-                R.drawable.payment_icon_evaly,
-                false));
+        if (paymentMethods == null)
+            return;
 
-        methodList.add(new PaymentMethodModel(
-                "bKash",
-                "Pay from your bKash account using \nbKash payment gateway.", R.drawable.payment_bkash_square,
-                false));
+        for (int i = 0; i < paymentMethods.length; i++) {
 
-        methodList.add(new PaymentMethodModel(
-                "Cards",
-                "Pay from your debit/visa/master card using \nSSL payment gateway.", R.drawable.payment_cards,
-                false));
+//            if (paymentMethods[i].equalsIgnoreCase("card") || paymentMethods[i].equalsIgnoreCase("bkash") || paymentMethods[i].equalsIgnoreCase("balance")){
+//                binding.amountPay.setEnabled(true);
+//            }
+
+            if (paymentMethods[i].equalsIgnoreCase("balance")){
+                methodList.add(new PaymentMethodModel(
+                        "Evaly Account",
+                        balanceText,
+                        R.drawable.payment_icon_evaly,
+                        false));
+            }else if (paymentMethods[i].equalsIgnoreCase("cod+balance")){
+                methodList.add(new PaymentMethodModel(
+                        Constants.BALANCE_WITH_CASH,
+                        balanceText,
+                        R.drawable.payment_icon_evaly,
+                        false));
+            }else if (paymentMethods[i].equalsIgnoreCase("cod")){
+                methodList.add(new PaymentMethodModel(
+                        Constants.CASH_ON_DELIVERY,
+                        "Payment on delivery.",
+                        R.drawable.ic_cash,
+                        false));
+            }else if (paymentMethods[i].equalsIgnoreCase("card")){
+                methodList.add(new PaymentMethodModel(
+                        Constants.CARD,
+                        "Pay from your debit/visa/master card using \nSSL payment gateway.", R.drawable.payment_cards,
+                        false));
+            }else if (paymentMethods[i].equalsIgnoreCase("bkash")){
+                methodList.add(new PaymentMethodModel(
+                        Constants.BKASH,
+                        "Pay from your bKash account using \nbKash payment gateway.", R.drawable.payment_bkash_square,
+                        false));
+            }
+        }
+
 
         controller.loadData(methodList, true);
     }

@@ -486,7 +486,10 @@ public class CartFragment extends Fragment {
                                 } catch (Exception ignored) {
 
                                 }
-                                navController.navigate(R.id.paymentFragment, bundle);
+                                Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+                                intent.putExtra("orderID", invoice);
+                                startActivity(intent);
+//                                navController.navigate(R.id.paymentFragment, bundle);
                             } else {
                                 Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
                                 intent.putExtra("orderID", invoice);

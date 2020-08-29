@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -51,9 +52,12 @@ import com.badoualy.stepperindicator.StepperIndicator;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.orhanobut.logger.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -80,6 +84,7 @@ import bd.com.evaly.evalyshop.models.order.OrderDetailsProducts;
 import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
+import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
@@ -88,6 +93,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
+import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
@@ -99,6 +105,7 @@ import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
+import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
 import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
 import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
@@ -119,6 +126,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     TextView heroStatus;
     @BindView(R.id.confirmDelivery)
     TextView confirmDelivery;
+    @BindView(R.id.confirmOrder)
+    TextView confirmOrder;
     @BindView(R.id.btnToggleTimeline)
     TextView btnToggleTimeline;
     @BindView(R.id.btnToggleTimelineHolder)
@@ -153,7 +162,10 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private OrderDetailsModel orderDetailsModel;
 
     private PaymentWebBuilder paymentWebBuilder;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
+    private String paymetMethods;
+    private String paymentMessage;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -202,6 +214,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         setContentView(R.layout.activity_order_details);
         ButterKnife.bind(this);
         // For Payment Listener
+
+        setupRemoteConfig();
+
         paymentWebBuilder = new PaymentWebBuilder(OrderDetailsActivity.this);
         paymentWebBuilder.setPaymentListener(this);
         getSupportActionBar().setElevation(0);
@@ -248,6 +263,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 getSupportActionBar().setElevation(4f);
         });
 
+
         shopInfo.setOnClickListener(v -> {
             Intent intent = new Intent(OrderDetailsActivity.this, MainActivity.class);
             intent.putExtra("type", 3);
@@ -278,8 +294,34 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         payParially = findViewById(R.id.payPartially);
 
         makePayment.setOnClickListener(v -> {
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount, shopSlug.contains("food"), this);
+//            new AlertDialog.Builder(OrderDetailsActivity.this)
+//                    .setTitle("Do you want to pay using evaly account?")
+//                    .setMessage("It will deduct 30% of order amount from your account")
+//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            makePartialPayment(invoice_no, String.valueOf(total_amount - paid_amount));
+//                        }
+//                    }).setNegativeButton("NO", null)
+//                    .show();
+            Logger.d(orderDetailsModel.getAllowed_payment_methods());
+            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount, shopSlug.contains("food"), orderDetailsModel.getAllowed_payment_methods(), paymentMessage,this);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
+        });
+
+        confirmOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(OrderDetailsActivity.this)
+                        .setTitle("Do you want to confirm this order for Cash On Delivery?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                makeCashOnDelivery(invoice_no);
+                            }
+                        }).setNegativeButton("NO", null)
+                        .show();
+            }
         });
 
         btnToggleTimeline.setOnClickListener(v -> {
@@ -295,12 +337,121 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         });
 
         payViaGiftCard = findViewById(R.id.payViaGiftCard);
-        payViaGiftCard.setOnClickListener(v -> dialogGiftCardPayment());
+        payViaGiftCard.setOnClickListener(view -> new AlertDialog.Builder(OrderDetailsActivity.this)
+                .setTitle("Do you want to pay with gift code?")
+                .setMessage("It will deduct 30% of order amount from your gift code amount")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogGiftCardPayment();
+                    }
+                }).setNegativeButton("NO", null)
+                .show());
 
         getDeliveryHero();
 
         confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
 
+    }
+
+    public void makePartialPayment(String invoice, String amount) {
+
+        ParitalPaymentModel model = new ParitalPaymentModel();
+
+        model.setInvoice_no(invoice);
+        model.setAmount(Double.parseDouble(amount));
+
+        OrderApiHelper.makePartialPayment(CredentialManager.getToken(), model, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+                getOrderDetails();
+                getOrderHistory();
+
+                if (response != null) {
+                    if (response.get("success").getAsBoolean()){
+                        Toast.makeText(getApplicationContext(),response.get("message").toString(), Toast.LENGTH_LONG).show();
+                    } else{
+                        Toast.makeText(getApplicationContext(),response.get("message").toString(), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(),"Payment failed, try again later", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                Toast.makeText(getApplicationContext(),"Payment failed, try again later", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    makePartialPayment(invoice, amount);
+            }
+        });
+
+    }
+
+
+    public void makeCashOnDelivery(String invoice) {
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("invoice_no", invoice);
+        OrderApiHelper.makeCashOnDelivery(CredentialManager.getToken(), data, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                if (response != null) {
+                    if (response.get("success").getAsBoolean()){
+                        getOrderDetails();
+                        getOrderHistory();
+                        Toast.makeText(getApplicationContext(),response.get("message").toString(), Toast.LENGTH_LONG).show();
+                    } else{
+                        Toast.makeText(getApplicationContext(),response.get("message").toString(), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(),"Payment failed, try again later", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                Toast.makeText(getApplicationContext(),"Payment failed, try again later", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    makeCashOnDelivery(invoice);
+            }
+        });
+
+    }
+
+
+    private void setupRemoteConfig() {
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(800)
+                .build();
+        //.setDeveloperModeEnabled(BuildConfig.DEBUG)
+
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+        checkRemoteConfig();
+    }
+
+    private void checkRemoteConfig() {
+        mFirebaseRemoteConfig
+                .fetchAndActivate()
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+//                        paymetMethods = mFirebaseRemoteConfig.getString("payment_method");
+                        paymentMessage = mFirebaseRemoteConfig.getString("evaly_pay_text");
+                        Logger.d(paymetMethods);
+                    }
+                });
     }
 
     @SuppressLint("DefaultLocale")
@@ -904,12 +1055,36 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     indicator.setDoneIcon(getDrawable(R.drawable.ic_close_smallest));
                     indicator.setVisibility(View.GONE);
                     makePayment.setVisibility(View.GONE);
+                    confirmOrder.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
-                } else if (response.getOrderStatus().toLowerCase().equals("delivered") || response.getPaymentStatus().toLowerCase().equals("refund_requested")) {
+                } else if (response.getOrderStatus().toLowerCase().equals("delivered") || response.getPaymentStatus().toLowerCase().equals("refund_requested") || response.getOrderStatus().toLowerCase().equals("processing") || response.getOrderStatus().toLowerCase().equals("picked") || response.getOrderStatus().toLowerCase().equals("shipped")) {
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
+                    confirmOrder.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
+                }else if (response.getOrderStatus().toLowerCase().equals("pending")){
+                    makePayment.setVisibility(View.GONE);
+                    payParially.setVisibility(View.GONE);
+                    confirmOrder.setVisibility(View.VISIBLE);
+                    payViaGiftCard.setVisibility(View.GONE);
+                }else if (response.getOrderStatus().toLowerCase().equals("confirmed")){
+                    confirmOrder.setVisibility(View.GONE);
+                    if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0){
+                        makePayment.setVisibility(View.VISIBLE);
+                        payParially.setVisibility(View.GONE);
+                        payViaGiftCard.setVisibility(View.GONE);
+                        for (int i = 0; i<response.getAllowed_payment_methods().length; i++){
+                            if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")){
+                                payViaGiftCard.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }else {
+                        makePayment.setVisibility(View.GONE);
+                        payParially.setVisibility(View.GONE);
+                        payViaGiftCard.setVisibility(View.GONE);
+                    }
+
                 }
 
                 username.setText(String.format("%s %s", response.getCustomer().getFirstName(), response.getCustomer().getLastName()));
@@ -1177,4 +1352,5 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         getOrderDetails();
         Toast.makeText(this, R.string.payment_success_message, Toast.LENGTH_LONG).show();
     }
+
 }

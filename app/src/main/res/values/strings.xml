@@ -354,5 +354,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="payment_success_message">Payment successful! If your order\'s payment status doesn\'t get updated within 5 minutes, please contact support.</string>
     <string name="payment_error_message">Something went wrong. Please try again later.</string>
     <string name="express">Express</string>
+    <string name="confirm_order">Confirm Order</string>
 
 </resources>
