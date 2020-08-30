@@ -93,7 +93,6 @@ import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
@@ -105,7 +104,6 @@ import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
 import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
 import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
@@ -842,41 +840,14 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     public void onResume() {
         super.onResume();
         Balance.update(this, false);
-        checkCardBalance();
-
     }
 
     public void updatePage() {
         scrollView.postDelayed(() -> scrollView.fullScroll(View.FOCUS_UP), 50);
         getOrderHistory();
-        Balance.update(this, balance);
         getOrderDetails();
-
     }
 
-    public void checkCardBalance() {
-
-        AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-                response = response.getAsJsonObject("data");
-
-                if (response.get("gift_card_balance").getAsDouble() < 1)
-                    payViaGiftCard.setVisibility(View.GONE);
-                balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + response.get("balance").getAsString() + "</b>"));
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

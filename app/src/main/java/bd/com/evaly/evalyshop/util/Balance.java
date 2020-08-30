@@ -102,7 +102,6 @@ public class Balance {
 
     public static void update(Activity context, TextView textView) {
 
-
         AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
