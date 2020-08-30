@@ -349,7 +349,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         ImageView close = dialog.findViewById(R.id.close);
         TextView confirm = dialog.findViewById(R.id.confirm);
         Glide.with(this)
-                .load(R.drawable.ic_successful_purchase_vector)
+                .load(R.drawable.ic_cod_banner)
                 .into(banner);
 
         close.setOnClickListener(v -> {

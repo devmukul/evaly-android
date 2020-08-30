@@ -43,7 +43,6 @@ import bd.com.evaly.evalyshop.ui.order.PayViaBkashActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.transaction.TransactionHistory;
 import bd.com.evaly.evalyshop.ui.user.editProfile.EditProfileActivity;
-import bd.com.evaly.evalyshop.util.Balance;
 import bd.com.evaly.evalyshop.util.Token;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import butterknife.ButterKnife;
@@ -243,8 +242,6 @@ public class UserDashboardActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Balance.update(this, false);
-
 
         if (!CredentialManager.getToken().equals("") && CredentialManager.getUserData() == null) {
             AppController.logout(this);
