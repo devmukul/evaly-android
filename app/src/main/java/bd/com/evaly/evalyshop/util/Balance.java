@@ -34,6 +34,40 @@ public class Balance {
                 JsonObject data = response.getAsJsonObject("data");
                 CredentialManager.setBalance(data.get("balance").getAsDouble());
 
+                if (openDashboard) {
+                    Intent intent = new Intent(context, UserDashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("from", "signin");
+                    context.startActivity(intent);
+                    try {
+                        context.finishAffinity();
+                    } catch (Exception ignored) {
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+
+    public static void updateUserInfo(Activity context, boolean openDashboard) {
+
+
+        AuthApiHelper.getUserInfo(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+                JsonObject data = response.getAsJsonObject("data");
+
                 JsonObject ob = data.getAsJsonObject("user");
                 UserModel userModel = new Gson().fromJson(ob.toString(), UserModel.class);
 
@@ -99,9 +133,7 @@ public class Balance {
         });
     }
 
-
     public static void update(Activity context, TextView textView) {
-
 
         AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override

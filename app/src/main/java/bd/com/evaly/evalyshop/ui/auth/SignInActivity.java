@@ -150,7 +150,8 @@ public class SignInActivity extends BaseActivity {
                         CredentialManager.saveUserName(phoneNumber.getText().toString());
                         CredentialManager.savePassword(password.getText().toString());
 
-                        Balance.update(SignInActivity.this, true);
+                        Balance.updateUserInfo(SignInActivity.this, true);
+                        Balance.update(SignInActivity.this, false);
 
                         Toast.makeText(SignInActivity.this, "Successfully signed in.", Toast.LENGTH_SHORT).show();
 

@@ -76,7 +76,6 @@ public class GiftCardActivity extends AppCompatActivity {
 
     public void updateBalance() {
 
-
         AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {

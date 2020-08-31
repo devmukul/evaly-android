@@ -93,7 +93,6 @@ import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.issue.IssuesActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
-import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderDetailsProductAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.adapter.OrderStatusAdapter;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.refund.RefundBottomSheet;
@@ -105,7 +104,6 @@ import bd.com.evaly.evalyshop.util.RealPathUtil;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
-import bd.com.evaly.evalyshop.util.preference.MyPreference;
 import bd.evaly.evalypaymentlibrary.builder.PaymentWebBuilder;
 import bd.evaly.evalypaymentlibrary.listener.PaymentListener;
 import bd.evaly.evalypaymentlibrary.model.PurchaseRequestInfo;
@@ -166,6 +164,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     private String paymetMethods;
     private String paymentMessage;
+    private boolean showCodConfirmDialog = false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -198,14 +197,12 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     }
 
     private void requestRefund() {
-
         if (invoice_no.equals("") || orderStatus.equals("") || paymentMethod.equals("") || paymentStatus.equals("")) {
             Toast.makeText(getApplicationContext(), "Can't request refund, reload the page", Toast.LENGTH_SHORT).show();
         } else {
             RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoice_no, orderStatus, paymentMethod, paymentStatus);
             refundBottomSheet.show(getSupportFragmentManager(), "Refund");
         }
-
     }
 
     @Override
@@ -216,7 +213,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         // For Payment Listener
 
         setupRemoteConfig();
-
         paymentWebBuilder = new PaymentWebBuilder(OrderDetailsActivity.this);
         paymentWebBuilder.setPaymentListener(this);
         getSupportActionBar().setElevation(0);
@@ -263,7 +259,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 getSupportActionBar().setElevation(4f);
         });
 
-
         shopInfo.setOnClickListener(v -> {
             Intent intent = new Intent(OrderDetailsActivity.this, MainActivity.class);
             intent.putExtra("type", 3);
@@ -275,12 +270,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             invoice_no = extras.getString("orderID");
-            Log.d("order_id", invoice_no);
-
             orderNumber.setText("#" + invoice_no);
             getOrderDetails();
+
+            if (extras.containsKey("show_cod_confirmation_dialog"))
+                showCodConfirmationDialog();
         }
-        balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + CredentialManager.getBalance() + "</b>"));
+        balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(CredentialManager.getBalance()) + "</b>"));
 
         getOrderHistory();
 
@@ -305,35 +301,24 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 //                    }).setNegativeButton("NO", null)
 //                    .show();
             Logger.d(orderDetailsModel.getAllowed_payment_methods());
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount, shopSlug.contains("food"), orderDetailsModel.getAllowed_payment_methods(), paymentMessage,this);
+            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount, shopSlug.contains("food"), orderDetailsModel.getAllowed_payment_methods(), paymentMessage, this);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
-        confirmOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(OrderDetailsActivity.this)
-                        .setTitle("Do you want to confirm this order for Cash On Delivery?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                makeCashOnDelivery(invoice_no);
-                            }
-                        }).setNegativeButton("NO", null)
-                        .show();
-            }
-        });
+        confirmOrder.setOnClickListener(view -> new AlertDialog.Builder(OrderDetailsActivity.this)
+                .setTitle("Do you want to confirm this order for Cash On Delivery?")
+                .setPositiveButton("Yes", (dialogInterface, i) -> makeCashOnDelivery(invoice_no)).setNegativeButton("NO", null)
+                .show());
 
         btnToggleTimeline.setOnClickListener(v -> {
             if (adapter.isShowAll()) {
                 adapter.setShowAll(false);
                 btnToggleTimeline.setText("Show All");
-                adapter.notifyDataSetChanged();
             } else {
                 adapter.setShowAll(true);
                 btnToggleTimeline.setText("Show Less");
-                adapter.notifyDataSetChanged();
             }
+            adapter.notifyDataSetChanged();
         });
 
         payViaGiftCard = findViewById(R.id.payViaGiftCard);
@@ -354,6 +339,30 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     }
 
+    private void showCodConfirmationDialog() {
+
+        BottomSheetDialog dialog = new BottomSheetDialog(context, R.style.BottomSheetDialogTheme);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.bottom_sheet_cod_confirmation);
+
+        ImageView banner = dialog.findViewById(R.id.banner);
+        ImageView close = dialog.findViewById(R.id.close);
+        TextView confirm = dialog.findViewById(R.id.confirm);
+        Glide.with(this)
+                .load(R.drawable.ic_cod_banner)
+                .into(banner);
+
+        close.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        confirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            makeCashOnDelivery(invoice_no);
+        });
+
+        dialog.show();
+    }
+
     public void makePartialPayment(String invoice, String amount) {
 
         ParitalPaymentModel model = new ParitalPaymentModel();
@@ -369,19 +378,19 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 getOrderHistory();
 
                 if (response != null) {
-                    if (response.get("success").getAsBoolean()){
-                        Toast.makeText(getApplicationContext(),response.get("message").toString(), Toast.LENGTH_LONG).show();
-                    } else{
-                        Toast.makeText(getApplicationContext(),response.get("message").toString(), Toast.LENGTH_LONG).show();
+                    if (response.get("success").getAsBoolean()) {
+                        Toast.makeText(getApplicationContext(), response.get("message").toString(), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), response.get("message").toString(), Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(),"Payment failed, try again later", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Payment failed, try again later", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                Toast.makeText(getApplicationContext(),"Payment failed, try again later", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Payment failed, try again later", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -395,28 +404,31 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
 
     public void makeCashOnDelivery(String invoice) {
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("Confirming order...");
+        dialog.show();
 
         HashMap<String, String> data = new HashMap<>();
         data.put("invoice_no", invoice);
         OrderApiHelper.makeCashOnDelivery(CredentialManager.getToken(), data, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
+                dialog.dismiss();
                 if (response != null) {
-                    if (response.get("success").getAsBoolean()){
+                    if (response.get("success").getAsBoolean()) {
                         getOrderDetails();
                         getOrderHistory();
-                        Toast.makeText(getApplicationContext(),response.get("message").toString(), Toast.LENGTH_LONG).show();
-                    } else{
-                        Toast.makeText(getApplicationContext(),response.get("message").toString(), Toast.LENGTH_LONG).show();
                     }
+                    Toast.makeText(getApplicationContext(), response.get("message").toString(), Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(),"Payment failed, try again later", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Order confirmation failed, try again later", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailed(String errorBody, int errorCode) {
-                Toast.makeText(getApplicationContext(),"Payment failed, try again later", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Order confirmation failed, try again later", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -430,13 +442,10 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
 
     private void setupRemoteConfig() {
-
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(800)
                 .build();
-        //.setDeveloperModeEnabled(BuildConfig.DEBUG)
-
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
 
         checkRemoteConfig();
@@ -841,41 +850,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     @Override
     public void onResume() {
         super.onResume();
-        Balance.update(this, false);
-        checkCardBalance();
-
     }
 
     public void updatePage() {
         scrollView.postDelayed(() -> scrollView.fullScroll(View.FOCUS_UP), 50);
-        getOrderHistory();
         Balance.update(this, balance);
+        getOrderHistory();
         getOrderDetails();
-
-    }
-
-    public void checkCardBalance() {
-
-        AuthApiHelper.getUserInfoPay(CredentialManager.getToken(), CredentialManager.getUserName(), new ResponseListenerAuth<JsonObject, String>() {
-            @Override
-            public void onDataFetched(JsonObject response, int statusCode) {
-                response = response.getAsJsonObject("data");
-
-                if (response.get("gift_card_balance").getAsDouble() < 1)
-                    payViaGiftCard.setVisibility(View.GONE);
-                balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + response.get("balance").getAsString() + "</b>"));
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
     }
 
     @Override
@@ -1052,23 +1033,23 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     payParially.setVisibility(View.GONE);
                     confirmOrder.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
-                }else if (response.getOrderStatus().toLowerCase().equals("pending")){
+                } else if (response.getOrderStatus().toLowerCase().equals("pending")) {
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     confirmOrder.setVisibility(View.VISIBLE);
                     payViaGiftCard.setVisibility(View.GONE);
-                }else if (response.getOrderStatus().toLowerCase().equals("confirmed")){
+                } else if (response.getOrderStatus().toLowerCase().equals("confirmed")) {
                     confirmOrder.setVisibility(View.GONE);
-                    if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0){
+                    if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0) {
                         makePayment.setVisibility(View.VISIBLE);
                         payParially.setVisibility(View.GONE);
                         payViaGiftCard.setVisibility(View.GONE);
-                        for (int i = 0; i<response.getAllowed_payment_methods().length; i++){
-                            if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")){
+                        for (int i = 0; i < response.getAllowed_payment_methods().length; i++) {
+                            if (response.getAllowed_payment_methods()[i].equalsIgnoreCase("gift_code")) {
                                 payViaGiftCard.setVisibility(View.VISIBLE);
                             }
                         }
-                    }else {
+                    } else {
                         makePayment.setVisibility(View.GONE);
                         payParially.setVisibility(View.GONE);
                         payViaGiftCard.setVisibility(View.GONE);

@@ -31,7 +31,6 @@ import java.util.List;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetPaymentBinding;
-import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.payment.PaymentMethodModel;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
 import bd.com.evaly.evalyshop.ui.payment.bottomsheet.controller.PaymentMethodController;
@@ -193,11 +192,11 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             return;
         }
         if (method.getName().equals(Constants.EVALY_ACCOUNT)) {
-            if (Double.parseDouble(binding.amountPay.getText().toString()) > CredentialManager.getBalance()) {
-                Toast.makeText(getContext(), "Insufficient Evaly Account (৳ " + CredentialManager.getBalance() + ")", Toast.LENGTH_SHORT).show();
-                dialog.hideDialog();
-                return;
-            }
+//            if (Double.parseDouble(binding.amountPay.getText().toString()) > CredentialManager.getBalance()) {
+//                Toast.makeText(getContext(), "Insufficient Evaly Account (৳ " + CredentialManager.getBalance() + ")", Toast.LENGTH_SHORT).show();
+//                dialog.hideDialog();
+//                return;
+//            }
             dialog.showDialog();
             viewModel.makePartialPayment(invoice_no, binding.amountPay.getText().toString());
         } else if (method.getName().equalsIgnoreCase(Constants.CASH_ON_DELIVERY)) {

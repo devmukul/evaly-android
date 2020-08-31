@@ -1,19 +1,12 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,9 +27,6 @@ import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -381,6 +371,10 @@ public class AuthApiHelper extends BaseApiHelper {
 
     public static void getUserInfoPay(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().getUserInfoPay(token, username).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getUserInfo(String token, String username, ResponseListenerAuth<JsonObject, String> listener) {
+        getiApiClient().getUserInfo(token, username).enqueue(getResponseCallBackDefault(listener));
     }
 
     // cashback claim
