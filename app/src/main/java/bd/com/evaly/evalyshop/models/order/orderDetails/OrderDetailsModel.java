@@ -67,6 +67,12 @@ public class OrderDetailsModel {
 	@SerializedName("customer_note")
 	private String customerNote;
 
+	@SerializedName("allowed_payment_methods")
+	private String [] allowed_payment_methods;
+
+	public String[] getAllowed_payment_methods() {
+		return allowed_payment_methods;
+	}
 
 	public void setDate(String date){
 		this.date = date;

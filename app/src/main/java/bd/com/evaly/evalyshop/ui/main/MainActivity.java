@@ -269,6 +269,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
+
     private void setupRemoteConfig() {
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()

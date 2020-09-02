@@ -571,7 +571,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
-                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
                     if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
                         JsonArray data = response.getAsJsonArray("data");
                         JsonObject item = data.get(0).getAsJsonObject();
@@ -584,11 +584,16 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
                             } catch (Exception ignored) {
 
                             }
-                            if (navController != null)
-                                navController.navigate(R.id.paymentFragment, bundle);
+                            Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
+                            intent.putExtra("orderID", invoice);
+                            intent.putExtra("show_cod_confirmation_dialog", true);
+                            startActivity(intent);
+//                            if (navController != null)
+//                                navController.navigate(R.id.paymentFragment, bundle);
                         } else {
                             Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
                             intent.putExtra("orderID", invoice);
+                            intent.putExtra("show_cod_confirmation_dialog", true);
                             startActivity(intent);
                         }
                     }

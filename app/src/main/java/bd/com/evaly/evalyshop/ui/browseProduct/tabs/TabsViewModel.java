@@ -19,6 +19,9 @@ public class TabsViewModel extends ViewModel {
         this.itemCount.setValue(itemCount);
     }
 
+
+
+
     public int getIntCount() {
         if (itemCount.getValue() == null)
             return 0;

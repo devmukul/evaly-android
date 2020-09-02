@@ -114,6 +114,9 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL_AUTH + "user-info-pay/{username}/")
     Call<JsonObject> getUserInfoPay(@Header("Authorization") String token, @Path("username") String username);
 
+    @GET(UrlUtils.BASE_URL_AUTH + "user-info-ekhata/{username}/")
+    Call<JsonObject> getUserInfo(@Header("Authorization") String token, @Path("username") String username);
+
     @PUT(UrlUtils.BASE_URL_AUTH + "user-info-update/")
     Call<JsonObject> setUserData(@Header("Authorization") String token, @Body HashMap<String, String> data);
 
@@ -337,6 +340,9 @@ public interface IApiClient {
 
     @POST(UrlUtils.DOMAIN + "pay/transactions/payment/order/")
     Call<JsonObject> makePartialPayment(@Header("Authorization") String token, @Body ParitalPaymentModel body);
+
+    @POST(UrlUtils.DOMAIN + "core/orders/payment/cod/")
+    Call<JsonObject> makeCashOnDelivery(@Header("Authorization") String token, @Body HashMap<String, String> body);
 
 
     @POST(UrlUtils.DOMAIN + "pay/pg")

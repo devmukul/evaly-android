@@ -36,6 +36,11 @@ public class OrderApiHelper extends BaseApiHelper {
         getiApiClient().makePartialPayment(token,body).enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void makeCashOnDelivery(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
+
+        getiApiClient().makeCashOnDelivery(token,body).enqueue(getResponseCallBackDefault(listener));
+    }
+
 
     public static void payViaCard(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener){
 

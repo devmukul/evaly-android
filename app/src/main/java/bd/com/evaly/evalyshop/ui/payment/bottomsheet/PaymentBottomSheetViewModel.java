@@ -54,6 +54,36 @@ public class PaymentBottomSheetViewModel extends ViewModel {
 
     }
 
+    public void makeCashOnDelivery(String invoice) {
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("invoice_no", invoice);
+        OrderApiHelper.makeCashOnDelivery(CredentialManager.getToken(), data, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                if (response != null) {
+                    if (response.get("success").getAsBoolean())
+                        navigator.onPaymentSuccess(response.get("message").toString());
+                    else
+                        navigator.onPaymentFailed(response.get("message").toString());
+                } else {
+                    navigator.onPaymentFailed("Payment failed, try again later");
+                }
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                navigator.onPaymentFailed("Payment failed, try again later");
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    makeCashOnDelivery(invoice);
+            }
+        });
+
+    }
 
     public void payViaCard(String invoice, String amount) {
 
