@@ -134,10 +134,10 @@ public class ExpressServiceModel implements Serializable {
         if (obj instanceof ExpressServiceModel) {
             ExpressServiceModel newModel = (ExpressServiceModel) obj;
             return (slug.equals(newModel.getSlug()) &&
-                    name.equals(newModel.getName()) &&
+                    (name == null ? "" : name).equals(newModel.getName()) &&
                     (appName == null ? "" : appName).equals(newModel.getAppName()) &&
-                    appBgColor.equals(newModel.getAppBgColor()) &&
-                    appLogo.equals(newModel.getAppLogo()));
+                    (appBgColor == null ? "" : appBgColor).equals(newModel.getAppBgColor()) &&
+                    (appLogo == null ? "" : appLogo).equals(newModel.getAppLogo()));
 
         } else
             return false;
