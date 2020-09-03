@@ -69,7 +69,7 @@ public interface IApiClient {
 
     // chat
 
-    @GET("https://"+Constants.XMPP_DOMAIN + "/rest/messages/unread-messages/count/{username}")
+    @GET("https://" + Constants.XMPP_DOMAIN + "/rest/messages/unread-messages/count/{username}")
     Call<CommonDataResponse<String>> getUnreadedMessageCount(@Header("Authorization") String token,
                                                              @Path("username") String username);
 
@@ -84,7 +84,7 @@ public interface IApiClient {
 
     @POST(UrlUtils.DOMAIN + "issue/api/v1/common/tickets")
     Call<CommonDataResponse<IssueListModel>> createIssueTicket(@Header("Authorization") String token,
-                                                                     @Body IssueCreateBody body);
+                                                               @Body IssueCreateBody body);
 
     @GET(UrlUtils.DOMAIN + "issue/api/v1/common/comments")
     Call<CommonDataResponse<List<IssueTicketCommentModel>>> getIssueTicketComment(@Header("Authorization") String token,
@@ -92,8 +92,8 @@ public interface IApiClient {
 
     @POST(UrlUtils.DOMAIN + "issue/api/v1/common/comments")
     Call<CommonDataResponse<IssueTicketCommentModel>> createIssueTicketComment(@Header("Authorization") String token,
-                                                                                     @Body IssueCommentBody body,
-                                                                                     @Query("ticket_id") String tickerId);
+                                                                               @Body IssueCommentBody body,
+                                                                               @Query("ticket_id") String tickerId);
 
 
     @POST(UrlUtils.SET_PASSWORD)
@@ -242,7 +242,7 @@ public interface IApiClient {
     // campaign APIs
 
     @GET(UrlUtils.CAMPAIGNS)
-    Call<CommonDataResponse<List<CampaignItem>>> getCampaigns(@Query("page") int page);
+    Call<CommonDataResponse<List<CampaignItem>>> getCampaigns(@Query("page") int page, @Query("search") String search);
 
     @GET(UrlUtils.CAMPAIGNS + "/{group}/shops")
     Call<CommonDataResponse<List<CampaignShopItem>>> getCampaignShops(@Path("group") String group, @Query("page") int page, @Query("limit") int limit);
