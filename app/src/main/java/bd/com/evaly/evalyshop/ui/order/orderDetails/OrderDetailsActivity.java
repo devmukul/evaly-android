@@ -1009,9 +1009,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     heroStatus.setText("Delivered the products");
                 }
 
-                if (orderStatus.equals("processing") ||
+                if ((orderStatus.equals("processing") ||
                         orderStatus.equals("picked") ||
-                        orderStatus.equals("shipped"))
+                        orderStatus.equals("shipped")) && paymentStatus.equals("paid"))
                     confirmDelivery.setVisibility(View.VISIBLE);
                 else
                     confirmDelivery.setVisibility(View.GONE);

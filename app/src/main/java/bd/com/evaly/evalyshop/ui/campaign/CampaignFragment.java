@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +23,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
+import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignAdapter;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -104,21 +106,14 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         });
         binding.recyclerView.setAdapter(adapter);
 
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 2);
         binding.recyclerView.setLayoutManager(manager);
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(manager) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    visibleItemCount = manager.getChildCount();
-                    totalItemCount = manager.getItemCount();
-                    pastVisiblesItems = manager.findFirstVisibleItemPosition();
-                    if (isLoading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            viewModel.loadCampaigns();
-                            isLoading = true;
-                        }
-                    }
+            public void loadMoreItem() {
+                if (!isLoading){
+                    viewModel.loadCampaigns();
+                    isLoading = true;
                 }
             }
         });

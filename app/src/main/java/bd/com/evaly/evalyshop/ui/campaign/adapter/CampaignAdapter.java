@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -46,34 +45,27 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
     public void onBindViewHolder(@NonNull CampaignAdapter.ViewHolder holder, int position) {
 
         CampaignItem model = itemList.get(position);
-
-        holder.tvTitle.setText(model.getName());
         holder.itemView.setOnClickListener(view -> listener.onItemClick(model));
-
         Glide.with(holder.itemView.getContext())
-                .load(model.getBannerImage())
+                .load(model.getImage())
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.bg_fafafa_round)
-                .into(holder.ivCover);
+                .placeholder(R.drawable.bg_fafafa_round).into(holder.ivCover);
 
-        Date startDate = Utils.getCampaignDate( model.getStartDate());
-        Date endDate = Utils.getCampaignDate( model.getEndDate());
+        Date startDate = Utils.getCampaignDate(model.getStartDate());
+        Date endDate = Utils.getCampaignDate(model.getEndDate());
         Date currentDate = Calendar.getInstance().getTime();
-
 
         if (currentDate.after(startDate) && currentDate.before(endDate)) {
             holder.tvStatus.setText("Live Now");
             holder.tvStatus.setBackground(context.getResources().getDrawable(R.drawable.btn_live_now_red));
-        } else if (currentDate.after(endDate)){
+        } else if (currentDate.after(endDate)) {
             holder.tvStatus.setText("Expired");
             holder.tvStatus.setBackground(context.getResources().getDrawable(R.drawable.btn_campaign_expired));
         } else {
             holder.tvStatus.setText("Live on " + Utils.getFormatedCampaignDate("", "d MMM hh:mm aa", model.getStartDate()));
-            holder.tvStatus.setBackground(context.getResources().getDrawable(R.drawable.btn_pending_bg));
+            holder.tvStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_campaign_live));
         }
-
-
     }
 
     @Override
@@ -83,7 +75,6 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
 
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle;
         ImageView ivCover;
         TextView tvStatus;
         View itemView;
@@ -93,7 +84,6 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHo
 
             this.itemView = itemView;
 
-            tvTitle = itemView.findViewById(R.id.tvTitle);
             ivCover = itemView.findViewById(R.id.ivCover);
             tvStatus = itemView.findViewById(R.id.tvStatus);
 
