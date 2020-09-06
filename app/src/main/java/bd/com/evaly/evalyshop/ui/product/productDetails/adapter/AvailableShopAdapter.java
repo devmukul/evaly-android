@@ -85,6 +85,12 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
         else
             viewHolder.address.setText(shop.getShopAddress());
 
+        if (shop.getInStock() < 1){
+            viewHolder.stock.setText("Contact Seller");
+        } else {
+            viewHolder.stock.setText("Stock Available");
+        }
+
         if (shop.getDiscountedPrice() == null ||
                 shop.getDiscountedPrice() < 1 ||
                 shop.getDiscountedPrice() >= shop.getPrice()
@@ -216,7 +222,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView shopName, price, chatBtn, buyBtn, address, maximumPrice, priceOff;
+        TextView shopName, price, chatBtn, buyBtn, address, maximumPrice, priceOff, stock;
         ImageView shopImage, shop, call, location;
         LinearLayout discount;
         View view;
@@ -232,7 +238,7 @@ public class AvailableShopAdapter extends RecyclerView.Adapter<AvailableShopAdap
             location = itemView.findViewById(R.id.location);
             maximumPrice = itemView.findViewById(R.id.max_price);
             priceOff = itemView.findViewById(R.id.price_off);
-
+            stock = itemView.findViewById(R.id.stock);
             chatBtn = itemView.findViewById(R.id.chat);
             buyBtn = itemView.findViewById(R.id.buy);
 

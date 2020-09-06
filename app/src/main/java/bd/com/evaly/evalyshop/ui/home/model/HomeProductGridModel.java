@@ -105,8 +105,16 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
         if (isShop) {
             binding.buyNow.setVisibility(View.VISIBLE);
             binding.buyNow.setOnClickListener(buyNowClickListener);
-        } else
+            binding.stock.setVisibility(View.VISIBLE);
+            if (model.getInStock() < 1) {
+                binding.stock.setText(R.string.contact_seller);
+            } else
+                binding.stock.setText(R.string.stock_available);
+
+        } else {
             binding.buyNow.setVisibility(View.GONE);
+            binding.stock.setVisibility(View.GONE);
+        }
 
         if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
             binding.buyNow.setVisibility(View.GONE);

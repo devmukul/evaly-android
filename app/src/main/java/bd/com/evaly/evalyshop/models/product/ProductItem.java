@@ -30,7 +30,16 @@ public class ProductItem {
 
 	private String uniqueId;
 
+	//@SerializedName("in_stock")
+	private int inStock;
 
+	public int getInStock() {
+		return inStock;
+	}
+
+	public void setInStock(int inStock) {
+		this.inStock = inStock;
+	}
 
 	public void setMaxPrice(String maxPrice){
 		this.maxPrice = maxPrice;

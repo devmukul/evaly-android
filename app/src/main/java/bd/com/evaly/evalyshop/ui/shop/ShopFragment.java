@@ -241,7 +241,6 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             binding.recyclerView.setVisibility(View.VISIBLE);
 
             List<ProductItem> tempList = new ArrayList<>();
-            long timeInMill = Calendar.getInstance().getTimeInMillis();
             for (int i = 0; i < shopItems.size(); i++) {
                 if (i == 0)
                     currentPage++;
@@ -254,6 +253,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 item.setMinPrice(String.valueOf(shopItem.getItemPrice()));
                 item.setMinDiscountedPrice(String.valueOf(shopItem.getDiscountedPrice()));
                 item.setUniqueId(item.getSlug());
+                item.setInStock(shopItem.getInStock());
                 tempList.add(item);
             }
 
@@ -318,7 +318,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         if (CredentialManager.getToken().equals("")) {
             startActivity(new Intent(getActivity(), SignInActivity.class));
-            Objects.requireNonNull(getActivity()).finish();
+            requireActivity().finish();
         } else {
 
             Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
