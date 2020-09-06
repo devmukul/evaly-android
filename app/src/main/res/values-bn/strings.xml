@@ -234,4 +234,5 @@
     <string name="contact_seller">বিক্রেতার সাথে যোগাযোগ করুন</string>
     <string name="stock_colon_available">"স্টকে আছে "</string>
     <string name="stock_color_contact_seller">বিক্রেতার সাথে যোগাযোগ করুন</string>
+    <string name="networkError" translatable="false">" কোন ইন্টারনেট সংযোগ পাওয়া যায়নি। দয়া করে আপনার নেটওয়ার্ক সেটিংস চেক করুন।"</string>
 </resources>

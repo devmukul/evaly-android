@@ -124,8 +124,7 @@ public class SignInActivity extends BaseActivity {
     }
 
 
-
-    public void signInUser(){
+    public void signInUser() {
 
 
         HashMap<String, String> payload = new HashMap<>();
@@ -164,9 +163,8 @@ public class SignInActivity extends BaseActivity {
 
             @Override
             public void onFailed(String body, int status) {
-
                 alert.hideDialog();
-                Toast.makeText(SignInActivity.this, "Server error, please try again after few minutes. "+ body, Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInActivity.this, body, Toast.LENGTH_SHORT).show();
             }
         });
     }

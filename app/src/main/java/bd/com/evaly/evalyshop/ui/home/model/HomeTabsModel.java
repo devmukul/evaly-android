@@ -74,14 +74,7 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
             HomeModelTabsBinding binding = HomeModelTabsBinding.bind(itemView);
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
-//
-//            appDatabase = AppDatabase.getInstance(activity);
-//            expressServiceDao = appDatabase.expressServiceDao();
-//            expressController = new ExpressController();
-//            expressController.setFragment(fragmentInstance);
-//            expressController.setSpanCount(2);
-//            binding.expressServiceList.setAdapter(expressController.getAdapter());
-//            expressController.requestModelBuild();
+
 
             pager = new FragmentTabPagerAdapter(fragmentInstance.getChildFragmentManager(), fragmentInstance.getLifecycle());
 
@@ -106,6 +99,7 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                         binding.viewPager.setCurrentItem(homeViewModel.getTabPosition());
                         isSelected = true;
                     } else {
+                        isSelected = true;
                         homeViewModel.setTabPosition(position);
                     }
 
@@ -135,38 +129,7 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
                 pager.notifyDataSetChanged();
             }
 
-//            expressServiceDao.getAll().observe(fragmentInstance.getViewLifecycleOwner(), expressServiceModels -> {
-//                expressController.reAddData(expressServiceModels);
-//            });
-
         }
 
-        private void getExpressShops() {
-            ExpressApiHelper.getServicesList(new ResponseListenerAuth<List<ExpressServiceModel>, String>() {
-                @Override
-                public void onDataFetched(List<ExpressServiceModel> response, int statusCode) {
-                    Executors.newFixedThreadPool(4).execute(() -> {
-                        expressServiceDao.insertList(response);
-
-                        List<String> slugs = new ArrayList<>();
-                        for (ExpressServiceModel item : response)
-                            slugs.add(item.getSlug());
-
-                        if (slugs.size() > 0)
-                            expressServiceDao.deleteOld(slugs);
-                    });
-                }
-
-                @Override
-                public void onFailed(String errorBody, int errorCode) {
-
-                }
-
-                @Override
-                public void onAuthError(boolean logout) {
-
-                }
-            });
-        }
     }
 }

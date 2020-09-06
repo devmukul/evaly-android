@@ -1,16 +1,20 @@
 package bd.com.evaly.evalyshop.rest.apiHelper;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.HashMap;
 
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.IApiClient;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,11 +78,7 @@ public class BaseApiHelper {
                     tokenRefresh(new ResponseListenerAuth<JsonObject, String>() {
                         @Override
                         public void onDataFetched(JsonObject response, int statusCode) {
-
-                            Log.d("refresh", "Refreshed and calling again");
-
                             dataFetchingListener.onAuthError(false);
-
                         }
 
                         @Override
@@ -99,8 +99,7 @@ public class BaseApiHelper {
                             dataFetchingListener.onFailed(response.errorBody().string(), response.code());
                         } catch (IOException e) {
                             e.printStackTrace();
-
-                            dataFetchingListener.onFailed("Error occurred", response.code());
+                            dataFetchingListener.onFailed("Error occurred!", response.code());
                         }
                     }
                 }
@@ -108,7 +107,10 @@ public class BaseApiHelper {
 
             @Override
             public void onFailure(Call<T> call, Throwable t) {
-                dataFetchingListener.onFailed(t.getMessage(), 0);
+                if (t instanceof IOException)
+                    dataFetchingListener.onFailed(AppController.getmContext().getString(R.string.networkError), 0);
+                else
+                    dataFetchingListener.onFailed("Error occurred, please try again later", 0);
             }
         };
     }
