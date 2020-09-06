@@ -226,4 +226,12 @@
     <string name="pay_via_card">Pay Via Card</string>
     <string name="payment_success_message">Payment successful! If your order\'s payment status doesn\'t get updated within 5 minutes, please contact support.</string>
     <string name="payment_error_message">Something went wrong. Please try again later.</string>
+    <string name="express">এক্সপ্রেস</string>
+    <string name="confirm_order">কনফার্ম অর্ডার</string>
+    <string name="search_campaigns">ক্যাম্পেইন সার্চ করুন</string>
+    <string name="stock_out">স্টক শেষ</string>
+    <string name="stock_available">স্টকে আছে</string>
+    <string name="contact_seller">বিক্রেতার সাথে যোগাযোগ করুন</string>
+    <string name="stock_colon_available">"স্টকে আছে "</string>
+    <string name="stock_color_contact_seller">বিক্রেতার সাথে যোগাযোগ করুন</string>
 </resources>

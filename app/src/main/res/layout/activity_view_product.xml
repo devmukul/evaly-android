@@ -20,7 +20,8 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            tools:visibility="gone">
 
             <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbar"
@@ -517,7 +518,7 @@
                                         android:layout_marginEnd="6dp"
                                         android:adjustViewBounds="true"
                                         android:src="@drawable/ic_marker_filled"
-                                        android:tint="#555" />
+                                        app:tint="#555" />
 
                                     <TextView
                                         android:id="@+id/shopLocation"
@@ -543,7 +544,7 @@
                                         android:layout_marginEnd="6dp"
                                         android:adjustViewBounds="true"
                                         android:src="@drawable/ic_call"
-                                        android:tint="#555" />
+                                        app:tint="#555" />
 
                                     <TextView
                                         android:id="@+id/shopPhone"
@@ -558,6 +559,37 @@
                                         android:textIsSelectable="true"
                                         android:textSize="14sp"
                                         tools:text="01758154554" />
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:id="@+id/stockHolder"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp">
+
+                                    <ImageView
+                                        android:layout_width="12dp"
+                                        android:layout_height="20dp"
+                                        android:layout_marginEnd="6dp"
+                                        android:adjustViewBounds="true"
+                                        android:paddingBottom="2dp"
+                                        android:src="@drawable/ic_box"
+                                        app:tint="#555" />
+
+                                    <TextView
+                                        android:id="@+id/stock"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:autoLink="phone"
+                                        android:ellipsize="end"
+                                        android:maxLines="2"
+                                        android:text="@string/stock_colon_available"
+                                        android:textAlignment="textStart"
+                                        android:textColor="#555"
+                                        android:textColorLink="#555"
+                                        android:textIsSelectable="true"
+                                        android:textSize="14sp" />
                                 </LinearLayout>
 
                                 <View

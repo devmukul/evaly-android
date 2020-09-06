@@ -709,6 +709,11 @@ public class ViewProductActivity extends BaseActivity {
         else
             binding.shopPhone.setText(shop.getContactNumber());
 
+        if (shop.getInStock()  < 1)
+            binding.stock.setText(R.string.stock_color_contact_seller);
+        else
+            binding.stock.setText(R.string.stock_colon_available);
+
         binding.avlshop.setText(R.string.also_available_at);
         productPrice = shop.getPrice();
 

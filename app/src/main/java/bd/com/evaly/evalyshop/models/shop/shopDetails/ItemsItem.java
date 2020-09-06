@@ -25,6 +25,17 @@ public class ItemsItem implements Serializable {
 	@SerializedName("discounted_price")
 	private double discountedPrice;
 
+	@SerializedName("in_stock")
+	private int inStock;
+
+	public int getInStock() {
+		return inStock;
+	}
+
+	public void setInStock(int inStock) {
+		this.inStock = inStock;
+	}
+
 	public void setItemPrice(double itemPrice){
 		this.itemPrice = itemPrice;
 	}

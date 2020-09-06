@@ -356,5 +356,11 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="express">Express</string>
     <string name="confirm_order">Confirm Order</string>
     <string name="search_campaigns">Search campaigns</string>
+    <string name="stock_out">Stock Out</string>
+    <string name="stock_available">Stock Available</string>
+    <string name="contact_seller">Contact Seller</string>
+    <string name="stock_colon_available">Stock: Available</string>
+    <string name="stock_color_contact_seller">Stock: Contact Seller</string>
+    <string name="evaly_balance">Evaly Account</string>
 
 </resources>
