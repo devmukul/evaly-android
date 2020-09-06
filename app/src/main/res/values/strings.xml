@@ -355,5 +355,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="payment_error_message">Something went wrong. Please try again later.</string>
     <string name="express">Express</string>
     <string name="confirm_order">Confirm Order</string>
+    <string name="search_campaigns">Search campaigns</string>
 
 </resources>

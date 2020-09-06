@@ -13,8 +13,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#fff">
+        android:background="#fff"
+        android:orientation="vertical">
 
 
         <androidx.appcompat.widget.Toolbar
@@ -47,12 +47,15 @@
                 android:layout_weight="0"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:paddingTop="5dp"
+                android:paddingHorizontal="10dp"
+                android:paddingTop="10dp"
                 android:paddingBottom="25dp"
                 android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
                 tools:itemCount="7"
-                tools:listitem="@layout/item_campaign" />
+                tools:listitem="@layout/item_campaign"
+                tools:visibility="visible" />
 
 
             <LinearLayout
@@ -75,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="25dp"
-                    android:text="No campaign is available right now."
+                    android:text="No campaigns found."
                     android:textColor="#555"
                     android:textSize="15sp" />
 

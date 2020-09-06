@@ -300,7 +300,10 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 //                        }
 //                    }).setNegativeButton("NO", null)
 //                    .show();
-            Logger.d(orderDetailsModel.getAllowed_payment_methods());
+            if (orderDetailsModel == null || orderDetailsModel.getAllowed_payment_methods() == null) {
+                ToastUtils.show("Cash on delivery only");
+                return;
+            }
             PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount, shopSlug.contains("food"), orderDetailsModel.getAllowed_payment_methods(), paymentMessage, this);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
@@ -1006,9 +1009,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     heroStatus.setText("Delivered the products");
                 }
 
-                if (orderStatus.equals("processing") ||
+                if ((orderStatus.equals("processing") ||
                         orderStatus.equals("picked") ||
-                        orderStatus.equals("shipped"))
+                        orderStatus.equals("shipped")) && paymentStatus.equals("paid"))
                     confirmDelivery.setVisibility(View.VISIBLE);
                 else
                     confirmDelivery.setVisibility(View.GONE);

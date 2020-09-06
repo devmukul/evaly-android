@@ -3,25 +3,25 @@ package bd.com.evaly.evalyshop.ui.campaign;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
+import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignAdapter;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -65,22 +65,54 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        setupToolbar();
+        initRecycler();
+        liveEventsObserver();
+    }
+
+    private void setupToolbar() {
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         binding.toolbar.setNavigationOnClickListener(view1 -> {
             if (getActivity() != null)
                 getActivity().onBackPressed();
         });
+        binding.toolbar.inflateMenu(R.menu.menu_search);
+        MenuItem searchItem = binding.toolbar.getMenu().findItem(R.id.action_search);
+        SearchView searchView;
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+            searchView.setQueryHint("Search campaigns...");
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    items.clear();
+                    viewModel.clear();
+                    viewModel.setSearch(query);
+                    viewModel.loadCampaigns();
+                    return false;
+                }
 
-        initRecycler();
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    return false;
+                }
+            });
 
-        liveEventsObserver();
+            searchView.setOnCloseListener(() -> {
+                items.clear();
+                adapter.notifyDataSetChanged();
+                viewModel.clear();
+                viewModel.setSearch(null);
+                viewModel.loadCampaigns();
+                return false;
+            });
+        }
     }
 
     private void liveEventsObserver() {
         viewModel.getLiveList().observe(getViewLifecycleOwner(), list -> {
             isLoading = false;
             binding.progressBar.setVisibility(View.GONE);
-
             if (list.size() == 0) {
                 binding.recyclerView.setVisibility(View.GONE);
                 binding.layoutNot.setVisibility(View.VISIBLE);
@@ -95,7 +127,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
 
     private void initRecycler() {
-
         items = new ArrayList<>();
         adapter = new CampaignAdapter(getContext(), items, item -> {
             Bundle bundle = new Bundle();
@@ -104,21 +135,14 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         });
         binding.recyclerView.setAdapter(adapter);
 
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 2);
         binding.recyclerView.setLayoutManager(manager);
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(manager) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    visibleItemCount = manager.getChildCount();
-                    totalItemCount = manager.getItemCount();
-                    pastVisiblesItems = manager.findFirstVisibleItemPosition();
-                    if (isLoading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            viewModel.loadCampaigns();
-                            isLoading = true;
-                        }
-                    }
+            public void loadMoreItem() {
+                if (!isLoading) {
+                    viewModel.loadCampaigns();
+                    isLoading = true;
                 }
             }
         });

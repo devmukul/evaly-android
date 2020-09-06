@@ -18,7 +18,7 @@ public class CampaignViewModel extends ViewModel {
     private int currentPage = 1;
     private MutableLiveData<List<CampaignItem>> liveList = new MutableLiveData<>();
     private List<CampaignItem> list = new ArrayList<>();
-
+    private String search = null;
 
     public CampaignViewModel() {
         currentPage = 1;
@@ -29,9 +29,9 @@ public class CampaignViewModel extends ViewModel {
         this.navigator = navigator;
     }
 
-    public void loadCampaigns(){
+    public void loadCampaigns() {
 
-        CampaignApiHelper.getCampaigns(currentPage, new ResponseListenerAuth<CommonDataResponse<List<CampaignItem>>, String>() {
+        CampaignApiHelper.getCampaigns(currentPage, search, new ResponseListenerAuth<CommonDataResponse<List<CampaignItem>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignItem>> response, int statusCode) {
                 list.addAll(response.getData());
@@ -51,6 +51,19 @@ public class CampaignViewModel extends ViewModel {
             }
         });
 
+    }
+
+    public void clear() {
+        list.clear();
+        currentPage = 1;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 
     public int getCurrentPage() {

@@ -29,8 +29,10 @@ public final class PaymentWebActivity extends AppCompatActivity implements Advan
     }
 
     private void setupToolbar() {
+        if (getSupportActionBar() == null)
+            return;
         getSupportActionBar().setElevation(4f);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        // getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(PaymentWebBuilder.getToolbarTitle());
     }
