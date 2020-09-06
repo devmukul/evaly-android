@@ -7,9 +7,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.orhanobut.logger.Logger;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListener;
@@ -70,19 +72,22 @@ public class AuthApiHelper extends BaseApiHelper {
 
     }
 
-    public static void register(HashMap<String, String> data, DataFetchingListener<Response<JsonObject>> listener) {
+    public static void register(HashMap<String, String> data, ResponseListener<JsonObject, String> listener) {
 
         IApiClient iApiClient = getiApiClient();
         Call<JsonObject> call = iApiClient.register(data);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                listener.onDataFetched(response);
+                listener.onDataFetched(response.body(), response.code());
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                listener.onFailed(0);
+                if (t instanceof IOException)
+                    listener.onFailed(AppController.getmContext().getString(R.string.networkError), 0);
+                else
+                    listener.onFailed("Error occurred, please try again later", 0);
             }
         });
 
@@ -101,7 +106,10 @@ public class AuthApiHelper extends BaseApiHelper {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                listener.onFailed(t.getMessage(), 0);
+                if (t instanceof IOException)
+                    listener.onFailed(AppController.getmContext().getString(R.string.networkError), 0);
+                else
+                    listener.onFailed("Error occurred, please try again later", 0);
             }
         });
 

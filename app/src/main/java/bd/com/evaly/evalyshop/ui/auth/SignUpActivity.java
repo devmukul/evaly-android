@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.pref.ReferPref;
-import bd.com.evaly.evalyshop.listener.DataFetchingListener;
+import bd.com.evaly.evalyshop.listener.ResponseListener;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.ui.auth.password.PasswordActivity;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
@@ -65,7 +65,7 @@ public class SignUpActivity extends BaseActivity {
                 Toast.makeText(SignUpActivity.this, "Please enter your phone number", Toast.LENGTH_SHORT).show();
             } else if (phoneNumber.getText().toString().length() != 11) {
                 Toast.makeText(SignUpActivity.this, "Please enter your phone number correctly", Toast.LENGTH_SHORT).show();
-            } else if (!checkBox.isChecked()){
+            } else if (!checkBox.isChecked()) {
                 Toast.makeText(SignUpActivity.this, "You must accept privacy policy and terms & conditions in order to sign up for Evaly", Toast.LENGTH_LONG).show();
             } else {
                 signUpUser();
@@ -97,18 +97,17 @@ public class SignUpActivity extends BaseActivity {
         if (!refText.equals(""))
             referPref.setRef(refText);
 
-
-        AuthApiHelper.register(hashMap, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
+        AuthApiHelper.register(hashMap, new ResponseListener<JsonObject, String>() {
             @Override
-            public void onDataFetched(retrofit2.Response<JsonObject> response) {
+            public void onDataFetched(JsonObject response, int statusCode) {
                 alert.hideDialog();
-                if (response.code() == 200){
+                if (statusCode == 200) {
                     Toast.makeText(getApplicationContext(), "This mobile number has already been used", Toast.LENGTH_LONG).show();
-                }else if (response.code() ==201){
+                } else if (statusCode == 201) {
 
                     Intent il = new Intent(SignUpActivity.this, PasswordActivity.class);
                     il.putExtra("phone", phoneNumber.getText().toString());
-                    il.putExtra("name", firstName.getText().toString()+" "+lastName.getText().toString());
+                    il.putExtra("name", firstName.getText().toString() + " " + lastName.getText().toString());
                     il.putExtra("type", "signup");
                     finish();
                     startActivity(il);
@@ -118,13 +117,11 @@ public class SignUpActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailed(int status) {
+            public void onFailed(String errorBody, int errorCode) {
                 alert.hideDialog();
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), errorBody, Toast.LENGTH_LONG).show();
             }
         });
-
-
     }
 
 

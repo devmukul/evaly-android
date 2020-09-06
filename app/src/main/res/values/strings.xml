@@ -362,5 +362,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="stock_colon_available">Stock: Available</string>
     <string name="stock_color_contact_seller">Stock: Contact Seller</string>
     <string name="evaly_balance">Evaly Account</string>
+    <string name="networkError">Oh! You are not connected to a wifi or cellular data network. Please connect and try again</string>
 
 </resources>

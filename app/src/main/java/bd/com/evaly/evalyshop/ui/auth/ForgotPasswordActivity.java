@@ -72,7 +72,7 @@ public class ForgotPasswordActivity extends BaseActivity {
                 if (errorCode == 404)
                     Toast.makeText(ForgotPasswordActivity.this, "This phone number is not registered yet", Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(ForgotPasswordActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForgotPasswordActivity.this, errorBody, Toast.LENGTH_SHORT).show();
 
             }
 
