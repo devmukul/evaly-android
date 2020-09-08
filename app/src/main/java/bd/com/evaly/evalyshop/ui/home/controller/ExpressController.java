@@ -37,7 +37,7 @@ public class ExpressController extends EpoxyController {
         for (ExpressServiceModel model : itemsExpress) {
             new HomeExpressItemModel_()
                     .clickListener((model1, parentView, clickedView, position) -> {
-                        if (model1.getModel().getName().toLowerCase().contains("food")) {
+                        if (model1.getModel().getSlug().equals("express-bullet-food")) {
                             try {
                                 activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=bd.com.evaly.efood")));
                             } catch (android.content.ActivityNotFoundException anfe) {

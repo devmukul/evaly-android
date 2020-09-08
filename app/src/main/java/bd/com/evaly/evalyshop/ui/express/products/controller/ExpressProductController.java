@@ -87,7 +87,7 @@ public class ExpressProductController extends EpoxyController {
         for (ExpressServiceModel model : itemsExpress) {
             new HomeExpressItemModel_()
                     .clickListener((model1, parentView, clickedView, position) -> {
-                        if (model1.getModel().getName().toLowerCase().contains("food")) {
+                        if (model1.getModel().getSlug().equals("express-bullet-food")) {
                             Intent launchIntent = activity.getPackageManager().getLaunchIntentForPackage("bd.com.evaly.efood");
                             try {
                                 if (launchIntent != null)
