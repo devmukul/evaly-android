@@ -61,7 +61,9 @@ import com.orhanobut.logger.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -132,6 +134,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     LinearLayout btnToggleTimelineHolder;
     @BindView(R.id.heroCall)
     ImageView heroCall;
+    @BindView(R.id.vatMessage)
+    TextView tvVatMessage;
     private double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
     private String shopSlug = "";
     private String invoice_no = "";
@@ -381,11 +385,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 getOrderHistory();
 
                 if (response != null) {
-                    if (response.get("success").getAsBoolean()) {
-                        Toast.makeText(getApplicationContext(), response.get("message").toString(), Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), response.get("message").toString(), Toast.LENGTH_LONG).show();
-                    }
+                    Toast.makeText(getApplicationContext(), response.get("message").toString(), Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Payment failed, try again later", Toast.LENGTH_LONG).show();
                 }
@@ -1020,6 +1020,19 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     deliveryConfirmationDialog();
 
                 orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
+
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
+                    Date firstDate = sdf.parse("09/09/2020");
+                    Date secondDate = sdf.parse(Utils.formattedDateFromString("", "dd/MM/yyy", response.getDate()));
+                    if (secondDate.after(firstDate))
+                        tvVatMessage.setVisibility(View.VISIBLE);
+                    else
+                        tvVatMessage.setVisibility(View.GONE);
+
+                } catch (Exception e) {
+                    tvVatMessage.setVisibility(View.GONE);
+                }
 
                 if (response.getOrderStatus().toLowerCase().equals("cancel")) {
                     StepperIndicator indicatorCancelled = findViewById(R.id.indicatorCancelled);

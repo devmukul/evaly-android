@@ -499,6 +499,7 @@
                     android:layout_marginBottom="20dp"
                     android:layout_weight="0"
                     android:paddingLeft="20dp"
+                    android:layout_marginTop="-5dp"
                     android:text="* Price includes VAT for VAT applicable products"
                     android:textColor="#666"
                     android:textSize="13sp" />
