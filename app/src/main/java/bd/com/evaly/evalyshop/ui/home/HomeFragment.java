@@ -115,6 +115,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
 
         productItemList = new ArrayList<>();
+
         homeController = new HomeController();
         homeController.setActivity((AppCompatActivity) getActivity());
         homeController.setFragment(this);

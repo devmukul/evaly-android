@@ -260,7 +260,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_weight="0"
                 android:paddingLeft="5dp"
-                android:text="Delivery charge (40tk) will be added for orders from Unimart, Meenclick, Shwapno and Bengal Meat Express shops"
+                android:text="Delivery charge (40tk) will be added for orders from Unimart, MeenaClick, Shwapno and Bengal Meat express shops"
                 android:textColor="#666"
                 android:textSize="13sp" />
 
