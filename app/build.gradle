@@ -9,8 +9,8 @@ android {
         applicationId "bd.com.evaly.evalyshop"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 236
-        versionName "2.3.6"
+        versionCode 237
+        versionName "2.3.7"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -36,9 +36,9 @@ android {
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            buildConfigField "String", 'BASE_URL', "\"https://api-.evaly.com.bd/\""
+            buildConfigField "String", 'BASE_URL', "\"https://api.evaly.com.bd/\""
             buildConfigField "String", 'WEB_URL', "\"https://beta.evaly.com.bd/\""
-            buildConfigField "String", 'CHAT_BASE', "\"chat-dev.evaly.com.bd\""
+            buildConfigField "String", 'CHAT_BASE', "\"chat.evaly.com.bd\""
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
             buildConfigField "String", 'BUILD', "\"dev\""
             buildConfigField "String", 'BKASH_URL', "\"https://beta.evaly.com.bd/bkash_payment\""

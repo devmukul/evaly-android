@@ -492,17 +492,82 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/vatMessage"
-                    android:layout_width="wrap_content"
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="#fafafa" />
+
+                <LinearLayout
+                    android:id="@+id/deliveryChargeHolder"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="top"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="0"
+                        android:padding="1dp"
+                        app:srcCompat="@drawable/ic_delivery"
+                        app:tint="#9A8FFD" />
+
+                    <TextView
+                        android:id="@+id/deliveryChargeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="0"
+                        android:gravity="center_vertical"
+                        android:minHeight="20dp"
+                        android:paddingLeft="5dp"
+                        android:text="Delivery charge (40tk) will be added for orders from Unimart, MeenaClick, Shwapno and Bengal Meat express shops"
+                        android:textColor="#666"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/vatHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="20dp"
-                    android:layout_weight="0"
-                    android:paddingLeft="20dp"
-                    android:layout_marginTop="-5dp"
-                    android:text="* Price includes VAT for VAT applicable products"
-                    android:textColor="#666"
-                    android:textSize="13sp" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/ic_taka_circle"
+                        app:tint="#ACBD14" />
+
+
+                    <TextView
+                        android:id="@+id/vatMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:paddingLeft="5dp"
+                        android:text="Price includes VAT for VAT applicable products"
+                        android:textColor="#666"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
 
                 <View
                     android:layout_width="match_parent"
