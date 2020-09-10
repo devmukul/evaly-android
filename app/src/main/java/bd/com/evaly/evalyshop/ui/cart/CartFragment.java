@@ -517,7 +517,7 @@ public class CartFragment extends Fragment {
 
                 if (response != null && getActivity() != null) {
                     String message = response.get("message").getAsString();
-                    // Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
                     if (response.has("data")) {
                         JsonArray data = response.getAsJsonArray("data");
