@@ -38,6 +38,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -98,6 +100,9 @@ public class CartFragment extends Fragment {
     private double totalPriceDouble = 0;
     private TextView tvTotalPrice;
     private NavController navController;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private String deliveryChargeText = null;
+    private String deliveryChargeApplicable = null;
 
     public CartFragment() {
         // Required empty public constructor
@@ -127,7 +132,7 @@ public class CartFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         this.view = view;
-
+        setupRemoteConfig();
         mToolbar = view.findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         mToolbar.setNavigationOnClickListener(view1 -> {
@@ -206,6 +211,7 @@ public class CartFragment extends Fragment {
             }
             boolean selected = false;
             boolean isExpress = false;
+            boolean showDeliveryCharge = false;
 
             HashMap<String, Integer> shopAmountMap = new HashMap<>();
             HashMap<String, Boolean> shopExpressMap = new HashMap<>();
@@ -213,7 +219,6 @@ public class CartFragment extends Fragment {
             for (int i = 0; i < adapter.getItemList().size(); i++) {
                 CartEntity cartItem = adapter.getItemList().get(i);
                 if (cartItem.isSelected()) {
-
                     String ss = cartItem.getShopSlug();
                     Integer am = shopAmountMap.get(ss);
 
@@ -228,12 +233,21 @@ public class CartFragment extends Fragment {
                     if (shopObject.has("is_express_shop")) {
                         if (shopObject.get("is_express_shop").getAsBoolean() || shopObject.get("is_express_shop").getAsString().equals("1"))
                             isExpress = true;
+                        if (deliveryChargeApplicable != null) {
+                            String[] array = deliveryChargeApplicable.split(",");
+                            for (String s : array) {
+                                String shopTitle = shopObject.get("shop_name").getAsString();
+                                if (shopTitle.toLowerCase().contains(s.toLowerCase())) {
+                                    showDeliveryCharge = true;
+                                    break;
+                                }
+                            }
+                        }
 
                     } else {
                         if (cartItem.getShopSlug().contains("evaly-express"))
                             isExpress = true;
                     }
-
                     shopExpressMap.put(ss, isExpress);
                 }
             }
@@ -254,13 +268,23 @@ public class CartFragment extends Fragment {
 
             checkLocationPermission();
 
+            TextView tvDeliveryChargeText = bottomSheetView.findViewById(R.id.deliveryChargeText);
             LinearLayout deliveryChargeHolder = bottomSheetView.findViewById(R.id.deliveryChargeHolder);
+            LinearLayout vatHolder = bottomSheetView.findViewById(R.id.vatHolder);
             if (isExpress) {
-                deliveryChargeHolder.setVisibility(View.VISIBLE);
                 deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
             } else {
-                deliveryChargeHolder.setVisibility(View.GONE);
                 deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
+            }
+
+            if (showDeliveryCharge && isExpress) {
+                if (deliveryChargeText != null)
+                    tvDeliveryChargeText.setText(deliveryChargeText);
+                deliveryChargeHolder.setVisibility(View.VISIBLE);
+                vatHolder.setVisibility(View.VISIBLE);
+            } else {
+                deliveryChargeHolder.setVisibility(View.GONE);
+                vatHolder.setVisibility(View.GONE);
             }
 
             if (!selected)
@@ -365,6 +389,28 @@ public class CartFragment extends Fragment {
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION},
                     1212);
+    }
+
+
+    private void setupRemoteConfig() {
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(800)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+        checkRemoteConfig();
+    }
+
+    private void checkRemoteConfig() {
+        mFirebaseRemoteConfig
+                .fetchAndActivate()
+                .addOnCompleteListener(getActivity(), task -> {
+                    if (task.isSuccessful()) {
+                        deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
+                        deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
+                    }
+                });
     }
 
     private void updateLocation() {

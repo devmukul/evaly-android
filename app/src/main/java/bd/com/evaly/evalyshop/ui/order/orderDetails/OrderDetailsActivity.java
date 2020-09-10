@@ -57,7 +57,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.orhanobut.logger.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -134,8 +133,17 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     LinearLayout btnToggleTimelineHolder;
     @BindView(R.id.heroCall)
     ImageView heroCall;
+
     @BindView(R.id.vatMessage)
     TextView tvVatMessage;
+    @BindView(R.id.deliveryChargeText)
+    TextView tvDeliveryChargeText;
+    @BindView(R.id.deliveryChargeHolder)
+    LinearLayout layoutDeliveryChargeHolder;
+    @BindView(R.id.vatHolder)
+    LinearLayout layoutVatHolder;
+
+
     private double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
     private String shopSlug = "";
     private String invoice_no = "";
@@ -162,13 +170,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private MenuItem refundMenuItem;
     private List<IssueCategoryModel> categoryList;
     private OrderDetailsModel orderDetailsModel;
-
     private PaymentWebBuilder paymentWebBuilder;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
-
     private String paymetMethods;
     private String paymentMessage;
     private boolean showCodConfirmDialog = false;
+    private String deliveryChargeText = null;
+    private String deliveryChargeApplicable = null;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -440,7 +448,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     makeCashOnDelivery(invoice);
             }
         });
-
     }
 
 
@@ -459,9 +466,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 .fetchAndActivate()
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-//                        paymetMethods = mFirebaseRemoteConfig.getString("payment_method");
                         paymentMessage = mFirebaseRemoteConfig.getString("evaly_pay_text");
-                        Logger.d(paymetMethods);
+                        deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
+                        deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
                     }
                 });
     }
@@ -1025,13 +1032,32 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
                     Date firstDate = sdf.parse("09/09/2020");
                     Date secondDate = sdf.parse(Utils.formattedDateFromString("", "dd/MM/yyy", response.getDate()));
-                    if (secondDate.after(firstDate))
-                        tvVatMessage.setVisibility(View.VISIBLE);
-                    else
-                        tvVatMessage.setVisibility(View.GONE);
+
+                    boolean check = false;
+                    String shopTitle = response.getShop().getName();
+                    if (deliveryChargeApplicable != null) {
+                        String[] array = deliveryChargeApplicable.split(",");
+                        for (String s : array) {
+                            if (shopTitle.toLowerCase().contains(s.toLowerCase())) {
+                                check = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ((secondDate != null && secondDate.after(firstDate)) && check) {
+                        layoutVatHolder.setVisibility(View.VISIBLE);
+                        layoutDeliveryChargeHolder.setVisibility(View.VISIBLE);
+                        if (deliveryChargeText != null)
+                            tvDeliveryChargeText.setText(deliveryChargeText.replaceAll(" will be", ""));
+                    } else {
+                        layoutVatHolder.setVisibility(View.GONE);
+                        layoutDeliveryChargeHolder.setVisibility(View.GONE);
+                    }
 
                 } catch (Exception e) {
-                    tvVatMessage.setVisibility(View.GONE);
+                    layoutVatHolder.setVisibility(View.GONE);
+                    layoutDeliveryChargeHolder.setVisibility(View.GONE);
                 }
 
                 if (response.getOrderStatus().toLowerCase().equals("cancel")) {
@@ -1118,12 +1144,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
                 }
-
-//                if (orderStatus.equals("pending") && paid_amount < 1) {
-//                    cancelBtn.setVisibility(View.VISIBLE);
-//                    cancelBtn.setOnClickListener(view -> cancelOrder());
-//                }
-
 
                 inflateMenu();
 
