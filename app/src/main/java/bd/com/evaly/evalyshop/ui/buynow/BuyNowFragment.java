@@ -414,6 +414,14 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             else
                 deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign.");
 
+            LinearLayout deliveryChargeHolder = bottomSheetView.findViewById(R.id.deliveryChargeHolder);
+
+            if (isExpress) {
+                deliveryChargeHolder.setVisibility(View.VISIBLE);
+            } else {
+                deliveryChargeHolder.setVisibility(View.GONE);
+            }
+
             checkLocationPermission();
             bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
             bottomSheetDialog.show();
@@ -571,7 +579,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
-                   // Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
                     if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
                         JsonArray data = response.getAsJsonArray("data");
                         JsonObject item = data.get(0).getAsJsonObject();
