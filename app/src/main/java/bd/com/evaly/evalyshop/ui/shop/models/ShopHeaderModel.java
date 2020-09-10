@@ -103,7 +103,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                 String phone = shop.getContactNumber();
                 if (fragment.getView() == null)
                     return;
-                final Snackbar snackBar = Snackbar.make(fragment.getView(), phone + "", Snackbar.LENGTH_LONG);
+                final Snackbar snackBar = Snackbar.make(fragment.getView(), phone + "\n", Snackbar.LENGTH_LONG);
                 snackBar.setAction("Call", v12 -> {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse("tel:" + shop.getContactNumber()));
@@ -117,7 +117,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                 String phone = shop.getAddress();
                 if (fragment.getView() == null)
                     return;
-                final Snackbar snackBar = Snackbar.make(fragment.getView(), phone + "", Snackbar.LENGTH_LONG);
+                final Snackbar snackBar = Snackbar.make(fragment.getView(), phone + "\n", Snackbar.LENGTH_LONG);
                 snackBar.setAction("Copy", v1 -> {
                     ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("address", shop.getAddress());
