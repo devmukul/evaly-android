@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_sheet_round_create_post"
         android:clickable="true"
         android:orientation="vertical"
-        android:padding="15dp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="20dp"
         app:behavior_hideable="true"
         app:behavior_peekHeight="56dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
@@ -195,6 +196,13 @@
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:background="#fafafa" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -207,19 +215,81 @@
                 android:layout_width="35dp"
                 android:layout_height="20dp"
                 android:layout_weight="0"
-                android:tint="#555"
-                app:srcCompat="@drawable/ic_info_small" />
+                app:srcCompat="@drawable/ic_clock"
+                app:tint="@color/colorAccent" />
 
 
             <TextView
                 android:id="@+id/deliveryDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-4dp"
+                android:layout_marginTop="-2dp"
                 android:layout_marginBottom="10dp"
                 android:layout_weight="0"
                 android:paddingLeft="5dp"
                 android:text="@string/delivery_of_the_products_will_be_completed_within_approximately_15_working_days_after_payment"
+                android:textColor="#666"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/deliveryChargeHolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="top"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                android:padding="1dp"
+                app:srcCompat="@drawable/ic_delivery"
+                app:tint="#9A8FFD" />
+
+            <TextView
+                android:id="@+id/deliveryChargeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="0"
+                android:paddingLeft="5dp"
+                android:text="Delivery charge (40tk) will be added for orders from Unimart, MeenaClick, Shwapno and Bengal Meat express shops"
+                android:textColor="#666"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                app:srcCompat="@drawable/ic_taka_circle"
+                app:tint="#ACBD14" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:paddingLeft="5dp"
+                android:text="Price includes VAT for VAT applicable products"
                 android:textColor="#666"
                 android:textSize="13sp" />
 

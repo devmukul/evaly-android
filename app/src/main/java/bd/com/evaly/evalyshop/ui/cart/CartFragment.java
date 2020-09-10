@@ -226,7 +226,7 @@ public class CartFragment extends Fragment {
 
                     JsonObject shopObject = JsonParser.parseString(cartItem.getShopJson()).getAsJsonObject();
                     if (shopObject.has("is_express_shop")) {
-                        if (shopObject.get("is_express_shop").getAsBoolean())
+                        if (shopObject.get("is_express_shop").getAsBoolean() || shopObject.get("is_express_shop").getAsString().equals("1"))
                             isExpress = true;
 
                     } else {
@@ -254,10 +254,14 @@ public class CartFragment extends Fragment {
 
             checkLocationPermission();
 
-            if (isExpress)
+            LinearLayout deliveryChargeHolder = bottomSheetView.findViewById(R.id.deliveryChargeHolder);
+            if (isExpress) {
+                deliveryChargeHolder.setVisibility(View.VISIBLE);
                 deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
-            else
+            } else {
+                deliveryChargeHolder.setVisibility(View.GONE);
                 deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
+            }
 
             if (!selected)
                 Toast.makeText(context, "Please select item from cart", Toast.LENGTH_SHORT).show();
