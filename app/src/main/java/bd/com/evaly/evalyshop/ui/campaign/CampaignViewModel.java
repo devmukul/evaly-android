@@ -9,14 +9,18 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
+import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 
 public class CampaignViewModel extends ViewModel {
 
     private CampaignNavigator navigator;
     private int currentPage = 1;
     private MutableLiveData<List<CampaignItem>> liveList = new MutableLiveData<>();
+    private MutableLiveData<List<BannerItem>> bannerLiveList = new MutableLiveData<>();
     private List<CampaignItem> list = new ArrayList<>();
     private String search = null;
 
@@ -53,9 +57,35 @@ public class CampaignViewModel extends ViewModel {
 
     }
 
+
+    public void loadBanners() {
+
+        GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonResultResponse<List<BannerItem>> response, int statusCode) {
+                bannerLiveList.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+    }
+
     public void clear() {
         list.clear();
         currentPage = 1;
+    }
+
+    public LiveData<List<BannerItem>> getBannerLiveList() {
+        return bannerLiveList;
     }
 
     public void setSearch(String search) {
