@@ -3,13 +3,10 @@ package bd.com.evaly.evalyshop.ui.campaign;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -30,11 +27,9 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     private FragmentCampaignBinding binding;
     private CampaignViewModel viewModel;
-    private View mRootView;
     private List<CampaignItem> items;
     private CampaignAdapter adapter;
     private NavController navController;
-    private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private boolean isLoading = false;
 
     public static CampaignFragment newInstance() {
@@ -48,11 +43,9 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_campaign, container, false);
-        binding.setViewModel(viewModel);
-        mRootView = binding.getRoot();
+        binding = FragmentCampaignBinding.inflate(inflater);
         navController = NavHostFragment.findNavController(this);
-        return mRootView;
+        return binding.getRoot();
     }
 
     @Override
@@ -71,55 +64,55 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     }
 
     private void setupToolbar() {
-        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-        binding.toolbar.setNavigationOnClickListener(view1 -> {
-            if (getActivity() != null)
-                getActivity().onBackPressed();
-        });
-        binding.toolbar.inflateMenu(R.menu.menu_search);
-        MenuItem searchItem = binding.toolbar.getMenu().findItem(R.id.action_search);
-        SearchView searchView;
-        if (searchItem != null) {
-            searchView = (SearchView) searchItem.getActionView();
-            searchView.setQueryHint("Search campaigns...");
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    items.clear();
-                    viewModel.clear();
-                    viewModel.setSearch(query);
-                    viewModel.loadCampaigns();
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String s) {
-                    return false;
-                }
-            });
-
-            searchView.setOnCloseListener(() -> {
-                items.clear();
-                adapter.notifyDataSetChanged();
-                viewModel.clear();
-                viewModel.setSearch(null);
-                viewModel.loadCampaigns();
-                return false;
-            });
-        }
+//        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+//        binding.toolbar.setNavigationOnClickListener(view1 -> {
+//            if (getActivity() != null)
+//                getActivity().onBackPressed();
+//        });
+//        binding.toolbar.inflateMenu(R.menu.menu_search);
+//        MenuItem searchItem = binding.toolbar.getMenu().findItem(R.id.action_search);
+//        SearchView searchView;
+//        if (searchItem != null) {
+//            searchView = (SearchView) searchItem.getActionView();
+//            searchView.setQueryHint("Search campaigns...");
+//            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//                @Override
+//                public boolean onQueryTextSubmit(String query) {
+//                    items.clear();
+//                    viewModel.clear();
+//                    viewModel.setSearch(query);
+//                    viewModel.loadCampaigns();
+//                    return false;
+//                }
+//
+//                @Override
+//                public boolean onQueryTextChange(String s) {
+//                    return false;
+//                }
+//            });
+//
+//            searchView.setOnCloseListener(() -> {
+//                items.clear();
+//                adapter.notifyDataSetChanged();
+//                viewModel.clear();
+//                viewModel.setSearch(null);
+//                viewModel.loadCampaigns();
+//                return false;
+//            });
+//        }
     }
 
     private void liveEventsObserver() {
         viewModel.getLiveList().observe(getViewLifecycleOwner(), list -> {
             isLoading = false;
-            binding.progressBar.setVisibility(View.GONE);
-            if (list.size() == 0) {
-                binding.recyclerView.setVisibility(View.GONE);
-                binding.layoutNot.setVisibility(View.VISIBLE);
-            } else {
-                binding.recyclerView.setVisibility(View.VISIBLE);
-                binding.layoutNot.setVisibility(View.GONE);
-            }
+//            binding.progressBar.setVisibility(View.GONE);
+//            if (list.size() == 0) {
+//                binding.recyclerView.setVisibility(View.GONE);
+//                binding.layoutNot.setVisibility(View.VISIBLE);
+//            } else {
+//                binding.recyclerView.setVisibility(View.VISIBLE);
+//                binding.layoutNot.setVisibility(View.GONE);
+//            }
             items.addAll(list);
             adapter.notifyItemRangeInserted(items.size() - list.size(), list.size());
         });
@@ -169,7 +162,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         if (getActivity() == null || getActivity().isFinishing() || binding == null)
             return;
         ToastUtils.show("Error occurred!");
-        binding.progressBar.setVisibility(View.INVISIBLE);
+        //  binding.progressBar.setVisibility(View.INVISIBLE);
     }
 }
 
