@@ -44,6 +44,11 @@
         <item name="fontFamily">sans-serif</item>
     </style>
 
+    <style name="TabTextAppearance.Light" >
+        <item name="android:textColor">#fff</item>
+        <item name="colorAccent">#fff</item>
+    </style>
+
     // rounded bottom sheet fragment
 
     <!-- set the rounded drawable as background to your bottom sheet -->
