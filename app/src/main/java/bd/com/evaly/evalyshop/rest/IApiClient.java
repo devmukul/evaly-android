@@ -257,6 +257,8 @@ public interface IApiClient {
     @GET(UrlUtils.ROOTCATEGORIES)
     Call<List<CategoryEntity>> getRootCategories();
 
+    Call<List<CategoryEntity>> getSubCategories(@Query("parent") String parent);
+
     // Order APIs
     @GET(UrlUtils.ORDERS)
     Call<CommonResultResponse<List<OrderListItem>>> getOrderList(@Header("Authorization") String token, @Query("page") int page, @Query("order_status") String orderStatus);

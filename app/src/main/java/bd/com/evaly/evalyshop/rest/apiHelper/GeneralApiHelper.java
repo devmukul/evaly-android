@@ -26,6 +26,10 @@ public class GeneralApiHelper extends BaseApiHelper {
         getiApiClient().getRootCategories().enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void getSubCategories(String rootCategory, ResponseListenerAuth<List<CategoryEntity>, String> listener) {
+        getiApiClient().getSubCategories(rootCategory).enqueue(getResponseCallBackDefault(listener));
+    }
+
     public static void getBanners(ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String> listener) {
         getiApiClient().getBanners().enqueue(getResponseCallBackDefault(listener));
     }
