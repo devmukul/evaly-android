@@ -88,7 +88,7 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
-    private void loadProducts() {
+    public void loadProducts() {
 
         ProductApiHelper.getCategoryBrandProducts(currentPageProducts, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
             @Override

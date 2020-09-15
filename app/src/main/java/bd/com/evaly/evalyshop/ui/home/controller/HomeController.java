@@ -2,39 +2,28 @@ package bd.com.evaly.evalyshop.ui.home.controller;
 
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.airbnb.epoxy.AutoModel;
-import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
-import com.airbnb.epoxy.OnModelBoundListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
-import bd.com.evaly.evalyshop.databinding.HomeModelTabsBinding;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
-import bd.com.evaly.evalyshop.ui.home.listener.BindListener;
 import bd.com.evaly.evalyshop.ui.home.model.HomeCarouselModelModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressItemModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
@@ -117,7 +106,7 @@ public class HomeController extends EpoxyController {
         // product listing
         for (ProductItem productItem : items) {
             new HomeProductGridModel_()
-                    .id(productItem.getUniqueId())
+                    .id(productItem.getSlug())
                     .model(productItem)
                     .clickListener((model, parentView, clickedView, position) -> {
                         ProductItem item = model.getModel();
@@ -137,8 +126,7 @@ public class HomeController extends EpoxyController {
     }
 
     public void addData(List<ProductItem> productItems) {
-        this.items.addAll(productItems);
-        requestModelBuild();
+        this.items = productItems;
     }
 
     public void addExpressData(List<ExpressServiceModel> items) {
