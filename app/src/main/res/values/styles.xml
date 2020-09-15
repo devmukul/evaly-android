@@ -162,5 +162,6 @@
     <style name="AppTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout.Colored">
         <item name="tabIndicatorColor">@color/colorAccent</item>
     </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
 </resources>
