@@ -3,7 +3,6 @@
     android:color="?colorControlHighlight">
 
     <item>
-
         <shape android:shape="oval" >
             <solid android:color="#2D000000" />
             <padding android:left="15dp"

@@ -77,6 +77,7 @@ public class ViewProductSliderAdapter extends PagerAdapter {
             try {
                 Intent intent = new Intent(context, ImageSliderActivity.class);
                 intent.putStringArrayListExtra("image_list", img);
+                intent.putExtra("selected", position);
                 //Toast.makeText(context, imgURL, Toast.LENGTH_SHORT).show();
                 context.startActivity(intent);
             } catch (Exception e) {

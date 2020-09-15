@@ -41,7 +41,6 @@ public abstract class ImageSliderModel extends DataBindingEpoxyModel {
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        binding.image.setMinimumDpi(80);
                         binding.image.setImage(ImageSource.bitmap(resource));
                     }
                 });
