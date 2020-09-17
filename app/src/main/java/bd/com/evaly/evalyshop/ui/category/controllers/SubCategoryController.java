@@ -1,9 +1,11 @@
 package bd.com.evaly.evalyshop.ui.category.controllers;
 
 
+import android.os.Bundle;
 import android.widget.LinearLayout;
 
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.navigation.NavController;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.EpoxyController;
@@ -16,7 +18,7 @@ import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.ui.category.CategoryViewModel;
 import bd.com.evaly.evalyshop.ui.category.models.SubCategoryModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
-import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.shop.models.ShopCategoryTitleModel_;
 
 public class SubCategoryController extends EpoxyController {
@@ -24,19 +26,20 @@ public class SubCategoryController extends EpoxyController {
     @AutoModel
     LoadingModel_ loader;
     @AutoModel
-    NoProductModel_ noProductModel;
+    NoItemModel_ noItemModel;
     @AutoModel
     ShopCategoryTitleModel_ categoryTitleModel;
 
     private List<CategoryEntity> items = new ArrayList<>();
     private CategoryViewModel viewModel;
+    private NavController navController;
     private boolean loadingMore = true;
     private boolean emptyPage = false;
-
     private String categoryTitle = null;
 
     public SubCategoryController() {
         setDebugLoggingEnabled(true);
+        setSpanCount(2);
     }
 
     public void setLoadingMore(boolean loadingMore) {
@@ -51,30 +54,37 @@ public class SubCategoryController extends EpoxyController {
             requestModelBuild();
     }
 
+    public void setNavController(NavController navController) {
+        this.navController = navController;
+    }
 
     @Override
     protected void buildModels() {
-
 
         for (CategoryEntity item : items) {
             new SubCategoryModel_()
                     .id(item.getSlug())
                     .model(item)
                     .clickListener((model, parentView, clickedView, position) -> {
-
+                        Bundle bundle = new Bundle();
+                        bundle.putString("slug", model.model().getSlug());
+                        bundle.putString("category", model.model().getSlug());
+                        navController.navigate(R.id.browseProductFragment, bundle);
                     })
                     .addTo(this);
         }
 
-        noProductModel
-                .text("No sub category Available")
-                .image(R.drawable.ic_empty_product)
-                .addIf(emptyPage, this);
+        noItemModel
+                .text("No categories found")
+                .image(R.drawable.ic_category)
+                .width(60)
+                .imageTint("#888888")
+                .spanSizeOverride((totalSpanCount, position, itemCount) -> 2)
+                .addIf(items.size() == 0 && !loadingMore, this);
 
         loader
                 .onBind((model, view, position) -> {
-                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) view.itemView.getLayoutParams();
-                    params.setFullSpan(true);
+                    GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) view.itemView.getLayoutParams();
                     if (items.size() == 0) {
                         params.height = LinearLayout.LayoutParams.MATCH_PARENT;
                         params.topMargin = 100;
@@ -83,6 +93,7 @@ public class SubCategoryController extends EpoxyController {
                         params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     }
                 })
+                .spanSizeOverride((totalSpanCount, position, itemCount) -> 2)
                 .addIf(loadingMore, this);
 
     }

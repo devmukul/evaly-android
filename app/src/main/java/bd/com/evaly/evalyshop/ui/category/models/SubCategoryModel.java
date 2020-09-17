@@ -48,8 +48,10 @@ public abstract class SubCategoryModel extends DataBindingEpoxyModel {
         super.bind(holder);
 
         ItemSubCategoryBinding binding = (ItemSubCategoryBinding) holder.getDataBinding();
-        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
-        params.setFullSpan(false);
+        if (binding.getRoot().getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
+            params.setFullSpan(false);
+        }
 
         binding.title.setText(Html.fromHtml(model.getName()));
 
@@ -68,8 +70,7 @@ public abstract class SubCategoryModel extends DataBindingEpoxyModel {
                         return true;
                     }
                 })
-                .skipMemoryCache(true)
-                .apply(new RequestOptions().override(160, 160))
+                .apply(new RequestOptions().override(260, 260))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_evaly_placeholder)
                 .into(binding.image);

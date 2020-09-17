@@ -57,21 +57,8 @@ public abstract class RootCategoryModel extends DataBindingEpoxyModel {
 
         Glide.with(binding.getRoot())
                 .load(image)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Bitmap bitmap = Utils.changeColor(((BitmapDrawable) resource).getBitmap(), Color.parseColor("#ecf3f9"), Color.WHITE);
-                        binding.image.setImageBitmap(bitmap);
-                        return true;
-                    }
-                })
                 .skipMemoryCache(true)
-                .apply(new RequestOptions().override(160, 160))
+                .apply(new RequestOptions().override(260, 260))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_evaly_placeholder)
                 .into(binding.image);

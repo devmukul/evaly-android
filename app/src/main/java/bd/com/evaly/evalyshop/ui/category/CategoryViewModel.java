@@ -8,6 +8,7 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
@@ -19,7 +20,15 @@ public class CategoryViewModel extends ViewModel {
     private String rootCategory = null;
 
     public CategoryViewModel() {
+        loadRootCategories();
+        if (rootCategory == null)
+            loadTopCategories();
+        else
+            loadSubCategories();
+    }
 
+    public String getRootCategory() {
+        return rootCategory;
     }
 
     public void loadRootCategories() {
@@ -47,6 +56,24 @@ public class CategoryViewModel extends ViewModel {
             @Override
             public void onDataFetched(List<CategoryEntity> response, int statusCode) {
                 subCategoryLiveData.setValue(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
+
+    public void loadTopCategories() {
+        GeneralApiHelper.getTopCategories(new ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<CategoryEntity>> response, int statusCode) {
+                subCategoryLiveData.setValue(response.getData());
             }
 
             @Override
