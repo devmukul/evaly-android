@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemCampaignButtonBinding;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -20,10 +21,7 @@ import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 public abstract class CampaignButtonModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
-    String name;
-
-    @EpoxyAttribute
-    String image;
+    CampaignCategoryResponse model;
 
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
@@ -35,13 +33,13 @@ public abstract class CampaignButtonModel extends DataBindingEpoxyModel {
 
         Glide.with(binding.getRoot())
                 .asBitmap()
-                .load(image)
+                .load(model.getImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .into(binding.sliderImage);
+                .into(binding.image);
 
-        binding.name.setText(name);
+        binding.name.setText(model.getName());
 
-        binding.sliderImage.setOnClickListener(clickListener);
+        binding.image.setOnClickListener(clickListener);
     }
 
 

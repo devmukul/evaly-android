@@ -140,6 +140,10 @@ public class CampaignViewModel extends ViewModel {
         return categoryLiveList;
     }
 
+    public LiveData<List<CampaignProductResponse>> getProductsLiveList() {
+        return productsLiveList;
+    }
+
     public LiveData<List<CampaignBannerResponse>> getBannerLiveList() {
         return bannerLiveList;
     }

@@ -18,14 +18,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
@@ -34,9 +33,11 @@ import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignAdapter;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignBannerController;
+import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignController;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSliderModel_;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
+import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class CampaignFragment extends Fragment implements CampaignNavigator {
@@ -48,6 +49,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     private CampaignAdapter adapter;
     private NavController navController;
     private CampaignBannerController sliderController;
+    private CampaignController productController;
     private boolean isLoading = false;
     private boolean isExpanded = true;
 
@@ -96,9 +98,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     }
 
     private void initSlider() {
-
-        // if (sliderController == null)
-        sliderController = new CampaignBannerController();
+        if (sliderController == null)
+            sliderController = new CampaignBannerController();
         sliderController.setFilterDuplicates(true);
         binding.sliderPager.setAdapter(sliderController.getAdapter());
 
@@ -125,10 +126,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
             }
         });
-
-
-        viewModel.loadCampaignCategory();
-
     }
 
     private void setupToolbar() {
@@ -137,6 +134,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         Window window = getActivity().getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
         int statusBarHeight = rectangle.top;
+
+        binding.marginFrame.setPadding(0, binding.marginFrame.getPaddingTop() + statusBarHeight, 0, 0);
 
         // binding.collapsingToolbar.setScrimVisibleHeightTrigger((binding.appBar.getHeight()-1));
         coverHeight = ((binding.coverHolder.getHeight()) + statusBarHeight + (int) Utils.convertDpToPixel(60, getContext())) * -1;
@@ -178,31 +177,31 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         viewModel.getCategoryLiveList().observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
             sliderController.addData(campaignCategoryResponses);
             sliderController.requestModelBuild();
+            productController.setCategoryList(campaignCategoryResponses);
+            productController.requestModelBuild();
         });
 
-        viewModel.getLiveList().observe(getViewLifecycleOwner(), list -> {
+        viewModel.getProductsLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
             isLoading = false;
-            items.addAll(list);
-            adapter.notifyItemRangeInserted(items.size() - list.size(), list.size());
+            productController.setProductList(campaignProductResponses);
+            productController.requestModelBuild();
         });
     }
 
     private void initRecycler() {
-        items = new ArrayList<>();
-        adapter = new CampaignAdapter(getContext(), items, item -> {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("model", item);
-            navController.navigate(R.id.campaignShopFragment, bundle);
-        });
-        binding.recyclerView.setAdapter(adapter);
-
-        GridLayoutManager manager = new GridLayoutManager(getContext(), 2);
-        binding.recyclerView.setLayoutManager(manager);
-        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(manager) {
+        if (productController == null)
+            productController = new CampaignController();
+        binding.recyclerView.setAdapter(productController.getAdapter());
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        binding.recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        productController.setSpanCount(2);
+        int spacing = (int) Utils.convertDpToPixel(10, requireActivity());
+        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, spacing, true));
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(staggeredGridLayoutManager) {
             @Override
             public void loadMoreItem() {
                 if (!isLoading) {
-                    viewModel.loadCampaigns();
+                    viewModel.loadCampaignProducts();
                     isLoading = true;
                 }
             }
@@ -238,7 +237,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         if (getActivity() == null || getActivity().isFinishing() || binding == null)
             return;
         ToastUtils.show("Error occurred!");
-        //  binding.progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void setStatusBarColor() {

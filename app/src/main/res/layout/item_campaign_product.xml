@@ -127,20 +127,6 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/stock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="5dp"
-                android:text="Stock Available"
-                android:textColor="#777"
-                android:textSize="11sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/campaignInfoHolder"
-                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/buy_now"
@@ -162,7 +148,7 @@
                 android:textStyle="normal"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/stock"
+                app:layout_constraintTop_toBottomOf="@id/campaignInfoHolder"
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

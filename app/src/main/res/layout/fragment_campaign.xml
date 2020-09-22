@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#fff"
-        android:fitsSystemWindows="false"
+        android:fitsSystemWindows="true"
         android:orientation="vertical"
         android:visibility="visible">
 
@@ -39,7 +39,7 @@
                 app:statusBarScrim="@color/white"
                 app:titleEnabled="false">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
@@ -47,7 +47,8 @@
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/coverHolder"
@@ -63,7 +64,7 @@
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/bg_fafafa_round"
                                 android:transitionName="banner_transition"
-                                app:layout_constraintDimensionRatio="H,2:1"
+                                app:layout_constraintDimensionRatio="H,2.2:1"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -72,72 +73,73 @@
                     </FrameLayout>
 
 
-                </LinearLayout>
-
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="95dp">
-
-                    <androidx.cardview.widget.CardView
+                    <FrameLayout
+                        android:id="@+id/marginFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="15dp"
-                        app:cardBackgroundColor="@color/fff"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp">
+                        android:layout_alignParentTop="true"
+                        android:paddingTop="65dp">
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/sliderHolder"
+                        <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="#fff"
-                            android:minHeight="100dp">
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="15dp"
+                            app:cardBackgroundColor="@color/fff"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp">
 
-                            <ImageView
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/sliderHolder"
                                 android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:background="@drawable/banner_skeleton_bg"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintDimensionRatio="H,2.93478:1"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:layout_height="wrap_content"
+                                android:background="#fff"
+                                android:minHeight="100dp">
 
-                            <androidx.viewpager2.widget.ViewPager2
-                                android:id="@+id/sliderPager"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_alignParentTop="true"
-                                android:clipToPadding="false"
-                                app:layout_constraintDimensionRatio="H,2.93478:1"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:background="@drawable/banner_skeleton_bg"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintDimensionRatio="H,2.93478:1"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-                            <com.google.android.material.tabs.TabLayout
-                                android:id="@+id/sliderIndicator"
-                                android:layout_width="match_parent"
-                                android:layout_height="25dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginStart="40dp"
-                                android:layout_marginEnd="40dp"
-                                android:background="@color/transparent"
-                                app:layout_constraintBottom_toBottomOf="@id/sliderPager"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:tabBackground="@drawable/indicator_selector"
-                                app:tabGravity="center"
-                                app:tabIndicatorHeight="0dp"
-                                app:tabPaddingEnd="7dp"
-                                app:tabPaddingStart="7dp" />
+                                <androidx.viewpager2.widget.ViewPager2
+                                    android:id="@+id/sliderPager"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_alignParentTop="true"
+                                    android:clipToPadding="false"
+                                    app:layout_constraintDimensionRatio="H,2.93478:1"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </androidx.cardview.widget.CardView>
-                </FrameLayout>
+                                <com.google.android.material.tabs.TabLayout
+                                    android:id="@+id/sliderIndicator"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="40dp"
+                                    android:layout_marginEnd="40dp"
+                                    android:background="@color/transparent"
+                                    app:layout_constraintBottom_toBottomOf="@id/sliderPager"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:tabBackground="@drawable/indicator_selector"
+                                    app:tabGravity="center"
+                                    app:tabIndicatorHeight="0dp"
+                                    app:tabPaddingEnd="7dp"
+                                    app:tabPaddingStart="7dp" />
 
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.cardview.widget.CardView>
+                    </FrameLayout>
+
+
+                </RelativeLayout>
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -145,6 +147,7 @@
                     android:layout_height="60dp"
                     android:background="@android:color/transparent"
                     android:elevation="0dp"
+                    android:fitsSystemWindows="false"
                     android:gravity="top"
                     android:paddingRight="5dp"
                     app:contentInsetStartWithNavigation="0dp"
@@ -209,8 +212,9 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
+            android:background="#fafafa"
             android:clipToPadding="false"
+            android:fitsSystemWindows="true"
             android:orientation="vertical"
             android:paddingHorizontal="10dp"
             android:paddingTop="20dp"
