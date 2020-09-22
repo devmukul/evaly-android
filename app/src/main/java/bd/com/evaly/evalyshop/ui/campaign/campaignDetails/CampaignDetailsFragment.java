@@ -22,12 +22,12 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.tabs.TabLayout;
 
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignDetailsBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
@@ -72,6 +72,40 @@ public class CampaignDetailsFragment extends Fragment {
         liveEventObservers();
         clickListeners();
         initRecycler();
+        initTabs();
+    }
+
+    private void initTabs() {
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                viewModel.clear();
+                switch (tab.getPosition()) {
+                    case 0:
+                        viewModel.setType("product");
+                        break;
+                    case 1:
+                        viewModel.setType("shop");
+                        break;
+                    case 2:
+                        viewModel.setType("brand");
+                        break;
+                }
+
+                viewModel.loadListFromApi();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     private void initRecycler() {
@@ -104,9 +138,8 @@ public class CampaignDetailsFragment extends Fragment {
             loadCampaignDetails(model);
         });
 
-        viewModel.getProductLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
-            ToastUtils.show("loaded");
-            controller.setProductList(campaignProductResponses);
+        viewModel.getLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
+            controller.setList(campaignProductResponses);
             controller.requestModelBuild();
         });
 

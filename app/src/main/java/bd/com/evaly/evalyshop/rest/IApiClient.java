@@ -21,8 +21,10 @@ import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
+import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
+import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
@@ -79,6 +81,18 @@ public interface IApiClient {
                                                                                         @Query("limit") int limit,
                                                                                         @Query("search") String search,
                                                                                         @Query("category") String category);
+
+    @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/brands")
+    Call<CommonDataResponse<List<CampaignBrandResponse>>> getCampaignCategoryBrands(@Query("page") int page,
+                                                                                    @Query("limit") int limit,
+                                                                                    @Query("search") String search,
+                                                                                    @Query("category") String category);
+
+    @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/shops")
+    Call<CommonDataResponse<List<CampaignShopResponse>>> getCampaignCategoryShops(@Query("page") int page,
+                                                                                  @Query("limit") int limit,
+                                                                                  @Query("search") String search,
+                                                                                  @Query("category") String category);
 
     @GET(UrlUtils.BASE_URL + "campaigns/mobile/products/latest")
     Call<CommonDataResponse<List<CampaignProductResponse>>> getCampaignAllProducts(@Query("page") int page,

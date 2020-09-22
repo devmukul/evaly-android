@@ -7,8 +7,10 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
+import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
+import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 
 public class CampaignApiHelper extends BaseApiHelper {
 
@@ -18,6 +20,14 @@ public class CampaignApiHelper extends BaseApiHelper {
 
     public static void getCampaignCategoryProducts(int page, int limit, String search, String category, ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String> listener) {
         getiApiClient().getCampaignCategoryProducts(page, limit, search, category).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getCampaignCategoryBrands(int page, int limit, String search, String category, ResponseListenerAuth<CommonDataResponse<List<CampaignBrandResponse>>, String> listener) {
+        getiApiClient().getCampaignCategoryBrands(page, limit, search, category).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getCampaignCategoryShops(int page, int limit, String search, String category, ResponseListenerAuth<CommonDataResponse<List<CampaignShopResponse>>, String> listener) {
+        getiApiClient().getCampaignCategoryShops(page, limit, search, category).enqueue(getResponseCallBackDefault(listener));
     }
 
     public static void getCampaignAllProducts(int page, int limit, String search, ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String> listener) {

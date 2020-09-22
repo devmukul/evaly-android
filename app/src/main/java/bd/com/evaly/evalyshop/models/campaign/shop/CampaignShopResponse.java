@@ -1,10 +1,10 @@
-package bd.com.evaly.evalyshop.models.campaign.products;
+package bd.com.evaly.evalyshop.models.campaign.shop;
 
 import com.google.gson.annotations.SerializedName;
 
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 
-public class CampaignProductResponse extends CampaignParentModel {
+public class CampaignShopResponse extends CampaignParentModel {
 
 	@SerializedName("cashback_text")
 	private String cashbackText;
@@ -15,20 +15,14 @@ public class CampaignProductResponse extends CampaignParentModel {
 	@SerializedName("badge_text")
 	private String badgeText;
 
-	@SerializedName("bottom_text")
-	private String bottomText;
-
-	@SerializedName("price")
-	private double price;
+	@SerializedName("campaign_slug")
+	private String campaignSlug;
 
 	@SerializedName("name")
 	private String name;
 
 	@SerializedName("slug")
 	private String slug;
-
-	@SerializedName("discounted_price")
-	private double discountedPrice;
 
 	public void setCashbackText(String cashbackText){
 		this.cashbackText = cashbackText;
@@ -54,20 +48,12 @@ public class CampaignProductResponse extends CampaignParentModel {
 		return badgeText;
 	}
 
-	public void setBottomText(String bottomText){
-		this.bottomText = bottomText;
+	public void setCampaignSlug(String campaignSlug){
+		this.campaignSlug = campaignSlug;
 	}
 
-	public String getBottomText(){
-		return bottomText;
-	}
-
-	public void setPrice(double price){
-		this.price = price;
-	}
-
-	public double getPrice(){
-		return price;
+	public String getCampaignSlug(){
+		return campaignSlug;
 	}
 
 	public void setName(String name){
@@ -86,26 +72,16 @@ public class CampaignProductResponse extends CampaignParentModel {
 		return slug;
 	}
 
-	public void setDiscountedPrice(double discountedPrice){
-		this.discountedPrice = discountedPrice;
-	}
-
-	public double getDiscountedPrice(){
-		return discountedPrice;
-	}
-
 	@Override
  	public String toString(){
 		return 
-			"CampaignProductResponse{" + 
+			"CampaignShopResponse{" + 
 			"cashback_text = '" + cashbackText + '\'' + 
 			",image = '" + image + '\'' + 
 			",badge_text = '" + badgeText + '\'' + 
-			",bottom_text = '" + bottomText + '\'' + 
-			",price = '" + price + '\'' + 
+			",campaign_slug = '" + campaignSlug + '\'' + 
 			",name = '" + name + '\'' + 
 			",slug = '" + slug + '\'' + 
-			",discounted_price = '" + discountedPrice + '\'' + 
 			"}";
 		}
 }
