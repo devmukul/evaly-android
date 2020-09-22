@@ -74,6 +74,12 @@ public interface IApiClient {
     @GET(UrlUtils.BASE_URL + "campaigns/mobile/products/banners/latest")
     Call<CommonDataResponse<List<CampaignBannerResponse>>> getCampaignBanners();
 
+    @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/products")
+    Call<CommonDataResponse<List<CampaignProductResponse>>> getCampaignCategoryProducts(@Query("page") int page,
+                                                                                        @Query("limit") int limit,
+                                                                                        @Query("search") String search,
+                                                                                        @Query("category") String category);
+
     @GET(UrlUtils.BASE_URL + "campaigns/mobile/products/latest")
     Call<CommonDataResponse<List<CampaignProductResponse>>> getCampaignAllProducts(@Query("page") int page,
                                                                                    @Query("limit") int limit,

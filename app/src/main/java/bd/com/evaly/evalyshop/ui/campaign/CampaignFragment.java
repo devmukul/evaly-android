@@ -87,10 +87,14 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         setupToolbar();
-        initHeader(null);
         initSlider();
         initRecycler();
         liveEventsObserver();
+        clickListeners();
+    }
+
+    private void clickListeners() {
+        binding.backArrow.setOnClickListener(v -> requireActivity().onBackPressed());
     }
 
     private void initSlider() {
@@ -119,7 +123,10 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                if (binding.sliderIndicator.getTabCount() > 0 && sliderController.getAdapter().getItemCount() > 0) {
+                    CampaignSliderModel_ model = (CampaignSliderModel_) sliderController.getAdapter().getModelAtPosition(tab.getPosition());
+                    initHeader(model.model().getBannerImage());
+                }
             }
         });
     }
@@ -175,6 +182,10 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             sliderController.requestModelBuild();
             productController.setCategoryList(campaignCategoryResponses);
             productController.requestModelBuild();
+            if (binding.sliderIndicator.getTabCount() > 0 && sliderController.getAdapter().getItemCount() > 0) {
+                CampaignSliderModel_ model = (CampaignSliderModel_) sliderController.getAdapter().getModelAtPosition(0);
+                initHeader(model.model().getBannerImage());
+            }
         });
 
         viewModel.getProductsLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {

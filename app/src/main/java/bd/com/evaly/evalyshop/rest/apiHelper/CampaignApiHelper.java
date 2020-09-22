@@ -16,6 +16,10 @@ public class CampaignApiHelper extends BaseApiHelper {
         getiApiClient().getCampaignBanners().enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void getCampaignCategoryProducts(int page, int limit, String search, String category, ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String> listener) {
+        getiApiClient().getCampaignCategoryProducts(page, limit, search, category).enqueue(getResponseCallBackDefault(listener));
+    }
+
     public static void getCampaignAllProducts(int page, int limit, String search, ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String> listener) {
         getiApiClient().getCampaignAllProducts(page, limit, search).enqueue(getResponseCallBackDefault(listener));
     }

@@ -50,6 +50,16 @@ public class Utils {
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
+    public static boolean isValidColor(String str) {
+        String regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
+        Pattern p = Pattern.compile(regex);
+        if (str == null) {
+            return false;
+        }
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
+
     public static int countWords(String s){
 
         int wordCount = 0;

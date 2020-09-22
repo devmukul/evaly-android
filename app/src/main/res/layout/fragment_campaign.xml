@@ -176,6 +176,7 @@
                                 android:layout_height="43dp"
                                 android:layout_marginStart="5dp"
                                 android:padding="12dp"
+                                android:clickable="true"
                                 android:src="@drawable/ic_left_arrow_new"
                                 app:tint="#fff" />
 
@@ -191,10 +192,12 @@
                         </LinearLayout>
 
                         <ImageView
+                            android:id="@+id/buttonRight"
                             android:layout_width="40dp"
                             android:layout_height="43dp"
                             android:layout_marginStart="5dp"
                             android:padding="8dp"
+                            android:clickable="true"
                             android:src="@drawable/ic_favorite"
                             app:tint="#444" />
 
