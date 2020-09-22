@@ -119,6 +119,8 @@ public class CampaignDetailsFragment extends Fragment {
                     binding.coverImage,
                     ColorStateList.valueOf(Color.parseColor(model.getBannerPrimaryBgColor())));
             binding.zToolbar.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
+            binding.appBar.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
+            binding.header.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             binding.collapsingToolbar.setContentScrimColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             binding.collapsingToolbar.setStatusBarScrimColor(Color.parseColor(model.getBannerPrimaryBgColor()));
         }
@@ -127,6 +129,8 @@ public class CampaignDetailsFragment extends Fragment {
                 .load(model.getBannerImage())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(binding.bannerImage);
+
+        binding.title.setText(model.getName());
     }
 
     private void setStatusBarColor() {
