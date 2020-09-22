@@ -31,7 +31,6 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
-import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignAdapter;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignBannerController;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignController;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSliderModel_;
@@ -45,8 +44,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     int coverHeight;
     private FragmentCampaignBinding binding;
     private CampaignViewModel viewModel;
-    private List<CampaignItem> items;
-    private CampaignAdapter adapter;
     private NavController navController;
     private CampaignBannerController sliderController;
     private CampaignController productController;
@@ -85,7 +82,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         super.onCreate(savedInstanceState);
         setStatusBarColor();
         viewModel = new ViewModelProvider(this).get(CampaignViewModel.class);
-        viewModel.setNavigator(this);
     }
 
     @Override
@@ -191,6 +187,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     private void initRecycler() {
         if (productController == null)
             productController = new CampaignController();
+        productController.setNavController(navController);
         binding.recyclerView.setAdapter(productController.getAdapter());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(staggeredGridLayoutManager);

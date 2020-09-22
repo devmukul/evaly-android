@@ -2,7 +2,9 @@ package bd.com.evaly.evalyshop.models.campaign.category;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CampaignCategoryResponse{
+import java.io.Serializable;
+
+public class CampaignCategoryResponse implements Serializable {
 
 	@SerializedName("image")
 	private String image;

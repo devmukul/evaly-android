@@ -1,7 +1,9 @@
 package bd.com.evaly.evalyshop.ui.campaign.controller;
 
+import android.os.Bundle;
 import android.view.ViewGroup;
 
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
@@ -10,6 +12,7 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignButtonModel_;
@@ -22,6 +25,7 @@ public class CampaignController extends EpoxyController {
     CategoryCarouselModel_ buttonCarousel;
     private List<CampaignCategoryResponse> categoryList = new ArrayList<>();
     private List<CampaignProductResponse> productList = new ArrayList<>();
+    private NavController navController;
 
     @Override
     protected void buildModels() {
@@ -30,6 +34,11 @@ public class CampaignController extends EpoxyController {
         for (CampaignCategoryResponse item : categoryList)
             buttonModels.add(new CampaignButtonModel_()
                     .id(item.getSlug())
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("model", model.model());
+                        navController.navigate(R.id.campaignDetails, bundle);
+                    })
                     .model(item));
 
         buttonCarousel
@@ -51,6 +60,10 @@ public class CampaignController extends EpoxyController {
                     .addTo(this);
         }
 
+    }
+
+    public void setNavController(NavController navController) {
+        this.navController = navController;
     }
 
     public void setProductList(List<CampaignProductResponse> productList) {

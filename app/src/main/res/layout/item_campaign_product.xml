@@ -60,7 +60,7 @@
                 android:paddingRight="10dp"
                 android:textAlignment="textStart"
                 android:textColor="#444"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image"
                 tools:text="This is the product title" />
@@ -89,7 +89,7 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="5dp"
                 android:textColor="#f57224"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/priceDiscount"
@@ -110,19 +110,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:background="@drawable/bg_campaign_red"
-                    android:paddingHorizontal="6dp"
-                    android:paddingVertical="2dp"
+                    android:paddingHorizontal="5dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     android:text="Hot Deal"
                     android:textColor="#fff"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/campaignCaback"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="6dp"
                     android:text="25% Cashback"
-                    android:textColor="#666"
+                    android:textColor="#444"
                     android:textSize="12sp" />
 
             </LinearLayout>

@@ -17,54 +17,22 @@ import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 
 public class CampaignViewModel extends ViewModel {
 
-    private CampaignNavigator navigator;
-    private int currentPage = 1;
-
     private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
     private List<CampaignCategoryResponse> categoryArrayList = new ArrayList<>();
     private MutableLiveData<List<CampaignItem>> liveList = new MutableLiveData<>();
     private MutableLiveData<List<CampaignBannerResponse>> bannerLiveList = new MutableLiveData<>();
     private MutableLiveData<List<CampaignProductResponse>> productsLiveList = new MutableLiveData<>();
+    private List<CampaignProductResponse> productsArrayList = new ArrayList<>();
     private List<CampaignItem> list = new ArrayList<>();
     private String search = null;
-    private int page = 1;
+    private int currentPage = 1;
 
     public CampaignViewModel() {
         currentPage = 1;
-        loadCampaigns();
         loadCampaignCategory();
         loadCampaignProducts();
         loadCampaignBanners();
     }
-
-    public void setNavigator(CampaignNavigator navigator) {
-        this.navigator = navigator;
-    }
-
-    public void loadCampaigns() {
-
-        CampaignApiHelper.getCampaigns(currentPage, search, new ResponseListenerAuth<CommonDataResponse<List<CampaignItem>>, String>() {
-            @Override
-            public void onDataFetched(CommonDataResponse<List<CampaignItem>> response, int statusCode) {
-                list.addAll(response.getData());
-                liveList.setValue(list);
-                if (response.getCount() > list.size())
-                    currentPage++;
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                navigator.onListFailed(errorBody, errorCode);
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
-
-    }
-
 
     public void loadCampaignCategory() {
         CampaignApiHelper.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
@@ -109,10 +77,13 @@ public class CampaignViewModel extends ViewModel {
 
 
     public void loadCampaignProducts() {
-        CampaignApiHelper.getCampaignAllProducts(page, 20, search, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
+        CampaignApiHelper.getCampaignAllProducts(currentPage, 20, search, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
-                productsLiveList.setValue(response.getData());
+                productsArrayList.addAll(response.getData());
+                productsLiveList.setValue(productsArrayList);
+                if (response.getCount() > productsArrayList.size())
+                    currentPage++;
             }
 
             @Override

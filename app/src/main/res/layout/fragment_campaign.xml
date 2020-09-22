@@ -196,7 +196,7 @@
                             android:layout_marginStart="5dp"
                             android:padding="8dp"
                             android:src="@drawable/ic_favorite"
-                            app:tint="#787878" />
+                            app:tint="#444" />
 
                     </LinearLayout>
 
@@ -212,12 +212,12 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fafafa"
+            android:background="@drawable/white_to_grey_gradient_fast"
             android:clipToPadding="false"
             android:fitsSystemWindows="true"
             android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:paddingTop="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="70dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 

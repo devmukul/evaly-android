@@ -34,6 +34,7 @@ public abstract class CampaignButtonModel extends DataBindingEpoxyModel {
         Glide.with(binding.getRoot())
                 .asBitmap()
                 .load(model.getImage())
+                .error(R.drawable.cover)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(binding.image);
 

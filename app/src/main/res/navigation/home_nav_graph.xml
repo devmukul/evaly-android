@@ -254,6 +254,10 @@
         android:id="@+id/shopQuickViewFragment"
         android:name="bd.com.evaly.evalyshop.ui.shop.quickView.ShopQuickViewFragment"
         android:label="ShopQuickViewFragment" />
+    <fragment
+        android:id="@+id/campaignDetails"
+        android:name="bd.com.evaly.evalyshop.ui.campaign.campaignDetails.CampaignDetails"
+        android:label="CampaignDetails" />
 
 
     <!--    <activity-->

@@ -77,6 +77,9 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         binding.getRoot().setOnClickListener(clickListener);
         binding.buyNow.setVisibility(View.GONE);
         binding.buyNow.setOnClickListener(buyNowClickListener);
+
+        binding.campaignName.setText(model.getBadgeText());
+        binding.campaignCaback.setText(model.getCashbackText().replace(".00", ""));
     }
 
 

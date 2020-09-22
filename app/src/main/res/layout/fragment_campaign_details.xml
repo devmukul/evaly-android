@@ -35,7 +35,7 @@
                 app:contentScrim="@color/white"
                 app:layout_scrollFlags="enterAlwaysCollapsed|scroll|exitUntilCollapsed|snap"
                 app:scrimAnimationDuration="0"
-                app:scrimVisibleHeightTrigger="210dp"
+                app:scrimVisibleHeightTrigger="100dp"
                 app:statusBarScrim="@color/white"
                 app:titleEnabled="false">
 
