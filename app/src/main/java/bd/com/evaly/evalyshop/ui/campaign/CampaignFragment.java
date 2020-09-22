@@ -14,7 +14,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -32,13 +31,10 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.models.CommonResultResponse;
-import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.ui.campaign.adapter.CampaignAdapter;
-import bd.com.evaly.evalyshop.ui.home.controller.SliderController;
+import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignBannerController;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSliderModel_;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import jp.wasabeef.glide.transformations.BlurTransformation;
@@ -51,8 +47,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     private List<CampaignItem> items;
     private CampaignAdapter adapter;
     private NavController navController;
+    private CampaignBannerController sliderController;
     private boolean isLoading = false;
-    private List<BannerItem> bannerList;
     private boolean isExpanded = true;
 
     public static CampaignFragment newInstance() {
@@ -100,24 +96,23 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     }
 
     private void initSlider() {
-        SliderController controller = new SliderController();
-        controller.setActivity((AppCompatActivity) getActivity());
 
-        binding.sliderPager.setAdapter(controller.getAdapter());
-
-        bannerList = new ArrayList<>();
+        // if (sliderController == null)
+        sliderController = new CampaignBannerController();
+        sliderController.setFilterDuplicates(true);
+        binding.sliderPager.setAdapter(sliderController.getAdapter());
 
         new TabLayoutMediator(binding.sliderIndicator, binding.sliderPager,
-                (tab, position) -> {
-                    tab.setText("");
-
-                }
+                (tab, position) -> tab.setText("")
         ).attach();
 
         binding.sliderIndicator.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                initHeader(bannerList.get(tab.getPosition()).getImage());
+                if (binding.sliderIndicator.getTabCount() > 0 && sliderController.getAdapter().getItemCount() > 0) {
+                    CampaignSliderModel_ model = (CampaignSliderModel_) sliderController.getAdapter().getModelAtPosition(tab.getPosition());
+                    initHeader(model.model().getBannerImage());
+                }
             }
 
             @Override
@@ -131,29 +126,12 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             }
         });
 
-        GeneralApiHelper.getBanners(new ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String>() {
-            @Override
-            public void onDataFetched(CommonResultResponse<List<BannerItem>> response, int statusCode) {
-                bannerList = response.getData();
-                controller.reAddData(response.getData());
-                controller.requestModelBuild();
-            }
 
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
+        viewModel.loadCampaignCategory();
 
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
-        });
     }
 
     private void setupToolbar() {
-
-
         isExpanded = true;
         Rect rectangle = new Rect();
         Window window = getActivity().getWindow();
@@ -193,57 +171,17 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                 }
             });
         });
-
-
-//        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-//        binding.toolbar.setNavigationOnClickListener(view1 -> {
-//            if (getActivity() != null)
-//                getActivity().onBackPressed();
-//        });
-//        binding.toolbar.inflateMenu(R.menu.menu_search);
-//        MenuItem searchItem = binding.toolbar.getMenu().findItem(R.id.action_search);
-//        SearchView searchView;
-//        if (searchItem != null) {
-//            searchView = (SearchView) searchItem.getActionView();
-//            searchView.setQueryHint("Search campaigns...");
-//            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                @Override
-//                public boolean onQueryTextSubmit(String query) {
-//                    items.clear();
-//                    viewModel.clear();
-//                    viewModel.setSearch(query);
-//                    viewModel.loadCampaigns();
-//                    return false;
-//                }
-//
-//                @Override
-//                public boolean onQueryTextChange(String s) {
-//                    return false;
-//                }
-//            });
-//
-//            searchView.setOnCloseListener(() -> {
-//                items.clear();
-//                adapter.notifyDataSetChanged();
-//                viewModel.clear();
-//                viewModel.setSearch(null);
-//                viewModel.loadCampaigns();
-//                return false;
-//            });
-//        }
     }
 
     private void liveEventsObserver() {
+
+        viewModel.getCategoryLiveList().observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
+            sliderController.addData(campaignCategoryResponses);
+            sliderController.requestModelBuild();
+        });
+
         viewModel.getLiveList().observe(getViewLifecycleOwner(), list -> {
             isLoading = false;
-//            binding.progressBar.setVisibility(View.GONE);
-//            if (list.size() == 0) {
-//                binding.recyclerView.setVisibility(View.GONE);
-//                binding.layoutNot.setVisibility(View.VISIBLE);
-//            } else {
-//                binding.recyclerView.setVisibility(View.VISIBLE);
-//                binding.layoutNot.setVisibility(View.GONE);
-//            }
             items.addAll(list);
             adapter.notifyItemRangeInserted(items.size() - list.size(), list.size());
         });
@@ -274,7 +212,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     private void initHeader(String url) {
         Glide.with(binding.coverImage)
                 .asBitmap()
-                .load(url == null ? R.drawable.cover : url)
+                .load(url == null ? R.drawable.bg_fafafa_round : url)
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 2)))
                 .into(binding.coverImage);
     }

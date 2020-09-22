@@ -14,7 +14,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemCampaignSliderBinding;
-import bd.com.evaly.evalyshop.models.banner.BannerItem;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -22,14 +22,10 @@ import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 public abstract class CampaignSliderModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
-    BannerItem model;
+    CampaignCategoryResponse model;
 
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
-
-    public BannerItem getModel() {
-        return model;
-    }
 
 
     @Override
@@ -39,9 +35,9 @@ public abstract class CampaignSliderModel extends DataBindingEpoxyModel {
 
         Glide.with(binding.getRoot())
                 .asBitmap()
-                .load(model.getImage())
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .load(model.getBannerImage())
                 .apply(new RequestOptions().override(1450, 460))
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(binding.sliderImage);
 
         binding.sliderImage.setOnClickListener(clickListener);

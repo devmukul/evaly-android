@@ -20,6 +20,9 @@ import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.brand.BrandDetails;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
+import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceDetailsModel;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.giftcard.GiftCardListItem;
@@ -66,6 +69,18 @@ import retrofit2.http.Url;
 
 public interface IApiClient {
 
+    // new campaign
+
+    @GET(UrlUtils.BASE_URL + "campaigns/mobile/products/banners/latest")
+    Call<CommonDataResponse<List<CampaignBannerResponse>>> getCampaignBanners();
+
+    @GET(UrlUtils.BASE_URL + "campaigns/mobile/products/latest")
+    Call<CommonDataResponse<List<CampaignProductResponse>>> getCampaignAllProducts(@Query("page") int page,
+                                                                                   @Query("limit") int limit,
+                                                                                   @Query("search") String search);
+
+    @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories")
+    Call<CommonDataResponse<List<CampaignCategoryResponse>>> getCampaignCategory();
 
     // chat
 
