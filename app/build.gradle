@@ -133,6 +133,7 @@ dependencies {
     implementation 'jp.wasabeef:glide-transformations:4.2.0'
     implementation project(":evalyPaymentLibrary")
     implementation project(path: ':richlinkpreview')
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 
     configurations {
         all*.exclude group: 'xpp3', module: 'xpp3'

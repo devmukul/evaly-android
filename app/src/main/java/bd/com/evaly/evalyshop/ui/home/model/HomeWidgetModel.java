@@ -42,7 +42,7 @@ public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
 
         NavController navController = NavHostFragment.findNavController(fragment);
 
-        binding.btn1Image.setOnClickListener(v -> navController.navigate(R.id.newsfeedFragment));
+        binding.btn1Image.setOnClickListener(v -> navController.navigate(R.id.categoryFragment));
         binding.btn2Image.setOnClickListener(v -> {
             Intent ni = new Intent(activity, GiftCardActivity.class);
             activity.startActivity(ni);

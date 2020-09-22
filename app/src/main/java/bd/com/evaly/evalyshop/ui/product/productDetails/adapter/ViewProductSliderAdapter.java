@@ -17,9 +17,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.ui.image.ImageSliderActivity;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 
 public class ViewProductSliderAdapter extends PagerAdapter {
@@ -27,10 +29,10 @@ public class ViewProductSliderAdapter extends PagerAdapter {
     FragmentTransaction ft;
     AppCompatActivity activity;
     private Context context;
-    private List<String> img;
+    private ArrayList<String> img;
     private int type = 1;
 
-    public ViewProductSliderAdapter(Context context, AppCompatActivity activity, List<String> img) {
+    public ViewProductSliderAdapter(Context context, AppCompatActivity activity, ArrayList<String> img) {
         this.context = context;
         this.img = img;
         this.activity = activity;
@@ -73,8 +75,9 @@ public class ViewProductSliderAdapter extends PagerAdapter {
         viewPager.addView(view, 0);
         view.setOnClickListener(v -> {
             try {
-                Intent intent = new Intent(context, ImagePreview.class);
-                intent.putExtra("image", imgURL);
+                Intent intent = new Intent(context, ImageSliderActivity.class);
+                intent.putStringArrayListExtra("image_list", img);
+                intent.putExtra("selected", position);
                 //Toast.makeText(context, imgURL, Toast.LENGTH_SHORT).show();
                 context.startActivity(intent);
             } catch (Exception e) {

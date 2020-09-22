@@ -53,6 +53,11 @@
             android:writePermission="bd.com.evaly.evalyshop.manager.TokenContentProvider._WRITE_PERMISSION" />
 
         <activity
+            android:name="bd.com.evaly.evalyshop.ui.image.ImageSliderActivity"
+            android:label="@string/title_activity_image_slider"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
             android:name=".ui.networkError.UnderMaintenanceActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 

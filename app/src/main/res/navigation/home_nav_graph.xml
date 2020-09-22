@@ -258,6 +258,10 @@
         android:id="@+id/campaignDetails"
         android:name="bd.com.evaly.evalyshop.ui.campaign.campaignDetails.CampaignDetailsFragment"
         android:label="CampaignDetails" />
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="bd.com.evaly.evalyshop.ui.category.CategoryFragment"
+        android:label="CategoryFragment" />
 
 
     <!--    <activity-->
@@ -273,6 +277,7 @@
     <!--        android:id="@+id/orderListActivity"-->
     <!--        android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity"-->
     <!--        android:label="OrderListActivity" />-->
+
 
 
 </navigation>

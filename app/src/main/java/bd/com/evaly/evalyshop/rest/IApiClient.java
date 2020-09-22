@@ -289,8 +289,15 @@ public interface IApiClient {
 
     // Root Category
 
-    @GET(UrlUtils.ROOTCATEGORIES)
+    @GET(UrlUtils.CATEGORIES)
     Call<List<CategoryEntity>> getRootCategories();
+
+
+    @GET(UrlUtils.BASE_URL + "public/top-categories/")
+    Call<CommonDataResponse<List<CategoryEntity>>> getTopCategories();
+
+    @GET(UrlUtils.CATEGORIES)
+    Call<List<CategoryEntity>> getSubCategories(@Query("parent") String parent);
 
     // Order APIs
     @GET(UrlUtils.ORDERS)

@@ -11,21 +11,31 @@ import com.google.gson.annotations.SerializedName;
 public class CategoryEntity {
 
     @ColumnInfo(name = "image_url")
-    @SerializedName("image_url")
+    @SerializedName(value = "image_url", alternate = "category_image")
     private String imageUrl;
 
     @ColumnInfo(name = "name")
-    @SerializedName("name")
+    @SerializedName(value = "name", alternate = "category_name")
     private String name;
 
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "slug")
-    @SerializedName("slug")
+    @SerializedName(value = "slug", alternate = "category_slug")
     private String slug;
 
     @ColumnInfo(name = "drawable")
     private int drawable = 0;
+
+    private boolean selected;
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     @Override
     public boolean equals(Object other) {
