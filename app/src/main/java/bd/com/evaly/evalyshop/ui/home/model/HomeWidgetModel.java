@@ -51,6 +51,10 @@ public abstract class HomeWidgetModel extends DataBindingEpoxyModel {
         binding.btn3Image.setOnClickListener(v -> navController.navigate(R.id.campaignFragment));
 
         binding.btn4Image.setOnClickListener(v -> {
+            navController.navigate(R.id.categoryFragment);
+        });
+
+        binding.btn5Image.setOnClickListener(v -> {
             if (CredentialManager.getToken().equals(""))
                 activity.startActivity(new Intent(activity, SignInActivity.class));
             else
