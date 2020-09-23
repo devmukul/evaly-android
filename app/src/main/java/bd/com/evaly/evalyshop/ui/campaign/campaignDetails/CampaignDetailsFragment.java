@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
@@ -117,6 +118,15 @@ public class CampaignDetailsFragment extends Fragment {
     }
 
     private void initTabs() {
+        String type = viewModel.getType();
+        if (type != null) {
+            if (type.equals("product"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0));
+            else if (type.equals("shop"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
+            else if (type.equals("brand"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(2));
+        }
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -160,6 +170,7 @@ public class CampaignDetailsFragment extends Fragment {
         controller.setNavController(navController);
         controller.setFilterDuplicates(true);
         controller.setViewModel(viewModel);
+        controller.setActivity((AppCompatActivity) getActivity());
         binding.recyclerView.setAdapter(controller.getAdapter());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(staggeredGridLayoutManager);
@@ -177,6 +188,7 @@ public class CampaignDetailsFragment extends Fragment {
                 }
             }
         });
+        controller.requestModelBuild();
     }
 
     private void clickListeners() {
@@ -245,9 +257,8 @@ public class CampaignDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (getActivity() != null) {
+    public void onDestroyView() {
+        super.onDestroyView();if (getActivity() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 getActivity().getWindow().setStatusBarColor(Color.WHITE);
@@ -256,4 +267,5 @@ public class CampaignDetailsFragment extends Fragment {
             }
         }
     }
+
 }

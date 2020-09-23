@@ -45,6 +45,7 @@ public class ShopSearchActivity extends BaseActivity {
     private String query;
     private ShopViewModel viewModel;
     private boolean firstLoad = true;
+    private String brandSlug = null;
 
     public ShopSearchActivity() {
 
@@ -58,11 +59,12 @@ public class ShopSearchActivity extends BaseActivity {
         Intent bundle = getIntent();
         shopSlug = bundle.getStringExtra("shop_slug");
         campaignSlug = bundle.getStringExtra("campaign_slug");
+        brandSlug = bundle.getStringExtra("brand_slug");
         shopName = bundle.getStringExtra("shop_name");
         binding = DataBindingUtil.setContentView(this, R.layout.fragment_shop_search);
 
 
-        viewModelFactory = new ShopViewModelFactory(null, null, null);
+        viewModelFactory = new ShopViewModelFactory(null, null, null, null);
         viewModel = new ViewModelProvider(this, viewModelFactory).get(ShopViewModel.class);
 
         if (shopName != null && !shopName.equals(""))
@@ -177,7 +179,7 @@ public class ShopSearchActivity extends BaseActivity {
         if (currentPage > 1)
             binding.bottomProgressBar.setVisibility(View.VISIBLE);
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, page, 21, null, campaignSlug, query, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, page, 21, null, campaignSlug, query, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 if (binding.search.getText().toString().length() > 0)

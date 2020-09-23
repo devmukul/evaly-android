@@ -241,7 +241,14 @@ public interface IApiClient {
     Call<ShopDetailsModel> getShopDetails(@Header("Authorization") String token, @Path("shopSlug") String shopSlug, @Query("page") int page, @Query("limit") int limit, @Query("category_slug") String categorySlug, @Query("search") String search);
 
     @GET(UrlUtils.CAMPAIGNS + "/{campaignSlug}/shops/{shopSlug}/items")
-    Call<ShopDetailsModel> getCampaignShopDetails(@Header("Authorization") String token, @Path("campaignSlug") String campaignSlug, @Path("shopSlug") String shopSlug, @Query("page") int page, @Query("limit") int limit, @Query("category_slug") String categorySlug, @Query("search") String search);
+    Call<ShopDetailsModel> getCampaignShopDetails(@Header("Authorization") String token,
+                                                  @Path("campaignSlug") String campaignSlug,
+                                                  @Path("shopSlug") String shopSlug,
+                                                  @Query("page") int page,
+                                                  @Query("limit") int limit,
+                                                  @Query("category_slug") String categorySlug,
+                                                  @Query("search") String search,
+                                                  @Query("brand_slug") String brandSlug);
 
     @GET(UrlUtils.BASE_URL + "public/products/{slug}/")
     Call<ProductDetailsModel> getProductDetails(@Path("slug") String slug);

@@ -1,13 +1,18 @@
 package bd.com.evaly.evalyshop.ui.campaign.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +25,7 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CategoryCarouselModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
 public class CampaignController extends EpoxyController {
 
@@ -29,6 +35,7 @@ public class CampaignController extends EpoxyController {
     private List<CampaignProductResponse> productList = new ArrayList<>();
     private NavController navController;
     private boolean isLoading = true;
+    private AppCompatActivity activity;
 
     @Override
     protected void buildModels() {
@@ -60,6 +67,16 @@ public class CampaignController extends EpoxyController {
             new CampaignProductModel_()
                     .id(item.getSlug())
                     .model(item)
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        CampaignProductResponse item1 = model.model();
+                        Intent intent = new Intent(activity, ViewProductActivity.class);
+                        intent.putExtra("product_slug", item1.getSlug());
+                        intent.putExtra("product_name", item1.getName());
+                        intent.putExtra("product_price", item1.getPrice());
+                        // intent.putExtra("shop_slug", item.get);
+                        intent.putExtra("product_image", item1.getImage());
+                        activity.startActivity(intent);
+                    })
                     .addTo(this);
         }
 
@@ -74,6 +91,10 @@ public class CampaignController extends EpoxyController {
                 .id("bottom_loading_model")
                 .addIf(isLoading, this);
 
+    }
+
+    public void setActivity(AppCompatActivity activity) {
+        this.activity = activity;
     }
 
     public void setNavController(NavController navController) {

@@ -1,8 +1,15 @@
 package bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +25,8 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignCategoryController extends EpoxyController {
 
@@ -25,6 +34,7 @@ public class CampaignCategoryController extends EpoxyController {
     private NavController navController;
     private boolean isLoading = true;
     private CampaignDetailsViewModel viewModel;
+    private AppCompatActivity activity;
 
     @Override
     protected void buildModels() {
@@ -34,16 +44,48 @@ public class CampaignCategoryController extends EpoxyController {
                 new CampaignProductModel_()
                         .id(((CampaignProductResponse) item).getSlug())
                         .model((CampaignProductResponse) item)
+                        .clickListener((model, parentView, clickedView, position) -> {
+                            CampaignProductResponse item1 = model.model();
+                            Intent intent = new Intent(activity, ViewProductActivity.class);
+                            intent.putExtra("product_slug", item1.getSlug());
+                            intent.putExtra("product_name", item1.getName());
+                            intent.putExtra("product_price", item1.getPrice());
+
+                            //intent.putExtra("shop_slug", item.get);
+                            intent.putExtra("product_image", item1.getImage());
+                            activity.startActivity(intent);
+                        })
                         .addTo(this);
             else if (item instanceof CampaignBrandResponse)
                 new CampaignBrandModel_()
                         .id(((CampaignBrandResponse) item).getSlug())
                         .model((CampaignBrandResponse) item)
+                        .clickListener((model, parentView, clickedView, position) -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("type", 1);
+                            bundle.putString("shop_name", model.model().getName());
+                            bundle.putString("logo_image", model.model().getImage());
+                            bundle.putString("shop_slug", model.model().getShopSlug());
+                            bundle.putString("category", "root");
+                            bundle.putString("brand_slug", model.model().getSlug());
+                            bundle.putString("campaign_slug", model.model().getCampaignSlug());
+                            navController.navigate(R.id.shopFragment, bundle);
+                        })
                         .addTo(this);
             else if (item instanceof CampaignShopResponse)
                 new CampaignShopModel_()
                         .id(((CampaignShopResponse) item).getSlug())
                         .model((CampaignShopResponse) item)
+                        .clickListener((model, parentView, clickedView, position) -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("type", 2);
+                            bundle.putString("shop_name", model.model().getName());
+                            bundle.putString("logo_image", model.model().getImage());
+                            bundle.putString("shop_slug", model.model().getSlug());
+                            bundle.putString("category", "root");
+                            bundle.putString("campaign_slug", model.model().getCampaignSlug());
+                            navController.navigate(R.id.shopFragment, bundle);
+                        })
                         .addTo(this);
         }
 
@@ -69,6 +111,10 @@ public class CampaignCategoryController extends EpoxyController {
             return "No brand found";
         else
             return "No product found";
+    }
+
+    public void setActivity(AppCompatActivity activity) {
+        this.activity = activity;
     }
 
     public void setViewModel(CampaignDetailsViewModel viewModel) {

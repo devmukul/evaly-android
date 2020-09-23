@@ -16,6 +16,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -237,6 +238,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         if (productController == null)
             productController = new CampaignController();
         productController.setNavController(navController);
+        productController.setActivity((AppCompatActivity) getActivity());
         binding.recyclerView.setAdapter(productController.getAdapter());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(staggeredGridLayoutManager);
@@ -254,6 +256,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                 }
             }
         });
+        productController.requestModelBuild();
     }
 
     private void initHeader(String url) {
