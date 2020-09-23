@@ -10,13 +10,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemCampaignShopViewBinding;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
+import bd.com.evaly.evalyshop.util.BindingUtils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -39,14 +37,9 @@ public abstract class CampaignShopModel extends DataBindingEpoxyModel {
 
         binding.title.setText(Html.fromHtml(model.getName()));
 
-        Glide.with(binding.getRoot())
-                .asBitmap()
-                .skipMemoryCache(true)
-                .apply(new RequestOptions().override(300, 300))
-                .load(model.getImage())
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_evaly_placeholder)
-                .into(binding.image);
+
+        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 300, 300);
+
 
         binding.getRoot().setOnClickListener(clickListener);
 

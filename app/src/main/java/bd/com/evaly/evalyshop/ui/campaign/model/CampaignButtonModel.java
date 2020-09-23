@@ -8,12 +8,11 @@ import androidx.databinding.ViewDataBinding;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemCampaignButtonBinding;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.util.BindingUtils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -29,17 +28,12 @@ public abstract class CampaignButtonModel extends DataBindingEpoxyModel {
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
+
         ItemCampaignButtonBinding binding = (ItemCampaignButtonBinding) holder.getDataBinding();
 
-        Glide.with(binding.getRoot())
-                .asBitmap()
-                .load(model.getImage())
-                .error(R.drawable.cover)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .into(binding.image);
+        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 200, 200);
 
         binding.name.setText(model.getName());
-
         binding.image.setOnClickListener(clickListener);
     }
 

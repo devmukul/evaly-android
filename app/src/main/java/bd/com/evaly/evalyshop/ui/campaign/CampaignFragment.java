@@ -34,6 +34,7 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignBannerController;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignController;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSliderModel_;
+import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
@@ -220,6 +221,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         Glide.with(binding.coverImage)
                 .asBitmap()
                 .load(url == null ? R.drawable.bg_fafafa_round : url)
+                .load(BindingUtils.generateResizeUrl(url, 1450, 460))
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 2)))
                 .into(binding.coverImage);
     }
