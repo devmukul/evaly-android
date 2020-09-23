@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -90,8 +92,33 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         setupToolbar();
         initSlider();
         initRecycler();
+        initSearch();
         liveEventsObserver();
         clickListeners();
+
+    }
+
+    private void initSearch() {
+
+        binding.searchText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String query = binding.searchText.getText().toString().trim();
+                if (query.length() == 0) {
+                    ToastUtils.show("Write what you want to search!");
+                    return false;
+                }
+                viewModel.clear();
+                viewModel.setSearch(query);
+                viewModel.loadCampaignProducts();
+                binding.searchText.clearFocus();
+                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                assert imm != null;
+                imm.hideSoftInputFromWindow(binding.searchText.getWindowToken(), 0);
+                return true;
+            }
+            return false;
+        });
+
     }
 
     private void clickListeners() {
@@ -190,6 +217,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         });
 
         viewModel.getProductsLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
+            productController.setLoading(false);
             isLoading = false;
             productController.setProductList(campaignProductResponses);
             productController.requestModelBuild();
@@ -210,6 +238,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             @Override
             public void loadMoreItem() {
                 if (!isLoading) {
+                    productController.setLoading(true);
+                    productController.requestModelBuild();
                     viewModel.loadCampaignProducts();
                     isLoading = true;
                 }

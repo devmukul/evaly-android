@@ -30,7 +30,7 @@ public abstract class CampaignSliderModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
         ItemCampaignSliderBinding binding = (ItemCampaignSliderBinding) holder.getDataBinding();
-        BindingUtils.setImage(binding.sliderImage, model.getImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460);
+        BindingUtils.setImage(binding.sliderImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460);
         binding.sliderImage.setOnClickListener(clickListener);
     }
 

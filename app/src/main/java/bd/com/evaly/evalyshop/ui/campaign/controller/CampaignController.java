@@ -18,6 +18,8 @@ import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignButtonModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CategoryCarouselModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 
 public class CampaignController extends EpoxyController {
 
@@ -26,6 +28,7 @@ public class CampaignController extends EpoxyController {
     private List<CampaignCategoryResponse> categoryList = new ArrayList<>();
     private List<CampaignProductResponse> productList = new ArrayList<>();
     private NavController navController;
+    private boolean isLoading = true;
 
     @Override
     protected void buildModels() {
@@ -60,6 +63,17 @@ public class CampaignController extends EpoxyController {
                     .addTo(this);
         }
 
+        new NoItemModel_()
+                .id("no_product_model")
+                .text("No product found")
+                .image(R.drawable.ic_empty_product)
+                .width(60)
+                .addIf(productList.size() == 0 && !isLoading, this);
+
+        new LoadingModel_()
+                .id("bottom_loading_model")
+                .addIf(isLoading, this);
+
     }
 
     public void setNavController(NavController navController) {
@@ -72,5 +86,9 @@ public class CampaignController extends EpoxyController {
 
     public void setCategoryList(List<CampaignCategoryResponse> categoryList) {
         this.categoryList = categoryList;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
     }
 }

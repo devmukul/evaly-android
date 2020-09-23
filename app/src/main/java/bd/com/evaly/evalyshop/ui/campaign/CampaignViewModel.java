@@ -26,6 +26,7 @@ public class CampaignViewModel extends ViewModel {
     private List<CampaignItem> list = new ArrayList<>();
     private String search = null;
     private int currentPage = 1;
+    private int totalCount = 0;
 
     public CampaignViewModel() {
         currentPage = 1;
@@ -77,12 +78,16 @@ public class CampaignViewModel extends ViewModel {
 
 
     public void loadCampaignProducts() {
+        if (currentPage > 1 && totalCount <= productsArrayList.size())
+            return;
+
         CampaignApiHelper.getCampaignAllProducts(currentPage, 20, search, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                 productsArrayList.addAll(response.getData());
                 productsLiveList.setValue(productsArrayList);
-                if (response.getCount() > productsArrayList.size())
+                totalCount = response.getCount();
+                if (totalCount > productsArrayList.size())
                     currentPage++;
             }
 
@@ -99,7 +104,7 @@ public class CampaignViewModel extends ViewModel {
     }
 
     public void clear() {
-        list.clear();
+        productsArrayList.clear();
         currentPage = 1;
     }
 

@@ -154,7 +154,6 @@ public class CampaignDetailsFragment extends Fragment {
             binding.zToolbar.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             binding.appBar.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             binding.header.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
-            binding.collapsingToolbar.setContentScrimColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             binding.collapsingToolbar.setStatusBarScrimColor(Color.parseColor(model.getBannerPrimaryBgColor()));
         }
         Glide.with(binding.getRoot())
