@@ -10,9 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,10 +26,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
+
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignDetailsBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
@@ -73,6 +78,42 @@ public class CampaignDetailsFragment extends Fragment {
         clickListeners();
         initRecycler();
         initTabs();
+        initSearch();
+    }
+
+    private void initSearch() {
+        ImageView icon = binding.searchView.findViewById(androidx.appcompat.R.id.search_mag_icon);
+        icon.setColorFilter(Color.WHITE);
+        binding.searchView.setMaxWidth(Integer.MAX_VALUE);
+        binding.searchView.setOnSearchClickListener(view -> {
+            binding.title.setVisibility(View.GONE);
+        });
+        binding.searchView.setOnCloseListener(() -> {
+            binding.title.setVisibility(View.VISIBLE);
+            viewModel.clear();
+            viewModel.setSearch(null);
+            viewModel.loadListFromApi();
+            return false;
+        });
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (query.length() == 0) {
+                    ToastUtils.show("Write what you want to search!");
+                    return false;
+                }
+                viewModel.clear();
+                viewModel.setSearch(query);
+                viewModel.loadListFromApi();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
     }
 
     private void initTabs() {
@@ -81,6 +122,10 @@ public class CampaignDetailsFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
 
                 viewModel.clear();
+                controller.setList(new ArrayList<>());
+                controller.setLoading(true);
+                controller.requestModelBuild();
+
                 switch (tab.getPosition()) {
                     case 0:
                         viewModel.setType("product");
@@ -94,6 +139,7 @@ public class CampaignDetailsFragment extends Fragment {
                 }
 
                 viewModel.loadListFromApi();
+
             }
 
             @Override
@@ -112,6 +158,8 @@ public class CampaignDetailsFragment extends Fragment {
         if (controller == null)
             controller = new CampaignCategoryController();
         controller.setNavController(navController);
+        controller.setFilterDuplicates(true);
+        controller.setViewModel(viewModel);
         binding.recyclerView.setAdapter(controller.getAdapter());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(staggeredGridLayoutManager);
@@ -122,8 +170,10 @@ public class CampaignDetailsFragment extends Fragment {
             @Override
             public void loadMoreItem() {
                 if (!isLoading) {
-                    viewModel.loadProductList();
                     isLoading = true;
+                    controller.setLoading(true);
+                    controller.requestModelBuild();
+                    viewModel.loadListFromApi();
                 }
             }
         });
@@ -139,8 +189,17 @@ public class CampaignDetailsFragment extends Fragment {
         });
 
         viewModel.getLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
+            isLoading = false;
+            controller.setLoading(false);
             controller.setList(campaignProductResponses);
             controller.requestModelBuild();
+        });
+
+        viewModel.getHideLoadingBar().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean) {
+                controller.setLoading(false);
+                controller.requestModelBuild();
+            }
         });
 
     }
@@ -162,7 +221,7 @@ public class CampaignDetailsFragment extends Fragment {
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(binding.bannerImage);
 
-        binding.title.setText(model.getName());
+        binding.title.setText(model.getName() + " " + model.getName());
     }
 
     private void setStatusBarColor() {

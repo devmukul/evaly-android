@@ -181,6 +181,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                     getActivity().getWindow().setStatusBarColor(Color.WHITE);
                     binding.backArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
                     binding.searchText.setTextColor(Color.parseColor("#777777"));
+                    binding.searchText.setHintTextColor(Color.parseColor("#777777"));
                     binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_light));
                 } else {
                     if (!isExpanded)
@@ -197,6 +198,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
                     binding.backArrow.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
                     binding.searchText.setTextColor(Color.parseColor("#ffffff"));
+                    binding.searchText.setHintTextColor(Color.parseColor("#ffffff"));
                     binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_dark));
                 }
             });
@@ -221,6 +223,13 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             isLoading = false;
             productController.setProductList(campaignProductResponses);
             productController.requestModelBuild();
+        });
+
+        viewModel.getHideLoadingBar().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean) {
+                productController.setLoading(false);
+                productController.requestModelBuild();
+            }
         });
     }
 

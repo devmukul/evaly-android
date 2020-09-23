@@ -15,12 +15,15 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class CampaignDetailsViewModel extends ViewModel {
     private MutableLiveData<CampaignCategoryResponse> campaignDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CampaignParentModel>> liveList = new MutableLiveData<>();
+    private SingleLiveEvent<Boolean> hideLoadingBar = new SingleLiveEvent<>();
     private List<CampaignParentModel> arrayList = new ArrayList<>();
     private int currentPage = 1;
+    private int totalCount = 0;
     private String search = null;
     private String type = "product";
 
@@ -33,6 +36,11 @@ public class CampaignDetailsViewModel extends ViewModel {
         if (campaignDetailsLiveData.getValue() == null)
             return;
 
+        if (currentPage > 1 && totalCount <= arrayList.size()) {
+            hideLoadingBar.setValue(true);
+            return;
+        }
+
         if (type.equals("product"))
             loadProductList();
         else if (type.equals("shop"))
@@ -42,13 +50,15 @@ public class CampaignDetailsViewModel extends ViewModel {
     }
 
     public void loadProductList() {
+
         CampaignApiHelper.getCampaignCategoryProducts(currentPage, 20, search, campaignDetailsLiveData.getValue().getSlug(),
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
                         liveList.setValue(arrayList);
-                        if (response.getCount() > arrayList.size())
+                        totalCount = response.getCount();
+                        if (totalCount > arrayList.size())
                             currentPage++;
                     }
 
@@ -71,7 +81,8 @@ public class CampaignDetailsViewModel extends ViewModel {
                     public void onDataFetched(CommonDataResponse<List<CampaignBrandResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
                         liveList.setValue(arrayList);
-                        if (response.getCount() > arrayList.size())
+                        totalCount = response.getCount();
+                        if (totalCount > arrayList.size())
                             currentPage++;
                     }
 
@@ -95,7 +106,8 @@ public class CampaignDetailsViewModel extends ViewModel {
                     public void onDataFetched(CommonDataResponse<List<CampaignShopResponse>> response, int statusCode) {
                         arrayList.addAll(response.getData());
                         liveList.setValue(arrayList);
-                        if (response.getCount() > arrayList.size())
+                        totalCount = response.getCount();
+                        if (totalCount > arrayList.size())
                             currentPage++;
                     }
 
@@ -111,9 +123,14 @@ public class CampaignDetailsViewModel extends ViewModel {
                 });
     }
 
-    public void clear(){
+    public void clear() {
         arrayList.clear();
         currentPage = 1;
+        totalCount = 0;
+    }
+
+    public SingleLiveEvent<Boolean> getHideLoadingBar() {
+        return hideLoadingBar;
     }
 
     public void setSearch(String search) {
@@ -137,6 +154,10 @@ public class CampaignDetailsViewModel extends ViewModel {
         if (liveList.getValue() == null) {
             loadProductList();
         }
+    }
+
+    public String getType() {
+        return type;
     }
 
     public void createLiveDataAndLoad() {

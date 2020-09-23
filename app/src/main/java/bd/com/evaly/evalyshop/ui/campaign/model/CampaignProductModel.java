@@ -44,7 +44,7 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         binding.title.setText(Html.fromHtml(model.getName()));
 
 
-        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 300, 300);
+        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300);
 
 
         if (model.getPrice() == 0) {

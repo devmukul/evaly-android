@@ -14,6 +14,7 @@ import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class CampaignViewModel extends ViewModel {
 
@@ -22,6 +23,7 @@ public class CampaignViewModel extends ViewModel {
     private MutableLiveData<List<CampaignItem>> liveList = new MutableLiveData<>();
     private MutableLiveData<List<CampaignBannerResponse>> bannerLiveList = new MutableLiveData<>();
     private MutableLiveData<List<CampaignProductResponse>> productsLiveList = new MutableLiveData<>();
+    private SingleLiveEvent<Boolean> hideLoadingBar = new SingleLiveEvent<>();
     private List<CampaignProductResponse> productsArrayList = new ArrayList<>();
     private List<CampaignItem> list = new ArrayList<>();
     private String search = null;
@@ -78,8 +80,10 @@ public class CampaignViewModel extends ViewModel {
 
 
     public void loadCampaignProducts() {
-        if (currentPage > 1 && totalCount <= productsArrayList.size())
+        if (currentPage > 1 && totalCount <= productsArrayList.size()) {
+            hideLoadingBar.setValue(true);
             return;
+        }
 
         CampaignApiHelper.getCampaignAllProducts(currentPage, 20, search, new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
             @Override
@@ -106,6 +110,11 @@ public class CampaignViewModel extends ViewModel {
     public void clear() {
         productsArrayList.clear();
         currentPage = 1;
+        totalCount = 0;
+    }
+
+    public SingleLiveEvent<Boolean> getHideLoadingBar() {
+        return hideLoadingBar;
     }
 
     public List<CampaignCategoryResponse> getCategoryArrayList() {
