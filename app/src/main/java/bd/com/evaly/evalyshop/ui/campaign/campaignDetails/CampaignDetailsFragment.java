@@ -3,6 +3,7 @@ package bd.com.evaly.evalyshop.ui.campaign.campaignDetails;
 import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,8 +24,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -77,11 +76,21 @@ public class CampaignDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setStatusBarColor();
+        initToolbar();
         liveEventObservers();
         clickListeners();
         initRecycler();
         initTabs();
         initSearch();
+    }
+
+    private void initToolbar() {
+        Rect rectangle = new Rect();
+        Window window = getActivity().getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+        int statusBarHeight = rectangle.top;
+        // binding.space.setPadding(0, statusBarHeight, 0, 0);
+        //binding.space.setLayoutParams(new LinearLayout.LayoutParams(binding.space.getWidth(), statusBarHeight));
     }
 
     private void initSearch() {
@@ -224,10 +233,11 @@ public class CampaignDetailsFragment extends Fragment {
             ViewCompat.setBackgroundTintList(
                     binding.coverImage,
                     ColorStateList.valueOf(Color.parseColor(model.getBannerPrimaryBgColor())));
-            binding.zToolbar.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
-            binding.appBar.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
+            // binding.zToolbar.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
+            // binding.appBar.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             binding.header.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             binding.collapsingToolbar.setStatusBarScrimColor(Color.parseColor(model.getBannerPrimaryBgColor()));
+            requireActivity().getWindow().setStatusBarColor(Color.parseColor(model.getBannerPrimaryBgColor()));
         }
 
         BindingUtils.setImage(binding.bannerImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460);
@@ -257,7 +267,8 @@ public class CampaignDetailsFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();if (getActivity() != null) {
+        super.onDestroyView();
+        if (getActivity() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 getActivity().getWindow().setStatusBarColor(Color.WHITE);

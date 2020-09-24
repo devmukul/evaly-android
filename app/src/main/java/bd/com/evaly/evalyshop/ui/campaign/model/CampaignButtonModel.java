@@ -37,6 +37,10 @@ public abstract class CampaignButtonModel extends DataBindingEpoxyModel {
         binding.image.setOnClickListener(clickListener);
     }
 
+    @Override
+    public boolean shouldSaveViewState() {
+        return true;
+    }
 
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
