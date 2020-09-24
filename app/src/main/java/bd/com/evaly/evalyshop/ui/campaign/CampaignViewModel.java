@@ -113,6 +113,10 @@ public class CampaignViewModel extends ViewModel {
         totalCount = 0;
     }
 
+    public String getSearch() {
+        return search;
+    }
+
     public SingleLiveEvent<Boolean> getHideLoadingBar() {
         return hideLoadingBar;
     }

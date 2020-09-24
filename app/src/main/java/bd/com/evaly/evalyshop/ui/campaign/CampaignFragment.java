@@ -8,6 +8,8 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,6 +125,27 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             return false;
         });
 
+        if (binding.searchText.getText().toString().length() > 0)
+            binding.clearSearch.setVisibility(View.VISIBLE);
+        else
+            binding.clearSearch.setVisibility(View.GONE);
+
+        binding.clearSearch.setOnClickListener(view -> {
+            binding.searchText.setText("");
+        });
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        binding.searchText.removeTextChangedListener(searchTextWatcher);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.searchText.addTextChangedListener(searchTextWatcher);
     }
 
     private void clickListeners() {
@@ -140,6 +163,31 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             }
         });
     }
+
+
+    private TextWatcher searchTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            String text = binding.searchText.getText().toString().trim();
+            if (text.length() == 0) {
+                binding.clearSearch.setVisibility(View.GONE);
+                viewModel.clear();
+                viewModel.setSearch(null);
+                viewModel.loadCampaignProducts();
+            } else
+                binding.clearSearch.setVisibility(View.VISIBLE);
+        }
+    };
 
     private void initSlider() {
         if (sliderController == null)
@@ -176,7 +224,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     }
 
     private void setupToolbar() {
-        isExpanded = true;
+        // isExpanded = true;
         Rect rectangle = new Rect();
         Window window = getActivity().getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
@@ -186,35 +234,42 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
         coverHeight = ((binding.coverHolder.getHeight()) + statusBarHeight + (int) Utils.convertDpToPixel(60, getContext())) * -1;
         coverHeight = (int) (Utils.convertDpToPixel(100, getContext())) * -1;
+        updateToolbarOnExpand(!isExpanded);
         binding.appBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
             appBarLayout.post(() -> {
-                if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
-                    if (isExpanded)
-                        return;
-                    isExpanded = true;
-                    darkStatusBar();
-                    binding.backArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
-                    binding.searchText.setTextColor(Color.parseColor("#777777"));
-                    binding.searchText.setHintTextColor(Color.parseColor("#777777"));
-                    binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_light));
-                } else {
-                    if (!isExpanded)
-                        return;
-                    isExpanded = false;
-                    binding.collapsingToolbar.setScrimsShown(false, true);
-                    if (getActivity() != null && getActivity().getWindow() != null) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
-                            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-                        }
-                    }
-                    binding.backArrow.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-                    binding.searchText.setTextColor(Color.parseColor("#ffffff"));
-                    binding.searchText.setHintTextColor(Color.parseColor("#ffffff"));
-                    binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_dark));
-                }
+                updateToolbarOnExpand(Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange());
             });
         });
+    }
+
+    private void updateToolbarOnExpand(boolean expanded) {
+        if (expanded) {
+            if (isExpanded)
+                return;
+            isExpanded = true;
+            darkStatusBar();
+            binding.backArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+            binding.clearSearch.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+            binding.searchText.setTextColor(Color.parseColor("#777777"));
+            binding.searchText.setHintTextColor(Color.parseColor("#777777"));
+            binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_light));
+        } else {
+            if (!isExpanded)
+                return;
+            isExpanded = false;
+            binding.collapsingToolbar.setScrimsShown(false, true);
+            if (getActivity() != null && getActivity().getWindow() != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
+                    getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+                }
+            }
+            binding.backArrow.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+            binding.clearSearch.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+            binding.searchText.setTextColor(Color.parseColor("#ffffff"));
+            binding.searchText.setHintTextColor(Color.parseColor("#ffffff"));
+            binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_dark));
+        }
     }
 
     private void liveEventsObserver() {
