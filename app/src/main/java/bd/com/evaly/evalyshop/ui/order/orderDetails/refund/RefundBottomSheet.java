@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -21,19 +22,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Random;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetRefundRequestBinding;
 import bd.com.evaly.evalyshop.databinding.ConfirmOtpViewBinding;
-import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsActivity;
+import bd.com.evaly.evalyshop.ui.order.orderDetails.OrderDetailsViewModel;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
@@ -46,8 +44,12 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     private String payment_method;
     private String payment_status;
     private ViewDialog dialog;
+    private boolean is_eligible = false;
+    private int selectedOtp = 0;
+    private Dialog otpAlert;
+    private OrderDetailsViewModel orderDetailsViewModel;
 
-    public static RefundBottomSheet newInstance(String invoiceNo, String orderStatus, String paymentMethod, String paymentStatus) {
+    public static RefundBottomSheet newInstance(String invoiceNo, String orderStatus, String paymentMethod, String paymentStatus, boolean is_eligible) {
 
         RefundBottomSheet instance = new RefundBottomSheet();
         Bundle bundle = new Bundle();
@@ -55,7 +57,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         bundle.putString("order_status", orderStatus.toLowerCase());
         bundle.putString("payment_method", paymentMethod.toLowerCase());
         bundle.putString("payment_status", paymentStatus.toLowerCase());
-
+        bundle.putBoolean("is_eligible", is_eligible);
         instance.setArguments(bundle);
         return instance;
     }
@@ -70,6 +72,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             order_status = getArguments().getString("order_status");
             payment_method = getArguments().getString("payment_method");
             payment_status = getArguments().getString("payment_status");
+            is_eligible = getArguments().getBoolean("is_eligible");
         }
 
         return binding.getRoot();
@@ -80,28 +83,38 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        orderDetailsViewModel = new ViewModelProvider(requireActivity()).get(OrderDetailsViewModel.class);
+
         dialog = new ViewDialog(getActivity());
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), R.layout.item_spinner_default);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), R.layout.item_spinner_default);
 
-        spinnerAdapter.add("Evaly Account");
-        spinnerAdapter.add("bKash");
-        spinnerAdapter.add("Bank");
+        if (!is_eligible) {
+            spinnerAdapter.add("Evaly Account");
+        }
 
         if (Utils.canRefundToCard(payment_method))
             spinnerAdapter.add("Debit/Credit Card");
+        else {
+            spinnerAdapter.add("bKash");
+            spinnerAdapter.add("Bank");
+        }
 
         binding.spRefundOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (position == 0 || position == 3) {
+                String paymentType = spinnerAdapter.getItem(position);
+                if (paymentType == null)
+                    return;
+
+                if (paymentType.equals("Evaly Account") || paymentType.equals("Debit/Credit Card")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
-                } else if (position == 1) {
+                } else if (paymentType.equals("bKash")) {
                     binding.llBkashHolder.setVisibility(View.VISIBLE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
-                } else if (position == 2) {
+                } else if (paymentType.equals("Bank")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.VISIBLE);
                 }
@@ -115,21 +128,18 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
         binding.spRefundOption.setAdapter(spinnerAdapter);
 
-        binding.spRefundOption.setSelection(1);
-
         binding.submitBtn.setOnClickListener(v -> {
 
             int selectedPosition = binding.spRefundOption.getSelectedItemPosition();
+            String paymentType = spinnerAdapter.getItem(selectedPosition);
 
             HashMap<String, String> body = new HashMap<>();
             body.put("invoice_no", invoice_no.toUpperCase());
 
-            if (selectedPosition == 0) {
+            if (paymentType.equals("Evaly Account")) {
                 body.put("refund_type", "Balance");
-            } else if (selectedPosition == 1) {
-
+            } else if (paymentType.equals("bKash")) {
                 String bkashNumber = binding.etbKashNumber.getText().toString().trim();
-
                 if (bkashNumber.equals("")) {
                     Toast.makeText(getContext(), "Please enter bKash number.", Toast.LENGTH_SHORT).show();
                     return;
@@ -139,9 +149,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 }
                 body.put("refund_type", "Bkash");
                 body.put("bkash_account", bkashNumber);
-
-            } else if (selectedPosition == 2) {
-
+            } else if (paymentType.equals("Bank")) {
                 String bankName = binding.etBankName.getText().toString().trim();
                 String branchName = binding.etBranch.getText().toString().trim();
                 String routingNumber = binding.etBranchRouting.getText().toString();
@@ -164,19 +172,46 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                     Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 body.put("refund_type", "Bank");
                 body.put("bank_name", bankName);
                 body.put("branch_name", branchName);
                 body.put("branch_routing_number", routingNumber);
                 body.put("account_name", accountName);
                 body.put("account_number", accountNumber);
-
-            } else if (selectedPosition == 3)
+            } else if (paymentType.equals("Debit/Credit Card"))
                 body.put("refund_type", "Card");
+
 
             requestRefund(body);
         });
+    }
+
+
+    private void deleteRefundTransaction() {
+
+        OrderApiHelper.deleteRefundTransaction(invoice_no, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
+                if (response.getSuccess() && statusCode == 202) {
+                    submitOtp();
+                    dismissAllowingStateLoss();
+                } else
+                    ToastUtils.show(response.getMessage());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    deleteRefundTransaction();
+
+            }
+        });
+
     }
 
     private void requestRefund(HashMap<String, String> body) {
@@ -188,51 +223,31 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 Logger.d(statusCode);
                 dialog.hideDialog();
-                if (statusCode == 202){
-                    final Dialog alert = new Dialog(getActivity(), R.style.FullWidthTransparentDialog);
-                    alert.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    alert.setCancelable(true);
+                if (statusCode == 202) {
+                    otpAlert = new Dialog(getActivity(), R.style.FullWidthTransparentDialog);
+                    otpAlert.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    otpAlert.setCancelable(true);
                     final ConfirmOtpViewBinding dialogConfirmDeliveryBinding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.confirm_otp_view, null, false);
 
                     dialogConfirmDeliveryBinding.verify.setOnClickListener(v -> {
                         if (dialogConfirmDeliveryBinding.code.getText().toString().trim().equals("")) {
                             ToastUtils.show("Please enter captcha code");
-                        } else{
+                        } else {
                             dialog.showDialog();
-                            HashMap<String, Integer> otpBody = new HashMap<>();
-                            otpBody.put("otp_token", Integer.parseInt(dialogConfirmDeliveryBinding.code.getText().toString()));
-                            OrderApiHelper.requestRefundConfirmOTP(CredentialManager.getToken(), invoice_no.toUpperCase(), otpBody, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
-                                @Override
-                                public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
-                                    if (!response.getSuccess()){
-                                        Toast.makeText(getActivity().getApplicationContext(), response.getMessage(), Toast.LENGTH_LONG).show();
-                                    }else{
-                                        Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                    dialog.hideDialog();
-                                    alert.dismiss();
-                                }
-
-                                @Override
-                                public void onFailed(String errorBody, int errorCode) {
-                                    dialog.hideDialog();
-                                    alert.dismiss();
-                                    Toast.makeText(getActivity().getApplicationContext(), R.string.something_wrong, Toast.LENGTH_LONG).show();
-                                }
-
-                                @Override
-                                public void onAuthError(boolean logout) {
-
-                                }
-                            });
+                            selectedOtp = Integer.parseInt(dialogConfirmDeliveryBinding.code.getText().toString());
                         }
 
-
+                        if (is_eligible)
+                            deleteRefundTransaction();
+                        else {
+                            dismissAllowingStateLoss();
+                            submitOtp();
+                        }
                     });
 
-                    alert.setContentView(dialogConfirmDeliveryBinding.getRoot());
-                    alert.show();
-                }else {
+                    otpAlert.setContentView(dialogConfirmDeliveryBinding.getRoot());
+                    otpAlert.show();
+                } else {
                     if (getContext() != null) {
                         dialog.hideDialog();
                         Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
@@ -258,9 +273,35 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                     requestRefund(body);
             }
         });
-
     }
 
+    private void submitOtp() {
+        HashMap<String, Integer> otpBody = new HashMap<>();
+        otpBody.put("otp_token", selectedOtp);
+        OrderApiHelper.requestRefundConfirmOTP(CredentialManager.getToken(), invoice_no.toUpperCase(), otpBody, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
+                if (response.getSuccess()) {
+                    if (otpAlert != null && otpAlert.isShowing())
+                        otpAlert.dismiss();
+                    orderDetailsViewModel.setRefreshPage();
+                }
+                dialog.hideDialog();
+                ToastUtils.show(response.getMessage());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                dialog.hideDialog();
+                Toast.makeText(getActivity().getApplicationContext(), R.string.something_wrong, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+    }
 
     private void onSuccess() {
         if (getContext() != null) {
