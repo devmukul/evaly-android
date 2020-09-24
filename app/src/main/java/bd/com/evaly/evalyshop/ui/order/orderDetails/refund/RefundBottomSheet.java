@@ -91,17 +91,13 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
         if (!is_eligible) {
             spinnerAdapter.add("Evaly Account");
+        }
+
+        if (Utils.canRefundToCard(payment_method))
+            spinnerAdapter.add("Debit/Credit Card");
+        else {
             spinnerAdapter.add("bKash");
             spinnerAdapter.add("Bank");
-            if (Utils.canRefundToCard(payment_method))
-                spinnerAdapter.add("Debit/Credit Card");
-        } else {
-            if (Utils.canRefundToCard(payment_method))
-                spinnerAdapter.add("Debit/Credit Card");
-            else {
-                spinnerAdapter.add("bKash");
-                spinnerAdapter.add("Bank");
-            }
         }
 
         binding.spRefundOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -243,8 +239,10 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
                         if (is_eligible)
                             deleteRefundTransaction();
-                        else
+                        else {
+                            dismissAllowingStateLoss();
                             submitOtp();
+                        }
                     });
 
                     otpAlert.setContentView(dialogConfirmDeliveryBinding.getRoot());
