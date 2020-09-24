@@ -193,6 +193,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         if (sliderController == null)
             sliderController = new CampaignBannerController();
         sliderController.setFilterDuplicates(true);
+        sliderController.setNavController(navController);
         binding.sliderPager.setAdapter(sliderController.getAdapter());
 
         new TabLayoutMediator(binding.sliderIndicator, binding.sliderPager,
