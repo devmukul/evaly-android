@@ -46,11 +46,8 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300);
 
         if (model.getPrice() == 0) {
-            binding.price.setVisibility(View.VISIBLE);
-            binding.price.setText("Unavailable");
-            binding.tvCashback.setVisibility(View.GONE);
+            binding.price.setVisibility(View.GONE);
         } else if (model.getDiscountedPrice() != 0) {
-
             if (model.getDiscountedPrice() < model.getPrice()) {
                 binding.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
                 binding.priceDiscount.setVisibility(View.VISIBLE);
@@ -60,7 +57,6 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
                 binding.priceDiscount.setVisibility(View.GONE);
                 binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
             }
-
         } else
             binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
 

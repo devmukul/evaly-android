@@ -88,9 +88,6 @@ public class CampaignDetailsFragment extends Fragment {
         Rect rectangle = new Rect();
         Window window = getActivity().getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
-        int statusBarHeight = rectangle.top;
-        // binding.space.setPadding(0, statusBarHeight, 0, 0);
-        //binding.space.setLayoutParams(new LinearLayout.LayoutParams(binding.space.getWidth(), statusBarHeight));
     }
 
     private void initSearch() {
@@ -207,9 +204,7 @@ public class CampaignDetailsFragment extends Fragment {
     }
 
     private void liveEventObservers() {
-        viewModel.getCampaignDetailsLiveData().observe(getViewLifecycleOwner(), model -> {
-            loadCampaignDetails(model);
-        });
+        viewModel.getCampaignDetailsLiveData().observe(getViewLifecycleOwner(), this::loadCampaignDetails);
 
         viewModel.getLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
             isLoading = false;
@@ -233,15 +228,11 @@ public class CampaignDetailsFragment extends Fragment {
             ViewCompat.setBackgroundTintList(
                     binding.coverImage,
                     ColorStateList.valueOf(Color.parseColor(model.getBannerPrimaryBgColor())));
-            // binding.zToolbar.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
-            // binding.appBar.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             binding.header.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             binding.collapsingToolbar.setStatusBarScrimColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             requireActivity().getWindow().setStatusBarColor(Color.parseColor(model.getBannerPrimaryBgColor()));
         }
-
         BindingUtils.setImage(binding.bannerImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460);
-
         binding.title.setText(model.getName());
     }
 

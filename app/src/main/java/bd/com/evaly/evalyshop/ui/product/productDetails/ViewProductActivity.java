@@ -46,7 +46,6 @@ import java.util.TreeMap;
 import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
@@ -336,7 +335,7 @@ public class ViewProductActivity extends BaseActivity {
                 summaryModel.getStar1(),
         };
 
-        binding.review.ratingAverage.setText(summaryModel.getAvgRating() + "");
+        binding.review.ratingAverage.setText(Utils.formatPrice(summaryModel.getAvgRating()));
         binding.review.ratingCounter.setText(summaryModel.getTotalRatings() + "");
         binding.review.ratingBar.setRating((float) summaryModel.getAvgRating());
 
@@ -681,7 +680,7 @@ public class ViewProductActivity extends BaseActivity {
 
     private void inflateShopDetails(AvailableShopModel shop) {
 
-        if (cashbackText != null){
+        if (cashbackText != null) {
             binding.tvCashback.setVisibility(View.VISIBLE);
             binding.tvCashback.setText(cashbackText.replaceAll(".00", ""));
         } else

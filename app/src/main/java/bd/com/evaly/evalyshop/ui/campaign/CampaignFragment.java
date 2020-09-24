@@ -130,6 +130,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         binding.buttonRight.setOnClickListener(view -> {
             if (!isSharingBottomShowing) {
                 binding.recyclerView.smoothScrollToPosition(0);
+                binding.recyclerView.postDelayed(() -> binding.recyclerView.scrollToPosition(0), 500);
             } else {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");

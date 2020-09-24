@@ -235,7 +235,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical"
                 android:paddingTop="10dp"
-                android:paddingBottom="60dp"
+                android:paddingBottom="160dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
