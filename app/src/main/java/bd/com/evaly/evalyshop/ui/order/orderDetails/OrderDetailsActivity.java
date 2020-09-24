@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -353,6 +352,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         viewModel.getRefundDeleteLiveData().observe(this, stringCommonDataResponse -> {
 
+        });
+
+        viewModel.getRefreshPage().observe(this, aBoolean -> {
+            getOrderHistory();
+            getOrderDetails();
         });
     }
 

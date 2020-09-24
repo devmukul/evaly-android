@@ -7,9 +7,11 @@ import androidx.lifecycle.ViewModel;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class OrderDetailsViewModel extends ViewModel {
 
+    private SingleLiveEvent<Boolean> refreshPage = new SingleLiveEvent<>();
     private MutableLiveData<CommonDataResponse<String>> refundEligibilityLiveData = new MutableLiveData<>();
     private MutableLiveData<CommonDataResponse<String>> refundDeleteLiveData = new MutableLiveData<>();
 
@@ -64,4 +66,11 @@ public class OrderDetailsViewModel extends ViewModel {
         });
     }
 
+    public void setRefreshPage() {
+        this.refreshPage.setValue(true);
+    }
+
+    public SingleLiveEvent<Boolean> getRefreshPage() {
+        return refreshPage;
+    }
 }
