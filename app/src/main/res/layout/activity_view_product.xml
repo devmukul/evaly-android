@@ -456,11 +456,25 @@
                         android:background="@color/separator_light" />
 
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/selectedShopHolder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/tvCashback"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="10dp"
+                            android:paddingBottom="3dp"
+                            android:paddingTop="2dp"
+                            android:background="@drawable/cashback_bg"
+                            android:layout_alignParentEnd="true"
+                            android:textColor="#fff"
+                            android:textSize="11sp"
+                            tools:text="30% Cashback"
+                            android:visibility="gone"
+                            tools:visibility="visible"/>
 
                         <LinearLayout
                             android:id="@+id/selectedShopClickHolder"
@@ -471,6 +485,7 @@
                             android:orientation="horizontal"
                             android:paddingLeft="20dp"
                             android:paddingTop="20dp"
+                            android:layout_alignParentTop="true"
                             android:paddingRight="15dp">
 
                             <ImageView
@@ -639,7 +654,8 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingStart="20dp"
-                            android:paddingEnd="20dp">
+                            android:paddingEnd="20dp"
+                            android:layout_below="@id/selectedShopClickHolder">
 
                             <Button
                                 android:id="@+id/add_cart"
@@ -681,9 +697,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="8dp"
                             android:layout_marginTop="20dp"
+                            android:layout_below="@id/buyNowHolder"
                             android:background="@color/separator_light" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
 
                     <LinearLayout

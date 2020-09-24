@@ -75,6 +75,7 @@ public class CampaignController extends EpoxyController {
                         intent.putExtra("product_price", item1.getPrice());
                         // intent.putExtra("shop_slug", item.get);
                         intent.putExtra("product_image", item1.getImage());
+                        intent.putExtra("cashback_text", item1.getCashbackText());
                         activity.startActivity(intent);
                     })
                     .addTo(this);

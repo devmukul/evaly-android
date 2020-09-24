@@ -29,10 +29,12 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignDetailsBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
+import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
@@ -227,13 +229,10 @@ public class CampaignDetailsFragment extends Fragment {
             binding.header.setBackgroundColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             binding.collapsingToolbar.setStatusBarScrimColor(Color.parseColor(model.getBannerPrimaryBgColor()));
         }
-        Glide.with(binding.getRoot())
-                .asBitmap()
-                .load(model.getBannerImage())
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .into(binding.bannerImage);
 
-        binding.title.setText(model.getName() + " " + model.getName());
+        BindingUtils.setImage(binding.bannerImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460);
+
+        binding.title.setText(model.getName());
     }
 
     private void setStatusBarColor() {
