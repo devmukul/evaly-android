@@ -2,14 +2,11 @@ package bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 
-import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
-import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +23,6 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignCategoryController extends EpoxyController {
 
@@ -50,7 +46,8 @@ public class CampaignCategoryController extends EpoxyController {
                             intent.putExtra("product_slug", item1.getSlug());
                             intent.putExtra("product_name", item1.getName());
                             intent.putExtra("product_price", item1.getPrice());
-                            //intent.putExtra("shop_slug", item.get);
+                            if (item1.getShopSlug() != null)
+                                intent.putExtra("shop_slug", item1.getShopSlug());
                             intent.putExtra("product_image", item1.getImage());
                             intent.putExtra("cashback_text", item1.getCashbackText());
                             activity.startActivity(intent);

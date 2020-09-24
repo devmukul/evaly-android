@@ -6,106 +6,117 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 
 public class CampaignProductResponse extends CampaignParentModel {
 
-	@SerializedName("cashback_text")
-	private String cashbackText;
+    @SerializedName("cashback_text")
+    private String cashbackText;
 
-	@SerializedName("image")
-	private String image;
+    @SerializedName("image")
+    private String image;
 
-	@SerializedName("badge_text")
-	private String badgeText;
+    @SerializedName("badge_text")
+    private String badgeText;
 
-	@SerializedName("bottom_text")
-	private String bottomText;
+    @SerializedName("bottom_text")
+    private String bottomText;
 
-	@SerializedName("price")
-	private double price;
+    @SerializedName("price")
+    private double price;
 
-	@SerializedName("name")
-	private String name;
+    @SerializedName("name")
+    private String name;
 
-	@SerializedName("slug")
-	private String slug;
+    @SerializedName("slug")
+    private String slug;
 
-	@SerializedName("discounted_price")
-	private double discountedPrice;
+    @SerializedName("discounted_price")
+    private double discountedPrice;
 
-	public void setCashbackText(String cashbackText){
-		this.cashbackText = cashbackText;
-	}
+    @SerializedName("shop_slug")
+    private String shopSlug;
 
-	public String getCashbackText(){
-		return cashbackText;
-	}
+    public void setShopSlug(String shopSlug) {
+        this.shopSlug = shopSlug;
+    }
 
-	public void setImage(String image){
-		this.image = image;
-	}
+    public String getShopSlug() {
+        return shopSlug;
+    }
 
-	public String getImage(){
-		return image;
-	}
+    public void setCashbackText(String cashbackText) {
+        this.cashbackText = cashbackText;
+    }
 
-	public void setBadgeText(String badgeText){
-		this.badgeText = badgeText;
-	}
+    public String getCashbackText() {
+        return cashbackText;
+    }
 
-	public String getBadgeText(){
-		return badgeText;
-	}
+    public void setImage(String image) {
+        this.image = image;
+    }
 
-	public void setBottomText(String bottomText){
-		this.bottomText = bottomText;
-	}
+    public String getImage() {
+        return image;
+    }
 
-	public String getBottomText(){
-		return bottomText;
-	}
+    public void setBadgeText(String badgeText) {
+        this.badgeText = badgeText;
+    }
 
-	public void setPrice(double price){
-		this.price = price;
-	}
+    public String getBadgeText() {
+        return badgeText;
+    }
 
-	public double getPrice(){
-		return price;
-	}
+    public void setBottomText(String bottomText) {
+        this.bottomText = bottomText;
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public String getBottomText() {
+        return bottomText;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
-	public void setSlug(String slug){
-		this.slug = slug;
-	}
+    public double getPrice() {
+        return price;
+    }
 
-	public String getSlug(){
-		return slug;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDiscountedPrice(double discountedPrice){
-		this.discountedPrice = discountedPrice;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public double getDiscountedPrice(){
-		return discountedPrice;
-	}
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"CampaignProductResponse{" + 
-			"cashback_text = '" + cashbackText + '\'' + 
-			",image = '" + image + '\'' + 
-			",badge_text = '" + badgeText + '\'' + 
-			",bottom_text = '" + bottomText + '\'' + 
-			",price = '" + price + '\'' + 
-			",name = '" + name + '\'' + 
-			",slug = '" + slug + '\'' + 
-			",discounted_price = '" + discountedPrice + '\'' + 
-			"}";
-		}
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setDiscountedPrice(double discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
+
+    public double getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "CampaignProductResponse{" +
+                        "cashback_text = '" + cashbackText + '\'' +
+                        ",image = '" + image + '\'' +
+                        ",badge_text = '" + badgeText + '\'' +
+                        ",bottom_text = '" + bottomText + '\'' +
+                        ",price = '" + price + '\'' +
+                        ",name = '" + name + '\'' +
+                        ",slug = '" + slug + '\'' +
+                        ",discounted_price = '" + discountedPrice + '\'' +
+                        "}";
+    }
 }
