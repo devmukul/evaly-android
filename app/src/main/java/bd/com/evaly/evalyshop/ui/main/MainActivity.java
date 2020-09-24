@@ -73,11 +73,11 @@ public class MainActivity extends BaseActivity {
     public boolean isLaunchActivity = true;
     private AlertDialog exitDialog;
     private AlertDialog.Builder exitDialogBuilder;
-    private AppController mChatApp = AppController.getInstance();
     private NavController navController;
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
+
 
     public void changeLanguage(String lang) {
         Locale myLocale;

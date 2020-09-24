@@ -16,7 +16,7 @@
             android:layout_height="55dp"
             android:layout_marginRight="5dp"
             android:adjustViewBounds="true"
-            android:background="@drawable/ic_ellipse_1"
+            android:background="@drawable/btn_gradient_circle"
             android:backgroundTint="#FF9901"
             android:clickable="false"
             android:padding="14dp"

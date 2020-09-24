@@ -124,9 +124,6 @@ public class ViewProductActivity extends BaseActivity {
     private String cashbackText = null;
     private AvailableShopModel toRemoveModel = null;
 
-    AppController mChatApp = AppController.getInstance();
-
-
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
 
         Window win = activity.getWindow();
@@ -687,7 +684,9 @@ public class ViewProductActivity extends BaseActivity {
         if (cashbackText != null){
             binding.tvCashback.setVisibility(View.VISIBLE);
             binding.tvCashback.setText(cashbackText.replaceAll(".00", ""));
-        }
+        } else
+            binding.tvCashback.setVisibility(View.GONE);
+
         binding.selectedShopHolder.setVisibility(View.VISIBLE);
         binding.shopName.setText(shop.getShopName());
 
