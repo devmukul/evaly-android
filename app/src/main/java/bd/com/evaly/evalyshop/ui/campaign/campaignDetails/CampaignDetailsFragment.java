@@ -253,18 +253,6 @@ public class CampaignDetailsFragment extends Fragment {
         }
     }
 
-    private void darkStatusBar() {
-        if (getActivity() != null && getActivity().getWindow() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                int flags = getActivity().getWindow().getDecorView().getSystemUiVisibility();
-                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                getActivity().getWindow().getDecorView().setSystemUiVisibility(flags);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getActivity().getWindow().setStatusBarColor(Color.BLACK);
-            }
-        }
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -272,8 +260,10 @@ public class CampaignDetailsFragment extends Fragment {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 getActivity().getWindow().setStatusBarColor(Color.WHITE);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getActivity().getWindow().setStatusBarColor(Color.WHITE);
+            } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
+                setWindowFlag(getActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+                getActivity().getWindow().setStatusBarColor(Color.BLACK);
             }
         }
     }

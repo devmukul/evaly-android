@@ -100,7 +100,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         initSearch();
         liveEventsObserver();
         clickListeners();
-
     }
 
     private void initSearch() {
@@ -184,7 +183,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
         binding.marginFrame.setPadding(0, binding.marginFrame.getPaddingTop() + statusBarHeight, 0, 0);
 
-        // binding.collapsingToolbar.setScrimVisibleHeightTrigger((binding.appBar.getHeight()-1));
         coverHeight = ((binding.coverHolder.getHeight()) + statusBarHeight + (int) Utils.convertDpToPixel(60, getContext())) * -1;
         coverHeight = (int) (Utils.convertDpToPixel(100, getContext())) * -1;
         binding.appBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
@@ -194,7 +192,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                         return;
                     isExpanded = true;
                     darkStatusBar();
-                    getActivity().getWindow().setStatusBarColor(Color.WHITE);
                     binding.backArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
                     binding.searchText.setTextColor(Color.parseColor("#777777"));
                     binding.searchText.setHintTextColor(Color.parseColor("#777777"));
@@ -208,10 +205,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
                             getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-                        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                            getActivity().getWindow().setStatusBarColor(Color.WHITE);
+                        }
                     }
-
                     binding.backArrow.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
                     binding.searchText.setTextColor(Color.parseColor("#ffffff"));
                     binding.searchText.setHintTextColor(Color.parseColor("#ffffff"));
@@ -302,16 +297,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                 .into(binding.coverImage);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
 
     @Override
     public void onListLoaded(List<CampaignItem> list) {
@@ -326,7 +311,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     }
 
     private void setStatusBarColor() {
-        if (getActivity() != null && getActivity().getWindow() != null) {
+        if (getActivity() != null && getActivity().getWindow() != null && Build.VERSION.SDK_INT > 23) {
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             setWindowFlag(getActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
@@ -335,12 +320,11 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     private void darkStatusBar() {
         if (getActivity() != null && getActivity().getWindow() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= 23) {
                 int flags = getActivity().getWindow().getDecorView().getSystemUiVisibility();
                 flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(flags);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getActivity().getWindow().setStatusBarColor(Color.BLACK);
+                getActivity().getWindow().setStatusBarColor(Color.WHITE);
             }
         }
     }
@@ -348,14 +332,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (getActivity() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                getActivity().getWindow().setStatusBarColor(Color.WHITE);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getActivity().getWindow().setStatusBarColor(Color.WHITE);
-            }
-        }
+        darkStatusBar();
     }
 }
 
