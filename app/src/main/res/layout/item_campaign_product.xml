@@ -22,21 +22,6 @@
             android:gravity="top|center_horizontal"
             android:paddingBottom="15dp">
 
-            <TextView
-                android:id="@+id/tvCashback"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/cashback_bg"
-                android:paddingLeft="10dp"
-                android:paddingTop="3dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="3dp"
-                android:textColor="#fff"
-                android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="10% Cashback" />
 
             <ImageView
                 android:id="@+id/image"
@@ -56,7 +41,7 @@
                 android:layout_marginTop="15dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:paddingLeft="15dp"
+                android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textAlignment="textStart"
                 android:textColor="#444"
@@ -71,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="40dp"
-                android:paddingLeft="15dp"
+                android:paddingLeft="10dp"
                 android:paddingRight="5dp"
                 android:textColor="#888"
                 android:textSize="13sp"
@@ -86,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="40dp"
-                android:paddingLeft="15dp"
+                android:paddingLeft="10dp"
                 android:paddingRight="5dp"
                 android:textColor="#f57224"
                 android:textSize="14sp"
@@ -108,7 +93,7 @@
                     android:id="@+id/campaignName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="10dp"
                     android:background="@drawable/bg_campaign_red"
                     android:paddingHorizontal="5dp"
                     android:paddingTop="2dp"
@@ -117,25 +102,27 @@
                     android:textColor="#fff"
                     android:textSize="10sp" />
 
-                <TextView
-                    android:id="@+id/campaignCaback"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="25% Cashback"
-                    android:textColor="#444"
-                    android:textSize="12sp" />
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/bottomText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/campaignInfoHolder"
+                tools:text="Anniversary Pre Sale Stores" />
 
             <TextView
                 android:id="@+id/buy_now"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/buy_now_btn_line"
                 android:clickable="true"
@@ -149,8 +136,25 @@
                 android:textStyle="normal"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/campaignInfoHolder"
+                app:layout_constraintTop_toBottomOf="@id/bottomText"
                 tools:visibility="visible" />
+
+
+            <TextView
+                android:id="@+id/tvCashback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/cashback_bg"
+                android:paddingLeft="8dp"
+                android:paddingTop="2dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="3dp"
+                android:textColor="#fff"
+                android:textSize="10sp"
+                android:visibility="gone"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="10% Cashback" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

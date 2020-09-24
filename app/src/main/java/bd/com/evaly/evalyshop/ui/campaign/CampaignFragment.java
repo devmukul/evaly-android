@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.campaign;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
@@ -15,12 +16,14 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -53,6 +56,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     private CampaignController productController;
     private boolean isLoading = false;
     private boolean isExpanded = true;
+    private boolean isSharingBottomShowing = true;
 
     public static CampaignFragment newInstance() {
         final CampaignFragment fragment = new CampaignFragment();
@@ -124,6 +128,17 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     private void clickListeners() {
         binding.backArrow.setOnClickListener(v -> requireActivity().onBackPressed());
+        binding.buttonRight.setOnClickListener(view -> {
+            if (!isSharingBottomShowing) {
+                binding.recyclerView.smoothScrollToPosition(0);
+            } else {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
+                i.putExtra(Intent.EXTRA_TEXT, "http://evaly.com.bd/campaign");
+                startActivity(Intent.createChooser(i, "Share URL"));
+            }
+        });
     }
 
     private void initSlider() {
@@ -254,6 +269,25 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                     viewModel.loadCampaignProducts();
                     isLoading = true;
                 }
+            }
+        });
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (dy > 200) {
+                    if (!isSharingBottomShowing)
+                        return;
+                    isSharingBottomShowing = false;
+                    binding.buttonRight.setImageDrawable(getResources().getDrawable(R.drawable.ic_up));
+                } else if (dy < -200) {
+                    if (isSharingBottomShowing)
+                        return;
+                    isSharingBottomShowing = true;
+                    binding.buttonRight.setImageDrawable(getResources().getDrawable(R.drawable.ic_share));
+                }
+
             }
         });
         productController.requestModelBuild();

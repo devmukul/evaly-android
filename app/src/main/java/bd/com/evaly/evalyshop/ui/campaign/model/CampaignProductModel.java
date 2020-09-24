@@ -18,6 +18,7 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemCampaignProductBinding;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.util.BindingUtils;
+import bd.com.evaly.evalyshop.util.Utils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -42,13 +43,9 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         params.setFullSpan(false);
 
         binding.title.setText(Html.fromHtml(model.getName()));
-
-
         BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300);
 
-
         if (model.getPrice() == 0) {
-
             binding.price.setVisibility(View.VISIBLE);
             binding.price.setText("Unavailable");
             binding.tvCashback.setVisibility(View.GONE);
@@ -72,7 +69,13 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         binding.buyNow.setOnClickListener(buyNowClickListener);
 
         binding.campaignName.setText(model.getBadgeText());
-        binding.campaignCaback.setText(model.getCashbackText().replace(".00", ""));
+        if (model.getCashbackText() == null || model.getCashbackText().length() == 0)
+            binding.tvCashback.setVisibility(View.GONE);
+        else {
+            binding.tvCashback.setText(Utils.toFirstCharUpperAll(model.getCashbackText().replace(".00", "")));
+            binding.tvCashback.setVisibility(View.VISIBLE);
+        }
+        binding.bottomText.setText(model.getBottomText());
     }
 
 

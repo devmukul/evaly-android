@@ -203,8 +203,8 @@
                             android:layout_height="43dp"
                             android:layout_marginStart="5dp"
                             android:clickable="true"
-                            android:padding="8dp"
-                            android:src="@drawable/ic_favorite"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_share"
                             app:tint="#444" />
 
                     </LinearLayout>
