@@ -45,6 +45,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -177,6 +178,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private boolean showCodConfirmDialog = false;
     private String deliveryChargeText = null;
     private String deliveryChargeApplicable = null;
+    private OrderDetailsViewModel viewModel;
+    private boolean isRefundEligible = false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,7 +215,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         if (invoice_no.equals("") || orderStatus.equals("") || paymentMethod.equals("") || paymentStatus.equals("")) {
             Toast.makeText(getApplicationContext(), "Can't request refund, reload the page", Toast.LENGTH_SHORT).show();
         } else {
-            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoice_no, orderStatus, paymentMethod, paymentStatus);
+            RefundBottomSheet refundBottomSheet = RefundBottomSheet.newInstance(invoice_no, orderStatus, paymentMethod, paymentStatus, isRefundEligible);
             refundBottomSheet.show(getSupportFragmentManager(), "Refund");
         }
     }
@@ -224,6 +227,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         ButterKnife.bind(this);
         // For Payment Listener
 
+        viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
         setupRemoteConfig();
         paymentWebBuilder = new PaymentWebBuilder(OrderDetailsActivity.this);
         paymentWebBuilder.setPaymentListener(this);
@@ -302,16 +306,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         payParially = findViewById(R.id.payPartially);
 
         makePayment.setOnClickListener(v -> {
-//            new AlertDialog.Builder(OrderDetailsActivity.this)
-//                    .setTitle("Do you want to pay using evaly account?")
-//                    .setMessage("It will deduct 30% of order amount from your account")
-//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            makePartialPayment(invoice_no, String.valueOf(total_amount - paid_amount));
-//                        }
-//                    }).setNegativeButton("NO", null)
-//                    .show();
             if (orderDetailsModel == null || orderDetailsModel.getAllowed_payment_methods() == null) {
                 ToastUtils.show("Cash on delivery only");
                 return;
@@ -340,18 +334,26 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         payViaGiftCard.setOnClickListener(view -> new AlertDialog.Builder(OrderDetailsActivity.this)
                 .setTitle("Do you want to pay with gift code?")
                 .setMessage("It will deduct 30% of order amount from your gift code amount")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogGiftCardPayment();
-                    }
-                }).setNegativeButton("NO", null)
+                .setPositiveButton("Yes", (dialogInterface, i) -> dialogGiftCardPayment()).setNegativeButton("NO", null)
                 .show());
 
         getDeliveryHero();
-
         confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
+        liveEvents();
+    }
 
+    private void liveEvents() {
+        viewModel.getRefundEligibilityLiveData().observe(this, response -> {
+            if (response.getSuccess())
+                isRefundEligible = true;
+            if (refundMenuItem == null)
+                return;
+            refundMenuItem.setVisible(true);
+        });
+
+        viewModel.getRefundDeleteLiveData().observe(this, stringCommonDataResponse -> {
+
+        });
     }
 
     private void showCodConfirmationDialog() {
@@ -991,11 +993,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 } else if (paymentStatus.toLowerCase().equals("refunded")) {
                     tvPaymentStatus.setTextColor(Color.parseColor("#333333"));
                     tvPaymentStatus.setBackgroundColor(Color.parseColor("#eeeeee"));
+                    viewModel.checkRefundEligibility(invoice_no);
                 } else if (paymentStatus.toLowerCase().equals("refund_requested")) {
                     tvPaymentStatus.setBackgroundColor(Color.parseColor("#c45da8"));
                     tvPaymentStatus.setTextColor(Color.parseColor("#ffffff"));
                 }
-
 
                 heroStatus.setText("Assigned for delivery");
 
@@ -1158,7 +1160,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     String productVariation = "";
 
                     for (int j = 0; j < orderItem.getVariations().size(); j++) {
-
                         JsonObject varJ = orderItem.getVariations().get(j).getAsJsonObject();
                         String attr = varJ.get("attribute").getAsString();
                         String variation = varJ.get("attribute_value").getAsString();
@@ -1283,15 +1284,12 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
             }
         });
-
     }
-
 
     @Override
     public void onBackPressed() {
         finish();
     }
-
 
     public void deliveryConfirmationDialog() {
 
@@ -1323,7 +1321,6 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         AlertDialog dialog = builder.create();
         dialog.show();
-
     }
 
     @Override

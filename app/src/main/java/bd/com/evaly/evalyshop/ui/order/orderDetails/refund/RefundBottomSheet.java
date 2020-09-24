@@ -21,14 +21,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Random;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomSheetRefundRequestBinding;
 import bd.com.evaly.evalyshop.databinding.ConfirmOtpViewBinding;
-import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
@@ -46,8 +42,9 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
     private String payment_method;
     private String payment_status;
     private ViewDialog dialog;
+    private boolean is_eligible = false;
 
-    public static RefundBottomSheet newInstance(String invoiceNo, String orderStatus, String paymentMethod, String paymentStatus) {
+    public static RefundBottomSheet newInstance(String invoiceNo, String orderStatus, String paymentMethod, String paymentStatus, boolean is_eligible) {
 
         RefundBottomSheet instance = new RefundBottomSheet();
         Bundle bundle = new Bundle();
@@ -55,7 +52,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         bundle.putString("order_status", orderStatus.toLowerCase());
         bundle.putString("payment_method", paymentMethod.toLowerCase());
         bundle.putString("payment_status", paymentStatus.toLowerCase());
-
+        bundle.putBoolean("is_eligible", is_eligible);
         instance.setArguments(bundle);
         return instance;
     }
@@ -70,6 +67,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             order_status = getArguments().getString("order_status");
             payment_method = getArguments().getString("payment_method");
             payment_status = getArguments().getString("payment_status");
+            is_eligible = getArguments().getBoolean("is_eligible");
         }
 
         return binding.getRoot();
@@ -82,26 +80,38 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
         dialog = new ViewDialog(getActivity());
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), R.layout.item_spinner_default);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), R.layout.item_spinner_default);
 
-        spinnerAdapter.add("Evaly Account");
-        spinnerAdapter.add("bKash");
-        spinnerAdapter.add("Bank");
-
-        if (Utils.canRefundToCard(payment_method))
-            spinnerAdapter.add("Debit/Credit Card");
+        if (!is_eligible) {
+            spinnerAdapter.add("Evaly Account");
+            spinnerAdapter.add("bKash");
+            spinnerAdapter.add("Bank");
+            if (Utils.canRefundToCard(payment_method))
+                spinnerAdapter.add("Debit/Credit Card");
+        } else {
+            if (Utils.canRefundToCard(payment_method))
+                spinnerAdapter.add("Debit/Credit Card");
+            else {
+                spinnerAdapter.add("bKash");
+                spinnerAdapter.add("Bank");
+            }
+        }
 
         binding.spRefundOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (position == 0 || position == 3) {
+                String paymentType = spinnerAdapter.getItem(position);
+                if (paymentType == null)
+                    return;
+
+                if (paymentType.equals("Evaly Account") || paymentType.equals("Debit/Credit Card")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
-                } else if (position == 1) {
+                } else if (paymentType.equals("bKash")) {
                     binding.llBkashHolder.setVisibility(View.VISIBLE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
-                } else if (position == 2) {
+                } else if (paymentType.equals("Bank")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.VISIBLE);
                 }
@@ -115,21 +125,18 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
         binding.spRefundOption.setAdapter(spinnerAdapter);
 
-        binding.spRefundOption.setSelection(1);
-
         binding.submitBtn.setOnClickListener(v -> {
 
             int selectedPosition = binding.spRefundOption.getSelectedItemPosition();
+            String paymentType = spinnerAdapter.getItem(selectedPosition);
 
             HashMap<String, String> body = new HashMap<>();
             body.put("invoice_no", invoice_no.toUpperCase());
 
-            if (selectedPosition == 0) {
+            if (paymentType.equals("Evaly Account")) {
                 body.put("refund_type", "Balance");
-            } else if (selectedPosition == 1) {
-
+            } else if (paymentType.equals("bKash")) {
                 String bkashNumber = binding.etbKashNumber.getText().toString().trim();
-
                 if (bkashNumber.equals("")) {
                     Toast.makeText(getContext(), "Please enter bKash number.", Toast.LENGTH_SHORT).show();
                     return;
@@ -139,9 +146,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 }
                 body.put("refund_type", "Bkash");
                 body.put("bkash_account", bkashNumber);
-
-            } else if (selectedPosition == 2) {
-
+            } else if (paymentType.equals("Bank")) {
                 String bankName = binding.etBankName.getText().toString().trim();
                 String branchName = binding.etBranch.getText().toString().trim();
                 String routingNumber = binding.etBranchRouting.getText().toString();
@@ -164,19 +169,44 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                     Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 body.put("refund_type", "Bank");
                 body.put("bank_name", bankName);
                 body.put("branch_name", branchName);
                 body.put("branch_routing_number", routingNumber);
                 body.put("account_name", accountName);
                 body.put("account_number", accountNumber);
-
-            } else if (selectedPosition == 3)
+            } else if (paymentType.equals("Debit/Credit Card"))
                 body.put("refund_type", "Card");
+
 
             requestRefund(body);
         });
+    }
+
+
+    private void deleteRefundTransaction() {
+
+        OrderApiHelper.deleteRefundTransaction(invoice_no, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
+                if (response.getSuccess())
+                    dismissAllowingStateLoss();
+                ToastUtils.show(response.getMessage());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    deleteRefundTransaction();
+
+            }
+        });
+
     }
 
     private void requestRefund(HashMap<String, String> body) {
@@ -188,7 +218,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 Logger.d(statusCode);
                 dialog.hideDialog();
-                if (statusCode == 202){
+                if (statusCode == 202) {
                     final Dialog alert = new Dialog(getActivity(), R.style.FullWidthTransparentDialog);
                     alert.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     alert.setCancelable(true);
@@ -197,20 +227,22 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                     dialogConfirmDeliveryBinding.verify.setOnClickListener(v -> {
                         if (dialogConfirmDeliveryBinding.code.getText().toString().trim().equals("")) {
                             ToastUtils.show("Please enter captcha code");
-                        } else{
+                        } else {
                             dialog.showDialog();
                             HashMap<String, Integer> otpBody = new HashMap<>();
                             otpBody.put("otp_token", Integer.parseInt(dialogConfirmDeliveryBinding.code.getText().toString()));
                             OrderApiHelper.requestRefundConfirmOTP(CredentialManager.getToken(), invoice_no.toUpperCase(), otpBody, new ResponseListenerAuth<CommonDataResponse<String>, String>() {
                                 @Override
                                 public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
-                                    if (!response.getSuccess()){
-                                        Toast.makeText(getActivity().getApplicationContext(), response.getMessage(), Toast.LENGTH_LONG).show();
-                                    }else{
-                                        Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
+                                    if (response.getSuccess())
+                                        alert.dismiss();
+
+                                    ToastUtils.show(response.getMessage());
                                     dialog.hideDialog();
-                                    alert.dismiss();
+
+                                    if (is_eligible && response.getSuccess()) {
+                                        deleteRefundTransaction();
+                                    }
                                 }
 
                                 @Override
@@ -232,7 +264,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
                     alert.setContentView(dialogConfirmDeliveryBinding.getRoot());
                     alert.show();
-                }else {
+                } else {
                     if (getContext() != null) {
                         dialog.hideDialog();
                         Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
