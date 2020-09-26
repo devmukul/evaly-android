@@ -232,6 +232,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                     dialogConfirmDeliveryBinding.verify.setOnClickListener(v -> {
                         if (dialogConfirmDeliveryBinding.code.getText().toString().trim().equals("")) {
                             ToastUtils.show("Please enter captcha code");
+                            return;
                         } else {
                             dialog.showDialog();
                             selectedOtp = Integer.parseInt(dialogConfirmDeliveryBinding.code.getText().toString());

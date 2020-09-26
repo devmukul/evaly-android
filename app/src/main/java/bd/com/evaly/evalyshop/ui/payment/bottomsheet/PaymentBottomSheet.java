@@ -221,16 +221,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     }
 
     private void setAmountText() {
-        if ((total_amount % 1) == 0){
-            double amount = (total_amount - paid_amount) * .3;
-            binding.amountPay.setText(String.format("%d", (int) (amount)));
-
-        } else{
-            double amount = (total_amount - paid_amount) * .3;
+            double amount = (total_amount - paid_amount);
             binding.amountPay.setText(String.format("%s", (int)(amount)));
-
-        }
-
     }
 
     private void setPaymentMethodViewData() {

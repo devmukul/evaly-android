@@ -330,11 +330,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         });
 
         payViaGiftCard = findViewById(R.id.payViaGiftCard);
-        payViaGiftCard.setOnClickListener(view -> new AlertDialog.Builder(OrderDetailsActivity.this)
-                .setTitle("Do you want to pay with gift code?")
-                .setMessage("It will deduct 30% of order amount from your gift code amount")
-                .setPositiveButton("Yes", (dialogInterface, i) -> dialogGiftCardPayment()).setNegativeButton("NO", null)
-                .show());
+        payViaGiftCard.setOnClickListener(view -> dialogGiftCardPayment());
 
         getDeliveryHero();
         confirmDelivery.setOnClickListener(v -> confirmDeliveryDialog());
@@ -881,7 +877,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
         if (requestCode == 10002) {
             if (resultCode == Activity.RESULT_OK) {
-                getOrderDetails();
+                updatePage();
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // some stuff that will happen if there's no result
             }
@@ -1081,12 +1077,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     payParially.setVisibility(View.GONE);
                     confirmOrder.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
-                } else if (response.getOrderStatus().toLowerCase().equals("pending")) {
-                    makePayment.setVisibility(View.GONE);
-                    payParially.setVisibility(View.GONE);
-                   // confirmOrder.setVisibility(View.VISIBLE);
-                    payViaGiftCard.setVisibility(View.GONE);
-                } else if (response.getOrderStatus().toLowerCase().equals("confirmed")) {
+                } else {
                     confirmOrder.setVisibility(View.GONE);
                     if (response.getAllowed_payment_methods() != null && response.getAllowed_payment_methods().length > 0) {
                         makePayment.setVisibility(View.VISIBLE);
@@ -1356,7 +1347,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
     @Override
     public void onPaymentSuccess(String message) {
-        getOrderDetails();
+        updatePage();
         Toast.makeText(this, R.string.payment_success_message, Toast.LENGTH_LONG).show();
     }
 
