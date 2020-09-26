@@ -469,6 +469,14 @@ public interface IApiClient {
     @POST(UrlUtils.BASE_URL + "confirm/refund-request/{invoice}")
     Call<CommonDataResponse<String>> postRequestRefundConfirmOTP(@Header("Authorization") String token, @Body HashMap<String, Integer> body, @Path("invoice") String slug);
 
+
+    @GET(UrlUtils.DOMAIN + "pay/refund-eligibility/{invoice}")
+    Call<CommonDataResponse<String>> checkRefundEligibility(@Header("Authorization") String token, @Path("invoice") String slug);
+
+    @DELETE(UrlUtils.DOMAIN + "pay/delete-refund-transaction/{invoice}")
+    Call<CommonDataResponse<String>> deleteRefundTransaction(@Header("Authorization") String token, @Path("invoice") String slug);
+
+
     // auth 2.0
 
 

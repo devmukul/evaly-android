@@ -141,7 +141,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             @Override
             public void loadMoreItem() {
                 if (!isLoading) {
-                    viewModel.loadCampaigns();
+                    // viewModel.loadCampaigns();
                     isLoading = true;
                 }
             }
