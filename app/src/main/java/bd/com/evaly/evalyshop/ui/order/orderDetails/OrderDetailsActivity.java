@@ -284,9 +284,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             invoice_no = extras.getString("orderID");
             orderNumber.setText("#" + invoice_no);
             getOrderDetails();
-
-            if (extras.containsKey("show_cod_confirmation_dialog"))
-                showCodConfirmationDialog();
+//
+//            if (extras.containsKey("show_cod_confirmation_dialog"))
+//                showCodConfirmationDialog();
         }
         balance.setText(Html.fromHtml(getString(R.string.evaly_bal) + ": <b>৳ " + Utils.formatPrice(CredentialManager.getBalance()) + "</b>"));
 
@@ -320,10 +320,10 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
-        confirmOrder.setOnClickListener(view -> new AlertDialog.Builder(OrderDetailsActivity.this)
-                .setTitle("Do you want to confirm this order for Cash On Delivery?")
-                .setPositiveButton("Yes", (dialogInterface, i) -> makeCashOnDelivery(invoice_no)).setNegativeButton("NO", null)
-                .show());
+//        confirmOrder.setOnClickListener(view -> new AlertDialog.Builder(OrderDetailsActivity.this)
+//                .setTitle("Do you want to confirm this order for Cash On Delivery?")
+//                .setPositiveButton("Yes", (dialogInterface, i) -> makeCashOnDelivery(invoice_no)).setNegativeButton("NO", null)
+//                .show());
 
         btnToggleTimeline.setOnClickListener(v -> {
             if (adapter.isShowAll()) {
@@ -1078,7 +1078,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 } else if (response.getOrderStatus().toLowerCase().equals("pending")) {
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
-                    confirmOrder.setVisibility(View.VISIBLE);
+                   // confirmOrder.setVisibility(View.VISIBLE);
                     payViaGiftCard.setVisibility(View.GONE);
                 } else if (response.getOrderStatus().toLowerCase().equals("confirmed")) {
                     confirmOrder.setVisibility(View.GONE);
