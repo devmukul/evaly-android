@@ -193,8 +193,8 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             @Override
             public void onDataFetched(CommonDataResponse<String> response, int statusCode) {
                 if (response.getSuccess() && statusCode == 202) {
-                    submitOtp();
-                    dismissAllowingStateLoss();
+//                    submitOtp();
+//                    dismissAllowingStateLoss();
                 } else
                     ToastUtils.show(response.getMessage());
             }
@@ -237,12 +237,8 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                             selectedOtp = Integer.parseInt(dialogConfirmDeliveryBinding.code.getText().toString());
                         }
 
-                        if (is_eligible)
-                            deleteRefundTransaction();
-                        else {
-                            dismissAllowingStateLoss();
-                            submitOtp();
-                        }
+                        dismissAllowingStateLoss();
+                        submitOtp();
                     });
 
                     otpAlert.setContentView(dialogConfirmDeliveryBinding.getRoot());
@@ -284,6 +280,8 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 if (response.getSuccess()) {
                     if (otpAlert != null && otpAlert.isShowing())
                         otpAlert.dismiss();
+                    if (is_eligible)
+                        deleteRefundTransaction();
                     orderDetailsViewModel.setRefreshPage();
                 }
                 dialog.hideDialog();
