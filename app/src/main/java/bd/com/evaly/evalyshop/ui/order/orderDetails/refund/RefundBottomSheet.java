@@ -236,7 +236,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                         });
                         dialogConfirmDeliveryBinding.verify.setOnClickListener(v -> {
                             if (dialogConfirmDeliveryBinding.code.getText().toString().trim().equals("")) {
-                                ToastUtils.show("Please enter captcha code");
+                                ToastUtils.show("Please enter OTP");
                                 return;
                             } else {
                                 dialog.showDialog();
@@ -282,7 +282,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
 
     private void startCountDown(ConfirmOtpViewBinding binding) {
 
-        if (binding == null || otpAlert == null || !otpAlert.isShowing())
+        if (binding == null || otpAlert == null)
             return;
 
         binding.otpExpireText.setVisibility(View.VISIBLE);
