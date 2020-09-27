@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.ui.order.orderDetails.refund;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -224,26 +225,32 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 Logger.d(statusCode);
                 dialog.hideDialog();
                 if (statusCode == 202) {
-                    otpAlert = new Dialog(getActivity(), R.style.FullWidthTransparentDialog);
-                    otpAlert.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    otpAlert.setCancelable(true);
-                    final ConfirmOtpViewBinding dialogConfirmDeliveryBinding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.confirm_otp_view, null, false);
+                    if (otpAlert == null || !otpAlert.isShowing()) {
+                        otpAlert = new Dialog(getActivity(), R.style.FullWidthTransparentDialog);
+                        otpAlert.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        otpAlert.setCancelable(true);
+                        final ConfirmOtpViewBinding dialogConfirmDeliveryBinding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.confirm_otp_view, null, false);
+                        dialogConfirmDeliveryBinding.resendOtp.setOnClickListener(v -> {
+                            requestRefund(body);
+                            startCountDown(dialogConfirmDeliveryBinding);
+                        });
+                        dialogConfirmDeliveryBinding.verify.setOnClickListener(v -> {
+                            if (dialogConfirmDeliveryBinding.code.getText().toString().trim().equals("")) {
+                                ToastUtils.show("Please enter captcha code");
+                                return;
+                            } else {
+                                dialog.showDialog();
+                                selectedOtp = Integer.parseInt(dialogConfirmDeliveryBinding.code.getText().toString());
+                            }
 
-                    dialogConfirmDeliveryBinding.verify.setOnClickListener(v -> {
-                        if (dialogConfirmDeliveryBinding.code.getText().toString().trim().equals("")) {
-                            ToastUtils.show("Please enter captcha code");
-                            return;
-                        } else {
-                            dialog.showDialog();
-                            selectedOtp = Integer.parseInt(dialogConfirmDeliveryBinding.code.getText().toString());
-                        }
+                            dismissAllowingStateLoss();
+                            submitOtp();
+                        });
 
-                        dismissAllowingStateLoss();
-                        submitOtp();
-                    });
-
-                    otpAlert.setContentView(dialogConfirmDeliveryBinding.getRoot());
-                    otpAlert.show();
+                        otpAlert.setContentView(dialogConfirmDeliveryBinding.getRoot());
+                        startCountDown(dialogConfirmDeliveryBinding);
+                        otpAlert.show();
+                    }
                 } else {
                     if (getContext() != null) {
                         dialog.hideDialog();
@@ -270,6 +277,38 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                     requestRefund(body);
             }
         });
+    }
+
+
+    private void startCountDown(ConfirmOtpViewBinding binding) {
+
+        if (binding == null || otpAlert == null || !otpAlert.isShowing())
+            return;
+
+        binding.otpExpireText.setVisibility(View.VISIBLE);
+        binding.countDown.setVisibility(View.VISIBLE);
+        binding.resendOtp.setVisibility(View.GONE);
+
+        new CountDownTimer(120 * 1000 + 1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                int seconds = (int) (millisUntilFinished / 1000);
+                int hours = seconds / (60 * 60);
+                int tempMint = (seconds - (hours * 60 * 60));
+                int minutes = tempMint / 60;
+                seconds = tempMint - (minutes * 60);
+
+                binding.countDown.setText(String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
+            }
+
+            public void onFinish() {
+                binding.otpExpireText.setVisibility(View.GONE);
+                binding.countDown.setVisibility(View.GONE);
+                binding.resendOtp.setVisibility(View.VISIBLE);
+
+            }
+
+        }.start();
     }
 
     private void submitOtp() {
