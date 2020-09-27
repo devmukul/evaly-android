@@ -39,6 +39,8 @@ public class PaymentMethodController extends EpoxyController {
                     .description(model.getDescription())
                     .image(model.getImage())
                     .isSelected(model.isSelected())
+                    .isEnabled(model.isEnabled())
+                    .badgeText(model.getBadgeText())
                     .onBind((model12, view, position) -> {
                         ItemPaymentMethodBinding binding = (ItemPaymentMethodBinding) view.getDataBinding();
                         binding.radioButton.setChecked(model12.isSelected());

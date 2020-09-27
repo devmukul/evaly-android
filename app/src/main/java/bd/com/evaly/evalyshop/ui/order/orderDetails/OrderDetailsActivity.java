@@ -179,6 +179,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     private String deliveryChargeApplicable = null;
     private OrderDetailsViewModel viewModel;
     private boolean isRefundEligible = false;
+    private String disabledPaymentMethods = "", disabledPaymentMethodText = "";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -309,7 +310,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 ToastUtils.show("Cash on delivery only");
                 return;
             }
-            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount, paid_amount, shopSlug.contains("food"), orderDetailsModel.getAllowed_payment_methods(), paymentMessage, this);
+            PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount,
+                    paid_amount, shopSlug.contains("food"), orderDetailsModel.getAllowed_payment_methods(),
+                    paymentMessage, disabledPaymentMethods, disabledPaymentMethodText, this);
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
@@ -471,6 +474,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                         paymentMessage = mFirebaseRemoteConfig.getString("evaly_pay_text");
                         deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
                         deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
+                        disabledPaymentMethods = mFirebaseRemoteConfig.getString("disabled_payment_methods");
+                        disabledPaymentMethodText = mFirebaseRemoteConfig.getString("disabled_payment_text");
                     }
                 });
     }
