@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.payment.bottomsheet.model;
 
 import android.graphics.Color;
+import android.text.Html;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -26,10 +27,16 @@ public abstract class PaymentMethodItemModel extends DataBindingEpoxyModel {
     String description;
 
     @EpoxyAttribute
+    String badgeText;
+
+    @EpoxyAttribute
     int image;
 
     @EpoxyAttribute
     boolean isSelected;
+
+    @EpoxyAttribute
+    boolean isEnabled;
 
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
@@ -46,13 +53,25 @@ public abstract class PaymentMethodItemModel extends DataBindingEpoxyModel {
                 .load(image)
                 .into(binding.image);
 
-        binding.container.setOnClickListener(clickListener);
         binding.radioButton.setChecked(isSelected);
 
         if (isSelected)
             binding.container.setBackgroundColor(Color.parseColor("#f9f9f9"));
         else
             binding.container.setBackgroundColor(Color.parseColor("#ffffff"));
+
+        if (isEnabled) {
+            binding.container.setAlpha(1);
+            binding.container.setOnClickListener(clickListener);
+        } else {
+            binding.container.setAlpha(0.7f);
+        }
+
+        if ((badgeText != null && !badgeText.equals("")) && !isEnabled)
+            binding.radioButton.setText(Html.fromHtml(title + " <small>(" + badgeText + ")</small>"));
+        else
+            binding.radioButton.setText(title);
+
     }
 
 
