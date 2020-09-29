@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -26,6 +27,7 @@ import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.ActivityExpressProductSearchBinding;
+import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
@@ -82,30 +84,18 @@ public class ExpressProductSearchFragment extends Fragment {
         binding.back.setOnClickListener(v -> getActivity().onBackPressed());
 
         int spanCount = 2;
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 4);
         expressProductController.setSpanCount(spanCount);
-
-        int spacing = (int) Utils.convertDpToPixel(10, getActivity());
-        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
         expressProductController.requestModelBuild();
 
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    visibleItemCount = layoutManager.getChildCount();
-                    totalItemCount = layoutManager.getItemCount();
-                    int[] firstVisibleItems = null;
-                    firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
-                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
-                        pastVisiblesItems = firstVisibleItems[0];
-
-                    if (!isLoading)
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                            if (totalCount > expressProductController.listSize())
-                                getShopProducts();
+            public void loadMoreItem() {
+                if (!isLoading){
+                    getShopProducts();
+                    isLoading = true;
                 }
             }
         });

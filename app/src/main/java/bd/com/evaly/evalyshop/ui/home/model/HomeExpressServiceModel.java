@@ -53,6 +53,7 @@ public abstract class HomeExpressServiceModel extends DataBindingEpoxyModel {
         Glide.with(binding.getRoot())
                 .asBitmap()
                 .load(model.getAppLogo() == null ? model.getImage() : model.getAppLogo())
+                .placeholder(R.drawable.bg_fafafa_round)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(binding.image);
 
