@@ -57,7 +57,6 @@ import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.campaign.CampaignShopActivity;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.menu.ContactActivity;
-import bd.com.evaly.evalyshop.ui.menu.InviteEarn;
 import bd.com.evaly.evalyshop.ui.networkError.UnderMaintenanceActivity;
 import bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity;
 import bd.com.evaly.evalyshop.ui.user.UserDashboardActivity;
@@ -453,18 +452,12 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_cart:
                         startActivity(new Intent(MainActivity.this, CartActivity.class));
                         break;
-                    case R.id.nav_invite_ref:
-                        startActivity(new Intent(MainActivity.this, InviteEarn.class));
-                        break;
                     case R.id.nav_voucher:
                         startActivity(new Intent(MainActivity.this, VoucherActivity.class));
                         break;
                     case R.id.nav_messages:
                         //startActivity(new Intent(MainActivity.this, ChatListActivity.class));
-
                         openEconnect();
-
-
                         break;
                     case R.id.nav_followed_shops:
                         Intent inf = new Intent(MainActivity.this, CampaignShopActivity.class);
