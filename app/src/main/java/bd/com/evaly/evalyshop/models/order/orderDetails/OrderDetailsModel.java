@@ -67,11 +67,29 @@ public class OrderDetailsModel {
 	@SerializedName("customer_note")
 	private String customerNote;
 
+	@SerializedName("delivery_charge")
+	private String deliveryCharge;
+
+	@SerializedName("apply_delivery_charge")
+	private boolean applyDeliveryCharge;
+
 	@SerializedName("allowed_payment_methods")
 	private String [] allowed_payment_methods;
 
 	public String[] getAllowed_payment_methods() {
 		return allowed_payment_methods;
+	}
+
+	public boolean isApplyDeliveryCharge() {
+		return applyDeliveryCharge;
+	}
+
+	public String getDeliveryCharge() {
+		return deliveryCharge;
+	}
+
+	public void setApplyDeliveryCharge(boolean applyDeliveryCharge) {
+		this.applyDeliveryCharge = applyDeliveryCharge;
 	}
 
 	public void setDate(String date){
