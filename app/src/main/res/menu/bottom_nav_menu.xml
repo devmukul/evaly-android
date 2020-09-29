@@ -16,7 +16,7 @@
 
     <item
         android:id="@+id/expressProductSearchFragment"
-        android:title="@string/express"
+        android:title=""
         android:enabled="false"
         app:showAsAction="ifRoom" />
 

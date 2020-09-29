@@ -14,8 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,19 +33,13 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.ui.express.products.controller.ExpressProductController;
-import bd.com.evaly.evalyshop.util.Utils;
-import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 public class ExpressProductSearchFragment extends Fragment {
 
-
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private ActivityExpressProductSearchBinding binding;
-    private ExpressProductSearchAdapter adapter;
     private List<ProductItem> itemList;
-    private int currentPage = 1;
+    private int currentPage = 1, totalCount = 0;
     private boolean isLoading = false;
-    private int totalCount = 0;
     private String query;
     private boolean firstLoad = true;
     private ExpressProductController expressProductController;
@@ -77,14 +69,16 @@ public class ExpressProductSearchFragment extends Fragment {
         expressServiceDao = AppDatabase.getInstance(getContext()).expressServiceDao();
         currentPage = 1;
         itemList = new ArrayList<>();
-        expressProductController = new ExpressProductController();
+        if (expressProductController == null)
+            expressProductController = new ExpressProductController();
         expressProductController.setActivity((AppCompatActivity) getActivity());
         expressProductController.setFragment(this);
+        expressProductController.setFilterDuplicates(true);
         binding.recyclerView.setAdapter(expressProductController.getAdapter());
         binding.back.setOnClickListener(v -> getActivity().onBackPressed());
 
         int spanCount = 2;
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 4);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         expressProductController.setSpanCount(spanCount);
         binding.recyclerView.setLayoutManager(layoutManager);
 
@@ -93,7 +87,7 @@ public class ExpressProductSearchFragment extends Fragment {
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
             public void loadMoreItem() {
-                if (!isLoading){
+                if (!isLoading) {
                     getShopProducts();
                     isLoading = true;
                 }
@@ -101,7 +95,7 @@ public class ExpressProductSearchFragment extends Fragment {
         });
 
         binding.progressContainer.setVisibility(View.VISIBLE);
-       // getShopProducts();
+        // getShopProducts();
 
         binding.search.setOnEditorActionListener((v, actionId, event) -> {
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) && (event.getAction() == KeyEvent.ACTION_DOWN))) {

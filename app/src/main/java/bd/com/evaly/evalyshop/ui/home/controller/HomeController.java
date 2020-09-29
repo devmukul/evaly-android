@@ -89,7 +89,7 @@ public class HomeController extends EpoxyController {
         //express services carousel
         expressHeaderModel_
                 .activity(activity)
-                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.evalyExpressFragment))
+                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.expressProductSearchFragment))
                 .addTo(this);
 
         List<DataBindingEpoxyModel> expressItemModels = new ArrayList<>();
@@ -101,7 +101,7 @@ public class HomeController extends EpoxyController {
                     .clickListener((model1, parentView, clickedView, position) -> {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("model", model1.getModel());
-                        NavHostFragment.findNavController(fragment).navigate(R.id.expressProductSearchFragment, bundle);
+                        NavHostFragment.findNavController(fragment).navigate(R.id.evalyExpressFragment, bundle);
                     })
                     .id(model.getSlug())
                     .model(model));
