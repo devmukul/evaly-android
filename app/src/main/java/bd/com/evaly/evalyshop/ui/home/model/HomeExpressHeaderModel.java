@@ -17,6 +17,8 @@ import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.databinding.HomeModelExpressHeaderBinding;
 import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 
+import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
+
 @EpoxyModelClass(layout = R.layout.home_model_express_header)
 public abstract class HomeExpressHeaderModel extends EpoxyModelWithHolder<HomeExpressHeaderModel.HomeExpressHolder> {
 
@@ -26,6 +28,9 @@ public abstract class HomeExpressHeaderModel extends EpoxyModelWithHolder<HomeEx
     public Fragment fragment;
     @EpoxyAttribute
     AppDatabase appDatabase;
+
+    @EpoxyAttribute(DoNotHash)
+    View.OnClickListener clickListener;
 
     @Override
     public void bind(@NonNull HomeExpressHolder holder) {
@@ -38,7 +43,7 @@ public abstract class HomeExpressHeaderModel extends EpoxyModelWithHolder<HomeEx
         holder.itemView = null;
     }
 
-    class HomeExpressHolder extends EpoxyHolder {
+    public class HomeExpressHolder extends EpoxyHolder {
         View itemView;
 
         @Override
@@ -47,13 +52,7 @@ public abstract class HomeExpressHeaderModel extends EpoxyModelWithHolder<HomeEx
             HomeModelExpressHeaderBinding binding = HomeModelExpressHeaderBinding.bind(itemView);
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
-
-            binding.help.setOnClickListener(v -> {
-                String text = "Evaly Express is a special service for daily needs products. With extremely fast delivery system, you will get your ordered items within 1 to 48 hours. <br><br>Currently this service is available for:<br><br>  • <b>Grocery</b><br> • <b>Foods</b><br>  • <b>Fish & Meat</b><br>  • <b>Pharmacy</b><br> • <b>Fashion</b>";
-                TextBottomSheetFragment fragment = TextBottomSheetFragment.newInstance(text);
-                fragment.show(activity.getSupportFragmentManager(), "terms");
-            });
-
+            binding.help.setOnClickListener(clickListener);
         }
     }
 
