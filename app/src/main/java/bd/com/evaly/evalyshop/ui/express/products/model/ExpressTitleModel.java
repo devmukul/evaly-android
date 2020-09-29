@@ -20,10 +20,8 @@ public abstract class ExpressTitleModel extends EpoxyModelWithHolder<ExpressTitl
 
     @Override
     public void bind(Holder holder) {
-
         if (title != null && !title.equals(""))
             ((TextView)holder.itemView.findViewById(R.id.title)).setText(title);
-
     }
 
     static class Holder extends EpoxyHolder {

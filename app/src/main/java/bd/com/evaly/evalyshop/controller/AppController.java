@@ -8,6 +8,8 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
@@ -25,6 +27,10 @@ public class AppController extends Application implements Application.ActivityLi
     public static boolean allDataLoaded;
     private final String TAG = getClass().getSimpleName();
     public Boolean mBounded = false;
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     public static Context getmContext() {
         return mContext;

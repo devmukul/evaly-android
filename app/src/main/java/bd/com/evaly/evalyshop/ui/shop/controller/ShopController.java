@@ -14,9 +14,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
-import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
-import com.airbnb.epoxy.OnModelBoundListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +117,7 @@ public class ShopController extends EpoxyController {
                         binding.quickView.setVisibility(View.GONE);
                     }
                 })
-                .addIf(!categoriesLoading && categoryItems.size() > 0,this);
+                .addIf(!categoriesLoading && categoryItems.size() > 0, this);
 
         List<ShopCategoryItemModel_> categoryModelList = new ArrayList<>();
         for (int i = 0; i < categoryItems.size(); i++) {
@@ -184,7 +182,8 @@ public class ShopController extends EpoxyController {
                         intent.putExtra("product_slug", item.getSlug());
                         intent.putExtra("product_name", item.getName());
                         intent.putExtra("product_price", (int) Double.parseDouble(item.getMaxPrice()));
-
+                        if (model.cashbackRate() > 0)
+                            intent.putExtra("cashback_text", model.cashbackRate() + "% Cashback");
                         if (model.isShop())
                             intent.putExtra("shop_slug", shopInfo.getData().getShop().getSlug());
 

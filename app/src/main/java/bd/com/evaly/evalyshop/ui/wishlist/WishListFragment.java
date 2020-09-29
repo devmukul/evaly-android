@@ -100,7 +100,7 @@ public class WishListFragment extends Fragment {
         LinearLayout empty = view.findViewById(R.id.empty);
         NestedScrollView scrollView = view.findViewById(R.id.scroller);
 
-        wishListDao.getAllLive().observe(this, wishListEntities -> {
+        wishListDao.getAllLive().observe(getViewLifecycleOwner(), wishListEntities -> {
 
             wishLists.clear();
             wishLists.addAll(wishListEntities);

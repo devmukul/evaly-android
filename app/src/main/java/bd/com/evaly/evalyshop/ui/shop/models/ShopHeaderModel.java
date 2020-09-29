@@ -23,10 +23,12 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ShopModelHeaderBinding;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
+import bd.com.evaly.evalyshop.ui.basic.TextBottomSheetFragment;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.ui.shop.ShopViewModel;
 import bd.com.evaly.evalyshop.ui.shop.delivery.DeliveryBottomSheetFragment;
@@ -129,10 +131,24 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
                 snackBar.show();
             });
 
-            binding.btn3Image.setOnClickListener(v -> {
-                DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopInfo.getShopDeliveryOptions());
-                deliveryBottomSheetFragment.show(fragment.getParentFragmentManager(), "delivery option");
-            });
+            if (shop.getCampaign() == null) {
+                binding.btn3Title.setText("Delivery");
+                binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_delivery));
+                binding.btn3Image.setOnClickListener(v -> {
+                    DeliveryBottomSheetFragment deliveryBottomSheetFragment = DeliveryBottomSheetFragment.newInstance(shopInfo.getShopDeliveryOptions());
+                    deliveryBottomSheetFragment.show(fragment.getParentFragmentManager(), "delivery option");
+                });
+            } else {
+                binding.btn3Title.setText("T&C");
+                binding.btn3Image.setImageDrawable(AppController.getmContext().getResources().getDrawable(R.drawable.ic_terms_and_conditions));
+                binding.btn3Image.setOnClickListener(v -> {
+                    String description = shop.getCampaign().getDescription();
+                    if (description == null)
+                        description = "Not available now";
+                    TextBottomSheetFragment textBottomSheetFragment = TextBottomSheetFragment.newInstance("Terms & Conditions", description);
+                    textBottomSheetFragment.show(fragment.getParentFragmentManager(), "tc");
+                });
+            }
 
             binding.btn4Image.setOnClickListener(v -> {
                 Intent intent = new Intent(activity, ReviewsActivity.class);

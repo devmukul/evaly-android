@@ -18,7 +18,7 @@ public class CommonDataResponse<T> {
     @Expose
     private int count;
 
-    @SerializedName("data")
+    @SerializedName(value = "data", alternate = "results")
     @Expose
     private T data;
 

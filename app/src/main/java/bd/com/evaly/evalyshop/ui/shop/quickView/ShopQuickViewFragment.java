@@ -69,7 +69,10 @@ public class ShopQuickViewFragment extends Fragment {
         });
         inflateSearchMenu();
 
-        factory = new ShopViewModelFactory(categorySlug, campaignSlug, shopSlug);
+        String brandSlug = null;
+        if (getArguments().containsKey("brand_slug"))
+            brandSlug = getArguments().getString("brand_slug");
+        factory = new ShopViewModelFactory(categorySlug, campaignSlug, shopSlug, brandSlug);
         viewModel = new ViewModelProvider(this, factory).get(ShopQuickViewModel.class);
 
         categoryController = new ShopQuickViewCategoryController();

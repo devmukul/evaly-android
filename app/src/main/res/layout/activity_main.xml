@@ -4,7 +4,6 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     app:elevation="0dp">
 
     <androidx.appcompat.widget.Toolbar
@@ -26,33 +25,33 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:defaultNavHost="true"
             android:layout_marginBottom="46dp"
+            app:defaultNavHost="true"
             app:navGraph="@navigation/home_nav_graph" />
 
         <ImageView
             android:id="@+id/fabCreate"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="28dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/btn_circle_red_bg"
             android:clickable="true"
-            android:padding="15dp"
-            app:elevation="50dp"
+            android:padding="17dp"
             android:translationZ="4dp"
+            app:elevation="50dp"
             app:srcCompat="@drawable/ic_evaly_e"
-            app:tint="#fff"/>
+            app:tint="#fff" />
 
-<!--        <com.google.android.material.bottomappbar.BottomAppBar-->
-<!--            android:id="@+id/bottom_bar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="bottom"-->
-<!--            android:clickable="false"-->
-<!--            app:elevation="6dp"-->
-<!--            android:background="@color/transparent"-->
-<!--            app:fabAlignmentMode="center" />-->
+        <!--        <com.google.android.material.bottomappbar.BottomAppBar-->
+        <!--            android:id="@+id/bottom_bar"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="bottom"-->
+        <!--            android:clickable="false"-->
+        <!--            app:elevation="6dp"-->
+        <!--            android:background="@color/transparent"-->
+        <!--            app:fabAlignmentMode="center" />-->
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -68,14 +67,13 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_bottom_nav"
                 android:clipChildren="false"
-                android:translationZ="12dp"
                 android:elevation="8dp"
+                android:translationZ="12dp"
                 app:itemIconTint="@drawable/drawer_item_color"
                 app:itemTextColor="#555"
                 app:labelVisibilityMode="labeled"
                 app:menu="@menu/bottom_nav_menu" />
         </FrameLayout>
-
 
 
     </FrameLayout>

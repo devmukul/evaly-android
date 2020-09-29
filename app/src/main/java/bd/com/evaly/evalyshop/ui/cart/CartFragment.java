@@ -207,6 +207,7 @@ public class CartFragment extends Fragment {
 
             if (CredentialManager.getToken().equals("")) {
                 Toast.makeText(context, "You need to login first.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(requireActivity(), SignInActivity.class));
                 return;
             }
             boolean selected = false;

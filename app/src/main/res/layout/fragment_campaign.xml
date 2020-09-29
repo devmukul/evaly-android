@@ -5,88 +5,245 @@
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="bd.com.evaly.evalyshop.ui.campaign.CampaignViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/layoutShoProduct"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#fff"
-        android:orientation="vertical">
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        android:visibility="visible">
 
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="#fff"
-            app:title="@string/campaigns" />
-
-
-        <LinearLayout
-            android:id="@+id/bottom_sheet"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#fff"
-            android:orientation="vertical">
+            android:elevation="0dp"
+            android:fitsSystemWindows="true"
+            app:contentInsetStartWithNavigation="0dp"
+            app:elevation="0dp">
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="190dp"
-                android:layout_marginBottom="50dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:paddingHorizontal="10dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="25dp"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
-                tools:itemCount="7"
-                tools:listitem="@layout/item_campaign"
-                tools:visibility="visible" />
-
-
-            <LinearLayout
-                android:id="@+id/layoutNot"
+            <bd.com.evaly.evalyshop.views.FixCollapsingToolbarLayout
+                android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="150dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:elevation="0dp"
+                android:fitsSystemWindows="true"
+                android:gravity="top"
+                android:padding="0dp"
+                app:contentScrim="@color/white"
+                app:layout_scrollFlags="enterAlwaysCollapsed|scroll|exitUntilCollapsed|snap"
+                app:scrimAnimationDuration="0"
+                app:scrimVisibleHeightTrigger="100dp"
+                app:statusBarScrim="@color/white"
+                app:titleEnabled="false">
 
-                <ImageView
-                    android:layout_width="50dp"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:tint="#666"
-                    app:srcCompat="@drawable/ic_star_flying" />
+                    android:fitsSystemWindows="true"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="25dp"
-                    android:text="No campaigns found."
-                    android:textColor="#555"
-                    android:textSize="15sp" />
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/coverHolder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/coverImage"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:adjustViewBounds="true"
+                                android:foreground="@drawable/bg_blurry"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/bg_fafafa_round"
+                                android:transitionName="banner_transition"
+                                app:layout_constraintDimensionRatio="H,2.2:1"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </FrameLayout>
 
 
-            </LinearLayout>
+                    <FrameLayout
+                        android:id="@+id/marginFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:paddingTop="65dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="15dp"
+                            app:cardBackgroundColor="@color/fff"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="0dp">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/sliderHolder"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="#fff"
+                                android:minHeight="100dp">
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:background="@drawable/banner_skeleton_bg"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintDimensionRatio="H,2.93478:1"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <androidx.viewpager2.widget.ViewPager2
+                                    android:id="@+id/sliderPager"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_alignParentTop="true"
+                                    android:clipToPadding="false"
+                                    app:layout_constraintDimensionRatio="H,2.93478:1"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <com.google.android.material.tabs.TabLayout
+                                    android:id="@+id/sliderIndicator"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginStart="40dp"
+                                    android:layout_marginEnd="40dp"
+                                    android:background="@color/transparent"
+                                    app:layout_constraintBottom_toBottomOf="@id/sliderPager"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:tabBackground="@drawable/indicator_selector"
+                                    app:tabGravity="center"
+                                    app:tabIndicatorHeight="0dp"
+                                    app:tabPaddingEnd="7dp"
+                                    app:tabPaddingStart="7dp" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.cardview.widget.CardView>
+                    </FrameLayout>
 
 
-        </LinearLayout>
+                </RelativeLayout>
 
-    </LinearLayout>
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@android:color/transparent"
+                    android:elevation="0dp"
+                    android:fitsSystemWindows="false"
+                    android:gravity="top"
+                    android:paddingRight="5dp"
+                    app:contentInsetStartWithNavigation="0dp"
+                    app:elevation="0dp"
+                    app:layout_collapseMode="pin"
+                    app:title="">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_collapseMode="pin">
+
+                        <LinearLayout
+                            android:id="@+id/searchContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="43dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/input_brd_round_dark"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/backArrow"
+                                android:layout_width="43dp"
+                                android:layout_height="43dp"
+                                android:layout_marginStart="5dp"
+                                android:clickable="true"
+                                android:padding="12dp"
+                                android:src="@drawable/ic_left_arrow_new"
+                                app:tint="#fff" />
+
+                            <EditText
+                                android:id="@+id/searchText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginEnd="15dp"
+                                android:layout_weight="1"
+                                android:background="@color/transparent"
+                                android:hint="Campaigns"
+                                android:imeOptions="actionSearch"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:textColor="#fff"
+                                android:textColorHint="#eee"
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:id="@+id/clearSearch"
+                                android:layout_width="43dp"
+                                android:layout_height="43dp"
+                                android:layout_marginEnd="4dp"
+                                android:padding="12dp"
+                                android:src="@drawable/ic_close"
+                                android:visibility="gone"
+                                app:tint="#fff"
+                                tools:visibility="visible" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/buttonRight"
+                            android:layout_width="40dp"
+                            android:layout_height="43dp"
+                            android:layout_marginStart="5dp"
+                            android:clickable="true"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_share"
+                            app:tint="#444" />
+
+                    </LinearLayout>
+
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </bd.com.evaly.evalyshop.views.FixCollapsingToolbarLayout>
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/white_to_grey_gradient_fast"
+            android:clipToPadding="false"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="70dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 </layout>

@@ -12,6 +12,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.Toast;
 
 import androidx.browser.customtabs.CustomTabsIntent;
@@ -49,6 +50,20 @@ public class Utils {
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
+
+    public static boolean isValidURL(String urlStr) {
+        return Patterns.WEB_URL.matcher(urlStr).matches();
+    }
+
+    public static boolean isValidColor(String str) {
+        String regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
+        Pattern p = Pattern.compile(regex);
+        if (str == null) {
+            return false;
+        }
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
 
     public static int countWords(String s){
 

@@ -12,19 +12,20 @@
 
         <ImageView
             android:id="@+id/btn1Image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:layout_marginRight="5dp"
             android:adjustViewBounds="true"
-            android:background="@drawable/circle_bg"
+            android:background="@drawable/btn_gradient_circle"
+            android:backgroundTint="#FF9901"
             android:clickable="false"
-            android:padding="16dp"
-            android:tint="@color/colorAccent"
+            android:padding="14dp"
             app:layout_constraintEnd_toStartOf="@+id/btn2Image"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_newsfeed_icon"
+            app:tint="#fff"
             tools:layout_editor_absoluteY="0dp" />
 
         <View
@@ -47,6 +48,8 @@
             android:layout_marginTop="8dp"
             android:layout_weight="0"
             android:text="@string/newsfeed"
+            android:textColor="#666"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/btn1Image"
             app:layout_constraintStart_toStartOf="@+id/btn1Image"
             app:layout_constraintTop_toBottomOf="@+id/btn1Image" />
@@ -54,19 +57,21 @@
 
         <ImageView
             android:id="@+id/btn2Image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="0"
-            android:background="@drawable/circle_bg"
+            android:background="@drawable/ic_ellipse_1"
+            android:backgroundTint="#6EE48A"
             android:clickable="false"
-            android:tint="#0EAD75"
+            android:padding="13dp"
             app:layout_constraintEnd_toStartOf="@+id/btn3Image"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn1Image"
             app:layout_constraintTop_toTopOf="@+id/btn1Image"
-            app:srcCompat="@drawable/ic_gift_card_line2" />
+            app:srcCompat="@drawable/ic_gift_card_line2"
+            app:tint="#fff" />
 
         <TextView
             android:id="@+id/btn2Title"
@@ -77,25 +82,30 @@
             android:clickable="false"
             android:gravity="center"
             android:text="@string/gift_cards"
+            android:textColor="#666"
+            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/btn2Image"
             app:layout_constraintTop_toBottomOf="@+id/btn2Image" />
 
 
         <ImageView
             android:id="@+id/btn3Image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="0"
-            android:background="@drawable/circle_bg"
+            android:background="@drawable/ic_ellipse_1"
+            android:backgroundTint="#07EA46"
             android:clickable="false"
-            android:tint="#2ab5d2"
+            android:padding="13dp"
             app:layout_constraintEnd_toStartOf="@+id/btn4Image"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn2Image"
             app:layout_constraintTop_toTopOf="@+id/btn2Image"
-            app:srcCompat="@drawable/ic_discount_tag" />
+            app:srcCompat="@drawable/ic_discount_tag"
+            app:tint="#fff" />
+
 
         <TextView
             android:id="@+id/btn3Title"
@@ -106,24 +116,28 @@
             android:clickable="false"
             android:text="@string/campaigns"
             android:textAlignment="center"
+            android:textColor="#666"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/btn3Image"
             app:layout_constraintStart_toStartOf="@+id/btn3Image"
             app:layout_constraintTop_toBottomOf="@+id/btn3Image" />
 
         <ImageView
             android:id="@+id/btn4Image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:layout_marginLeft="5dp"
             android:layout_weight="0"
-            android:background="@drawable/circle_bg"
+            android:background="@drawable/ic_ellipse_1"
+            android:backgroundTint="#22CAFF"
             android:clickable="false"
-            android:tint="#CC9933"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="15dp"
+            app:layout_constraintEnd_toEndOf="@id/btn5Image"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn3Image"
             app:layout_constraintTop_toTopOf="@+id/btn3Image"
-            app:srcCompat="@drawable/ic_order_thin" />
+            app:srcCompat="@drawable/ic_category"
+            app:tint="#fff" />
 
         <TextView
             android:id="@+id/btn4Title"
@@ -131,17 +145,49 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_weight="0"
-            android:text="@string/orders"
+            android:text="@string/categories"
+            android:textColor="#666"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/btn4Image"
             app:layout_constraintStart_toStartOf="@+id/btn4Image"
             app:layout_constraintTop_toBottomOf="@+id/btn4Image" />
+
+        <ImageView
+            android:id="@+id/btn5Image"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0"
+            android:background="@drawable/ic_ellipse_1"
+            android:backgroundTint="#DA5156"
+            android:clickable="false"
+            android:padding="13dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btn4Image"
+            app:layout_constraintTop_toTopOf="@+id/btn4Image"
+            app:srcCompat="@drawable/ic_order_thin"
+            app:tint="#fff" />
+
+        <TextView
+            android:id="@+id/btn5Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0"
+            android:text="@string/orders"
+            android:textColor="#666"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/btn5Image"
+            app:layout_constraintStart_toStartOf="@+id/btn5Image"
+            app:layout_constraintTop_toBottomOf="@+id/btn5Image" />
 
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="8dp"
             android:layout_marginTop="17dp"
-            android:background="@color/separator_light"
+            android:background="#f9f9f9"
             app:layout_constraintTop_toBottomOf="@+id/btn2Title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:foreground="?selectableItemBackground"
         android:gravity="top|center_horizontal"
+        android:background="#FBFCFF"
         android:orientation="vertical">
 
         <View
@@ -37,7 +38,6 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:adjustViewBounds="true"
-            android:background="@android:color/white"
             app:layout_constraintDimensionRatio="H,1.12:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

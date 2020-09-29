@@ -38,6 +38,7 @@ public class HomeViewModel extends ViewModel {
     public HomeViewModel() {
         currentPageProducts = 1;
         loadProducts();
+        loadExpressServices();
     }
 
     public int getTabPosition() {

@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.category;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +63,7 @@ public class CategoryFragment extends Fragment {
 
         viewModelLiveDataObservers();
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         binding.rvProducts.setLayoutManager(layoutManager);
         layoutManager.setSpanSizeLookup(subCategoryController.getSpanSizeLookup());
 
@@ -106,6 +107,7 @@ public class CategoryFragment extends Fragment {
 
         viewModel.getSelectedCategoryLiveData().observe(getViewLifecycleOwner(), tabsItem -> {
             binding.selectedBrd.setVisibility(View.GONE);
+            binding.allCategories.setBackgroundColor(Color.parseColor("#FBFCFF"));
             String categorySlug = tabsItem.getSlug();
             viewModel.setRootCategory(categorySlug);
             viewModel.loadSubCategories();
@@ -121,6 +123,7 @@ public class CategoryFragment extends Fragment {
             subCategoryController.setCategoryTitle(null);
             subCategoryController.setLoadingMore(true);
             binding.selectedBrd.setVisibility(View.VISIBLE);
+            binding.allCategories.setBackgroundColor(Color.parseColor("#FBFCFF"));
             categoryController.deselectCategory();
             viewModel.loadTopCategories();
         });

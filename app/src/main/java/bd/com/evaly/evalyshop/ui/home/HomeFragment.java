@@ -142,7 +142,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void liveEventObservers() {
-
         viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
             homeController.setLoadingMore(false);
             homeController.addData(list);
@@ -150,6 +149,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             isLoading = false;
         });
 
+        viewModel.getExpressListLive().observe(getViewLifecycleOwner(), expressServiceModels -> {
+            homeController.setExpressLoading(false);
+            homeController.addExpressData(expressServiceModels);
+        });
     }
 
 

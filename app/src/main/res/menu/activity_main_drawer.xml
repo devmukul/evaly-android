@@ -1,62 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home"
-            android:title="@string/home" />
-        <item
-            android:id="@+id/nav_account"
-            android:icon="@drawable/ic_user"
-            android:title="@string/dashboard" />
-        <item
-            android:id="@+id/nav_orders"
-            android:icon="@drawable/ic_order_thin"
-            android:title="@string/orders"/>
-        <item
-            android:id="@+id/nav_messages"
-            android:icon="@drawable/ic_chat_small"
-            app:actionLayout="@layout/item_drawer_menu_badge"
-            android:title="@string/messages"/>
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/home" />
+    <item
+        android:id="@+id/nav_account"
+        android:icon="@drawable/ic_user"
+        android:title="@string/dashboard" />
+    <item
+        android:id="@+id/nav_orders"
+        android:icon="@drawable/ic_order_thin"
+        android:title="@string/orders" />
+    <item
+        android:id="@+id/nav_messages"
+        android:icon="@drawable/ic_chat_small"
+        android:title="@string/messages"
+        app:actionLayout="@layout/item_drawer_menu_badge" />
 
-        <item
-            android:id="@+id/nav_cart"
-            android:icon="@drawable/ic_cart"
-            android:title="@string/cart" />
+    <item
+        android:id="@+id/nav_cart"
+        android:icon="@drawable/ic_cart"
+        android:title="@string/cart" />
 
-        <item
-            android:id="@+id/nav_wishlist"
-            android:icon="@drawable/ic_favorite"
-            android:title="@string/wish_list"/>
-
-
-        <item android:id="@+id/nav_followed_shops"
-                android:icon="@drawable/ic_menu_store"
-                android:title="@string/favorite_shops"/>
-
-        <item
-            android:id="@+id/nav_voucher"
-            android:icon="@drawable/ic_menu_voucher"
-            android:title="@string/vouchers"/>
-
-        <item
-            android:id="@+id/nav_invite_ref"
-            android:icon="@drawable/ic_referral"
-            android:title="@string/invite_earn"/>
+    <item
+        android:id="@+id/nav_wishlist"
+        android:icon="@drawable/ic_favorite"
+        android:title="@string/wish_list" />
 
 
-        <item
-            android:id="@+id/nav_contact"
-            android:icon="@drawable/ic_phone_thin"
-            android:title="@string/contact_us_short"/>
+    <item
+        android:id="@+id/nav_followed_shops"
+        android:icon="@drawable/ic_menu_store"
+        android:title="@string/favorite_shops" />
 
-        <!--<item-->
-            <!--android:id="@+id/nav_about"-->
-            <!--android:icon="@drawable/ic_info"-->
-            <!--android:title="About Evaly"/>-->
+    <item
+        android:id="@+id/nav_voucher"
+        android:icon="@drawable/ic_menu_voucher"
+        android:title="@string/vouchers" />
 
+    <item
+        android:id="@+id/nav_contact"
+        android:icon="@drawable/ic_phone_thin"
+        android:title="@string/contact_us_short" />
 
+    <!--<item-->
+    <!--android:id="@+id/nav_about"-->
+    <!--android:icon="@drawable/ic_info"-->
+    <!--android:title="About Evaly"/>-->
 </menu>
