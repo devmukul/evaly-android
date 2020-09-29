@@ -142,7 +142,10 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     LinearLayout layoutDeliveryChargeHolder;
     @BindView(R.id.vatHolder)
     LinearLayout layoutVatHolder;
-
+    @BindView(R.id.llCashCollect)
+    LinearLayout llCashCollect;
+    @BindView(R.id.tvDeliveryFee)
+    TextView tvDeliveryFee;
 
     private double total_amount = 0.0, paid_amount = 0.0, due_amount = 0.0;
     private String shopSlug = "";
@@ -312,7 +315,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             }
             PaymentBottomSheet paymentBottomSheet = PaymentBottomSheet.newInstance(invoice_no, total_amount,
                     paid_amount, shopSlug.contains("food"), orderDetailsModel.getAllowed_payment_methods(),
-                    paymentMessage, disabledPaymentMethods, disabledPaymentMethodText, this);
+                    paymentMessage, disabledPaymentMethods, disabledPaymentMethodText, this, orderDetailsModel.isApplyDeliveryCharge(), orderDetailsModel.getDeliveryCharge());
             paymentBottomSheet.show(getSupportFragmentManager(), "payment");
         });
 
@@ -1021,6 +1024,13 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 } else if (orderStatus.equals("delivered")) {
                     indicator.setCurrentStep(6);
                     heroStatus.setText("Delivered the products");
+                }
+
+                if (orderDetailsModel.isApplyDeliveryCharge() && !orderDetailsModel.getOrderStatus().equalsIgnoreCase("delivered")){
+                    llCashCollect.setVisibility(View.VISIBLE);
+                    tvDeliveryFee.setText(Html.fromHtml("Please Collect Delivery Fee <b>৳"+ orderDetailsModel.getDeliveryCharge() +"</b> by Cash from Customer."));
+                }else{
+                    llCashCollect.setVisibility(View.GONE);
                 }
 
                 if ((orderStatus.equals("processing") ||

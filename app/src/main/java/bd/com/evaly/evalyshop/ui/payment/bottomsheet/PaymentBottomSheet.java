@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
     private ViewDialog dialog;
     private boolean isFood = false;
     private String[] paymentMethods;
-    private String balanceText;
+    private String balanceText, deliveryFee;
+    private boolean applyDeliveryFee;
     private String disabledPaymentMethods = "", disabledPaymentMethodText = "";
 
 
@@ -62,7 +64,9 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                                                  String balanceText,
                                                  String disabledPaymentMethods,
                                                  String disabledPaymentMethodText,
-                                                 PaymentOptionListener paymentOptionListener) {
+                                                 PaymentOptionListener paymentOptionListener,
+                                                 boolean applyDeliveryFee,
+                                                 String deliveryFee) {
         PaymentBottomSheet instance = new PaymentBottomSheet();
         paymentOptionRedirceListener = paymentOptionListener;
         Bundle bundle = new Bundle();
@@ -74,6 +78,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         bundle.putStringArray("payment_methods", paymentMethods);
         bundle.putString("balance_text", balanceText);
         bundle.putString("disabled_payment_methods", disabledPaymentMethods);
+        bundle.putBoolean("apply_delivery_fee", applyDeliveryFee);
+        bundle.putString("delivery_fee", deliveryFee);
         bundle.putString("disabled_payment_method_text", disabledPaymentMethodText);
         instance.setArguments(bundle);
         return instance;
@@ -112,6 +118,8 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             }
             disabledPaymentMethods = getArguments().getString("disabled_payment_methods");
             disabledPaymentMethodText = getArguments().getString("disabled_payment_method_text");
+            applyDeliveryFee = getArguments().getBoolean("apply_delivery_fee");
+            deliveryFee = getArguments().getString("delivery_fee");
         }
     }
 
@@ -161,6 +169,14 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         binding.confirm.setOnClickListener(view1 -> {
             onPaymentConfirmOnClick();
         });
+
+        if (applyDeliveryFee){
+            binding.llCashCollect.setVisibility(View.VISIBLE);
+            binding.tvDeliveryFee.setText(Html.fromHtml("Please Collect Delivery Fee <b>৳"+ deliveryFee +"</b> by Cash from Customer."));
+
+        }else{
+            binding.llCashCollect.setVisibility(View.GONE);
+        }
 
     }
 
