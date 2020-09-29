@@ -26,6 +26,14 @@ public class GeneralApiHelper extends BaseApiHelper {
         getiApiClient().getRootCategories().enqueue(getResponseCallBackDefault(listener));
     }
 
+    public static void getTopCategories(ResponseListenerAuth<CommonDataResponse<List<CategoryEntity>>, String> listener) {
+        getiApiClient().getTopCategories().enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void getSubCategories(String rootCategory, ResponseListenerAuth<List<CategoryEntity>, String> listener) {
+        getiApiClient().getSubCategories(rootCategory).enqueue(getResponseCallBackDefault(listener));
+    }
+
     public static void getBanners(ResponseListenerAuth<CommonResultResponse<List<BannerItem>>, String> listener) {
         getiApiClient().getBanners().enqueue(getResponseCallBackDefault(listener));
     }
@@ -39,17 +47,16 @@ public class GeneralApiHelper extends BaseApiHelper {
     public static void subscribeToShop(String token, String shopSlug, boolean subscribe, ResponseListenerAuth<JsonObject, String> listener) {
         if (subscribe) {
 
-            HashMap<String,String> body = new HashMap<>();
+            HashMap<String, String> body = new HashMap<>();
             body.put("shop_slug", shopSlug);
 
             getiApiClient().subscribeToShop(token, body).enqueue(getResponseCallBackDefault(listener));
-        }
-        else
+        } else
             getiApiClient().unsubscribeShop(token, shopSlug).enqueue(getResponseCallBackDefault(listener));
     }
 
 
-    public static void checkReferral(HashMap<String,String> body, ResponseListenerAuth<JsonObject, String> listener){
+    public static void checkReferral(HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
         getiApiClient().checkReferral(body.get("device_id"), body.get("referred_by"), body.get("token")).enqueue(getResponseCallBackDefault(listener));
     }
 

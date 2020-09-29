@@ -34,6 +34,8 @@ import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -41,7 +43,6 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
@@ -82,6 +83,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private Context context;
     private ArrayList<ShopItem> itemsList;
     private String shop_slug = "tvs-bangladesh";
+    private String shopName = "";
     private String shop_item_slug = "tvs-apache-rtr-160cc-single-disc";
     private int shop_item_id;
     private int quantityCount = 1;
@@ -95,6 +97,10 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     private CartEntity cartItem;
     private AvailableShopModel shopItem;
     private NavController navController;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private String deliveryChargeText = null;
+    private String deliveryChargeApplicable = null;
+
 
     public static BuyNowFragment newInstance(String shopSlug, String productSlug) {
         BuyNowFragment f = new BuyNowFragment();
@@ -233,6 +239,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         binding.productName.setText(cartItem.getName());
         binding.shopName.setText(String.format("Seller: %s", shopItem.getShopName()));
+        shopName = shopItem.getShopName();
         binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
         binding.quantity.setText("1");
         binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
@@ -299,7 +306,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        setupRemoteConfig();
         context = view.getContext();
 
         if (getActivity() instanceof MainActivity)
@@ -414,6 +421,43 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             else
                 deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign.");
 
+            LinearLayout deliveryChargeHolder = bottomSheetView.findViewById(R.id.deliveryChargeHolder);
+
+            if (isExpress) {
+                deliveryChargeHolder.setVisibility(View.VISIBLE);
+            } else {
+                deliveryChargeHolder.setVisibility(View.GONE);
+            }
+
+
+            boolean showDeliveryCharge = false;
+            if (deliveryChargeApplicable != null) {
+                String[] array = deliveryChargeApplicable.split(",");
+                for (String s : array) {
+                    if (shopName.toLowerCase().contains(s.toLowerCase())) {
+                        showDeliveryCharge = true;
+                        break;
+                    }
+                }
+            }
+
+            TextView tvDeliveryChargeText = bottomSheetView.findViewById(R.id.deliveryChargeText);
+            LinearLayout vatHolder = bottomSheetView.findViewById(R.id.vatHolder);
+            if (isExpress) {
+                deliveryDuration.setText("Delivery of the products will be completed within approximately 1 to 72 hours after payment depending on service.");
+            } else {
+                deliveryDuration.setText("Delivery will be made within 7 to 45 working days, depending on product and campaign");
+            }
+
+            if (showDeliveryCharge && isExpress) {
+                tvDeliveryChargeText.setText(deliveryChargeText);
+                deliveryChargeHolder.setVisibility(View.VISIBLE);
+                vatHolder.setVisibility(View.VISIBLE);
+            } else {
+                deliveryChargeHolder.setVisibility(View.GONE);
+                vatHolder.setVisibility(View.GONE);
+            }
+
             checkLocationPermission();
             bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
             bottomSheetDialog.show();
@@ -439,6 +483,27 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
             BottomSheetBehavior.from(bottomSheet).setHideable(true);
         });
         return bottomSheetDialog;
+    }
+
+    private void setupRemoteConfig() {
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(800)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+        checkRemoteConfig();
+    }
+
+    private void checkRemoteConfig() {
+        mFirebaseRemoteConfig
+                .fetchAndActivate()
+                .addOnCompleteListener(getActivity(), task -> {
+                    if (task.isSuccessful()) {
+                        deliveryChargeApplicable = mFirebaseRemoteConfig.getString("delivery_charge_applicable");
+                        deliveryChargeText = mFirebaseRemoteConfig.getString("delivery_charge_text");
+                    }
+                });
     }
 
     public void getProductDetails() {
@@ -492,6 +557,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         binding.productName.setText(firstItem.getShopItemName());
         binding.shopName.setText(String.format("Seller: %s", firstItem.getShopName()));
+        shopName = firstItem.getShopName();
         binding.price.setText(String.format("%s x 1", Utils.formatPriceSymbol(productPriceInt)));
         binding.priceTotal.setText(Utils.formatPriceSymbol(productPriceInt));
         binding.quantity.setText("1");
@@ -499,7 +565,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
         shop_item_id = firstItem.getShopItemId();
 
-        if (getContext() != null && this.isVisible() && !Objects.requireNonNull(getActivity()).isDestroyed())
+        if (getContext() != null && this.isVisible() && !requireActivity().isDestroyed())
             Glide.with(getContext())
                     .load(firstItem.getShopItemImage())
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -571,7 +637,7 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
 
                 if (response != null && getContext() != null) {
                     String errorMsg = response.get("message").getAsString();
-                   // Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
                     if (response.has("data") && response.getAsJsonArray("data").size() > 0) {
                         JsonArray data = response.getAsJsonArray("data");
                         JsonObject item = data.get(0).getAsJsonObject();

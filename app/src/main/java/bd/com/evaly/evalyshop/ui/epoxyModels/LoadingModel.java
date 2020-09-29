@@ -30,8 +30,10 @@ public abstract class LoadingModel extends EpoxyModelWithHolder<LoadingModel.Hol
         @Override
         protected void bindView(@NonNull View itemView) {
             this.itemView = itemView;
-            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) itemView.getLayoutParams();
-            params.setFullSpan(true);
+            if (itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) itemView.getLayoutParams();
+                params.setFullSpan(true);
+            }
             container = itemView.findViewById(R.id.container);
         }
     }

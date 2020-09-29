@@ -14,12 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
@@ -28,10 +26,8 @@ import bd.com.evaly.evalyshop.data.roomdb.express.ExpressServiceDao;
 import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
-import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
-import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -43,12 +39,10 @@ import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private MainActivity activity;
     private Context context;
-    private int currentPage = 1;
     private List<ProductItem> productItemList;
-    private boolean isLoading = false;
+    private boolean isLoading = true;
     private FragmentHomeBinding binding;
     private NavController navController;
     private HomeController homeController;
@@ -115,7 +109,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
 
         productItemList = new ArrayList<>();
-        homeController = new HomeController();
+
+        if (homeController == null)
+            homeController = new HomeController();
+        homeController.setFilterDuplicates(true);
         homeController.setActivity((AppCompatActivity) getActivity());
         homeController.setFragment(this);
         homeController.setHomeViewModel(viewModel);
@@ -130,60 +127,31 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.recyclerView.setLayoutManager(layoutManager);
 
         homeController.requestModelBuild();
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    visibleItemCount = layoutManager.getChildCount();
-                    totalItemCount = layoutManager.getItemCount();
-                    int[] firstVisibleItems = null;
-                    firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
-                    if (firstVisibleItems != null && firstVisibleItems.length > 0)
-                        pastVisiblesItems = firstVisibleItems[0];
-
-                    if (!isLoading)
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                            getProducts();
+            public void loadMoreItem() {
+                if (!isLoading) {
+                    viewModel.loadProducts();
+                    homeController.setLoadingMore(true);
+                    isLoading = true;
                 }
             }
         });
 
-        currentPage = 1;
-        getProducts();
+        liveEventObservers();
     }
 
-    private void getProducts() {
-        homeController.setLoadingMore(true);
-        isLoading = true;
-        ProductApiHelper.getCategoryBrandProducts(currentPage, "root", null, new ResponseListenerAuth<CommonResultResponse<List<ProductItem>>, String>() {
-            @Override
-            public void onDataFetched(CommonResultResponse<List<ProductItem>> response, int statusCode) {
-                if (binding == null)
-                    return;
-                homeController.setLoadingMore(false);
-                List<ProductItem> list = response.getData();
-                long timeInMill = Calendar.getInstance().getTimeInMillis();
-                for (ProductItem item : list)
-                    item.setUniqueId(item.getSlug() + timeInMill);
+    private void liveEventObservers() {
 
-                homeController.addData(list);
-                isLoading = false;
-
-                if (response.getCount() > 10)
-                    currentPage++;
-            }
-
-            @Override
-            public void onFailed(String errorBody, int errorCode) {
-                homeController.setLoadingMore(false);
-            }
-
-            @Override
-            public void onAuthError(boolean logout) {
-
-            }
+        viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
+            homeController.setLoadingMore(false);
+            homeController.addData(list);
+            homeController.requestModelBuild();
+            isLoading = false;
         });
+
     }
+
 
     @Override
     public void onResume() {
