@@ -1028,7 +1028,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
                 if (orderDetailsModel.isApplyDeliveryCharge() && !orderDetailsModel.getOrderStatus().equalsIgnoreCase("delivered")){
                     llCashCollect.setVisibility(View.VISIBLE);
-                    tvDeliveryFee.setText(Html.fromHtml("Please Collect Delivery Fee <b>৳"+ orderDetailsModel.getDeliveryCharge() +"</b> by Cash from Customer."));
+                    tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳"+ orderDetailsModel.getDeliveryCharge() +"</b> Cash to Delivery Hero."));
                 }else{
                     llCashCollect.setVisibility(View.GONE);
                 }

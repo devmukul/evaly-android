@@ -12,8 +12,8 @@
 
         <ImageView
             android:id="@+id/btn1Image"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
             android:layout_marginRight="5dp"
             android:adjustViewBounds="true"
             android:background="@drawable/btn_gradient_circle"
@@ -57,8 +57,8 @@
 
         <ImageView
             android:id="@+id/btn2Image"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="0"
@@ -90,8 +90,8 @@
 
         <ImageView
             android:id="@+id/btn3Image"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="0"
@@ -124,8 +124,8 @@
 
         <ImageView
             android:id="@+id/btn4Image"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
             android:layout_marginLeft="5dp"
             android:layout_weight="0"
             android:background="@drawable/ic_ellipse_1"
@@ -154,8 +154,8 @@
 
         <ImageView
             android:id="@+id/btn5Image"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
             android:layout_marginLeft="5dp"
             android:layout_weight="0"
             android:background="@drawable/ic_ellipse_1"
