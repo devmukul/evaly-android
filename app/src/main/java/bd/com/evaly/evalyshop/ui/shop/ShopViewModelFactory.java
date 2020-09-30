@@ -11,12 +11,14 @@ public class ShopViewModelFactory extends NewInstanceFactory{
     private String categorySlug;
     private String campaignSlug;
     private String shopSlug;
+    private String brandSlug;
 
-    public ShopViewModelFactory(String categorySlug, String campaignSlug, String shopSlug) {
+    public ShopViewModelFactory(String categorySlug, String campaignSlug, String shopSlug, String brandSlug) {
         super();
         this.categorySlug = categorySlug;
         this.campaignSlug = campaignSlug;
         this.shopSlug = shopSlug;
+        this.brandSlug = brandSlug;
     }
 
     @SuppressWarnings("unchecked")
@@ -24,11 +26,11 @@ public class ShopViewModelFactory extends NewInstanceFactory{
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ShopViewModel.class)) {
-            return (T) new ShopViewModel(categorySlug, campaignSlug, shopSlug);
+            return (T) new ShopViewModel(categorySlug, campaignSlug, shopSlug, brandSlug);
         }
 
         if (modelClass.isAssignableFrom(ShopQuickViewModel.class)) {
-            return (T) new ShopQuickViewModel(categorySlug, campaignSlug, shopSlug);
+            return (T) new ShopQuickViewModel(categorySlug, campaignSlug, shopSlug, brandSlug);
         }
 
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());

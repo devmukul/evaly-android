@@ -24,8 +24,10 @@ import bd.com.evaly.evalyshop.ui.epoxyModels.NoProductModel_;
 import bd.com.evaly.evalyshop.ui.express.products.model.ExpressTitleModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeCarouselModelModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressHeaderModel_;
-import bd.com.evaly.evalyshop.ui.home.model.HomeExpressItemModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel;
+import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.util.ToastUtils;
@@ -78,14 +80,14 @@ public class ExpressProductController extends EpoxyController {
     @Override
     protected void buildModels() {
 
-        for (int i = 0; i < 6; i++) {
-            new HomeExpressSkeletonModel_()
+        for (int i = 0; i < 10; i++) {
+            new HomeExpressServiceSkeletonModel_()
                     .id("express_dummy" + i)
                     .addIf(isExpressLoading && itemsExpress.size() == 0, this);
         }
 
         for (ExpressServiceModel model : itemsExpress) {
-            new HomeExpressItemModel_()
+            new HomeExpressServiceModel_()
                     .clickListener((model1, parentView, clickedView, position) -> {
                         if (model1.getModel().getSlug().equals("express-bullet-food")) {
                             Intent launchIntent = activity.getPackageManager().getLaunchIntentForPackage("bd.com.evaly.efood");

@@ -21,6 +21,7 @@ import java.util.Locale;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.HomeModelProductGridBinding;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.util.Utils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -74,16 +75,20 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
         }
 
         if ((model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
-            if (cashbackRate == 0) {
-                binding.tvCashback.setText("Unavailable");
-                binding.tvCashback.bringToFront();
-                binding.tvCashback.setVisibility(View.VISIBLE);
-                binding.price.setVisibility(View.GONE);
-            } else {
-                binding.price.setVisibility(View.VISIBLE);
-                binding.price.setText("Unavailable");
-                binding.tvCashback.setVisibility(View.GONE);
-            }
+//            if (cashbackRate == 0) {
+//                binding.tvCashback.setText("Unavailable");
+//                binding.tvCashback.bringToFront();
+//                binding.tvCashback.setVisibility(View.VISIBLE);
+//                binding.price.setVisibility(View.GONE);
+//            } else {
+//                binding.price.setVisibility(View.VISIBLE);
+//                binding.price.setText("Unavailable");
+//                binding.tvCashback.setVisibility(View.GONE);
+//            }
+            binding.tvCashback.setVisibility(View.GONE);
+            binding.price.setVisibility(View.GONE);
+            binding.price.setText(Utils.formatPriceSymbol(0));
+
         } else if (model.getMinDiscountedPriceD() != 0) {
 
             if (model.getMinDiscountedPriceD() < model.getMinPriceD()) {
@@ -106,7 +111,7 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
             binding.buyNow.setVisibility(View.VISIBLE);
             binding.buyNow.setOnClickListener(buyNowClickListener);
             binding.stock.setVisibility(View.VISIBLE);
-            if (model.getInStock() < 1) {
+            if (model.getInStock() < 1 || (model.getMinPriceD() == 0) || (model.getMaxPriceD() == 0)) {
                 binding.stock.setText(R.string.contact_seller);
             } else
                 binding.stock.setText(R.string.stock_available);

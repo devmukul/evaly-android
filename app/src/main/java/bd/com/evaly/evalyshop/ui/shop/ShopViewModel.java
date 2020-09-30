@@ -34,6 +34,7 @@ public class ShopViewModel extends ViewModel {
     private MutableLiveData<TabsItem> selectedCategoryLiveData = new MutableLiveData<>();
     private String categorySlug;
     private String campaignSlug;
+    private String brandSlug;
     private String shopSlug;
     private int currentPage = 1;
     private int categoryCurrentPage = 1;
@@ -46,11 +47,12 @@ public class ShopViewModel extends ViewModel {
     private boolean isShop = true;
 
 
-    public ShopViewModel(String categorySlug, String campaignSlug, String shopSlug) {
+    public ShopViewModel(String categorySlug, String campaignSlug, String shopSlug, String brandSlug) {
         super();
         this.categorySlug = categorySlug;
         this.campaignSlug = campaignSlug;
         this.shopSlug = shopSlug;
+        this.brandSlug = brandSlug;
 
         currentPage = 1;
         categoryCurrentPage = 1;
@@ -150,6 +152,10 @@ public class ShopViewModel extends ViewModel {
         this.buyNowLiveData.setValue(slug);
     }
 
+    public void setBrandSlug(String brandSlug) {
+        this.brandSlug = brandSlug;
+    }
+
     public LiveData<TabsItem> getSelectedCategoryLiveData() {
         return selectedCategoryLiveData;
     }
@@ -213,7 +219,7 @@ public class ShopViewModel extends ViewModel {
 
     public void loadShopProducts() {
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
 

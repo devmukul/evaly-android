@@ -586,11 +586,13 @@
                     android:visibility="gone"
                     android:paddingHorizontal="10dp">
 
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_delivery_fee"></ImageView>
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/ic_delivery_fee" />
 
                     <TextView
                         android:id="@+id/tvDeliveryFee"

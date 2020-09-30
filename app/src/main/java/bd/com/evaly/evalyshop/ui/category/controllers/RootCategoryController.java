@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.category.controllers;
 
 
+import android.graphics.Color;
 import android.view.View;
 
 import com.airbnb.epoxy.AutoModel;
@@ -75,9 +76,12 @@ public class RootCategoryController extends EpoxyController {
                     .onBind((model, view, position) -> {
                         ItemRootCategoryBinding binding = (ItemRootCategoryBinding) view.getDataBinding();
                         if (model.model.isSelected()) {
+                            binding.categoryItem.setBackgroundColor(Color.parseColor("#ffffff"));
                             binding.selectedBrd.setVisibility(View.VISIBLE);
-                        } else
+                        } else {
+                            binding.categoryItem.setBackgroundColor(Color.parseColor("#FBFCFF"));
                             binding.selectedBrd.setVisibility(View.GONE);
+                        }
                     })
                     .addTo(this);
         }

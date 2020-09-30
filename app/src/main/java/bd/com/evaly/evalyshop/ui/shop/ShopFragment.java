@@ -25,11 +25,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentShopBinding;
@@ -70,6 +67,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private FragmentShopBinding binding;
     private Shop shopDetailsModel;
     private ShopDetailsModel fullShopDetailsModel;
+    private String brandSlug;
 
     public ShopFragment() {
 
@@ -105,9 +103,16 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             campaign_slug = getArguments().getString("campaign_slug");
 
         slug = getArguments().getString("shop_slug");
-        viewModelFactory = new ShopViewModelFactory(categorySlug, campaign_slug, slug);
+
+        brandSlug = null;
+        if (getArguments().containsKey("brand_slug")) {
+            brandSlug = getArguments().getString("brand_slug");
+        }
+
+        viewModelFactory = new ShopViewModelFactory(categorySlug, campaign_slug, slug, brandSlug);
         viewModel = new ViewModelProvider(this, viewModelFactory).get(ShopViewModel.class);
         binding.swipeRefresh.setOnRefreshListener(this);
+
 
         if (!Utils.isNetworkAvailable(getContext()))
             new NetworkErrorDialog(getContext(), new NetworkErrorDialogListener() {
@@ -130,6 +135,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             bundle.putString("shop_slug", slug);
             bundle.putString("shop_name", shopDetailsModel.getName());
             bundle.putString("campaign_slug", campaign_slug);
+            bundle.putString("brand_slug", brandSlug);
             NavHostFragment.findNavController(this).navigate(R.id.shopSearchActivity, bundle);
         });
 
@@ -328,10 +334,10 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     Logger.d(new Gson().toJson(shopDetailsModel));
                     RosterTable rosterTable = new RosterTable();
                     rosterTable.name = shopDetailsModel.getName();
-                    if (shopDetailsModel.getOwnerName() == null || shopDetailsModel.getOwnerName().isEmpty()){
-                        rosterTable.id = shopDetailsModel.getContactNumber() +"@"+Constants.XMPP_HOST;
-                    }else{
-                        rosterTable.id = shopDetailsModel.getOwnerName() +"@"+Constants.XMPP_HOST;
+                    if (shopDetailsModel.getOwnerName() == null || shopDetailsModel.getOwnerName().isEmpty()) {
+                        rosterTable.id = shopDetailsModel.getContactNumber() + "@" + Constants.XMPP_HOST;
+                    } else {
+                        rosterTable.id = shopDetailsModel.getOwnerName() + "@" + Constants.XMPP_HOST;
                     }
 
                     rosterTable.imageUrl = shopDetailsModel.getLogoImage();
@@ -349,12 +355,12 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                     startActivity(launchIntent);
                 }
-            }catch (ActivityNotFoundException e){
+            } catch (ActivityNotFoundException e) {
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
                 } catch (android.content.ActivityNotFoundException anfe) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
-                } catch (Exception e2){
+                } catch (Exception e2) {
                     ToastUtils.show("Please install eConnect app from Google Play Store");
                 }
             }

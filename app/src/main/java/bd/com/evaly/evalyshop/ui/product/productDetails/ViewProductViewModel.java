@@ -97,7 +97,7 @@ public class ViewProductViewModel extends ViewModel {
 
     public void loadShopDetails(String shopSlug, String campaignSlug) {
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, 1, 0, null, campaignSlug, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, 1, 0, null, campaignSlug, null, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetails.setValue(response);

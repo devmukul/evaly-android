@@ -79,7 +79,7 @@ public class SubCategoryController extends EpoxyController {
                 .image(R.drawable.ic_category)
                 .width(60)
                 .imageTint("#888888")
-                .spanSizeOverride((totalSpanCount, position, itemCount) -> 2)
+                .spanSizeOverride((totalSpanCount, position, itemCount) -> 3)
                 .addIf(items.size() == 0 && !loadingMore, this);
 
         loader
@@ -93,7 +93,7 @@ public class SubCategoryController extends EpoxyController {
                         params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     }
                 })
-                .spanSizeOverride((totalSpanCount, position, itemCount) -> 2)
+                .spanSizeOverride((totalSpanCount, position, itemCount) -> 3)
                 .addIf(loadingMore, this);
 
     }

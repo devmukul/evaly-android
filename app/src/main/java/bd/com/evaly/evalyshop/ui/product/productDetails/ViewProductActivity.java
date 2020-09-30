@@ -46,7 +46,6 @@ import java.util.TreeMap;
 import java.util.concurrent.Executors;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartEntity;
@@ -121,10 +120,8 @@ public class ViewProductActivity extends BaseActivity {
     private LocationManager lm;
 
     private String shopSlug = null;
+    private String cashbackText = null;
     private AvailableShopModel toRemoveModel = null;
-
-    AppController mChatApp = AppController.getInstance();
-
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
 
@@ -167,6 +164,9 @@ public class ViewProductActivity extends BaseActivity {
 
         if (getIntent().hasExtra("shop_slug"))
             shopSlug = getIntent().getStringExtra("shop_slug");
+
+        if (getIntent().hasExtra("cashback_text"))
+            cashbackText = getIntent().getStringExtra("cashback_text");
 
         AppDatabase appDatabase = AppDatabase.getInstance(this);
         wishListDao = appDatabase.wishListDao();
@@ -335,7 +335,7 @@ public class ViewProductActivity extends BaseActivity {
                 summaryModel.getStar1(),
         };
 
-        binding.review.ratingAverage.setText(summaryModel.getAvgRating() + "");
+        binding.review.ratingAverage.setText(Utils.formatPrice(summaryModel.getAvgRating()));
         binding.review.ratingCounter.setText(summaryModel.getTotalRatings() + "");
         binding.review.ratingBar.setRating((float) summaryModel.getAvgRating());
 
@@ -680,6 +680,12 @@ public class ViewProductActivity extends BaseActivity {
 
     private void inflateShopDetails(AvailableShopModel shop) {
 
+        if (cashbackText != null) {
+            binding.tvCashback.setVisibility(View.VISIBLE);
+            binding.tvCashback.setText(cashbackText.replaceAll(".00", ""));
+        } else
+            binding.tvCashback.setVisibility(View.GONE);
+
         binding.selectedShopHolder.setVisibility(View.VISIBLE);
         binding.shopName.setText(shop.getShopName());
 
@@ -699,7 +705,7 @@ public class ViewProductActivity extends BaseActivity {
         else
             binding.shopPhone.setText(shop.getContactNumber());
 
-        if (shop.getInStock()  < 1)
+        if (shop.getInStock() < 1)
             binding.stock.setText(R.string.stock_color_contact_seller);
         else
             binding.stock.setText(R.string.stock_colon_available);
@@ -721,7 +727,7 @@ public class ViewProductActivity extends BaseActivity {
             binding.maxPrice.setPaintFlags(binding.maxPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
-        if (shop.getPrice() == 0 || shop.getDiscountedPrice() == 0)
+        if (shop.getPrice() == 0)
             binding.buyNowHolder.setVisibility(View.GONE);
         else
             binding.buyNowHolder.setVisibility(View.VISIBLE);
@@ -931,7 +937,6 @@ public class ViewProductActivity extends BaseActivity {
             });
         viewModel.createPost(createPostModel);
     }
-
 
 
     public void hideProductHolder() {

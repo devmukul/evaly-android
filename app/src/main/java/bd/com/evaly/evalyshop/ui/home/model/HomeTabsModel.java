@@ -80,7 +80,7 @@ public abstract class HomeTabsModel extends EpoxyModelWithHolder<HomeTabsModel.H
 
             binding.viewPager.setOffscreenPageLimit(3);
             binding.viewPager.setAdapter(pager);
-            binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
+            //binding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
             binding.tabLayout.setSmoothScrollingEnabled(true);
 
             new TabLayoutMediator(binding.tabLayout, binding.viewPager,

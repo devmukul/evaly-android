@@ -15,9 +15,7 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
-import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
-import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ShopApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
@@ -34,26 +32,25 @@ public class ShopQuickViewModel extends ViewModel {
 
     private String categorySlug;
     private String campaignSlug;
+    private String brandSlug;
     private String shopSlug;
     private int currentPage = 1;
     private int categoryCurrentPage = 1;
     private Integer categoryCount = null;
     private boolean isCategoryLoading = false;
 
-    public ShopQuickViewModel(String categorySlug, String campaignSlug, String shopSlug) {
+    public ShopQuickViewModel(String categorySlug, String campaignSlug, String shopSlug, String brandSlug) {
         super();
         this.categorySlug = categorySlug;
         this.campaignSlug = campaignSlug;
         this.shopSlug = shopSlug;
-
+        this.brandSlug = brandSlug;
         currentPage = 1;
         categoryCurrentPage = 1;
-
         if (shopSlug != null) {
             loadShopProducts();
             loadShopCategories();
         }
-
     }
 
     public void clear() {
@@ -143,7 +140,7 @@ public class ShopQuickViewModel extends ViewModel {
 
     public void loadShopProducts() {
 
-        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, new ResponseListenerAuth<ShopDetailsModel, String>() {
+        ShopApiHelper.getShopDetailsItem(CredentialManager.getToken(), shopSlug, currentPage, 21, categorySlug, campaignSlug, null, brandSlug, new ResponseListenerAuth<ShopDetailsModel, String>() {
             @Override
             public void onDataFetched(ShopDetailsModel response, int statusCode) {
                 shopDetailsLiveData.setValue(response);
@@ -166,6 +163,9 @@ public class ShopQuickViewModel extends ViewModel {
         });
     }
 
+    public void setBrandSlug(String brandSlug) {
+        this.brandSlug = brandSlug;
+    }
 
     public void loadShopCategories() {
 

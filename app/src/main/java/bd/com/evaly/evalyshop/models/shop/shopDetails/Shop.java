@@ -7,214 +7,225 @@ import java.util.List;
 
 public class Shop implements Serializable {
 
-	@SerializedName("image")
-	private String image;
+    @SerializedName("image")
+    private String image;
 
-	@SerializedName("owner_name")
-	private String ownerName;
+    @SerializedName("owner_name")
+    private String ownerName;
 
-	@SerializedName("address")
-	private String address;
+    @SerializedName("address")
+    private String address;
 
-	@SerializedName("bank_info")
-	private Object bankInfo;
+    @SerializedName("bank_info")
+    private Object bankInfo;
 
-	@SerializedName("latitude")
-	private String latitude;
+    @SerializedName("latitude")
+    private String latitude;
 
-	@SerializedName("nid")
-	private Object nid;
+    @SerializedName("nid")
+    private Object nid;
 
-	@SerializedName("description")
-	private Object description;
+    @SerializedName("description")
+    private Object description;
 
-	@SerializedName("logo_image")
-	private String logoImage;
+    @SerializedName("logo_image")
+    private String logoImage;
 
-	@SerializedName("contact_number")
-	private String contactNumber;
+    @SerializedName("contact_number")
+    private String contactNumber;
 
-	@SerializedName("shop_delivery_options")
-	private List<ShopDeliveryOption> shopDeliveryOptions;
+    @SerializedName("shop_delivery_options")
+    private List<ShopDeliveryOption> shopDeliveryOptions;
 
-	@SerializedName("approved")
-	private boolean approved;
+    @SerializedName("approved")
+    private boolean approved;
 
-	@SerializedName("trade_license")
-	private Object tradeLicense;
+    @SerializedName("trade_license")
+    private Object tradeLicense;
 
-	@SerializedName("name")
-	private String name;
+    @SerializedName("name")
+    private String name;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("slug")
-	private String slug;
+    @SerializedName("slug")
+    private String slug;
 
-	@SerializedName("longitude")
-	private String longitude;
+    @SerializedName("longitude")
+    private String longitude;
 
-	@SerializedName("status")
-	private String status;
+    @SerializedName("status")
+    private String status;
 
-	public void setImage(String image){
-		this.image = image;
-	}
+    @SerializedName("campaign")
+    private Campaign campaign;
 
-	public String getImage(){
-		return image;
-	}
+    public Campaign getCampaign() {
+        return campaign;
+    }
 
-	public void setOwnerName(String ownerName){
-		this.ownerName = ownerName;
-	}
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
 
-	public String getOwnerName(){
-		return ownerName;
-	}
+    public void setImage(String image) {
+        this.image = image;
+    }
 
-	public void setAddress(String address){
-		this.address = address;
-	}
+    public String getImage() {
+        return image;
+    }
 
-	public String getAddress(){
-		return address;
-	}
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
 
-	public void setBankInfo(Object bankInfo){
-		this.bankInfo = bankInfo;
-	}
+    public String getOwnerName() {
+        return ownerName;
+    }
 
-	public Object getBankInfo(){
-		return bankInfo;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setLatitude(String latitude){
-		this.latitude = latitude;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public String getLatitude(){
-		return latitude;
-	}
+    public void setBankInfo(Object bankInfo) {
+        this.bankInfo = bankInfo;
+    }
 
-	public void setNid(Object nid){
-		this.nid = nid;
-	}
+    public Object getBankInfo() {
+        return bankInfo;
+    }
 
-	public Object getNid(){
-		return nid;
-	}
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
 
-	public void setDescription(Object description){
-		this.description = description;
-	}
+    public String getLatitude() {
+        return latitude;
+    }
 
-	public Object getDescription(){
-		return description;
-	}
+    public void setNid(Object nid) {
+        this.nid = nid;
+    }
 
-	public void setLogoImage(String logoImage){
-		this.logoImage = logoImage;
-	}
+    public Object getNid() {
+        return nid;
+    }
 
-	public String getLogoImage(){
-		return logoImage;
-	}
+    public void setDescription(Object description) {
+        this.description = description;
+    }
 
-	public void setContactNumber(String contactNumber){
-		this.contactNumber = contactNumber;
-	}
+    public Object getDescription() {
+        return description;
+    }
 
-	public String getContactNumber(){
-		return contactNumber;
-	}
+    public void setLogoImage(String logoImage) {
+        this.logoImage = logoImage;
+    }
 
-	public void setShopDeliveryOptions(List<ShopDeliveryOption> shopDeliveryOptions){
-		this.shopDeliveryOptions = shopDeliveryOptions;
-	}
+    public String getLogoImage() {
+        return logoImage;
+    }
 
-	public List<ShopDeliveryOption> getShopDeliveryOptions(){
-		return shopDeliveryOptions;
-	}
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
 
-	public void setApproved(boolean approved){
-		this.approved = approved;
-	}
+    public String getContactNumber() {
+        return contactNumber;
+    }
 
-	public boolean isApproved(){
-		return approved;
-	}
+    public void setShopDeliveryOptions(List<ShopDeliveryOption> shopDeliveryOptions) {
+        this.shopDeliveryOptions = shopDeliveryOptions;
+    }
 
-	public void setTradeLicense(Object tradeLicense){
-		this.tradeLicense = tradeLicense;
-	}
+    public List<ShopDeliveryOption> getShopDeliveryOptions() {
+        return shopDeliveryOptions;
+    }
 
-	public Object getTradeLicense(){
-		return tradeLicense;
-	}
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public boolean isApproved() {
+        return approved;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public void setTradeLicense(Object tradeLicense) {
+        this.tradeLicense = tradeLicense;
+    }
 
-	public void setId(int id){
-		this.id = id;
-	}
+    public Object getTradeLicense() {
+        return tradeLicense;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setSlug(String slug){
-		this.slug = slug;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getSlug(){
-		return slug;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setLongitude(String longitude){
-		this.longitude = longitude;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getLongitude(){
-		return longitude;
-	}
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
-	public void setStatus(String status){
-		this.status = status;
-	}
+    public String getSlug() {
+        return slug;
+    }
 
-	public String getStatus(){
-		return status;
-	}
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"Shop{" + 
-			"image = '" + image + '\'' + 
-			",owner_name = '" + ownerName + '\'' + 
-			",address = '" + address + '\'' + 
-			",bank_info = '" + bankInfo + '\'' + 
-			",latitude = '" + latitude + '\'' + 
-			",nid = '" + nid + '\'' + 
-			",description = '" + description + '\'' + 
-			",logo_image = '" + logoImage + '\'' + 
-			",contact_number = '" + contactNumber + '\'' + 
-			",shop_delivery_options = '" + shopDeliveryOptions + '\'' + 
-			",approved = '" + approved + '\'' + 
-			",trade_license = '" + tradeLicense + '\'' + 
-			",name = '" + name + '\'' + 
-			",id = '" + id + '\'' + 
-			",slug = '" + slug + '\'' + 
-			",longitude = '" + longitude + '\'' + 
-			",status = '" + status + '\'' + 
-			"}";
-		}
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Shop{" +
+                        "image = '" + image + '\'' +
+                        ",owner_name = '" + ownerName + '\'' +
+                        ",address = '" + address + '\'' +
+                        ",bank_info = '" + bankInfo + '\'' +
+                        ",latitude = '" + latitude + '\'' +
+                        ",nid = '" + nid + '\'' +
+                        ",description = '" + description + '\'' +
+                        ",logo_image = '" + logoImage + '\'' +
+                        ",contact_number = '" + contactNumber + '\'' +
+                        ",shop_delivery_options = '" + shopDeliveryOptions + '\'' +
+                        ",approved = '" + approved + '\'' +
+                        ",trade_license = '" + tradeLicense + '\'' +
+                        ",name = '" + name + '\'' +
+                        ",id = '" + id + '\'' +
+                        ",slug = '" + slug + '\'' +
+                        ",longitude = '" + longitude + '\'' +
+                        ",status = '" + status + '\'' +
+                        "}";
+    }
 }

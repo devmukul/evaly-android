@@ -42,6 +42,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.ReviewsApiHelper;
 import bd.com.evaly.evalyshop.ui.reviews.adapter.ReviewsAdapter;
+import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
 import bd.com.evaly.evalyshop.util.reviewratings.RatingReviews;
@@ -160,7 +161,7 @@ public class ReviewsActivity extends AppCompatActivity {
                     star_1
             };
 
-            ((TextView) findViewById(R.id.rating_average)).setText(avg_ratings + "");
+            ((TextView) findViewById(R.id.rating_average)).setText(Utils.formatPrice(avg_ratings));
             ((TextView) findViewById(R.id.rating_counter)).setText(total_ratings + " ratings");
             ((RatingBar) findViewById(R.id.ratingBar)).setRating((float) avg_ratings);
 
