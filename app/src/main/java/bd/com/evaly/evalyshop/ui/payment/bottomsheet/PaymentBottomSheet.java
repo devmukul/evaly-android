@@ -172,7 +172,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
 
         if (applyDeliveryFee){
             binding.llCashCollect.setVisibility(View.VISIBLE);
-            binding.tvDeliveryFee.setText(Html.fromHtml("Please Collect Delivery Fee <b>৳"+ deliveryFee +"</b> by Cash from Customer."));
+            binding.tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳"+ deliveryFee +"</b> Cash to Delivery Hero."));
 
         }else{
             binding.llCashCollect.setVisibility(View.GONE);
