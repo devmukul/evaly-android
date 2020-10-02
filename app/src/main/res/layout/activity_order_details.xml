@@ -583,7 +583,9 @@
                     android:layout_marginBottom="20dp"
                     android:background="@drawable/bg_deliver_fee"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="15dp">
+                    android:visibility="gone"
+                    android:paddingHorizontal="10dp">
+
 
                     <ImageView
                         android:layout_width="20dp"
