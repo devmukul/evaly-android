@@ -8,7 +8,7 @@
 
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
-            <solid android:color="#bd1f26"/>
+            <solid android:color="#000"/>
 
 
             <corners
@@ -26,7 +26,7 @@
 
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
-            <solid android:color="#bd1f26"/>
+            <solid android:color="#000"/>
 
 
             <corners
