@@ -80,7 +80,7 @@ public class ExpressProductController extends EpoxyController {
     @Override
     protected void buildModels() {
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 12; i++) {
             new HomeExpressServiceSkeletonModel_()
                     .id("express_dummy" + i)
                     .addIf(isExpressLoading && itemsExpress.size() == 0, this);
@@ -107,6 +107,7 @@ public class ExpressProductController extends EpoxyController {
                     })
                     .id(model.getSlug())
                     .model(model)
+                    .fontSize(13)
                     .addTo(this);
         }
     }

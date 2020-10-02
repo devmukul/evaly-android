@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
+import android.util.TypedValue;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,9 @@ public abstract class HomeExpressServiceModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
+
+    @EpoxyAttribute
+    int fontSize;
 
     public ExpressServiceModel getModel() {
         return model;
@@ -60,6 +64,8 @@ public abstract class HomeExpressServiceModel extends DataBindingEpoxyModel {
         binding.image.setPadding(0, 0, 0, 0);
 
         binding.title.setText(name.replace("\\n", "\n"));
+        if (fontSize > 0)
+            binding.title.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
         binding.getRoot().setOnClickListener(clickListener);
     }
 

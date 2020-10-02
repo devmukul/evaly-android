@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BalanceFragmentBinding;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 
 public class BalanceFragment extends BottomSheetDialogFragment {
 
@@ -43,7 +44,7 @@ public class BalanceFragment extends BottomSheetDialogFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(BalanceViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(BalanceViewModel.class);
 
         binding.balanceHolder.setVisibility(View.GONE);
         binding.balanceHolder2.setVisibility(View.GONE);
@@ -65,6 +66,7 @@ public class BalanceFragment extends BottomSheetDialogFragment {
             else
                 binding.claimCashback.setVisibility(View.VISIBLE);
 
+            CredentialManager.setBalance(balanceModel.getBalance());
         });
 
         mViewModel.updateBalance();
@@ -76,10 +78,10 @@ public class BalanceFragment extends BottomSheetDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BottomSheetDialog bottomSheetDialog=(BottomSheetDialog)super.onCreateDialog(savedInstanceState);
+        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         bottomSheetDialog.setOnShowListener(dialog -> {
             BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
-            FrameLayout bottomSheet =  dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            FrameLayout bottomSheet = dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
             BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
             BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
             BottomSheetBehavior.from(bottomSheet).setHideable(true);

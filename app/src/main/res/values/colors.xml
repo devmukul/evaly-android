@@ -2,7 +2,8 @@
 <resources>
     <color name="colorPrimary">#fff</color>
     <color name="colorPrimaryDark">#fff</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccentOld">#D81B60</color>
+    <color name="colorAccent">#000000</color>
     <color name="colorAccentBlue">#6c81f7</color>
 
     <color name="fff">#fff</color>
@@ -34,8 +35,9 @@
     <color name="separator_light">#FAFAFA</color>
 
 
-    <color name="evaly_color">#bd1f26</color>
-    <color name="transaction_color">#666ee4</color>
+    <color name="evaly_color_old">#bd1f26</color>
+    <color name="evaly_color">#000000</color>
+    <color name="transaction_color">#000000</color>
 
     <color name="green">#38A169</color>
     <color name="red_app">#d21034</color>
