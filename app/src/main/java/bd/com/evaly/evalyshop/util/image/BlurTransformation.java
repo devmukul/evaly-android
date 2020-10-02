@@ -44,7 +44,7 @@ public class BlurTransformation extends BitmapTransformation {
         // Copy the output to the blurred bitmap
         output.copyTo(blurredBitmap);
 
-        toTransform.recycle();
+       // toTransform.recycle();
 
         return blurredBitmap;
     }

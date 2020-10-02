@@ -65,7 +65,7 @@ public class InitializeActionBar {
 
     public void getNotificationCount() {
 
-        if (Calendar.getInstance().getTimeInMillis() - CredentialManager.getMessageCounterLastUpdated() < 600000){
+        if (Calendar.getInstance().getTimeInMillis() - CredentialManager.getMessageCounterLastUpdated() < 600000) {
             updateHotCount(CredentialManager.getMessageCount());
             return;
         }
@@ -125,6 +125,11 @@ public class InitializeActionBar {
                 context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "bd.com.evaly.econnect")));
             } catch (android.content.ActivityNotFoundException anfe) {
                 context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+                try {
+                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "bd.com.evaly.econnect")));
+                } catch (Exception e3) {
+                    ToastUtils.show("Couldn't open eConnect, please install from Google Playstore");
+                }
             }
         }
     }

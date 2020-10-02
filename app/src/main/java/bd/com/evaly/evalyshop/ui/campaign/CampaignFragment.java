@@ -251,6 +251,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             darkStatusBar();
             binding.backArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
             binding.clearSearch.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+            binding.buttonRight.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
             binding.searchText.setTextColor(Color.parseColor("#777777"));
             binding.searchText.setHintTextColor(Color.parseColor("#777777"));
             binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_light));
@@ -265,6 +266,8 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                     getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
                 }
             }
+
+            binding.buttonRight.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
             binding.backArrow.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
             binding.clearSearch.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
             binding.searchText.setTextColor(Color.parseColor("#ffffff"));

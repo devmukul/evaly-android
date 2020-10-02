@@ -254,7 +254,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 } else {
                     if (getContext() != null) {
                         dialog.hideDialog();
-                        Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        ToastUtils.show(response.getMessage());
                         if (response.getSuccess())
                             onSuccess();
                     }
@@ -267,7 +267,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 if (getContext() != null) {
                     Logger.d(errorBody);
                     dialog.hideDialog();
-                    Toast.makeText(getContext(), "Couldn't request refund, try again later", Toast.LENGTH_SHORT).show();
+                    ToastUtils.show("Couldn't request refund, try again later");
                 }
             }
 
@@ -331,7 +331,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             @Override
             public void onFailed(String errorBody, int errorCode) {
                 dialog.hideDialog();
-                Toast.makeText(getActivity().getApplicationContext(), R.string.something_wrong, Toast.LENGTH_LONG).show();
+                ToastUtils.show(R.string.something_wrong);
             }
 
             @Override

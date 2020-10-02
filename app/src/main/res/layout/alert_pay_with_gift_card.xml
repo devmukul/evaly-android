@@ -32,7 +32,7 @@
             android:adjustViewBounds="true"
             android:paddingLeft="15dp"
             android:paddingBottom="15dp"
-            app:srcCompat="@drawable/ic_close" />
+            app:srcCompat="@drawable/ic_close_new" />
 
 
     </LinearLayout>
