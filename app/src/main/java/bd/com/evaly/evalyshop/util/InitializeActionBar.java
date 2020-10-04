@@ -110,8 +110,8 @@ public class InitializeActionBar {
     }
 
     private void openEconnect() {
-        Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
         try {
+            Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
             if (launchIntent != null) {
                 launchIntent.putExtra("to", "OPEN_CHAT_LIST");
                 launchIntent.putExtra("user", CredentialManager.getUserName());

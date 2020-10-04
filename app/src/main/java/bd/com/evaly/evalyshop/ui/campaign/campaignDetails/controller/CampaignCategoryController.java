@@ -23,7 +23,6 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignCategoryController extends EpoxyController {
 
@@ -32,6 +31,10 @@ public class CampaignCategoryController extends EpoxyController {
     private boolean isLoading = true;
     private CampaignDetailsViewModel viewModel;
     private AppCompatActivity activity;
+
+    public CampaignCategoryController(){
+        setFilterDuplicates(true);
+    }
 
     @Override
     protected void buildModels() {

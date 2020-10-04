@@ -308,6 +308,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         if (productController == null)
             productController = new CampaignController();
         productController.setNavController(navController);
+        productController.setFilterDuplicates(true);
         productController.setActivity((AppCompatActivity) getActivity());
         binding.recyclerView.setAdapter(productController.getAdapter());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -350,7 +351,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     private void initHeader(String url) {
         Glide.with(binding.coverImage)
-                .asBitmap()
                 .load(url == null ? R.drawable.bg_fafafa_round : url)
                 .load(BindingUtils.generateResizeUrl(url, 1450, 460, false))
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 2)))

@@ -34,6 +34,10 @@ public class CampaignController extends EpoxyController {
     private boolean isLoading = true;
     private AppCompatActivity activity;
 
+    public CampaignController(){
+        setFilterDuplicates(true);
+    }
+
     @Override
     protected void buildModels() {
 

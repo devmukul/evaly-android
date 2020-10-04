@@ -187,8 +187,8 @@ public class UserDashboardActivity extends BaseActivity {
     @OnClick(R.id.llMessage)
     void gotoMessage() {
 
-        Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
         try {
+            Intent launchIntent = new Intent("bd.com.evaly.econnect.OPEN_MAINACTIVITY");
             launchIntent.putExtra("to", "OPEN_CHAT_LIST");
             launchIntent.putExtra("user", CredentialManager.getUserName());
             launchIntent.putExtra("password", CredentialManager.getPassword());
