@@ -46,9 +46,9 @@
         <LinearLayout
             android:id="@+id/home_search"
             android:layout_width="match_parent"
-            android:layout_height="43dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
             android:layout_weight="1"
             android:background="@drawable/btn_search_light"
             android:clickable="true"

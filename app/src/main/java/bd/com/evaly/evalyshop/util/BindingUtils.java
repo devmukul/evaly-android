@@ -32,7 +32,7 @@ public class BindingUtils {
                 .into(view);
     }
 
-    public static void setImage(ImageView view, String url, int placeHolder, int errorImage, int width, int height) {
+    public static void setImage(ImageView view, String url, int placeHolder, int errorImage, int width, int height, boolean whiteBg) {
         if (url == null)
             return;
         url = url.replace("\n\r", "");
@@ -41,7 +41,7 @@ public class BindingUtils {
         if (url.contains("/media.evaly.com.bd/"))
             Glide.with(view.getContext())
                     .asBitmap()
-                    .load(generateResizeUrl(url, width, height))
+                    .load(generateResizeUrl(url, width, height, whiteBg))
                     .error(errorImage)
                     .placeholder(placeHolder)
                     .into(view);
@@ -56,7 +56,7 @@ public class BindingUtils {
     }
 
 
-    public static String generateResizeUrl(String url, int width, int height) {
+    public static String generateResizeUrl(String url, int width, int height, boolean whiteBg) {
 
         String[] split = url.split("/media.evaly.com.bd/");
 
@@ -70,7 +70,10 @@ public class BindingUtils {
 
         // resize
         Resize resize = new Resize();
-        resize.setFit("cover");
+        if (whiteBg)
+            resize.setFit("contain");
+        else
+            resize.setFit("cover");
         resize.setWidth(width);
         resize.setHeight(height);
         edits.setResize(resize);

@@ -232,7 +232,7 @@ public class CampaignDetailsFragment extends Fragment {
             binding.collapsingToolbar.setStatusBarScrimColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             requireActivity().getWindow().setStatusBarColor(Color.parseColor(model.getBannerPrimaryBgColor()));
         }
-        BindingUtils.setImage(binding.bannerImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460);
+        BindingUtils.setImage(binding.bannerImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460, false);
         binding.title.setText(model.getName());
     }
 

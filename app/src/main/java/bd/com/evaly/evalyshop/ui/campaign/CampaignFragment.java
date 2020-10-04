@@ -352,7 +352,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         Glide.with(binding.coverImage)
                 .asBitmap()
                 .load(url == null ? R.drawable.bg_fafafa_round : url)
-                .load(BindingUtils.generateResizeUrl(url, 1450, 460))
+                .load(BindingUtils.generateResizeUrl(url, 1450, 460, false))
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 2)))
                 .into(binding.coverImage);
     }

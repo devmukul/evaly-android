@@ -38,7 +38,7 @@ public abstract class CampaignShopModel extends DataBindingEpoxyModel {
         binding.title.setText(Html.fromHtml(model.getName()));
 
 
-        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300);
+        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, true);
 
 
         binding.getRoot().setOnClickListener(clickListener);
