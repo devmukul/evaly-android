@@ -131,6 +131,8 @@ public class InitializeActionBar {
                     ToastUtils.show("Couldn't open eConnect, please install from Google Playstore");
                 }
             }
+        } catch (Exception ee){
+            ToastUtils.show("Couldn't open eConnect, please install from Google Playstore");
         }
     }
 

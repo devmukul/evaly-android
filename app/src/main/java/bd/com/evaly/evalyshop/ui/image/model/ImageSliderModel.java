@@ -12,10 +12,7 @@ import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.Request;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 
@@ -33,15 +30,21 @@ public abstract class ImageSliderModel extends DataBindingEpoxyModel {
         super.bind(holder);
         ItemTouchImageBinding binding = (ItemTouchImageBinding) holder.getDataBinding();
 
-        Glide.with(binding.getRoot())
+        Glide.with(binding.image)
                 .asBitmap()
                 .load(image)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .skipMemoryCache(true)
-                .into(new SimpleTarget<Bitmap>() {
+                .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        binding.image.setImage(ImageSource.bitmap(resource));
+                        if (binding.image.getContext() != null)
+                            binding.image.setImage(ImageSource.bitmap(resource));
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
                     }
                 });
 

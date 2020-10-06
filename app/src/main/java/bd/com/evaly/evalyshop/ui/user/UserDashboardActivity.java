@@ -204,6 +204,8 @@ public class UserDashboardActivity extends BaseActivity {
                     ToastUtils.show("Couldn't open eConnect, please install from Google Playstore");
                 }
             }
+        } catch (Exception ee) {
+            ToastUtils.show("Couldn't open eConnect, please install from Google Playstore");
         }
     }
 

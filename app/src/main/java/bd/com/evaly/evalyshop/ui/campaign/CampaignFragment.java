@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.campaign;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +37,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
@@ -243,6 +245,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         });
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void updateToolbarOnExpand(boolean expanded) {
         if (expanded) {
             if (isExpanded)
@@ -254,7 +257,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             binding.buttonRight.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
             binding.searchText.setTextColor(Color.parseColor("#777777"));
             binding.searchText.setHintTextColor(Color.parseColor("#777777"));
-            binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_light));
+            binding.searchContainer.setBackground(AppController.getmContext().getDrawable(R.drawable.input_brd_round_light));
         } else {
             if (!isExpanded)
                 return;
@@ -272,7 +275,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             binding.clearSearch.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
             binding.searchText.setTextColor(Color.parseColor("#ffffff"));
             binding.searchText.setHintTextColor(Color.parseColor("#ffffff"));
-            binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_dark));
+            binding.searchContainer.setBackground(AppController.getmContext().getDrawable(R.drawable.input_brd_round_dark));
         }
     }
 
@@ -353,7 +356,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         Glide.with(binding.coverImage)
                 .load(url == null ? R.drawable.bg_fafafa_round : url)
                 .load(BindingUtils.generateResizeUrl(url, 1450, 460, false))
-                .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 2)))
+                .transform(new BlurTransformation(15, 2))
                 .into(binding.coverImage);
     }
 
