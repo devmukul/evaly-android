@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignDetailsBinding;
@@ -149,12 +150,9 @@ public class CampaignDetailsFragment extends Fragment {
                         viewModel.setType("shop");
                         break;
                     case 1:
-                        viewModel.setType("campaign");
-                        break;
-                    case 2:
                         viewModel.setType("products");
                         break;
-                    case 3:
+                    case 2:
                         viewModel.setType("brands");
                         break;
                 }
@@ -203,6 +201,11 @@ public class CampaignDetailsFragment extends Fragment {
     }
 
     private void clickListeners() {
+        binding.filterBtn.setOnClickListener(view -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("category", Objects.requireNonNull(viewModel.getCampaignDetailsLiveData().getValue()).getSlug());
+            navController.navigate(R.id.campaignListBottomSheet, bundle);
+        });
         binding.backArrow.setOnClickListener(v -> requireActivity().onBackPressed());
     }
 

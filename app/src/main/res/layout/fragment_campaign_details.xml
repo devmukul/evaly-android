@@ -66,38 +66,50 @@
             </androidx.appcompat.widget.Toolbar>
 
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                app:tabIndicatorColor="#fff"
-                app:tabMode="scrollable"
-                app:tabTextAppearance="@style/TabTextAppearance.Light">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sellers" />
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    app:tabIndicatorColor="#fff"
+                    app:tabMode="scrollable"
+                    app:tabTextAppearance="@style/TabTextAppearance.Light">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sellers" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Products" />
 
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Campaigns" />
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Brands" />
 
+                </com.google.android.material.tabs.TabLayout>
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Products" />
+                <ImageView
+                    android:id="@+id/filterBtn"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="7dp"
+                    android:background="?actionBarItemBackground"
+                    android:padding="15dp"
+                    android:clickable="true"
+                    android:src="@drawable/ic_filter"
+                    app:tint="#fff" />
 
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Brands" />
-
-            </com.google.android.material.tabs.TabLayout>
+            </LinearLayout>
 
 
         </LinearLayout>
