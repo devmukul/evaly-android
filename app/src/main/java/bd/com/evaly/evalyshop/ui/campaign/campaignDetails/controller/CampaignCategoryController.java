@@ -2,11 +2,14 @@ package bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 
+import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +17,14 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
+import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.CampaignDetailsViewModel;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBrandModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSubModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
@@ -32,7 +37,7 @@ public class CampaignCategoryController extends EpoxyController {
     private CampaignDetailsViewModel viewModel;
     private AppCompatActivity activity;
 
-    public CampaignCategoryController(){
+    public CampaignCategoryController() {
         setFilterDuplicates(true);
     }
 
@@ -86,6 +91,17 @@ public class CampaignCategoryController extends EpoxyController {
                             bundle.putString("category", "root");
                             bundle.putString("campaign_slug", model.model().getCampaignSlug());
                             navController.navigate(R.id.shopFragment, bundle);
+                        })
+                        .addTo(this);
+            else if (item instanceof SubCampaignResponse)
+                new CampaignSubModel_()
+                        .id(((SubCampaignResponse) item).getSlug())
+                        .model((SubCampaignResponse) item)
+                        .clickListener(new OnModelClickListener<CampaignSubModel_, DataBindingEpoxyModel.DataBindingHolder>() {
+                            @Override
+                            public void onClick(CampaignSubModel_ model, DataBindingEpoxyModel.DataBindingHolder parentView, View clickedView, int position) {
+
+                            }
                         })
                         .addTo(this);
         }

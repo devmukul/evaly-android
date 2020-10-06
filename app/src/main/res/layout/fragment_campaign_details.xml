@@ -74,6 +74,17 @@
                 app:tabMode="scrollable"
                 app:tabTextAppearance="@style/TabTextAppearance.Light">
 
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sellers" />
+
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Campaigns" />
+
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
@@ -84,13 +95,7 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Seller" />
-
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Brand" />
+                    android:text="Brands" />
 
             </com.google.android.material.tabs.TabLayout>
 

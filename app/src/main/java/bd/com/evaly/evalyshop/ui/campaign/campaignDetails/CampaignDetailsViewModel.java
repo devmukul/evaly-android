@@ -11,6 +11,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
+import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
@@ -47,6 +48,32 @@ public class CampaignDetailsViewModel extends ViewModel {
             loadShopList();
         else if (type.equals("brand"))
             loadBrandList();
+        else if (type.equals("campaign"))
+            loadCampaignList();
+    }
+
+    public void loadCampaignList() {
+        CampaignApiHelper.getCampaignCategoryCampaigns(currentPage, 20, search, campaignDetailsLiveData.getValue().getSlug(),
+                new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
+                    @Override
+                    public void onDataFetched(CommonDataResponse<List<SubCampaignResponse>> response, int statusCode) {
+                        arrayList.addAll(response.getData());
+                        liveList.setValue(arrayList);
+                        totalCount = response.getCount();
+                        if (totalCount > arrayList.size())
+                            currentPage++;
+                    }
+
+                    @Override
+                    public void onFailed(String errorBody, int errorCode) {
+
+                    }
+
+                    @Override
+                    public void onAuthError(boolean logout) {
+
+                    }
+                });
     }
 
     public void loadProductList() {

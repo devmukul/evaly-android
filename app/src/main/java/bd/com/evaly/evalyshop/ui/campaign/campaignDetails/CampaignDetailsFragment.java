@@ -146,13 +146,16 @@ public class CampaignDetailsFragment extends Fragment {
 
                 switch (tab.getPosition()) {
                     case 0:
-                        viewModel.setType("product");
-                        break;
-                    case 1:
                         viewModel.setType("shop");
                         break;
+                    case 1:
+                        viewModel.setType("campaign");
+                        break;
                     case 2:
-                        viewModel.setType("brand");
+                        viewModel.setType("products");
+                        break;
+                    case 3:
+                        viewModel.setType("brands");
                         break;
                 }
 
