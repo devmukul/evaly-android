@@ -46,7 +46,7 @@ public class CampaignListController extends EpoxyController {
                 .id("no_product_model")
                 .text("No campaign found")
                 .image(R.drawable.ic_discount_tag)
-                .width(100)
+                .width(80)
                 .addIf(list.size() == 0 && !isLoading, this);
 
         new LoadingModel_()

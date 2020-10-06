@@ -51,7 +51,7 @@ public class CampaignCategoryController extends EpoxyController {
                     .title(mainViewModel.getCampaignOnClick().getValue().getName())
                     .onBind((model, view, position) -> {
                         ItemCampaignTitleBinding binding = (ItemCampaignTitleBinding) view.getDataBinding();
-                        binding.title.setText(mainViewModel.getCampaignOnClick().getValue().getName());
+                        binding.title.setText(model.title());
                     })
                     .addIf(viewModel.getCampaign() != null && mainViewModel.getCampaignOnClick().getValue() != null, this);
 

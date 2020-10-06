@@ -136,11 +136,11 @@ public class CampaignDetailsFragment extends Fragment {
     private void initTabs() {
         String type = viewModel.getType();
         if (type != null) {
-            if (type.equals("product"))
+            if (type.equals("shop"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0));
-            else if (type.equals("shop"))
-                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
             else if (type.equals("brand"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
+            else if (type.equals("product"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(2));
         }
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -154,13 +154,13 @@ public class CampaignDetailsFragment extends Fragment {
 
                 switch (tab.getPosition()) {
                     case 0:
-                        viewModel.setType("product");
-                        break;
-                    case 1:
                         viewModel.setType("shop");
                         break;
-                    case 2:
+                    case 1:
                         viewModel.setType("brand");
+                        break;
+                    case 2:
+                        viewModel.setType("product");
                         break;
                 }
 

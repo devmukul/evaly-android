@@ -17,6 +17,7 @@ import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignDetailsViewModel extends ViewModel {
     private MutableLiveData<CampaignCategoryResponse> campaignDetailsLiveData = new MutableLiveData<>();
@@ -26,15 +27,17 @@ public class CampaignDetailsViewModel extends ViewModel {
     private int currentPage = 1;
     private int totalCount = 0;
     private String search = null;
-    private String type = "product";
+    private String type = "shop";
     private String campaign = null;
 
 
     public CampaignDetailsViewModel() {
+
         loadListFromApi();
     }
 
     public void loadListFromApi() {
+
         if (campaignDetailsLiveData.getValue() == null)
             return;
 
@@ -51,6 +54,7 @@ public class CampaignDetailsViewModel extends ViewModel {
             loadBrandList();
         else if (type.equals("campaign"))
             loadCampaignList();
+
     }
 
     public void loadCampaignList() {
@@ -158,7 +162,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     }
 
     private String getCategorySlug() {
-        if (campaignDetailsLiveData == null)
+        if (campaignDetailsLiveData == null || campaignDetailsLiveData.getValue() == null)
             return null;
         return campaignDetailsLiveData.getValue().getSlug();
     }
@@ -194,7 +198,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     public void setCampaignDetailsLiveData(CampaignCategoryResponse model) {
         this.campaignDetailsLiveData.setValue(model);
         if (liveList.getValue() == null) {
-            loadProductList();
+            loadListFromApi();
         }
     }
 
