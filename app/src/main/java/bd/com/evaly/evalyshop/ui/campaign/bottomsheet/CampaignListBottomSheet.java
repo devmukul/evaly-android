@@ -2,14 +2,17 @@ package bd.com.evaly.evalyshop.ui.campaign.bottomsheet;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -20,6 +23,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.BottomsheetCampaignListBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 
@@ -27,6 +32,7 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
 
     private BottomsheetCampaignListBinding binding;
     private CampaignListViewModel viewModel;
+    private MainViewModel mainViewModel;
     private CampaignListController controller;
     private NavController navController;
     private boolean isLoading = true;
@@ -45,9 +51,10 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
         viewModel = new ViewModelProvider(this).get(CampaignListViewModel.class);
+        mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         assert getArguments() != null;
         if (viewModel.getCategory() == null) {
-            viewModel.setCategory(getArguments().getString("category"));
+            viewModel.setCategory((CampaignCategoryResponse) getArguments().getSerializable("category"));
             viewModel.loadFromApi();
         }
     }
@@ -66,10 +73,52 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
         Rect rectangle = new Rect();
         Window window = getActivity().getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+        if (mainViewModel.getCampaignOnClick().getValue() == null)
+            binding.clearFilter.setVisibility(View.GONE);
+        else
+            binding.clearFilter.setVisibility(View.VISIBLE);
     }
 
     private void initSearch() {
+        binding.search.setHint("Search in " + viewModel.getCategory().getName());
+        binding.search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String query = binding.search.getText().toString();
+                if (query.length() > 0)
+                    binding.clear.setVisibility(View.VISIBLE);
+                else {
+                    viewModel.clear();
+                    binding.clear.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        binding.search.setOnEditorActionListener(
+                (v, actionId, event) -> {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH
+                            || actionId == EditorInfo.IME_ACTION_DONE
+                            || event.getAction() == KeyEvent.ACTION_DOWN
+                            && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                        viewModel.clear();
+                        viewModel.setSearch(binding.search.getText().toString().trim());
+                        viewModel.loadFromApi();
+                        return true;
+                    }
+                    return false;
+                });
+
+        binding.clear.setOnClickListener(view -> binding.search.setText(""));
 
     }
 
@@ -78,6 +127,10 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
             controller = new CampaignListController();
         controller.setNavController(navController);
         controller.setFilterDuplicates(true);
+        controller.setClickListener(model -> {
+            mainViewModel.setCampaignOnClick(model);
+            dismissAllowingStateLoss();
+        });
         binding.recyclerView.setAdapter(controller.getAdapter());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(staggeredGridLayoutManager);
@@ -99,6 +152,10 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void clickListeners() {
+        binding.clearFilter.setOnClickListener(view -> {
+            mainViewModel.setCampaignOnClick(null);
+            dismissAllowingStateLoss();
+        });
         binding.toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
     }
 

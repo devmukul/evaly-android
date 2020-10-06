@@ -27,6 +27,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     private int totalCount = 0;
     private String search = null;
     private String type = "product";
+    private String campaign = null;
 
 
     public CampaignDetailsViewModel() {
@@ -53,7 +54,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     }
 
     public void loadCampaignList() {
-        CampaignApiHelper.getCampaignCategoryCampaigns(currentPage, 20, search, campaignDetailsLiveData.getValue().getSlug(),
+        CampaignApiHelper.getCampaignCategoryCampaigns(currentPage, 20, search, campaign,
                 new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<SubCampaignResponse>> response, int statusCode) {
@@ -78,7 +79,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
     public void loadProductList() {
 
-        CampaignApiHelper.getCampaignCategoryProducts(currentPage, 20, search, campaignDetailsLiveData.getValue().getSlug(),
+        CampaignApiHelper.getCampaignCategoryProducts(currentPage, 20, search, getCategorySlug(), campaign,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
@@ -102,7 +103,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     }
 
     public void loadBrandList() {
-        CampaignApiHelper.getCampaignCategoryBrands(currentPage, 20, search, campaignDetailsLiveData.getValue().getSlug(),
+        CampaignApiHelper.getCampaignCategoryBrands(currentPage, 20, search, getCategorySlug(), campaign,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignBrandResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignBrandResponse>> response, int statusCode) {
@@ -127,7 +128,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
 
     public void loadShopList() {
-        CampaignApiHelper.getCampaignCategoryShops(currentPage, 20, search, campaignDetailsLiveData.getValue().getSlug(),
+        CampaignApiHelper.getCampaignCategoryShops(currentPage, 20, search, getCategorySlug(), campaign,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignShopResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignShopResponse>> response, int statusCode) {
@@ -156,6 +157,12 @@ public class CampaignDetailsViewModel extends ViewModel {
         totalCount = 0;
     }
 
+    private String getCategorySlug() {
+        if (campaignDetailsLiveData == null)
+            return null;
+        return campaignDetailsLiveData.getValue().getSlug();
+    }
+
     public SingleLiveEvent<Boolean> getHideLoadingBar() {
         return hideLoadingBar;
     }
@@ -181,6 +188,10 @@ public class CampaignDetailsViewModel extends ViewModel {
         if (liveList.getValue() == null) {
             loadProductList();
         }
+    }
+
+    public void setCampaign(String slug) {
+        this.campaign = slug;
     }
 
     public String getType() {

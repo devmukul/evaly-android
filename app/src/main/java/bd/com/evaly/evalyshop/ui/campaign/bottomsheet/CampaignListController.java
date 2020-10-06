@@ -18,6 +18,16 @@ public class CampaignListController extends EpoxyController {
     private List<SubCampaignResponse> list = new ArrayList<>();
     private NavController navController;
     private boolean isLoading = true;
+    private ClickListener clickListener;
+
+
+    public interface ClickListener {
+        void onClick(SubCampaignResponse model);
+    }
+
+    public void setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 
     public void setNavController(NavController navController) {
         this.navController = navController;
@@ -29,12 +39,13 @@ public class CampaignListController extends EpoxyController {
             new CampaignSubModel_()
                     .id(item.getSlug())
                     .model(item)
+                    .clickListener((model, parentView, clickedView, position) -> clickListener.onClick(model.model()))
                     .addTo(this);
 
         new NoItemModel_()
                 .id("no_product_model")
                 .text("No campaign found")
-                .image(R.drawable.ic_empty_product)
+                .image(R.drawable.ic_discount_tag)
                 .width(100)
                 .addIf(list.size() == 0 && !isLoading, this);
 

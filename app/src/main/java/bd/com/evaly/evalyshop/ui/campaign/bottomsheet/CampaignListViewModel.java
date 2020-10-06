@@ -10,6 +10,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
@@ -21,7 +22,7 @@ public class CampaignListViewModel extends ViewModel {
     private int currentPage = 1;
     private int totalCount = 0;
     private String search = null;
-    private String category = null;
+    private CampaignCategoryResponse category;
 
     public CampaignListViewModel() {
         if (category != null)
@@ -40,16 +41,16 @@ public class CampaignListViewModel extends ViewModel {
         this.search = search;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(CampaignCategoryResponse category) {
         this.category = category;
     }
 
-    public String getCategory() {
+    public CampaignCategoryResponse getCategory() {
         return category;
     }
 
     public void loadFromApi() {
-        CampaignApiHelper.getCampaignCategoryCampaigns(currentPage, 20, search, category, new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
+        CampaignApiHelper.getCampaignCategoryCampaigns(currentPage, 20, search, category.getSlug(), new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
             @Override
             public void onDataFetched(CommonDataResponse<List<SubCampaignResponse>> response, int statusCode) {
                 arrayList.addAll(response.getData());
@@ -71,6 +72,10 @@ public class CampaignListViewModel extends ViewModel {
         });
     }
 
+    public void clear(){
+        currentPage = 1;
+        arrayList.clear();
+    }
 
     public SingleLiveEvent<Boolean> getHideLoadingBar() {
         return hideLoadingBar;

@@ -2,14 +2,11 @@ package bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 
-import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
-import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,11 +94,8 @@ public class CampaignCategoryController extends EpoxyController {
                 new CampaignSubModel_()
                         .id(((SubCampaignResponse) item).getSlug())
                         .model((SubCampaignResponse) item)
-                        .clickListener(new OnModelClickListener<CampaignSubModel_, DataBindingEpoxyModel.DataBindingHolder>() {
-                            @Override
-                            public void onClick(CampaignSubModel_ model, DataBindingEpoxyModel.DataBindingHolder parentView, View clickedView, int position) {
+                        .clickListener((model, parentView, clickedView, position) -> {
 
-                            }
                         })
                         .addTo(this);
         }

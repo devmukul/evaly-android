@@ -34,6 +34,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentCampaignDetailsBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -43,6 +44,7 @@ public class CampaignDetailsFragment extends Fragment {
 
     private FragmentCampaignDetailsBinding binding;
     private CampaignDetailsViewModel viewModel;
+    private MainViewModel mainViewModel;
     private CampaignCategoryController controller;
     private NavController navController;
     private boolean isLoading = true;
@@ -69,6 +71,7 @@ public class CampaignDetailsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         viewModel = new ViewModelProvider(this).get(CampaignDetailsViewModel.class);
         viewModel.setCampaignDetailsLiveData((CampaignCategoryResponse) requireArguments().getSerializable("model"));
     }
@@ -150,10 +153,10 @@ public class CampaignDetailsFragment extends Fragment {
                         viewModel.setType("shop");
                         break;
                     case 1:
-                        viewModel.setType("products");
+                        viewModel.setType("product");
                         break;
                     case 2:
-                        viewModel.setType("brands");
+                        viewModel.setType("brand");
                         break;
                 }
 
@@ -203,13 +206,14 @@ public class CampaignDetailsFragment extends Fragment {
     private void clickListeners() {
         binding.filterBtn.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
-            bundle.putString("category", Objects.requireNonNull(viewModel.getCampaignDetailsLiveData().getValue()).getSlug());
+            bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignDetailsLiveData().getValue()));
             navController.navigate(R.id.campaignListBottomSheet, bundle);
         });
         binding.backArrow.setOnClickListener(v -> requireActivity().onBackPressed());
     }
 
     private void liveEventObservers() {
+
         viewModel.getCampaignDetailsLiveData().observe(getViewLifecycleOwner(), this::loadCampaignDetails);
 
         viewModel.getLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
@@ -224,6 +228,19 @@ public class CampaignDetailsFragment extends Fragment {
                 controller.setLoading(false);
                 controller.requestModelBuild();
             }
+        });
+
+        mainViewModel.getCampaignOnClick().observe(getViewLifecycleOwner(), subCampaignResponse -> {
+            viewModel.clear();
+            if (subCampaignResponse == null) {
+                binding.filterIndicator.setVisibility(View.GONE);
+                viewModel.setCampaign(null);
+            }
+            else {
+                viewModel.setCampaign(subCampaignResponse.getSlug());
+                binding.filterIndicator.setVisibility(View.VISIBLE);
+            }
+            viewModel.loadListFromApi();
         });
 
     }

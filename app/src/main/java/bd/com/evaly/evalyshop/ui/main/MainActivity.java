@@ -184,9 +184,6 @@ public class MainActivity extends BaseActivity {
         if (!CredentialManager.getToken().equals("")) {
             if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals(""))
                 AppController.logout(MainActivity.this);
-            else {
-
-            }
         }
 
         String email = CredentialManager.getUserName();
