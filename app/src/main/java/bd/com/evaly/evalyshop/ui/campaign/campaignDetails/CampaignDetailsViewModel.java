@@ -183,6 +183,14 @@ public class CampaignDetailsViewModel extends ViewModel {
         return campaignDetailsLiveData;
     }
 
+    public String getCampaign() {
+        return campaign;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
     public void setCampaignDetailsLiveData(CampaignCategoryResponse model) {
         this.campaignDetailsLiveData.setValue(model);
         if (liveList.getValue() == null) {

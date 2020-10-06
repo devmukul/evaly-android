@@ -92,6 +92,10 @@ public class CampaignDetailsFragment extends Fragment {
         Rect rectangle = new Rect();
         Window window = getActivity().getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+        if (viewModel.getCampaign() == null)
+            binding.filterIndicator.setVisibility(View.GONE);
+        else
+            binding.filterIndicator.setVisibility(View.VISIBLE);
     }
 
     private void initSearch() {
@@ -150,10 +154,10 @@ public class CampaignDetailsFragment extends Fragment {
 
                 switch (tab.getPosition()) {
                     case 0:
-                        viewModel.setType("shop");
+                        viewModel.setType("product");
                         break;
                     case 1:
-                        viewModel.setType("product");
+                        viewModel.setType("shop");
                         break;
                     case 2:
                         viewModel.setType("brand");
@@ -182,6 +186,7 @@ public class CampaignDetailsFragment extends Fragment {
         controller.setNavController(navController);
         controller.setFilterDuplicates(true);
         controller.setViewModel(viewModel);
+        controller.setMainViewModel(mainViewModel);
         controller.setActivity((AppCompatActivity) getActivity());
         binding.recyclerView.setAdapter(controller.getAdapter());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -235,12 +240,12 @@ public class CampaignDetailsFragment extends Fragment {
             if (subCampaignResponse == null) {
                 binding.filterIndicator.setVisibility(View.GONE);
                 viewModel.setCampaign(null);
-            }
-            else {
+            } else {
                 viewModel.setCampaign(subCampaignResponse.getSlug());
                 binding.filterIndicator.setVisibility(View.VISIBLE);
             }
             viewModel.loadListFromApi();
+            binding.recyclerView.scrollToPosition(0);
         });
 
     }

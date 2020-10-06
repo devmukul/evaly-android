@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ItemCampaignTitleBinding;
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
@@ -22,8 +23,10 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBrandModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSubModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignTitleModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
 
 public class CampaignCategoryController extends EpoxyController {
@@ -32,6 +35,7 @@ public class CampaignCategoryController extends EpoxyController {
     private NavController navController;
     private boolean isLoading = true;
     private CampaignDetailsViewModel viewModel;
+    private MainViewModel mainViewModel;
     private AppCompatActivity activity;
 
     public CampaignCategoryController() {
@@ -40,6 +44,16 @@ public class CampaignCategoryController extends EpoxyController {
 
     @Override
     protected void buildModels() {
+
+        if (mainViewModel.getCampaignOnClick().getValue() != null)
+            new CampaignTitleModel_()
+                    .id("title_cc")
+                    .title(mainViewModel.getCampaignOnClick().getValue().getName())
+                    .onBind((model, view, position) -> {
+                        ItemCampaignTitleBinding binding = (ItemCampaignTitleBinding) view.getDataBinding();
+                        binding.title.setText(mainViewModel.getCampaignOnClick().getValue().getName());
+                    })
+                    .addIf(viewModel.getCampaign() != null && mainViewModel.getCampaignOnClick().getValue() != null, this);
 
         for (CampaignParentModel item : list) {
             if (item instanceof CampaignProductResponse)
@@ -122,6 +136,10 @@ public class CampaignCategoryController extends EpoxyController {
             return "No brand found";
         else
             return "No product found";
+    }
+
+    public void setMainViewModel(MainViewModel mainViewModel) {
+        this.mainViewModel = mainViewModel;
     }
 
     public void setActivity(AppCompatActivity activity) {
