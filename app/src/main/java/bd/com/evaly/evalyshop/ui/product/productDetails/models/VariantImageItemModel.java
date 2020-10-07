@@ -11,9 +11,9 @@ import com.airbnb.epoxy.EpoxyModelClass;
 import com.bumptech.glide.Glide;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ItemVariationImageBinding;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributeValuesItem;
+import bd.com.evaly.evalyshop.util.BindingUtils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -39,12 +39,7 @@ public abstract class VariantImageItemModel extends DataBindingEpoxyModel {
                 .into(binding.image);
 
         binding.text.setText(model.getValue());
-        if (isSelected) {
-            binding.holder.setBackground(AppController.getmContext().getDrawable(R.drawable.bg_variation_size_selected));
-        } else {
-            binding.holder.setBackground(AppController.getmContext().getDrawable(R.drawable.bg_variation_size_default));
-        }
-
+        BindingUtils.markImageVariation(binding.holder, isSelected);
         binding.getRoot().setOnClickListener(clickListener);
     }
 

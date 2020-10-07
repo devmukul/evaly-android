@@ -78,6 +78,7 @@ import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SizeButtonAdapte
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.bottomsheet.SkuBottomSheetFragment;
+import bd.com.evaly.evalyshop.ui.product.productDetails.controller.VariantsController;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
@@ -122,6 +123,7 @@ public class ViewProductActivity extends BaseActivity {
     private String shopSlug = null;
     private String cashbackText = null;
     private AvailableShopModel toRemoveModel = null;
+    private VariantsController variantsController;
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
 
@@ -314,6 +316,16 @@ public class ViewProductActivity extends BaseActivity {
             builder.show();
 
         });
+
+
+        initVariantRecycler();
+    }
+
+    private void initVariantRecycler() {
+        if (variantsController == null)
+            variantsController = new VariantsController();
+
+        binding.rvVariant.setAdapter(variantsController.getAdapter());
     }
 
     private void populateRatingsSummary(JsonObject jsonObject) {
@@ -437,15 +449,25 @@ public class ViewProductActivity extends BaseActivity {
         Data data = productDetailsModel.getData();
         productAttributesItemList = data.getAttributes();
         productVariantsItemList = data.getProductVariants();
-        List<ProductSpecificationsItem> productSpecificationsItemList = data.getProductSpecifications();
-
-        showProductHolder();
 
         if (productVariantsItemList.size() == 0) {
             Toast.makeText(context, "Product is not available!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
+
+        List<ProductSpecificationsItem> productSpecificationsItemList = data.getProductSpecifications();
+
+        if (productAttributesItemList.size() > 0) {
+            binding.rvVariant.setVisibility(View.VISIBLE);
+            variantsController.setList(productAttributesItemList);
+            variantsController.setSelectedVariants(productVariantsItemList.get(0).getAttributeValues());
+            variantsController.requestModelBuild();
+        } else {
+            binding.rvVariant.setVisibility(View.GONE);
+        }
+
+        showProductHolder();
 
         binding.sliderPager.setVisibility(View.VISIBLE);
         binding.collapsingToolbar.setVisibility(View.VISIBLE);

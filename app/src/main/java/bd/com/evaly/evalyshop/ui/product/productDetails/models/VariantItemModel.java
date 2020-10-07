@@ -13,10 +13,11 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ItemVariationSizeBinding;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributeValuesItem;
+import bd.com.evaly.evalyshop.util.BindingUtils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
-@EpoxyModelClass(layout = R.layout.item_variation_image)
+@EpoxyModelClass(layout = R.layout.item_variation_size)
 public abstract class VariantItemModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
@@ -33,11 +34,7 @@ public abstract class VariantItemModel extends DataBindingEpoxyModel {
         super.bind(holder);
         ItemVariationSizeBinding binding = (ItemVariationSizeBinding) holder.getDataBinding();
         binding.tvSize.setText(model.getValue());
-        if (isSelected) {
-            binding.cardSize.setBackground(AppController.getmContext().getDrawable(R.drawable.bg_variation_size_selected));
-        } else {
-            binding.cardSize.setBackground(AppController.getmContext().getDrawable(R.drawable.bg_variation_size_default));
-        }
+        BindingUtils.markVariation(binding.cardSize, isSelected);
         binding.getRoot().setOnClickListener(clickListener);
     }
 

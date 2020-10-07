@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.util;
 
 import android.util.Base64;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -9,6 +10,8 @@ import com.google.gson.Gson;
 
 import java.nio.charset.StandardCharsets;
 
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.models.image.Background;
 import bd.com.evaly.evalyshop.models.image.CloudFrontRequest;
 import bd.com.evaly.evalyshop.models.image.Edits;
@@ -16,6 +19,22 @@ import bd.com.evaly.evalyshop.models.image.Jpeg;
 import bd.com.evaly.evalyshop.models.image.Resize;
 
 public class BindingUtils {
+
+    public static void markImageVariation(RelativeLayout holder, boolean selected) {
+        if (selected) {
+            holder.setBackground(AppController.getmContext().getDrawable(R.drawable.variation_brd_selected));
+        } else {
+            holder.setBackground(AppController.getmContext().getDrawable(R.drawable.variation_brd));
+        }
+    }
+
+    public static void markVariation(RelativeLayout holder, boolean selected) {
+        if (selected) {
+            holder.setBackground(AppController.getmContext().getDrawable(R.drawable.bg_variation_size_selected));
+        } else {
+            holder.setBackground(AppController.getmContext().getDrawable(R.drawable.bg_variation_size_default));
+        }
+    }
 
     public static void setImage(ImageView view, String url, int placeHolder, int errorImage) {
         if (url == null)
