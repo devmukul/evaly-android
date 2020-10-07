@@ -1,15 +1,18 @@
 package bd.com.evaly.evalyshop.ui.campaign.bottomsheet;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -93,7 +96,6 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
                 if (query.length() > 0)
                     binding.clear.setVisibility(View.VISIBLE);
                 else {
-                    viewModel.clear();
                     binding.clear.setVisibility(View.GONE);
                 }
             }
@@ -113,13 +115,27 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
                         viewModel.clear();
                         viewModel.setSearch(binding.search.getText().toString().trim());
                         viewModel.loadFromApi();
+                        binding.search.clearFocus();
+                        hideKeyboard();
                         return true;
                     }
                     return false;
                 });
 
-        binding.clear.setOnClickListener(view -> binding.search.setText(""));
+        binding.clear.setOnClickListener(view -> {
+            binding.search.setText("");
+            viewModel.clear();
+            viewModel.setSearch(null);
+            viewModel.loadFromApi();
+            hideKeyboard();
+        });
 
+    }
+
+    private void hideKeyboard(){
+        InputMethodManager in = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert in != null;
+        in.hideSoftInputFromWindow(binding.search.getWindowToken(), 0);
     }
 
     private void initRecycler() {

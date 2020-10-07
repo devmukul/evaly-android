@@ -57,6 +57,7 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
                 binding.priceDiscount.setVisibility(View.GONE);
                 binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
             }
+            binding.price.setVisibility(View.VISIBLE);
         } else
             binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
 
