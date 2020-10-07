@@ -37,7 +37,7 @@
                 app:expandedTitleMarginStart="20dp"
                 app:expandedTitleMarginTop="0dp"
                 app:expandedTitleTextAppearance="@style/CollapsingToolbarLayoutExpandedTextStyle"
-                app:layout_scrollFlags="enterAlwaysCollapsed|scroll|exitUntilCollapsed"
+                app:layout_scrollFlags="enterAlwaysCollapsed|scroll|exitUntilCollapsed|snap"
                 app:maxLines="2"
                 app:scrimAnimationDuration="10"
                 app:statusBarScrim="@color/white"
@@ -224,10 +224,27 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/variantHolder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#fff"
+                        android:minHeight="20dp"
                         android:orientation="vertical">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:background="@color/separator_light" />
+
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="0dp"
+                            android:text="Variation"
+                            android:textColor="#555"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvVariant"
@@ -235,108 +252,12 @@
                             android:layout_height="wrap_content"
                             android:nestedScrollingEnabled="false"
                             android:orientation="vertical"
-                            android:paddingLeft="20dp"
                             android:paddingBottom="15dp"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             tools:itemCount="2"
                             tools:listitem="@layout/item_variation_image" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/variant1Holder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="20dp"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        tools:visibility="visible">
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="8dp"
-                            android:background="@color/separator_light" />
-
-                        <TextView
-                            android:id="@+id/variant1Title"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="15dp"
-                            android:layout_marginBottom="15dp"
-                            android:text="Size"
-                            android:textColor="#555"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-
-                        <HorizontalScrollView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:scrollbars="none">
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvVariant1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:nestedScrollingEnabled="false"
-                                android:orientation="horizontal"
-                                android:paddingLeft="20dp"
-                                android:paddingBottom="15dp"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                                tools:listitem="@layout/item_variation_image" />
-                        </HorizontalScrollView>
 
                     </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/variant2Holder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="20dp"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        tools:visibility="visible">
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="8dp"
-                            android:background="@color/separator_light" />
-
-                        <TextView
-                            android:id="@+id/variant2Title"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="15dp"
-                            android:layout_marginBottom="15dp"
-                            android:text="Color"
-                            android:textColor="#555"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-
-                        <HorizontalScrollView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:scrollbars="none">
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvVariant2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:nestedScrollingEnabled="false"
-                                android:orientation="horizontal"
-                                android:paddingLeft="20dp"
-                                android:paddingBottom="15dp"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                                tools:listitem="@layout/item_variation_image" />
-
-                        </HorizontalScrollView>
-
-                    </LinearLayout>
-
 
                     <View
                         android:id="@+id/view7"
@@ -952,30 +873,21 @@
         <LinearLayout
             android:id="@+id/stickyButtons"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="60dp"
             android:layout_gravity="bottom"
-            android:background="@android:color/transparent"
-            android:elevation="0dp"
+            android:background="@drawable/bg_bottom_nav"
+            android:elevation="8dp"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:translationZ="5dp"
+            android:translationZ="12dp"
             app:layout_behavior="bd.com.evaly.evalyshop.util.MoveUpwardBehavior">
-
-
-            <View
-                android:id="@+id/view13"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginBottom="-1dp"
-                android:layout_weight="0"
-                android:background="@drawable/half_dp_bg" />
 
             <LinearLayout
                 android:id="@+id/buttonsHolder"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:background="#fff"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingVertical="2dp">
 
                 <ImageView
                     android:id="@+id/addToWishlist"
@@ -995,7 +907,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
-                    android:layout_weight="1"
+                    android:layout_weight="0"
                     android:background="@drawable/my_cart_bg"
                     android:clickable="true"
                     android:gravity="center"
@@ -1008,24 +920,26 @@
                         android:clickable="false"
                         android:fontFamily="sans-serif-thin"
                         android:gravity="center"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="10dp"
                         android:text="MY CART"
                         android:textAlignment="center"
-                        android:textColor="#ff665d"
-                        android:textSize="15sp"
+                        android:textColor="#444"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/cartCount"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
-                        android:layout_weight="0"
-                        android:background="@drawable/cart_count"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_cart_count"
                         android:gravity="center"
+                        android:minWidth="20dp"
+                        android:paddingVertical="3dp"
+                        android:paddingStart="10dp"
                         android:paddingLeft="6dp"
-                        android:paddingTop="2dp"
+                        android:paddingEnd="15dp"
                         android:paddingRight="6dp"
-                        android:paddingBottom="2dp"
                         android:text="0"
                         android:textColor="#155724"
                         android:textStyle="bold" />
@@ -1033,12 +947,14 @@
 
                 <TextView
                     android:id="@+id/addToCart"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="15dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginEnd="15dp"
                     android:layout_marginRight="12dp"
                     android:layout_marginBottom="6dp"
-                    android:layout_weight="1"
+                    android:layout_weight="0"
                     android:background="@drawable/available_shop_bg"
                     android:clickable="true"
                     android:fontFamily="sans-serif-thin"
@@ -1046,7 +962,7 @@
                     android:text="AVAILABLE AT SHOPS"
                     android:textAlignment="center"
                     android:textColor="#fff"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
 

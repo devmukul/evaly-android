@@ -7,8 +7,7 @@
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
             <solid android:color="#ff665d"/>
-            <corners android:topRightRadius="10dp"
-                android:bottomRightRadius="10dp"/>
+            <corners android:radius="40dp"/>
         </shape>
     </item>
 
@@ -19,8 +18,7 @@
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
             <solid android:color="#ff665d"/>
-            <corners android:topRightRadius="10dp"
-                android:bottomRightRadius="10dp"/>
+            <corners android:radius="40dp"/>
         </shape>
     </item>
 
