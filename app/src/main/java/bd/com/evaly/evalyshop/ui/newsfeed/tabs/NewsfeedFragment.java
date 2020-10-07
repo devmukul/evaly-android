@@ -110,6 +110,10 @@ public class NewsfeedFragment extends Fragment {
         NewsfeedPostFragment announcementFragment = NewsfeedPostFragment.newInstance("announcement");
         pager.addFragment(announcementFragment, "ANNOUNCEMENT");
 
+        NewsfeedPostFragment dailyNewsFragment = NewsfeedPostFragment.newInstance("daily-news");
+        pager.addFragment(dailyNewsFragment, "DAILY NEWS");
+
+
         NewsfeedPostFragment ceoFragment = NewsfeedPostFragment.newInstance("ceo");
         pager.addFragment(ceoFragment, "CEO");
 

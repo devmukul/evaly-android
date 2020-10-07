@@ -42,6 +42,7 @@ import bd.com.evaly.evalyshop.models.newsfeed.newsfeed.NewsfeedPost;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.ImageUtils;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -97,7 +98,6 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         binding.shareBtn.setOnClickListener(v -> {
             createPost();
         });
@@ -130,6 +130,8 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
         if (CredentialManager.getUserData().getGroups() != null) {
             if (CredentialManager.getUserData().getGroups().contains("EvalyEmployee"))
                 binding.spinnerHolder.setVisibility(View.VISIBLE);
+            else
+                binding.spinnerHolder.setVisibility(View.GONE);
         } else
             binding.spinnerHolder.setVisibility(View.GONE);
 
@@ -214,6 +216,8 @@ public class CreatePostBottomSheet extends BottomSheetDialogFragment {
                 postType = "ceo";
             else if (typePosition == 1)
                 postType = "announcement";
+            else if (typePosition == 2)
+                postType = "daily-news";
             else
                 postType = "public";
 

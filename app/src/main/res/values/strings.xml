@@ -247,6 +247,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string-array name="post_type">
         <item>CEO</item>
         <item>ANNOUNCEMENT</item>
+        <item>DAILY NEWS</item>
         <item>PUBLIC</item>
     </string-array>
     <string-array name="brands">
