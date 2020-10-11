@@ -698,18 +698,24 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
         toRemoveModel = null;
 
+        binding.selectedShopHolder.setVisibility(View.GONE);
+        binding.availableShopsHolder.setVisibility(View.VISIBLE);
+
         List<AvailableShopModel> list = new ArrayList<>(response.getData());
 
-        if (shopSlug != null || response.getData().size() == 1) {
+        if (shopSlug != null || list.size() == 1) {
             for (AvailableShopModel model : list) {
-                if (model.getShopSlug().equals(shopSlug) || list.size() == 1)
+                if (model.getShopSlug().equals(shopSlug) || list.size() == 1) {
                     toRemoveModel = model;
+                    break;
+                }
             }
             if (toRemoveModel != null) {
                 list.remove(toRemoveModel);
                 inflateShopDetails(toRemoveModel);
             } else {
                 binding.selectedShopHolder.setVisibility(View.GONE);
+                binding.availableShopsHolder.setVisibility(View.VISIBLE);
                 binding.avlshop.setText(R.string.available_at_shop);
             }
         }
@@ -723,6 +729,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
                 binding.availableShopsHolder.setVisibility(View.GONE);
             if (toRemoveModel.getDiscountedPrice() == 0 && toRemoveModel.getPrice() == 0) {
                 binding.selectedShopHolder.setVisibility(View.GONE);
+                binding.availableShopsHolder.setVisibility(View.VISIBLE);
                 binding.avlshop.setText(R.string.available_at_shop);
                 if (list.size() == 0) {
                     binding.availableShopsHolder.setVisibility(View.VISIBLE);

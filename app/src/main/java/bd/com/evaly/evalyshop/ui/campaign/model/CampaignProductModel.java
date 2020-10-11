@@ -45,9 +45,11 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         binding.title.setText(Html.fromHtml(model.getName()));
         BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, false);
 
+        binding.priceDiscount.setVisibility(View.GONE);
         if (model.getPrice() == 0) {
             binding.price.setVisibility(View.GONE);
         } else if (model.getDiscountedPrice() != 0) {
+            binding.price.setVisibility(View.VISIBLE);
             if (model.getDiscountedPrice() < model.getPrice()) {
                 binding.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
                 binding.priceDiscount.setVisibility(View.VISIBLE);
@@ -57,9 +59,10 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
                 binding.priceDiscount.setVisibility(View.GONE);
                 binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
             }
+        } else {
             binding.price.setVisibility(View.VISIBLE);
-        } else
             binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
+        }
 
         binding.getRoot().setOnClickListener(clickListener);
         binding.buyNow.setVisibility(View.GONE);
