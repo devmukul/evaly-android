@@ -25,6 +25,7 @@ import bd.com.evaly.evalyshop.ui.campaign.model.CampaignButtonModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignCarouselModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignHeaderModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignTitleModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CategoryCarouselModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
@@ -81,6 +82,12 @@ public class CampaignController extends EpoxyController {
                     .headerText(rootItem.getBannerHeaderText())
                     .subText(rootItem.getBannerSubText())
                     .primaryColor(rootItem.getBannerPrimaryBgColor())
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("model", rootItem.getCategoryResponse());
+                        bundle.putBoolean("open_filter", true);
+                        navController.navigate(R.id.campaignDetails, bundle);
+                    })
                     .addIf(rootItem.getCampaigns().size() > 0, this);
 
             List<DataBindingEpoxyModel> modelList = new ArrayList<>();
@@ -88,6 +95,12 @@ public class CampaignController extends EpoxyController {
                 modelList.add(new CampaignCarouselModel_()
                         .id("sub_cam", item.getSlug())
                         .isStaggered(false)
+                        .clickListener((model, parentView, clickedView, position) -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("model", rootItem.getCategoryResponse());
+                            bundle.putSerializable("sub_model", model.model());
+                            navController.navigate(R.id.campaignDetails, bundle);
+                        })
                         .model(item));
 
             new CategoryCarouselModel_()
@@ -110,6 +123,12 @@ public class CampaignController extends EpoxyController {
                     .addIf(rootItem.getCampaigns().size() > 0, this);
         }
 
+
+
+        new CampaignTitleModel_()
+                .id("cam_title")
+                .title("Products")
+                .addTo(this);
 
         for (CampaignProductResponse item : productList) {
             new CampaignProductModel_()

@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.home.model;
 
-import android.graphics.Color;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -15,12 +14,12 @@ import com.airbnb.epoxy.EpoxyModelWithHolder;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
-import bd.com.evaly.evalyshop.databinding.HomeModelExpressHeaderBinding;
+import bd.com.evaly.evalyshop.databinding.HomeModelCampaignHeaderBinding;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
-@EpoxyModelClass(layout = R.layout.home_model_express_header)
-public abstract class HomeExpressHeaderModel extends EpoxyModelWithHolder<HomeExpressHeaderModel.HomeExpressHolder> {
+@EpoxyModelClass(layout = R.layout.home_model_campaign_header)
+public abstract class HomeCampaignHeaderModel extends EpoxyModelWithHolder<HomeCampaignHeaderModel.HomeExpressHolder> {
 
     @EpoxyAttribute
     public AppCompatActivity activity;
@@ -28,12 +27,6 @@ public abstract class HomeExpressHeaderModel extends EpoxyModelWithHolder<HomeEx
     public Fragment fragment;
     @EpoxyAttribute
     AppDatabase appDatabase;
-    @EpoxyAttribute
-    String title;
-    @EpoxyAttribute
-    boolean showMore;
-    @EpoxyAttribute
-    boolean transparentBackground;
 
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
@@ -55,21 +48,9 @@ public abstract class HomeExpressHeaderModel extends EpoxyModelWithHolder<HomeEx
         @Override
         protected void bindView(@NonNull View itemView) {
             this.itemView = itemView;
-            HomeModelExpressHeaderBinding binding = HomeModelExpressHeaderBinding.bind(itemView);
+            HomeModelCampaignHeaderBinding binding = HomeModelCampaignHeaderBinding.bind(itemView);
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
-            if (title != null)
-                binding.title.setText(title);
-            if (showMore)
-                binding.help.setVisibility(View.VISIBLE);
-            else
-                binding.help.setVisibility(View.GONE);
-
-            if (transparentBackground)
-                binding.container.setBackgroundColor(Color.TRANSPARENT);
-            else
-                binding.container.setBackgroundColor(Color.WHITE);
-
             binding.help.setOnClickListener(clickListener);
         }
     }

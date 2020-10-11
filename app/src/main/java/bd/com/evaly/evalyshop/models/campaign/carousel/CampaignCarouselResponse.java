@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 
 public class CampaignCarouselResponse{
 
@@ -40,6 +41,20 @@ public class CampaignCarouselResponse{
 
 	@SerializedName("banner_primary_bg_color")
 	private String bannerPrimaryBgColor;
+
+	public CampaignCategoryResponse getCategoryResponse(){
+		CampaignCategoryResponse model = new CampaignCategoryResponse();
+		model.setBannerHeaderText(bannerHeaderText);
+		model.setBannerHeaderTextColor(bannerHeaderTextColor);
+		model.setBannerImage(bannerImage);
+		model.setBannerPrimaryBgColor(bannerPrimaryBgColor);
+		model.setBannerSecondaryBgColor(bannerSecondaryBgColor);
+		model.setImage(bannerImage);
+		model.setSlug(slug);
+		model.setName(name);
+		return model;
+
+	}
 
 	public void setCampaigns(List<SubCampaignResponse> campaigns){
 		this.campaigns = campaigns;

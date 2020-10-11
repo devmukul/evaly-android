@@ -45,12 +45,18 @@ public abstract class CampaignSubModel extends DataBindingEpoxyModel {
         BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, true);
 
         binding.getRoot().setOnClickListener(clickListener);
-        binding.cashBackText.setText(model.getCashbackText().replace(".00", ""));
         if (model.getBadgeText() == null) {
             binding.badgeText.setVisibility(View.GONE);
         } else {
             binding.badgeText.setVisibility(View.VISIBLE);
             binding.badgeText.setText(model.getBadgeText());
+        }
+
+        if (model.getCashbackText() == null || model.getCashbackText().equals("") || model.getCashbackText().contains("00.00")) {
+            binding.cashBackText.setVisibility(View.GONE);
+        } else {
+            binding.cashBackText.setVisibility(View.VISIBLE);
+            binding.cashBackText.setText(model.getCashbackText().replace(".00", "").replace("cashback", "Cashback"));
         }
     }
 

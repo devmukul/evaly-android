@@ -153,6 +153,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             homeController.setExpressLoading(false);
             homeController.addExpressData(expressServiceModels);
         });
+
+        viewModel.getCampaignCategoryLiveList().observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
+            homeController.setCampaignLoading(false);
+            homeController.setCampaignCategoryList(campaignCategoryResponses);
+        });
     }
 
 

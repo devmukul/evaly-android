@@ -183,8 +183,8 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="17dp"
-            android:background="#f9f9f9"
+            android:layout_marginTop="10dp"
+            android:background="#fff"
             app:layout_constraintTop_toBottomOf="@+id/btn2Title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

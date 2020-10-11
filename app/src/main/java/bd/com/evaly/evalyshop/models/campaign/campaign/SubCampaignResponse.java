@@ -2,9 +2,11 @@ package bd.com.evaly.evalyshop.models.campaign.campaign;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 
-public class SubCampaignResponse extends CampaignParentModel {
+public class SubCampaignResponse extends CampaignParentModel implements Serializable {
 
     @SerializedName(value = "cashback_text", alternate = "badge_text_1")
     private String cashbackText;

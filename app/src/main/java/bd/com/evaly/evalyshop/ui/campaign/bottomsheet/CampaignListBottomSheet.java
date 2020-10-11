@@ -7,7 +7,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -39,6 +38,7 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
     private CampaignListController controller;
     private NavController navController;
     private boolean isLoading = true;
+    private boolean showClear = false;
 
 
     @Nullable
@@ -56,6 +56,7 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
         viewModel = new ViewModelProvider(this).get(CampaignListViewModel.class);
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         assert getArguments() != null;
+        showClear = getArguments().getBoolean("show_clear");
         if (viewModel.getCategory() == null) {
             viewModel.setCategory((CampaignCategoryResponse) getArguments().getSerializable("category"));
             viewModel.loadFromApi();
@@ -70,16 +71,20 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
         clickListeners();
         initRecycler();
         initSearch();
+        updateViews();
+    }
+
+    private void updateViews() {
+        if (showClear)
+            binding.clear.setVisibility(View.VISIBLE);
+        else
+            binding.clear.setVisibility(View.GONE);
     }
 
     private void initToolbar() {
         Rect rectangle = new Rect();
         Window window = getActivity().getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
-        if (mainViewModel.getCampaignOnClick().getValue() == null)
-            binding.clearFilter.setVisibility(View.GONE);
-        else
-            binding.clearFilter.setVisibility(View.VISIBLE);
     }
 
     private void initSearch() {

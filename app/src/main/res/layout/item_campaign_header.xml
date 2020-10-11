@@ -11,6 +11,7 @@
         android:background="@drawable/bg_campaign_header"
         android:paddingVertical="10dp"
         android:paddingLeft="15dp"
+        android:clickable="true"
         android:paddingRight="10dp">
 
         <TextView
@@ -39,8 +40,9 @@
             tools:text="Upto 25% Discount &amp; 70% Cashback" />
 
         <ImageView
-            android:layout_width="25dp"
+            android:layout_width="22dp"
             android:layout_height="40dp"
+            android:alpha="0.7"
             android:src="@drawable/ic_keyboard_arrow_right"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

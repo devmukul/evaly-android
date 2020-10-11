@@ -57,7 +57,7 @@ public abstract class CampaignHeaderModel extends DataBindingEpoxyModel {
                 binding.holder,
                 ColorStateList.valueOf(Color.parseColor(primaryColor)));
 
-        binding.getRoot().setOnClickListener(clickListener);
+        binding.holder.setOnClickListener(clickListener);
 
     }
 

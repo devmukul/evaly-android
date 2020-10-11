@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
+import com.airbnb.epoxy.CarouselModel_;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
 
@@ -20,10 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
+import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.home.HomeViewModel;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressCarouselModel_;
@@ -58,16 +64,24 @@ public class HomeController extends EpoxyController {
     @AutoModel
     HomeExpressHeaderModel_ expressHeaderModel_;
     @AutoModel
+    HomeExpressHeaderModel_ campaignHeaderModel_;
+    @AutoModel
+    HomeExpressHeaderModel_ productHeaderModel_;
+    @AutoModel
     HomeExpressSkeletonModel_ expressSkeletonBindingModel_;
+    @AutoModel
+    CarouselModel_ campaignCategoryCarousel;
 
     private AppCompatActivity activity;
     private Fragment fragment;
     private HomeViewModel homeViewModel;
     private List<ProductItem> items = new ArrayList<>();
     private List<ExpressServiceModel> itemsExpress = new ArrayList<>();
+    private List<CampaignCategoryResponse> campaignCategoryList = new ArrayList<>();
     private AppDatabase appDatabase;
     private boolean loadingMore = true;
     private boolean isExpressLoading = true;
+    private boolean isCampaignLoading = true;
 
 
     @Override
@@ -86,11 +100,54 @@ public class HomeController extends EpoxyController {
                 .activity(activity)
                 .addTo(this);
 
+
+        //campaign carousel
+        campaignHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Ongoing Campaigns")
+                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.campaignFragment))
+                .addTo(this);
+
+
+        List<DataBindingEpoxyModel> campaignSkeletonItemModels = new ArrayList<>();
+        for (int i = 0; i < 3; i++)
+            campaignSkeletonItemModels.add(new CampaignBannerSkeletonModel_().id("cam_ske", i));
+
+        List<DataBindingEpoxyModel> campaignModels = new ArrayList<>();
+        for (CampaignCategoryResponse item : campaignCategoryList) {
+            campaignModels.add(new CampaignBannerModel_()
+                    .id("camp", item.getSlug())
+                    .model(item));
+        }
+
+        campaignCategoryCarousel
+                .models(isCampaignLoading ? campaignSkeletonItemModels : campaignModels)
+                .onBind((model, view, position) -> {
+                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    params.setFullSpan(true);
+                    view.setLayoutParams(params);
+                    view.setBackgroundColor(Color.parseColor("#ffffff"));
+                })
+                .padding(new Carousel.Padding(
+                        (int) Utils.convertDpToPixel(15, activity),
+                        (int) Utils.convertDpToPixel(12, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity)))
+                .addTo(this);
+
+
         //express services carousel
         expressHeaderModel_
                 .activity(activity)
+                .showMore(true)
                 .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.expressProductSearchFragment))
                 .addTo(this);
+
 
         List<DataBindingEpoxyModel> expressItemModels = new ArrayList<>();
         int count = 0;
@@ -123,20 +180,31 @@ public class HomeController extends EpoxyController {
                     );
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
-                    view.setBackgroundColor(Color.parseColor("#ffffff"));
-                    // view.setBackground(AppController.getmContext().getDrawable(R.drawable.white_to_grey_gradient));
+                    // view.setBackgroundColor(Color.parseColor("#ffffff"));
+                    view.setBackground(AppController.getmContext().getDrawable(R.drawable.white_to_grey_gradient));
                 })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(10, activity),
                         (int) Utils.convertDpToPixel(12, activity),
                         (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(5, activity),
+                        (int) Utils.convertDpToPixel(0, activity),
                         0))
                 .addTo(this);
 
-        tabsModel.activity(activity)
-                .fragmentInstance(fragment)
-                .homeViewModel(homeViewModel)
+//        tabsModel.activity(activity)
+//                .fragmentInstance(fragment)
+//                .homeViewModel(homeViewModel)
+//                .addTo(this);
+
+        productHeaderModel_
+                .title("Products")
+                .showMore(false)
+                .transparentBackground(true)
+                .addTo(this);
+
+        new EmptySpaceModel_()
+                .id("empty_space_10")
+                .height(15)
                 .addTo(this);
 
 
@@ -160,6 +228,14 @@ public class HomeController extends EpoxyController {
 
         // bottom loading bar
         loader.addIf(loadingMore, this);
+    }
+
+    public void setCampaignLoading(boolean campaignLoading) {
+        isCampaignLoading = campaignLoading;
+    }
+
+    public void setCampaignCategoryList(List<CampaignCategoryResponse> campaignCategoryList) {
+        this.campaignCategoryList = campaignCategoryList;
     }
 
     public void addData(List<ProductItem> productItems) {

@@ -32,6 +32,7 @@ import java.util.Objects;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignDetailsBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -73,6 +74,13 @@ public class CampaignDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         viewModel = new ViewModelProvider(this).get(CampaignDetailsViewModel.class);
+
+        if (getArguments() != null && getArguments().containsKey("sub_model") && getArguments().getSerializable("sub_model") != null) {
+            SubCampaignResponse subCampaignResponse = (SubCampaignResponse) getArguments().getSerializable("sub_model");
+            mainViewModel.setCampaignOnClick(subCampaignResponse);
+            viewModel.setCampaign(subCampaignResponse.getSlug());
+        }
+
         viewModel.setCampaignDetailsLiveData((CampaignCategoryResponse) requireArguments().getSerializable("model"));
     }
 
@@ -86,6 +94,8 @@ public class CampaignDetailsFragment extends Fragment {
         initRecycler();
         initTabs();
         initSearch();
+        if (getArguments() != null && getArguments().containsKey("open_filter"))
+            openFilterModal();
     }
 
     private void initToolbar() {
@@ -210,11 +220,16 @@ public class CampaignDetailsFragment extends Fragment {
 
     private void clickListeners() {
         binding.filterBtn.setOnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignDetailsLiveData().getValue()));
-            navController.navigate(R.id.campaignListBottomSheet, bundle);
+            openFilterModal();
         });
         binding.backArrow.setOnClickListener(v -> requireActivity().onBackPressed());
+    }
+
+    private void openFilterModal() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignDetailsLiveData().getValue()));
+        bundle.putBoolean("show_clear", viewModel.getCampaign() == null);
+        navController.navigate(R.id.campaignListBottomSheet, bundle);
     }
 
     private void liveEventObservers() {

@@ -33,7 +33,6 @@ public abstract class CampaignCarouselModel extends DataBindingEpoxyModel {
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
-
         ItemCampaignCarouselBinding binding = (ItemCampaignCarouselBinding) holder.getDataBinding();
 
         if (isStaggered) {
@@ -45,8 +44,12 @@ public abstract class CampaignCarouselModel extends DataBindingEpoxyModel {
         BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, true);
 
         binding.getRoot().setOnClickListener(clickListener);
-        binding.cashBackText.setText(model.getBadgeText().replace(".00", "").replace("cashback", "Cashback"));
-
+        if (model.getBadgeText() == null || model.getBadgeText().equals("") || model.getBadgeText().contains("00.00")){
+            binding.cashBackText.setVisibility(View.GONE);
+        } else {
+            binding.cashBackText.setVisibility(View.VISIBLE);
+            binding.cashBackText.setText(model.getBadgeText().replace(".00", "").replace("cashback", "Cashback"));
+        }
     }
 
     @Override
