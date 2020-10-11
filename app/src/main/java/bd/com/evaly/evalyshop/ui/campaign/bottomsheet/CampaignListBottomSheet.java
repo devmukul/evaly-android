@@ -56,7 +56,8 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
         viewModel = new ViewModelProvider(this).get(CampaignListViewModel.class);
         mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         assert getArguments() != null;
-        showClear = getArguments().getBoolean("show_clear");
+        if (getArguments().containsKey("show_clear"))
+            showClear = getArguments().getBoolean("show_clear");
         if (viewModel.getCategory() == null) {
             viewModel.setCategory((CampaignCategoryResponse) getArguments().getSerializable("category"));
             viewModel.loadFromApi();
@@ -76,9 +77,9 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
 
     private void updateViews() {
         if (showClear)
-            binding.clear.setVisibility(View.VISIBLE);
+            binding.clearFilter.setVisibility(View.VISIBLE);
         else
-            binding.clear.setVisibility(View.GONE);
+            binding.clearFilter.setVisibility(View.GONE);
     }
 
     private void initToolbar() {
@@ -137,7 +138,7 @@ public class CampaignListBottomSheet extends BottomSheetDialogFragment {
 
     }
 
-    private void hideKeyboard(){
+    private void hideKeyboard() {
         InputMethodManager in = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         assert in != null;
         in.hideSoftInputFromWindow(binding.search.getWindowToken(), 0);

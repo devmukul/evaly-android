@@ -228,7 +228,7 @@ public class CampaignDetailsFragment extends Fragment {
     private void openFilterModal() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignDetailsLiveData().getValue()));
-        bundle.putBoolean("show_clear", viewModel.getCampaign() == null);
+        bundle.putBoolean("show_clear", viewModel.getCampaign() != null);
         navController.navigate(R.id.campaignListBottomSheet, bundle);
     }
 

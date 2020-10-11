@@ -85,6 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="0dp"
+                android:background="#fff"
                 android:fitsSystemWindows="true"
                 app:contentInsetStartWithNavigation="0dp"
                 app:elevation="0dp">
@@ -94,7 +95,7 @@
                     android:id="@+id/collapsingToolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#f9f9f9"
+                    android:background="#fff"
                     android:elevation="0dp"
                     android:fitsSystemWindows="true"
                     android:gravity="top"
