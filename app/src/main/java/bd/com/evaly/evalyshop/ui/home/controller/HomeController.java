@@ -118,7 +118,12 @@ public class HomeController extends EpoxyController {
         for (CampaignCategoryResponse item : campaignCategoryList) {
             campaignModels.add(new CampaignBannerModel_()
                     .id("camp", item.getSlug())
-                    .model(item));
+                    .model(item)
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("model", model.model());
+                        NavHostFragment.findNavController(fragment).navigate(R.id.campaignDetails, bundle);
+                    }));
         }
 
         campaignCategoryCarousel
