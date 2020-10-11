@@ -12,14 +12,14 @@ import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.ItemCampaignSubBinding;
+import bd.com.evaly.evalyshop.databinding.ItemCampaignCarouselBinding;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.util.BindingUtils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
-@EpoxyModelClass(layout = R.layout.item_campaign_sub)
-public abstract class CampaignSubModel extends DataBindingEpoxyModel {
+@EpoxyModelClass(layout = R.layout.item_campaign_carousel)
+public abstract class CampaignCarouselModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
     public SubCampaignResponse model;
@@ -34,7 +34,7 @@ public abstract class CampaignSubModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
 
-        ItemCampaignSubBinding binding = (ItemCampaignSubBinding) holder.getDataBinding();
+        ItemCampaignCarouselBinding binding = (ItemCampaignCarouselBinding) holder.getDataBinding();
 
         if (isStaggered) {
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
@@ -45,13 +45,8 @@ public abstract class CampaignSubModel extends DataBindingEpoxyModel {
         BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, true);
 
         binding.getRoot().setOnClickListener(clickListener);
-        binding.cashBackText.setText(model.getCashbackText().replace(".00", ""));
-        if (model.getBadgeText() == null) {
-            binding.badgeText.setVisibility(View.GONE);
-        } else {
-            binding.badgeText.setVisibility(View.VISIBLE);
-            binding.badgeText.setText(model.getBadgeText());
-        }
+        binding.cashBackText.setText(model.getBadgeText().replace(".00", "").replace("cashback", "Cashback"));
+
     }
 
     @Override

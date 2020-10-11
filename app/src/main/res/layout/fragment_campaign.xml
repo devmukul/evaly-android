@@ -190,7 +190,7 @@
                                 android:layout_marginEnd="15dp"
                                 android:layout_weight="1"
                                 android:background="@color/transparent"
-                                android:hint="Campaigns"
+                                android:hint="Search in campaigns"
                                 android:imeOptions="actionSearch"
                                 android:maxLines="1"
                                 android:singleLine="true"

@@ -30,7 +30,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -281,6 +280,11 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     private void liveEventsObserver() {
 
+        viewModel.getCarouselLiveList().observe(getViewLifecycleOwner(), campaignCarouselResponses -> {
+            productController.setCarouselList(campaignCarouselResponses);
+            productController.requestModelBuild();
+        });
+
         viewModel.getCategoryLiveList().observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
             sliderController.addData(campaignCategoryResponses);
             sliderController.requestModelBuild();
@@ -305,6 +309,7 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                 productController.requestModelBuild();
             }
         });
+
     }
 
     private void initRecycler() {

@@ -13,11 +13,9 @@ public class CategoryCarousel extends Carousel {
 
     public CategoryCarousel(Context context) {
         super(context);
-        setNestedScrollingEnabled(true);
+        setNestedScrollingEnabled(false);
         addStatesFromChildren();
     }
-
-
 
     @Nullable
     @Override

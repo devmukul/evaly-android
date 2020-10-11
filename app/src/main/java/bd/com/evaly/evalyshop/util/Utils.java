@@ -42,6 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 
 public class Utils {
 
@@ -65,7 +66,7 @@ public class Utils {
         return m.matches();
     }
 
-    public static int countWords(String s){
+    public static int countWords(String s) {
 
         int wordCount = 0;
 
@@ -182,14 +183,14 @@ public class Utils {
         return formatPrice(d);
     }
 
-    public static String formatPriceSymbol(String s){
+    public static String formatPriceSymbol(String s) {
         if (s == null)
             return "৳ 0";
         return "৳ " + formatPrice(s);
     }
 
 
-    public static String formatPriceSymbol(double s){
+    public static String formatPriceSymbol(double s) {
         return "৳ " + formatPrice(s);
     }
 
@@ -201,6 +202,9 @@ public class Utils {
         return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
+    public static int convertDpToPixel(int dp) {
+        return (int) (dp * ((float) AppController.getmContext().getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
 
     public static String capitalize(String capString) {
         StringBuffer capBuffer = new StringBuffer();
@@ -682,7 +686,7 @@ public class Utils {
         long outputDate = 0;
 
         SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
-      //  df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
+        //  df_input.setTimeZone(TimeZone.getTimeZone("gmt"));
 
         SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
         df_output.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));

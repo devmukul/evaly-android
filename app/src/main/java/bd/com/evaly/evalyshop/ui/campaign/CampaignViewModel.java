@@ -11,6 +11,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
+import bd.com.evaly.evalyshop.models.campaign.carousel.CampaignCarouselResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
@@ -18,6 +19,7 @@ import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class CampaignViewModel extends ViewModel {
 
+    private MutableLiveData<List<CampaignCarouselResponse>> carouselLiveList = new MutableLiveData<>();
     private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
     private List<CampaignCategoryResponse> categoryArrayList = new ArrayList<>();
     private MutableLiveData<List<CampaignItem>> liveList = new MutableLiveData<>();
@@ -35,6 +37,27 @@ public class CampaignViewModel extends ViewModel {
         loadCampaignCategory();
         loadCampaignProducts();
         loadCampaignBanners();
+        loadCampaignCarousel();
+    }
+
+
+    public void loadCampaignCarousel() {
+        CampaignApiHelper.getCampaignCarousel("campaign", new ResponseListenerAuth<CommonDataResponse<List<CampaignCarouselResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<CampaignCarouselResponse>> response, int statusCode) {
+                carouselLiveList.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void loadCampaignCategory() {
@@ -113,8 +136,16 @@ public class CampaignViewModel extends ViewModel {
         totalCount = 0;
     }
 
+    public LiveData<List<CampaignCarouselResponse>> getCarouselLiveList() {
+        return carouselLiveList;
+    }
+
     public String getSearch() {
         return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
     }
 
     public SingleLiveEvent<Boolean> getHideLoadingBar() {
@@ -135,10 +166,6 @@ public class CampaignViewModel extends ViewModel {
 
     public LiveData<List<CampaignBannerResponse>> getBannerLiveList() {
         return bannerLiveList;
-    }
-
-    public void setSearch(String search) {
-        this.search = search;
     }
 
     public int getCurrentPage() {

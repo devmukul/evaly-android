@@ -9,11 +9,16 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
+import bd.com.evaly.evalyshop.models.campaign.carousel.CampaignCarouselResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 
 public class CampaignApiHelper extends BaseApiHelper {
+
+    public static void getCampaignCarousel(String context, ResponseListenerAuth<CommonDataResponse<List<CampaignCarouselResponse>>, String> listener) {
+        getiApiClient().getCampaignCarousel(context).enqueue(getResponseCallBackDefault(listener));
+    }
 
     public static void getCampaignBanners(ResponseListenerAuth<CommonDataResponse<List<CampaignBannerResponse>>, String> listener) {
         getiApiClient().getCampaignBanners().enqueue(getResponseCallBackDefault(listener));

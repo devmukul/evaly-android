@@ -23,6 +23,7 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
+import bd.com.evaly.evalyshop.models.campaign.carousel.CampaignCarouselResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
@@ -74,6 +75,10 @@ public interface IApiClient {
 
     // new campaign
 
+
+    @GET(UrlUtils.BASE_URL + "campaigns/web/home")
+    Call<CommonDataResponse<List<CampaignCarouselResponse>>> getCampaignCarousel(@Query("context_type") String contextType);
+
     @GET(UrlUtils.BASE_URL + "campaigns/mobile/products/banners/latest")
     Call<CommonDataResponse<List<CampaignBannerResponse>>> getCampaignBanners();
 
@@ -83,7 +88,6 @@ public interface IApiClient {
                                                                                         @Query("search") String search,
                                                                                         @Query("category") String category,
                                                                                         @Query("campaign") String campaign);
-
 
     @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/campaigns")
     Call<CommonDataResponse<List<SubCampaignResponse>>> getCampaignCategoryCampaigns(@Query("page") int page,
