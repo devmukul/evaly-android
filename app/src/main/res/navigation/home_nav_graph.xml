@@ -266,6 +266,10 @@
         android:id="@+id/campaignListBottomSheet"
         android:name="bd.com.evaly.evalyshop.ui.campaign.bottomsheet.CampaignListBottomSheet"
         android:label="CampaignListBottomSheet" />
+    <fragment
+        android:id="@+id/globalSearchFragment"
+        android:name="bd.com.evaly.evalyshop.ui.search.GlobalSearchFragment"
+        android:label="GlobalSearchFragment" />
 
 
     <!--    <activity-->
