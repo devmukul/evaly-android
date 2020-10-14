@@ -33,16 +33,15 @@ public abstract class CampaignBannerModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
         ItemCampaignBannerBinding binding = (ItemCampaignBannerBinding) holder.getDataBinding();
+        binding.getRoot().setOnClickListener(clickListener);
+
         ViewCompat.setBackgroundTintList(
                 binding.gradient,
                 ColorStateList.valueOf(Color.parseColor(model.getBannerPrimaryBgColor())));
         BindingUtils.setImage(binding.image, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460, false);
 
-
         binding.headerText.setText(model.getBannerHeaderText().toUpperCase());
         binding.subText.setText(model.getBannerSubText());
-
-        binding.getRoot().setOnClickListener(clickListener);
     }
 
 

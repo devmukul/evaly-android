@@ -19,7 +19,6 @@
             android:id="@+id/headerText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:capitalize="characters"
             android:clickable="false"
             android:textColor="#fff"
             android:textIsSelectable="false"

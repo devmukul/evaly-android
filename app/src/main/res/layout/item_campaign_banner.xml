@@ -4,21 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/holder"
         android:layout_width="wrap_content"
         android:layout_height="75dp"
         app:cardCornerRadius="6dp"
-        android:clickable="false"
         app:cardElevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
+                android:clickable="false"
                 android:src="@drawable/cover" />
 
             <View
@@ -26,6 +28,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@drawable/bg_campaign_gradient"
+                android:clickable="false"
                 app:layout_constraintBottom_toBottomOf="@id/image"
                 app:layout_constraintEnd_toEndOf="@id/image"
                 app:layout_constraintStart_toStartOf="@id/image"
@@ -37,18 +40,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                android:capitalize="characters"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="#fff"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textIsSelectable="false"
                 app:layout_constraintBottom_toTopOf="@+id/subText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image"
-                tools:layout_editor_absoluteX="15dp"
                 tools:text="HOT DEALS" />
 
             <TextView
@@ -60,13 +60,11 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="#fff"
-                android:textIsSelectable="false"
                 android:textSize="13sp"
                 app:layout_constraintBottom_toTopOf="@+id/image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/headerText"
-                tools:layout_editor_absoluteX="15dp"
                 tools:text="Upto 25% Discount &amp; 70% Cashback" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

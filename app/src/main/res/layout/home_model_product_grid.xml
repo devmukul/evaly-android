@@ -112,9 +112,9 @@
                 android:textColor="#777"
                 android:textSize="11sp"
                 android:visibility="gone"
-                tools:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/price" />
+                app:layout_constraintTop_toBottomOf="@+id/price"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/buy_now"

@@ -127,8 +127,6 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
 
             }
         });
-
-
     }
 
 
@@ -151,8 +149,10 @@ public class IssueDetailsBottomSheet extends BottomSheetDialogFragment {
             public void onDataFetched(CommonDataResponse<IssueTicketCommentModel> response, int statusCode) {
                 binding.commentInput.setText("");
                 dialog.dismiss();
-                if (response.getData() != null)
+                if (response.getData() != null) {
+                    binding.not.setVisibility(View.GONE);
                     itemList.add(response.getData());
+                }
                 adapter.notifyDataSetChanged();
             }
 
