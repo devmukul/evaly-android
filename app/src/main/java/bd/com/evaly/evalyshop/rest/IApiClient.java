@@ -51,6 +51,7 @@ import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
+import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
@@ -72,6 +73,18 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+
+
+    // algolia
+
+    @POST("https://eza2j926q5-dsn.algolia.net/1/indexes/*/queries")
+    Call<JsonObject> searchOnAlgolia(@Query("x-algolia-agent") String agent,
+                                     @Query("x-algolia-application-id") String applicationId,
+                                     @Query("x-algolia-api-key") String apiKey,
+                                     @Body AlgoliaRequest body);
+
+
 
     // new campaign
 
