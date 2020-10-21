@@ -216,6 +216,7 @@ public class HomeController extends EpoxyController {
         expressHeaderModel_
                 .activity(activity)
                 .showMore(true)
+                .title("Evaly Express")
                 .transparentBackground(true)
                 .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.expressProductSearchFragment))
                 .addTo(this);
