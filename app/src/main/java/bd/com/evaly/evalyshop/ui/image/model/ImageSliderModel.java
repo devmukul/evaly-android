@@ -17,6 +17,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.ItemTouchImageBinding;
 
 @EpoxyModelClass(layout = R.layout.item_touch_image)
@@ -30,28 +31,37 @@ public abstract class ImageSliderModel extends DataBindingEpoxyModel {
         super.bind(holder);
         ItemTouchImageBinding binding = (ItemTouchImageBinding) holder.getDataBinding();
 
-        Glide.with(binding.image)
-                .asBitmap()
-                .load(image)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .skipMemoryCache(true)
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        if (binding.image.getContext() != null)
-                            binding.image.setImage(ImageSource.bitmap(resource));
-                    }
+        try {
+            Glide.with(AppController.getmContext())
+                    .asBitmap()
+                    .load(image)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .skipMemoryCache(true)
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            if (binding != null && binding.image.getContext() != null)
+                                binding.image.setImage(ImageSource.bitmap(resource));
+                        }
 
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
 
-                    }
-                });
+                        }
+                    });
+        } catch (Exception ignored) {
+
+        }
 
     }
 
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
 
+    }
+
+    @Override
+    public void unbind(@NonNull DataBindingHolder holder) {
+        super.unbind(holder);
     }
 }

@@ -486,6 +486,8 @@ public class MainActivity extends BaseActivity {
             } catch (Exception e4) {
                 ToastUtils.show("Please install eConnect app from Playstore");
             }
+        } catch (Exception e5) {
+            ToastUtils.show("Please install eConnect app from Playstore");
         }
     }
 

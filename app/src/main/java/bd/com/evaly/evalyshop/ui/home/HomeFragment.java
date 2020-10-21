@@ -1,6 +1,7 @@
 package bd.com.evaly.evalyshop.ui.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.networkError.NetworkErrorDialog;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
@@ -104,7 +106,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "home", mainViewModel);
         FragmentAppBarHeaderBinding headerBinding = binding.header;
-        headerBinding.homeSearch.setOnClickListener(view1 -> navController.navigate(R.id.globalSearchFragment));
+        headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
 
         productItemList = new ArrayList<>();
 
@@ -156,6 +158,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             homeController.setCampaignLoading(false);
             homeController.setCampaignCategoryList(campaignCategoryResponses);
         });
+
     }
 
 

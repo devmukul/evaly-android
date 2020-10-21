@@ -17,6 +17,7 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
@@ -28,8 +29,8 @@ import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 public class HomeViewModel extends ViewModel {
 
     private int tabPosition = -1;
-
     private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
+    private MutableLiveData<List<CampaignProductResponse>> flashSaleProductList = new MutableLiveData<>();
     private MutableLiveData<List<ProductItem>> productListLive = new MutableLiveData<>();
     private List<ProductItem> productArrayList = new ArrayList<>();
     private MutableLiveData<List<BannerItem>> bannerListLive = new MutableLiveData<>();
@@ -46,6 +47,7 @@ public class HomeViewModel extends ViewModel {
         loadProducts();
         loadExpressServices();
         loadCampaignCategory();
+        loadFlashSaleProductList();
     }
 
     public int getTabPosition() {
@@ -59,6 +61,11 @@ public class HomeViewModel extends ViewModel {
     public LiveData<List<CampaignCategoryResponse>> getCampaignCategoryLiveList() {
         return categoryLiveList;
     }
+
+    public LiveData<List<CampaignProductResponse>> getFlashSaleProductList() {
+        return flashSaleProductList;
+    }
+
 
     public void loadCampaignCategory() {
         CampaignApiHelper.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {

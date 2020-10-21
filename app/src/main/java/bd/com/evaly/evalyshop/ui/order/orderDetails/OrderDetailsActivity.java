@@ -614,6 +614,11 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         addPhoto.setOnClickListener(view -> openImageSelector());
 
         btnSubmit.setOnClickListener(view -> {
+            if (orderDetailsModel == null || orderDetailsModel.getShop() == null){
+                ToastUtils.show("Please reload the page");
+                return;
+            }
+
             if (etDescription.getText().toString().trim().isEmpty()) {
                 etDescription.setError("Required");
                 return;
@@ -1033,9 +1038,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     llCashCollect.setVisibility(View.GONE);
                 }
 
-                if ((orderStatus.equals("processing") ||
-                        orderStatus.equals("picked") ||
-                        orderStatus.equals("shipped")) && paymentStatus.equals("paid"))
+                if (orderStatus.equals("shipped") && paymentStatus.equals("paid"))
                     confirmDelivery.setVisibility(View.VISIBLE);
                 else
                     confirmDelivery.setVisibility(View.GONE);
@@ -1312,6 +1315,10 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             AuthApiHelper.updateProductStatus(data, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                 @Override
                 public void onDataFetched(retrofit2.Response<JsonObject> response1) {
+                    if (response1 == null){
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     if (response1.code() == 200 || response1.code() == 201) {
                         dialog.hideDialog();
                         Toast.makeText(getApplicationContext(), "Order Updated", Toast.LENGTH_LONG).show();
