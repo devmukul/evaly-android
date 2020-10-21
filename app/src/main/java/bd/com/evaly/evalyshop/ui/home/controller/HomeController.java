@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.home.controller;
 
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
@@ -29,7 +28,6 @@ import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerSkeletonModel_;
-import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSmallProductModel_;
 import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
@@ -46,6 +44,8 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.util.Constants;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
 public class HomeController extends EpoxyController {
@@ -143,15 +143,15 @@ public class HomeController extends EpoxyController {
                     );
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
-                   // view.setBackgroundColor(Color.parseColor("#ffffff"));
+                    // view.setBackgroundColor(Color.parseColor("#ffffff"));
                     view.setBackground(AppController.getmContext().getDrawable(R.drawable.white_to_grey_gradient));
                 })
                 .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(15, activity),
+                        (int) Utils.convertDpToPixel(5, activity),
                         (int) Utils.convertDpToPixel(12, activity),
+                        (int) Utils.convertDpToPixel(15, activity),
                         (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity)))
+                        0))
                 .addTo(this);
 
 
@@ -161,7 +161,17 @@ public class HomeController extends EpoxyController {
                 .showMore(true)
                 .title("Flash Sale")
                 .transparentBackground(true)
-                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.campaignFragment))
+                .clickListener((model, parentView, clickedView, position) -> {
+                    for (CampaignCategoryResponse s : campaignCategoryList) {
+                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("model", s);
+                            NavHostFragment.findNavController(fragment).navigate(R.id.campaignDetails, bundle);
+                            return;
+                        }
+                    }
+                    ToastUtils.show("Please visit campaign page");
+                })
                 .addIf(flashSaleProducts.size() > 0, this);
 
         List<DataBindingEpoxyModel> flashSaleModels = new ArrayList<>();
@@ -169,6 +179,18 @@ public class HomeController extends EpoxyController {
         for (CampaignProductResponse item : flashSaleProducts) {
             flashSaleModels.add(new CampaignSmallProductModel_()
                     .id("flashsale", item.getSlug())
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        CampaignProductResponse item1 = model.model();
+                        Intent intent = new Intent(activity, ViewProductActivity.class);
+                        intent.putExtra("product_slug", item1.getSlug());
+                        intent.putExtra("product_name", item1.getName());
+                        intent.putExtra("product_price", item1.getPrice());
+                        if (item.getShopSlug() != null)
+                            intent.putExtra("shop_slug", item.getShopSlug());
+                        intent.putExtra("product_image", item1.getImage());
+                        intent.putExtra("cashback_text", item1.getCashbackText());
+                        activity.startActivity(intent);
+                    })
                     .model(item));
         }
 
@@ -231,7 +253,7 @@ public class HomeController extends EpoxyController {
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
                     // view.setBackgroundColor(Color.parseColor("#ffffff"));
-                   // view.setBackground(AppController.getmContext().getDrawable(R.drawable.white_to_grey_gradient));
+                    // view.setBackground(AppController.getmContext().getDrawable(R.drawable.white_to_grey_gradient));
                 })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(10, activity),

@@ -16,6 +16,7 @@ import com.airbnb.epoxy.EpoxyModelWithHolder;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.databinding.HomeModelExpressHeaderBinding;
+import bd.com.evaly.evalyshop.databinding.HomeModelFlashsaleHeaderBinding;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -55,7 +56,7 @@ public abstract class HomeExpressHeaderModel extends EpoxyModelWithHolder<HomeEx
         @Override
         protected void bindView(@NonNull View itemView) {
             this.itemView = itemView;
-            HomeModelExpressHeaderBinding binding = HomeModelExpressHeaderBinding.bind(itemView);
+            HomeModelFlashsaleHeaderBinding binding = HomeModelFlashsaleHeaderBinding.bind(itemView);
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(true);
             if (title != null)

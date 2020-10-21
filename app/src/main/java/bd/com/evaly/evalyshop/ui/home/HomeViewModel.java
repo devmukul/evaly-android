@@ -25,6 +25,7 @@ import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.util.Constants;
 
 public class HomeViewModel extends ViewModel {
 
@@ -68,8 +69,8 @@ public class HomeViewModel extends ViewModel {
 
     public void loadFlashSaleProductList() {
 
-        //  flash-sale-2509b8bb
-        CampaignApiHelper.getCampaignCategoryProducts(1, 20, null, "hot-deal-3b06c2c4", null,
+        //  flash-sale-2509b8bb  hot-deal-3b06c2c4
+        CampaignApiHelper.getCampaignCategoryProducts(1, 20, null, Constants.FLASH_SALE_SLUG, null,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
