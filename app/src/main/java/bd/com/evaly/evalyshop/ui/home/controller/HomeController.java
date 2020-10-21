@@ -24,10 +24,13 @@ import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerSkeletonModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSmallProductModel_;
 import bd.com.evaly.evalyshop.ui.epoxy.EpoxyDividerModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.EmptySpaceModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
@@ -71,11 +74,16 @@ public class HomeController extends EpoxyController {
     HomeExpressSkeletonModel_ expressSkeletonBindingModel_;
     @AutoModel
     CarouselModel_ campaignCategoryCarousel;
+    @AutoModel
+    CarouselModel_ flashSaleCarousel;
+    @AutoModel
+    HomeExpressHeaderModel_ flashSaleHeaderModel_;
 
     private AppCompatActivity activity;
     private Fragment fragment;
     private HomeViewModel homeViewModel;
     private List<ProductItem> items = new ArrayList<>();
+    private List<CampaignProductResponse> flashSaleProducts = new ArrayList<>();
     private List<ExpressServiceModel> itemsExpress = new ArrayList<>();
     private List<CampaignCategoryResponse> campaignCategoryList = new ArrayList<>();
     private AppDatabase appDatabase;
@@ -135,7 +143,8 @@ public class HomeController extends EpoxyController {
                     );
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
-                    view.setBackgroundColor(Color.parseColor("#ffffff"));
+                   // view.setBackgroundColor(Color.parseColor("#ffffff"));
+                    view.setBackground(AppController.getmContext().getDrawable(R.drawable.white_to_grey_gradient));
                 })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
@@ -146,10 +155,46 @@ public class HomeController extends EpoxyController {
                 .addTo(this);
 
 
+        //flash sale carousel
+        flashSaleHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Flash Sale")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.campaignFragment))
+                .addIf(flashSaleProducts.size() > 0, this);
+
+        List<DataBindingEpoxyModel> flashSaleModels = new ArrayList<>();
+
+        for (CampaignProductResponse item : flashSaleProducts) {
+            flashSaleModels.add(new CampaignSmallProductModel_()
+                    .id("flashsale", item.getSlug())
+                    .model(item));
+        }
+
+        flashSaleCarousel
+                .models(flashSaleModels)
+                .onBind((model, view, position) -> {
+                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    params.setFullSpan(true);
+                    view.setLayoutParams(params);
+                })
+                .padding(new Carousel.Padding(
+                        (int) Utils.convertDpToPixel(15, activity),
+                        (int) Utils.convertDpToPixel(12, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity)))
+                .addIf(flashSaleModels.size() > 0, this);
+
         //express services carousel
         expressHeaderModel_
                 .activity(activity)
                 .showMore(true)
+                .transparentBackground(true)
                 .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.expressProductSearchFragment))
                 .addTo(this);
 
@@ -186,7 +231,7 @@ public class HomeController extends EpoxyController {
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
                     // view.setBackgroundColor(Color.parseColor("#ffffff"));
-                    view.setBackground(AppController.getmContext().getDrawable(R.drawable.white_to_grey_gradient));
+                   // view.setBackground(AppController.getmContext().getDrawable(R.drawable.white_to_grey_gradient));
                 })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(10, activity),
@@ -233,6 +278,10 @@ public class HomeController extends EpoxyController {
 
         // bottom loading bar
         loader.addIf(loadingMore, this);
+    }
+
+    public void setFlashSaleProducts(List<CampaignProductResponse> flashSaleProducts) {
+        this.flashSaleProducts = flashSaleProducts;
     }
 
     public void setCampaignLoading(boolean campaignLoading) {

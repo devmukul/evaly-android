@@ -66,6 +66,27 @@ public class HomeViewModel extends ViewModel {
         return flashSaleProductList;
     }
 
+    public void loadFlashSaleProductList() {
+
+        //  flash-sale-2509b8bb
+        CampaignApiHelper.getCampaignCategoryProducts(1, 20, null, "hot-deal-3b06c2c4", null,
+                new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
+                    @Override
+                    public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
+                        flashSaleProductList.setValue(response.getData());
+                    }
+
+                    @Override
+                    public void onFailed(String errorBody, int errorCode) {
+
+                    }
+
+                    @Override
+                    public void onAuthError(boolean logout) {
+
+                    }
+                });
+    }
 
     public void loadCampaignCategory() {
         CampaignApiHelper.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {

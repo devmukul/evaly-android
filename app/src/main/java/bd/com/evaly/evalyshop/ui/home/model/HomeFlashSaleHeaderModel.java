@@ -19,8 +19,8 @@ import bd.com.evaly.evalyshop.databinding.HomeModelExpressHeaderBinding;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
-@EpoxyModelClass(layout = R.layout.home_model_flashsale_header)
-public abstract class HomeExpressHeaderModel extends EpoxyModelWithHolder<HomeExpressHeaderModel.HomeExpressHolder> {
+@EpoxyModelClass(layout = R.layout.home_model_express_header)
+public abstract class HomeFlashSaleHeaderModel extends EpoxyModelWithHolder<HomeFlashSaleHeaderModel.HomeExpressHolder> {
 
     @EpoxyAttribute
     public AppCompatActivity activity;

@@ -15,15 +15,15 @@ import com.airbnb.epoxy.EpoxyModelClass;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.databinding.ItemCampaignProductBinding;
+import bd.com.evaly.evalyshop.databinding.ItemCampaignSmallProductBinding;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
-@EpoxyModelClass(layout = R.layout.item_campaign_product)
-public abstract class CampaignProductModel extends DataBindingEpoxyModel {
+@EpoxyModelClass(layout = R.layout.item_campaign_small_product)
+public abstract class CampaignSmallProductModel extends DataBindingEpoxyModel {
 
     @EpoxyAttribute
     public CampaignProductResponse model;
@@ -38,7 +38,7 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
 
-        ItemCampaignProductBinding binding = (ItemCampaignProductBinding) holder.getDataBinding();
+        ItemCampaignSmallProductBinding binding = (ItemCampaignSmallProductBinding) holder.getDataBinding();
         if (binding.getRoot().getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
             params.setFullSpan(false);
@@ -67,17 +67,13 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         }
 
         binding.getRoot().setOnClickListener(clickListener);
-        binding.buyNow.setVisibility(View.GONE);
-        binding.buyNow.setOnClickListener(buyNowClickListener);
-
-        binding.campaignName.setText(model.getBadgeText());
         if (model.getCashbackText() == null || model.getCashbackText().length() == 0)
             binding.tvCashback.setVisibility(View.GONE);
         else {
             binding.tvCashback.setText(Utils.toFirstCharUpperAll(model.getCashbackText().replace(".00", "")));
             binding.tvCashback.setVisibility(View.VISIBLE);
         }
-        binding.bottomText.setText(model.getBottomText());
+        // binding.bottomText.setText(model.getBottomText());
     }
 
 
