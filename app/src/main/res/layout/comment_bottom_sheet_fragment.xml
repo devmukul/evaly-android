@@ -13,7 +13,7 @@
             android:id="@+id/container2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <bd.com.evaly.evalyshop.views.StickyScrollView
@@ -41,7 +41,7 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="#fff"
+                            android:background="@color/white"
                             android:paddingTop="13dp"
                             android:paddingBottom="13dp"
                             android:tag="sticky">
@@ -72,7 +72,7 @@
                                 android:layout_marginTop="3dp"
                                 android:layout_toRightOf="@id/pictureHolder"
                                 tools:text="User Name"
-                                android:textColor="#333"
+                                android:textColor="@color/c333"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
 
@@ -95,7 +95,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/pictureHolder"
                             android:autoLink="all"
-                            android:background="#fff"
+                            android:background="@color/white"
                             android:paddingLeft="17dp"
                             android:paddingTop="5dp"
                             android:paddingRight="17dp"
@@ -159,7 +159,7 @@
                             android:paddingTop="15dp"
                             android:paddingBottom="17dp"
                             android:text="Comments"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 

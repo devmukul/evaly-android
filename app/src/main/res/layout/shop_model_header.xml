@@ -52,7 +52,7 @@
             android:paddingEnd="20dp"
             android:text="Shop Name"
             android:textAlignment="textStart"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textIsSelectable="true"
             android:textSize="17sp"
             android:textStyle="bold"
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:text="(0)"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
             app:layout_constraintStart_toEndOf="@+id/ratingBar"
@@ -142,7 +142,7 @@
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="20dp"
-                android:tint="#333"
+                android:tint="@color/c333"
                 app:srcCompat="@drawable/ic_inbox" />
 
         </LinearLayout>

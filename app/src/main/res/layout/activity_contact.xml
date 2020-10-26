@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/fafafa">
 
     <LinearLayout
@@ -51,8 +51,8 @@
                     android:paddingTop="10dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="10dp"
-                    android:tint="#000"
-                    app:srcCompat="@drawable/ic_arrow_back" />
+                    app:srcCompat="@drawable/ic_arrow_back"
+                    app:tint="@color/black" />
 
                 <TextView
                     android:id="@+id/contact_title"
@@ -62,7 +62,7 @@
                     android:layout_marginBottom="1dp"
                     android:text="@string/contact_us"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="#000"
+                    android:textColor="@color/black"
                     android:textSize="22sp" />
             </LinearLayout>
 
@@ -77,6 +77,7 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:background="@drawable/home_box_bg"
+            android:backgroundTint="@color/ddd"
             android:orientation="vertical"
             android:paddingLeft="5dp"
             android:paddingTop="20dp"
@@ -211,8 +212,6 @@
         </LinearLayout>
 
 
-
-
         <ImageView
             android:layout_width="100dp"
             android:layout_height="50dp"
@@ -264,7 +263,7 @@
                         android:layout_marginTop="5dp"
                         android:text="@string/evaly_address"
                         android:textAlignment="viewStart"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textIsSelectable="true"
                         android:textSize="17sp" />
                 </LinearLayout>
@@ -306,8 +305,8 @@
                         android:autoLink="email"
                         android:text="support@evaly.com.bd"
                         android:textAlignment="center"
-                        android:textColor="#333"
-                        android:textColorLink="#333"
+                        android:textColor="@color/c333"
+                        android:textColorLink="@color/c333"
                         android:textIsSelectable="false"
                         android:textSize="17sp" />
                 </LinearLayout>
@@ -348,16 +347,13 @@
                         android:autoLink="phone"
                         android:text="09638111666"
                         android:textAlignment="center"
-                        android:textColor="#333"
-                        android:textColorLink="#333"
+                        android:textColor="@color/c333"
+                        android:textColorLink="@color/c333"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
             </LinearLayout>
-
-
-
 
 
         </LinearLayout>

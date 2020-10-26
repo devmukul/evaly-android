@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:text="৳ 0.0"
-                    android:textColor="#000333"
+                    android:textColor="@color/black"
                     android:textSize="34sp" />
             </LinearLayout>
         </RelativeLayout>
@@ -82,7 +82,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
-            app:cardBackgroundColor="#fff"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="15dp"
             app:cardElevation="1dp"
             app:cardMaxElevation="0dp"

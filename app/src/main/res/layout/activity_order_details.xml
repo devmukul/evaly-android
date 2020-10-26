@@ -14,7 +14,7 @@
             android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
+            android:background="@color/white"
             android:focusableInTouchMode="true"
             tools:context=".ui.order.orderDetails.OrderDetailsActivity">
 
@@ -40,7 +40,7 @@
                         android:layout_weight="0"
                         android:text="@string/invoice_no"
                         android:textAllCaps="true"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="18sp" />
 
                     <TextView
@@ -52,7 +52,8 @@
                         android:textAllCaps="true"
                         android:textColor="#137ef4"
                         android:textIsSelectable="true"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:text="#EVL3293872189372" />
 
                     <TextView
                         android:id="@+id/order_date"
@@ -61,7 +62,8 @@
                         android:layout_weight="1"
                         android:textAlignment="textEnd"
                         android:textAllCaps="true"
-                        android:textColor="#888" />
+                        android:textColor="@color/c777"
+                        tools:text="20-4-20" />
 
                 </LinearLayout>
 
@@ -110,6 +112,7 @@
                     android:layout_marginEnd="18dp"
                     android:layout_weight="0"
                     android:background="@drawable/bg_profile"
+                    android:backgroundTint="@color/f9f9f9"
                     android:orientation="vertical"
                     android:paddingLeft="20dp"
                     android:visibility="gone"
@@ -124,7 +127,7 @@
                         android:fontFamily="sans-serif-medium"
                         android:maxLines="1"
                         android:paddingRight="10dp"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="19sp"
                         app:layout_constraintBottom_toTopOf="@+id/barrier"
                         app:layout_constraintEnd_toStartOf="@+id/heroCall"
@@ -137,7 +140,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
                         android:paddingRight="10dp"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toStartOf="@+id/heroCall"
                         app:layout_constraintStart_toStartOf="@+id/heroName"
@@ -194,7 +197,7 @@
                         android:layout_weight="1"
                         android:text="@string/order_status"
                         android:textAllCaps="true"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="18sp" />
 
                     <TextView
@@ -227,7 +230,7 @@
                         android:paddingEnd="12dp"
                         android:paddingBottom="5dp"
                         android:text="Product Received?"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="14sp"
                         android:visibility="gone"
                         tools:visibility="visible" />
@@ -312,7 +315,7 @@
                         android:layout_marginLeft="20dp"
                         android:layout_weight="1"
                         android:text="@string/description"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="15sp" />
 
                     <TextView
@@ -322,7 +325,7 @@
                         android:layout_weight="1"
                         android:text="@string/rate_amp_qty"
                         android:textAlignment="textEnd"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="15sp" />
 
                     <TextView
@@ -332,7 +335,7 @@
                         android:layout_marginRight="19dp"
                         android:text="@string/total"
                         android:textAlignment="textEnd"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="15sp" />
                 </LinearLayout>
 
@@ -389,7 +392,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/order_summary"
-                    android:textColor="#000"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <LinearLayout
@@ -429,7 +432,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textAlignment="textEnd"
-                                android:textColor="#000"
+                                android:textColor="@color/black"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -455,7 +458,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textAlignment="textEnd"
-                                android:textColor="#000"
+                                android:textColor="@color/black"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -482,7 +485,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textAlignment="textEnd"
-                                android:textColor="#000"
+                                android:textColor="@color/black"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -583,8 +586,8 @@
                     android:layout_marginBottom="20dp"
                     android:background="@drawable/bg_deliver_fee"
                     android:orientation="horizontal"
-                    android:visibility="gone"
-                    android:paddingHorizontal="10dp">
+                    android:paddingHorizontal="10dp"
+                    android:visibility="gone">
 
 
                     <ImageView
@@ -630,7 +633,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:text="@string/payment_status"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:textSize="16sp" />
 
                         <TextView
@@ -665,7 +668,7 @@
                             android:paddingBottom="8dp"
                             android:text="Pay Partially"
                             android:textAlignment="center"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:visibility="gone" />
 
                     </LinearLayout>
@@ -699,7 +702,7 @@
                                 android:paddingRight="10dp"
                                 android:paddingBottom="5dp"
                                 android:text="Unpaid"
-                                android:textColor="#fff"
+                                android:textColor="@color/white"
                                 android:textSize="14sp" />
 
                         </androidx.cardview.widget.CardView>
@@ -728,7 +731,7 @@
                         android:paddingBottom="8dp"
                         android:text="@string/make_payment"
                         android:textAlignment="center"
-                        android:textColor="#fff" />
+                        android:textColor="@color/white" />
 
                     <TextView
                         android:id="@+id/payViaGiftCard"
@@ -745,7 +748,7 @@
                         android:paddingBottom="8dp"
                         android:text="@string/pay_via_gift_card"
                         android:textAlignment="center"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:visibility="visible" />
 
                     <TextView
@@ -792,7 +795,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:text="@string/bill_from"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:textSize="16sp" />
 
                         <ImageView
@@ -863,7 +866,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:text="@string/bill_to"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:textSize="16sp" />
 
                         <ImageView
@@ -938,7 +941,7 @@
                     android:layout_marginBottom="10dp"
                     android:paddingLeft="20dp"
                     android:text="@string/need_help"
-                    android:textColor="#333"
+                    android:textColor="@color/c333"
                     android:textSize="16sp"
                     android:textStyle="normal" />
 

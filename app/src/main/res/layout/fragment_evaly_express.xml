@@ -33,7 +33,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#fff"
+                android:background="@color/white"
                 android:fitsSystemWindows="true"
                 app:title="Grocery Express Shops">
 
@@ -119,7 +119,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
                         android:text="Dhaka"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="15sp" />
 
                     <ImageView

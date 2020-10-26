@@ -83,6 +83,6 @@
         android:elevation="0dp"
         android:stateListAnimator="@null"
         android:text="Save Contact Information"
-        android:textColor="#fff" />
+        android:textColor="@color/white" />
 
 </LinearLayout>

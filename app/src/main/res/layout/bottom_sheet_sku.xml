@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:text="Product SKU"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
                     android:paddingLeft="20dp"
                     android:paddingRight="25dp"
                     android:singleLine="true"
-                    android:textColor="#333"
+                    android:textColor="@color/c333"
                     android:textSize="16sp"
                     tools:text="0X35DA7"
                     android:layout_marginTop="1dp"/>
@@ -61,7 +61,7 @@
                     android:paddingEnd="25dp"
                     android:stateListAnimator="@null"
                     android:text="COPY"
-                    android:textColor="#fff" />
+                    android:textColor="@color/white" />
 
             </LinearLayout>
         </LinearLayout>

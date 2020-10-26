@@ -36,7 +36,7 @@
         android:maxLines="2"
         android:minLines="2"
         android:textAlignment="center"
-        android:textColor="#000"
+        android:textColor="@color/black"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

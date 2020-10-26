@@ -4,7 +4,7 @@
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff"
+    android:background="@color/white"
     android:clickable="true"
     android:orientation="vertical"
     android:paddingLeft="5dp"
@@ -45,7 +45,7 @@
             android:paddingRight="6dp"
             android:paddingBottom="3dp"
             android:text="@string/partial_pay"
-            android:textColor="#fff"
+            android:textColor="@color/white"
             android:textSize="13sp"
             android:visibility="visible" />
     </LinearLayout>

@@ -30,7 +30,7 @@
         android:maxLines="3"
         android:minLines="2"
         android:textAlignment="center"
-        android:textColor="#000"
+        android:textColor="@color/black"
         android:textSize="13sp" />
 
 </LinearLayout>

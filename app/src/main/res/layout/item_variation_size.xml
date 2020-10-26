@@ -22,6 +22,6 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:text="12"
-            android:textColor="#000" />
+            android:textColor="@color/black" />
     </RelativeLayout>
 </layout>

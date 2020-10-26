@@ -94,7 +94,7 @@
                 android:layout_marginLeft="3dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="2:00"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

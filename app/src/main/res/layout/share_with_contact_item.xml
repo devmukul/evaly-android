@@ -58,7 +58,7 @@
                 android:maxLength="100"
                 android:maxLines="1"
                 android:text="Ilias Ahmed"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 

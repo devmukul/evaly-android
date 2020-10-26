@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Request Refund"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="Choose Refund Option"
-            android:textColor="#333" />
+            android:textColor="@color/c333" />
 
 
         <LinearLayout
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="bKash Number"
-                android:textColor="#333" />
+                android:textColor="@color/c333" />
 
 
             <EditText
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
-            android:background="#fff"
+            android:background="@color/white"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Bank Name"
-                android:textColor="#333" />
+                android:textColor="@color/c333" />
 
             <EditText
                 android:id="@+id/etBankName"
@@ -105,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Account Name"
-                android:textColor="#333" />
+                android:textColor="@color/c333" />
 
             <EditText
                 android:id="@+id/etAccountName"
@@ -123,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Account Number"
-                android:textColor="#333" />
+                android:textColor="@color/c333" />
 
             <EditText
                 android:id="@+id/etAccountNumber"
@@ -154,7 +154,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Branch Name"
-                        android:textColor="#333" />
+                        android:textColor="@color/c333" />
 
                     <EditText
                         android:id="@+id/etBranch"
@@ -182,7 +182,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Routing Number"
-                        android:textColor="#333" />
+                        android:textColor="@color/c333" />
 
                     <EditText
                         android:id="@+id/etBranchRouting"
@@ -213,7 +213,7 @@
             android:gravity="center"
             android:text="SUBMIT"
             android:textAlignment="center"
-            android:textColor="#fff"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
 

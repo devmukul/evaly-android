@@ -29,7 +29,7 @@
                 android:paddingTop="15dp"
                 android:paddingBottom="10dp"
                 android:text="Create a status"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -67,14 +67,14 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
                     android:layout_weight="1"
-                    android:background="#fff"
+                    android:background="@color/white"
                     android:fontFamily="sans-serif"
                     android:gravity="top"
                     android:hint="Write your thoughts here..."
                     android:inputType="textMultiLine"
                     android:minLines="3"
                     android:padding="12dp"
-                    android:textColor="#000"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <RelativeLayout
@@ -192,7 +192,7 @@
                 android:stateListAnimator="@null"
                 android:text="SHARE"
                 android:textAllCaps="false"
-                android:textColor="#fff"
+                android:textColor="@color/white"
                 android:textSize="16sp" />
 
         </LinearLayout>

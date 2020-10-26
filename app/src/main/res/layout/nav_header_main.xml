@@ -40,7 +40,7 @@
         android:layout_toRightOf="@id/imageCropperNav"
         android:fontFamily="sans-serif-medium"
         android:text="Name"
-        android:textColor="#333" />
+        android:textColor="@color/c333" />
 
     <TextView
         android:id="@+id/phone"

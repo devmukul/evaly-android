@@ -82,7 +82,7 @@
                             android:paddingRight="15dp"
                             android:paddingBottom="16dp"
                             android:text="@string/available_at_shop"
-                            android:textColor="#000"
+                            android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 

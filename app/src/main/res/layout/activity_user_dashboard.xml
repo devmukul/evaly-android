@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@color/white"
     android:focusableInTouchMode="true"
     tools:context=".ui.user.UserDashboardActivity">
 
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/pictureHolder"
                 android:text="Name"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -62,7 +62,7 @@
                 android:paddingRight="10dp"
                 android:paddingBottom="5dp"
                 android:text="@string/check_account"
-                android:textColor="#fff"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
 
         </RelativeLayout>
@@ -70,7 +70,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="8dp"
-            android:background="#f6f6f6" />
+            android:background="@color/fafafa" />
 
         <LinearLayout
             android:id="@+id/order"
@@ -88,7 +88,7 @@
                 android:layout_width="22dp"
                 android:layout_height="20dp"
                 android:layout_weight="0"
-                android:tint="#333"
+                app:tint="@color/c333"
                 app:srcCompat="@drawable/ic_cart" />
 
             <TextView
@@ -97,7 +97,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
                 android:text="@string/orders"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -105,7 +105,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="8dp"
-            android:background="#f6f6f6" />
+            android:background="@color/fafafa" />
 
         <LinearLayout
             android:id="@+id/llMessage"
@@ -127,7 +127,7 @@
                 android:paddingLeft="1dp"
                 android:paddingTop="3dp"
                 android:paddingRight="1dp"
-                android:tint="#333"
+                app:tint="@color/c333"
                 app:srcCompat="@drawable/ic_messages" />
 
             <LinearLayout
@@ -140,7 +140,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="0"
                     android:text="@string/messages"
-                    android:textColor="#333"
+                    android:textColor="@color/c333"
                     android:textSize="18sp" />
 
                 <TextView
@@ -154,7 +154,7 @@
                     android:paddingEnd="6dp"
                     android:paddingBottom="2dp"
                     android:text="0"
-                    android:textColor="#fff"
+                    android:textColor="@color/white"
                     android:textSize="14sp"
                     android:visibility="gone" />
 
@@ -177,7 +177,7 @@
                 android:layout_width="22dp"
                 android:layout_height="21dp"
                 android:layout_weight="0"
-                android:tint="#333"
+                app:tint="@color/c333"
                 app:srcCompat="@drawable/ic_notification" />
 
             <TextView
@@ -186,7 +186,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
                 android:text="@string/notifications"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -208,7 +208,7 @@
                 android:layout_width="22dp"
                 android:layout_height="18dp"
                 android:layout_weight="0"
-                android:tint="#333"
+                app:tint="@color/c333"
                 app:srcCompat="@drawable/ic_add_money" />
 
             <TextView
@@ -218,7 +218,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
                 android:text="Make Payment"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -239,7 +239,7 @@
                 android:layout_width="24dp"
                 android:layout_height="22dp"
                 android:layout_weight="0"
-                android:tint="#333"
+                app:tint="@color/c333"
                 app:srcCompat="@drawable/ic_transactions_list" />
 
             <TextView
@@ -248,7 +248,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
                 android:text="@string/transaction_history"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -269,7 +269,7 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_weight="0"
-                android:tint="#333"
+                app:tint="@color/c333"
                 app:srcCompat="@drawable/ic_user" />
 
             <TextView
@@ -278,7 +278,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
                 android:text="@string/edit_personal_info"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -299,7 +299,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_weight="0"
-                android:tint="#333"
+                app:tint="@color/c333"
                 app:srcCompat="@drawable/ic_input_lock" />
 
             <TextView
@@ -308,7 +308,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
                 android:text="@string/change_password"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -330,7 +330,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_weight="0"
-                android:tint="#333"
+                app:tint="@color/c333"
                 app:srcCompat="@drawable/ic_globe_earth" />
 
             <TextView
@@ -339,7 +339,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
                 android:text="@string/change_language"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -347,7 +347,7 @@
             android:layout_width="match_parent"
             android:layout_height="8dp"
             android:layout_marginTop="5dp"
-            android:background="#f6f6f6" />
+            android:background="@color/fafafa" />
 
         <LinearLayout
             android:id="@+id/addressClick"
@@ -365,7 +365,7 @@
                 android:layout_width="22dp"
                 android:layout_height="20dp"
                 android:layout_weight="0"
-                android:tint="#333"
+                app:tint="@color/c333"
                 app:srcCompat="@drawable/ic_home" />
 
             <TextView
@@ -374,7 +374,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_weight="0"
                 android:text="@string/address"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp" />
 
             <LinearLayout
@@ -392,7 +392,7 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="2dp"
                     android:layout_weight="0"
-                    android:tint="#4eb950"
+                    app:tint="#4eb950"
                     app:srcCompat="@drawable/ic_edit_pen" />
             </LinearLayout>
 
@@ -416,7 +416,7 @@
                 android:layout_marginRight="2dp"
                 android:layout_weight="0"
                 android:adjustViewBounds="true"
-                android:tint="@color/c444"
+                app:tint="@color/c444"
                 app:srcCompat="@drawable/ic_square" />
 
             <TextView
@@ -426,7 +426,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="14sp" />
 
         </LinearLayout>
@@ -503,7 +503,7 @@
             android:layout_width="match_parent"
             android:layout_height="8dp"
             android:layout_marginTop="6dp"
-            android:background="#f6f6f6"
+            android:background="@color/fafafa"
             android:visibility="gone" />
     </LinearLayout>
 

@@ -67,12 +67,12 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/circle_bg_dark"
             android:clickable="true"
+            android:focusable="true"
             android:padding="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_left_arrow_new"
-            app:tint="@color/fff"
-            android:focusable="true" />
+            app:tint="#fff" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

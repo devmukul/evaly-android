@@ -28,7 +28,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:clipToPadding="true"
-            app:cardBackgroundColor="#fff"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="10dp"
             app:cardElevation="0dp"
             app:cardPreventCornerOverlap="true">
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_weight="0"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="13sp"
             tools:text="Size: 20"
             android:textStyle="bold" />

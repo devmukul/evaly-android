@@ -43,7 +43,7 @@
                     android:clickable="true"
                     android:padding="9dp"
                     android:src="@drawable/ic_left_arrow_new"
-                    app:tint="#fff" />
+                    app:tint="@color/white" />
 
                 <TextView
                     android:id="@+id/title"
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
                     android:text="Campaigns"
-                    android:textColor="#fff"
+                    android:textColor="@color/white"
                     android:textSize="16sp" />
 
                 <androidx.appcompat.widget.SearchView
@@ -85,7 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="0dp"
-                android:background="#fff"
+                android:background="@color/white"
                 android:fitsSystemWindows="true"
                 app:contentInsetStartWithNavigation="0dp"
                 app:elevation="0dp">
@@ -95,7 +95,7 @@
                     android:id="@+id/collapsingToolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#fff"
+                    android:background="@color/white"
                     android:elevation="0dp"
                     android:fitsSystemWindows="true"
                     android:gravity="top"
@@ -166,7 +166,7 @@
                                 android:id="@+id/sliderHolder"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="#fff"
+                                android:background="@color/white"
                                 android:minHeight="100dp">
 
                                 <ImageView
@@ -208,7 +208,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_weight="1"
-                        app:tabIndicatorColor="#000"
+                        app:tabIndicatorColor="@color/black"
                         app:tabMode="scrollable"
                         app:tabTextAppearance="@style/TabTextAppearance">
 
@@ -244,7 +244,7 @@
                             android:paddingTop="8dp"
                             android:paddingBottom="6dp"
                             android:src="@drawable/ic_filter"
-                            app:tint="#000" />
+                            app:tint="@color/black" />
 
                         <View
                             android:id="@+id/filterIndicator"

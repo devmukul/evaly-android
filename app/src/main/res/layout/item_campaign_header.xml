@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:textColor="#fff"
+            android:textColor="@color/white"
             android:textIsSelectable="false"
             android:textSize="15sp"
             android:textStyle="bold"
@@ -37,7 +37,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:singleLine="true"
-            android:textColor="#fff"
+            android:textColor="@color/white"
             android:textIsSelectable="false"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +53,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#fff" />
+            app:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -106,7 +106,7 @@
                 android:layout_weight="1"
                 android:text="@string/total_colon"
                 android:textAlignment="textEnd"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="16sp" />
 
             <TextView
@@ -136,7 +136,7 @@
                 android:paddingRight="15dp"
                 android:text="@string/check_out"
                 android:textAllCaps="true"
-                android:textColor="#fff"
+                android:textColor="@color/white"
                 android:textSize="16sp" />
         </LinearLayout>
 

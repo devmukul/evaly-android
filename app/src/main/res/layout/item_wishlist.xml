@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/product_image"
-        android:textColor="#333"
+        android:textColor="@color/c333"
         android:textSize="15sp" />
 
     <TextView

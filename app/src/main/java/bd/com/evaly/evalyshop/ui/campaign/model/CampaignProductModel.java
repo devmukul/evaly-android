@@ -74,8 +74,11 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         if (model.getCashbackText() == null || model.getCashbackText().length() == 0)
             binding.tvCashback.setVisibility(View.GONE);
         else {
+            if (model.getCashbackText().contains("0.00"))
+                binding.tvCashback.setVisibility(View.GONE);
+            else
+                binding.tvCashback.setVisibility(View.VISIBLE);
             binding.tvCashback.setText(Utils.toFirstCharUpperAll(model.getCashbackText().replace(".00", "")));
-            binding.tvCashback.setVisibility(View.VISIBLE);
         }
         binding.bottomText.setText(model.getBottomText());
     }

@@ -29,7 +29,7 @@
         android:layout_marginRight="10dp"
         android:layout_toRightOf="@+id/shop_image"
         android:text="Title is here"
-        android:textColor="#000"
+        android:textColor="@color/black"
         android:textSize="14sp" />
 
     <TextView

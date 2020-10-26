@@ -56,7 +56,7 @@
             android:paddingEnd="8dp"
             android:paddingBottom="13dp"
             android:textAlignment="center"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="12sp"
             app:layout_constraintTop_toBottomOf="@id/image"
             tools:text="Female Fashion" />

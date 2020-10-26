@@ -7,6 +7,7 @@
     <color name="colorAccentBlue">#6c81f7</color>
 
     <color name="fff">#fff</color>
+    <color name="bottom_nav">#fff</color>
 
     <color name="transparent">@android:color/transparent</color>
 
@@ -22,6 +23,7 @@
     <color name="aaa">#aaa</color>
     <color name="eee">#eee</color>
     <color name="ddd">#ddd</color>
+    <color name="f9f9f9">#f9f9f9</color>
 
     <color name="c333">#333</color>
     <color name="c444">#444</color>
@@ -63,6 +65,9 @@
 
 
     <color name="barColor5">#db9803</color>
+
+    <color name="bgCartBtn">#fff2f2</color>
+    <color name="bgCartCount">#08430505</color>
 
 
 </resources>

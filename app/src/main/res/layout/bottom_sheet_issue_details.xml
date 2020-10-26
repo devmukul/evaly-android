@@ -12,7 +12,7 @@
         android:id="@+id/container2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <bd.com.evaly.evalyshop.views.StickyScrollView
@@ -40,7 +40,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#fff"
+                        android:background="@color/white"
                         android:paddingLeft="18dp"
                         android:paddingTop="18dp"
                         android:paddingRight="18dp"
@@ -52,7 +52,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="EVL321093712"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:textSize="17sp"
                             android:textStyle="bold" />
 
@@ -106,14 +106,14 @@
                                     android:id="@+id/tvStatus"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="#333"
+                                    android:background="@color/c333"
                                     android:clickable="false"
                                     android:paddingLeft="8dp"
                                     android:paddingTop="4dp"
                                     android:paddingRight="8dp"
                                     android:paddingBottom="4dp"
                                     android:text="Pending"
-                                    android:textColor="#fff"
+                                    android:textColor="@color/white"
                                     android:textSize="12sp"
                                     android:visibility="gone"/>
 
@@ -129,7 +129,7 @@
                                     android:paddingRight="8dp"
                                     android:paddingBottom="4dp"
                                     android:text="Active"
-                                    android:textColor="#fff"
+                                    android:textColor="@color/white"
                                     android:textSize="12sp" />
 
                             </LinearLayout>
@@ -149,7 +149,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autoLink="all"
-                        android:background="#fff"
+                        android:background="@color/white"
                         android:paddingLeft="17dp"
                         android:paddingTop="13dp"
                         android:paddingRight="17dp"
@@ -165,7 +165,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autoLink="all"
-                        android:background="#fff"
+                        android:background="@color/white"
                         android:paddingLeft="17dp"
                         android:paddingTop="10dp"
                         android:paddingRight="17dp"
@@ -205,7 +205,7 @@
                         android:paddingTop="15dp"
                         android:paddingBottom="17dp"
                         android:text="Replies"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 

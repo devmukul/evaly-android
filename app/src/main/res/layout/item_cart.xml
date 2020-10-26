@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#fff"
+    android:background="@color/white"
     android:orientation="vertical">
 
 
@@ -62,7 +62,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/white"
         android:focusableInTouchMode="true"
         android:paddingTop="5dp"
         android:paddingBottom="20dp">
@@ -194,7 +194,7 @@
                 android:maxLength="4"
                 android:textSize="18sp"
                 android:enabled="false"
-                android:textColor="#333"/>
+                android:textColor="@color/c333"/>
 
             <ImageView
                 android:id="@+id/plus"

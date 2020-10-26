@@ -5,19 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#fff">
+    android:background="@color/white">
 
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#fff"
+        android:background="@color/white"
         android:elevation="4dp"
-        app:tabIndicatorColor="#333"
+        app:tabIndicatorColor="@color/c333"
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="2dp"
-        app:tabSelectedTextColor="#333"
+        app:tabSelectedTextColor="@color/c333"
         app:tabTextColor="@color/c666">
 
         <com.google.android.material.tabs.TabItem

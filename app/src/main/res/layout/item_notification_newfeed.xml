@@ -39,7 +39,7 @@
             android:layout_marginRight="10dp"
             android:layout_toRightOf="@+id/pictureHolder"
             android:text="Title is here"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="14sp" />
 
         <TextView

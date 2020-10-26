@@ -15,7 +15,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"
         android:text="@string/upload_bank_receipt"
-        android:textColor="#333"
+        android:textColor="@color/c333"
         android:textSize="18sp"
         android:textStyle="bold" />
 

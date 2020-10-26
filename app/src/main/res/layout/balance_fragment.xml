@@ -18,7 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
+            android:background="@color/white"
             android:orientation="vertical"
             android:minHeight="255dp">
 
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/evaly_account"
                 android:textSize="16sp"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:layout_marginStart="20dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="3dp"
@@ -81,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="৳"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="20sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -108,7 +108,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="৳"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="20sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -147,7 +147,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="৳"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="20sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -180,7 +180,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/red_rounded_bg"
-                        android:textColor="#fff"
+                        android:textColor="@color/white"
                         android:text="@string/claim"
                         android:layout_marginStart="10dp"
                         android:paddingLeft="6dp"
@@ -201,7 +201,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="@string/taka"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="20sp"
                         android:textStyle="bold" />
                 </RelativeLayout>

@@ -5,7 +5,7 @@
     android:id="@+id/stickyScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@color/white"
     tools:context=".ui.menu.InviteEarn">
 
     <LinearLayout
@@ -97,7 +97,7 @@
                     android:paddingLeft="25dp"
                     android:paddingRight="25dp"
                     android:text="COPY"
-                    android:textColor="#fff"
+                    android:textColor="@color/white"
                     android:textSize="18sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -138,7 +138,7 @@
                 android:layout_marginLeft="5dp"
                 android:text="0 people registered with your code."
                 android:textAlignment="viewStart"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="16sp" />
         </LinearLayout>
 

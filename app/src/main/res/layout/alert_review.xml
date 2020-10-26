@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:text="@string/rate_the_product"
-        android:textColor="#333"
+        android:textColor="@color/c333"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -55,7 +55,7 @@
         android:inputType="textMultiLine"
         android:minLines="4"
         android:padding="15dp"
-        android:textColor="#000"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:maxHeight="200dp"/>
 

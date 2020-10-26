@@ -41,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Show Nearby Shops"
-                    android:textColor="#000"
+                    android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="normal" />
 
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="Or choose your district"
-                android:textColor="#000"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -105,7 +105,7 @@
                 android:paddingBottom="20dp"
                 android:text="No match found!"
                 android:textAlignment="center"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="17sp"
                 android:visibility="gone" />
 

@@ -52,7 +52,7 @@
         android:paddingRight="6dp"
         android:paddingBottom="2dp"
         android:text="Live Now"
-        android:textColor="#fff"
+        android:textColor="@color/white"
         android:textSize="11sp" />
 
 
