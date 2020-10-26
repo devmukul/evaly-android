@@ -67,7 +67,7 @@
         android:paddingTop="15dp"
         android:paddingRight="17dp"
         android:paddingBottom="10dp"
-        android:textColor="#444"
+        android:textColor="@color/c444"
         android:textSize="16sp"
         android:clickable="true"/>
 

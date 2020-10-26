@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Are you sure you want to mark this order as Delivered? Confirm delivery only if you have received the products."
-            android:textColor="#444"
+            android:textColor="@color/c444"
             android:textSize="15sp" />
 
 
@@ -77,7 +77,7 @@
                 android:paddingEnd="14dp"
                 android:stateListAnimator="@null"
                 android:text="Confirm Delivery"
-                android:textColor="#fff"
+                android:textColor="@color/fff"
                 android:textSize="14sp" />
 
         </LinearLayout>

@@ -6,7 +6,7 @@
         android:id="@+id/shimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fafafa"
+        android:background="@color/fafafa"
         app:shimmer_base_alpha="1"
         app:shimmer_base_color="@color/c333"
         app:shimmer_colored="false"

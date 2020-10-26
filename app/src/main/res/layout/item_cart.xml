@@ -12,7 +12,7 @@
         android:id="@+id/dividerView"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="#fafafa" />
+        android:background="@color/fafafa" />
 
     <LinearLayout
         android:id="@+id/sellerHolder"
@@ -104,7 +104,7 @@
             android:clickable="true"
             android:maxLines="2"
             android:text=" "
-            android:textColor="#444"
+            android:textColor="@color/c444"
             android:textIsSelectable="false"
             android:textSize="16sp" />
 

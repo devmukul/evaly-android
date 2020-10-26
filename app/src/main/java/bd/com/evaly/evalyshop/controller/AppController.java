@@ -69,6 +69,7 @@ public class AppController extends Application implements Application.ActivityLi
         mAppController = this;
         mContext = getApplicationContext();
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         Logger.addLogAdapter(new AndroidLogAdapter());
 
     }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:transitionGroup="true"
     tools:context=".ui.search.GlobalSearchActivity"
-    android:background="#fafafa">
+    android:background="@color/fafafa">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -106,7 +106,7 @@
             android:layout_height="110dp"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0"
-            android:background="#fafafa"
+            android:background="@color/fafafa"
             android:paddingTop="35dp"
             android:paddingBottom="35dp" />
 

@@ -35,7 +35,7 @@
             android:paddingRight="4dp"
             android:paddingBottom="1dp"
             android:text="19:19"
-            android:textColor="#fff"
+            android:textColor="@color/fff"
             android:textSize="12sp"
             android:visibility="gone"
             tools:layout_editor_absoluteX="10dp"
@@ -111,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
                 android:layout_weight="0"
-                android:tint="#FFF"
+                android:tint="@color/fff"
                 app:srcCompat="@drawable/ic_notification" />
 
             <TextView
@@ -121,7 +121,7 @@
                 android:layout_weight="0"
                 android:paddingLeft="5dp"
                 android:text="Follow"
-                android:textColor="#fff" />
+                android:textColor="@color/fff" />
         </LinearLayout>
 
 

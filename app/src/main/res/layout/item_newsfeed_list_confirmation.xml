@@ -61,7 +61,7 @@
         android:text="Pending"
         android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
-        android:textColor="#fff"/>
+        android:textColor="@color/fff"/>
 
     <TextView
         android:id="@+id/text"
@@ -73,7 +73,7 @@
         android:paddingTop="15dp"
         android:paddingRight="17dp"
         android:paddingBottom="10dp"
-        android:textColor="#444"
+        android:textColor="@color/c444"
         android:textSize="16sp" />
 
     <ImageView

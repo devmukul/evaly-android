@@ -15,7 +15,7 @@
         android:id="@+id/lin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/fff"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -42,7 +42,7 @@
                 android:paddingBottom="5dp"
                 android:text="@string/pending"
                 android:textSize="14sp"
-                android:textColor="#fff" />
+                android:textColor="@color/fff" />
 
 
             <TextView
@@ -55,7 +55,7 @@
                 android:paddingRight="10dp"
                 android:paddingBottom="5dp"
                 android:text="time ago"
-                android:textColor="#fff"
+                android:textColor="@color/fff"
                 android:textSize="14sp"
                 android:layout_alignParentBottom="true"/>
 
@@ -174,7 +174,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
                         android:text="Price: "
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="16sp" />
 
                     <TextView
@@ -214,7 +214,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
                         android:text="Account: "
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="16sp" />
 
                     <TextView
@@ -239,7 +239,7 @@
                 android:clickable="false"
                 android:stateListAnimator="@null"
                 android:text="PAY"
-                android:textColor="#fff"
+                android:textColor="@color/fff"
                 android:textSize="15sp" />
         </LinearLayout>
 

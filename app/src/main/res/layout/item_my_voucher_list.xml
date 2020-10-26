@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff"
+    android:background="@color/fff"
     android:paddingBottom="15dp"
     android:orientation="vertical">
 
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:background="#f1f3f4"
+            android:background="@color/f1f3f4"
             android:clickable="true">
 
             <ImageView
@@ -259,7 +259,7 @@
                     android:layout_weight="0"
                     android:backgroundTint="@color/colorAccent"
                     android:text="@string/pay"
-                    android:textColor="#fff" />
+                    android:textColor="@color/fff" />
             </LinearLayout>
 
         </RelativeLayout>

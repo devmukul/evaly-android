@@ -6,7 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff"
+        android:background="@color/fff"
         android:orientation="vertical"
         tools:context=".ui.search.SearchCategory">
 
@@ -64,7 +64,7 @@
                     android:imeOptions="actionDone"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textColorHint="#666"
+                    android:textColorHint="@color/c666"
                     android:textSize="16sp" />
 
                 <ImageView

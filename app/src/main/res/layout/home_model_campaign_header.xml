@@ -15,7 +15,7 @@
             android:layout_marginTop="15dp"
             android:fontFamily="sans-serif-medium"
             android:text="Ongoing Campaigns"
-            android:textColor="#444"
+            android:textColor="@color/c444"
             android:textSize="15sp"
             android:textStyle="normal"
             app:layout_constraintStart_toStartOf="parent"

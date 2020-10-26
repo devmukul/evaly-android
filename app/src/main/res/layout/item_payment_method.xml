@@ -6,7 +6,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/fff"
         android:paddingStart="13dp"
         android:paddingTop="17dp"
         android:paddingEnd="15dp"

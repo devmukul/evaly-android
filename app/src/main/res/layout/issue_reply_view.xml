@@ -61,7 +61,7 @@
                 android:layout_marginBottom="5dp"
                 android:autoLink="all"
                 android:text="Comment text..."
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 android:textSize="14sp" />
 
             <TextView

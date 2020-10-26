@@ -11,7 +11,7 @@
     <bd.com.evaly.evalyshop.views.StickyScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff">
+        android:background="@color/fff">
 
         <LinearLayout
             android:id="@+id/bottom_sheet"
@@ -45,7 +45,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:visibility="visible"
-                android:background="#fff"/>
+                android:background="@color/fff"/>
 
 
             <LinearLayout
@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="15dp"
                     android:text="@string/price_colon"
-                    android:textColor="#666"
+                    android:textColor="@color/c666"
                     android:textSize="14sp" />
 
                 <TextView
@@ -81,7 +81,7 @@
                     android:paddingLeft="15dp"
                     android:text="@string/value_colon"
                     android:textAlignment="textEnd"
-                    android:textColor="#666"
+                    android:textColor="@color/c666"
                     android:textSize="14sp" />
 
                 <TextView
@@ -118,7 +118,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:text="@string/phone_number"
-                android:textColor="#666"
+                android:textColor="@color/c666"
                 android:textSize="14sp" />
 
             <EditText
@@ -224,7 +224,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/total_price"
                         android:textAlignment="textEnd"
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="14sp" />
 
                     <TextView
@@ -286,7 +286,7 @@
                 android:background="@drawable/black_ripple_bg"
                 android:stateListAnimator="@null"
                 android:text="@string/buy"
-                android:textColor="#fff" />
+                android:textColor="@color/fff" />
 
         </LinearLayout>
     </bd.com.evaly.evalyshop.views.StickyScrollView>

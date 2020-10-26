@@ -43,7 +43,7 @@
                 android:maxLines="2"
                 android:paddingLeft="13dp"
                 android:paddingRight="10dp"
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#fafafa"
+                android:background="@color/fafafa"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

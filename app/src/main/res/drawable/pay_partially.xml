@@ -10,7 +10,7 @@
             <stroke android:width="0.5dp"
                 android:color="#ddd"/>
 
-            <solid android:color="#f1f3f4"/>
+            <solid android:color="@color/f1f3f4"/>
             <corners
                 android:bottomLeftRadius="5dp"
                 android:bottomRightRadius="5dp"
@@ -30,7 +30,7 @@
             <stroke android:width="0.5dp"
                 android:color="#ddd"/>
 
-            <solid android:color="#f1f3f4"/>
+            <solid android:color="@color/f1f3f4"/>
             <corners
                 android:bottomLeftRadius="5dp"
                 android:bottomRightRadius="5dp"

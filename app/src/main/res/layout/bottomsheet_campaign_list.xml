@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bottom_sheet_round_create_post"
-        android:backgroundTint="#fafafa"
+        android:backgroundTint="@color/fafafa"
         android:fitsSystemWindows="false"
         android:orientation="vertical"
         android:visibility="visible">
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="115dp"
-            android:background="#fafafa"
+            android:background="@color/fafafa"
             android:clipToPadding="false"
             android:orientation="vertical"
             android:paddingHorizontal="5dp"

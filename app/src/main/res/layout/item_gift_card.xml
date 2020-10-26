@@ -15,7 +15,7 @@
         android:id="@+id/lin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/fff"
         android:orientation="vertical">
 
         <ImageView
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:text="Price: "
-                android:textColor="#666"
+                android:textColor="@color/c666"
                 android:textSize="16sp" />
 
             <TextView
@@ -74,7 +74,7 @@
                 android:clickable="false"
                 android:stateListAnimator="@null"
                 android:text="@string/buy"
-                android:textColor="#fff"
+                android:textColor="@color/fff"
                 android:textSize="15sp" />
         </LinearLayout>
 

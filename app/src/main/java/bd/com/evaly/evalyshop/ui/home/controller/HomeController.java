@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -114,6 +115,7 @@ public class HomeController extends EpoxyController {
                 .activity(activity)
                 .showMore(true)
                 .title("Ongoing Campaigns")
+                .transparentBackground(true)
                 .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.campaignFragment))
                 .addTo(this);
 
@@ -143,8 +145,7 @@ public class HomeController extends EpoxyController {
                     );
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
-                    // view.setBackgroundColor(Color.parseColor("#ffffff"));
-                    view.setBackground(AppController.getmContext().getDrawable(R.drawable.white_to_grey_gradient));
+                    ContextCompat.getDrawable(AppController.getmContext(), R.drawable.white_to_grey_gradient);
                 })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(5, activity),

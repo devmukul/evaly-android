@@ -24,7 +24,7 @@
             android:id="@+id/bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#fff"
+            android:background="@color/fff"
             android:orientation="vertical">
 
             <LinearLayout
@@ -94,7 +94,7 @@
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_star_flying"
-                    android:tint="#666"/>
+                    android:tint="@color/c666"/>
 
                 <TextView
                     android:layout_width="wrap_content"

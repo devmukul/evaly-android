@@ -7,7 +7,7 @@
         android:id="@+id/cardView"
         android:layout_width="150dp"
         android:layout_height="match_parent"
-        app:cardBackgroundColor="#fff"
+        app:cardBackgroundColor="@color/fff"
         app:cardCornerRadius="10dp"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="true"
@@ -31,7 +31,7 @@
                 android:paddingTop="3dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="3dp"
-                android:textColor="#fff"
+                android:textColor="@color/fff"
                 android:textSize="12sp"
                 android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent"
@@ -59,7 +59,7 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="10dp"
                 android:textAlignment="textStart"
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image"
@@ -85,7 +85,7 @@
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
                     android:text="25% Cashback"
-                    android:textColor="#fff"
+                    android:textColor="@color/fff"
                     android:textSize="12sp" />
 
                 <TextView
@@ -95,7 +95,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="5dp"
                     android:text="25% Cashback"
-                    android:textColor="#444"
+                    android:textColor="@color/c444"
                     android:textSize="12sp"
                     android:visibility="gone" />
 

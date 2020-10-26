@@ -92,7 +92,7 @@
         android:stateListAnimator="@null"
         android:text="@string/make_payment"
         android:textAllCaps="false"
-        android:textColor="#fff"
+        android:textColor="@color/fff"
         android:textSize="16sp" />
 
 

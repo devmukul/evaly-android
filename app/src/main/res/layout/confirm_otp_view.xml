@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="An OTP code is sent to your phone, please enter that to confirm refund request."
-            android:textColor="#444"
+            android:textColor="@color/c444"
             android:textSize="15sp" />
 
         <LinearLayout
@@ -65,7 +65,7 @@
                 android:paddingEnd="14dp"
                 android:stateListAnimator="@null"
                 android:text="Confirm Refund"
-                android:textColor="#fff"
+                android:textColor="@color/fff"
                 android:textSize="14sp" />
 
         </LinearLayout>
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="3dp"
                 android:text="Otp will expire in"
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

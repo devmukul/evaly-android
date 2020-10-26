@@ -114,7 +114,7 @@
                 android:layout_marginBottom="5dp"
                 android:autoLink="all"
                 android:text="Comment text..."
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 android:textSize="14sp" />
 
 
@@ -199,7 +199,7 @@
             android:layout_marginLeft="15dp"
             android:clickable="true"
             android:text="Show previous 0 more replies"
-            android:textColor="#444"
+            android:textColor="@color/c444"
             android:textSize="15sp"
             android:textStyle="bold"
             android:visibility="gone" />

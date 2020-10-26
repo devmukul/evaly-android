@@ -295,7 +295,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:layout_marginTop="0dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -360,7 +360,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
                         android:layout_marginTop="20dp"
-                        android:background="#fafafa" />
+                        android:background="@color/fafafa" />
 
                     <TextView
                         android:id="@+id/tvCampaignRule"
@@ -370,7 +370,7 @@
                         android:paddingTop="15dp"
                         android:paddingRight="20dp"
                         android:text=""
-                        android:textColor="#444"
+                        android:textColor="@color/c444"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -380,7 +380,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:layout_marginTop="20dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
 
                 <TextView
@@ -498,7 +498,7 @@
                     android:layout_height="1dp"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginBottom="5dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
                 <LinearLayout
                     android:id="@+id/deliveryChargeHolder"
@@ -529,7 +529,7 @@
                         android:minHeight="20dp"
                         android:paddingLeft="5dp"
                         android:text="Delivery charge (40tk) will be added for orders from Unimart, MeenaClick, Shwapno and Bengal Meat express shops"
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -563,7 +563,7 @@
                         android:layout_weight="0"
                         android:paddingLeft="5dp"
                         android:text="Price includes VAT for VAT applicable products"
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -573,7 +573,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:layout_marginBottom="15dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
                 <LinearLayout
                     android:id="@+id/llCashCollect"
@@ -649,7 +649,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="@string/bal_colon"
-                            android:textColor="#444" />
+                            android:textColor="@color/c444" />
 
 
                         <TextView
@@ -768,7 +768,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -802,7 +802,7 @@
                             android:layout_below="@+id/bill"
                             android:layout_marginTop="3dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#666"
+                            android:tint="@color/c666"
                             app:srcCompat="@drawable/ic_menu_store" />
 
                         <TextView
@@ -873,7 +873,7 @@
                             android:layout_below="@+id/bill1"
                             android:layout_marginTop="3dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#666"
+                            android:tint="@color/c666"
                             app:srcCompat="@drawable/ic_user" />
 
                         <TextView
@@ -928,7 +928,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
 
                 <TextView

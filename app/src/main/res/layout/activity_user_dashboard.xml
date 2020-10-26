@@ -416,7 +416,7 @@
                 android:layout_marginRight="2dp"
                 android:layout_weight="0"
                 android:adjustViewBounds="true"
-                android:tint="#444"
+                android:tint="@color/c444"
                 app:srcCompat="@drawable/ic_square" />
 
             <TextView

@@ -28,7 +28,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_weight="2"
                 android:text="@string/checkout_information"
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/contact_number"
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 android:textSize="15sp" />
 
         </LinearLayout>
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:text="@string/delivery_address"
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 android:textSize="15sp" />
 
         </LinearLayout>
@@ -130,8 +130,8 @@
             android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:hint="@string/add_new_address"
-            android:textColor="#666"
-            android:textColorHint="#666"
+            android:textColor="@color/c666"
+            android:textColorHint="@color/c666"
             android:visibility="gone" />
 
         <LinearLayout
@@ -191,7 +191,7 @@
                 android:layout_weight="0"
                 android:paddingLeft="5dp"
                 android:text="@string/i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -227,7 +227,7 @@
                 android:layout_weight="0"
                 android:paddingLeft="5dp"
                 android:text="@string/delivery_of_the_products_will_be_completed_within_approximately_15_working_days_after_payment"
-                android:textColor="#666"
+                android:textColor="@color/c666"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -261,7 +261,7 @@
                 android:minHeight="20dp"
                 android:paddingLeft="5dp"
                 android:text="Delivery charge (40tk) will be added for orders from Unimart, MeenaClick, Shwapno and Bengal Meat express shops"
-                android:textColor="#666"
+                android:textColor="@color/c666"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -291,7 +291,7 @@
                 android:layout_weight="0"
                 android:paddingLeft="5dp"
                 android:text="Price includes VAT for VAT applicable products"
-                android:textColor="#666"
+                android:textColor="@color/c666"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -304,7 +304,7 @@
             android:background="@drawable/black_btn"
             android:stateListAnimator="@null"
             android:text="@string/place_order"
-            android:textColor="#fff" />
+            android:textColor="@color/fff" />
 
     </LinearLayout>
 </layout>

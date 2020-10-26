@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
                     android:text="Amount to pay"
-                    android:textColor="#444"
+                    android:textColor="@color/c444"
                     android:textSize="16sp" />
 
                 <LinearLayout
@@ -116,7 +116,7 @@
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="15dp"
                     android:text="Select payment method"
-                    android:textColor="#444"
+                    android:textColor="@color/c444"
                     android:textSize="16sp" />
 
                 <LinearLayout

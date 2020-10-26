@@ -28,7 +28,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#fff"
+                    android:background="@color/fff"
                     android:orientation="vertical">
 
 
@@ -79,7 +79,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#fff"
+                        android:background="@color/fff"
                         android:focusableInTouchMode="true"
                         android:paddingTop="5dp"
                         android:paddingBottom="20dp">
@@ -178,7 +178,7 @@
                             android:clickable="true"
                             android:maxLines="2"
                             android:text="Product Title"
-                            android:textColor="#444"
+                            android:textColor="@color/c444"
                             android:textIsSelectable="false"
                             android:textSize="16sp" />
 
@@ -201,7 +201,7 @@
                         android:id="@+id/dividerView"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:background="#fafafa" />
+                        android:background="@color/fafafa" />
 
                 </LinearLayout>
 
@@ -242,7 +242,7 @@
                         android:id="@+id/dividerViewVariation"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:background="#fafafa" />
+                        android:background="@color/fafafa" />
 
                 </LinearLayout>
 
@@ -287,7 +287,7 @@
                         android:fontFamily="sans-serif"
                         android:stateListAnimator="@null"
                         android:text="@string/check_out"
-                        android:textColor="#fff" />
+                        android:textColor="@color/fff" />
 
 
                 </LinearLayout>

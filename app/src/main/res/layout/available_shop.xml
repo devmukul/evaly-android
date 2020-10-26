@@ -103,7 +103,7 @@
             android:drawableLeft="@drawable/ic_shop_marker"
             android:drawablePadding="3dp"
             android:text="Address of the shop"
-            android:textColor="#666"
+            android:textColor="@color/c666"
             android:textSize="15sp"
             android:visibility="gone" />
 
@@ -243,7 +243,7 @@
         android:paddingBottom="3dp"
         android:text="Stock Available"
         android:textSize="12sp"
-        android:textColor="#666"
+        android:textColor="@color/c666"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

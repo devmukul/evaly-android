@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:text="Price: "
-                android:textColor="#666"
+                android:textColor="@color/c666"
                 android:textSize="18sp" />
 
             <TextView
@@ -73,7 +73,7 @@
                 android:clickable="false"
                 android:stateListAnimator="@null"
                 android:text="@string/buy"
-                android:textColor="#fff"
+                android:textColor="@color/fff"
                 android:textSize="16sp" />
         </LinearLayout>
 

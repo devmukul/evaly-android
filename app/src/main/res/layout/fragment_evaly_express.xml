@@ -93,8 +93,8 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:text=""
-                    android:textColor="#444"
-                    android:textColorHint="#666"
+                    android:textColor="@color/c444"
+                    android:textColorHint="@color/c666"
                     android:textSize="15sp" />
 
 
@@ -140,7 +140,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fafafa"
+        android:background="@color/fafafa"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingLeft="10dp"
@@ -165,7 +165,7 @@
         android:id="@+id/layoutNot"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:background="#fafafa"
+        android:background="@color/fafafa"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
@@ -175,7 +175,7 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:tint="#666"
+            android:tint="@color/c666"
             app:srcCompat="@drawable/ic_store_line" />
 
         <TextView

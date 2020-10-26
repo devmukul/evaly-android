@@ -48,7 +48,7 @@
         android:paddingTop="15dp"
         android:paddingRight="15dp"
         android:paddingBottom="15dp"
-        android:textColorHint="#666"
+        android:textColorHint="@color/c666"
         android:imeOptions="actionNext"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/relativeLayout3"
@@ -81,7 +81,7 @@
             android:paddingTop="15dp"
             android:paddingRight="15dp"
             android:paddingBottom="15dp"
-            android:textColorHint="#666"
+            android:textColorHint="@color/c666"
             android:textSize="16sp" />
 
         <ImageView

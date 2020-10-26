@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@color/fff"
     android:gravity="center_vertical"
     android:orientation="vertical"
     tools:context=".ui.networkError.NetworkErrorActivity">
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="@string/ooops"
         android:textAlignment="center"
-        android:textColor="#666"
+        android:textColor="@color/c666"
         android:textSize="30sp" />
 
     <TextView
@@ -46,5 +46,5 @@
         android:paddingLeft="100dp"
         android:paddingRight="100dp"
         android:text="@string/retry"
-        android:textColor="#fff" />
+        android:textColor="@color/fff" />
 </LinearLayout>

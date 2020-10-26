@@ -53,6 +53,6 @@
         android:elevation="0dp"
         android:stateListAnimator="@null"
         android:text="Save Address"
-        android:textColor="#fff" />
+        android:textColor="@color/fff" />
 
 </LinearLayout>

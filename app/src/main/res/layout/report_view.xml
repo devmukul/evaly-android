@@ -112,7 +112,7 @@
                     android:layout_marginLeft="6dp"
                     android:layout_marginRight="10dp"
                     android:text="@string/add_photo"
-                    android:textColor="#444"
+                    android:textColor="@color/c444"
                     android:textSize="15sp" />
 
 

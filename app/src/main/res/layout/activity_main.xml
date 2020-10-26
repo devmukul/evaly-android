@@ -71,7 +71,7 @@
                 android:elevation="8dp"
                 android:translationZ="12dp"
                 app:itemIconTint="@drawable/drawer_item_color"
-                app:itemTextColor="#555"
+                app:itemTextColor="@color/c555"
                 app:labelVisibilityMode="labeled"
                 app:menu="@menu/bottom_nav_menu" />
         </FrameLayout>

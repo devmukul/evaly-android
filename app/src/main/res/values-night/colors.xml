@@ -1,47 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#fff</color>
-    <color name="colorPrimaryDark">#fff</color>
+    <color name="colorPrimary">#1a1a1a</color>
+    <color name="colorPrimaryDark">#1a1a1a</color>
     <color name="colorAccentOld">#D81B60</color>
     <color name="colorAccent">#000000</color>
     <color name="colorAccentBlue">#6c81f7</color>
 
-    <color name="fff">#fff</color>
+    <color name="fff">#1a1a1a</color>
 
     <color name="transparent">@android:color/transparent</color>
 
-    <color name="white">#FFFFFF</color>
-    <color name="whiteBut">#FFFFFF</color>
-    <color name="black">#000000</color>
+    <color name="white">#1a1a1a</color>
+    <color name="black">#fff</color>
+
+    <color name="border_color">#ddd</color>
+
+    <color name="c333">#ddd</color>
+
+    <color name="aaa">#444</color>
+    <color name="eee">#999</color>
+    <color name="ddd">#666</color>
+
+    <color name="c777">#aaa</color>
+    <color name="c444">#ddd</color>
+    <color name="c555">#c0c0c0</color>
+    <color name="c666">#a8a8a8</color>
+
+    <color name="separator">#242424</color>
+
+    <color name="whiteBut">#242424</color>
+    <color name="app_bg">#1a1a1a</color>
+    <color name="fafafa">#242424</color>
+    <color name="f1f3f4">#242424</color>
+    <color name="fcfcfc">#1a1a1a</color>
 
 
-    <color name="border_color">#eee</color>
-
-
-
-    <color name="aaa">#aaa</color>
-    <color name="eee">#eee</color>
-    <color name="ddd">#ddd</color>
-
-    <color name="c333">#333</color>
-    <color name="c444">#444</color>
-    <color name="c555">#555</color>
-    <color name="c666">#666</color>
-    <color name="c777">#777</color>
-
-
-    <color name="separator">#F1F3F4</color>
-
-
-    <color name="app_bg">#fafafa</color>
-    <color name="fafafa">#fafafa</color>
-
-    <color name="f1f3f4">#F1F3F4</color>
-
-    <color name="fcfcfc">#fcfcfc</color>
-
-    <color name="separator_light">#FAFAFA</color>
-
+    <color name="separator_light">#242424</color>
 
     <color name="evaly_color_old">#bd1f26</color>
     <color name="evaly_color">#000000</color>
@@ -49,7 +42,6 @@
 
     <color name="green">#38A169</color>
     <color name="red_app">#d21034</color>
-
     <color name="color1">#FCBC5A</color>
     <color name="color2">#FC5A7F</color>
     <color name="color3">#F25AFC</color>
@@ -60,9 +52,5 @@
     <color name="color8">#892702</color>
     <color name="color9">#C4CBEA</color>
     <color name="color10">#EAC4C4</color>
-
-
     <color name="barColor5">#db9803</color>
-
-
 </resources>

@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="-1dp"
         android:clickable="false"
-        android:textColor="#444"
+        android:textColor="@color/c444"
         android:textIsSelectable="true"
         android:textSize="16sp"
         android:textStyle="bold"

@@ -15,7 +15,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="14dp"
             android:text="Evaly Express"
-            android:textColor="#444"
+            android:textColor="@color/c444"
             android:textSize="16sp"
             android:textStyle="normal"
             android:fontFamily="sans-serif-medium"
@@ -157,7 +157,7 @@
             android:layout_width="match_parent"
             android:layout_height="8dp"
             android:layout_marginTop="20dp"
-            android:background="#fafafa"
+            android:background="@color/fafafa"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnGrocery" />

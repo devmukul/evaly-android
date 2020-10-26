@@ -60,7 +60,7 @@
             android:backgroundTint="@color/colorAccent"
             android:stateListAnimator="@null"
             android:text="@string/submit"
-            android:textColor="#fff" />
+            android:textColor="@color/fff" />
 
         <Button
             android:id="@+id/buttonCancel"

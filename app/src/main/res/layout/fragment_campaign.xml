@@ -11,7 +11,7 @@
         android:id="@+id/layoutShoProduct"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff"
+        android:background="@color/fff"
         android:fitsSystemWindows="true"
         android:orientation="vertical"
         android:visibility="visible">
@@ -96,7 +96,7 @@
                                 android:id="@+id/sliderHolder"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="#fff"
+                                android:background="@color/fff"
                                 android:minHeight="100dp">
 
                                 <ImageView
@@ -180,7 +180,7 @@
                                 android:clickable="true"
                                 android:padding="12dp"
                                 app:srcCompat="@drawable/ic_left_arrow_new"
-                                app:tint="#fff" />
+                                app:tint="@color/fff" />
 
                             <EditText
                                 android:id="@+id/searchText"
@@ -194,7 +194,7 @@
                                 android:imeOptions="actionSearch"
                                 android:maxLines="1"
                                 android:singleLine="true"
-                                android:textColor="#fff"
+                                android:textColor="@color/fff"
                                 android:textColorHint="#eee"
                                 android:textSize="16sp" />
 
@@ -206,7 +206,7 @@
                                 android:padding="12dp"
                                 android:visibility="gone"
                                 app:srcCompat="@drawable/ic_close"
-                                app:tint="#fff"
+                                app:tint="@color/fff"
                                 tools:visibility="visible" />
 
                         </LinearLayout>
@@ -219,7 +219,7 @@
                             android:clickable="true"
                             android:padding="10dp"
                             app:srcCompat="@drawable/ic_share"
-                            app:tint="#444" />
+                            app:tint="@color/c444" />
 
                     </LinearLayout>
 

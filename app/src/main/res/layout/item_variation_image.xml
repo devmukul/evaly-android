@@ -35,7 +35,7 @@
             android:layout_marginTop="3dp"
             android:maxWidth="80dp"
             android:textAlignment="center"
-            android:textColor="#444"
+            android:textColor="@color/c444"
             android:textSize="12sp"
             tools:text="Color: Red, Size: L" />
 
