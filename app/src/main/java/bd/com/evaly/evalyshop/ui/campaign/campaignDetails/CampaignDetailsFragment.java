@@ -32,6 +32,7 @@ import java.util.Objects;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignDetailsBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
@@ -292,7 +293,10 @@ public class CampaignDetailsFragment extends Fragment {
         super.onDestroyView();
         if (getActivity() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                if (CredentialManager.isDarkMode())
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
+                else
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.fff));
             } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(0);

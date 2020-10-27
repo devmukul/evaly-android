@@ -59,6 +59,7 @@
             android:hint="@string/no_email_added"
             android:inputType="number"
             android:padding="10dp"
+            android:textColorHint="@color/c777"
             android:textColor="@color/c555" />
 
 

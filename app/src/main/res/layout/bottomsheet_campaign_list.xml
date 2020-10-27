@@ -57,7 +57,8 @@
                 android:hint="Search campaigns"
                 android:imeOptions="actionSearch"
                 android:maxLines="1"
-                android:textColor="@color/c777"
+                android:textColor="@color/c555"
+                android:textColorHint="@color/c777"
                 android:paddingHorizontal="15dp"
                 android:singleLine="true"
                 android:textSize="16sp" />

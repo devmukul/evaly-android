@@ -70,7 +70,7 @@ public class HomeViewModel extends ViewModel {
     public void loadFlashSaleProductList() {
 
         //  flash-sale-2509b8bb  hot-deal-3b06c2c4
-        CampaignApiHelper.getCampaignCategoryProducts(1, 20, null, "quick-deal-1a805c5c", null,
+        CampaignApiHelper.getCampaignCategoryProducts(1, 20, null, Constants.FLASH_SALE_SLUG, null,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {

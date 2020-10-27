@@ -22,17 +22,17 @@ public class BindingUtils {
 
     public static void markImageVariation(RelativeLayout holder, boolean selected) {
         if (selected) {
-            holder.setBackground(AppController.getmContext().getDrawable(R.drawable.variation_brd_selected));
+            holder.setBackground(holder.getContext().getDrawable(R.drawable.variation_brd_selected));
         } else {
-            holder.setBackground(AppController.getmContext().getDrawable(R.drawable.variation_brd));
+            holder.setBackground(holder.getContext().getDrawable(R.drawable.variation_brd));
         }
     }
 
     public static void markVariation(RelativeLayout holder, boolean selected) {
         if (selected) {
-            holder.setBackground(AppController.getmContext().getDrawable(R.drawable.bg_variation_size_selected));
+            holder.setBackground(holder.getContext().getDrawable(R.drawable.bg_variation_size_selected));
         } else {
-            holder.setBackground(AppController.getmContext().getDrawable(R.drawable.bg_variation_size_default));
+            holder.setBackground(holder.getContext().getDrawable(R.drawable.bg_variation_size_default));
         }
     }
 

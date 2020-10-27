@@ -39,7 +39,7 @@
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             app:srcCompat="@drawable/ic_close_vector"
-            app:tint="@color/black" />
+            app:tint="@color/c333" />
 
 
     </LinearLayout>
@@ -70,6 +70,7 @@
                 android:inputType="textMultiLine"
                 android:minLines="3"
                 android:padding="10dp"
+                android:textColorHint="@color/c777"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -187,7 +188,7 @@
             android:stateListAnimator="@null"
             android:text="@string/share"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/fffh"
             android:textSize="16sp" />
 
     </LinearLayout>

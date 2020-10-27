@@ -543,6 +543,9 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                         viewModel.updateOrderAddress(body);
                         dialog.dismiss();
                     })
+                    .setNegativeButton(android.R.string.no, (dialogInterface, i) -> {
+
+                    })
                     .show();
 
         });
@@ -1213,7 +1216,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
                 if (response.getCampaignRules().size() > 0) {
                     try {
-                        if (response.getCampaignRules().get(0).getAsJsonObject().get("category").getAsJsonObject().get("slug").getAsString().equals("pod-1ce6180b"))
+                        if (response.getCampaignRules().get(0).getAsJsonObject().get("category").getAsJsonObject().get("slug").getAsString().equals("pod-1ce6180b") && orderStatus.equals("pending"))
                             makePayment.setVisibility(View.GONE);
                     } catch (Exception ignore) {
 

@@ -748,7 +748,8 @@
                                 android:layout_width="150dp"
                                 android:layout_height="80dp"
                                 android:layout_weight="0"
-                                app:srcCompat="@drawable/ic_sad_cart" />
+                                app:srcCompat="@drawable/ic_sad_cart"
+                                app:tint="@color/c555" />
 
                             <TextView
                                 android:id="@+id/tvNoShop"
@@ -757,6 +758,7 @@
                                 android:layout_weight="0"
                                 android:gravity="center_horizontal"
                                 android:paddingBottom="10dp"
+                                android:textColor="@color/c777"
                                 android:text="This product is currently \nnot available at any shop" />
 
                         </LinearLayout>
@@ -834,7 +836,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:background="@color/fafafa"
+                    android:background="@color/separator_light"
                     android:paddingLeft="15dp"
                     android:paddingTop="8dp"
                     android:paddingRight="15dp"
@@ -849,7 +851,7 @@
                     android:id="@+id/products"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/fafafa"
+                    android:background="@color/separator_light"
                     android:nestedScrollingEnabled="false"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
