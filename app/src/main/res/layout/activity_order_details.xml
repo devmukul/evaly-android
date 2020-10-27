@@ -278,7 +278,7 @@
                         android:paddingTop="3dp"
                         android:paddingBottom="4dp"
                         android:text="Show More"
-                        android:textColor="@color/evaly_color"
+                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                     <ImageView
@@ -289,7 +289,7 @@
                         android:adjustViewBounds="true"
                         android:padding="1dp"
                         android:src="@drawable/ic_up_down"
-                        android:tint="@color/evaly_color" />
+                        android:tint="@color/black" />
 
                 </LinearLayout>
 
@@ -940,7 +940,7 @@
                             android:textColor="@color/c333"
                             android:visibility="gone"
                             tools:visibility="visible"
-                            android:text="Update Delivery Address"/>
+                            android:text="Change Delivery Address"/>
 
                     </RelativeLayout>
 

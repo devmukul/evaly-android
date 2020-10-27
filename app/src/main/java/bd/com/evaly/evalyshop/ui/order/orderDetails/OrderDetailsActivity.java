@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -66,6 +67,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 import bd.com.evaly.evalyshop.BuildConfig;
@@ -544,6 +546,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     .show();
 
         });
+        Objects.requireNonNull(dialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         dialog.setContentView(dialogBinding.getRoot());
         dialog.show();
     }
@@ -1095,6 +1098,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
 
                 orderDate.setText(Utils.formattedDateFromString("", "yyyy-MM-d", response.getDate()));
 
+
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
                     Date firstDate = sdf.parse("09/09/2020");
@@ -1205,6 +1209,15 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                     makePayment.setVisibility(View.GONE);
                     payParially.setVisibility(View.GONE);
                     payViaGiftCard.setVisibility(View.GONE);
+                }
+
+                if (response.getCampaignRules().size() > 0) {
+                    try {
+                        if (response.getCampaignRules().get(0).getAsJsonObject().get("category").getAsJsonObject().get("slug").getAsString().equals("pod-1ce6180b"))
+                            makePayment.setVisibility(View.GONE);
+                    } catch (Exception ignore) {
+
+                    }
                 }
 
                 inflateMenu();

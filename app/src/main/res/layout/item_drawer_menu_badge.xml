@@ -19,6 +19,6 @@
             android:text="0"
             android:visibility="invisible"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="@color/fff" />
+            android:textColor="@color/fffh" />
     </FrameLayout>
 </layout>
