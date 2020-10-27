@@ -29,7 +29,7 @@
             android:layout_width="3dp"
             android:layout_height="5dp"
             android:layout_weight="0"
-            android:background="#eee" />
+            android:background="@color/bgOrderTimeLine" />
 
         <ImageView
             android:layout_width="12dp"
@@ -43,7 +43,7 @@
             android:layout_width="3dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#eee" />
+            android:background="@color/bgOrderTimeLine" />
 
     </LinearLayout>
 

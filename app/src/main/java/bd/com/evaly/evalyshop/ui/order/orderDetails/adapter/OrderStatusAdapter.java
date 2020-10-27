@@ -49,7 +49,7 @@ public class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.
             myViewHolder.lineTop.setBackgroundColor(Color.TRANSPARENT);
 
         if (i < getItemCount() - 1)
-            myViewHolder.lineBottom.setBackgroundColor(Color.parseColor("#eeeeee"));
+            myViewHolder.lineBottom.setBackgroundColor(context.getResources().getColor(R.color.bgOrderTimeLine));
         else
             myViewHolder.lineBottom.setBackgroundColor(Color.TRANSPARENT);
 

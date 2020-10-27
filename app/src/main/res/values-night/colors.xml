@@ -68,4 +68,6 @@
     <color name="barColor5">#db9803</color>
     <color name="campaignBlur">#6D000000</color>
     <color name="inputBgDark">#5EFFFFFF</color>
+
+    <color name="bgOrderTimeLine">#aaa</color>
 </resources>

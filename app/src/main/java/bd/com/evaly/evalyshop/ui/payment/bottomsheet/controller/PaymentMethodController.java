@@ -9,6 +9,7 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemPaymentMethodBinding;
 import bd.com.evaly.evalyshop.listener.RecyclerViewOnItemClickListener;
 import bd.com.evaly.evalyshop.models.payment.PaymentMethodModel;
@@ -45,9 +46,9 @@ public class PaymentMethodController extends EpoxyController {
                         ItemPaymentMethodBinding binding = (ItemPaymentMethodBinding) view.getDataBinding();
                         binding.radioButton.setChecked(model12.isSelected());
                         if (model12.isSelected())
-                            binding.container.setBackgroundColor(Color.parseColor("#f9f9f9"));
+                            binding.container.setBackgroundColor(binding.container.getContext().getResources().getColor(R.color.f9f9f9));
                         else
-                            binding.container.setBackgroundColor(Color.parseColor("#ffffff"));
+                            binding.container.setBackgroundColor(binding.container.getContext().getResources().getColor(R.color.fff));
                     })
                     .clickListener((model1, parentView, clickedView, position) -> {
                         String title = model1.title();

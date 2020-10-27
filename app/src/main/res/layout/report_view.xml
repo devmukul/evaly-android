@@ -49,6 +49,7 @@
         <Spinner
             android:id="@+id/spnDelivery"
             android:layout_width="match_parent"
+            android:backgroundTint="@color/aaa"
             android:layout_height="wrap_content"/>
 
         <TextView
