@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No shop available"
-                android:textColor="#555"
+                android:textColor="@color/c555"
                 android:textSize="16sp"
                 android:layout_marginTop="10dp"/>
 

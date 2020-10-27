@@ -69,8 +69,8 @@
             android:maxHeight="40dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:textColor="#555"
-            android:textColorHint="#555"
+            android:textColor="@color/c555"
+            android:textColorHint="@color/c555"
             android:textSize="14sp" />
 
         <Button

@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            android:background="#f8f8f8"
+            android:background="@color/f8f8f8"
             android:orientation="vertical"
             android:descendantFocusability="blocksDescendants">
 
@@ -88,7 +88,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
                         android:text="3 min ago"
-                        android:textColor="#555"
+                        android:textColor="@color/c555"
                         android:textSize="12sp" />
 
                     <TextView
@@ -140,7 +140,7 @@
                             android:layout_height="wrap_content"
                             android:text="Like"
                             android:textStyle="bold"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="14sp"
                             android:layout_marginRight="15dp"
                             android:visibility="gone"/>
@@ -163,14 +163,14 @@
                 android:id="@+id/view11"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#eee"
+                android:background="@color/eee"
                 android:visibility="gone" />
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#f8f8f8"
+                android:background="@color/f8f8f8"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:tag="sticky">
@@ -196,6 +196,7 @@
                     android:paddingTop="10dp"
                     android:paddingRight="15dp"
                     android:paddingBottom="10dp"
+                    android:tint="@color/black"
                     app:srcCompat="@drawable/ic_refresh" />
 
             </LinearLayout>
@@ -203,7 +204,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#f8f8f8"
+                android:background="@color/f8f8f8"
                 android:orientation="vertical">
 
 
@@ -280,7 +281,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:background="#f8f8f8"
+        android:background="@color/f8f8f8"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="10dp">

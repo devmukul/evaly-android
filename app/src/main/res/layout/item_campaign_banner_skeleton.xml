@@ -18,7 +18,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                app:tint="#f7f7f7"
+                app:tint="@color/f6f6f6"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/bg_fafafa_round"
                 app:layout_constraintBottom_toBottomOf="parent"

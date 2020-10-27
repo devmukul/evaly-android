@@ -42,22 +42,22 @@
                 android:paddingBottom="5dp"
                 android:text="@string/pending"
                 android:textSize="14sp"
-                android:textColor="@color/fff" />
+                android:textColor="@color/fffh" />
 
 
             <TextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:background="@drawable/gift_card_time_bg"
                 android:paddingLeft="10dp"
                 android:paddingTop="4dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="5dp"
                 android:text="time ago"
-                android:textColor="@color/fff"
-                android:textSize="14sp"
-                android:layout_alignParentBottom="true"/>
+                android:textColor="@color/fffh"
+                android:textSize="14sp" />
 
 
 
@@ -97,7 +97,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Invoice No."
-                    android:textColor="#555" />
+                    android:textColor="@color/c555" />
                 <TextView
                     android:id="@+id/invoice_id"
                     android:layout_width="match_parent"
@@ -117,7 +117,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="01759877045"
-                    android:textColor="#555"
+                    android:textColor="@color/c555"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -132,7 +132,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="To"
-                    android:textColor="#555" />
+                    android:textColor="@color/c555" />
 
                 <TextView
                     android:id="@+id/giftTo"

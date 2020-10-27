@@ -16,7 +16,7 @@
             android:paddingRight="15dp"
             android:paddingBottom="12dp"
             android:text="@string/categories"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"

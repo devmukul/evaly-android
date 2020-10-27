@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@color/fff"
     android:padding="15dp">
 
     <TextView
@@ -60,7 +60,7 @@
             android:backgroundTint="@color/colorAccent"
             android:stateListAnimator="@null"
             android:text="@string/submit"
-            android:textColor="@color/fff" />
+            android:textColor="@color/fffh" />
 
         <Button
             android:id="@+id/buttonCancel"
@@ -69,6 +69,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:textColor="@color/black"
             android:background="@android:color/transparent"
             android:text="@string/cancel" />
 

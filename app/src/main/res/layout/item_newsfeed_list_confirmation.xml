@@ -61,7 +61,7 @@
         android:text="Pending"
         android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
-        android:textColor="@color/fff"/>
+        android:textColor="@color/fffh"/>
 
     <TextView
         android:id="@+id/text"
@@ -133,7 +133,8 @@
                 android:layout_weight="0"
                 android:paddingLeft="10dp"
                 android:paddingRight="5dp"
-                app:srcCompat="@drawable/ic_trash" />
+                app:srcCompat="@drawable/ic_trash"
+                app:tint="@color/c333" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -161,7 +162,8 @@
                 android:layout_weight="0"
                 android:paddingLeft="10dp"
                 android:paddingRight="5dp"
-                app:srcCompat="@drawable/ic_minus_circle" />
+                app:srcCompat="@drawable/ic_minus_circle"
+                app:tint="@color/c333" />
 
             <TextView
                 android:id="@+id/likeCount"
@@ -189,7 +191,8 @@
                 android:layout_weight="0"
                 android:paddingLeft="10dp"
                 android:paddingRight="5dp"
-                app:srcCompat="@drawable/ic_confirm" />
+                app:srcCompat="@drawable/ic_confirm"
+                app:tint="@color/c333" />
 
             <TextView
                 android:id="@+id/commentCount"

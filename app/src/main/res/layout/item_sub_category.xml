@@ -17,7 +17,8 @@
             android:id="@+id/android_custom_gridview_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="@color/fff"
+            android:foreground="?android:attr/selectableItemBackground"
             android:gravity="top|center_horizontal">
 
             <ImageView

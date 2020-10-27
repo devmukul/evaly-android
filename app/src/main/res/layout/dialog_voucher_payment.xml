@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/fff"
     android:orientation="vertical"
     android:padding="15dp">
 
@@ -30,7 +31,7 @@
         android:text="@string/how_to_make_bkash_payment"
         android:textAlignment="viewStart"
         android:textAllCaps="false"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/black"
         android:textSize="16sp" />
 
     <EditText
@@ -79,7 +80,7 @@
             android:backgroundTint="@color/colorAccent"
             android:stateListAnimator="@null"
             android:text="@string/submit"
-            android:textColor="@color/fff" />
+            android:textColor="@color/fffh" />
 
         <Button
             android:id="@+id/buttonCancel"
@@ -88,6 +89,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:textColor="@color/black"
             android:background="@android:color/transparent"
             android:text="@string/cancel" />
 

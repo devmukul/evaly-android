@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
                     android:text="Like"
-                    android:textColor="#555"
+                    android:textColor="@color/c555"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:visibility="gone" />
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/reply"
-                    android:textColor="#555"
+                    android:textColor="@color/c555"
                     android:textSize="14sp" />
 
 
@@ -134,7 +134,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:text="3 min ago"
-                android:textColor="#555"
+                android:textColor="@color/c555"
                 android:textSize="12sp" />
 
         </RelativeLayout>

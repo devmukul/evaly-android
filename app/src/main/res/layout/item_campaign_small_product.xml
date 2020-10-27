@@ -90,7 +90,7 @@
                 android:paddingTop="2dp"
                 android:paddingRight="6dp"
                 android:paddingBottom="2dp"
-                android:textColor="@color/white"
+                android:textColor="@color/fffh"
                 android:textSize="10sp"
                 android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent"

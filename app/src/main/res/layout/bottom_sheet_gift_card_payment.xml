@@ -45,7 +45,7 @@
             android:paddingRight="6dp"
             android:paddingBottom="3dp"
             android:text="@string/partial_pay"
-            android:textColor="@color/white"
+            android:textColor="@color/fffh"
             android:textSize="13sp"
             android:visibility="visible" />
     </LinearLayout>
@@ -59,16 +59,16 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/input_brd"
         android:clickable="false"
+        android:digits="1234567890"
+        android:drawableRight="@drawable/ic_edit_drawable"
         android:focusableInTouchMode="false"
         android:hint="@string/amount"
+        android:imeOptions="actionDone"
         android:inputType="number"
         android:paddingLeft="15dp"
         android:paddingTop="10dp"
         android:paddingRight="15dp"
-        android:paddingBottom="10dp"
-        android:imeOptions="actionDone"
-        android:digits="1234567890"
-        android:drawableRight="@drawable/ic_edit_drawable"/>
+        android:paddingBottom="10dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -121,7 +121,8 @@
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_bank_icon"
-            android:visibility="visible" />
+            android:visibility="visible"
+            app:tint="@color/c444" />
 
     </LinearLayout>
 
@@ -170,9 +171,6 @@
             android:visibility="visible" />
 
     </LinearLayout>
-
-
-
 
 
 </LinearLayout>

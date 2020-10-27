@@ -30,7 +30,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
             android:text="@string/invite_your_friends_amp_earn_money"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -111,7 +111,7 @@
             <!--android:layout_weight="0"-->
             <!--app:cardCornerRadius="10dp"-->
             <!--app:cardElevation="0dp"-->
-            <!--app:cardBackgroundColor="#eeeeee">-->
+            <!--app:cardBackgroundColor="@color/eeeeee">-->
         <!--</android.support.v7.widget.CardView>-->
 
         <LinearLayout
@@ -128,7 +128,7 @@
                 android:layout_width="16dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
-                android:tint="#555"
+                android:tint="@color/c555"
                 app:srcCompat="@drawable/ic_referral" />
 
             <TextView

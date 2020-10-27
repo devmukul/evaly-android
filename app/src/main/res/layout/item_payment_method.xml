@@ -41,7 +41,7 @@
             android:layout_marginTop="7dp"
             android:paddingLeft="37dp"
             android:text="You can pay up to 60% of the order amount using Evaly Balance."
-            android:textColor="#555"
+            android:textColor="@color/c555"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

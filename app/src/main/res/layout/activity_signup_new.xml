@@ -16,6 +16,7 @@
         android:background="?attr/actionBarItemBackground"
         android:padding="10dp"
         app:srcCompat="@drawable/ic_close_new"
+        android:tint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -34,9 +34,10 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/fff"
                 android:paddingLeft="15dp"
-                android:paddingRight="15dp"
                 android:paddingTop="15dp"
+                android:paddingRight="15dp"
                 android:paddingBottom="15dp"
                 android:tag="sticky"
                 android:text="@string/gift_card"
@@ -44,8 +45,7 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:visibility="visible"
-                android:background="@color/fff"/>
+                android:visibility="visible" />
 
 
             <LinearLayout
@@ -157,7 +157,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:text="@string/quantity"
-                        android:textColor="#555"
+                        android:textColor="@color/c555"
                         android:textSize="14sp" />
 
                     <LinearLayout
@@ -179,7 +179,7 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_weight="0"
-                            android:background="#eee"
+                            android:background="@color/eee"
                             android:clickable="true"
                             android:padding="5dp"
                             app:srcCompat="@drawable/ic_minus" />
@@ -192,11 +192,11 @@
                             android:background="@null"
                             android:imeOptions="actionDone"
                             android:inputType="number"
+                            android:maxLength="4"
                             android:maxLines="1"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:text="1"
-                            android:maxLength="4"
                             android:textSize="22sp" />
 
                         <ImageView
@@ -204,7 +204,7 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_weight="0"
-                            android:background="#eee"
+                            android:background="@color/eee"
                             android:clickable="true"
                             android:padding="5dp"
                             app:srcCompat="@drawable/ic_plus" />
@@ -286,7 +286,7 @@
                 android:background="@drawable/black_ripple_bg"
                 android:stateListAnimator="@null"
                 android:text="@string/buy"
-                android:textColor="@color/fff" />
+                android:textColor="@color/fffh" />
 
         </LinearLayout>
     </bd.com.evaly.evalyshop.views.StickyScrollView>

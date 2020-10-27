@@ -40,7 +40,7 @@
         android:layout_marginBottom="30dp"
         android:text="Your order has been placed. Are you sure you want to confirm the order for cash on delivery?"
         android:textAlignment="center"
-        android:textColor="@color/evaly_color"
+        android:textColor="@color/black"
         android:textSize="16sp" />
 
     <TextView
@@ -53,7 +53,7 @@
         android:gravity="center"
         android:text="Confirm Order"
         android:layout_marginBottom="30dp"
-        android:textColor="@color/white"
+        android:textColor="@color/fffh"
         android:textSize="16sp" />
 
 </LinearLayout>

@@ -96,7 +96,7 @@
         android:layout_below="@id/tvCommentCount"
         android:layout_marginTop="23dp"
         android:layout_marginBottom="5dp"
-        android:background="#f8f8f8"
+        android:background="@color/f8f8f8"
         android:visibility="visible" />
 
 </RelativeLayout>

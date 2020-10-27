@@ -97,7 +97,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_weight="0"
-                        android:background="#eee"
+                        android:background="@color/eee"
                         android:clickable="true"
                         android:padding="5dp"
                         app:srcCompat="@drawable/ic_minus" />
@@ -121,7 +121,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_weight="0"
-                        android:background="#eee"
+                        android:background="@color/eee"
                         android:clickable="true"
                         android:padding="5dp"
                         app:srcCompat="@drawable/ic_plus" />

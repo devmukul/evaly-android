@@ -61,7 +61,7 @@
                     android:paddingEnd="25dp"
                     android:stateListAnimator="@null"
                     android:text="COPY"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/fffh" />
 
             </LinearLayout>
         </LinearLayout>

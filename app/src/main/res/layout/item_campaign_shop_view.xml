@@ -86,7 +86,7 @@
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
                     android:text="Hot Deal"
-                    android:textColor="@color/fff"
+                    android:textColor="@color/fffh"
                     android:textSize="10sp" />
 
                 <TextView

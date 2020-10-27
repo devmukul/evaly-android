@@ -11,16 +11,21 @@
     <color name="transparent">@android:color/transparent</color>
 
     <color name="white">#1a1a1a</color>
-    <color name="black">#fff</color>
+    <color name="black">#fafafa</color>
 
     <color name="border_color">#ddd</color>
 
     <color name="c333">#ddd</color>
 
     <color name="aaa">#444</color>
-    <color name="eee">#999</color>
+    <color name="eee">#333</color>
+    <color name="eaeaea">#333</color>
     <color name="ddd">#333</color>
     <color name="f9f9f9">#222</color>
+    <color name="f8f8f8">#222</color>
+    <color name="f6f6f6">#222</color>
+    <color name="f7f7f7">#222</color>
+    <color name="fefefe">#222</color>
 
     <color name="c777">#aaa</color>
     <color name="c444">#ddd</color>
@@ -41,6 +46,7 @@
 
 
     <color name="separator_light">#242424</color>
+    <color name="rootCategoryBg">#222</color>
 
     <color name="evaly_color_old">#bd1f26</color>
     <color name="evaly_color">#000000</color>

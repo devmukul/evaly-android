@@ -15,7 +15,7 @@
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
         android:minHeight="50dp"
-        app:cardBackgroundColor="#f1f1f1"
+        app:cardBackgroundColor="@color/f1f3f4"
         app:cardCornerRadius="25dp"
         app:cardElevation="0dp">
 
@@ -27,7 +27,7 @@
         android:layout_height="18dp"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@id/pic"
-        android:background="#f1f1f1" />
+        android:background="@color/f1f3f4" />
 
     <View
         android:id="@+id/date"
@@ -37,7 +37,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/pic"
-        android:background="#f1f1f1" />
+        android:background="@color/f1f3f4" />
 
     <View
         android:id="@+id/text"
@@ -48,7 +48,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginRight="10dp"
         android:layout_weight="1"
-        android:background="#f1f1f1" />
+        android:background="@color/f1f3f4" />
 
     <View
         android:id="@+id/text2"
@@ -59,6 +59,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="150dp"
         android:layout_weight="1"
-        android:background="#f1f1f1" />
+        android:background="@color/f1f3f4" />
 
 </RelativeLayout>

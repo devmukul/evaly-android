@@ -29,7 +29,7 @@
             android:layout_width="3dp"
             android:layout_height="5dp"
             android:layout_weight="0"
-            android:background="#eee" />
+            android:background="@color/eee" />
 
         <ImageView
             android:layout_width="12dp"
@@ -43,7 +43,7 @@
             android:layout_width="3dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#eee" />
+            android:background="@color/eee" />
 
     </LinearLayout>
 
@@ -58,7 +58,7 @@
             android:id="@+id/status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             android:textSize="15sp"
             android:textStyle="bold" />
 

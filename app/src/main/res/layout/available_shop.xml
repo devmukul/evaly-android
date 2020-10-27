@@ -8,7 +8,6 @@
     android:background="@drawable/border_box">
 
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -128,7 +127,8 @@
                     android:layout_height="43dp"
                     android:background="@drawable/circle_bg_small"
                     android:clickable="true"
-                    app:srcCompat="@drawable/ic_menu_store" />
+                    app:srcCompat="@drawable/ic_menu_store"
+                    app:tint="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -144,7 +144,8 @@
                     android:layout_height="43dp"
                     android:background="@drawable/circle_bg_small"
                     android:clickable="true"
-                    app:srcCompat="@drawable/ic_shop_call" />
+                    app:srcCompat="@drawable/ic_shop_call"
+                    app:tint="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -160,7 +161,8 @@
                     android:layout_height="43dp"
                     android:background="@drawable/circle_bg_small"
                     android:clickable="true"
-                    app:srcCompat="@drawable/ic_marker" />
+                    app:srcCompat="@drawable/ic_marker"
+                    app:tint="@color/black" />
             </LinearLayout>
         </LinearLayout>
 
@@ -221,7 +223,7 @@
                     android:stateListAnimator="@null"
                     android:text="@string/add_to_cart"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:textColor="@color/fffh"
                     android:textSize="16sp"
                     android:textStyle="normal" />
 
@@ -242,8 +244,8 @@
         android:paddingEnd="10dp"
         android:paddingBottom="3dp"
         android:text="Stock Available"
-        android:textSize="12sp"
         android:textColor="@color/c666"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

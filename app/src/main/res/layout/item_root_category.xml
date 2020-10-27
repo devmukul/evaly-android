@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:foreground="?selectableItemBackground"
         android:gravity="top|center_horizontal"
-        android:background="#FBFCFF"
+        android:background="@color/rootCategoryBg"
         android:orientation="vertical">
 
         <View
@@ -26,7 +26,7 @@
             android:id="@+id/brd"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#f8f8f8"
+            android:background="@color/f8f8f8"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <ImageView

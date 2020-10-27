@@ -85,7 +85,7 @@
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
                     android:text="25% Cashback"
-                    android:textColor="@color/fff"
+                    android:textColor="@color/fffh"
                     android:textSize="12sp" />
 
                 <TextView

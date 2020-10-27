@@ -71,14 +71,14 @@
                 android:id="@+id/tvCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#555"
+                android:textColor="@color/c555"
                 android:textStyle="bold"
                 android:text="(0) " />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#555"
+                android:textColor="@color/c555"
                 android:text="Send" />
         </LinearLayout>
 

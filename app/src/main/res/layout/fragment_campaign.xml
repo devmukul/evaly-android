@@ -29,7 +29,7 @@
                 android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#f9f9f9"
+                android:background="@color/f9f9f9"
                 android:elevation="0dp"
                 android:fitsSystemWindows="true"
                 android:gravity="top"
@@ -194,8 +194,8 @@
                                 android:imeOptions="actionSearch"
                                 android:maxLines="1"
                                 android:singleLine="true"
-                                android:textColor="@color/fff"
-                                android:textColorHint="#eee"
+                                android:textColor="@color/fffh"
+                                android:textColorHint="@color/fffh"
                                 android:textSize="16sp" />
 
                             <ImageView
@@ -235,7 +235,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#f9f9f9"
+            android:background="@color/f9f9f9"
             android:clipToPadding="false"
             android:fitsSystemWindows="true"
             android:orientation="vertical"

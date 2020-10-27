@@ -13,7 +13,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
             android:text="Color"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

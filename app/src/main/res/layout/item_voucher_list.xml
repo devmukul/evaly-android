@@ -15,7 +15,7 @@
         android:id="@+id/lin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f5f5f5"
+        android:background="@color/f6f6f6"
         android:orientation="vertical">
 
         <ImageView
@@ -73,7 +73,7 @@
                 android:clickable="false"
                 android:stateListAnimator="@null"
                 android:text="@string/buy"
-                android:textColor="@color/fff"
+                android:textColor="@color/fffh"
                 android:textSize="16sp" />
         </LinearLayout>
 

@@ -59,6 +59,7 @@
             android:layout_height="66dp"
             android:orientation="horizontal"
             android:paddingTop="1dp"
+            android:background="@color/fff"
             android:paddingBottom="15dp">
 
             <LinearLayout
@@ -78,8 +79,8 @@
                     android:layout_height="20dp"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="0"
-                    android:tint="#555"
-                    app:srcCompat="@drawable/ic_search" />
+                    app:srcCompat="@drawable/ic_search"
+                    app:tint="@color/c555" />
 
                 <EditText
                     android:id="@+id/search"
@@ -111,7 +112,7 @@
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:layout_marginRight="20dp"
-                        android:background="#ededed" />
+                        android:background="@color/eee" />
 
                     <TextView
                         android:id="@+id/districtName"
@@ -184,7 +185,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="25dp"
             android:text="Sorry, no express shop found"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             android:textSize="15sp" />
     </LinearLayout>
 

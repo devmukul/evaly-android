@@ -87,7 +87,7 @@
             android:clickable="true"
             android:scaleType="centerCrop"
             android:visibility="visible"
-            android:background="#eee"/>
+            android:background="@color/eee"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardLink"
@@ -150,7 +150,7 @@
                 android:adjustViewBounds="true"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
-                android:tint="#555"
+                android:tint="@color/c555"
                 app:srcCompat="@drawable/ic_comment_icon_new" />
 
             <TextView
@@ -174,7 +174,7 @@
                 android:adjustViewBounds="true"
                 android:paddingTop="2dp"
                 android:paddingBottom="3dp"
-                android:tint="#555"
+                android:tint="@color/c555"
                 app:srcCompat="@drawable/ic_share" />
 
 

@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:text="@string/address"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -53,6 +53,6 @@
         android:elevation="0dp"
         android:stateListAnimator="@null"
         android:text="Save Address"
-        android:textColor="@color/fff" />
+        android:textColor="@color/fffh" />
 
 </LinearLayout>

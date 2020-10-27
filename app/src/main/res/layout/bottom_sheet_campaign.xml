@@ -33,7 +33,7 @@
                 android:orientation="vertical"
                 android:tag="sticky"
                 android:paddingBottom="10dp"
-                android:background="#ffff">
+                android:background="@color/fff">
             <View
                 android:layout_width="70dp"
                 android:layout_height="4dp"
@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/no_campaign_is_available_right_now"
-                    android:textColor="#555"
+                    android:textColor="@color/c555"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="25dp"
                     android:textSize="15sp"/>

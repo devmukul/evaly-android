@@ -242,7 +242,7 @@
                             android:layout_marginTop="15dp"
                             android:layout_marginBottom="0dp"
                             android:text="Variation"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -282,7 +282,7 @@
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:text="@string/sku"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -326,7 +326,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="@string/description"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -373,7 +373,7 @@
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="12dp"
                             android:text="@string/specifications"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -475,7 +475,7 @@
                                         android:layout_marginEnd="6dp"
                                         android:adjustViewBounds="true"
                                         android:src="@drawable/ic_marker_filled"
-                                        app:tint="#555" />
+                                        app:tint="@color/c555" />
 
                                     <TextView
                                         android:id="@+id/shopLocation"
@@ -484,7 +484,7 @@
                                         android:ellipsize="end"
                                         android:maxLines="2"
                                         android:textAlignment="textStart"
-                                        android:textColor="#555"
+                                        android:textColor="@color/c555"
                                         android:textIsSelectable="true"
                                         android:textSize="14sp"
                                         tools:text="Road 14, Dhanmondi 27, Dhaka" />
@@ -501,7 +501,7 @@
                                         android:layout_marginEnd="6dp"
                                         android:adjustViewBounds="true"
                                         android:src="@drawable/ic_call"
-                                        app:tint="#555" />
+                                        app:tint="@color/c555" />
 
                                     <TextView
                                         android:id="@+id/shopPhone"
@@ -511,8 +511,8 @@
                                         android:ellipsize="end"
                                         android:maxLines="2"
                                         android:textAlignment="textStart"
-                                        android:textColor="#555"
-                                        android:textColorLink="#555"
+                                        android:textColor="@color/c555"
+                                        android:textColorLink="@color/c555"
                                         android:textIsSelectable="true"
                                         android:textSize="14sp"
                                         tools:text="01758154554" />
@@ -532,7 +532,7 @@
                                         android:adjustViewBounds="true"
                                         android:paddingBottom="2dp"
                                         android:src="@drawable/ic_box"
-                                        app:tint="#555" />
+                                        app:tint="@color/c555" />
 
                                     <TextView
                                         android:id="@+id/stock"
@@ -543,8 +543,8 @@
                                         android:maxLines="2"
                                         android:text="@string/stock_colon_available"
                                         android:textAlignment="textStart"
-                                        android:textColor="#555"
-                                        android:textColorLink="#555"
+                                        android:textColor="@color/c555"
+                                        android:textColorLink="@color/c555"
                                         android:textIsSelectable="true"
                                         android:textSize="14sp" />
                                 </LinearLayout>
@@ -665,7 +665,7 @@
                                 android:layout_marginBottom="15dp"
                                 android:layout_weight="1"
                                 android:text="@string/available_at_shop"
-                                android:textColor="#555"
+                                android:textColor="@color/c555"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
 
@@ -783,7 +783,7 @@
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="10dp"
                             android:text="Reviews &amp; Ratings"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -840,7 +840,7 @@
                     android:paddingRight="15dp"
                     android:paddingBottom="18dp"
                     android:text="@string/explore_more_products"
-                    android:textColor="#555"
+                    android:textColor="@color/c555"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 

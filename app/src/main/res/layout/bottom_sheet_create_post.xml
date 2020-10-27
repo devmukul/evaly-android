@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/container2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -140,7 +139,8 @@
                     android:layout_height="20dp"
                     android:layout_weight="0"
                     android:adjustViewBounds="false"
-                    app:srcCompat="@drawable/ic_gallery" />
+                    app:srcCompat="@drawable/ic_gallery"
+                    app:tint="@color/black" />
 
                 <TextView
                     android:id="@+id/add_photo_text"
@@ -192,7 +192,7 @@
                 android:stateListAnimator="@null"
                 android:text="SHARE"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/fffh"
                 android:textSize="16sp" />
 
         </LinearLayout>

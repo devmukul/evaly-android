@@ -7,6 +7,7 @@
     <color name="colorAccentBlue">#6c81f7</color>
 
     <color name="fff">#fff</color>
+    <color name="fffh">#fff</color>
     <color name="bottom_nav">#fff</color>
 
     <color name="transparent">@android:color/transparent</color>
@@ -19,11 +20,15 @@
     <color name="border_color">#eee</color>
 
 
-
     <color name="aaa">#aaa</color>
     <color name="eee">#eee</color>
+    <color name="eaeaea">#eaeaea</color>
     <color name="ddd">#ddd</color>
+    <color name="f6f6f6">#f6f6f6</color>
+    <color name="f7f7f7">#f7f7f7</color>
     <color name="f9f9f9">#f9f9f9</color>
+    <color name="f8f8f8">#f8f8f8</color>
+    <color name="fefefe">#fefefe</color>
 
     <color name="c333">#333</color>
     <color name="c444">#444</color>
@@ -68,6 +73,7 @@
 
     <color name="bgCartBtn">#fff2f2</color>
     <color name="bgCartCount">#08430505</color>
+    <color name="rootCategoryBg">#FBFCFF</color>
 
 
 </resources>

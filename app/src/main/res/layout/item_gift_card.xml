@@ -22,6 +22,7 @@
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="120dp"
             android:adjustViewBounds="true" />
 
         <TextView
@@ -74,7 +75,7 @@
                 android:clickable="false"
                 android:stateListAnimator="@null"
                 android:text="@string/buy"
-                android:textColor="@color/fff"
+                android:textColor="@color/fffh"
                 android:textSize="15sp" />
         </LinearLayout>
 

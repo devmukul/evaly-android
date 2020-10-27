@@ -49,7 +49,7 @@
                         android:id="@+id/brd"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#f8f8f8"
+                        android:background="@color/f8f8f8"
                         app:layout_constraintBottom_toBottomOf="parent" />
 
                     <TextView

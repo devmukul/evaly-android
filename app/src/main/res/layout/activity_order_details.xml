@@ -171,7 +171,7 @@
                         android:layout_marginEnd="18dp"
                         android:background="@drawable/circle_bg"
                         android:padding="10dp"
-                        android:tint="#555"
+                        android:tint="@color/c555"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -424,7 +424,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/subtotal"
-                                android:textColor="#555" />
+                                android:textColor="@color/c555" />
 
                             <TextView
                                 android:id="@+id/total_price"
@@ -450,7 +450,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/paid_amount"
-                                android:textColor="#555" />
+                                android:textColor="@color/c555" />
 
                             <TextView
                                 android:id="@+id/paid_amount"
@@ -477,7 +477,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/due_amount"
-                                android:textColor="#555" />
+                                android:textColor="@color/c555" />
 
                             <TextView
                                 android:id="@+id/due_price"
@@ -823,7 +823,7 @@
                             android:layout_below="@+id/billfromName"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#555"
+                            android:tint="@color/c555"
                             app:srcCompat="@drawable/ic_marker" />
 
                         <TextView
@@ -842,7 +842,7 @@
                             android:layout_below="@+id/billfromAddress"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#555"
+                            android:tint="@color/c555"
                             app:srcCompat="@drawable/ic_input_phone" />
 
                         <TextView
@@ -894,7 +894,7 @@
                             android:layout_below="@+id/billtoName1"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#555"
+                            android:tint="@color/c555"
                             app:srcCompat="@drawable/ic_marker" />
 
                         <TextView
@@ -913,7 +913,7 @@
                             android:layout_below="@+id/billtoAddress1"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#555"
+                            android:tint="@color/c555"
                             app:srcCompat="@drawable/ic_input_phone" />
 
                         <TextView

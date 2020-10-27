@@ -56,7 +56,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:adjustViewBounds="true"
-                                android:src="#eee"
+                                android:src="@color/eee"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintDimensionRatio="H,2.93478:1"
                                 app:layout_constraintLeft_toLeftOf="parent"
@@ -187,7 +187,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="25dp"
                         android:text="Sorry, no shop found"
-                        android:textColor="#555"
+                        android:textColor="@color/c555"
                         android:textSize="15sp" />
                 </LinearLayout>
             </LinearLayout>

@@ -38,7 +38,8 @@
             android:adjustViewBounds="true"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            app:srcCompat="@drawable/ic_close_vector" />
+            app:srcCompat="@drawable/ic_close_vector"
+            app:tint="@color/black" />
 
 
     </LinearLayout>
@@ -133,7 +134,8 @@
                 android:layout_height="20dp"
                 android:layout_weight="0"
                 android:adjustViewBounds="false"
-                app:srcCompat="@drawable/ic_gallery" />
+                app:srcCompat="@drawable/ic_gallery"
+                app:tint="@color/black" />
 
             <TextView
                 android:id="@+id/add_photo_text"

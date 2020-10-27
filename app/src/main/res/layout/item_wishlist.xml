@@ -34,7 +34,7 @@
         android:layout_below="@+id/product_name"
         android:layout_alignStart="@+id/product_name"
         android:layout_marginTop="5dp"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/black"
         android:textSize="17sp" />
 
     <TextView
@@ -63,7 +63,7 @@
         android:paddingRight="0dp"
         android:paddingBottom="5dp"
         android:layout_marginBottom="5dp"
-        android:tint="@color/colorAccent"
-        app:srcCompat="@drawable/ic_trash" />
+        app:srcCompat="@drawable/ic_trash"
+        app:tint="@color/black" />
 
 </RelativeLayout>

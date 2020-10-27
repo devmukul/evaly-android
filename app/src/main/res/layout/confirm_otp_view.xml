@@ -16,7 +16,7 @@
             android:layout_marginBottom="15dp"
             android:fontFamily="sans-serif-medium"
             android:text="Refund Confirmation"
-            android:textColor="#111"
+            android:textColor="@color/black"
             android:textSize="17sp" />
 
         <TextView
@@ -65,7 +65,7 @@
                 android:paddingEnd="14dp"
                 android:stateListAnimator="@null"
                 android:text="Confirm Refund"
-                android:textColor="@color/fff"
+                android:textColor="@color/fffh"
                 android:textSize="14sp" />
 
         </LinearLayout>
@@ -106,7 +106,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:paddingRight="20dp"
                 android:text="Resend OTP"
-                android:textColor="@color/evaly_color"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />

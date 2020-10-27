@@ -468,7 +468,7 @@
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:text="\u25AA B3, 349/A, Road 9, Block C, Bashundhara R/A"
-                     android:textColor="#555"
+                     android:textColor="@color/c555"
                      android:textSize="14sp" />
 
              </LinearLayout>
@@ -492,7 +492,7 @@
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:text="C7, House 26, Hatkhola Road, Dhaka-1203"
-                     android:textColor="#555"
+                     android:textColor="@color/c555"
                      android:textSize="14sp" />
 
              </LinearLayout>

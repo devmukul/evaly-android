@@ -14,7 +14,7 @@
                 android:topRightRadius="8dp"/>
             <stroke
                 android:width="0.3dp"
-                android:color="#ddd"/>
+                android:color="@color/ddd"/>
         </shape>
     </item>
 
@@ -29,7 +29,7 @@
                 android:topRightRadius="8dp"/>
             <stroke
                 android:width="0.3dp"
-                android:color="#ddd"/>
+                android:color="@color/ddd"/>
         </shape>
     </item>
 

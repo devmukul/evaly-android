@@ -83,7 +83,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:text="3 min ago"
-                android:textColor="#555"
+                android:textColor="@color/c555"
                 android:textSize="12sp" />
 
         </RelativeLayout>

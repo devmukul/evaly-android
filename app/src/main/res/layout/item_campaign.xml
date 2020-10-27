@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:adjustViewBounds="true"
-                android:src="#eee"
+                android:src="@color/eee"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="H,1:1.5168"
                 app:layout_constraintLeft_toLeftOf="parent"

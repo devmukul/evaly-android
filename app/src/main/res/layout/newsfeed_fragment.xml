@@ -6,12 +6,14 @@
         android:id="@+id/root_coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/app_bg"
         android:fitsSystemWindows="false">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/fff"
             android:fitsSystemWindows="true"
             app:elevation="0dp">
 
@@ -40,17 +42,17 @@
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 style="@style/TabLayoutStyle"
-                app:tabTextAppearance="@style/TabTextAppearance"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="-5dp"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="-5dp"
                 android:paddingBottom="5dp"
                 app:tabIndicatorFullWidth="false"
                 app:tabIndicatorHeight="5dp"
                 app:tabMode="scrollable"
-                app:tabSelectedTextColor="@color/c333">
+                app:tabSelectedTextColor="@color/c333"
+                app:tabTextAppearance="@style/TabTextAppearance">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
@@ -76,10 +78,9 @@
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#f8f8f8"
+            android:background="@color/f8f8f8"
             android:orientation="horizontal"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

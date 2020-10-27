@@ -15,7 +15,7 @@
         android:layout_marginBottom="15dp"
         android:layout_weight="0"
         android:text="Category"
-        android:textColor="#555"
+        android:textColor="@color/c555"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="gone" />
@@ -50,7 +50,7 @@
             android:paddingBottom="4dp"
             android:text="12"
             android:textAlignment="center"
-            android:textColor="@color/c333" />
+            android:textColor="#333" />
     </LinearLayout>
 
 </LinearLayout>

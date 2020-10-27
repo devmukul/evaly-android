@@ -26,7 +26,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#f8f8f8"
+                android:background="@color/f8f8f8"
                 android:focusableInTouchMode="false"
                 android:orientation="vertical">
 
@@ -141,7 +141,7 @@
                         android:id="@+id/view11"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#f8f8f8"
+                        android:background="@color/f8f8f8"
                         android:visibility="visible" />
 
 
@@ -181,7 +181,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/text"
                         android:adjustViewBounds="true"
-                        android:background="#eee"
+                        android:background="@color/eee"
                         android:minHeight="300dp"
                         android:visibility="gone" />
 
@@ -192,7 +192,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#f8f8f8"
+                    android:background="@color/f8f8f8"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:tag="sticky">
@@ -226,7 +226,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#f8f8f8"
+                    android:background="@color/f8f8f8"
                     android:descendantFocusability="blocksDescendants"
                     android:orientation="vertical">
 
@@ -292,7 +292,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:background="#f8f8f8"
+            android:background="@color/f8f8f8"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingBottom="0dp">
