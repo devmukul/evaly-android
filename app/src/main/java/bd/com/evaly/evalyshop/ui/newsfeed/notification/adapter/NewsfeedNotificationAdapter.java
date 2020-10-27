@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.newsfeed.notification.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,9 +51,9 @@ public class NewsfeedNotificationAdapter extends RecyclerView.Adapter<NewsfeedNo
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
         if (!notifications.get(i).isRead())
-            myViewHolder.view.setBackgroundColor(Color.parseColor("#fafafa"));
+            myViewHolder.view.setBackgroundColor(context.getResources().getColor(R.color.fafafa));
         else
-            myViewHolder.view.setBackgroundColor(Color.parseColor("#ffffff"));
+            myViewHolder.view.setBackgroundColor(context.getResources().getColor(R.color.fff));
 
         myViewHolder.messages.setText(Html.fromHtml(notifications.get(i).getMessage()));
 

@@ -2,7 +2,6 @@ package bd.com.evaly.evalyshop.ui.order.orderList;
 
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,7 +122,7 @@ public class OrderListFragment extends Fragment {
                     if (response.getCount() == 0 && page == 1) {
                         notOrdered.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
-                        nestedSV.setBackgroundColor(Color.WHITE);
+                        nestedSV.setBackgroundColor(getResources().getColor(R.color.fff));
                     } else {
                         notOrdered.setVisibility(View.GONE);
                         orders.addAll(response.getData());

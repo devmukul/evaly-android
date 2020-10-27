@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.search.GlobalSearchActivity"
-    android:id="@+id/layout_drawer">
+    tools:context=".ui.search.GlobalSearchActivity">
 
     <bd.com.evaly.evalyshop.views.StickyScrollView
         android:id="@+id/sticky"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fafafa"
+        android:background="@color/fafafa"
         android:transitionGroup="true"
         tools:context=".ui.search.GlobalSearchActivity">
 
@@ -25,7 +24,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#fff"
+                android:background="@color/fff"
                 android:orientation="vertical"
                 android:tag="sticky">
 
@@ -57,14 +56,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="#fff"
+                        android:background="@color/fff"
                         android:hint="Search here?"
                         android:imeOptions="actionDone"
                         android:inputType="text"
                         android:maxLines="1"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
-                        android:popupBackground="#fff"
+                        android:popupBackground="@color/fff"
                         android:popupElevation="0dp"
                         android:singleLine="true"
                         android:textSize="16sp" />
@@ -78,7 +77,7 @@
                         android:paddingTop="9dp"
                         android:paddingBottom="9dp"
                         android:tag="search"
-                        android:tint="#444"
+                        android:tint="@color/c444"
                         app:srcCompat="@drawable/ic_search" />
 
                 </LinearLayout>
@@ -87,7 +86,7 @@
                     android:id="@+id/lineafterSearch"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f1f3f4" />
+                    android:background="@color/f1f3f4" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -120,7 +119,7 @@
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0"
-                        android:background="#f1f3f4" />
+                        android:background="@color/f1f3f4" />
 
                     <LinearLayout
                         android:id="@+id/filter"
@@ -135,7 +134,7 @@
                             android:layout_width="11dp"
                             android:layout_height="18dp"
                             android:layout_weight="0"
-                            android:tint="#333"
+                            android:tint="@color/c333"
                             app:srcCompat="@drawable/ic_filter" />
 
                         <TextView
@@ -145,7 +144,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_weight="0"
                             android:text="Filter"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -155,7 +154,7 @@
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0"
-                        android:background="#f1f3f4" />
+                        android:background="@color/f1f3f4" />
 
                     <LinearLayout
                         android:id="@+id/sortBtn"
@@ -171,8 +170,8 @@
                             android:layout_width="14dp"
                             android:layout_height="20dp"
                             android:layout_weight="0"
-                            android:tint="#333"
-                            app:srcCompat="@drawable/ic_up_down" />
+                            app:srcCompat="@drawable/ic_up_down"
+                            app:tint="@color/c333" />
 
                         <TextView
                             android:id="@+id/textView37"
@@ -181,7 +180,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_weight="0"
                             android:text="Sort"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:textSize="16sp" />
 
                     </LinearLayout>
@@ -211,7 +210,7 @@
                 android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0"
-                android:background="#fafafa"
+                android:background="@color/fafafa"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp" />
 
@@ -239,7 +238,7 @@
                     android:layout_weight="1"
                     android:text="No results found :-("
                     android:textAlignment="center"
-                    android:textColor="#777"
+                    android:textColor="@color/c777"
                     android:textSize="20sp" />
 
                 <TextView
@@ -262,7 +261,7 @@
         android:layout_width="340dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:background="#fff"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <androidx.core.widget.NestedScrollView
@@ -270,7 +269,7 @@
             android:layout_width="340dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#fff"
+            android:background="@color/white"
             android:choiceMode="singleChoice"
             android:dividerHeight="1dp">
 
@@ -288,7 +287,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_weight="0"
                     android:text="Price Range"
-                    android:textColor="#555"
+                    android:textColor="@color/c555"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -311,7 +310,7 @@
                         android:hint="Minimum"
                         android:inputType="number"
                         android:padding="10dp"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <View
@@ -319,7 +318,7 @@
                         android:layout_width="6dp"
                         android:layout_height="2dp"
                         android:layout_weight="0"
-                        android:background="#666" />
+                        android:background="@color/c666" />
 
                     <EditText
                         android:id="@+id/maximum"
@@ -332,7 +331,7 @@
                         android:hint="Maximum"
                         android:inputType="number"
                         android:padding="10dp"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -364,7 +363,7 @@
                 android:padding="15dp"
                 android:text="CLEAR"
                 android:textAlignment="center"
-                android:textColor="#fff" />
+                android:textColor="@color/fffh" />
 
             <Button
                 android:id="@+id/header"
@@ -375,7 +374,7 @@
                 android:padding="15dp"
                 android:text="Apply"
                 android:textAlignment="center"
-                android:textColor="#fff" />
+                android:textColor="@color/fffh" />
         </LinearLayout>
 
     </LinearLayout>

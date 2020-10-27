@@ -7,7 +7,7 @@
 
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="oval" >
-            <solid android:color="#F1F3F4" />
+            <solid android:color="@color/f1f3f4" />
             <padding android:left="15dp"
                 android:right="15dp"
                 android:top="15dp"
@@ -20,7 +20,7 @@
 
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="oval" >
-            <solid android:color="#F1F3F4" />
+            <solid android:color="@color/f1f3f4" />
             <padding android:left="15dp"
                 android:right="15dp"
                 android:top="15dp"

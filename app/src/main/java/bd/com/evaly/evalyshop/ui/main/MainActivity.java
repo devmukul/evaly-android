@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.FragmentTransaction;
@@ -91,8 +92,34 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    public void showDarkModeDialog() {
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        CharSequence[] items = new CharSequence[]{"Dark", "Light"};
+
+        int selectedPos = 0;
+        if (!CredentialManager.isDarkMode())
+            selectedPos = 1;
+
+        adb.setSingleChoiceItems(items, selectedPos, (d, n) -> {
+            CredentialManager.setDarkMode(n == 0);
+            startActivity(new Intent(MainActivity.this, MainActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            finishAffinity();
+        });
+        adb.setNegativeButton(R.string.cancel, null);
+        adb.setTitle("Choose Theme");
+        adb.show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (CredentialManager.isDarkMode())
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
 
@@ -184,9 +211,6 @@ public class MainActivity extends BaseActivity {
         if (!CredentialManager.getToken().equals("")) {
             if (CredentialManager.getUserName().equals("") || CredentialManager.getPassword().equals(""))
                 AppController.logout(MainActivity.this);
-            else {
-
-            }
         }
 
         String email = CredentialManager.getUserName();
@@ -399,6 +423,9 @@ public class MainActivity extends BaseActivity {
                         this.startActivity(getIntent());
                         this.overridePendingTransition(0, 0);
                         break;
+                    case R.id.nav_dark_mode:
+                        showDarkModeDialog();
+                        break;
                 }
                 new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
                 return true;
@@ -464,6 +491,10 @@ public class MainActivity extends BaseActivity {
                         inf.putExtra("title", "Followed Shops");
                         inf.putExtra("slug", "shop-subscriptions");
                         startActivity(inf);
+                        break;
+                    case R.id.nav_dark_mode:
+                        showDarkModeDialog();
+                        break;
                 }
                 new Handler().postDelayed(() -> binding.drawerLayout.closeDrawer(GravityCompat.START), 150);
                 return true;
@@ -489,6 +520,8 @@ public class MainActivity extends BaseActivity {
             } catch (Exception e4) {
                 ToastUtils.show("Please install eConnect app from Playstore");
             }
+        } catch (Exception e5) {
+            ToastUtils.show("Please install eConnect app from Playstore");
         }
     }
 

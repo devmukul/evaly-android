@@ -5,7 +5,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/app_bg">
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer"
@@ -65,10 +66,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:paddingBottom="56dp"
                 android:text="@string/no_post_yet"
                 android:textAlignment="center"
-                android:textColor="#555"
-                android:paddingBottom="56dp"
+                android:textColor="@color/c555"
                 android:textSize="18sp" />
         </LinearLayout>
 

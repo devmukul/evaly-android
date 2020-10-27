@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.campaign;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +30,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -38,6 +38,7 @@ import java.util.List;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignBannerController;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignController;
@@ -59,6 +60,29 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     private boolean isLoading = false;
     private boolean isExpanded = true;
     private boolean isSharingBottomShowing = true;
+    private TextWatcher searchTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            String text = binding.searchText.getText().toString().trim();
+            if (text.length() == 0) {
+                binding.clearSearch.setVisibility(View.GONE);
+                viewModel.clear();
+                viewModel.setSearch(null);
+                viewModel.loadCampaignProducts();
+            } else
+                binding.clearSearch.setVisibility(View.VISIBLE);
+        }
+    };
 
     public static CampaignFragment newInstance() {
         final CampaignFragment fragment = new CampaignFragment();
@@ -164,31 +188,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         });
     }
 
-
-    private TextWatcher searchTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            String text = binding.searchText.getText().toString().trim();
-            if (text.length() == 0) {
-                binding.clearSearch.setVisibility(View.GONE);
-                viewModel.clear();
-                viewModel.setSearch(null);
-                viewModel.loadCampaignProducts();
-            } else
-                binding.clearSearch.setVisibility(View.VISIBLE);
-        }
-    };
-
     private void initSlider() {
         if (sliderController == null)
             sliderController = new CampaignBannerController();
@@ -243,17 +242,18 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         });
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void updateToolbarOnExpand(boolean expanded) {
         if (expanded) {
             if (isExpanded)
                 return;
             isExpanded = true;
             darkStatusBar();
-            binding.backArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
-            binding.clearSearch.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
-            binding.buttonRight.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
-            binding.searchText.setTextColor(Color.parseColor("#777777"));
-            binding.searchText.setHintTextColor(Color.parseColor("#777777"));
+            binding.backArrow.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            binding.clearSearch.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            binding.buttonRight.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            binding.searchText.setTextColor(getResources().getColor(R.color.c777));
+            binding.searchText.setHintTextColor(getResources().getColor(R.color.c777));
             binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_light));
         } else {
             if (!isExpanded)
@@ -267,16 +267,21 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                 }
             }
 
-            binding.buttonRight.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-            binding.backArrow.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-            binding.clearSearch.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-            binding.searchText.setTextColor(Color.parseColor("#ffffff"));
-            binding.searchText.setHintTextColor(Color.parseColor("#ffffff"));
+            binding.buttonRight.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
+            binding.backArrow.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
+            binding.clearSearch.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
+            binding.searchText.setTextColor(getResources().getColor(R.color.fff));
+            binding.searchText.setHintTextColor(getResources().getColor(R.color.fff));
             binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_dark));
         }
     }
 
     private void liveEventsObserver() {
+
+        viewModel.getCarouselLiveList().observe(getViewLifecycleOwner(), campaignCarouselResponses -> {
+            productController.setCarouselList(campaignCarouselResponses);
+            productController.requestModelBuild();
+        });
 
         viewModel.getCategoryLiveList().observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
             sliderController.addData(campaignCategoryResponses);
@@ -302,12 +307,14 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                 productController.requestModelBuild();
             }
         });
+
     }
 
     private void initRecycler() {
         if (productController == null)
             productController = new CampaignController();
         productController.setNavController(navController);
+        productController.setFilterDuplicates(true);
         productController.setActivity((AppCompatActivity) getActivity());
         binding.recyclerView.setAdapter(productController.getAdapter());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -350,10 +357,9 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
 
     private void initHeader(String url) {
         Glide.with(binding.coverImage)
-                .asBitmap()
                 .load(url == null ? R.drawable.bg_fafafa_round : url)
-                .load(BindingUtils.generateResizeUrl(url, 1450, 460))
-                .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 2)))
+                .load(BindingUtils.generateResizeUrl(url, 1450, 460, false))
+                .transform(new BlurTransformation(15, 2))
                 .into(binding.coverImage);
     }
 
@@ -383,8 +389,11 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             if (Build.VERSION.SDK_INT >= 23) {
                 int flags = getActivity().getWindow().getDecorView().getSystemUiVisibility();
                 flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                getActivity().getWindow().getDecorView().setSystemUiVisibility(flags);
-                getActivity().getWindow().setStatusBarColor(Color.WHITE);
+                if (CredentialManager.isDarkMode())
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
+                else
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(flags);
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.fff));
             }
         }
     }

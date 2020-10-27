@@ -18,7 +18,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fafafa"
+            android:background="@color/fafafa"
             android:clipToPadding="false"
             android:paddingBottom="40dp"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="60dp"
-        android:background="#fff">
+        android:background="@color/white">
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer"

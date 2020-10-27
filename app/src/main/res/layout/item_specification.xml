@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="12dp"
     android:orientation="horizontal">
 
@@ -10,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1.5"
-        android:textColor="#444"
+        android:textColor="@color/c444"
+        tools:text="Title"
         android:textSize="16sp" />
 
     <TextView
@@ -18,7 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="#000"
+        tools:text="Value"
+        android:textColor="@color/black"
         android:textSize="16sp" />
 
 </LinearLayout>

@@ -12,12 +12,11 @@
 
         <ImageView
             android:id="@+id/btn1Image"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_marginRight="5dp"
             android:adjustViewBounds="true"
-            android:background="@drawable/btn_gradient_circle"
-            android:backgroundTint="#FF9901"
+            android:background="@drawable/circle_bg"
             android:clickable="false"
             android:padding="14dp"
             app:layout_constraintEnd_toStartOf="@+id/btn2Image"
@@ -25,21 +24,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_newsfeed_icon"
-            app:tint="#fff"
+            app:tint="#DA5156"
             tools:layout_editor_absoluteY="0dp" />
 
         <View
             android:id="@+id/btn1Indicator"
-            android:layout_width="13dp"
-            android:layout_height="13dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="12dp"
             android:background="@drawable/circle_indicator_white"
+            android:backgroundTint="#DD759F"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/btn1Image"
-            app:layout_constraintTop_toTopOf="@+id/btn1Image" />
+            app:layout_constraintTop_toTopOf="@+id/btn1Image"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/btn1Title"
@@ -48,7 +49,8 @@
             android:layout_marginTop="8dp"
             android:layout_weight="0"
             android:text="@string/newsfeed"
-            android:textColor="#666"
+            android:textColor="@color/c666"
+            android:textIsSelectable="false"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/btn1Image"
             app:layout_constraintStart_toStartOf="@+id/btn1Image"
@@ -57,13 +59,12 @@
 
         <ImageView
             android:id="@+id/btn2Image"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="0"
-            android:background="@drawable/ic_ellipse_1"
-            android:backgroundTint="#6EE48A"
+            android:background="@drawable/circle_bg"
             android:clickable="false"
             android:padding="13dp"
             app:layout_constraintEnd_toStartOf="@+id/btn3Image"
@@ -71,7 +72,7 @@
             app:layout_constraintStart_toEndOf="@+id/btn1Image"
             app:layout_constraintTop_toTopOf="@+id/btn1Image"
             app:srcCompat="@drawable/ic_gift_card_line2"
-            app:tint="#fff" />
+            app:tint="#0EAD75" />
 
         <TextView
             android:id="@+id/btn2Title"
@@ -82,7 +83,8 @@
             android:clickable="false"
             android:gravity="center"
             android:text="@string/gift_cards"
-            android:textColor="#666"
+            android:textColor="@color/c666"
+            android:textIsSelectable="false"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/btn2Image"
             app:layout_constraintTop_toBottomOf="@+id/btn2Image" />
@@ -90,13 +92,12 @@
 
         <ImageView
             android:id="@+id/btn3Image"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="0"
-            android:background="@drawable/ic_ellipse_1"
-            android:backgroundTint="#07EA46"
+            android:background="@drawable/circle_bg"
             android:clickable="false"
             android:padding="13dp"
             app:layout_constraintEnd_toStartOf="@+id/btn4Image"
@@ -104,7 +105,7 @@
             app:layout_constraintStart_toEndOf="@+id/btn2Image"
             app:layout_constraintTop_toTopOf="@+id/btn2Image"
             app:srcCompat="@drawable/ic_discount_tag"
-            app:tint="#fff" />
+            app:tint="#BFC518" />
 
 
         <TextView
@@ -116,7 +117,8 @@
             android:clickable="false"
             android:text="@string/campaigns"
             android:textAlignment="center"
-            android:textColor="#666"
+            android:textColor="@color/c666"
+            android:textIsSelectable="false"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/btn3Image"
             app:layout_constraintStart_toStartOf="@+id/btn3Image"
@@ -124,20 +126,19 @@
 
         <ImageView
             android:id="@+id/btn4Image"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_marginLeft="5dp"
             android:layout_weight="0"
-            android:background="@drawable/ic_ellipse_1"
-            android:backgroundTint="#22CAFF"
+            android:background="@drawable/circle_bg"
             android:clickable="false"
-            android:padding="15dp"
+            android:padding="16dp"
             app:layout_constraintEnd_toEndOf="@id/btn5Image"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn3Image"
             app:layout_constraintTop_toTopOf="@+id/btn3Image"
             app:srcCompat="@drawable/ic_category"
-            app:tint="#fff" />
+            app:tint="#2ab5d2" />
 
         <TextView
             android:id="@+id/btn4Title"
@@ -146,7 +147,8 @@
             android:layout_marginTop="8dp"
             android:layout_weight="0"
             android:text="@string/categories"
-            android:textColor="#666"
+            android:textColor="@color/c666"
+            android:textIsSelectable="false"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/btn4Image"
             app:layout_constraintStart_toStartOf="@+id/btn4Image"
@@ -154,12 +156,11 @@
 
         <ImageView
             android:id="@+id/btn5Image"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_marginLeft="5dp"
             android:layout_weight="0"
-            android:background="@drawable/ic_ellipse_1"
-            android:backgroundTint="#DA5156"
+            android:background="@drawable/circle_bg"
             android:clickable="false"
             android:padding="13dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -167,7 +168,7 @@
             app:layout_constraintStart_toEndOf="@+id/btn4Image"
             app:layout_constraintTop_toTopOf="@+id/btn4Image"
             app:srcCompat="@drawable/ic_order_thin"
-            app:tint="#fff" />
+            app:tint="#CC9933" />
 
         <TextView
             android:id="@+id/btn5Title"
@@ -176,7 +177,8 @@
             android:layout_marginTop="8dp"
             android:layout_weight="0"
             android:text="@string/orders"
-            android:textColor="#666"
+            android:textColor="@color/c666"
+            android:textIsSelectable="false"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/btn5Image"
             app:layout_constraintStart_toStartOf="@+id/btn5Image"
@@ -185,9 +187,9 @@
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginTop="17dp"
-            android:background="#f9f9f9"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/fff"
             app:layout_constraintTop_toBottomOf="@+id/btn2Title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

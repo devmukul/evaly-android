@@ -3,13 +3,10 @@ package bd.com.evaly.evalyshop.ui.campaign.controller;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import androidx.navigation.NavController;
 
-import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
-import com.airbnb.epoxy.OnModelClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +19,10 @@ public class CampaignBannerController extends EpoxyController {
 
     private List<CampaignCategoryResponse> items = new ArrayList<>();
     private NavController navController;
+
+    public CampaignBannerController(){
+        setFilterDuplicates(true);
+    }
 
     @Override
     protected void buildModels() {

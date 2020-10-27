@@ -1,0 +1,71 @@
+<resources>
+    <color name="colorPrimary">#1a1a1a</color>
+    <color name="colorPrimaryDark">#1a1a1a</color>
+    <color name="colorAccentOld">#D81B60</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccentBlue">#6c81f7</color>
+
+    <color name="fff">#1a1a1a</color>
+    <color name="bottom_nav">#171717</color>
+
+    <color name="transparent">@android:color/transparent</color>
+
+    <color name="white">#1a1a1a</color>
+    <color name="black">#fafafa</color>
+
+    <color name="border_color">#ddd</color>
+
+    <color name="c333">#ddd</color>
+    <color name="productDetailsBtn">#C81A1A1A</color>
+
+    <color name="aaa">#444</color>
+    <color name="eee">#232323</color>
+    <color name="eaeaea">#333</color>
+    <color name="ddd">#333</color>
+    <color name="f9f9f9">#222</color>
+    <color name="f8f8f8">#222</color>
+    <color name="f6f6f6">#222</color>
+    <color name="f7f7f7">#222</color>
+    <color name="fefefe">#222</color>
+
+    <color name="c777">#aaa</color>
+    <color name="c444">#ddd</color>
+    <color name="c555">#B3B0B0</color>
+    <color name="c666">#a8a8a8</color>
+
+    <color name="separator">#242424</color>
+
+
+    <color name="bgCartBtn">#242424</color>
+    <color name="bgCartCount">#08FFFFFF</color>
+
+    <color name="whiteBut">#1E1D1D</color>
+    <color name="app_bg">#171717</color>
+    <color name="fafafa">#171717</color>
+    <color name="f1f3f4">#242424</color>
+    <color name="fcfcfc">#1a1a1a</color>
+
+
+    <color name="separator_light">#1E1E1E</color>
+    <color name="rootCategoryBg">#222</color>
+
+    <color name="evaly_color_old">#bd1f26</color>
+    <color name="evaly_color">#000000</color>
+    <color name="transaction_color">#000000</color>
+
+    <color name="green">#38A169</color>
+    <color name="red_app">#d21034</color>
+    <color name="color1">#FCBC5A</color>
+    <color name="color2">#FC5A7F</color>
+    <color name="color3">#F25AFC</color>
+    <color name="color4">#5A90FC</color>
+    <color name="color5">#5AF7FC</color>
+    <color name="color6">#5AFC77</color>
+    <color name="color7">#F85757</color>
+    <color name="color8">#892702</color>
+    <color name="color9">#C4CBEA</color>
+    <color name="color10">#EAC4C4</color>
+    <color name="barColor5">#db9803</color>
+    <color name="campaignBlur">#6D000000</color>
+    <color name="inputBgDark">#5EFFFFFF</color>
+</resources>

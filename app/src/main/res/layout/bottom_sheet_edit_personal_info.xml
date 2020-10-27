@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:text="Edit Personal Information"
-        android:textColor="#333"
+        android:textColor="@color/c333"
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="gone" />
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:text="@string/first_name"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,11 +52,12 @@
             android:layout_weight="1"
             android:background="@drawable/input_brd_small"
             android:hint="@string/first_name"
-            android:paddingLeft="15dp"
-            android:textSize="16sp"
-            android:maxLines="1"
-            android:singleLine="true"
             android:imeOptions="actionGo"
+            android:maxLines="1"
+            android:paddingLeft="15dp"
+            android:singleLine="true"
+            android:textColor="@color/c666"
+            android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fn" />
@@ -68,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:text="@string/last_name"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             app:layout_constraintStart_toStartOf="@id/lastName"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -81,10 +82,11 @@
             android:layout_weight="1"
             android:background="@drawable/input_brd_small"
             android:hint="@string/last_name"
-            android:maxLines="1"
-            android:singleLine="true"
             android:imeOptions="actionDone"
+            android:maxLines="1"
             android:paddingLeft="15dp"
+            android:singleLine="true"
+            android:textColor="@color/c666"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -107,7 +109,7 @@
         android:layout_marginLeft="3dp"
         android:layout_marginTop="20dp"
         android:text="Gender"
-        android:textColor="#555"
+        android:textColor="@color/c555"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -123,14 +125,18 @@
             android:id="@+id/checkMale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Male" />
+            android:buttonTint="@color/colorAccent"
+            android:text="Male"
+            android:textColor="@color/c666" />
 
         <RadioButton
             android:id="@+id/checkFemale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Female" />
+            android:buttonTint="@color/colorAccent"
+            android:text="Female"
+            android:textColor="@color/c666" />
 
         <RadioButton
             android:id="@+id/checkGenderOther"
@@ -138,7 +144,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:text="Other" />
+            android:buttonTint="@color/colorAccent"
+            android:text="Other"
+            android:textColor="@color/c666" />
     </RadioGroup>
 
     <Button
@@ -150,6 +158,6 @@
         android:elevation="0dp"
         android:stateListAnimator="@null"
         android:text="Save Personal Information"
-        android:textColor="#fff" />
+        android:textColor="@color/fffh" />
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -41,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Show Nearby Shops"
-                    android:textColor="#000"
+                    android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="normal" />
 
@@ -52,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="Or choose your district"
-                android:textColor="#000"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -69,8 +70,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="8dp"
                     android:padding="5dp"
-                    android:tint="#666"
-                    app:srcCompat="@drawable/ic_search" />
+                    app:srcCompat="@drawable/ic_search"
+                    app:tint="@color/c666" />
 
                 <EditText
                     android:id="@+id/search"
@@ -81,7 +82,8 @@
                     android:imeOptions="actionDone"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textColor="#666"
+                    android:textColorHint="@color/c777"
+                    android:textColor="@color/c666"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -105,7 +107,7 @@
                 android:paddingBottom="20dp"
                 android:text="No match found!"
                 android:textAlignment="center"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="17sp"
                 android:visibility="gone" />
 

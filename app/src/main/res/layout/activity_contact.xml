@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#fafafa">
+    android:background="@color/fafafa">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,8 +51,8 @@
                     android:paddingTop="10dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="10dp"
-                    android:tint="#000"
-                    app:srcCompat="@drawable/ic_arrow_back" />
+                    app:srcCompat="@drawable/ic_arrow_back"
+                    app:tint="#000" />
 
                 <TextView
                     android:id="@+id/contact_title"
@@ -77,6 +77,7 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:background="@drawable/home_box_bg"
+            android:backgroundTint="@color/ddd"
             android:orientation="vertical"
             android:paddingLeft="5dp"
             android:paddingTop="20dp"
@@ -104,8 +105,8 @@
                         android:background="@drawable/grid_color_1"
                         android:clickable="false"
                         android:padding="14dp"
-                        android:tint="#fff"
-                        app:srcCompat="@drawable/ic_call" />
+                        app:srcCompat="@drawable/ic_call"
+                        app:tint="@color/fffh" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -113,7 +114,7 @@
                         android:layout_marginTop="5dp"
                         android:text="@string/call"
                         android:textAlignment="center"
-                        android:textColor="#444"
+                        android:textColor="@color/c444"
                         android:textSize="13sp" />
                 </LinearLayout>
 
@@ -133,8 +134,8 @@
                         android:background="@drawable/grid_color_3"
                         android:clickable="false"
                         android:padding="14dp"
-                        android:tint="#fff"
-                        app:srcCompat="@drawable/ic_chat_small" />
+                        app:srcCompat="@drawable/ic_chat_small"
+                        app:tint="@color/fffh" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -142,7 +143,7 @@
                         android:layout_marginTop="5dp"
                         android:text="@string/support"
                         android:textAlignment="center"
-                        android:textColor="#444"
+                        android:textColor="@color/c444"
                         android:textSize="13sp" />
                 </LinearLayout>
 
@@ -162,8 +163,8 @@
                         android:background="@drawable/grid_color_2"
                         android:clickable="false"
                         android:padding="14dp"
-                        android:tint="#fff"
-                        app:srcCompat="@drawable/ic_marker_filled" />
+                        app:srcCompat="@drawable/ic_marker_filled"
+                        app:tint="@color/fffh" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -171,7 +172,7 @@
                         android:layout_marginTop="5dp"
                         android:text="@string/maps"
                         android:textAlignment="center"
-                        android:textColor="#444"
+                        android:textColor="@color/c444"
                         android:textSize="13sp" />
                 </LinearLayout>
 
@@ -194,8 +195,8 @@
                         android:paddingTop="10dp"
                         android:paddingRight="10dp"
                         android:paddingBottom="10dp"
-                        android:tint="#fff"
-                        app:srcCompat="@drawable/ic_facebook_f" />
+                        app:srcCompat="@drawable/ic_facebook_f"
+                        app:tint="@color/fffh" />
 
                     <TextView
                         android:id="@+id/textView5"
@@ -204,13 +205,11 @@
                         android:layout_marginTop="5dp"
                         android:text="@string/facebook"
                         android:textAlignment="center"
-                        android:textColor="#444"
+                        android:textColor="@color/c444"
                         android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
-
 
 
         <ImageView
@@ -243,7 +242,7 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginRight="10dp"
                     android:src="@drawable/ic_marker"
-                    android:tint="#666" />
+                    android:tint="@color/c666" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -255,7 +254,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/address"
                         android:textAlignment="center"
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="14sp" />
 
                     <TextView
@@ -264,7 +263,7 @@
                         android:layout_marginTop="5dp"
                         android:text="@string/evaly_address"
                         android:textAlignment="viewStart"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textIsSelectable="true"
                         android:textSize="17sp" />
                 </LinearLayout>
@@ -283,7 +282,7 @@
                     android:layout_height="18dp"
                     android:layout_marginRight="10dp"
                     android:src="@drawable/ic_secured_letter"
-                    android:tint="#666" />
+                    android:tint="@color/c666" />
 
 
                 <LinearLayout
@@ -296,7 +295,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/email"
                         android:textAlignment="center"
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="14sp" />
 
                     <TextView
@@ -306,8 +305,8 @@
                         android:autoLink="email"
                         android:text="support@evaly.com.bd"
                         android:textAlignment="center"
-                        android:textColor="#333"
-                        android:textColorLink="#333"
+                        android:textColor="@color/c333"
+                        android:textColorLink="@color/c333"
                         android:textIsSelectable="false"
                         android:textSize="17sp" />
                 </LinearLayout>
@@ -325,7 +324,7 @@
                     android:layout_height="18dp"
                     android:layout_marginRight="10dp"
                     android:src="@drawable/ic_phone_thin"
-                    android:tint="#666" />
+                    android:tint="@color/c666" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -337,7 +336,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/customer_care"
                         android:textAlignment="center"
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="14sp" />
 
                     <TextView
@@ -348,16 +347,13 @@
                         android:autoLink="phone"
                         android:text="09638111666"
                         android:textAlignment="center"
-                        android:textColor="#333"
-                        android:textColorLink="#333"
+                        android:textColor="@color/c333"
+                        android:textColorLink="@color/c333"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
             </LinearLayout>
-
-
-
 
 
         </LinearLayout>

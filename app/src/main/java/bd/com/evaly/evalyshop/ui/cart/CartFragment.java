@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
@@ -72,6 +71,7 @@ import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
+import static androidx.core.content.ContextCompat.getColor;
 
 public class CartFragment extends Fragment {
 
@@ -484,7 +484,7 @@ public class CartFragment extends Fragment {
                 Button button = view.findViewById(R.id.button);
                 button.setVisibility(View.GONE);
                 NestedScrollView scrollView = view.findViewById(R.id.scroller);
-                scrollView.setBackgroundColor(Color.WHITE);
+                scrollView.setBackgroundColor(getColor(getContext(), R.color.white));
             } else {
                 totalPriceDouble = 0;
                 cartItem = true;

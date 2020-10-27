@@ -1,15 +1,19 @@
 package bd.com.evaly.evalyshop.util.reviewratings;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.DisplayMetrics;
 
+import androidx.core.content.ContextCompat;
+
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
+
 
 class Utils {
-    static int DEFAULT_BAR_COLOR = Color.parseColor("#333333");
-    static int DEFAULT_BAR_TEXT_COLOR = Color.parseColor("#333333");
+    static int DEFAULT_BAR_COLOR = ContextCompat.getColor(AppController.getmContext(), R.color.c333);
+    static int DEFAULT_BAR_TEXT_COLOR = ContextCompat.getColor(AppController.getmContext(), R.color.c333);
     static int DEFAULT_BAR_SPACE = 5;
 
 

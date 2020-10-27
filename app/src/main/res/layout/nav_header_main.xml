@@ -5,7 +5,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
-    android:background="#fdfdfd"
+    android:background="@color/fefefe"
     android:gravity="center_vertical"
     android:paddingTop="20dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
@@ -15,7 +15,7 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginStart="16dp"
-        app:cardBackgroundColor="#fff"
+        app:cardBackgroundColor="@color/fff"
         app:cardCornerRadius="28dp"
         app:cardElevation="1dp">
 
@@ -40,7 +40,7 @@
         android:layout_toRightOf="@id/imageCropperNav"
         android:fontFamily="sans-serif-medium"
         android:text="Name"
-        android:textColor="#333" />
+        android:textColor="@color/c333" />
 
     <TextView
         android:id="@+id/phone"
@@ -51,7 +51,7 @@
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/imageCropperNav"
         android:text="phone"
-        android:textColor="#555" />
+        android:textColor="@color/c555" />
 
 
     <View

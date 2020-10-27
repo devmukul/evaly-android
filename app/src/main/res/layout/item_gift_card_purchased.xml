@@ -15,7 +15,7 @@
         android:id="@+id/lin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/fff"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -42,22 +42,22 @@
                 android:paddingBottom="5dp"
                 android:text="@string/pending"
                 android:textSize="14sp"
-                android:textColor="#fff" />
+                android:textColor="@color/fffh" />
 
 
             <TextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:background="@drawable/gift_card_time_bg"
                 android:paddingLeft="10dp"
                 android:paddingTop="4dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="5dp"
                 android:text="time ago"
-                android:textColor="#fff"
-                android:textSize="14sp"
-                android:layout_alignParentBottom="true"/>
+                android:textColor="@color/fffh"
+                android:textSize="14sp" />
 
 
 
@@ -73,7 +73,7 @@
             android:paddingRight="15dp"
             android:text="Gift card"
             android:textAlignment="textStart"
-            android:textColor="#000"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
             android:visibility="visible" />
@@ -97,14 +97,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Invoice No."
-                    android:textColor="#555" />
+                    android:textColor="@color/c555" />
                 <TextView
                     android:id="@+id/invoice_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="EVLC145072076"
-                    android:textColor="#333"
+                    android:textColor="@color/c333"
                     android:textIsSelectable="true"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -117,7 +117,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="01759877045"
-                    android:textColor="#555"
+                    android:textColor="@color/c555"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -132,14 +132,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="To"
-                    android:textColor="#555" />
+                    android:textColor="@color/c555" />
 
                 <TextView
                     android:id="@+id/giftTo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="01659878046"
-                    android:textColor="#222"
+                    android:textColor="@color/c333"
                     android:textIsSelectable="true"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -174,7 +174,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
                         android:text="Price: "
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="16sp" />
 
                     <TextView
@@ -194,7 +194,7 @@
                         android:layout_weight="1"
                         android:paddingLeft="5dp"
                         android:text="x 1"
-                        android:textColor="#333" />
+                        android:textColor="@color/c333" />
 
 
                 </LinearLayout>
@@ -214,7 +214,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
                         android:text="Account: "
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="16sp" />
 
                     <TextView
@@ -239,7 +239,7 @@
                 android:clickable="false"
                 android:stateListAnimator="@null"
                 android:text="PAY"
-                android:textColor="#fff"
+                android:textColor="@color/fff"
                 android:textSize="15sp" />
         </LinearLayout>
 

@@ -2,6 +2,7 @@ package bd.com.evaly.evalyshop.util;
 
 import android.util.Base64;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -9,6 +10,8 @@ import com.google.gson.Gson;
 
 import java.nio.charset.StandardCharsets;
 
+import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.models.image.Background;
 import bd.com.evaly.evalyshop.models.image.CloudFrontRequest;
 import bd.com.evaly.evalyshop.models.image.Edits;
@@ -16,6 +19,22 @@ import bd.com.evaly.evalyshop.models.image.Jpeg;
 import bd.com.evaly.evalyshop.models.image.Resize;
 
 public class BindingUtils {
+
+    public static void markImageVariation(RelativeLayout holder, boolean selected) {
+        if (selected) {
+            holder.setBackground(holder.getContext().getDrawable(R.drawable.variation_brd_selected));
+        } else {
+            holder.setBackground(holder.getContext().getDrawable(R.drawable.variation_brd));
+        }
+    }
+
+    public static void markVariation(RelativeLayout holder, boolean selected) {
+        if (selected) {
+            holder.setBackground(holder.getContext().getDrawable(R.drawable.bg_variation_size_selected));
+        } else {
+            holder.setBackground(holder.getContext().getDrawable(R.drawable.bg_variation_size_default));
+        }
+    }
 
     public static void setImage(ImageView view, String url, int placeHolder, int errorImage) {
         if (url == null)
@@ -32,7 +51,7 @@ public class BindingUtils {
                 .into(view);
     }
 
-    public static void setImage(ImageView view, String url, int placeHolder, int errorImage, int width, int height) {
+    public static void setImage(ImageView view, String url, int placeHolder, int errorImage, int width, int height, boolean whiteBg) {
         if (url == null)
             return;
         url = url.replace("\n\r", "");
@@ -41,7 +60,7 @@ public class BindingUtils {
         if (url.contains("/media.evaly.com.bd/"))
             Glide.with(view.getContext())
                     .asBitmap()
-                    .load(generateResizeUrl(url, width, height))
+                    .load(generateResizeUrl(url, width, height, whiteBg))
                     .error(errorImage)
                     .placeholder(placeHolder)
                     .into(view);
@@ -56,7 +75,7 @@ public class BindingUtils {
     }
 
 
-    public static String generateResizeUrl(String url, int width, int height) {
+    public static String generateResizeUrl(String url, int width, int height, boolean whiteBg) {
 
         String[] split = url.split("/media.evaly.com.bd/");
 
@@ -70,7 +89,10 @@ public class BindingUtils {
 
         // resize
         Resize resize = new Resize();
-        resize.setFit("cover");
+        if (whiteBg)
+            resize.setFit("contain");
+        else
+            resize.setFit("cover");
         resize.setWidth(width);
         resize.setHeight(height);
         edits.setResize(resize);

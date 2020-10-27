@@ -14,7 +14,7 @@
             android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
+            android:background="@color/white"
             android:focusableInTouchMode="true"
             tools:context=".ui.order.orderDetails.OrderDetailsActivity">
 
@@ -40,7 +40,7 @@
                         android:layout_weight="0"
                         android:text="@string/invoice_no"
                         android:textAllCaps="true"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="18sp" />
 
                     <TextView
@@ -52,7 +52,8 @@
                         android:textAllCaps="true"
                         android:textColor="#137ef4"
                         android:textIsSelectable="true"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:text="#EVL3293872189372" />
 
                     <TextView
                         android:id="@+id/order_date"
@@ -61,7 +62,8 @@
                         android:layout_weight="1"
                         android:textAlignment="textEnd"
                         android:textAllCaps="true"
-                        android:textColor="#888" />
+                        android:textColor="@color/c777"
+                        tools:text="20-4-20" />
 
                 </LinearLayout>
 
@@ -110,6 +112,7 @@
                     android:layout_marginEnd="18dp"
                     android:layout_weight="0"
                     android:background="@drawable/bg_profile"
+                    android:backgroundTint="@color/f9f9f9"
                     android:orientation="vertical"
                     android:paddingLeft="20dp"
                     android:visibility="gone"
@@ -124,7 +127,7 @@
                         android:fontFamily="sans-serif-medium"
                         android:maxLines="1"
                         android:paddingRight="10dp"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="19sp"
                         app:layout_constraintBottom_toTopOf="@+id/barrier"
                         app:layout_constraintEnd_toStartOf="@+id/heroCall"
@@ -137,7 +140,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
                         android:paddingRight="10dp"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toStartOf="@+id/heroCall"
                         app:layout_constraintStart_toStartOf="@+id/heroName"
@@ -168,7 +171,7 @@
                         android:layout_marginEnd="18dp"
                         android:background="@drawable/circle_bg"
                         android:padding="10dp"
-                        android:tint="#555"
+                        android:tint="@color/c555"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -194,7 +197,7 @@
                         android:layout_weight="1"
                         android:text="@string/order_status"
                         android:textAllCaps="true"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="18sp" />
 
                     <TextView
@@ -226,8 +229,8 @@
                         android:paddingTop="4dp"
                         android:paddingEnd="12dp"
                         android:paddingBottom="5dp"
-                        android:text="Delivered?"
-                        android:textColor="#333"
+                        android:text="Product Received?"
+                        android:textColor="@color/c333"
                         android:textSize="14sp"
                         android:visibility="gone"
                         tools:visibility="visible" />
@@ -275,7 +278,7 @@
                         android:paddingTop="3dp"
                         android:paddingBottom="4dp"
                         android:text="Show More"
-                        android:textColor="@color/evaly_color"
+                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                     <ImageView
@@ -286,7 +289,7 @@
                         android:adjustViewBounds="true"
                         android:padding="1dp"
                         android:src="@drawable/ic_up_down"
-                        android:tint="@color/evaly_color" />
+                        android:tint="@color/black" />
 
                 </LinearLayout>
 
@@ -295,7 +298,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:layout_marginTop="0dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -312,7 +315,7 @@
                         android:layout_marginLeft="20dp"
                         android:layout_weight="1"
                         android:text="@string/description"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="15sp" />
 
                     <TextView
@@ -322,7 +325,7 @@
                         android:layout_weight="1"
                         android:text="@string/rate_amp_qty"
                         android:textAlignment="textEnd"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="15sp" />
 
                     <TextView
@@ -332,7 +335,7 @@
                         android:layout_marginRight="19dp"
                         android:text="@string/total"
                         android:textAlignment="textEnd"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="15sp" />
                 </LinearLayout>
 
@@ -360,7 +363,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
                         android:layout_marginTop="20dp"
-                        android:background="#fafafa" />
+                        android:background="@color/fafafa" />
 
                     <TextView
                         android:id="@+id/tvCampaignRule"
@@ -370,7 +373,7 @@
                         android:paddingTop="15dp"
                         android:paddingRight="20dp"
                         android:text=""
-                        android:textColor="#444"
+                        android:textColor="@color/c444"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -380,7 +383,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:layout_marginTop="20dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
 
                 <TextView
@@ -389,7 +392,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/order_summary"
-                    android:textColor="#000"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <LinearLayout
@@ -421,7 +424,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/subtotal"
-                                android:textColor="#555" />
+                                android:textColor="@color/c555" />
 
                             <TextView
                                 android:id="@+id/total_price"
@@ -429,7 +432,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textAlignment="textEnd"
-                                android:textColor="#000"
+                                android:textColor="@color/black"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -447,7 +450,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/paid_amount"
-                                android:textColor="#555" />
+                                android:textColor="@color/c555" />
 
                             <TextView
                                 android:id="@+id/paid_amount"
@@ -455,7 +458,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textAlignment="textEnd"
-                                android:textColor="#000"
+                                android:textColor="@color/black"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -474,7 +477,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/due_amount"
-                                android:textColor="#555" />
+                                android:textColor="@color/c555" />
 
                             <TextView
                                 android:id="@+id/due_price"
@@ -482,7 +485,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textAlignment="textEnd"
-                                android:textColor="#000"
+                                android:textColor="@color/black"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -498,7 +501,7 @@
                     android:layout_height="1dp"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginBottom="5dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
                 <LinearLayout
                     android:id="@+id/deliveryChargeHolder"
@@ -529,7 +532,7 @@
                         android:minHeight="20dp"
                         android:paddingLeft="5dp"
                         android:text="Delivery charge (40tk) will be added for orders from Unimart, MeenaClick, Shwapno and Bengal Meat express shops"
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -563,7 +566,7 @@
                         android:layout_weight="0"
                         android:paddingLeft="5dp"
                         android:text="Price includes VAT for VAT applicable products"
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -573,7 +576,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:layout_marginBottom="15dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
                 <LinearLayout
                     android:id="@+id/llCashCollect"
@@ -583,8 +586,8 @@
                     android:layout_marginBottom="20dp"
                     android:background="@drawable/bg_deliver_fee"
                     android:orientation="horizontal"
-                    android:visibility="gone"
-                    android:paddingHorizontal="10dp">
+                    android:paddingHorizontal="10dp"
+                    android:visibility="gone">
 
 
                     <ImageView
@@ -630,7 +633,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:text="@string/payment_status"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:textSize="16sp" />
 
                         <TextView
@@ -649,7 +652,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="@string/bal_colon"
-                            android:textColor="#444" />
+                            android:textColor="@color/c444" />
 
 
                         <TextView
@@ -665,7 +668,7 @@
                             android:paddingBottom="8dp"
                             android:text="Pay Partially"
                             android:textAlignment="center"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:visibility="gone" />
 
                     </LinearLayout>
@@ -699,7 +702,7 @@
                                 android:paddingRight="10dp"
                                 android:paddingBottom="5dp"
                                 android:text="Unpaid"
-                                android:textColor="#fff"
+                                android:textColor="@color/white"
                                 android:textSize="14sp" />
 
                         </androidx.cardview.widget.CardView>
@@ -728,7 +731,7 @@
                         android:paddingBottom="8dp"
                         android:text="@string/make_payment"
                         android:textAlignment="center"
-                        android:textColor="#fff" />
+                        android:textColor="@color/fffh" />
 
                     <TextView
                         android:id="@+id/payViaGiftCard"
@@ -745,7 +748,7 @@
                         android:paddingBottom="8dp"
                         android:text="@string/pay_via_gift_card"
                         android:textAlignment="center"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:visibility="visible" />
 
                     <TextView
@@ -761,14 +764,14 @@
                         android:paddingBottom="8dp"
                         android:text="@string/confirm_order"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="@color/fffh"
                         android:visibility="gone" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -792,7 +795,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:text="@string/bill_from"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:textSize="16sp" />
 
                         <ImageView
@@ -802,7 +805,7 @@
                             android:layout_below="@+id/bill"
                             android:layout_marginTop="3dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#666"
+                            android:tint="@color/c666"
                             app:srcCompat="@drawable/ic_menu_store" />
 
                         <TextView
@@ -820,7 +823,7 @@
                             android:layout_below="@+id/billfromName"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#555"
+                            android:tint="@color/c555"
                             app:srcCompat="@drawable/ic_marker" />
 
                         <TextView
@@ -839,7 +842,7 @@
                             android:layout_below="@+id/billfromAddress"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#555"
+                            android:tint="@color/c555"
                             app:srcCompat="@drawable/ic_input_phone" />
 
                         <TextView
@@ -863,7 +866,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:text="@string/bill_to"
-                            android:textColor="#333"
+                            android:textColor="@color/c333"
                             android:textSize="16sp" />
 
                         <ImageView
@@ -873,7 +876,7 @@
                             android:layout_below="@+id/bill1"
                             android:layout_marginTop="3dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#666"
+                            android:tint="@color/c666"
                             app:srcCompat="@drawable/ic_user" />
 
                         <TextView
@@ -891,7 +894,7 @@
                             android:layout_below="@+id/billtoName1"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#555"
+                            android:tint="@color/c555"
                             app:srcCompat="@drawable/ic_marker" />
 
                         <TextView
@@ -910,8 +913,8 @@
                             android:layout_below="@+id/billtoAddress1"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
-                            android:tint="#555"
-                            app:srcCompat="@drawable/ic_input_phone" />
+                            app:srcCompat="@drawable/ic_input_phone"
+                            app:tint="@color/c555" />
 
                         <TextView
                             android:id="@+id/billtoPhone"
@@ -920,6 +923,25 @@
                             android:layout_below="@+id/billtoAddress1"
                             android:layout_toRightOf="@+id/phone2"
                             android:autoLink="phone" />
+
+
+                        <TextView
+                            android:id="@+id/updateDeliveryAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/billtoPhone"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/btn_eee_small"
+                            android:gravity="center"
+                            android:paddingHorizontal="6dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="5dp"
+                            android:textSize="13sp"
+                            android:textColor="@color/c333"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            android:text="Change Delivery Address"/>
+
                     </RelativeLayout>
 
                 </LinearLayout>
@@ -928,7 +950,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
-                    android:background="#fafafa" />
+                    android:background="@color/fafafa" />
 
 
                 <TextView
@@ -938,7 +960,7 @@
                     android:layout_marginBottom="10dp"
                     android:paddingLeft="20dp"
                     android:text="@string/need_help"
-                    android:textColor="#333"
+                    android:textColor="@color/c333"
                     android:textSize="16sp"
                     android:textStyle="normal" />
 

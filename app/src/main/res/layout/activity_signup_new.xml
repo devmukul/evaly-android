@@ -6,7 +6,7 @@
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@color/white"
     android:fitsSystemWindows="true">
 
     <ImageView
@@ -16,6 +16,7 @@
         android:background="?attr/actionBarItemBackground"
         android:padding="10dp"
         app:srcCompat="@drawable/ic_close_new"
+        android:tint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,6 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:tint="@color/black"
         app:srcCompat="@drawable/ic_evaly_new_logo" />
 
 
@@ -45,7 +47,7 @@
         android:paddingTop="15dp"
         android:paddingRight="20dp"
         android:paddingBottom="15dp"
-        android:textColorHint="#666"
+        android:textColorHint="@color/c666"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/number"
         app:layout_constraintEnd_toStartOf="@+id/l_name"
@@ -64,7 +66,7 @@
         android:paddingTop="15dp"
         android:paddingRight="20dp"
         android:paddingBottom="15dp"
-        android:textColorHint="#666"
+        android:textColorHint="@color/c666"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/number"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,7 +89,7 @@
         android:paddingRight="20dp"
         android:paddingBottom="15dp"
         android:imeOptions="actionDone"
-        android:textColorHint="#666"
+        android:textColorHint="@color/c666"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/referral"
         app:layout_constraintEnd_toEndOf="parent"
@@ -107,7 +109,7 @@
         android:paddingTop="15dp"
         android:paddingRight="20dp"
         android:paddingBottom="15dp"
-        android:textColorHint="#666"
+        android:textColorHint="@color/c666"
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/textView42"
@@ -134,7 +136,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginBottom="15dp"
         android:text="@string/leave_empty_if_you_don_t_have_invitation_code"
-        android:textColor="#666"
+        android:textColor="@color/c666"
         android:textSize="15sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/privacyText"
@@ -159,7 +161,7 @@
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="20dp"
         android:text="@string/i_agree_to_the_privacy_policy_and_terms_amp_conditions_of_evaly"
-        android:textColor="#333"
+        android:textColor="@color/c333"
         android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@+id/sign_up"
         app:layout_constraintEnd_toEndOf="parent"
@@ -206,7 +208,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:text="@string/already_have_an_account"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="16sp" />
 
         <TextView

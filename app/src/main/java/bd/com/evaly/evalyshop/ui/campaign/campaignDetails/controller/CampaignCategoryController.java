@@ -12,18 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.databinding.ItemCampaignTitleBinding;
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
+import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.CampaignDetailsViewModel;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBrandModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignProductModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignShopModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSubModel_;
+import bd.com.evaly.evalyshop.ui.campaign.model.CampaignTitleModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.epoxyModels.NoItemModel_;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignCategoryController extends EpoxyController {
 
@@ -31,10 +35,25 @@ public class CampaignCategoryController extends EpoxyController {
     private NavController navController;
     private boolean isLoading = true;
     private CampaignDetailsViewModel viewModel;
+    private MainViewModel mainViewModel;
     private AppCompatActivity activity;
+
+    public CampaignCategoryController() {
+        setFilterDuplicates(true);
+    }
 
     @Override
     protected void buildModels() {
+
+        if (mainViewModel.getCampaignOnClick().getValue() != null)
+            new CampaignTitleModel_()
+                    .id("title_cc")
+                    .title(mainViewModel.getCampaignOnClick().getValue().getName())
+                    .onBind((model, view, position) -> {
+                        ItemCampaignTitleBinding binding = (ItemCampaignTitleBinding) view.getDataBinding();
+                        binding.title.setText(model.title());
+                    })
+                    .addIf(viewModel.getCampaign() != null && mainViewModel.getCampaignOnClick().getValue() != null, this);
 
         for (CampaignParentModel item : list) {
             if (item instanceof CampaignProductResponse)
@@ -85,6 +104,14 @@ public class CampaignCategoryController extends EpoxyController {
                             navController.navigate(R.id.shopFragment, bundle);
                         })
                         .addTo(this);
+            else if (item instanceof SubCampaignResponse)
+                new CampaignSubModel_()
+                        .id(((SubCampaignResponse) item).getSlug())
+                        .model((SubCampaignResponse) item)
+                        .clickListener((model, parentView, clickedView, position) -> {
+
+                        })
+                        .addTo(this);
         }
 
         new NoItemModel_()
@@ -109,6 +136,10 @@ public class CampaignCategoryController extends EpoxyController {
             return "No brand found";
         else
             return "No product found";
+    }
+
+    public void setMainViewModel(MainViewModel mainViewModel) {
+        this.mainViewModel = mainViewModel;
     }
 
     public void setActivity(AppCompatActivity activity) {

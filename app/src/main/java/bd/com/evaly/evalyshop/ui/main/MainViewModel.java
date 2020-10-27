@@ -5,13 +5,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 import java.util.HashMap;
 
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 import retrofit2.Response;
 
 public class MainViewModel extends ViewModel {
@@ -20,7 +21,15 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<Boolean> backOnClick = new MutableLiveData<>();
     private MutableLiveData<Boolean> updateNewsfeed = new MutableLiveData<>();
     public MutableLiveData<Boolean> registered = new MutableLiveData<>();
+    private SingleLiveEvent<SubCampaignResponse> campaignOnClick = new SingleLiveEvent<>();
 
+    public void setCampaignOnClick(SubCampaignResponse model) {
+        this.campaignOnClick.setValue(model);
+    }
+
+    public SingleLiveEvent<SubCampaignResponse> getCampaignOnClick() {
+        return campaignOnClick;
+    }
 
     public LiveData<Boolean> getDrawerOnClick() {
         return drawerOnClick;
@@ -34,8 +43,8 @@ public class MainViewModel extends ViewModel {
         return backOnClick;
     }
 
-    public void registerXMPP(){
-        HashMap<String, String> data= new HashMap<>();
+    public void registerXMPP() {
+        HashMap<String, String> data = new HashMap<>();
         data.put("password", CredentialManager.getPassword());
         AuthApiHelper.registerXMPP(data, new DataFetchingListener<Response<JsonObject>>() {
             @Override

@@ -12,7 +12,7 @@
             android:id="@+id/holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
+            android:background="@color/white"
             android:clickable="true">
 
 
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0.6"
-                android:background="#333"
+                android:background="@color/c333"
                 android:clickable="true"
                 android:foreground="?selectableItemBackground"
                 app:layout_constraintEnd_toStartOf="parent"
@@ -53,7 +53,7 @@
                 android:paddingBottom="5dp"
                 android:shadowColor="#80000000"
                 android:shadowRadius="6"
-                android:textColor="#fff"
+                android:textColor="@color/white"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -39,7 +39,7 @@
             android:layout_marginRight="10dp"
             android:layout_toRightOf="@+id/pictureHolder"
             android:text="Title is here"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="14sp" />
 
         <TextView
@@ -51,7 +51,7 @@
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@id/pictureHolder"
             android:text="Minute Ago"
-            android:textColor="#555" />
+            android:textColor="@color/c555" />
 
     </RelativeLayout>
 

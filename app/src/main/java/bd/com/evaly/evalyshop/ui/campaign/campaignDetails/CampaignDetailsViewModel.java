@@ -11,11 +11,13 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.campaign.CampaignParentModel;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
+import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
 import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class CampaignDetailsViewModel extends ViewModel {
     private MutableLiveData<CampaignCategoryResponse> campaignDetailsLiveData = new MutableLiveData<>();
@@ -25,14 +27,17 @@ public class CampaignDetailsViewModel extends ViewModel {
     private int currentPage = 1;
     private int totalCount = 0;
     private String search = null;
-    private String type = "product";
+    private String type = "shop";
+    private String campaign = null;
 
 
     public CampaignDetailsViewModel() {
+
         loadListFromApi();
     }
 
     public void loadListFromApi() {
+
         if (campaignDetailsLiveData.getValue() == null)
             return;
 
@@ -47,11 +52,38 @@ public class CampaignDetailsViewModel extends ViewModel {
             loadShopList();
         else if (type.equals("brand"))
             loadBrandList();
+        else if (type.equals("campaign"))
+            loadCampaignList();
+
+    }
+
+    public void loadCampaignList() {
+        CampaignApiHelper.getCampaignCategoryCampaigns(currentPage, 20, search, campaign,
+                new ResponseListenerAuth<CommonDataResponse<List<SubCampaignResponse>>, String>() {
+                    @Override
+                    public void onDataFetched(CommonDataResponse<List<SubCampaignResponse>> response, int statusCode) {
+                        arrayList.addAll(response.getData());
+                        liveList.setValue(arrayList);
+                        totalCount = response.getCount();
+                        if (totalCount > arrayList.size())
+                            currentPage++;
+                    }
+
+                    @Override
+                    public void onFailed(String errorBody, int errorCode) {
+
+                    }
+
+                    @Override
+                    public void onAuthError(boolean logout) {
+
+                    }
+                });
     }
 
     public void loadProductList() {
 
-        CampaignApiHelper.getCampaignCategoryProducts(currentPage, 20, search, campaignDetailsLiveData.getValue().getSlug(),
+        CampaignApiHelper.getCampaignCategoryProducts(currentPage, 20, search, getCategorySlug(), campaign,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
@@ -75,7 +107,7 @@ public class CampaignDetailsViewModel extends ViewModel {
     }
 
     public void loadBrandList() {
-        CampaignApiHelper.getCampaignCategoryBrands(currentPage, 20, search, campaignDetailsLiveData.getValue().getSlug(),
+        CampaignApiHelper.getCampaignCategoryBrands(currentPage, 20, search, getCategorySlug(), campaign,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignBrandResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignBrandResponse>> response, int statusCode) {
@@ -100,7 +132,7 @@ public class CampaignDetailsViewModel extends ViewModel {
 
 
     public void loadShopList() {
-        CampaignApiHelper.getCampaignCategoryShops(currentPage, 20, search, campaignDetailsLiveData.getValue().getSlug(),
+        CampaignApiHelper.getCampaignCategoryShops(currentPage, 20, search, getCategorySlug(), campaign,
                 new ResponseListenerAuth<CommonDataResponse<List<CampaignShopResponse>>, String>() {
                     @Override
                     public void onDataFetched(CommonDataResponse<List<CampaignShopResponse>> response, int statusCode) {
@@ -129,6 +161,12 @@ public class CampaignDetailsViewModel extends ViewModel {
         totalCount = 0;
     }
 
+    private String getCategorySlug() {
+        if (campaignDetailsLiveData == null || campaignDetailsLiveData.getValue() == null)
+            return null;
+        return campaignDetailsLiveData.getValue().getSlug();
+    }
+
     public SingleLiveEvent<Boolean> getHideLoadingBar() {
         return hideLoadingBar;
     }
@@ -149,11 +187,23 @@ public class CampaignDetailsViewModel extends ViewModel {
         return campaignDetailsLiveData;
     }
 
+    public String getCampaign() {
+        return campaign;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
     public void setCampaignDetailsLiveData(CampaignCategoryResponse model) {
         this.campaignDetailsLiveData.setValue(model);
         if (liveList.getValue() == null) {
-            loadProductList();
+            loadListFromApi();
         }
+    }
+
+    public void setCampaign(String slug) {
+        this.campaign = slug;
     }
 
     public String getType() {

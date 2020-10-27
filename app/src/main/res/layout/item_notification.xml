@@ -29,7 +29,7 @@
         android:layout_marginRight="10dp"
         android:layout_toRightOf="@+id/shop_image"
         android:text="Title is here"
-        android:textColor="#000"
+        android:textColor="@color/black"
         android:textSize="14sp" />
 
     <TextView
@@ -41,7 +41,7 @@
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/shop_image"
         android:text="Minute Ago"
-        android:textColor="#555" />
+        android:textColor="@color/c555" />
 
 </RelativeLayout>
 
@@ -51,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/shop_image"
-        android:background="#f6f6f6" />
+        android:background="@color/f6f6f6" />
 
 
 </LinearLayout>

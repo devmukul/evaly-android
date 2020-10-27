@@ -20,7 +20,7 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_marginStart="20dp"
-                app:cardBackgroundColor="#fff"
+                app:cardBackgroundColor="@color/fff"
                 app:cardCornerRadius="28dp"
                 app:cardElevation="0dp">
 
@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="HM Tamim"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -84,7 +84,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="10dp"
-                android:textColor="#333" />
+                android:textColor="@color/c333" />
 
         </RelativeLayout>
 

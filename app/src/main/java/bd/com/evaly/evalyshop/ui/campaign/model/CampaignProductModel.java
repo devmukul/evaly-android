@@ -39,15 +39,19 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         super.bind(holder);
 
         ItemCampaignProductBinding binding = (ItemCampaignProductBinding) holder.getDataBinding();
-        StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
-        params.setFullSpan(false);
+        if (binding.getRoot().getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) binding.getRoot().getLayoutParams();
+            params.setFullSpan(false);
+        }
 
         binding.title.setText(Html.fromHtml(model.getName()));
-        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300);
+        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.ic_evaly_placeholder, R.drawable.ic_evaly_placeholder, 300, 300, false);
 
+        binding.priceDiscount.setVisibility(View.GONE);
         if (model.getPrice() == 0) {
             binding.price.setVisibility(View.GONE);
         } else if (model.getDiscountedPrice() != 0) {
+            binding.price.setVisibility(View.VISIBLE);
             if (model.getDiscountedPrice() < model.getPrice()) {
                 binding.priceDiscount.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
                 binding.priceDiscount.setVisibility(View.VISIBLE);
@@ -57,8 +61,10 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
                 binding.priceDiscount.setVisibility(View.GONE);
                 binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
             }
-        } else
+        } else {
+            binding.price.setVisibility(View.VISIBLE);
             binding.price.setText(String.format(Locale.ENGLISH, "৳ %d", (int) model.getPrice()));
+        }
 
         binding.getRoot().setOnClickListener(clickListener);
         binding.buyNow.setVisibility(View.GONE);
@@ -68,8 +74,11 @@ public abstract class CampaignProductModel extends DataBindingEpoxyModel {
         if (model.getCashbackText() == null || model.getCashbackText().length() == 0)
             binding.tvCashback.setVisibility(View.GONE);
         else {
+            if (model.getCashbackText().contains(" 0.00"))
+                binding.tvCashback.setVisibility(View.GONE);
+            else
+                binding.tvCashback.setVisibility(View.VISIBLE);
             binding.tvCashback.setText(Utils.toFirstCharUpperAll(model.getCashbackText().replace(".00", "")));
-            binding.tvCashback.setVisibility(View.VISIBLE);
         }
         binding.bottomText.setText(model.getBottomText());
     }

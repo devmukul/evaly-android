@@ -22,6 +22,8 @@ import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.models.campaign.CampaignShopItem;
 import bd.com.evaly.evalyshop.models.campaign.banner.CampaignBannerResponse;
 import bd.com.evaly.evalyshop.models.campaign.brand.CampaignBrandResponse;
+import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
+import bd.com.evaly.evalyshop.models.campaign.carousel.CampaignCarouselResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.campaign.shop.CampaignShopResponse;
@@ -45,10 +47,12 @@ import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
+import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
 import bd.com.evaly.evalyshop.models.reviews.ReviewItem;
+import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
@@ -71,7 +75,23 @@ import retrofit2.http.Url;
 
 public interface IApiClient {
 
+
+
+    // algolia
+
+    @POST("https://eza2j926q5-dsn.algolia.net/1/indexes/*/queries")
+    Call<JsonObject> searchOnAlgolia(@Query("x-algolia-agent") String agent,
+                                     @Query("x-algolia-application-id") String applicationId,
+                                     @Query("x-algolia-api-key") String apiKey,
+                                     @Body AlgoliaRequest body);
+
+
+
     // new campaign
+
+
+    @GET(UrlUtils.BASE_URL + "campaigns/web/home")
+    Call<CommonDataResponse<List<CampaignCarouselResponse>>> getCampaignCarousel(@Query("context_type") String contextType);
 
     @GET(UrlUtils.BASE_URL + "campaigns/mobile/products/banners/latest")
     Call<CommonDataResponse<List<CampaignBannerResponse>>> getCampaignBanners();
@@ -80,19 +100,28 @@ public interface IApiClient {
     Call<CommonDataResponse<List<CampaignProductResponse>>> getCampaignCategoryProducts(@Query("page") int page,
                                                                                         @Query("limit") int limit,
                                                                                         @Query("search") String search,
-                                                                                        @Query("category") String category);
+                                                                                        @Query("category") String category,
+                                                                                        @Query("campaign") String campaign);
+
+    @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/campaigns")
+    Call<CommonDataResponse<List<SubCampaignResponse>>> getCampaignCategoryCampaigns(@Query("page") int page,
+                                                                                     @Query("limit") int limit,
+                                                                                     @Query("search") String search,
+                                                                                     @Query("category") String category);
 
     @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/brands")
     Call<CommonDataResponse<List<CampaignBrandResponse>>> getCampaignCategoryBrands(@Query("page") int page,
                                                                                     @Query("limit") int limit,
                                                                                     @Query("search") String search,
-                                                                                    @Query("category") String category);
+                                                                                    @Query("category") String category,
+                                                                                    @Query("campaign") String campaign);
 
     @GET(UrlUtils.BASE_URL + "campaigns/mobile/categories/shops")
     Call<CommonDataResponse<List<CampaignShopResponse>>> getCampaignCategoryShops(@Query("page") int page,
                                                                                   @Query("limit") int limit,
                                                                                   @Query("search") String search,
-                                                                                  @Query("category") String category);
+                                                                                  @Query("category") String category,
+                                                                                  @Query("campaign") String campaign);
 
     @GET(UrlUtils.BASE_URL + "campaigns/mobile/products/latest")
     Call<CommonDataResponse<List<CampaignProductResponse>>> getCampaignAllProducts(@Query("page") int page,
@@ -317,6 +346,8 @@ public interface IApiClient {
     Call<JsonObject> confirmDelivery(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo);
 
 
+
+
     // brand
 
     @GET(UrlUtils.BASE_URL + "public/brands/{brandSlug}/")
@@ -359,6 +390,11 @@ public interface IApiClient {
 
     @GET(UrlUtils.BASE_URL + "custom/orders/{invoiceNo}/")
     Call<OrderDetailsModel> getOrderDetails(@Header("Authorization") String token, @Path("invoiceNo") String invoiceNo);
+
+
+    @POST(UrlUtils.BASE_URL + "orders/delivery-address/update/")
+    Call<CommonDataResponse<OrderDetailsModel>> updateOrderAddress(@Header("Authorization") String token,
+                                                                   @Body UpdateOrderAddressRequest body);
 
 
     @GET(UrlUtils.BASE_URL + "orders/histories/{invoiceNo}/")

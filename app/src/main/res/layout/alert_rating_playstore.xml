@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:text="@string/rate_evaly_on_playstore"
-        android:textColor="#333"
+        android:textColor="@color/c333"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -46,7 +46,7 @@
         android:stateListAnimator="@null"
         android:text="@string/rate_now"
         android:textAllCaps="false"
-        android:textColor="#fff"
+        android:textColor="@color/fffh"
         android:textSize="16sp" />
 
 

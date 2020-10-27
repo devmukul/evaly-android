@@ -48,6 +48,11 @@
         android:icon="@drawable/ic_phone_thin"
         android:title="@string/contact_us_short" />
 
+    <item
+        android:id="@+id/nav_dark_mode"
+        android:icon="@drawable/ic_night"
+        android:title="@string/dark_mode" />
+
     <!--<item-->
     <!--android:id="@+id/nav_about"-->
     <!--android:icon="@drawable/ic_info"-->

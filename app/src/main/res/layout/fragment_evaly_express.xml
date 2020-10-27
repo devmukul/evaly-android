@@ -33,7 +33,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#fff"
+                android:background="@color/white"
                 android:fitsSystemWindows="true"
                 app:title="Grocery Express Shops">
 
@@ -57,6 +57,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="66dp"
+            android:background="@color/fff"
             android:orientation="horizontal"
             android:paddingTop="1dp"
             android:paddingBottom="15dp">
@@ -78,8 +79,8 @@
                     android:layout_height="20dp"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="0"
-                    android:tint="#555"
-                    app:srcCompat="@drawable/ic_search" />
+                    app:srcCompat="@drawable/ic_search"
+                    app:tint="@color/c555" />
 
                 <EditText
                     android:id="@+id/search"
@@ -93,8 +94,8 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:text=""
-                    android:textColor="#444"
-                    android:textColorHint="#666"
+                    android:textColor="@color/c444"
+                    android:textColorHint="@color/c666"
                     android:textSize="15sp" />
 
 
@@ -111,7 +112,7 @@
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:layout_marginRight="20dp"
-                        android:background="#ededed" />
+                        android:background="@color/eee" />
 
                     <TextView
                         android:id="@+id/districtName"
@@ -119,7 +120,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
                         android:text="Dhaka"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textSize="15sp" />
 
                     <ImageView
@@ -140,7 +141,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fafafa"
+        android:background="@color/fafafa"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingLeft="10dp"
@@ -165,7 +166,7 @@
         android:id="@+id/layoutNot"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:background="#fafafa"
+        android:background="@color/fafafa"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
@@ -175,7 +176,7 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:tint="#666"
+            android:tint="@color/c666"
             app:srcCompat="@drawable/ic_store_line" />
 
         <TextView
@@ -184,7 +185,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="25dp"
             android:text="Sorry, no express shop found"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             android:textSize="15sp" />
     </LinearLayout>
 

@@ -1,8 +1,9 @@
 package bd.com.evaly.evalyshop.ui.category.controllers;
 
 
-import android.graphics.Color;
 import android.view.View;
+
+import androidx.core.content.ContextCompat;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.EpoxyController;
@@ -10,6 +11,7 @@ import com.airbnb.epoxy.EpoxyController;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.databinding.ItemRootCategoryBinding;
 import bd.com.evaly.evalyshop.ui.category.CategoryViewModel;
@@ -28,16 +30,16 @@ public class RootCategoryController extends EpoxyController {
     private boolean categoriesLoading = false;
     private String categoryTitle = null;
 
+    public RootCategoryController() {
+        setDebugLoggingEnabled(true);
+    }
+
     public boolean isCategoriesLoading() {
         return categoriesLoading;
     }
 
     public void setCategoriesLoading(boolean categoriesLoading) {
         this.categoriesLoading = categoriesLoading;
-    }
-
-    public RootCategoryController() {
-        setDebugLoggingEnabled(true);
     }
 
     public void setLoadingMore(boolean loadingMore, boolean build) {
@@ -76,14 +78,15 @@ public class RootCategoryController extends EpoxyController {
                     .onBind((model, view, position) -> {
                         ItemRootCategoryBinding binding = (ItemRootCategoryBinding) view.getDataBinding();
                         if (model.model.isSelected()) {
-                            binding.categoryItem.setBackgroundColor(Color.parseColor("#ffffff"));
+                            binding.categoryItem.setBackgroundColor(ContextCompat.getColor(binding.categoryItem.getContext(), R.color.fff));
                             binding.selectedBrd.setVisibility(View.VISIBLE);
                         } else {
-                            binding.categoryItem.setBackgroundColor(Color.parseColor("#FBFCFF"));
+                            binding.categoryItem.setBackgroundColor(ContextCompat.getColor(binding.categoryItem.getContext(), R.color.rootCategoryBg));
                             binding.selectedBrd.setVisibility(View.GONE);
                         }
                     })
                     .addTo(this);
+
         }
 
         loader.addIf(loadingMore, this);

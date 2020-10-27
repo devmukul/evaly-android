@@ -23,7 +23,7 @@
             android:layout_height="40dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:background="#f1f1f1" />
+            android:background="@color/f1f3f4" />
 
         <View
             android:id="@+id/add_to_cart"
@@ -32,7 +32,7 @@
             android:layout_marginLeft="9dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:background="#f1f1f1" />
+            android:background="@color/f1f3f4" />
     </LinearLayout>
 
     <View
@@ -42,7 +42,7 @@
         android:layout_below="@id/shop_title"
         android:layout_marginTop="15dp"
         android:layout_marginRight="5dp"
-        android:background="#f1f1f1" />
+        android:background="@color/f1f3f4" />
 
     <View
         android:id="@+id/product_title"
@@ -53,7 +53,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginRight="10dp"
         android:layout_toRightOf="@id/product_image"
-        android:background="#f1f1f1" />
+        android:background="@color/f1f3f4" />
 
 
     <View
@@ -65,7 +65,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginRight="10dp"
         android:layout_toRightOf="@id/product_image"
-        android:background="#f1f1f1" />
+        android:background="@color/f1f3f4" />
 
 
     <View
@@ -74,6 +74,6 @@
         android:layout_height="18dp"
         android:layout_marginRight="7dp"
         android:layout_marginTop="5dp"
-        android:background="#f1f1f1" />
+        android:background="@color/f1f3f4" />
 
 </RelativeLayout>

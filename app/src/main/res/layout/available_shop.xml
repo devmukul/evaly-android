@@ -8,7 +8,6 @@
     android:background="@drawable/border_box">
 
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -33,7 +32,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:singleLine="true"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textIsSelectable="true"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -81,7 +80,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_weight="0"
                 android:text="6000"
-                android:textColor="#777"
+                android:textColor="@color/c777"
                 android:textSize="12sp" />
 
             <TextView
@@ -103,7 +102,7 @@
             android:drawableLeft="@drawable/ic_shop_marker"
             android:drawablePadding="3dp"
             android:text="Address of the shop"
-            android:textColor="#666"
+            android:textColor="@color/c666"
             android:textSize="15sp"
             android:visibility="gone" />
 
@@ -128,7 +127,8 @@
                     android:layout_height="43dp"
                     android:background="@drawable/circle_bg_small"
                     android:clickable="true"
-                    app:srcCompat="@drawable/ic_menu_store" />
+                    app:srcCompat="@drawable/ic_menu_store"
+                    app:tint="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -144,7 +144,8 @@
                     android:layout_height="43dp"
                     android:background="@drawable/circle_bg_small"
                     android:clickable="true"
-                    app:srcCompat="@drawable/ic_shop_call" />
+                    app:srcCompat="@drawable/ic_shop_call"
+                    app:tint="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -160,7 +161,8 @@
                     android:layout_height="43dp"
                     android:background="@drawable/circle_bg_small"
                     android:clickable="true"
-                    app:srcCompat="@drawable/ic_marker" />
+                    app:srcCompat="@drawable/ic_marker"
+                    app:tint="@color/black" />
             </LinearLayout>
         </LinearLayout>
 
@@ -221,7 +223,7 @@
                     android:stateListAnimator="@null"
                     android:text="@string/add_to_cart"
                     android:textAllCaps="false"
-                    android:textColor="#fff"
+                    android:textColor="@color/fffh"
                     android:textSize="16sp"
                     android:textStyle="normal" />
 
@@ -242,8 +244,8 @@
         android:paddingEnd="10dp"
         android:paddingBottom="3dp"
         android:text="Stock Available"
+        android:textColor="@color/c666"
         android:textSize="12sp"
-        android:textColor="#666"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

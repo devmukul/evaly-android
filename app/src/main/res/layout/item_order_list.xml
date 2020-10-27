@@ -20,8 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="-1dp"
         android:clickable="false"
-        android:textColor="#444"
-        android:textIsSelectable="true"
+        android:textColor="@color/c444"
+        android:textIsSelectable="false"
         android:textSize="16sp"
         android:textStyle="bold"
         tools:text="EVL28139213" />
@@ -48,14 +48,14 @@
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#333"
+                android:background="@color/c333"
                 android:clickable="false"
                 android:paddingLeft="8dp"
                 android:paddingTop="3dp"
                 android:paddingRight="8dp"
                 android:paddingBottom="3dp"
                 android:text="Pending"
-                android:textColor="#fff"
+                android:textColor="@color/fffh"
                 android:textSize="13sp" />
 
             <TextView
@@ -70,7 +70,7 @@
                 android:paddingRight="8dp"
                 android:paddingBottom="3dp"
                 android:text="Unpaid"
-                android:textColor="#fff"
+                android:textColor="@color/fffh"
                 android:textSize="13sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -94,7 +94,7 @@
         android:layout_alignBaseline="@+id/phone"
         android:layout_alignParentRight="true"
         android:clickable="false"
-        android:textColor="#777"
+        android:textColor="@color/c777"
         android:textSize="15sp"
         tools:text="12/02/2020" />
 </RelativeLayout>

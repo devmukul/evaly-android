@@ -27,12 +27,16 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignDetailsBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
+import bd.com.evaly.evalyshop.models.campaign.campaign.SubCampaignResponse;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.ui.campaign.campaignDetails.controller.CampaignCategoryController;
+import bd.com.evaly.evalyshop.ui.main.MainViewModel;
 import bd.com.evaly.evalyshop.util.BindingUtils;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -42,6 +46,7 @@ public class CampaignDetailsFragment extends Fragment {
 
     private FragmentCampaignDetailsBinding binding;
     private CampaignDetailsViewModel viewModel;
+    private MainViewModel mainViewModel;
     private CampaignCategoryController controller;
     private NavController navController;
     private boolean isLoading = true;
@@ -68,7 +73,15 @@ public class CampaignDetailsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         viewModel = new ViewModelProvider(this).get(CampaignDetailsViewModel.class);
+
+        if (getArguments() != null && getArguments().containsKey("sub_model") && getArguments().getSerializable("sub_model") != null) {
+            SubCampaignResponse subCampaignResponse = (SubCampaignResponse) getArguments().getSerializable("sub_model");
+            mainViewModel.setCampaignOnClick(subCampaignResponse);
+            viewModel.setCampaign(subCampaignResponse.getSlug());
+        }
+
         viewModel.setCampaignDetailsLiveData((CampaignCategoryResponse) requireArguments().getSerializable("model"));
     }
 
@@ -82,12 +95,18 @@ public class CampaignDetailsFragment extends Fragment {
         initRecycler();
         initTabs();
         initSearch();
+        if (getArguments() != null && getArguments().containsKey("open_filter"))
+            openFilterModal();
     }
 
     private void initToolbar() {
         Rect rectangle = new Rect();
         Window window = getActivity().getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+        if (viewModel.getCampaign() == null)
+            binding.filterIndicator.setVisibility(View.GONE);
+        else
+            binding.filterIndicator.setVisibility(View.VISIBLE);
     }
 
     private void initSearch() {
@@ -128,11 +147,11 @@ public class CampaignDetailsFragment extends Fragment {
     private void initTabs() {
         String type = viewModel.getType();
         if (type != null) {
-            if (type.equals("product"))
+            if (type.equals("shop"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0));
-            else if (type.equals("shop"))
-                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
             else if (type.equals("brand"))
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1));
+            else if (type.equals("product"))
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(2));
         }
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -146,13 +165,13 @@ public class CampaignDetailsFragment extends Fragment {
 
                 switch (tab.getPosition()) {
                     case 0:
-                        viewModel.setType("product");
-                        break;
-                    case 1:
                         viewModel.setType("shop");
                         break;
-                    case 2:
+                    case 1:
                         viewModel.setType("brand");
+                        break;
+                    case 2:
+                        viewModel.setType("product");
                         break;
                 }
 
@@ -178,6 +197,7 @@ public class CampaignDetailsFragment extends Fragment {
         controller.setNavController(navController);
         controller.setFilterDuplicates(true);
         controller.setViewModel(viewModel);
+        controller.setMainViewModel(mainViewModel);
         controller.setActivity((AppCompatActivity) getActivity());
         binding.recyclerView.setAdapter(controller.getAdapter());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -200,10 +220,21 @@ public class CampaignDetailsFragment extends Fragment {
     }
 
     private void clickListeners() {
+        binding.filterBtn.setOnClickListener(view -> {
+            openFilterModal();
+        });
         binding.backArrow.setOnClickListener(v -> requireActivity().onBackPressed());
     }
 
+    private void openFilterModal() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("category", Objects.requireNonNull(viewModel.getCampaignDetailsLiveData().getValue()));
+        bundle.putBoolean("show_clear", viewModel.getCampaign() != null);
+        navController.navigate(R.id.campaignListBottomSheet, bundle);
+    }
+
     private void liveEventObservers() {
+
         viewModel.getCampaignDetailsLiveData().observe(getViewLifecycleOwner(), this::loadCampaignDetails);
 
         viewModel.getLiveList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
@@ -220,6 +251,19 @@ public class CampaignDetailsFragment extends Fragment {
             }
         });
 
+        mainViewModel.getCampaignOnClick().observe(getViewLifecycleOwner(), subCampaignResponse -> {
+            viewModel.clear();
+            if (subCampaignResponse == null) {
+                binding.filterIndicator.setVisibility(View.GONE);
+                viewModel.setCampaign(null);
+            } else {
+                viewModel.setCampaign(subCampaignResponse.getSlug());
+                binding.filterIndicator.setVisibility(View.VISIBLE);
+            }
+            viewModel.loadListFromApi();
+            binding.recyclerView.scrollToPosition(0);
+        });
+
     }
 
     private void loadCampaignDetails(CampaignCategoryResponse model) {
@@ -232,7 +276,7 @@ public class CampaignDetailsFragment extends Fragment {
             binding.collapsingToolbar.setStatusBarScrimColor(Color.parseColor(model.getBannerPrimaryBgColor()));
             requireActivity().getWindow().setStatusBarColor(Color.parseColor(model.getBannerPrimaryBgColor()));
         }
-        BindingUtils.setImage(binding.bannerImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460);
+        BindingUtils.setImage(binding.bannerImage, model.getBannerImage(), R.drawable.bg_fafafa_round, R.drawable.ic_evaly_placeholder, 1450, 460, false);
         binding.title.setText(model.getName());
     }
 
@@ -249,12 +293,15 @@ public class CampaignDetailsFragment extends Fragment {
         super.onDestroyView();
         if (getActivity() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                getActivity().getWindow().setStatusBarColor(Color.WHITE);
+                if (CredentialManager.isDarkMode())
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
+                else
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.fff));
             } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
                 setWindowFlag(getActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-                getActivity().getWindow().setStatusBarColor(Color.BLACK);
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black));
             }
         }
     }

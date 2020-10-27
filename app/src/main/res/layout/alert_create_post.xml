@@ -25,7 +25,7 @@
             android:paddingTop="15dp"
             android:paddingBottom="10dp"
             android:text="@string/create_a_status"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -38,7 +38,8 @@
             android:adjustViewBounds="true"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            app:srcCompat="@drawable/ic_close_vector" />
+            app:srcCompat="@drawable/ic_close_vector"
+            app:tint="@color/c333" />
 
 
     </LinearLayout>
@@ -62,14 +63,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="#fff"
+                android:background="@color/white"
                 android:fontFamily="sans-serif"
                 android:gravity="top"
                 android:hint="@string/write_your_thoughts_here"
                 android:inputType="textMultiLine"
                 android:minLines="3"
                 android:padding="10dp"
-                android:textColor="#000"
+                android:textColorHint="@color/c777"
+                android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <RelativeLayout
@@ -133,7 +135,8 @@
                 android:layout_height="20dp"
                 android:layout_weight="0"
                 android:adjustViewBounds="false"
-                app:srcCompat="@drawable/ic_gallery" />
+                app:srcCompat="@drawable/ic_gallery"
+                app:tint="@color/black" />
 
             <TextView
                 android:id="@+id/add_photo_text"
@@ -142,7 +145,7 @@
                 android:layout_marginLeft="6dp"
                 android:layout_marginRight="10dp"
                 android:text="@string/add_photo"
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 android:textSize="16sp" />
 
 
@@ -185,7 +188,7 @@
             android:stateListAnimator="@null"
             android:text="@string/share"
             android:textAllCaps="false"
-            android:textColor="#fff"
+            android:textColor="@color/fffh"
             android:textSize="16sp" />
 
     </LinearLayout>

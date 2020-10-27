@@ -13,7 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
+            android:background="@color/fff"
             android:minHeight="155dp"
             android:orientation="vertical">
 
@@ -33,7 +33,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="5dp"
                 android:text="@string/delivery_options"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

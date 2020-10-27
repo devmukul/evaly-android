@@ -5,7 +5,7 @@
     android:id="@+id/linearLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
     android:focusableInTouchMode="true">
 
@@ -16,6 +16,7 @@
         android:background="?attr/actionBarItemBackground"
         android:padding="10dp"
         app:srcCompat="@drawable/ic_close_new"
+        android:tint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,6 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black"
         app:srcCompat="@drawable/ic_evaly_new_logo" />
 
 
@@ -48,7 +50,7 @@
         android:paddingTop="15dp"
         android:paddingRight="15dp"
         android:paddingBottom="15dp"
-        android:textColorHint="#666"
+        android:textColorHint="@color/c666"
         android:imeOptions="actionNext"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/relativeLayout3"
@@ -81,7 +83,7 @@
             android:paddingTop="15dp"
             android:paddingRight="15dp"
             android:paddingBottom="15dp"
-            android:textColorHint="#666"
+            android:textColorHint="@color/c666"
             android:textSize="16sp" />
 
         <ImageView
@@ -102,7 +104,7 @@
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="25dp"
         android:text="@string/forgot_your_password"
-        android:textColor="#555"
+        android:textColor="@color/c555"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/sign_in"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -146,7 +148,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:text="@string/don_t_have_an_account"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="16sp" />
 
         <TextView

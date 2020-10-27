@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -27,6 +28,7 @@ import bd.com.evaly.evalyshop.databinding.FragmentAppBarHeaderBinding;
 import bd.com.evaly.evalyshop.databinding.FragmentHomeBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
@@ -152,7 +154,20 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         viewModel.getExpressListLive().observe(getViewLifecycleOwner(), expressServiceModels -> {
             homeController.setExpressLoading(false);
             homeController.addExpressData(expressServiceModels);
+            homeController.requestModelBuild();
         });
+
+        viewModel.getCampaignCategoryLiveList().observe(getViewLifecycleOwner(), campaignCategoryResponses -> {
+            homeController.setCampaignLoading(false);
+            homeController.setCampaignCategoryList(campaignCategoryResponses);
+            homeController.requestModelBuild();
+        });
+
+        viewModel.getFlashSaleProductList().observe(getViewLifecycleOwner(), campaignProductResponses -> {
+            homeController.setFlashSaleProducts(campaignProductResponses);
+            homeController.requestModelBuild();
+        });
+
     }
 
 

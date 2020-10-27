@@ -15,7 +15,7 @@
         android:id="@+id/lin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f5f5f5"
+        android:background="@color/f6f6f6"
         android:orientation="vertical">
 
         <ImageView
@@ -31,7 +31,7 @@
             android:layout_marginTop="10dp"
             android:text="400000Tk Voucher"
             android:textAlignment="center"
-            android:textColor="#000"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:visibility="gone" />
 
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:text="Price: "
-                android:textColor="#666"
+                android:textColor="@color/c666"
                 android:textSize="18sp" />
 
             <TextView
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TK. 20000"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -73,7 +73,7 @@
                 android:clickable="false"
                 android:stateListAnimator="@null"
                 android:text="@string/buy"
-                android:textColor="#fff"
+                android:textColor="@color/fffh"
                 android:textSize="16sp" />
         </LinearLayout>
 

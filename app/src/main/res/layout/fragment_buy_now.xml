@@ -28,7 +28,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#fff"
+                    android:background="@color/fff"
                     android:orientation="vertical">
 
 
@@ -52,7 +52,7 @@
                             android:layout_marginTop="1dp"
                             android:layout_weight="0"
                             android:paddingLeft="2dp"
-                            android:tint="#555"
+                            android:tint="@color/c555"
                             app:srcCompat="@drawable/ic_menu_store" />
 
                         <TextView
@@ -64,7 +64,7 @@
                             android:paddingLeft="8dp"
                             android:paddingRight="15dp"
                             android:text="@string/seller_unknown"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="16sp" />
 
                         <TextView
@@ -72,14 +72,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="14sp" />
                     </LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#fff"
+                        android:background="@color/fff"
                         android:focusableInTouchMode="true"
                         android:paddingTop="5dp"
                         android:paddingBottom="20dp">
@@ -112,7 +112,7 @@
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
                                 android:layout_weight="0"
-                                android:background="#eee"
+                                android:background="@color/eee"
                                 android:clickable="true"
                                 android:padding="6dp"
                                 app:srcCompat="@drawable/ic_minus" />
@@ -125,6 +125,7 @@
                                 android:background="@null"
                                 android:focusable="false"
                                 android:gravity="center"
+                                android:textColor="@color/black"
                                 android:imeOptions="actionDone"
                                 android:inputType="number"
                                 android:maxLength="5"
@@ -139,7 +140,7 @@
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
                                 android:layout_weight="0"
-                                android:background="#eee"
+                                android:background="@color/eee"
                                 android:clickable="true"
                                 android:padding="6dp"
                                 app:srcCompat="@drawable/ic_plus" />
@@ -178,7 +179,7 @@
                             android:clickable="true"
                             android:maxLines="2"
                             android:text="Product Title"
-                            android:textColor="#444"
+                            android:textColor="@color/c444"
                             android:textIsSelectable="false"
                             android:textSize="16sp" />
 
@@ -191,7 +192,7 @@
                             android:layout_alignStart="@+id/product_name"
                             android:layout_marginTop="3dp"
                             android:text="৳ 174900 x 1"
-                            android:textColor="#777"
+                            android:textColor="@color/c777"
                             android:textSize="13sp" />
 
 
@@ -201,7 +202,7 @@
                         android:id="@+id/dividerView"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:background="#fafafa" />
+                        android:background="@color/fafafa" />
 
                 </LinearLayout>
 
@@ -221,7 +222,7 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginRight="15dp"
                         android:text="Select Variant:"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="16sp"
                         android:visibility="visible" />
 
@@ -242,7 +243,7 @@
                         android:id="@+id/dividerViewVariation"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:background="#fafafa" />
+                        android:background="@color/fafafa" />
 
                 </LinearLayout>
 
@@ -274,7 +275,7 @@
                         android:fontFamily="sans-serif"
                         android:stateListAnimator="@null"
                         android:text="@string/add_to_cart"
-                        android:textColor="#333" />
+                        android:textColor="@color/c333" />
 
                     <Button
                         android:id="@+id/buy_now"
@@ -287,7 +288,7 @@
                         android:fontFamily="sans-serif"
                         android:stateListAnimator="@null"
                         android:text="@string/check_out"
-                        android:textColor="#fff" />
+                        android:textColor="@color/fffh" />
 
 
                 </LinearLayout>

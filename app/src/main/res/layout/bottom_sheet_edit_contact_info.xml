@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:text="@string/phone_number"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,6 +40,7 @@
             android:maxLines="1"
             android:singleLine="true"
             android:imeOptions="actionGo"
+            android:textColor="@color/c666"
             android:paddingLeft="15dp"
             android:inputType="numberDecimal"
             android:textSize="16sp" />
@@ -51,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:text="@string/email"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             android:layout_marginTop="15dp"
             app:layout_constraintStart_toStartOf="@id/lastName"
             app:layout_constraintTop_toTopOf="parent" />
@@ -69,6 +70,7 @@
             android:maxLines="1"
             android:singleLine="true"
             android:imeOptions="actionDone"
+            android:textColor="@color/c666"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@id/ln" />
@@ -83,6 +85,6 @@
         android:elevation="0dp"
         android:stateListAnimator="@null"
         android:text="Save Contact Information"
-        android:textColor="#fff" />
+        android:textColor="@color/fffh" />
 
 </LinearLayout>

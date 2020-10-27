@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fafafa"
+    android:background="@color/fafafa"
     android:orientation="vertical">
 
 
@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:background="#fff"
+        android:background="@color/fff"
         android:orientation="vertical">
 
         <include
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:background="#fff"
+            android:background="@color/fff"
             android:visibility="gone"
             app:tabPaddingBottom="5dp"
             app:tabSelectedTextColor="@color/black"
@@ -50,7 +50,7 @@
             android:id="@+id/shimmerHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#fafafa">
+            android:background="@color/fafafa">
 
             <include
                 android:id="@+id/shimmer"
@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:background="#fafafa"
+        android:background="@color/fafafa"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -76,7 +76,7 @@
             android:paddingRight="15dp"
             android:paddingBottom="18dp"
             android:text="@string/products"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -96,7 +96,7 @@
             android:paddingRight="15dp"
             android:paddingBottom="8dp"
             android:text="FILTER"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="14sp"
             android:visibility="gone" />
     </LinearLayout>

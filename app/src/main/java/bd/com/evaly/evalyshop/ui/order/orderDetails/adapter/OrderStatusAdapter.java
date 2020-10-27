@@ -46,12 +46,12 @@ public class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.
         myViewHolder.note.setText(Html.fromHtml(orderStatuses.get(i).getNote()));
 
         if (i == 0)
-            myViewHolder.lineTop.setBackgroundColor(Color.WHITE);
+            myViewHolder.lineTop.setBackgroundColor(Color.TRANSPARENT);
 
         if (i < getItemCount() - 1)
             myViewHolder.lineBottom.setBackgroundColor(Color.parseColor("#eeeeee"));
         else
-            myViewHolder.lineBottom.setBackgroundColor(Color.WHITE);
+            myViewHolder.lineBottom.setBackgroundColor(Color.TRANSPARENT);
 
     }
 

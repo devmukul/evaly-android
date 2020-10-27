@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@color/fff"
     android:orientation="vertical"
     tools:context=".ui.search.SearchCategory">
 
@@ -46,10 +46,10 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:hint="Search categories..."
+                android:imeOptions="actionDone"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:imeOptions="actionDone"
-                android:textColorHint="#666"
+                android:textColorHint="@color/c666"
                 android:textSize="17sp" />
 
             <ImageView
@@ -57,7 +57,8 @@
                 android:layout_width="45dp"
                 android:layout_height="20dp"
                 android:layout_weight="0"
-                app:srcCompat="@drawable/ic_search" />
+                app:srcCompat="@drawable/ic_search"
+                app:tint="@color/c555" />
         </LinearLayout>
     </LinearLayout>
 
@@ -69,7 +70,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/progressContainer"
@@ -106,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:text="Search categories here"
                     android:textAlignment="center"
-                    android:textColor="#333"
+                    android:textColor="@color/c333"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -118,7 +119,7 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="20dp"
                 android:text='Search result for "phone"'
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 

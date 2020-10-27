@@ -1,40 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginRight="15dp"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+<layout>
 
-
-    <RelativeLayout
-        android:id="@+id/holder"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@drawable/variation_brd"
-        android:gravity="center"
-        android:padding="4dp">
-
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"/>
-
-    </RelativeLayout>
-
-
-    <TextView
-        android:id="@+id/text"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="80dp"
-        android:layout_marginTop="3dp"
-        android:textAlignment="center"
-        android:textColor="#444"
-        tools:text="Color: Red, Size: L"
-        android:textSize="12sp" />
+        android:layout_marginRight="15dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-</LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/holder"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/variation_brd"
+            android:gravity="center"
+            android:padding="4dp">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter" />
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:maxWidth="80dp"
+            android:textAlignment="center"
+            android:textColor="@color/c444"
+            android:textSize="12sp"
+            tools:text="Color: Red, Size: L" />
+
+    </LinearLayout>
+</layout>

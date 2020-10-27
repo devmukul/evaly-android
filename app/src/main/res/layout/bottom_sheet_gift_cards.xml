@@ -11,7 +11,7 @@
     <bd.com.evaly.evalyshop.views.StickyScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff">
+        android:background="@color/fff">
 
         <LinearLayout
             android:id="@+id/bottom_sheet"
@@ -34,18 +34,18 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/fff"
                 android:paddingLeft="15dp"
-                android:paddingRight="15dp"
                 android:paddingTop="15dp"
+                android:paddingRight="15dp"
                 android:paddingBottom="15dp"
                 android:tag="sticky"
                 android:text="@string/gift_card"
                 android:textAlignment="textStart"
-                android:textColor="#000"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:visibility="visible"
-                android:background="#fff"/>
+                android:visibility="visible" />
 
 
             <LinearLayout
@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="15dp"
                     android:text="@string/price_colon"
-                    android:textColor="#666"
+                    android:textColor="@color/c666"
                     android:textSize="14sp" />
 
                 <TextView
@@ -81,7 +81,7 @@
                     android:paddingLeft="15dp"
                     android:text="@string/value_colon"
                     android:textAlignment="textEnd"
-                    android:textColor="#666"
+                    android:textColor="@color/c666"
                     android:textSize="14sp" />
 
                 <TextView
@@ -106,7 +106,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="15dp"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="17sp"
                 android:visibility="visible" />
 
@@ -118,7 +118,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:text="@string/phone_number"
-                android:textColor="#666"
+                android:textColor="@color/c666"
                 android:textSize="14sp" />
 
             <EditText
@@ -135,6 +135,8 @@
                 android:maxLength="11"
                 android:maxLines="1"
                 android:padding="10dp"
+                android:textColorHint="@color/c777"
+                android:textColor="@color/c555"
                 android:singleLine="true"
                 android:textSize="16sp" />
 
@@ -157,7 +159,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:text="@string/quantity"
-                        android:textColor="#555"
+                        android:textColor="@color/c555"
                         android:textSize="14sp" />
 
                     <LinearLayout
@@ -179,7 +181,7 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_weight="0"
-                            android:background="#eee"
+                            android:background="@color/eee"
                             android:clickable="true"
                             android:padding="5dp"
                             app:srcCompat="@drawable/ic_minus" />
@@ -192,11 +194,12 @@
                             android:background="@null"
                             android:imeOptions="actionDone"
                             android:inputType="number"
+                            android:maxLength="4"
                             android:maxLines="1"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:text="1"
-                            android:maxLength="4"
+                            android:textColor="@color/black"
                             android:textSize="22sp" />
 
                         <ImageView
@@ -204,7 +207,7 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_weight="0"
-                            android:background="#eee"
+                            android:background="@color/eee"
                             android:clickable="true"
                             android:padding="5dp"
                             app:srcCompat="@drawable/ic_plus" />
@@ -224,7 +227,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/total_price"
                         android:textAlignment="textEnd"
-                        android:textColor="#666"
+                        android:textColor="@color/c666"
                         android:textSize="14sp" />
 
                     <TextView
@@ -233,7 +236,7 @@
                         android:layout_height="30dp"
                         android:layout_below="@+id/total_amount"
                         android:layout_marginTop="2dp"
-                        android:textColor="#333"
+                        android:textColor="@color/c333"
                         android:textSize="25dp"
                         android:textStyle="bold" />
 
@@ -257,6 +260,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
+                    android:buttonTint="@color/colorAccent"
                     android:text="" />
 
 
@@ -269,7 +273,7 @@
                     android:layout_weight="0"
                     android:paddingLeft="5dp"
                     android:text="@string/i_agree_to_the_terms_amp_conditions_and_purchasing_policy_of_evaly"
-                    android:textColor="#333"
+                    android:textColor="@color/c333"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -286,7 +290,7 @@
                 android:background="@drawable/black_ripple_bg"
                 android:stateListAnimator="@null"
                 android:text="@string/buy"
-                android:textColor="#fff" />
+                android:textColor="@color/fffh" />
 
         </LinearLayout>
     </bd.com.evaly.evalyshop.views.StickyScrollView>

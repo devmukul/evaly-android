@@ -18,7 +18,7 @@
         android:gravity="center_vertical"
         android:paddingStart="2dp"
         android:paddingLeft="2dp"
-        android:textColor="#333333"
+        android:textColor="@color/c333"
         android:typeface="monospace" />
 
 
@@ -27,7 +27,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="#f1f3f4"
+        android:background="@color/f1f3f4"
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
@@ -60,6 +60,6 @@
         android:layout_marginTop="-1dp"
         android:layout_weight="0"
         android:paddingStart="6dp"
-        android:textColor="#333333"
+        android:textColor="@color/c333"
         android:textSize="10sp" />
 </LinearLayout>

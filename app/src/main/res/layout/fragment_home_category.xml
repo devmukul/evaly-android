@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
-    android:background="#fafafa">
+    android:background="@color/fafafa">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fafafa"
+        android:background="@color/fafafa"
         android:minHeight="400dp"
         android:nestedScrollingEnabled="false"
         android:orientation="vertical"
@@ -69,8 +69,8 @@
             android:maxHeight="40dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:textColor="#555"
-            android:textColorHint="#555"
+            android:textColor="@color/c555"
+            android:textColorHint="@color/c555"
             android:textSize="14sp" />
 
         <Button
@@ -87,7 +87,7 @@
             android:text="@string/show_more"
             android:textAlignment="center"
             android:textAllCaps="false"
-            android:textColor="#fff"
+            android:textColor="@color/fff"
             android:textSize="14sp"
             android:visibility="visible" />
 

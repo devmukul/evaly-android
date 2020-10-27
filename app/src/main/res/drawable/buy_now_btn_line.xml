@@ -6,7 +6,7 @@
     <item android:id="@android:id/mask">
 
         <shape android:shape="rectangle">
-            <solid android:color="#f1f3f4"/>
+            <solid android:color="@color/f1f3f4"/>
             <corners
                 android:bottomLeftRadius="8dp"
                 android:bottomRightRadius="8dp"
@@ -14,14 +14,14 @@
                 android:topRightRadius="8dp"/>
             <stroke
                 android:width="0.3dp"
-                android:color="#ddd"/>
+                android:color="@color/ddd"/>
         </shape>
     </item>
 
     <item android:id="@android:id/background">
 
         <shape android:shape="rectangle">
-            <solid android:color="#f1f3f4"/>
+            <solid android:color="@color/f1f3f4"/>
             <corners
                 android:bottomLeftRadius="8dp"
                 android:bottomRightRadius="8dp"
@@ -29,7 +29,7 @@
                 android:topRightRadius="8dp"/>
             <stroke
                 android:width="0.3dp"
-                android:color="#ddd"/>
+                android:color="@color/ddd"/>
         </shape>
     </item>
 

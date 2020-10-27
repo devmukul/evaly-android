@@ -58,7 +58,6 @@ import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.CreatePostModel;
 import bd.com.evaly.evalyshop.models.newsfeed.createPost.Post;
 import bd.com.evaly.evalyshop.models.product.Products;
-import bd.com.evaly.evalyshop.models.product.productDetails.AttributeValuesItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AttributesItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.Data;
@@ -73,11 +72,10 @@ import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.AvailableShopAdapter;
-import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ColorButtonAdapter;
-import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SizeButtonAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.SpecificationAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.adapter.ViewProductSliderAdapter;
 import bd.com.evaly.evalyshop.ui.product.productDetails.bottomsheet.SkuBottomSheetFragment;
+import bd.com.evaly.evalyshop.ui.product.productDetails.controller.VariantsController;
 import bd.com.evaly.evalyshop.ui.product.productList.ProductGrid;
 import bd.com.evaly.evalyshop.ui.reviews.ReviewsActivity;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
@@ -89,7 +87,7 @@ import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
 
-public class ViewProductActivity extends BaseActivity {
+public class ViewProductActivity extends BaseActivity implements VariantsController.SelectListener {
 
     private String slug = "", category = "", name = "", productImage = "";
     private double productPrice;
@@ -118,10 +116,10 @@ public class ViewProductActivity extends BaseActivity {
     private boolean gps_enabled = false;
     private boolean network_enabled = false;
     private LocationManager lm;
-
     private String shopSlug = null;
     private String cashbackText = null;
     private AvailableShopModel toRemoveModel = null;
+    private VariantsController variantsController;
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
 
@@ -314,6 +312,17 @@ public class ViewProductActivity extends BaseActivity {
             builder.show();
 
         });
+
+
+        initVariantRecycler();
+    }
+
+    private void initVariantRecycler() {
+        if (variantsController == null)
+            variantsController = new VariantsController();
+        variantsController.setSelectListener(this);
+
+        binding.rvVariant.setAdapter(variantsController.getAdapter());
     }
 
     private void populateRatingsSummary(JsonObject jsonObject) {
@@ -437,15 +446,25 @@ public class ViewProductActivity extends BaseActivity {
         Data data = productDetailsModel.getData();
         productAttributesItemList = data.getAttributes();
         productVariantsItemList = data.getProductVariants();
-        List<ProductSpecificationsItem> productSpecificationsItemList = data.getProductSpecifications();
-
-        showProductHolder();
 
         if (productVariantsItemList.size() == 0) {
             Toast.makeText(context, "Product is not available!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
+
+        List<ProductSpecificationsItem> productSpecificationsItemList = data.getProductSpecifications();
+
+        if (productAttributesItemList.size() > 0) {
+            binding.variantHolder.setVisibility(View.VISIBLE);
+            variantsController.setList(productAttributesItemList);
+            variantsController.setSelectedVariants(new ArrayList<>(productVariantsItemList.get(0).getAttributeValues()));
+            variantsController.requestModelBuild();
+        } else {
+            binding.variantHolder.setVisibility(View.GONE);
+        }
+
+        showProductHolder();
 
         binding.sliderPager.setVisibility(View.VISIBLE);
         binding.collapsingToolbar.setVisibility(View.VISIBLE);
@@ -463,34 +482,7 @@ public class ViewProductActivity extends BaseActivity {
         specificationAdapter.notifyDataSetChanged();
         shareURL = "https://evaly.com.bd/products/" + slug;
         populateProductByVariant(firstProductVariantsItem);
-//
-//        for (int i = 0; i < productVariantsItemList.size(); i++) {
-//            for (int j = 0; j < productVariantsItemList.get(i).getAttributeValues().size(); j++) {
-//                int variantValue = productVariantsItemList.get(i).getAttributeValues().get(j);
-//                for (int k = 0; k < productAttributesItemList.size(); k++) {
-//                    for (int l = 0; l < productAttributesItemList.get(k).getAttributeValues().size(); l++) {
-//                        AttributeValuesItem attributeValuesItem = productAttributesItemList.get(k).getAttributeValues().get(l);
-//
-//                        if (attributeValuesItem.getKey() == variantValue)
-//                            attributeValuesItem.setColor_image(productVariantsItemList.get(i).getColorImage());
-//                    }
-//                }
-//            }
-//        }
-
-        if (productAttributesItemList.size() > 0) {
-            if (productAttributesItemList.get(0).getAttributeData().getType().equalsIgnoreCase("Size"))
-                populateSizeOption(productAttributesItemList.get(0).getAttributeData().getValues());
-            else if (productAttributesItemList.get(0).getAttributeName().equalsIgnoreCase("Color"))
-                populateColorOption(productAttributesItemList.get(0).getAttributeData().getValues());
-        }
-
-        if (productAttributesItemList.size() > 1) {
-            if (productAttributesItemList.get(1).getAttributeData().getType().equalsIgnoreCase("Color"))
-                populateColorOption(productAttributesItemList.get(1).getAttributeData().getValues());
-            else if (productAttributesItemList.get(1).getAttributeName().equalsIgnoreCase("Size"))
-                populateSizeOption(productAttributesItemList.get(1).getAttributeData().getValues());
-        }
+        getRelatedProducts(firstProductVariantsItem.getCategorySlug());
 
     }
 
@@ -524,7 +516,6 @@ public class ViewProductActivity extends BaseActivity {
         shopItemId = item.getVariantId();
 
         getAvailableShops(item.getVariantId());
-        getRelatedProducts(item.getCategorySlug());
 
         Executors.newSingleThreadExecutor().execute(() -> {
             int c = wishListDao.checkExists(slug);
@@ -555,112 +546,6 @@ public class ViewProductActivity extends BaseActivity {
         wishListItem.setProductSlug(slug);
         wishListItem.setPrice(String.valueOf(price));
 
-    }
-
-    private void populateSizeOption(List<AttributeValuesItem> attribute_values) {
-
-        if (attribute_values.size() > 0 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
-            binding.variant1Holder.setVisibility(View.VISIBLE);
-            for (int i = 0; i < attribute_values.size(); i++) {
-                if (productAttributesItemList.size() > 1 &&
-                        productVariantsItemList.get(0).getAttributeValues().size() > 1) {
-                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) ||
-                            attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
-                        attribute_values.get(i).setSelected(true);
-                        variantKey1 = attribute_values.get(i).getKey();
-                    }
-                } else {
-                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
-                        attribute_values.get(i).setSelected(true);
-                        variantKey1 = attribute_values.get(i).getKey();
-                    }
-                }
-            }
-        }
-
-        SizeButtonAdapter adapter = new SizeButtonAdapter(attribute_values, this, object -> {
-            AttributeValuesItem attributesValue = (AttributeValuesItem) object;
-            if (productAttributesItemList.size() == 1) {
-                for (int i = 0; i < productVariantsItemList.size(); i++) {
-                    ProductVariantsItem variantItem = productVariantsItemList.get(i);
-                    for (int j = 0; j < variantItem.getAttributeValues().size(); j++) {
-                        int attrValue = variantItem.getAttributeValues().get(j);
-                        if (attrValue == attributesValue.getKey()) {
-                            populateProductByVariant(productVariantsItemList.get(i));
-                        }
-                    }
-                }
-            } else if (productAttributesItemList.size() == 2) {
-
-                for (int i = 0; i < productVariantsItemList.size(); i++) {
-                    ProductVariantsItem variantItem = productVariantsItemList.get(i);
-                    if (variantItem.getAttributeValues().size() > 1) {
-                        int key1 = variantItem.getAttributeValues().get(0);
-                        int key2 = variantItem.getAttributeValues().get(1);
-                        if ((key1 == attributesValue.getKey() && key2 == variantKey2) ||
-                                (key2 == attributesValue.getKey() && key1 == variantKey2)) {
-
-                            populateProductByVariant(productVariantsItemList.get(i));
-                            variantKey1 = attributesValue.getKey();
-                            break;
-                        }
-                    }
-                }
-            }
-        });
-        binding.rvVariant1.setAdapter(adapter);
-    }
-
-    private void populateColorOption(List<AttributeValuesItem> attribute_values) {
-        if (attribute_values.size() > 0 && productVariantsItemList.get(0).getAttributeValues().size() > 0) {
-            binding.variant2Holder.setVisibility(View.VISIBLE);
-            for (int i = 0; i < attribute_values.size(); i++) {
-                if (productAttributesItemList.size() > 1 && productVariantsItemList.get(0).getAttributeValues().size() > 1) {
-
-                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0) ||
-                            attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(1)) {
-                        attribute_values.get(i).setSelected(true);
-                        variantKey2 = attribute_values.get(i).getKey();
-                    }
-                } else {
-                    if (attribute_values.get(i).getKey() == productVariantsItemList.get(0).getAttributeValues().get(0)) {
-                        attribute_values.get(i).setSelected(true);
-                        variantKey2 = attribute_values.get(i).getKey();
-                    }
-                }
-            }
-        }
-
-        ColorButtonAdapter adapter = new ColorButtonAdapter(attribute_values, this, object -> {
-            AttributeValuesItem attributesValue = (AttributeValuesItem) object;
-            if (productAttributesItemList.size() == 1) {
-                for (int i = 0; i < productVariantsItemList.size(); i++) {
-                    ProductVariantsItem variantItem = productVariantsItemList.get(i);
-                    for (int j = 0; j < variantItem.getAttributeValues().size(); j++) {
-                        int attrValue = variantItem.getAttributeValues().get(j);
-                        if (attrValue == attributesValue.getKey()) {
-                            populateProductByVariant(productVariantsItemList.get(i));
-                        }
-                    }
-                }
-            } else if (productAttributesItemList.size() == 2) {
-                for (int i = 0; i < productVariantsItemList.size(); i++) {
-                    ProductVariantsItem variantItem = productVariantsItemList.get(i);
-                    if (variantItem.getAttributeValues().size() > 1) {
-                        int key1 = variantItem.getAttributeValues().get(0);
-                        int key2 = variantItem.getAttributeValues().get(1);
-
-                        if ((key1 == attributesValue.getKey() && key2 == variantKey1) || (key2 == attributesValue.getKey() && key1 == variantKey1)) {
-                            populateProductByVariant(productVariantsItemList.get(i));
-
-                            variantKey2 = attributesValue.getKey();
-                            break;
-                        }
-                    }
-                }
-            }
-        });
-        binding.rvVariant2.setAdapter(adapter);
     }
 
     private void getRelatedProducts(String categorySlug) {
@@ -813,18 +698,24 @@ public class ViewProductActivity extends BaseActivity {
 
         toRemoveModel = null;
 
+        binding.selectedShopHolder.setVisibility(View.GONE);
+        binding.availableShopsHolder.setVisibility(View.VISIBLE);
+
         List<AvailableShopModel> list = new ArrayList<>(response.getData());
 
-        if (shopSlug != null || response.getData().size() == 1) {
+        if (shopSlug != null || list.size() == 1) {
             for (AvailableShopModel model : list) {
-                if (model.getShopSlug().equals(shopSlug) || list.size() == 1)
+                if (model.getShopSlug().equals(shopSlug) || list.size() == 1) {
                     toRemoveModel = model;
+                    break;
+                }
             }
             if (toRemoveModel != null) {
                 list.remove(toRemoveModel);
                 inflateShopDetails(toRemoveModel);
             } else {
                 binding.selectedShopHolder.setVisibility(View.GONE);
+                binding.availableShopsHolder.setVisibility(View.VISIBLE);
                 binding.avlshop.setText(R.string.available_at_shop);
             }
         }
@@ -838,6 +729,7 @@ public class ViewProductActivity extends BaseActivity {
                 binding.availableShopsHolder.setVisibility(View.GONE);
             if (toRemoveModel.getDiscountedPrice() == 0 && toRemoveModel.getPrice() == 0) {
                 binding.selectedShopHolder.setVisibility(View.GONE);
+                binding.availableShopsHolder.setVisibility(View.VISIBLE);
                 binding.avlshop.setText(R.string.available_at_shop);
                 if (list.size() == 0) {
                     binding.availableShopsHolder.setVisibility(View.VISIBLE);
@@ -942,7 +834,7 @@ public class ViewProductActivity extends BaseActivity {
     public void hideProductHolder() {
         binding.productInfo.setVisibility(View.GONE);
         binding.relatedTitle.setVisibility(View.GONE);
-        binding.progressBar.setBackgroundColor(Color.parseColor("#ffffff"));
+        binding.progressBar.setBackgroundColor(ContextCompat.getColor(this, R.color.fff));
         binding.stickyButtons.setVisibility(View.GONE);
     }
 
@@ -950,7 +842,7 @@ public class ViewProductActivity extends BaseActivity {
         binding.productInfo.setVisibility(View.VISIBLE);
         binding.relatedTitle.setVisibility(View.VISIBLE);
         binding.stickyButtons.setVisibility(View.VISIBLE);
-        binding.progressBar.setBackgroundColor(Color.parseColor("#fafafa"));
+        binding.progressBar.setBackgroundColor(ContextCompat.getColor(this, R.color.fafafa));
     }
 
     private void setLightStatusBar(Activity activity) {
@@ -959,9 +851,18 @@ public class ViewProductActivity extends BaseActivity {
             flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             activity.getWindow().getDecorView().setSystemUiVisibility(flags);
         } else {
-            activity.getWindow().setStatusBarColor(Color.BLACK);
+            activity.getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         }
     }
 
-
+    @Override
+    public void findVariantByController() {
+        List<Integer> selectedAttr = variantsController.getSelectedVariants();
+        for (ProductVariantsItem variantModel : productVariantsItemList) {
+            if (variantModel.getAttributeValues().containsAll(selectedAttr) && selectedAttr.containsAll(variantModel.getAttributeValues())) {
+                populateProductByVariant(variantModel);
+                break;
+            }
+        }
+    }
 }

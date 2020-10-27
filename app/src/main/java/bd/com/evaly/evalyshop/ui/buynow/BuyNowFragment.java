@@ -477,10 +477,11 @@ public class BuyNowFragment extends BottomSheetDialogFragment implements Variati
         bottomSheetDialog.setOnShowListener(dialog -> {
             BottomSheetDialog dialogz = (BottomSheetDialog) dialog;
             FrameLayout bottomSheet = dialogz.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-            assert bottomSheet != null;
-            BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-            BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
-            BottomSheetBehavior.from(bottomSheet).setHideable(true);
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+                BottomSheetBehavior.from(bottomSheet).setSkipCollapsed(true);
+                BottomSheetBehavior.from(bottomSheet).setHideable(true);
+            }
         });
         return bottomSheetDialog;
     }

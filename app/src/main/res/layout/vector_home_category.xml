@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_centerHorizontal="true"
-        android:background="@android:color/white"
+        android:background="@color/fff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +32,7 @@
         android:gravity="center"
         android:maxLines="2"
         android:textAlignment="center"
-        android:textColor="#000"
+        android:textColor="@color/black"
         android:textSize="13sp"
         android:layout_marginTop="18dp"
         app:layout_constraintEnd_toEndOf="parent"

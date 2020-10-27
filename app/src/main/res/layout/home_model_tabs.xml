@@ -5,7 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="1dp">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
@@ -36,13 +36,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:background="#fafafa"
+            android:background="@color/fafafa"
             android:paddingLeft="15dp"
             android:paddingTop="10dp"
             android:paddingRight="15dp"
             android:paddingBottom="15dp"
             android:text="@string/recent_products"
-            android:textColor="#555"
+            android:textColor="@color/c555"
             android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="visible"

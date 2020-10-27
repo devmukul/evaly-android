@@ -25,7 +25,7 @@
             android:paddingTop="15dp"
             android:paddingBottom="10dp"
             android:text="@string/share_to_newsfeed"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -62,14 +62,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="#fff"
+                android:background="@color/fafafa"
                 android:fontFamily="sans-serif"
                 android:gravity="top"
                 android:hint="@string/write_your_thoughts_here"
                 android:inputType="textMultiLine"
                 android:minLines="3"
                 android:padding="10dp"
-                android:textColor="#000"
+                android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <io.github.ponnamkarthik.richlinkpreview.RichLinkView
@@ -103,7 +103,7 @@
             android:stateListAnimator="@null"
             android:text="@string/share"
             android:textAllCaps="false"
-            android:textColor="#fff"
+            android:textColor="@color/fffh"
             android:textSize="16sp" />
 
     </LinearLayout>

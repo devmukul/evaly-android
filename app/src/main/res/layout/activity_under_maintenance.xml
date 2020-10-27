@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="vertical"
     tools:context=".ui.networkError.NetworkErrorActivity">
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:text="Under Maintenance"
         android:textAlignment="center"
-        android:textColor="#444"
+        android:textColor="@color/c444"
         android:textSize="25sp" />
 
     <TextView
@@ -38,7 +38,7 @@
         android:layout_marginEnd="15dp"
         android:text="Server is currently under maintenance.\nWe should be back shortly."
         android:textAlignment="center"
-        android:textColor="#666"
+        android:textColor="@color/c666"
         android:textSize="16sp" />
 
     <Button

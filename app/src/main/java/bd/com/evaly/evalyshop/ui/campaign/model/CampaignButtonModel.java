@@ -31,7 +31,7 @@ public abstract class CampaignButtonModel extends DataBindingEpoxyModel {
 
         ItemCampaignButtonBinding binding = (ItemCampaignButtonBinding) holder.getDataBinding();
 
-        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.bg_eee_round, R.drawable.ic_evaly_placeholder, 400, 400);
+        BindingUtils.setImage(binding.image, model.getImage(), R.drawable.bg_eee_round, R.drawable.ic_evaly_placeholder, 400, 400, false);
 
         binding.name.setText(model.getName());
         binding.image.setOnClickListener(clickListener);

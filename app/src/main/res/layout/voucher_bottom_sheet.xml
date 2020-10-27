@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textAlignment="center"
-            android:textColor="#000"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:visibility="gone" />
 
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="15dp"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -97,7 +97,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_weight="0"
-                        android:background="#eee"
+                        android:background="@color/eee"
                         android:clickable="true"
                         android:padding="5dp"
                         app:srcCompat="@drawable/ic_minus" />
@@ -121,7 +121,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_weight="0"
-                        android:background="#eee"
+                        android:background="@color/eee"
                         android:clickable="true"
                         android:padding="5dp"
                         app:srcCompat="@drawable/ic_plus" />
@@ -149,7 +149,7 @@
                     android:layout_height="30dp"
                     android:layout_below="@+id/total_amount"
                     android:layout_marginTop="2dp"
-                    android:textColor="#333"
+                    android:textColor="@color/c333"
                     android:textSize="25dp"
                     android:textStyle="bold" />
 
@@ -169,7 +169,7 @@
             android:background="@drawable/black_ripple_bg"
             android:stateListAnimator="@null"
             android:text="CLAIM"
-            android:textColor="#fff" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 </LinearLayout>

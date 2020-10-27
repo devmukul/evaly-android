@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbar"
@@ -61,15 +61,18 @@
                             android:layout_height="0dp"
                             android:scaleType="fitCenter"
                             app:layout_constraintDimensionRatio="H,1:1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <bd.com.evaly.evalyshop.views.SliderViewPager
                             android:id="@+id/sliderPager"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="#fff"
+                            android:background="@color/fff"
                             android:visibility="visible"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +136,7 @@
                         android:layout_marginBottom="0dp"
                         android:layout_weight="0"
                         android:maxLines="2"
-                        android:textColor="#fff"
+                        android:textColor="@color/fff"
                         android:textIsSelectable="true"
                         android:textSize="18sp"
                         android:textStyle="normal"
@@ -168,7 +171,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:src="@drawable/ic_left_arrow_new"
-                            android:tint="#000" />
+                            app:tint="@color/black" />
 
                     </LinearLayout>
 
@@ -191,7 +194,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:src="@drawable/ic_share"
-                            android:tint="#000" />
+                            app:tint="@color/black" />
                     </LinearLayout>
 
                 </androidx.appcompat.widget.Toolbar>
@@ -205,8 +208,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="55dp"
-            android:background="#fff"
+            android:layout_marginBottom="40dp"
+            android:background="@color/fff"
             android:paddingTop="0dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -220,17 +223,15 @@
                     android:id="@+id/productInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#fff"
+                    android:background="@color/fff"
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/variant1Holder"
+                        android:id="@+id/variantHolder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="20dp"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        tools:visibility="visible">
+                        android:orientation="vertical">
 
                         <View
                             android:layout_width="match_parent"
@@ -238,85 +239,28 @@
                             android:background="@color/separator_light" />
 
                         <TextView
-                            android:id="@+id/variant1Title"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
                             android:layout_marginTop="15dp"
-                            android:layout_marginBottom="15dp"
-                            android:text="Size"
-                            android:textColor="#555"
+                            android:layout_marginBottom="0dp"
+                            android:text="Variation"
+                            android:textColor="@color/c555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
-
-                        <HorizontalScrollView
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvVariant"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:scrollbars="none">
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvVariant1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:nestedScrollingEnabled="false"
-                                android:orientation="horizontal"
-                                android:paddingLeft="20dp"
-                                android:paddingBottom="15dp"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                                tools:listitem="@layout/item_variation_image" />
-                        </HorizontalScrollView>
+                            android:nestedScrollingEnabled="false"
+                            android:orientation="vertical"
+                            android:paddingBottom="15dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:itemCount="2"
+                            tools:listitem="@layout/item_variation_image" />
 
                     </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/variant2Holder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="20dp"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        tools:visibility="visible">
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="8dp"
-                            android:background="@color/separator_light" />
-
-                        <TextView
-                            android:id="@+id/variant2Title"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="15dp"
-                            android:layout_marginBottom="15dp"
-                            android:text="Color"
-                            android:textColor="#555"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-
-                        <HorizontalScrollView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:scrollbars="none">
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvVariant2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:nestedScrollingEnabled="false"
-                                android:orientation="horizontal"
-                                android:paddingLeft="20dp"
-                                android:paddingBottom="15dp"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                                tools:listitem="@layout/item_variation_image" />
-
-                        </HorizontalScrollView>
-
-                    </LinearLayout>
-
 
                     <View
                         android:id="@+id/view7"
@@ -341,7 +285,7 @@
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:text="@string/sku"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -385,7 +329,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="@string/description"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -395,8 +339,8 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:src="@drawable/ic_keyboard_arrow_right"
-                            android:tint="#666"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            app:tint="@color/c666" />
 
                         <TextView
                             android:id="@+id/tvDescription"
@@ -406,7 +350,7 @@
                             android:layout_marginTop="10dp"
                             android:layout_marginRight="5dp"
                             android:layout_marginBottom="8dp"
-                            android:textColor="#000"
+                            android:textColor="@color/black"
                             android:textSize="16sp" />
 
                     </RelativeLayout>
@@ -432,7 +376,7 @@
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="12dp"
                             android:text="@string/specifications"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -461,31 +405,32 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/tvCashback"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingHorizontal="10dp"
-                            android:paddingBottom="3dp"
-                            android:paddingTop="2dp"
-                            android:background="@drawable/cashback_bg"
                             android:layout_alignParentEnd="true"
-                            android:textColor="#fff"
+                            android:background="@drawable/cashback_bg"
+                            android:paddingHorizontal="10dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="3dp"
+                            android:textColor="@color/fffh"
                             android:textSize="11sp"
-                            tools:text="30% Cashback"
                             android:visibility="gone"
-                            tools:visibility="visible"/>
+                            tools:text="30% Cashback"
+                            tools:visibility="visible" />
 
                         <LinearLayout
                             android:id="@+id/selectedShopClickHolder"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
                             android:clickable="true"
                             android:longClickable="false"
                             android:orientation="horizontal"
                             android:paddingLeft="20dp"
                             android:paddingTop="20dp"
-                            android:layout_alignParentTop="true"
                             android:paddingRight="15dp">
 
                             <ImageView
@@ -516,7 +461,7 @@
                                     android:maxLines="5"
                                     android:paddingBottom="8dp"
                                     android:textAlignment="textStart"
-                                    android:textColor="#333"
+                                    android:textColor="@color/c333"
                                     android:textSize="17sp"
                                     tools:text="Shop Name" />
 
@@ -533,7 +478,7 @@
                                         android:layout_marginEnd="6dp"
                                         android:adjustViewBounds="true"
                                         android:src="@drawable/ic_marker_filled"
-                                        app:tint="#555" />
+                                        app:tint="@color/c555" />
 
                                     <TextView
                                         android:id="@+id/shopLocation"
@@ -542,7 +487,7 @@
                                         android:ellipsize="end"
                                         android:maxLines="2"
                                         android:textAlignment="textStart"
-                                        android:textColor="#555"
+                                        android:textColor="@color/c555"
                                         android:textIsSelectable="true"
                                         android:textSize="14sp"
                                         tools:text="Road 14, Dhanmondi 27, Dhaka" />
@@ -559,7 +504,7 @@
                                         android:layout_marginEnd="6dp"
                                         android:adjustViewBounds="true"
                                         android:src="@drawable/ic_call"
-                                        app:tint="#555" />
+                                        app:tint="@color/c555" />
 
                                     <TextView
                                         android:id="@+id/shopPhone"
@@ -569,8 +514,8 @@
                                         android:ellipsize="end"
                                         android:maxLines="2"
                                         android:textAlignment="textStart"
-                                        android:textColor="#555"
-                                        android:textColorLink="#555"
+                                        android:textColor="@color/c555"
+                                        android:textColorLink="@color/c555"
                                         android:textIsSelectable="true"
                                         android:textSize="14sp"
                                         tools:text="01758154554" />
@@ -590,7 +535,7 @@
                                         android:adjustViewBounds="true"
                                         android:paddingBottom="2dp"
                                         android:src="@drawable/ic_box"
-                                        app:tint="#555" />
+                                        app:tint="@color/c555" />
 
                                     <TextView
                                         android:id="@+id/stock"
@@ -601,8 +546,8 @@
                                         android:maxLines="2"
                                         android:text="@string/stock_colon_available"
                                         android:textAlignment="textStart"
-                                        android:textColor="#555"
-                                        android:textColorLink="#555"
+                                        android:textColor="@color/c555"
+                                        android:textColorLink="@color/c555"
                                         android:textIsSelectable="true"
                                         android:textSize="14sp" />
                                 </LinearLayout>
@@ -612,7 +557,7 @@
                                     android:layout_height="1dp"
                                     android:layout_marginTop="12dp"
                                     android:layout_marginBottom="4dp"
-                                    android:background="#f1f3f4" />
+                                    android:background="@color/f1f3f4" />
 
                                 <LinearLayout
                                     android:id="@+id/selectedShopPriceHolder"
@@ -638,7 +583,7 @@
                                         android:layout_marginLeft="10dp"
                                         android:layout_weight="0"
                                         android:text=" ৳ 6000"
-                                        android:textColor="#777"
+                                        android:textColor="@color/c777"
                                         android:textSize="12sp" />
                                 </LinearLayout>
 
@@ -652,10 +597,10 @@
                             android:id="@+id/buyNowHolder"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_below="@id/selectedShopClickHolder"
                             android:orientation="horizontal"
                             android:paddingStart="20dp"
-                            android:paddingEnd="20dp"
-                            android:layout_below="@id/selectedShopClickHolder">
+                            android:paddingEnd="20dp">
 
                             <Button
                                 android:id="@+id/add_cart"
@@ -670,7 +615,7 @@
                                 android:stateListAnimator="@null"
                                 android:text="@string/add_to_cart"
                                 android:textAllCaps="false"
-                                android:textColor="#333"
+                                android:textColor="@color/c333"
                                 android:textSize="14sp"
                                 android:textStyle="normal" />
 
@@ -687,7 +632,7 @@
                                 android:stateListAnimator="@null"
                                 android:text="@string/buy_now"
                                 android:textAllCaps="false"
-                                android:textColor="#fff"
+                                android:textColor="@color/fffh"
                                 android:textSize="14sp"
                                 android:textStyle="normal" />
 
@@ -696,8 +641,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="8dp"
-                            android:layout_marginTop="20dp"
                             android:layout_below="@id/buyNowHolder"
+                            android:layout_marginTop="20dp"
                             android:background="@color/separator_light" />
 
                     </RelativeLayout>
@@ -723,7 +668,7 @@
                                 android:layout_marginBottom="15dp"
                                 android:layout_weight="1"
                                 android:text="@string/available_at_shop"
-                                android:textColor="#555"
+                                android:textColor="@color/c555"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
 
@@ -745,7 +690,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="All"
-                                    android:textColor="#444" />
+                                    android:textColor="@color/c444" />
 
                                 <ImageView
                                     android:layout_width="wrap_content"
@@ -803,7 +748,8 @@
                                 android:layout_width="150dp"
                                 android:layout_height="80dp"
                                 android:layout_weight="0"
-                                app:srcCompat="@drawable/ic_sad_cart" />
+                                app:srcCompat="@drawable/ic_sad_cart"
+                                app:tint="@color/c555" />
 
                             <TextView
                                 android:id="@+id/tvNoShop"
@@ -812,6 +758,7 @@
                                 android:layout_weight="0"
                                 android:gravity="center_horizontal"
                                 android:paddingBottom="10dp"
+                                android:textColor="@color/c777"
                                 android:text="This product is currently \nnot available at any shop" />
 
                         </LinearLayout>
@@ -841,7 +788,7 @@
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="10dp"
                             android:text="Reviews &amp; Ratings"
-                            android:textColor="#555"
+                            android:textColor="@color/c555"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -877,13 +824,10 @@
 
                     </LinearLayout>
 
-
                     <View
-
                         android:layout_width="match_parent"
                         android:layout_height="10dp"
                         android:background="@color/separator_light" />
-
 
                 </LinearLayout>
 
@@ -892,13 +836,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:background="#fafafa"
+                    android:background="@color/separator_light"
                     android:paddingLeft="15dp"
                     android:paddingTop="8dp"
                     android:paddingRight="15dp"
                     android:paddingBottom="18dp"
                     android:text="@string/explore_more_products"
-                    android:textColor="#555"
+                    android:textColor="@color/c555"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -907,10 +851,11 @@
                     android:id="@+id/products"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#fafafa"
+                    android:background="@color/separator_light"
                     android:nestedScrollingEnabled="false"
                     android:paddingLeft="5dp"
-                    android:paddingRight="5dp" />
+                    android:paddingRight="5dp"
+                    android:paddingBottom="20dp" />
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -919,11 +864,8 @@
                     android:layout_height="60dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="0"
-                    android:background="#fafafa"
                     android:paddingTop="15dp"
                     android:paddingBottom="15dp" />
-
-
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -931,30 +873,21 @@
         <LinearLayout
             android:id="@+id/stickyButtons"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="60dp"
             android:layout_gravity="bottom"
-            android:background="@android:color/transparent"
-            android:elevation="0dp"
+            android:background="@drawable/bg_bottom_nav"
+            android:elevation="8dp"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:translationZ="5dp"
+            android:translationZ="12dp"
             app:layout_behavior="bd.com.evaly.evalyshop.util.MoveUpwardBehavior">
-
-
-            <View
-                android:id="@+id/view13"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginBottom="-1dp"
-                android:layout_weight="0"
-                android:background="@drawable/half_dp_bg" />
 
             <LinearLayout
                 android:id="@+id/buttonsHolder"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:background="#fff"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingVertical="2dp">
 
                 <ImageView
                     android:id="@+id/addToWishlist"
@@ -962,7 +895,6 @@
                     android:layout_height="match_parent"
                     android:layout_margin="4dp"
                     android:layout_weight="0"
-                    android:background="@drawable/white_ripple"
                     android:clickable="true"
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
@@ -974,7 +906,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
-                    android:layout_weight="1"
+                    android:layout_weight="0"
                     android:background="@drawable/my_cart_bg"
                     android:clickable="true"
                     android:gravity="center"
@@ -987,24 +919,26 @@
                         android:clickable="false"
                         android:fontFamily="sans-serif-thin"
                         android:gravity="center"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="10dp"
                         android:text="MY CART"
                         android:textAlignment="center"
-                        android:textColor="#ff665d"
-                        android:textSize="15sp"
+                        android:textColor="@color/c444"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/cartCount"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
-                        android:layout_weight="0"
-                        android:background="@drawable/cart_count"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_cart_count"
                         android:gravity="center"
+                        android:minWidth="20dp"
+                        android:paddingVertical="3dp"
+                        android:paddingStart="10dp"
                         android:paddingLeft="6dp"
-                        android:paddingTop="2dp"
+                        android:paddingEnd="15dp"
                         android:paddingRight="6dp"
-                        android:paddingBottom="2dp"
                         android:text="0"
                         android:textColor="#155724"
                         android:textStyle="bold" />
@@ -1012,12 +946,14 @@
 
                 <TextView
                     android:id="@+id/addToCart"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="15dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginEnd="15dp"
                     android:layout_marginRight="12dp"
                     android:layout_marginBottom="6dp"
-                    android:layout_weight="1"
+                    android:layout_weight="0"
                     android:background="@drawable/available_shop_bg"
                     android:clickable="true"
                     android:fontFamily="sans-serif-thin"
@@ -1025,7 +961,7 @@
                     android:text="AVAILABLE AT SHOPS"
                     android:textAlignment="center"
                     android:textColor="#fff"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
 

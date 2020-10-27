@@ -30,7 +30,8 @@
                     android:adjustViewBounds="true"
                     android:clickable="false"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/bg_fafafa_round"
+                    app:srcCompat="@drawable/bg_fafafa_round"
+                    app:tint="@color/f6f6f6"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="H,1:1"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -55,10 +56,9 @@
                 android:ellipsize="end"
                 android:gravity="center|top"
                 android:maxLines="2"
-                android:minLines="2"
                 android:paddingHorizontal="3dp"
                 android:paddingBottom="5dp"
-                android:textColor="#666"
+                android:textColor="@color/c666"
                 android:textSize="11sp" />
 
             <LinearLayout
@@ -77,25 +77,11 @@
                     android:gravity="center"
                     android:maxLines="2"
                     android:paddingHorizontal="3dp"
-                    android:text="Grocery"
-                    android:textColor="#fafafa"
+                    android:text="Grocery Grocery"
+                    android:textColor="@color/fafafa"
                     android:textSize="10sp" />
 
-                <TextView
-                    android:id="@+id/title2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="2dp"
-                    android:background="@drawable/bg_fafafa_round"
-                    android:clickable="false"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    android:paddingHorizontal="3dp"
-                    android:text="Grocery Expr"
-                    android:textColor="#fafafa"
-                    android:textSize="10sp" />
+
             </LinearLayout>
 
         </LinearLayout>

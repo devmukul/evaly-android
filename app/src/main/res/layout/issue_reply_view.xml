@@ -61,7 +61,7 @@
                 android:layout_marginBottom="5dp"
                 android:autoLink="all"
                 android:text="Comment text..."
-                android:textColor="#444"
+                android:textColor="@color/c444"
                 android:textSize="14sp" />
 
             <TextView
@@ -72,7 +72,7 @@
                 android:layout_marginRight="100dp"
                 android:ellipsize="end"
                 android:text="User Name"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textStyle="bold" />
 
 
@@ -83,7 +83,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:text="3 min ago"
-                android:textColor="#555"
+                android:textColor="@color/c555"
                 android:textSize="12sp" />
 
         </RelativeLayout>
@@ -123,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
@@ -135,7 +135,7 @@
                 android:maxLines="1"
                 android:paddingLeft="5dp"
                 android:text=""
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="13sp" />
 
         </LinearLayout>

@@ -24,7 +24,7 @@
             android:id="@+id/bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#fff"
+            android:background="@color/fff"
             android:orientation="vertical">
 
             <LinearLayout
@@ -33,7 +33,7 @@
                 android:orientation="vertical"
                 android:tag="sticky"
                 android:paddingBottom="10dp"
-                android:background="#ffff">
+                android:background="@color/fff">
             <View
                 android:layout_width="70dp"
                 android:layout_height="4dp"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/campaigns"
                 android:textSize="16sp"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:layout_marginLeft="20dp"
                 android:layout_marginBottom="10dp"
                 android:textStyle="bold"/>
@@ -94,13 +94,13 @@
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_star_flying"
-                    android:tint="#666"/>
+                    app:tint="@color/c666" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/no_campaign_is_available_right_now"
-                    android:textColor="#555"
+                    android:textColor="@color/c555"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="25dp"
                     android:textSize="15sp"/>

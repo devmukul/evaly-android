@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:foreground="?selectableItemBackground"
         android:gravity="top|center_horizontal"
-        android:background="#FBFCFF"
+        android:background="@color/rootCategoryBg"
         android:orientation="vertical">
 
         <View
@@ -26,7 +26,7 @@
             android:id="@+id/brd"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#f8f8f8"
+            android:background="@color/f8f8f8"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <ImageView
@@ -56,7 +56,7 @@
             android:paddingEnd="8dp"
             android:paddingBottom="13dp"
             android:textAlignment="center"
-            android:textColor="#333"
+            android:textColor="@color/c333"
             android:textSize="12sp"
             app:layout_constraintTop_toBottomOf="@id/image"
             tools:text="Female Fashion" />

@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="#fff">
+        android:background="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,14 +43,14 @@
                 android:layout_marginBottom="10dp"
                 android:text="Your order has been successfully placed"
                 android:textAlignment="center"
-                android:textColor="#333"
+                android:textColor="@color/c333"
                 android:textSize="18sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
                 android:layout_marginTop="20dp"
-                android:background="#fafafa" />
+                android:background="@color/fafafa" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
                     android:text="@string/order_summary"
-                    android:textColor="#000"
+                    android:textColor="@color/black"
                     android:textSize="16sp"
                     android:layout_marginTop="1dp"/>
 
@@ -81,7 +81,7 @@
                     android:paddingEnd="10dp"
                     android:paddingBottom="5dp"
                     android:text="View Details"
-                    android:textColor="#333"
+                    android:textColor="@color/c333"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -116,7 +116,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/subtotal"
-                            android:textColor="#555" />
+                            android:textColor="@color/c555" />
 
                         <TextView
                             android:id="@+id/total_price"
@@ -124,7 +124,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:textAlignment="textEnd"
-                            android:textColor="#000"
+                            android:textColor="@color/black"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             tools:text="৳ 5600" />
@@ -143,7 +143,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/paid_amount"
-                            android:textColor="#555" />
+                            android:textColor="@color/c555" />
 
                         <TextView
                             android:id="@+id/paid_amount"
@@ -151,7 +151,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:textAlignment="textEnd"
-                            android:textColor="#000"
+                            android:textColor="@color/black"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             tools:text="৳ 0" />
@@ -171,7 +171,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/due_amount"
-                            android:textColor="#555" />
+                            android:textColor="@color/c555" />
 
                         <TextView
                             android:id="@+id/due_price"
@@ -179,7 +179,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:textAlignment="textEnd"
-                            android:textColor="#000"
+                            android:textColor="@color/black"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             tools:text="৳ 5600" />
@@ -193,7 +193,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
-                android:background="#fafafa" />
+                android:background="@color/fafafa" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -216,7 +216,7 @@
                     android:stateListAnimator="@null"
                     android:text="Continue Shopping"
                     android:textAllCaps="false"
-                    android:textColor="#000"
+                    android:textColor="@color/black"
                     android:textSize="14sp"
                     android:textStyle="normal" />
 
@@ -233,7 +233,7 @@
                     android:stateListAnimator="@null"
                     android:text="@string/make_payment"
                     android:textAllCaps="false"
-                    android:textColor="#fff"
+                    android:textColor="@color/fffh"
                     android:textSize="14sp"
                     android:textStyle="normal"/>
             </LinearLayout>

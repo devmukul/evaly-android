@@ -49,15 +49,14 @@
             android:ellipsize="end"
             android:gravity="center|top"
             android:maxLines="2"
-            android:minLines="2"
             android:paddingHorizontal="3dp"
             android:paddingBottom="5dp"
-            android:textColor="#777"
+            android:textColor="@color/c777"
             android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image"
-            tools:text="Grocery\nExpress" />
+            tools:text="Grocery Express" />
 
     </LinearLayout>
 </layout>

@@ -1,5 +1,6 @@
 package bd.com.evaly.evalyshop.ui.home;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -12,18 +13,25 @@ import java.util.List;
 
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.banner.BannerItem;
+import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
+import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
+import bd.com.evaly.evalyshop.rest.apiHelper.CampaignApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ExpressApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GeneralApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
+import bd.com.evaly.evalyshop.util.Constants;
 
 public class HomeViewModel extends ViewModel {
 
     private int tabPosition = -1;
+    private MutableLiveData<List<CampaignCategoryResponse>> categoryLiveList = new MutableLiveData<>();
+    private MutableLiveData<List<CampaignProductResponse>> flashSaleProductList = new MutableLiveData<>();
     private MutableLiveData<List<ProductItem>> productListLive = new MutableLiveData<>();
     private List<ProductItem> productArrayList = new ArrayList<>();
     private MutableLiveData<List<BannerItem>> bannerListLive = new MutableLiveData<>();
@@ -39,6 +47,8 @@ public class HomeViewModel extends ViewModel {
         currentPageProducts = 1;
         loadProducts();
         loadExpressServices();
+        loadCampaignCategory();
+        loadFlashSaleProductList();
     }
 
     public int getTabPosition() {
@@ -47,6 +57,55 @@ public class HomeViewModel extends ViewModel {
 
     public void setTabPosition(int tabPosition) {
         this.tabPosition = tabPosition;
+    }
+
+    public LiveData<List<CampaignCategoryResponse>> getCampaignCategoryLiveList() {
+        return categoryLiveList;
+    }
+
+    public LiveData<List<CampaignProductResponse>> getFlashSaleProductList() {
+        return flashSaleProductList;
+    }
+
+    public void loadFlashSaleProductList() {
+
+        //  flash-sale-2509b8bb  hot-deal-3b06c2c4
+        CampaignApiHelper.getCampaignCategoryProducts(1, 20, null, Constants.FLASH_SALE_SLUG, null,
+                new ResponseListenerAuth<CommonDataResponse<List<CampaignProductResponse>>, String>() {
+                    @Override
+                    public void onDataFetched(CommonDataResponse<List<CampaignProductResponse>> response, int statusCode) {
+                        flashSaleProductList.setValue(response.getData());
+                    }
+
+                    @Override
+                    public void onFailed(String errorBody, int errorCode) {
+
+                    }
+
+                    @Override
+                    public void onAuthError(boolean logout) {
+
+                    }
+                });
+    }
+
+    public void loadCampaignCategory() {
+        CampaignApiHelper.getCampaignCategory(new ResponseListenerAuth<CommonDataResponse<List<CampaignCategoryResponse>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<CampaignCategoryResponse>> response, int statusCode) {
+                categoryLiveList.setValue(response.getData());
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void loadBanners() {
