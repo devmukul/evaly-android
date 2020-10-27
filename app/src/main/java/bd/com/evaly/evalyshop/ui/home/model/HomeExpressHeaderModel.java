@@ -5,7 +5,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -15,7 +14,6 @@ import com.airbnb.epoxy.EpoxyModelClass;
 import com.airbnb.epoxy.EpoxyModelWithHolder;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.databinding.HomeModelFlashsaleHeaderBinding;
 
@@ -70,8 +68,7 @@ public abstract class HomeExpressHeaderModel extends EpoxyModelWithHolder<HomeEx
             if (transparentBackground)
                 binding.container.setBackgroundColor(Color.TRANSPARENT);
             else
-                binding.container.setBackgroundColor(
-                        ContextCompat.getColor(AppController.getmContext(), R.color.white));
+                binding.container.setBackgroundColor(binding.container.getContext().getResources().getColor(R.color.white));
 
             binding.help.setOnClickListener(clickListener);
         }

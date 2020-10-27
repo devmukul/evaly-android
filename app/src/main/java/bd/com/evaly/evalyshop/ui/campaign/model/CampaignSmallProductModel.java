@@ -71,7 +71,7 @@ public abstract class CampaignSmallProductModel extends DataBindingEpoxyModel {
             binding.tvCashback.setVisibility(View.GONE);
         else {
 
-            if (model.getCashbackText().contains("0.00"))
+            if (model.getCashbackText().contains(" 0.00"))
                 binding.tvCashback.setVisibility(View.GONE);
             else
                 binding.tvCashback.setVisibility(View.VISIBLE);

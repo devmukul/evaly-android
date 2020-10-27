@@ -4,7 +4,6 @@ import android.animation.LayoutTransition;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -19,11 +18,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import bd.com.evaly.evalyshop.R;
+import bd.com.evaly.evalyshop.controller.AppController;
 
 import static bd.com.evaly.evalyshop.util.reviewratings.Utils.getRoundedBarDrawable;
 import static bd.com.evaly.evalyshop.util.reviewratings.Utils.getRoundedBarGradientDrawable;
@@ -98,8 +100,7 @@ public class RatingReviews extends FrameLayout {
 
                 mLinearParentLayout.setLayoutTransition(new LayoutTransition());
 
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 Log.e("ozii", e.toString());
             }
         }
@@ -140,7 +141,6 @@ public class RatingReviews extends FrameLayout {
             addBar(bar);
         }
     }
-
 
 
     public void createRatingBars(int maxBarValue, String labels[], int color, int raters[]) {
@@ -207,13 +207,12 @@ public class RatingReviews extends FrameLayout {
                 } else {
                     if (isRoundCorner) {
 
-
-                        view.findViewById(R.id.linear_bar_bg).setBackground(getRoundedBarDrawable(Color.parseColor("#f1f3f4"), radius));
+                        view.findViewById(R.id.linear_bar_bg).setBackground(getRoundedBarDrawable(ContextCompat.getColor(AppController.getmContext(), R.color.f1f3f4), radius));
                         view.findViewById(R.id.linear_bar).setBackground(getRoundedBarDrawable(bgColor, radius));
 
 
                     } else {
-                        view.findViewById(R.id.linear_bar_bg).setBackgroundColor(Color.parseColor("#f1f3f4"));
+                        view.findViewById(R.id.linear_bar_bg).setBackgroundColor(ContextCompat.getColor(AppController.getmContext(), R.color.f1f3f4));
                         view.findViewById(R.id.linear_bar).setBackgroundColor(bgColor);
                     }
                 }
@@ -250,13 +249,10 @@ public class RatingReviews extends FrameLayout {
         ValueAnimator anim = ValueAnimator.ofInt(
                 initialBar == null ? 0 : dimension * initialBar.getRaters() / mBarMaxValue, dimensionBar);
 
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                ViewGroup.LayoutParams layoutParams = linearLayoutBar.getLayoutParams();
-                layoutParams.width = (Integer) valueAnimator.getAnimatedValue();
-                linearLayoutBar.setLayoutParams(layoutParams);
-            }
+        anim.addUpdateListener(valueAnimator -> {
+            ViewGroup.LayoutParams layoutParams = linearLayoutBar.getLayoutParams();
+            layoutParams.width = (Integer) valueAnimator.getAnimatedValue();
+            linearLayoutBar.setLayoutParams(layoutParams);
         });
 
         if (isShowAnimation) {
@@ -266,12 +262,9 @@ public class RatingReviews extends FrameLayout {
         }
         anim.start();
 
-        view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onBarClickListener != null) {
-                    onBarClickListener.onBarClick(bar);
-                }
+        view.setOnClickListener(view1 -> {
+            if (onBarClickListener != null) {
+                onBarClickListener.onBarClick(bar);
             }
         });
 
@@ -327,12 +320,7 @@ public class RatingReviews extends FrameLayout {
 
         if (bar != null) {
             if (mLinearParentLayout.getHeight() == 0) {
-                getDimension(mLinearParentLayout, new DimensionReceivedCallback() {
-                    @Override
-                    public void onDimensionReceived(int dimension) {
-                        createBar(dimension, bar);
-                    }
-                });
+                getDimension(mLinearParentLayout, dimension -> createBar(dimension, bar));
             } else {
                 createBar(mLinearParentLayout.getWidth(), bar);
             }

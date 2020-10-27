@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="@color/white"
+                android:background="@color/fafafa"
                 android:fontFamily="sans-serif"
                 android:gravity="top"
                 android:hint="@string/write_your_thoughts_here"
@@ -103,7 +103,7 @@
             android:stateListAnimator="@null"
             android:text="@string/share"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/fffh"
             android:textSize="16sp" />
 
     </LinearLayout>

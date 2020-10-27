@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -393,7 +394,7 @@ public class GlobalSearchActivity extends BaseActivity {
             getProducts(1);
 
         searchText.setOnItemClickListener((arg0, arg1, arg2, arg3) -> {
-            nestedSV.setBackgroundColor(Color.parseColor("#fafafa"));
+            nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fafafa));
             noResult.setVisibility(View.GONE);
 
             fromFilter = false;
@@ -450,7 +451,7 @@ public class GlobalSearchActivity extends BaseActivity {
         searchText.setOnEditorActionListener((v, actionId, event) -> {
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) && (event.getAction() == KeyEvent.ACTION_DOWN))) {
 
-                nestedSV.setBackgroundColor(Color.parseColor("#fafafa"));
+                nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fafafa));
                 noResult.setVisibility(View.GONE);
 
                 minimum.setText("");
@@ -828,7 +829,7 @@ public class GlobalSearchActivity extends BaseActivity {
                         try {
 
                             if ((productList.length() < 1 && page == 1) || jsonObject.getInt("nbHits") < 1) {
-                                nestedSV.setBackgroundColor(Color.parseColor("#ffffff"));
+                                nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fff));
                                 noResult.setVisibility(View.VISIBLE);
 
                                 if (!GlobalSearchActivity.this.isFinishing()) {
@@ -845,7 +846,7 @@ public class GlobalSearchActivity extends BaseActivity {
 
                             } else {
 
-                                nestedSV.setBackgroundColor(Color.parseColor("#fafafa"));
+                                nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fafafa));
                                 noResult.setVisibility(View.GONE);
                             }
                         } catch (Exception e) {
@@ -1008,7 +1009,7 @@ public class GlobalSearchActivity extends BaseActivity {
     public void setNotFound(boolean notFound) {
 
         if (notFound && !GlobalSearchActivity.this.isFinishing()) {
-            nestedSV.setBackgroundColor(Color.parseColor("#ffffff"));
+            nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fff));
             noResult.setVisibility(View.VISIBLE);
 
             try {
@@ -1023,7 +1024,7 @@ public class GlobalSearchActivity extends BaseActivity {
 
         } else {
 
-            nestedSV.setBackgroundColor(Color.parseColor("#fafafa"));
+            nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fafafa));
             noResult.setVisibility(View.GONE);
         }
 

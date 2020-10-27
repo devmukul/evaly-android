@@ -2,7 +2,7 @@
     <color name="colorPrimary">#1a1a1a</color>
     <color name="colorPrimaryDark">#1a1a1a</color>
     <color name="colorAccentOld">#D81B60</color>
-    <color name="colorAccent">#000000</color>
+    <color name="colorAccent">#D81B60</color>
     <color name="colorAccentBlue">#6c81f7</color>
 
     <color name="fff">#1a1a1a</color>
@@ -16,9 +16,10 @@
     <color name="border_color">#ddd</color>
 
     <color name="c333">#ddd</color>
+    <color name="productDetailsBtn">#C81A1A1A</color>
 
     <color name="aaa">#444</color>
-    <color name="eee">#333</color>
+    <color name="eee">#232323</color>
     <color name="eaeaea">#333</color>
     <color name="ddd">#333</color>
     <color name="f9f9f9">#222</color>
@@ -39,13 +40,13 @@
     <color name="bgCartCount">#08FFFFFF</color>
 
     <color name="whiteBut">#1E1D1D</color>
-    <color name="app_bg">#1a1a1a</color>
-    <color name="fafafa">#242424</color>
+    <color name="app_bg">#171717</color>
+    <color name="fafafa">#171717</color>
     <color name="f1f3f4">#242424</color>
     <color name="fcfcfc">#1a1a1a</color>
 
 
-    <color name="separator_light">#242424</color>
+    <color name="separator_light">#1E1E1E</color>
     <color name="rootCategoryBg">#222</color>
 
     <color name="evaly_color_old">#bd1f26</color>

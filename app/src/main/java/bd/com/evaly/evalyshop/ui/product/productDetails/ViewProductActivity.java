@@ -834,7 +834,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     public void hideProductHolder() {
         binding.productInfo.setVisibility(View.GONE);
         binding.relatedTitle.setVisibility(View.GONE);
-        binding.progressBar.setBackgroundColor(Color.parseColor("#ffffff"));
+        binding.progressBar.setBackgroundColor(ContextCompat.getColor(this, R.color.fff));
         binding.stickyButtons.setVisibility(View.GONE);
     }
 
@@ -842,7 +842,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         binding.productInfo.setVisibility(View.VISIBLE);
         binding.relatedTitle.setVisibility(View.VISIBLE);
         binding.stickyButtons.setVisibility(View.VISIBLE);
-        binding.progressBar.setBackgroundColor(Color.parseColor("#fafafa"));
+        binding.progressBar.setBackgroundColor(ContextCompat.getColor(this, R.color.fafafa));
     }
 
     private void setLightStatusBar(Activity activity) {
@@ -851,7 +851,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
             flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             activity.getWindow().getDecorView().setSystemUiVisibility(flags);
         } else {
-            activity.getWindow().setStatusBarColor(Color.BLACK);
+            activity.getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         }
     }
 

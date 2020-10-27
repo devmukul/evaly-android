@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
@@ -115,7 +114,7 @@ public class HomeController extends EpoxyController {
                 .activity(activity)
                 .showMore(true)
                 .title("Ongoing Campaigns")
-                .transparentBackground(true)
+                .transparentBackground(false)
                 .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.campaignFragment))
                 .addTo(this);
 
@@ -145,7 +144,7 @@ public class HomeController extends EpoxyController {
                     );
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
-                    ContextCompat.getDrawable(AppController.getmContext(), R.drawable.white_to_grey_gradient);
+                    view.setBackground(ContextCompat.getDrawable(activity, R.drawable.white_to_grey_gradient));
                 })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(5, activity),

@@ -22,7 +22,7 @@
             bar:show_label="true"
             bar:show_raters="true"
             bar:spaces="12dp"
-            bar:text_color="#333333"
+            bar:text_color="@color/c333"
             bar:text_size="10sp"
             bar:width="11dp" />
 
@@ -34,7 +34,7 @@
             android:layout_marginTop="8dp"
             android:background="?android:selectableItemBackground"
             android:text="0.0"
-            android:textColor="#333333"
+            android:textColor="@color/c333"
             android:textSize="36sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +42,7 @@
 
         <RatingBar
             android:id="@+id/ratingBar"
-            style="@android:style/Widget.Material.Light.RatingBar.Small"
+            style="@android:style/Widget.Material.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
@@ -62,7 +62,7 @@
             android:layout_marginTop="2dp"
             android:gravity="center_horizontal"
             android:text="0 ratings"
-            android:textColor="#333333"
+            android:textColor="@color/c333"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="@+id/ratingBar"
             app:layout_constraintStart_toStartOf="@+id/ratingBar"

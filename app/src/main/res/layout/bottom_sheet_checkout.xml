@@ -216,7 +216,7 @@
                 android:layout_height="20dp"
                 android:layout_weight="0"
                 app:srcCompat="@drawable/ic_clock"
-                app:tint="@color/colorAccent" />
+                app:tint="@color/black" />
 
 
             <TextView
@@ -304,7 +304,7 @@
             android:background="@drawable/black_btn"
             android:stateListAnimator="@null"
             android:text="@string/place_order"
-            android:textColor="@color/fff" />
+            android:textColor="@color/fffh" />
 
     </LinearLayout>
 </layout>

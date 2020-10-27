@@ -1,6 +1,5 @@
 package bd.com.evaly.evalyshop.ui.wishlist;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,7 +109,7 @@ public class WishListFragment extends Fragment {
                 empty.setVisibility(View.GONE);
             } else {
                 empty.setVisibility(View.VISIBLE);
-                scrollView.setBackgroundColor(Color.WHITE);
+                scrollView.setBackgroundColor(getResources().getColor(R.color.white));
             }
         });
 
