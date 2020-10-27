@@ -83,7 +83,8 @@
                             android:layout_below="@id/user_name"
                             android:layout_alignStart="@id/user_name"
                             android:text="2 hours ago"
-                            android:textSize="13sp" />
+                            android:textSize="13sp"
+                            android:textColor="@color/c777"/>
 
 
                     </RelativeLayout>

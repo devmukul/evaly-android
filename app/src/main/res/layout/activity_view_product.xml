@@ -208,7 +208,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="43dp"
+            android:layout_marginBottom="40dp"
             android:background="@color/fff"
             android:paddingTop="0dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -583,7 +583,7 @@
                                         android:layout_marginLeft="10dp"
                                         android:layout_weight="0"
                                         android:text=" ৳ 6000"
-                                        android:textColor="#777"
+                                        android:textColor="@color/c777"
                                         android:textSize="12sp" />
                                 </LinearLayout>
 

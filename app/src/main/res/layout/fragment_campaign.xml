@@ -194,8 +194,8 @@
                                 android:imeOptions="actionSearch"
                                 android:maxLines="1"
                                 android:singleLine="true"
-                                android:textColor="@color/fffh"
-                                android:textColorHint="@color/fffh"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/c333"
                                 android:textSize="16sp" />
 
                             <ImageView

@@ -170,8 +170,8 @@
                             android:layout_width="14dp"
                             android:layout_height="20dp"
                             android:layout_weight="0"
-                            android:tint="@color/c333"
-                            app:srcCompat="@drawable/ic_up_down" />
+                            app:srcCompat="@drawable/ic_up_down"
+                            app:tint="@color/c333" />
 
                         <TextView
                             android:id="@+id/textView37"
@@ -238,7 +238,7 @@
                     android:layout_weight="1"
                     android:text="No results found :-("
                     android:textAlignment="center"
-                    android:textColor="#777"
+                    android:textColor="@color/c777"
                     android:textSize="20sp" />
 
                 <TextView

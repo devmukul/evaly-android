@@ -36,9 +36,9 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.databinding.FragmentCampaignBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.models.campaign.CampaignItem;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignBannerController;
 import bd.com.evaly.evalyshop.ui.campaign.controller.CampaignController;
@@ -60,6 +60,29 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
     private boolean isLoading = false;
     private boolean isExpanded = true;
     private boolean isSharingBottomShowing = true;
+    private TextWatcher searchTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            String text = binding.searchText.getText().toString().trim();
+            if (text.length() == 0) {
+                binding.clearSearch.setVisibility(View.GONE);
+                viewModel.clear();
+                viewModel.setSearch(null);
+                viewModel.loadCampaignProducts();
+            } else
+                binding.clearSearch.setVisibility(View.VISIBLE);
+        }
+    };
 
     public static CampaignFragment newInstance() {
         final CampaignFragment fragment = new CampaignFragment();
@@ -165,31 +188,6 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
         });
     }
 
-
-    private TextWatcher searchTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            String text = binding.searchText.getText().toString().trim();
-            if (text.length() == 0) {
-                binding.clearSearch.setVisibility(View.GONE);
-                viewModel.clear();
-                viewModel.setSearch(null);
-                viewModel.loadCampaignProducts();
-            } else
-                binding.clearSearch.setVisibility(View.VISIBLE);
-        }
-    };
-
     private void initSlider() {
         if (sliderController == null)
             sliderController = new CampaignBannerController();
@@ -251,12 +249,12 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                 return;
             isExpanded = true;
             darkStatusBar();
-            binding.backArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
-            binding.clearSearch.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
-            binding.buttonRight.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
-            binding.searchText.setTextColor(Color.parseColor("#777777"));
-            binding.searchText.setHintTextColor(Color.parseColor("#777777"));
-            binding.searchContainer.setBackground(AppController.getmContext().getDrawable(R.drawable.input_brd_round_light));
+            binding.backArrow.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            binding.clearSearch.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            binding.buttonRight.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            binding.searchText.setTextColor(getResources().getColor(R.color.c777));
+            binding.searchText.setHintTextColor(getResources().getColor(R.color.c777));
+            binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_light));
         } else {
             if (!isExpanded)
                 return;
@@ -269,12 +267,12 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
                 }
             }
 
-            binding.buttonRight.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-            binding.backArrow.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-            binding.clearSearch.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-            binding.searchText.setTextColor(Color.parseColor("#ffffff"));
-            binding.searchText.setHintTextColor(Color.parseColor("#ffffff"));
-            binding.searchContainer.setBackground(AppController.getmContext().getDrawable(R.drawable.input_brd_round_dark));
+            binding.buttonRight.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
+            binding.backArrow.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
+            binding.clearSearch.setColorFilter(getResources().getColor(R.color.fff), PorterDuff.Mode.SRC_ATOP);
+            binding.searchText.setTextColor(getResources().getColor(R.color.fff));
+            binding.searchText.setHintTextColor(getResources().getColor(R.color.fff));
+            binding.searchContainer.setBackground(getResources().getDrawable(R.drawable.input_brd_round_dark));
         }
     }
 
@@ -391,8 +389,11 @@ public class CampaignFragment extends Fragment implements CampaignNavigator {
             if (Build.VERSION.SDK_INT >= 23) {
                 int flags = getActivity().getWindow().getDecorView().getSystemUiVisibility();
                 flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                getActivity().getWindow().getDecorView().setSystemUiVisibility(flags);
-                getActivity().getWindow().setStatusBarColor(Color.WHITE);
+                if (CredentialManager.isDarkMode())
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
+                else
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(flags);
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.fff));
             }
         }
     }

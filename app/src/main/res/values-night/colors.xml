@@ -66,4 +66,6 @@
     <color name="color9">#C4CBEA</color>
     <color name="color10">#EAC4C4</color>
     <color name="barColor5">#db9803</color>
+    <color name="campaignBlur">#6D000000</color>
+    <color name="inputBgDark">#5EFFFFFF</color>
 </resources>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_sheet_round_create_post"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp">
+
+        <View
+            android:layout_width="60dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bottomsheet_top_brd" />
+
+        <TextView
+            android:id="@+id/fn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="@string/address"
+            android:textColor="@color/c555"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_brd_small"
+            android:gravity="top"
+            android:hint="Your full address"
+            android:inputType="textMultiLine|textPostalAddress"
+            android:minLines="4"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/c666"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="top"
+            android:orientation="horizontal">
+
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="0"
+                android:padding="1dp"
+                app:srcCompat="@drawable/ic_info_small"
+                app:tint="@color/black" />
+
+
+            <TextView
+                android:id="@+id/deliveryDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="0"
+                android:paddingLeft="5dp"
+                android:text="You can update delivery address only 2 times. For further changes, please create an issue."
+                android:textColor="@color/c666"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/input_btn_bg_small"
+            android:elevation="0dp"
+            android:stateListAnimator="@null"
+            android:text="Save Address"
+            android:textColor="@color/fffh" />
+
+    </LinearLayout>
+</layout>

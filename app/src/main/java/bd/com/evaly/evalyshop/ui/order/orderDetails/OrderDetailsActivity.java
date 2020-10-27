@@ -71,6 +71,7 @@ import java.util.Random;
 import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.controller.AppController;
+import bd.com.evaly.evalyshop.databinding.BottomSheetUpdateOrderAddressBinding;
 import bd.com.evaly.evalyshop.databinding.DialogConfirmDeliveryBinding;
 import bd.com.evaly.evalyshop.listener.DataFetchingListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
@@ -86,6 +87,7 @@ import bd.com.evaly.evalyshop.models.order.OrderStatus;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderItemsItem;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
+import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.rest.apiHelper.AuthApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.GiftCardApiHelper;
 import bd.com.evaly.evalyshop.rest.apiHelper.ImageApiHelper;
@@ -133,6 +135,8 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
     LinearLayout btnToggleTimelineHolder;
     @BindView(R.id.heroCall)
     ImageView heroCall;
+    @BindView(R.id.updateDeliveryAddress)
+    TextView updateDeliveryAddress;
 
     @BindView(R.id.vatMessage)
     TextView tvVatMessage;
@@ -360,6 +364,12 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             getOrderHistory();
             getOrderDetails();
         });
+
+        viewModel.getUpdateAddress().observe(this, response -> {
+            ToastUtils.show(response.getMessage());
+            getOrderDetails();
+            getOrderHistory();
+        });
     }
 
     private void showCodConfirmationDialog() {
@@ -507,6 +517,37 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         dialog.show();
     }
 
+
+    @SuppressLint("DefaultLocale")
+    @OnClick(R.id.updateDeliveryAddress)
+    void updateDeliveryAddressDialog() {
+        BottomSheetDialog dialog = new BottomSheetDialog(OrderDetailsActivity.this, R.style.BottomSheetDialogTheme);
+        final BottomSheetUpdateOrderAddressBinding dialogBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.bottom_sheet_update_order_address, null, false);
+
+        dialogBinding.address.setText(orderDetailsModel.getCustomerAddress());
+        dialogBinding.save.setOnClickListener(v -> {
+            if (dialogBinding.address.getText().toString().trim().length() < 5) {
+                ToastUtils.show("Please enter valid address");
+                return;
+            }
+            UpdateOrderAddressRequest body = new UpdateOrderAddressRequest();
+            body.setAddress(dialogBinding.address.getText().toString().trim());
+            body.setInvoiceNo(invoice_no);
+
+            new AlertDialog.Builder(context)
+                    .setCancelable(false)
+                    .setMessage("Are you sure you want to change delivery address?")
+                    .setPositiveButton(android.R.string.yes, (dialog1, which) -> {
+                        viewModel.updateOrderAddress(body);
+                        dialog.dismiss();
+                    })
+                    .show();
+
+        });
+        dialog.setContentView(dialogBinding.getRoot());
+        dialog.show();
+    }
+
     private void requestConfirmDelivery(Dialog alertDialog) {
 
         ProgressDialog dialog = new ProgressDialog(this);
@@ -614,7 +655,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
         addPhoto.setOnClickListener(view -> openImageSelector());
 
         btnSubmit.setOnClickListener(view -> {
-            if (orderDetailsModel == null || orderDetailsModel.getShop() == null){
+            if (orderDetailsModel == null || orderDetailsModel.getShop() == null) {
                 ToastUtils.show("Please reload the page");
                 return;
             }
@@ -1015,26 +1056,32 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
                 heroStatus.setText("Assigned for delivery");
 
                 if (orderStatus.equals("pending")) {
+                    updateDeliveryAddress.setVisibility(View.VISIBLE);
                     indicator.setCurrentStep(1);
                 } else if (orderStatus.equals("confirmed")) {
+                    updateDeliveryAddress.setVisibility(View.VISIBLE);
                     indicator.setCurrentStep(2);
                 } else if (orderStatus.equals("processing")) {
+                    updateDeliveryAddress.setVisibility(View.VISIBLE);
                     indicator.setCurrentStep(3);
                 } else if (orderStatus.equals("picked")) {
+                    updateDeliveryAddress.setVisibility(View.GONE);
                     indicator.setCurrentStep(4);
                     heroStatus.setText("Picked the order for delivery");
                 } else if (orderStatus.equals("shipped")) {
+                    updateDeliveryAddress.setVisibility(View.GONE);
                     indicator.setCurrentStep(5);
                     heroStatus.setText("Picked the order for delivery");
+                    updateDeliveryAddress.setVisibility(View.GONE);
                 } else if (orderStatus.equals("delivered")) {
                     indicator.setCurrentStep(6);
                     heroStatus.setText("Delivered the products");
                 }
 
-                if (orderDetailsModel.isApplyDeliveryCharge() && !orderDetailsModel.getOrderStatus().equalsIgnoreCase("delivered")){
+                if (orderDetailsModel.isApplyDeliveryCharge() && !orderDetailsModel.getOrderStatus().equalsIgnoreCase("delivered")) {
                     llCashCollect.setVisibility(View.VISIBLE);
-                    tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳"+ orderDetailsModel.getDeliveryCharge() +"</b> Cash to Delivery Hero."));
-                }else{
+                    tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳" + orderDetailsModel.getDeliveryCharge() + "</b> Cash to Delivery Hero."));
+                } else {
                     llCashCollect.setVisibility(View.GONE);
                 }
 
@@ -1315,7 +1362,7 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             AuthApiHelper.updateProductStatus(data, new DataFetchingListener<retrofit2.Response<JsonObject>>() {
                 @Override
                 public void onDataFetched(retrofit2.Response<JsonObject> response1) {
-                    if (response1 == null){
+                    if (response1 == null) {
                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.something_wrong), Toast.LENGTH_LONG).show();
                         return;
                     }

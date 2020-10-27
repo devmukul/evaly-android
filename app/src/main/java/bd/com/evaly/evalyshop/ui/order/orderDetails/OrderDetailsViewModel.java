@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
+import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
+import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.rest.apiHelper.OrderApiHelper;
 import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
@@ -14,6 +16,11 @@ public class OrderDetailsViewModel extends ViewModel {
     private SingleLiveEvent<Boolean> refreshPage = new SingleLiveEvent<>();
     private MutableLiveData<CommonDataResponse<String>> refundEligibilityLiveData = new MutableLiveData<>();
     private MutableLiveData<CommonDataResponse<String>> refundDeleteLiveData = new MutableLiveData<>();
+    private MutableLiveData<CommonDataResponse<OrderDetailsModel>> updateAddress = new MutableLiveData<>();
+
+    public LiveData<CommonDataResponse<OrderDetailsModel>> getUpdateAddress() {
+        return updateAddress;
+    }
 
     public LiveData<CommonDataResponse<String>> getRefundEligibilityLiveData() {
         return refundEligibilityLiveData;
@@ -21,6 +28,25 @@ public class OrderDetailsViewModel extends ViewModel {
 
     public LiveData<CommonDataResponse<String>> getRefundDeleteLiveData() {
         return refundDeleteLiveData;
+    }
+
+    public void updateOrderAddress(UpdateOrderAddressRequest body) {
+        OrderApiHelper.updateAddress(body, new ResponseListenerAuth<CommonDataResponse<OrderDetailsModel>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<OrderDetailsModel> response, int statusCode) {
+                updateAddress.setValue(response);
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
     }
 
     public void checkRefundEligibility(String invoice) {

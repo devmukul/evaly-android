@@ -47,6 +47,7 @@ import bd.com.evaly.evalyshop.models.order.OrderIssueModel;
 import bd.com.evaly.evalyshop.models.order.OrderListItem;
 import bd.com.evaly.evalyshop.models.order.orderDetails.OrderDetailsModel;
 import bd.com.evaly.evalyshop.models.order.payment.ParitalPaymentModel;
+import bd.com.evaly.evalyshop.models.order.updateAddress.UpdateOrderAddressRequest;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
 import bd.com.evaly.evalyshop.models.product.productDetails.AvailableShopModel;
 import bd.com.evaly.evalyshop.models.product.productDetails.ProductDetailsModel;
@@ -345,6 +346,8 @@ public interface IApiClient {
     Call<JsonObject> confirmDelivery(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo);
 
 
+
+
     // brand
 
     @GET(UrlUtils.BASE_URL + "public/brands/{brandSlug}/")
@@ -387,6 +390,11 @@ public interface IApiClient {
 
     @GET(UrlUtils.BASE_URL + "custom/orders/{invoiceNo}/")
     Call<OrderDetailsModel> getOrderDetails(@Header("Authorization") String token, @Path("invoiceNo") String invoiceNo);
+
+
+    @POST(UrlUtils.BASE_URL + "orders/delivery-address/update/")
+    Call<CommonDataResponse<OrderDetailsModel>> updateOrderAddress(@Header("Authorization") String token,
+                                                                   @Body UpdateOrderAddressRequest body);
 
 
     @GET(UrlUtils.BASE_URL + "orders/histories/{invoiceNo}/")

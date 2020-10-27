@@ -79,6 +79,7 @@
                             android:layout_alignParentRight="true"
                             android:layout_marginLeft="8dp"
                             android:layout_marginTop="12dp"
+                            android:textColor="@color/c777"
                             android:text="2 hours ago"
                             android:textSize="14sp" />
 
@@ -258,8 +259,8 @@
                             android:id="@+id/imageView22"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:tint="#aaa"
-                            app:srcCompat="@drawable/ic_chat_small" />
+                            app:srcCompat="@drawable/ic_chat_small"
+                            app:tint="#aaa" />
 
                         <TextView
                             android:id="@+id/textView53"
@@ -269,6 +270,7 @@
                             android:text="No replies yet"
                             android:textAlignment="center"
                             android:textAllCaps="false"
+                            android:textColor="@color/c333"
                             android:textSize="16sp" />
                     </LinearLayout>
 

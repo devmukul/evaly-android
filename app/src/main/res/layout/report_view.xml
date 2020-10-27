@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="12dp"
+                android:textColor="@color/c777"
                 android:text="@string/issue_type" />
 
             <ImageView
@@ -41,7 +42,8 @@
                 android:focusable="true"
                 android:padding="10dp"
                 android:layout_marginBottom="2dp"
-                android:src="@drawable/ic_close_vector"/>
+                android:src="@drawable/ic_close_vector"
+                app:tint="@color/black" />
         </LinearLayout>
 
         <Spinner
@@ -54,6 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="12sp"
+            android:textColor="@color/c777"
             android:text="@string/description_cap" />
 
         <EditText
@@ -64,6 +67,8 @@
             android:minLines="5"
             android:gravity="start"
             android:padding="15dp"
+            android:textColor="@color/c555"
+            android:textColorHint="@color/c777"
             android:background="@drawable/input_bg"
             android:hint="@string/write_your_issue_here"
             android:textSize="16sp" />
@@ -103,6 +108,7 @@
                     android:layout_height="18dp"
                     android:layout_weight="0"
                     android:adjustViewBounds="false"
+                    android:tint="@color/c333"
                     app:srcCompat="@drawable/ic_gallery" />
 
                 <TextView
@@ -128,7 +134,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="right"
                     android:text="@string/submit"
-                    android:textColor="@color/white"
+                    android:textColor="@color/fffh"
                     android:background="@drawable/red_rounded_bg"
                     />
             </LinearLayout>

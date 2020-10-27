@@ -238,7 +238,7 @@
                     android:layout_weight="1"
                     android:text="No results found :-("
                     android:textAlignment="center"
-                    android:textColor="#777"
+                    android:textColor="@color/c777"
                     android:textSize="20sp" />
 
                 <TextView

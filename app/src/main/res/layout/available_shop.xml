@@ -80,7 +80,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_weight="0"
                 android:text="6000"
-                android:textColor="#777"
+                android:textColor="@color/c777"
                 android:textSize="12sp" />
 
             <TextView

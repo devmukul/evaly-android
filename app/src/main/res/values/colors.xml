@@ -75,6 +75,8 @@
     <color name="bgCartBtn">#fff2f2</color>
     <color name="bgCartCount">#08430505</color>
     <color name="rootCategoryBg">#FBFCFF</color>
+    <color name="campaignBlur">#4BBABEBF</color>
+    <color name="inputBgDark">#5E000000</color>
 
 
 </resources>

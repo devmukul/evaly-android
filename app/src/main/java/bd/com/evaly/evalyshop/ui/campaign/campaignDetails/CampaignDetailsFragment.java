@@ -293,11 +293,11 @@ public class CampaignDetailsFragment extends Fragment {
         if (getActivity() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                getActivity().getWindow().setStatusBarColor(Color.WHITE);
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.fff));
             } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(0);
                 setWindowFlag(getActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-                getActivity().getWindow().setStatusBarColor(Color.BLACK);
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black));
             }
         }
     }

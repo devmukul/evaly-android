@@ -129,4 +129,11 @@ public class CredentialManager {
         MyPreference.with(AppController.mContext).addInt("message_counter", count).save();
     }
 
+    public static void setDarkMode(boolean is) {
+        MyPreference.with(AppController.mContext).addBoolean("dark_mode", is).save();
+    }
+
+    public static boolean isDarkMode(){
+        return MyPreference.with(AppController.mContext).getBoolean("dark_mode", false);
+    }
 }

@@ -79,6 +79,7 @@
                     android:layout_weight="0"
                     android:paddingLeft="10dp"
                     android:paddingRight="5dp"
+                    android:tint="@color/black"
                     app:srcCompat="@drawable/ic_reply" />
 
 

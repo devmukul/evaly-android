@@ -40,6 +40,7 @@
             android:maxLines="1"
             android:singleLine="true"
             android:imeOptions="actionGo"
+            android:textColor="@color/c666"
             android:paddingLeft="15dp"
             android:inputType="numberDecimal"
             android:textSize="16sp" />
@@ -69,6 +70,7 @@
             android:maxLines="1"
             android:singleLine="true"
             android:imeOptions="actionDone"
+            android:textColor="@color/c666"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@id/ln" />

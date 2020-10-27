@@ -37,6 +37,7 @@
             android:layout_weight="1"
             android:background="@drawable/input_brd_small"
             android:hint="Your full address"
+            android:textColor="@color/c666"
             android:inputType="textMultiLine|textPostalAddress"
             android:paddingLeft="15dp"
             android:minLines="4"

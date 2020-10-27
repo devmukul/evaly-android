@@ -731,7 +731,7 @@
                         android:paddingBottom="8dp"
                         android:text="@string/make_payment"
                         android:textAlignment="center"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/fffh" />
 
                     <TextView
                         android:id="@+id/payViaGiftCard"
@@ -764,7 +764,7 @@
                         android:paddingBottom="8dp"
                         android:text="@string/confirm_order"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="@color/fffh"
                         android:visibility="gone" />
                 </LinearLayout>
 
@@ -913,8 +913,8 @@
                             android:layout_below="@+id/billtoAddress1"
                             android:layout_marginTop="2dp"
                             android:layout_marginRight="3dp"
-                            android:tint="@color/c555"
-                            app:srcCompat="@drawable/ic_input_phone" />
+                            app:srcCompat="@drawable/ic_input_phone"
+                            app:tint="@color/c555" />
 
                         <TextView
                             android:id="@+id/billtoPhone"
@@ -923,6 +923,25 @@
                             android:layout_below="@+id/billtoAddress1"
                             android:layout_toRightOf="@+id/phone2"
                             android:autoLink="phone" />
+
+
+                        <TextView
+                            android:id="@+id/updateDeliveryAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/billtoPhone"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/btn_eee_small"
+                            android:gravity="center"
+                            android:paddingHorizontal="6dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="5dp"
+                            android:textSize="13sp"
+                            android:textColor="@color/c333"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            android:text="Update Delivery Address"/>
+
                     </RelativeLayout>
 
                 </LinearLayout>
