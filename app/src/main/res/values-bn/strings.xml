@@ -61,7 +61,6 @@
     <string name="i_agree_to_the_privacy_policy_and_terms_amp_conditions_of_evaly">আমি ইভ্যালি গোপনীয়তা নীতি এবং শর্তাবলীর সাথে সম্মত</string>
     <string name="already_have_an_account">ইতিমধ্যে আপনার একাউন্ট আছে?</string>
     <string name="recent_transactions">সাম্প্রতিক পেমেন্ট</string>
-    <string name="evaly_balance">ইভ্যালি একাউন্ট</string>
     <string name="check_account">একাউন্ট দেখুন</string>
     <string name="orders">অর্ডার</string>
     <string name="notifications">নোটিফিকেশন</string>
@@ -192,7 +191,6 @@
     <string name="bill_to">যার জন্য বিল</string>
     <string name="favorite_shops">প্রিয় দোকান</string>
     <string name="vouchers">ভাউচার</string>
-    <string name="invite_earn">ইনভাইট ও আয়</string>
     <string name="contact_us_short">যোগাযোগ করুন</string>
     <string name="announcement_cap">ঘোষণা</string>
     <string name="ceo_cap">সিইও</string>
@@ -219,17 +217,13 @@
     <string name="paid_amount">পরিশোধিত হয়েছে</string>
     <string name="due_amount">বাকি রয়েছে</string>
     <string name="order_summary">অর্ডার সংক্ষিপ্তসার</string>
-    <string name="what_is_it">এটা কি?</string>
     <string name="also_available_at">Also available at</string>
     <string name="not_available">Not Available</string>
     <string name="bkash_payment">bKash Payment</string>
     <string name="pay_via_card">Pay Via Card</string>
     <string name="payment_success_message">Payment successful! If your order\'s payment status doesn\'t get updated within 5 minutes, please contact support.</string>
     <string name="payment_error_message">Something went wrong. Please try again later.</string>
-    <string name="express">এক্সপ্রেস</string>
     <string name="confirm_order">কনফার্ম অর্ডার</string>
-    <string name="search_campaigns">ক্যাম্পেইন সার্চ করুন</string>
-    <string name="stock_out">স্টক শেষ</string>
     <string name="stock_available">স্টকে আছে</string>
     <string name="contact_seller">বিক্রেতার সাথে যোগাযোগ করুন</string>
     <string name="stock_colon_available">স্টকে আছে</string>

@@ -209,7 +209,6 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="bill_to">Bill To</string>
     <string name="favorite_shops">Favorite Shops</string>
     <string name="vouchers">Vouchers</string>
-    <string name="invite_earn"><![CDATA[Invite & Earn]]></string>
     <string name="contact_us_short">Contact Us</string>
     <string name="announcement_cap">ANNOUNCEMENT</string>
     <string name="ceo_cap">CEO</string>
@@ -347,32 +346,21 @@ It is a platform where people can purchase all kinds of goods from a single webs
     </string-array>
 
     <string name="asset_statements" translatable="false">[{\"include\": \"https://evaly.com.bd/.well-known/assetlinks.json\"}]</string>
-    <string name="what_is_it">What is it?</string>
     <string name="also_available_at">Also available at</string>
     <string name="not_available">Not Available</string>
     <string name="bkash_payment">bKash Payment</string>
     <string name="pay_via_card">Pay Via Card</string>
     <string name="payment_success_message">Payment successful! If your order\'s payment status doesn\'t get updated within 5 minutes, please contact support.</string>
     <string name="payment_error_message">Something went wrong. Please try again later.</string>
-    <string name="express">Express</string>
     <string name="confirm_order">Confirm Order</string>
-    <string name="search_campaigns">Search campaigns</string>
-    <string name="stock_out">Stock Out</string>
     <string name="stock_available">Stock Available</string>
     <string name="contact_seller">Contact Seller</string>
     <string name="stock_colon_available">Stock: Available</string>
     <string name="stock_color_contact_seller">Stock: Contact Seller</string>
-    <string name="evaly_balance">Evaly Account</string>
     <string name="networkError">Oh! You are not connected to a wifi or cellular data network. Please connect and try again</string>
     <string name="title_activity_image_slider">ImageSliderActivity</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="you_have_to_pay_delivery_fee_in_cash"><![CDATA[Please Pay <strong>Delivery Fee ৳ %1$s</strong> with Cash to Delivery Hero.]]></string>
     <string name="dark_mode">Dark Mode</string>
 

@@ -1,8 +1,5 @@
 <resources>
 
-    <dimen name="design_bottom_navigation_text_size">12sp</dimen>
-    <dimen name="design_bottom_navigation_active_text_size">12sp</dimen>
-
 
     <dimen name="nav_header_height">100dp</dimen>
 
@@ -11,5 +8,4 @@
     <dimen name="tab_height">150dp</dimen>
 
     <dimen name="eight_dp">8dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
 </resources>

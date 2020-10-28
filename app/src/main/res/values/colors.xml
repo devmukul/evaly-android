@@ -2,7 +2,6 @@
 <resources>
     <color name="colorPrimary">#fff</color>
     <color name="colorPrimaryDark">#fff</color>
-    <color name="colorAccentOld">#D81B60</color>
     <color name="colorAccent">#000000</color>
     <color name="colorAccentBlue">#6c81f7</color>
 
@@ -17,7 +16,6 @@
     <color name="black">#000000</color>
 
 
-    <color name="border_color">#eee</color>
     <color name="productDetailsBtn">#D7FFFFFF</color>
 
 
@@ -26,7 +24,6 @@
     <color name="eaeaea">#eaeaea</color>
     <color name="ddd">#ddd</color>
     <color name="f6f6f6">#f6f6f6</color>
-    <color name="f7f7f7">#f7f7f7</color>
     <color name="f9f9f9">#f9f9f9</color>
     <color name="f8f8f8">#f8f8f8</color>
     <color name="fefefe">#fefefe</color>
@@ -46,12 +43,9 @@
 
     <color name="f1f3f4">#F1F3F4</color>
 
-    <color name="fcfcfc">#fcfcfc</color>
-
     <color name="separator_light">#FAFAFA</color>
 
 
-    <color name="evaly_color_old">#bd1f26</color>
     <color name="evaly_color">#000000</color>
     <color name="transaction_color">#000000</color>
 
