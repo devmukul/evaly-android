@@ -19,7 +19,9 @@ import bd.com.evaly.evalyshop.manager.CredentialManager;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
+import dagger.hilt.android.HiltAndroidApp;
 
+@HiltAndroidApp
 public class AppController extends Application implements Application.ActivityLifecycleCallbacks {
 
     public static AppController mAppController;
