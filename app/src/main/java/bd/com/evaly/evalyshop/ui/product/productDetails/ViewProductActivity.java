@@ -45,6 +45,8 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.Executors;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
 import bd.com.evaly.evalyshop.data.roomdb.cart.CartDao;
@@ -67,6 +69,7 @@ import bd.com.evaly.evalyshop.models.product.productDetails.ProductVariantsItem;
 import bd.com.evaly.evalyshop.models.reviews.ReviewSummaryModel;
 import bd.com.evaly.evalyshop.models.shop.AvailableShop;
 import bd.com.evaly.evalyshop.models.wishlist.WishList;
+import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.ui.base.BaseActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
 import bd.com.evaly.evalyshop.ui.cart.CartActivity;
@@ -83,11 +86,18 @@ import bd.com.evaly.evalyshop.util.LocationUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.util.ViewDialog;
 import bd.com.evaly.evalyshop.util.reviewratings.BarLabels;
+import dagger.hilt.android.AndroidEntryPoint;
 import io.github.ponnamkarthik.richlinkpreview.RichLinkView;
 import io.github.ponnamkarthik.richlinkpreview.ViewListener;
 
-
+@AndroidEntryPoint
 public class ViewProductActivity extends BaseActivity implements VariantsController.SelectListener {
+
+    @Inject
+    RecommenderViewModel recommenderViewModel;
+    long startTime = System.currentTimeMillis();
+    ProductVariantsItem firstProductVariantsItem;
+
 
     private String slug = "", category = "", name = "", productImage = "";
     private double productPrice;
@@ -313,8 +323,23 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
         });
 
-
         initVariantRecycler();
+    }
+
+    private void initRecommender() {
+
+
+    }
+
+    private void updateRecommender(){
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        updateRecommender();
+        super.onDestroy();
     }
 
     private void initVariantRecycler() {
@@ -469,7 +494,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         binding.sliderPager.setVisibility(View.VISIBLE);
         binding.collapsingToolbar.setVisibility(View.VISIBLE);
 
-        ProductVariantsItem firstProductVariantsItem = productVariantsItemList.get(0);
+        firstProductVariantsItem = productVariantsItemList.get(0);
 
         specificationsItemList.clear();
         specificationsItemList.add(new ProductSpecificationsItem("Brand", firstProductVariantsItem.getBrandName(), 0));
@@ -483,6 +508,8 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         shareURL = "https://evaly.com.bd/products/" + slug;
         populateProductByVariant(firstProductVariantsItem);
         getRelatedProducts(firstProductVariantsItem.getCategorySlug());
+
+        initRecommender();
 
     }
 
