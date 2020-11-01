@@ -119,5 +119,40 @@ public class PaymentBottomSheetViewModel extends ViewModel {
 
     }
 
+    public void payViaNagad(String invoice, String amount) {
+
+        HashMap<String, String> payload = new HashMap<>();
+        payload.put("amount", amount);
+        payload.put("context", "order_payment");
+        payload.put("context_reference", invoice);
+        payload.put("source", "PC_WEB");
+
+        OrderApiHelper.payViaNagad(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+
+                if ((response != null && response.has("callBackUrl")) && !response.get("callBackUrl").isJsonNull()) {
+                    String purl = response.get("callBackUrl").getAsString();
+                    navigator.payViaCard(purl);
+                } else
+                    navigator.payViaCard("");
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+                navigator.payViaCard("");
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    payViaCard(invoice, amount);
+
+            }
+        });
+
+    }
+
 
 }

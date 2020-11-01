@@ -433,6 +433,10 @@ public interface IApiClient {
     @POST(UrlUtils.DOMAIN + "pay/pg")
     Call<JsonObject> payViaCard(@Header("Authorization") String token, @Body HashMap<String, String> body);
 
+
+    @POST(UrlUtils.DOMAIN + "pay/nagad")
+    Call<JsonObject> payViaNagad(@Header("Authorization") String token, @Body HashMap<String, String> body);
+
     @POST(UrlUtils.DOMAIN + "pay/bank_deposit/")
     Call<JsonObject> payViaBank(@Header("Authorization") String token, @Body HashMap<String, String> body);
 

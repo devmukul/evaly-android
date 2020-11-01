@@ -1414,7 +1414,10 @@ public class OrderDetailsActivity extends BaseActivity implements PaymentBottomS
             purchaseRequestInfo = new PurchaseRequestInfo(CredentialManager.getTokenNoBearer(), amount, invoice_no);
         } else {
             successURL = Constants.SSL_SUCCESS_URL;
-            paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
+            if (url.contains("nagad"))
+                paymentWebBuilder.setToolbarTitle("Pay via Nagad");
+            else
+                paymentWebBuilder.setToolbarTitle(getResources().getString(R.string.pay_via_card));
         }
 
         paymentWebBuilder.loadPaymentURL(url, successURL, purchaseRequestInfo);

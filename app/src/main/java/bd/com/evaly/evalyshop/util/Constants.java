@@ -22,6 +22,7 @@ public class Constants {
     public static final String CASH_ON_DELIVERY = "Cash on Delivery";
     public static final String EVALY_ACCOUNT = "Evaly Account";
     public static final String BKASH = "bKash";
+    public static final String NAGAD = "Nagad";
     public static final String CARD = "Card";
     public static final String BALANCE_WITH_CASH = "Evaly Account + Cash on Delivery";
     // Event specific constants
