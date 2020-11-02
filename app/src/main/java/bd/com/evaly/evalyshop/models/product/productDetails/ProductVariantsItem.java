@@ -10,6 +10,12 @@ public class ProductVariantsItem{
 	@SerializedName("category_name")
 	private String categoryName;
 
+	@SerializedName("category_image")
+	private String categoryImage;
+
+	@SerializedName("brand_image")
+	private String brandImage;
+
 	@SerializedName("brand_slug")
 	private String brandSlug;
 
@@ -58,6 +64,22 @@ public class ProductVariantsItem{
 
 	public String getCategoryName(){
 		return categoryName;
+	}
+
+	public String getCategoryImage() {
+		return categoryImage;
+	}
+
+	public void setCategoryImage(String categoryImage) {
+		this.categoryImage = categoryImage;
+	}
+
+	public String getBrandImage() {
+		return brandImage;
+	}
+
+	public void setBrandImage(String brandImage) {
+		this.brandImage = brandImage;
 	}
 
 	public void setBrandSlug(String brandSlug){

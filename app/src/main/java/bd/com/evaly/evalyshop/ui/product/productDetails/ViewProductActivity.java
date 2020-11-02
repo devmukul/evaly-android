@@ -95,7 +95,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
     @Inject
     RecommenderViewModel recommenderViewModel;
-    long startTime = System.currentTimeMillis();
+    long startTime = 0;
     ProductVariantsItem firstProductVariantsItem;
 
 
@@ -148,6 +148,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityViewProductBinding.inflate(getLayoutInflater());
+        startTime = System.currentTimeMillis();
         View view = binding.getRoot();
         setContentView(view);
 
@@ -327,12 +328,31 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     }
 
     private void initRecommender() {
+        recommenderViewModel.insert("category",
+                firstProductVariantsItem.getCategorySlug(),
+                firstProductVariantsItem.getCategoryName(),
+                firstProductVariantsItem.getCategoryImage());
 
-
+        recommenderViewModel.insert("brand",
+                firstProductVariantsItem.getBrandSlug(),
+                firstProductVariantsItem.getBrandName(),
+                firstProductVariantsItem.getBrandImage());
     }
 
-    private void updateRecommender(){
+    private void updateRecommender() {
 
+        long endTime = System.currentTimeMillis();
+        long diff = endTime - startTime;
+
+        recommenderViewModel.insert("category",
+                firstProductVariantsItem.getCategorySlug(),
+                firstProductVariantsItem.getCategoryName(),
+                firstProductVariantsItem.getCategoryImage());
+
+        recommenderViewModel.insert("brand",
+                firstProductVariantsItem.getBrandSlug(),
+                firstProductVariantsItem.getBrandName(),
+                firstProductVariantsItem.getBrandImage());
 
     }
 

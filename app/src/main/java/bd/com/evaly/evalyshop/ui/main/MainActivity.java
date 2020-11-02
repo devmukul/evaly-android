@@ -65,9 +65,11 @@ import bd.com.evaly.evalyshop.ui.voucher.VoucherActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.preference.MyPreference;
+import dagger.hilt.android.AndroidEntryPoint;
 
 import static androidx.navigation.ui.NavigationUI.onNavDestinationSelected;
 
+@AndroidEntryPoint
 public class MainActivity extends BaseActivity {
 
     public boolean isLaunchActivity = true;

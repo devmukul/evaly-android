@@ -18,8 +18,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.data.roomdb.AppDatabase;
@@ -30,6 +35,8 @@ import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
+import bd.com.evaly.evalyshop.recommender.database.table.RsEntity;
 import bd.com.evaly.evalyshop.ui.home.controller.HomeController;
 import bd.com.evaly.evalyshop.ui.main.MainActivity;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -38,8 +45,13 @@ import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+
+    @Inject
+    RecommenderViewModel recommenderViewModel;
 
     private MainActivity activity;
     private Context context;
@@ -144,6 +156,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void liveEventObservers() {
+
+        recommenderViewModel.getRsEntityLiveData().observe(getViewLifecycleOwner(), rsEntities -> {
+            Logger.d(new Gson().toJson(rsEntities));
+        });
+
         viewModel.getProductListLive().observe(getViewLifecycleOwner(), list -> {
             homeController.setLoadingMore(false);
             homeController.addData(list);
