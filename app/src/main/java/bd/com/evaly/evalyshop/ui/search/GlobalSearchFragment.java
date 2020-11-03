@@ -57,6 +57,7 @@ public class GlobalSearchFragment extends Fragment {
         viewModel.searchOnAlogia();
         viewModel.getProductList().observe(getViewLifecycleOwner(), searchHitResponses -> {
             isLoading = false;
+            controller.setLoadingMore(false);
             controller.setList(searchHitResponses);
             controller.requestModelBuild();
         });
@@ -65,6 +66,8 @@ public class GlobalSearchFragment extends Fragment {
     private void intRecyclerView() {
         if (controller == null)
             controller = new GlobalSearchController();
+
+        controller.setFilterDuplicates(true);
         binding.recyclerView.setAdapter(controller.getAdapter());
 
         int spanCount = 2;
@@ -75,13 +78,13 @@ public class GlobalSearchFragment extends Fragment {
         binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         binding.recyclerView.setLayoutManager(layoutManager);
 
-        controller.requestModelBuild();
         binding.recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
             public void loadMoreItem() {
                 if (!isLoading) {
+                    controller.setLoadingMore(true);
+                    controller.requestModelBuild();
                     viewModel.searchOnAlogia();
-                    /// controller.setLoadingMore(true);
                     isLoading = true;
                 }
             }

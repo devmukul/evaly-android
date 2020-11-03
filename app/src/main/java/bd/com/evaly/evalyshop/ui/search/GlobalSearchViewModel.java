@@ -1,5 +1,7 @@
 package bd.com.evaly.evalyshop.ui.search;
 
+import android.annotation.SuppressLint;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -9,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,13 +28,18 @@ public class GlobalSearchViewModel {
     private RequestsItem requestsItem;
     private AlgoliaRequest algoliaRequest;
     private AlgoliaParams searchParams;
-    private MutableLiveData<List<SearchHitResponse>> productList = new MutableLiveData<>();
+    private List<SearchHitResponse> productList = new ArrayList<>();
+    private MutableLiveData<List<SearchHitResponse>> productListLive = new MutableLiveData<>();
+    private int page;
 
+    @SuppressLint("DefaultLocale")
     @Inject
     public GlobalSearchViewModel() {
         searchParams = new AlgoliaParams();
+        searchParams.setPage(String.format("%d", page));
         requestsItem = new RequestsItem();
         requestsItem.setIndexName("products");
+        page = 1;
     }
 
     public AlgoliaParams getSearchParams() {
@@ -50,11 +58,20 @@ public class GlobalSearchViewModel {
         requestsItem.setIndexName(index);
     }
 
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
     public void searchOnAlogia() {
 
         requestsItem.setParams(searchParams.getParams());
         algoliaRequest = new AlgoliaRequest();
         algoliaRequest.addRequest(requestsItem);
+        searchParams.setPage(String.format("%d", page));
 
         SearchApiHelper.algoliaSearch(algoliaRequest, new ResponseListenerAuth<JsonObject, String>() {
             @Override
@@ -62,7 +79,9 @@ public class GlobalSearchViewModel {
                 JsonArray jsonArray = response.getAsJsonArray("results").get(0).getAsJsonObject().getAsJsonArray("hits");
                 Type listType = new TypeToken<List<SearchHitResponse>>() {
                 }.getType();
-                productList.setValue(new Gson().fromJson(jsonArray, listType));
+                productList.addAll(new Gson().fromJson(jsonArray, listType));
+                productListLive.setValue(productList);
+                page++;
             }
 
             @Override
@@ -78,6 +97,6 @@ public class GlobalSearchViewModel {
     }
 
     public LiveData<List<SearchHitResponse>> getProductList() {
-        return productList;
+        return productListLive;
     }
 }

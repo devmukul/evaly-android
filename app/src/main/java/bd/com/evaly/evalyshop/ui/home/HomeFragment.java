@@ -112,12 +112,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         MainViewModel mainViewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         new InitializeActionBar(view.findViewById(R.id.header_logo), getActivity(), "home", mainViewModel);
         FragmentAppBarHeaderBinding headerBinding = binding.header;
-       // headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
+
+
+//        headerBinding.homeSearch.setOnClickListener(view1 -> startActivity(new Intent(getContext(), GlobalSearchActivity.class)));
 
         headerBinding.homeSearch.setOnClickListener(view1 -> {
             navController.navigate(R.id.globalSearchFragment);
         });
-
 
         productItemList = new ArrayList<>();
 

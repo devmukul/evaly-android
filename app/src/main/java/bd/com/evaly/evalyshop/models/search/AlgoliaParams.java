@@ -78,6 +78,14 @@ public class AlgoliaParams implements Serializable {
         this.numericFilters = numericFilters;
     }
 
+    public void setPage(String page) {
+        this.page = page;
+    }
+
+    public String getPage() {
+        return page;
+    }
+
     @NonNull
     public String getQuery() {
         return query;

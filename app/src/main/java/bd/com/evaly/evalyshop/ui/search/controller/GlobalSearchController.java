@@ -1,17 +1,22 @@
 package bd.com.evaly.evalyshop.ui.search.controller;
 
+import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.EpoxyController;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.models.search.SearchHitResponse;
+import bd.com.evaly.evalyshop.ui.epoxyModels.LoadingModel_;
 import bd.com.evaly.evalyshop.ui.search.model.SearchProductGridModel_;
 
 public class GlobalSearchController extends EpoxyController {
 
-    List<SearchHitResponse> list = new ArrayList<>();
+    @AutoModel
+    LoadingModel_ loaderBottom;
 
+    private List<SearchHitResponse> list = new ArrayList<>();
+    private boolean isLoadingMore = true;
     @Override
     protected void buildModels() {
         for (Object o : list) {
@@ -28,6 +33,12 @@ public class GlobalSearchController extends EpoxyController {
                         .addTo(this);
             }
         }
+
+        loaderBottom.addIf(isLoadingMore, this);
+    }
+
+    public void setLoadingMore(boolean loadingMore) {
+        isLoadingMore = loadingMore;
     }
 
     public void setList(List<SearchHitResponse> list) {

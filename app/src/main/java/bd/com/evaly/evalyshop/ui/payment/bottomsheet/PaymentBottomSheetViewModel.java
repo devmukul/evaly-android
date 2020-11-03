@@ -143,7 +143,7 @@ public class PaymentBottomSheetViewModel extends ViewModel {
             @Override
             public void onAuthError(boolean logout) {
                 if (!logout)
-                    payViaCard(invoice, amount);
+                    payViaNagad(invoice, amount);
 
             }
         });
