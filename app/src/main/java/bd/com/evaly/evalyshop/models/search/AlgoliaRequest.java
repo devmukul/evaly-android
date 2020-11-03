@@ -1,26 +1,33 @@
 package bd.com.evaly.evalyshop.models.search;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class AlgoliaRequest{
+import java.util.ArrayList;
+import java.util.List;
 
-	@SerializedName("requests")
-	private List<RequestsItem> requests;
+public class AlgoliaRequest {
 
-	public void setRequests(List<RequestsItem> requests){
-		this.requests = requests;
-	}
+    @SerializedName("requests")
+    private List<RequestsItem> requests;
 
-	public List<RequestsItem> getRequests(){
-		return requests;
-	}
+    public void addRequest(RequestsItem requestsItem) {
+        requests = new ArrayList<>();
+        requests.add(requestsItem);
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"AlgoliaRequest{" + 
-			"requests = '" + requests + '\'' + 
-			"}";
-		}
+    public List<RequestsItem> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<RequestsItem> requests) {
+        this.requests = requests;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "AlgoliaRequest{" +
+                        "requests = '" + requests + '\'' +
+                        "}";
+    }
 }

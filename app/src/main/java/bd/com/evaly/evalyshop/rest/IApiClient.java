@@ -7,6 +7,7 @@ import com.google.gson.JsonPrimitive;
 import java.util.HashMap;
 import java.util.List;
 
+import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
@@ -430,7 +431,7 @@ public interface IApiClient {
     Call<JsonObject> payViaCard(@Header("Authorization") String token, @Body HashMap<String, String> body);
 
 
-    @POST(UrlUtils.DOMAIN + "pay/nagad")
+    @POST(BuildConfig.NAGAD_URL)
     Call<JsonObject> payViaNagad(@Header("Authorization") String token, @Body HashMap<String, String> body);
 
     @POST(UrlUtils.DOMAIN + "pay/bank_deposit/")

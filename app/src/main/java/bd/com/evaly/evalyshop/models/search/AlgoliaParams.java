@@ -65,4 +65,21 @@ public class AlgoliaParams implements Serializable {
         return Utils.urlEncodeUTF8(getMap());
     }
 
+
+    public void setQuery(@NonNull String query) {
+        this.query = query;
+    }
+
+    public void setFacetFilters(@NonNull List<List<String>> facetFilters) {
+        this.facetFilters = facetFilters;
+    }
+
+    public void setNumericFilters(@NonNull List<String> numericFilters) {
+        this.numericFilters = numericFilters;
+    }
+
+    @NonNull
+    public String getQuery() {
+        return query;
+    }
 }

@@ -280,7 +280,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                         R.drawable.ic_cash,
                         false,
                         isEnabled));
-            }  else if (paymentMethods[i].equalsIgnoreCase("card")) {
+            } else if (paymentMethods[i].equalsIgnoreCase("card")) {
                 methodList.add(new PaymentMethodModel(
                         Constants.CARD,
                         "Pay from your debit/visa/master card using \nSSL payment gateway.",
@@ -301,7 +301,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                         Constants.NAGAD,
                         "Pay from your Nagad account using \nNagad payment gateway.",
                         disabledPaymentMethodText,
-                        R.drawable.ic_nagad,
+                        R.drawable.ic_nagad2,
                         false,
                         isEnabled));
             }

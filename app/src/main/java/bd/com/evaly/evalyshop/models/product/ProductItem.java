@@ -7,141 +7,139 @@ import java.util.List;
 
 public class ProductItem {
 
-	@SerializedName("max_price")
-	private String maxPrice;
+    @SerializedName("max_price")
+    private String maxPrice;
 
-	@SerializedName("min_price")
-	private String minPrice;
+    @SerializedName("min_price")
+    private String minPrice;
 
-	@SerializedName("name")
-	private String name;
+    @SerializedName("name")
+    private String name;
 
-	@SerializedName("image_urls")
-	private List<String> imageUrls;
+    @SerializedName("image_urls")
+    private List<String> imageUrls;
 
-	@SerializedName("price_type")
-	private String priceType;
+    @SerializedName("price_type")
+    private String priceType;
 
-	@SerializedName("slug")
-	private String slug;
+    @SerializedName("slug")
+    private String slug;
 
-	@SerializedName("min_discounted_price")
-	private String minDiscountedPrice;
+    @SerializedName("min_discounted_price")
+    private String minDiscountedPrice;
 
-	private String uniqueId;
+    private String uniqueId;
 
-	//@SerializedName("in_stock")
-	private int inStock;
+    //@SerializedName("in_stock")
+    private int inStock;
 
-	public int getInStock() {
-		return inStock;
-	}
+    public int getInStock() {
+        return inStock;
+    }
 
-	public void setInStock(int inStock) {
-		this.inStock = inStock;
-	}
+    public void setInStock(int inStock) {
+        this.inStock = inStock;
+    }
 
-	public void setMaxPrice(String maxPrice){
-		this.maxPrice = maxPrice;
-	}
+    public String getMaxPrice() {
+        return maxPrice;
+    }
 
-	public String getMaxPrice(){
-		return maxPrice;
-	}
+    public void setMaxPrice(String maxPrice) {
+        this.maxPrice = maxPrice;
+    }
 
-	public void setMinPrice(String minPrice){
-		this.minPrice = minPrice;
-	}
+    public String getMinPrice() {
+        return minPrice;
+    }
 
-	public String getMinPrice(){
-		return minPrice;
-	}
+    public void setMinPrice(String minPrice) {
+        this.minPrice = minPrice;
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setImageUrls(List<String> imageUrls){
-		this.imageUrls = imageUrls;
-	}
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
 
-	public List<String> getImageUrls(){
-		return imageUrls;
-	}
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
+    }
 
-	public void setPriceType(String priceType){
-		this.priceType = priceType;
-	}
+    public String getPriceType() {
+        return priceType;
+    }
 
-	public String getPriceType(){
-		return priceType;
-	}
+    public void setPriceType(String priceType) {
+        this.priceType = priceType;
+    }
 
-	public void setSlug(String slug){
-		this.slug = slug;
-	}
+    public String getSlug() {
+        return slug;
+    }
 
-	public String getSlug(){
-		return slug;
-	}
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
-	public void setMinDiscountedPrice(String minDiscountedPrice){
-		this.minDiscountedPrice = minDiscountedPrice;
-	}
+    public String getMinDiscountedPrice() {
+        return minDiscountedPrice;
+    }
 
-	public String getMinDiscountedPrice(){
-		return minDiscountedPrice;
-	}
+    public void setMinDiscountedPrice(String minDiscountedPrice) {
+        this.minDiscountedPrice = minDiscountedPrice;
+    }
 
+    public double getMaxPriceD() {
+        try {
+            return Math.round(Double.parseDouble(maxPrice));
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
 
+    public double getMinPriceD() {
+        try {
+            return Math.round(Double.parseDouble(minPrice));
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
 
-	public double getMaxPriceD(){
-		try {
-			return Math.round(Double.parseDouble(maxPrice));
-		}catch (Exception e){
-			return 0.0;
-		}
-	}
+    public double getMinDiscountedPriceD() {
+        try {
+            return Math.round(Double.parseDouble(minDiscountedPrice));
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
 
-	public double getMinPriceD(){
-		try {
-			return Math.round(Double.parseDouble(minPrice));
-		}catch (Exception e){
-			return 0.0;
-		}
-	}
+    @Override
+    public String toString() {
+        return
+                "ProductItem{" +
+                        "max_price = '" + maxPrice + '\'' +
+                        ",min_price = '" + minPrice + '\'' +
+                        ",name = '" + name + '\'' +
+                        ",image_urls = '" + imageUrls + '\'' +
+                        ",price_type = '" + priceType + '\'' +
+                        ",slug = '" + slug + '\'' +
+                        ",min_discounted_price = '" + minDiscountedPrice + '\'' +
+                        "}";
+    }
 
-	public double getMinDiscountedPriceD(){
-		try {
-			return Math.round(Double.parseDouble(minDiscountedPrice));
-		}catch (Exception e){
-			return 0.0;
-		}
-	}
+    public String getUniqueId() {
+        return uniqueId;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"ProductItem{" +
-			"max_price = '" + maxPrice + '\'' + 
-			",min_price = '" + minPrice + '\'' + 
-			",name = '" + name + '\'' + 
-			",image_urls = '" + imageUrls + '\'' + 
-			",price_type = '" + priceType + '\'' + 
-			",slug = '" + slug + '\'' + 
-			",min_discounted_price = '" + minDiscountedPrice + '\'' + 
-			"}";
-		}
-
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 }

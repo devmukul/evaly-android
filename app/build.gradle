@@ -37,6 +37,7 @@ android {
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111666\""
             buildConfigField "String", 'BUILD', "\"prod\""
             buildConfigField "String", 'BKASH_URL', "\"https://evaly.com.bd/bkash_payment\""
+            buildConfigField "String", 'NAGAD_URL', "\"https://nagad.evaly.com.bd/\""
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -46,6 +47,7 @@ android {
             buildConfigField "String", 'EVALY_NUMBER', "\"09638111667\""
             buildConfigField "String", 'BUILD', "\"dev\""
             buildConfigField "String", 'BKASH_URL', "\"https://beta.evaly.com.bd/bkash_payment\""
+            buildConfigField "String", 'NAGAD_URL', "\"https://api-dev.evaly.com.bd/pay/nagad/\""
         }
 
         lintOptions {

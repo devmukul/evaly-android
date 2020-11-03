@@ -114,6 +114,8 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
             if (getArguments().containsKey("category"))
                 categorySlug = getArguments().getString("category");
+            else
+                categorySlug = "root";
 
             if (categorySlug == null || categorySlug.equals("root")) {
                 categorySlug = "root";
