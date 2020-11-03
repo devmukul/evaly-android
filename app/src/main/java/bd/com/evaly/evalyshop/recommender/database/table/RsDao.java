@@ -11,7 +11,6 @@ import java.util.List;
 
 import io.reactivex.Completable;
 
-import static androidx.room.OnConflictStrategy.ABORT;
 import static androidx.room.OnConflictStrategy.REPLACE;
 
 @Dao
@@ -44,9 +43,12 @@ public interface RsDao {
     @Query("SELECT * FROM recommender_table")
     LiveData<List<RsEntity>> getAllLiveData();
 
+    @Query("SELECT * FROM recommender_table WHERE type = :type ORDER BY open_count DESC")
+    LiveData<List<RsEntity>> getLiveDataByType(String type);
+
     // new events
 
-    @Query("SELECT * FROM recommender_table ORDER BY open_count, time_spent, last_opened")
+    @Query("SELECT * FROM recommender_table ORDER BY open_count, time_spent DESC")
     LiveData<List<RsEntity>> getLiveDataSorted();
 
     @Query("UPDATE recommender_table SET open_count = open_count+1, last_opened = :time WHERE type = :type AND slug = :slug")

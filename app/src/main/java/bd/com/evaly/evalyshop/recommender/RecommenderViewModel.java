@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.recommender.database.table.RsDao;
 import bd.com.evaly.evalyshop.recommender.database.table.RsEntity;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -21,17 +20,29 @@ public class RecommenderViewModel extends ViewModel {
 
     private RsDao rsDao;
     private CompositeDisposable compositeDisposable;
-    private LiveData<List<RsEntity>> rsEntityLiveData;
+    private LiveData<List<RsEntity>> rsBrandLiveData;
+    private LiveData<List<RsEntity>> rsCategoryLiveData;
+    private LiveData<List<RsEntity>> rsShopLiveData;
 
     @Inject
     public RecommenderViewModel(RsDao rsDao) {
         this.rsDao = rsDao;
-        this.rsEntityLiveData = rsDao.getAllLiveData();
+        this.rsBrandLiveData = rsDao.getLiveDataByType("brand");
+        this.rsCategoryLiveData = rsDao.getLiveDataByType("category");
+        this.rsShopLiveData = rsDao.getLiveDataByType("shop");
         this.compositeDisposable = new CompositeDisposable();
     }
 
-    public LiveData<List<RsEntity>> getRsEntityLiveData() {
-        return rsEntityLiveData;
+    public LiveData<List<RsEntity>> getRsBrandLiveData() {
+        return rsBrandLiveData;
+    }
+
+    public LiveData<List<RsEntity>> getRsCategoryLiveData() {
+        return rsCategoryLiveData;
+    }
+
+    public LiveData<List<RsEntity>> getRsShopLiveData() {
+        return rsShopLiveData;
     }
 
     public void insert(String type, String slug, String name, String image) {
@@ -56,7 +67,7 @@ public class RecommenderViewModel extends ViewModel {
     public void updateOpenCount(String type, String slug) {
         compositeDisposable.add(
                 rsDao.updateOpenedCount(type, slug, Calendar.getInstance().getTimeInMillis())
-                        .observeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.io())
                         .subscribeWith(new DisposableCompletableObserver() {
                             @Override
                             public void onComplete() {
@@ -74,7 +85,7 @@ public class RecommenderViewModel extends ViewModel {
     public void updateSpentTime(String type, String slug, long duration) {
         compositeDisposable.add(
                 rsDao.updateTimeSpent(type, slug, duration, Calendar.getInstance().getTimeInMillis())
-                        .observeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.io())
                         .subscribeWith(new DisposableCompletableObserver() {
                             @Override
                             public void onComplete() {
@@ -91,7 +102,7 @@ public class RecommenderViewModel extends ViewModel {
     public void updateSpentTimeAndCount(String type, String slug, long duration) {
         compositeDisposable.add(
                 rsDao.updateTimeSpentOpenCount(type, slug, duration, Calendar.getInstance().getTimeInMillis())
-                        .observeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.io())
                         .subscribeWith(new DisposableCompletableObserver() {
                             @Override
                             public void onComplete() {

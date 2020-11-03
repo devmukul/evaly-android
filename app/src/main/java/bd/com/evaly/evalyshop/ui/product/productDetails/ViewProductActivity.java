@@ -344,15 +344,13 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         long endTime = System.currentTimeMillis();
         long diff = endTime - startTime;
 
-        recommenderViewModel.insert("category",
+        recommenderViewModel.updateSpentTime("category",
                 firstProductVariantsItem.getCategorySlug(),
-                firstProductVariantsItem.getCategoryName(),
-                firstProductVariantsItem.getCategoryImage());
+                diff);
 
-        recommenderViewModel.insert("brand",
+        recommenderViewModel.updateSpentTime("brand",
                 firstProductVariantsItem.getBrandSlug(),
-                firstProductVariantsItem.getBrandName(),
-                firstProductVariantsItem.getBrandImage());
+                diff);
 
     }
 

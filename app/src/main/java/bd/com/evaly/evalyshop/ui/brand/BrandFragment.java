@@ -23,12 +23,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentBrandBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.rest.apiHelper.ProductApiHelper;
 import bd.com.evaly.evalyshop.ui.brand.controller.BrandController;
 import bd.com.evaly.evalyshop.ui.main.MainViewModel;
@@ -37,9 +40,14 @@ import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    RecommenderViewModel recommenderViewModel;
+    long startTime = 0;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private String slug = "", title = "", categoryString = "", imgUrl = "", categorySlug = "";
     private int currentPage = 1;
@@ -68,6 +76,7 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        startTime = System.currentTimeMillis();
         binding.swipeRefresh.setOnRefreshListener(this);
 
         if (!Utils.isNetworkAvailable(getContext()))
@@ -156,8 +165,26 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         });
         getProducts();
+        initRecommender();
     }
 
+
+    private void initRecommender() {
+        recommenderViewModel.insert("brand",
+                slug,
+                title,
+                imgUrl);
+    }
+
+    private void updateRecommender() {
+
+        long endTime = System.currentTimeMillis();
+        long diff = endTime - startTime;
+
+        recommenderViewModel.updateSpentTime("brand",
+                slug,
+                diff);
+    }
 
     private void getProducts() {
 
@@ -232,6 +259,6 @@ public class BrandFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding.recyclerView.setAdapter(null);
+        updateRecommender();
     }
 }

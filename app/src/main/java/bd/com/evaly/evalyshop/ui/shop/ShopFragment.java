@@ -28,6 +28,8 @@ import com.orhanobut.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentShopBinding;
 import bd.com.evaly.evalyshop.listener.NetworkErrorDialogListener;
@@ -38,6 +40,7 @@ import bd.com.evaly.evalyshop.models.shop.shopDetails.Data;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ItemsItem;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.Shop;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
+import bd.com.evaly.evalyshop.recommender.RecommenderViewModel;
 import bd.com.evaly.evalyshop.rest.ApiClient;
 import bd.com.evaly.evalyshop.ui.auth.SignInActivity;
 import bd.com.evaly.evalyshop.ui.buynow.BuyNowFragment;
@@ -49,10 +52,14 @@ import bd.com.evaly.evalyshop.util.InitializeActionBar;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
+import dagger.hilt.android.AndroidEntryPoint;
 
-
+@AndroidEntryPoint
 public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    RecommenderViewModel recommenderViewModel;
+    long startTime = 0;
     private ShopViewModelFactory viewModelFactory;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private String slug = "", campaign_slug = "", title = "";
@@ -92,6 +99,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        startTime = System.currentTimeMillis();
 
         if (getArguments() == null) {
             Toast.makeText(getContext(), "Shop not available", Toast.LENGTH_SHORT).show();
@@ -185,6 +194,25 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
         viewModelLiveDataObservers();
+    }
+
+
+
+    private void initRecommender() {
+        recommenderViewModel.insert("shop",
+                shopDetailsModel.getSlug(),
+                shopDetailsModel.getName(),
+                shopDetailsModel.getLogoImage());
+    }
+
+    private void updateRecommender() {
+
+        long endTime = System.currentTimeMillis();
+        long diff = endTime - startTime;
+
+        recommenderViewModel.updateSpentTime("shop",
+                shopDetailsModel.getSlug(),
+                diff);
     }
 
     private void viewModelLiveDataObservers() {
@@ -315,6 +343,8 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         binding.shimmerHolder.setVisibility(View.GONE);
                     }
                 });
+
+        initRecommender();
     }
 
     private void setUpXmpp() {
@@ -400,6 +430,7 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        updateRecommender();
     }
 
 }

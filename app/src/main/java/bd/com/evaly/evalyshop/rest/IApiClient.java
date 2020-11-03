@@ -76,7 +76,6 @@ import retrofit2.http.Url;
 public interface IApiClient {
 
 
-
     // algolia
 
     @POST("https://eza2j926q5-dsn.algolia.net/1/indexes/*/queries")
@@ -84,7 +83,6 @@ public interface IApiClient {
                                      @Query("x-algolia-application-id") String applicationId,
                                      @Query("x-algolia-api-key") String apiKey,
                                      @Body AlgoliaRequest body);
-
 
 
     // new campaign
@@ -346,8 +344,6 @@ public interface IApiClient {
     Call<JsonObject> confirmDelivery(@Header("Authorization") String token, @Path("invoice_no") String invoiceNo);
 
 
-
-
     // brand
 
     @GET(UrlUtils.BASE_URL + "public/brands/{brandSlug}/")
@@ -574,7 +570,9 @@ public interface IApiClient {
 
     // evaly express services
 
-    @GET(UrlUtils.BASE_URL + "public/express-services/")
+    // UrlUtils.BASE_URL +
+    // TODO
+    @GET("https://api.evaly.com.bd/core/public/express-services/")
     Call<List<ExpressServiceModel>> getExpressServicesList();
 
 

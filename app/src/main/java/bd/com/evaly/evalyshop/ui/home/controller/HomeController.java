@@ -26,6 +26,7 @@ import bd.com.evaly.evalyshop.models.campaign.category.CampaignCategoryResponse;
 import bd.com.evaly.evalyshop.models.campaign.products.CampaignProductResponse;
 import bd.com.evaly.evalyshop.models.express.ExpressServiceModel;
 import bd.com.evaly.evalyshop.models.product.ProductItem;
+import bd.com.evaly.evalyshop.recommender.database.table.RsEntity;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignBannerSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.campaign.model.CampaignSmallProductModel_;
@@ -40,6 +41,7 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeRsGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
@@ -78,6 +80,12 @@ public class HomeController extends EpoxyController {
     CarouselModel_ flashSaleCarousel;
     @AutoModel
     HomeExpressHeaderModel_ flashSaleHeaderModel_;
+    @AutoModel
+    HomeExpressHeaderModel_ categoryHeaderModel_;
+    @AutoModel
+    HomeExpressHeaderModel_ shopsHeaderModel_;
+    @AutoModel
+    HomeExpressHeaderModel_ brandsHeaderModel_;
 
     private AppCompatActivity activity;
     private Fragment fragment;
@@ -86,6 +94,9 @@ public class HomeController extends EpoxyController {
     private List<CampaignProductResponse> flashSaleProducts = new ArrayList<>();
     private List<ExpressServiceModel> itemsExpress = new ArrayList<>();
     private List<CampaignCategoryResponse> campaignCategoryList = new ArrayList<>();
+    private List<RsEntity> rsBrandList = new ArrayList<>();
+    private List<RsEntity> rsCategoryList = new ArrayList<>();
+    private List<RsEntity> rsShopList = new ArrayList<>();
     private AppDatabase appDatabase;
     private boolean loadingMore = true;
     private boolean isExpressLoading = true;
@@ -109,7 +120,6 @@ public class HomeController extends EpoxyController {
                 .addTo(this);
 
 
-        //campaign carousel
         campaignHeaderModel_
                 .activity(activity)
                 .showMore(true)
@@ -117,6 +127,233 @@ public class HomeController extends EpoxyController {
                 .transparentBackground(false)
                 .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.campaignFragment))
                 .addTo(this);
+
+        initCampaignCarousel();
+
+        flashSaleHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Flash Sale")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> {
+                    for (CampaignCategoryResponse s : campaignCategoryList) {
+                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("model", s);
+                            NavHostFragment.findNavController(fragment).navigate(R.id.campaignDetails, bundle);
+                            return;
+                        }
+                    }
+                    ToastUtils.show("Please visit campaign page");
+                })
+                .addIf(flashSaleProducts.size() > 0, this);
+
+        initFlashSaleCarousel();
+
+        expressHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Evaly Express")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.expressProductSearchFragment))
+                .addTo(this);
+
+        initExpressCarousel();
+
+        categoryHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Categories for you")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> {
+
+                })
+                .addIf(rsCategoryList.size() > 0, this);
+
+        initCategoryCarousel();
+
+        shopsHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Shops for you")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> {
+
+                })
+                .addIf(rsShopList.size() > 0, this);
+        initShopCarousel();
+
+        brandsHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Brands for you")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> {
+
+                })
+                .addIf(rsBrandList.size() > 0, this);
+        initBrandsCarousel();
+
+
+        productHeaderModel_
+                .title("Products")
+                .showMore(false)
+                .transparentBackground(true)
+                .addTo(this);
+
+        new EmptySpaceModel_()
+                .id("empty_space_10")
+                .height(15)
+                .addTo(this);
+
+
+        // product listing
+        for (ProductItem productItem : items) {
+            new HomeProductGridModel_()
+                    .id(productItem.getSlug())
+                    .model(productItem)
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        ProductItem item = model.getModel();
+                        Intent intent = new Intent(activity, ViewProductActivity.class);
+                        intent.putExtra("product_slug", item.getSlug());
+                        intent.putExtra("product_name", item.getName());
+                        intent.putExtra("product_price", item.getMaxPrice());
+                        if (item.getImageUrls().size() > 0)
+                            intent.putExtra("product_image", item.getImageUrls().get(0));
+                        activity.startActivity(intent);
+                    })
+                    .addTo(this);
+        }
+
+        // bottom loading bar
+        loader.addIf(loadingMore, this);
+    }
+
+    private void initCategoryCarousel() {
+
+
+        List<DataBindingEpoxyModel> models = new ArrayList<>();
+
+        for (RsEntity item : rsCategoryList) {
+            models.add(new HomeRsGridModel_()
+                    .id("rs_Category", item.getSlug())
+                    .title(item.getName())
+                    .image(item.getImageUrl())
+                    .slug(item.getSlug())
+                    .type(item.getType())
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("slug", model.slug());
+                        bundle.putString("category", model.slug());
+                        NavHostFragment.findNavController(fragment).navigate(R.id.browseProductFragment, bundle);
+                    }));
+        }
+
+        new CarouselModel_()
+                .id("carousel", "rs_categories")
+                .models(models)
+                .onBind((model, view, position) -> {
+                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    params.setFullSpan(true);
+                    view.setLayoutParams(params);
+                })
+                .padding(new Carousel.Padding(
+                        (int) Utils.convertDpToPixel(15, activity),
+                        (int) Utils.convertDpToPixel(12, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity)))
+                .addIf(rsCategoryList.size() > 0, this);
+    }
+
+
+    private void initBrandsCarousel() {
+
+
+
+        List<DataBindingEpoxyModel> models = new ArrayList<>();
+
+        for (RsEntity item : rsBrandList) {
+            models.add(new HomeRsGridModel_()
+                    .id("rs_brand", item.getSlug())
+                    .title(item.getName())
+                    .image(item.getImageUrl())
+                    .slug(item.getSlug())
+                    .type(item.getType())
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("brand_slug", model.slug());
+                        bundle.putString("brand_name", model.title());
+                        bundle.putString("image_url", model.image());
+                        NavHostFragment.findNavController(fragment).navigate(R.id.brandFragment, bundle);
+                    }));
+        }
+
+        new CarouselModel_()
+                .id("carousel", "rs_brands")
+                .models(models)
+                .onBind((model, view, position) -> {
+                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    params.setFullSpan(true);
+                    view.setLayoutParams(params);
+                })
+                .padding(new Carousel.Padding(
+                        (int) Utils.convertDpToPixel(15, activity),
+                        (int) Utils.convertDpToPixel(12, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity)))
+                .addIf(rsBrandList.size() > 0, this);
+    }
+
+
+    private void initShopCarousel() {
+
+        List<DataBindingEpoxyModel> models = new ArrayList<>();
+
+        for (RsEntity item : rsShopList) {
+            models.add(new HomeRsGridModel_()
+                    .id("rs_brand", item.getSlug())
+                    .title(item.getName())
+                    .image(item.getImageUrl())
+                    .slug(item.getSlug())
+                    .type(item.getType())
+                    .clickListener((model, parentView, clickedView, position) -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("shop_slug", model.slug());
+                        bundle.putString("shop_name", model.title());
+                        NavHostFragment.findNavController(fragment).navigate(R.id.shopFragment, bundle);
+                    }));
+        }
+
+        new CarouselModel_()
+                .id("carousel", "rs_shops")
+                .models(models)
+                .onBind((model, view, position) -> {
+                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    params.setFullSpan(true);
+                    view.setLayoutParams(params);
+                })
+                .padding(new Carousel.Padding(
+                        (int) Utils.convertDpToPixel(15, activity),
+                        (int) Utils.convertDpToPixel(12, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity)))
+                .addIf(rsShopList.size() > 0, this);
+    }
+
+    private void initCampaignCarousel() {
+        //campaign carousel
 
 
         List<DataBindingEpoxyModel> campaignSkeletonItemModels = new ArrayList<>();
@@ -154,72 +391,10 @@ public class HomeController extends EpoxyController {
                         0))
                 .addTo(this);
 
+    }
 
-        //flash sale carousel
-        flashSaleHeaderModel_
-                .activity(activity)
-                .showMore(true)
-                .title("Flash Sale")
-                .transparentBackground(true)
-                .clickListener((model, parentView, clickedView, position) -> {
-                    for (CampaignCategoryResponse s : campaignCategoryList) {
-                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("model", s);
-                            NavHostFragment.findNavController(fragment).navigate(R.id.campaignDetails, bundle);
-                            return;
-                        }
-                    }
-                    ToastUtils.show("Please visit campaign page");
-                })
-                .addIf(flashSaleProducts.size() > 0, this);
-
-        List<DataBindingEpoxyModel> flashSaleModels = new ArrayList<>();
-
-        for (CampaignProductResponse item : flashSaleProducts) {
-            flashSaleModels.add(new CampaignSmallProductModel_()
-                    .id("flashsale", item.getSlug())
-                    .clickListener((model, parentView, clickedView, position) -> {
-                        CampaignProductResponse item1 = model.model();
-                        Intent intent = new Intent(activity, ViewProductActivity.class);
-                        intent.putExtra("product_slug", item1.getSlug());
-                        intent.putExtra("product_name", item1.getName());
-                        intent.putExtra("product_price", item1.getPrice());
-                        if (item.getShopSlug() != null)
-                            intent.putExtra("shop_slug", item.getShopSlug());
-                        intent.putExtra("product_image", item1.getImage());
-                        intent.putExtra("cashback_text", item1.getCashbackText());
-                        activity.startActivity(intent);
-                    })
-                    .model(item));
-        }
-
-        flashSaleCarousel
-                .models(flashSaleModels)
-                .onBind((model, view, position) -> {
-                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-                    params.setFullSpan(true);
-                    view.setLayoutParams(params);
-                })
-                .padding(new Carousel.Padding(
-                        (int) Utils.convertDpToPixel(15, activity),
-                        (int) Utils.convertDpToPixel(12, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity),
-                        (int) Utils.convertDpToPixel(10, activity)))
-                .addIf(flashSaleModels.size() > 0, this);
-
+    private void initExpressCarousel() {
         //express services carousel
-        expressHeaderModel_
-                .activity(activity)
-                .showMore(true)
-                .title("Evaly Express")
-                .transparentBackground(true)
-                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.expressProductSearchFragment))
-                .addTo(this);
 
 
         List<DataBindingEpoxyModel> expressItemModels = new ArrayList<>();
@@ -263,44 +438,61 @@ public class HomeController extends EpoxyController {
                         (int) Utils.convertDpToPixel(0, activity),
                         0))
                 .addTo(this);
+    }
 
-//        tabsModel.activity(activity)
-//                .fragmentInstance(fragment)
-//                .homeViewModel(homeViewModel)
-//                .addTo(this);
-
-        productHeaderModel_
-                .title("Products")
-                .showMore(false)
-                .transparentBackground(true)
-                .addTo(this);
-
-        new EmptySpaceModel_()
-                .id("empty_space_10")
-                .height(15)
-                .addTo(this);
+    private void initFlashSaleCarousel() {
+        //flash sale carousel
 
 
-        // product listing
-        for (ProductItem productItem : items) {
-            new HomeProductGridModel_()
-                    .id(productItem.getSlug())
-                    .model(productItem)
+        List<DataBindingEpoxyModel> flashSaleModels = new ArrayList<>();
+
+        for (CampaignProductResponse item : flashSaleProducts) {
+            flashSaleModels.add(new CampaignSmallProductModel_()
+                    .id("flashsale", item.getSlug())
                     .clickListener((model, parentView, clickedView, position) -> {
-                        ProductItem item = model.getModel();
+                        CampaignProductResponse item1 = model.model();
                         Intent intent = new Intent(activity, ViewProductActivity.class);
-                        intent.putExtra("product_slug", item.getSlug());
-                        intent.putExtra("product_name", item.getName());
-                        intent.putExtra("product_price", item.getMaxPrice());
-                        if (item.getImageUrls().size() > 0)
-                            intent.putExtra("product_image", item.getImageUrls().get(0));
+                        intent.putExtra("product_slug", item1.getSlug());
+                        intent.putExtra("product_name", item1.getName());
+                        intent.putExtra("product_price", item1.getPrice());
+                        if (item.getShopSlug() != null)
+                            intent.putExtra("shop_slug", item.getShopSlug());
+                        intent.putExtra("product_image", item1.getImage());
+                        intent.putExtra("cashback_text", item1.getCashbackText());
                         activity.startActivity(intent);
                     })
-                    .addTo(this);
+                    .model(item));
         }
 
-        // bottom loading bar
-        loader.addIf(loadingMore, this);
+        flashSaleCarousel
+                .models(flashSaleModels)
+                .onBind((model, view, position) -> {
+                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    params.setFullSpan(true);
+                    view.setLayoutParams(params);
+                })
+                .padding(new Carousel.Padding(
+                        (int) Utils.convertDpToPixel(15, activity),
+                        (int) Utils.convertDpToPixel(12, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity),
+                        (int) Utils.convertDpToPixel(10, activity)))
+                .addIf(flashSaleModels.size() > 0, this);
+    }
+
+    public void setRsBrandList(List<RsEntity> rsBrandList) {
+        this.rsBrandList = rsBrandList;
+    }
+
+    public void setRsCategoryList(List<RsEntity> rsCategoryList) {
+        this.rsCategoryList = rsCategoryList;
+    }
+
+    public void setRsShopList(List<RsEntity> rsShopList) {
+        this.rsShopList = rsShopList;
     }
 
     public void setFlashSaleProducts(List<CampaignProductResponse> flashSaleProducts) {
