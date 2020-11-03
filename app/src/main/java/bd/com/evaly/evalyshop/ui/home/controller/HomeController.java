@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
+import com.airbnb.epoxy.CarouselModel_;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
-import com.airbnb.epoxy.EpoxyModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +77,7 @@ public class HomeController extends EpoxyController {
     @AutoModel
     HomeExpressSkeletonModel_ expressSkeletonBindingModel_;
     @AutoModel
-    HomeRsCarouselModel_ campaignCategoryCarousel;
+    CarouselModel_ campaignCategoryCarousel;
     @AutoModel
     HomeRsCarouselModel_ flashSaleCarousel;
     @AutoModel
@@ -128,11 +128,11 @@ public class HomeController extends EpoxyController {
                 .addTo(this);
 
 
-//        initCampaignCarousel();
-//
-//        initFlashSaleCarousel();
+        initCampaignCarousel();
 
-      //  initExpressCarousel();
+        initFlashSaleCarousel();
+
+        initExpressCarousel();
 
         initCategoryCarousel();
 
@@ -212,20 +212,7 @@ public class HomeController extends EpoxyController {
         categoryCarousel
                 .models(models)
                 .initialPrefetchItemCount(5)
-                .onBind((model, view, position) -> {
-                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-                    params.setFullSpan(true);
-                    view.setLayoutParams(params);
-                })
-                .spanSizeOverride(new EpoxyModel.SpanSizeOverrideCallback() {
-                    @Override
-                    public int getSpanSize(int totalSpanCount, int position, int itemCount) {
-                        return 2;
-                    }
-                })
+                .spanSizeOverride((totalSpanCount, position, itemCount) -> 2)
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
                         (int) Utils.convertDpToPixel(12, activity),
@@ -272,15 +259,6 @@ public class HomeController extends EpoxyController {
         brandCarousel
                 .models(models)
                 .initialPrefetchItemCount(5)
-//                .onBind((model, view, position) -> {
-//                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-//                            ViewGroup.LayoutParams.MATCH_PARENT,
-//                            ViewGroup.LayoutParams.WRAP_CONTENT
-//                    );
-//                    params.setFullSpan(true);
-//                    view.setLayoutParams(params);
-//                    view.setMinimumHeight(1000);
-//                })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
                         (int) Utils.convertDpToPixel(12, activity),
@@ -326,15 +304,6 @@ public class HomeController extends EpoxyController {
         shopCarousel
                 .models(models)
                 .initialPrefetchItemCount(5)
-//                .onBind((model, view, position) -> {
-//                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-//                            ViewGroup.LayoutParams.MATCH_PARENT,
-//                            ViewGroup.LayoutParams.WRAP_CONTENT
-//                    );
-//                    params.setFullSpan(true);
-//                    view.setLayoutParams(params);
-//                    view.setMinimumHeight(1000);
-//                })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
                         (int) Utils.convertDpToPixel(12, activity),
@@ -343,6 +312,7 @@ public class HomeController extends EpoxyController {
                         (int) Utils.convertDpToPixel(10, activity)))
                 .addIf(rsShopList.size() > 0, this);
     }
+
 
     private void initCampaignCarousel() {
         //campaign carousel
