@@ -17,10 +17,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
+import bd.com.evaly.evalyshop.models.BaseModel;
+import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.search.AlgoliaParams;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
 import bd.com.evaly.evalyshop.models.search.RequestsItem;
 import bd.com.evaly.evalyshop.models.search.SearchHitResponse;
+import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.SearchApiHelper;
 
 public class GlobalSearchViewModel {
@@ -28,9 +31,11 @@ public class GlobalSearchViewModel {
     private RequestsItem requestsItem;
     private AlgoliaRequest algoliaRequest;
     private AlgoliaParams searchParams;
-    private List<SearchHitResponse> productList = new ArrayList<>();
-    private MutableLiveData<List<SearchHitResponse>> productListLive = new MutableLiveData<>();
+    private List<BaseModel> productList = new ArrayList<>();
+    private MutableLiveData<List<BaseModel>> productListLive = new MutableLiveData<>();
     private int page;
+    private String type;
+    private String query;
 
     @SuppressLint("DefaultLocale")
     @Inject
@@ -51,7 +56,7 @@ public class GlobalSearchViewModel {
     }
 
     public void setSearchQuery(String query) {
-        searchParams.setQuery(query);
+        this.query = query;
     }
 
     public void setIndex(String index) {
@@ -68,6 +73,7 @@ public class GlobalSearchViewModel {
 
     public void searchOnAlogia() {
 
+        searchParams.setQuery(query);
         requestsItem.setParams(searchParams.getParams());
         algoliaRequest = new AlgoliaRequest();
         algoliaRequest.addRequest(requestsItem);
@@ -96,7 +102,30 @@ public class GlobalSearchViewModel {
         });
     }
 
-    public LiveData<List<SearchHitResponse>> getProductList() {
+
+    public void getShops(){
+
+        SearchApiHelper.searchShops(page, query, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<ShopItem>> response, int statusCode) {
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
+
+
+    }
+
+    public LiveData<List<BaseModel>> getProductList() {
         return productListLive;
     }
 }

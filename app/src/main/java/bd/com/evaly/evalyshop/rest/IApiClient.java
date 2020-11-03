@@ -77,6 +77,11 @@ import retrofit2.http.Url;
 public interface IApiClient {
 
 
+    @GET(UrlUtils.BASE_URL + "custom/shops/")
+    Call<CommonDataResponse<List<ShopItem>>> searchShop(@Query("page") int page,
+                                                        @Query("limit") int limit,
+                                                        @Query("search") String search);
+
     // algolia
 
     @POST("https://eza2j926q5-dsn.algolia.net/1/indexes/*/queries")

@@ -2,7 +2,9 @@ package bd.com.evaly.evalyshop.models.search;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SearchHitResponse{
+import bd.com.evaly.evalyshop.models.BaseModel;
+
+public class SearchHitResponse extends BaseModel{
 
 	@SerializedName("category_name")
 	private String categoryName;
