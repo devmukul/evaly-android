@@ -53,6 +53,12 @@ public class OrderApiHelper extends BaseApiHelper {
     }
 
 
+    public static void payViaNagad(String token, HashMap<String, String> body, ResponseListenerAuth<JsonObject, String> listener) {
+
+        getiApiClient().payViaNagad(token, body).enqueue(getResponseCallBackDefault(listener));
+    }
+
+
     public static void getOrderDetails(String token, String invoiceNo, ResponseListenerAuth<OrderDetailsModel, String> listener) {
 
         getiApiClient().getOrderDetails(token, invoiceNo).enqueue(getResponseCallBackDefault(listener));

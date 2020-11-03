@@ -95,9 +95,40 @@ public class PaymentBottomSheetViewModel extends ViewModel {
         OrderApiHelper.payViaCard(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
             @Override
             public void onDataFetched(JsonObject response, int statusCode) {
-
                 if ((response != null && response.has("payment_gateway_url")) && !response.get("payment_gateway_url").isJsonNull()) {
                     String purl = response.get("payment_gateway_url").getAsString();
+                    navigator.payViaCard(purl);
+                } else
+                    navigator.payViaCard("");
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+                navigator.payViaCard("");
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+                if (!logout)
+                    payViaCard(invoice, amount);
+            }
+        });
+
+    }
+
+    public void payViaNagad(String invoice, String amount) {
+
+        HashMap<String, String> payload = new HashMap<>();
+        payload.put("amount", amount);
+        payload.put("context", "order_payment");
+        payload.put("context_reference", invoice);
+        payload.put("source", "MOBILE_APP");
+
+        OrderApiHelper.payViaNagad(CredentialManager.getToken(), payload, new ResponseListenerAuth<JsonObject, String>() {
+            @Override
+            public void onDataFetched(JsonObject response, int statusCode) {
+                if ((response != null && response.has("callBackUrl")) && !response.get("callBackUrl").isJsonNull()) {
+                    String purl = response.get("callBackUrl").getAsString();
                     navigator.payViaCard(purl);
                 } else
                     navigator.payViaCard("");

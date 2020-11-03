@@ -170,11 +170,11 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
             onPaymentConfirmOnClick();
         });
 
-        if (applyDeliveryFee){
+        if (applyDeliveryFee) {
             binding.llCashCollect.setVisibility(View.VISIBLE);
-            binding.tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳"+ deliveryFee +"</b> Cash to Delivery Hero."));
+            binding.tvDeliveryFee.setText(Html.fromHtml("Please Pay Delivery Fee <b>৳" + deliveryFee + "</b> Cash to Delivery Hero."));
 
-        }else{
+        } else {
             binding.llCashCollect.setVisibility(View.GONE);
         }
 
@@ -229,6 +229,10 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
         } else if (method.getName().equalsIgnoreCase(Constants.CARD)) {
             Toast.makeText(getContext(), "Opening to payment gateway!", Toast.LENGTH_SHORT).show();
             viewModel.payViaCard(invoice_no, enteredAmount);
+        }
+        if (method.getName().equalsIgnoreCase(Constants.NAGAD)) {
+            Toast.makeText(getContext(), "Opening to Nagad gateway!", Toast.LENGTH_SHORT).show();
+            viewModel.payViaNagad(invoice_no, enteredAmount);
         } else {
             ToastUtils.show("Payment is not possible, please try again");
         }
@@ -276,7 +280,7 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                         R.drawable.ic_cash,
                         false,
                         isEnabled));
-            } else if (paymentMethods[i].equalsIgnoreCase("card")) {
+            }  else if (paymentMethods[i].equalsIgnoreCase("card")) {
                 methodList.add(new PaymentMethodModel(
                         Constants.CARD,
                         "Pay from your debit/visa/master card using \nSSL payment gateway.",
@@ -292,9 +296,16 @@ public class PaymentBottomSheet extends BottomSheetDialogFragment implements Pay
                         R.drawable.payment_bkash_square,
                         false,
                         isEnabled));
+            } else if (paymentMethods[i].equalsIgnoreCase("nagad")) {
+                methodList.add(new PaymentMethodModel(
+                        Constants.NAGAD,
+                        "Pay from your Nagad account using \nNagad payment gateway.",
+                        disabledPaymentMethodText,
+                        R.drawable.ic_nagad,
+                        false,
+                        isEnabled));
             }
         }
-
 
         controller.loadData(methodList, true);
     }

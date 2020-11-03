@@ -58,7 +58,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/ordered_by_mistake"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@color/c333"/>
 
                 <RadioButton
                     android:id="@+id/radioButton5"
@@ -66,7 +67,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="@string/changed_my_mind"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@color/c333"/>
 
                 <RadioButton
                     android:id="@+id/radioButton4"
@@ -74,7 +76,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="@string/entered_wrong_information"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@color/c333"/>
 
                 <RadioButton
                     android:id="@+id/radioButton3"
@@ -82,7 +85,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="@string/selected_wrong_product_variant"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@color/c333"/>
 
                 <RadioButton
                     android:id="@+id/radioButton2"
@@ -90,7 +94,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="@string/want_to_buy_from_another_seller"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@color/c333"/>
 
                 <RadioButton
                     android:id="@+id/radioButton"
@@ -98,7 +103,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="@string/other_reason"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@color/c333"/>
             </RadioGroup>
 
 
