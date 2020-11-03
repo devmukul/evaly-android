@@ -340,6 +340,8 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
     }
 
     private void updateRecommender() {
+        if (firstProductVariantsItem == null)
+            return;
 
         long endTime = System.currentTimeMillis();
         long diff = endTime - startTime;
@@ -351,7 +353,6 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
         recommenderViewModel.updateSpentTime("brand",
                 firstProductVariantsItem.getBrandSlug(),
                 diff);
-
     }
 
     @Override

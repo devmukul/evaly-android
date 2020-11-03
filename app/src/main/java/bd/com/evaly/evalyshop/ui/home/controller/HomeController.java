@@ -46,6 +46,7 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeWidgetModel_;
 import bd.com.evaly.evalyshop.ui.product.productDetails.ViewProductActivity;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchActivity;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ToastUtils;
 import bd.com.evaly.evalyshop.util.Utils;
@@ -120,81 +121,26 @@ public class HomeController extends EpoxyController {
                 .addTo(this);
 
 
-        campaignHeaderModel_
-                .activity(activity)
-                .showMore(true)
-                .title("Ongoing Campaigns")
-                .transparentBackground(false)
-                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.campaignFragment))
-                .addTo(this);
-
         initCampaignCarousel();
-
-        flashSaleHeaderModel_
-                .activity(activity)
-                .showMore(true)
-                .title("Flash Sale")
-                .transparentBackground(true)
-                .clickListener((model, parentView, clickedView, position) -> {
-                    for (CampaignCategoryResponse s : campaignCategoryList) {
-                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("model", s);
-                            NavHostFragment.findNavController(fragment).navigate(R.id.campaignDetails, bundle);
-                            return;
-                        }
-                    }
-                    ToastUtils.show("Please visit campaign page");
-                })
-                .addIf(flashSaleProducts.size() > 0, this);
 
         initFlashSaleCarousel();
 
-        expressHeaderModel_
-                .activity(activity)
-                .showMore(true)
-                .title("Evaly Express")
-                .transparentBackground(true)
-                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.expressProductSearchFragment))
-                .addTo(this);
-
         initExpressCarousel();
-
-        categoryHeaderModel_
-                .activity(activity)
-                .showMore(true)
-                .title("Categories for you")
-                .transparentBackground(true)
-                .clickListener((model, parentView, clickedView, position) -> {
-
-                })
-                .addIf(rsCategoryList.size() > 0, this);
 
         initCategoryCarousel();
 
-        shopsHeaderModel_
-                .activity(activity)
-                .showMore(true)
-                .title("Shops for you")
-                .transparentBackground(true)
-                .clickListener((model, parentView, clickedView, position) -> {
-
-                })
-                .addIf(rsShopList.size() > 0, this);
         initShopCarousel();
 
-        brandsHeaderModel_
-                .activity(activity)
-                .showMore(true)
-                .title("Brands for you")
-                .transparentBackground(true)
-                .clickListener((model, parentView, clickedView, position) -> {
-
-                })
-                .addIf(rsBrandList.size() > 0, this);
         initBrandsCarousel();
 
 
+        initProductGrid();
+
+        // bottom loading bar
+        loader.addIf(loadingMore, this);
+    }
+
+    private void initProductGrid() {
         productHeaderModel_
                 .title("Products")
                 .showMore(false)
@@ -224,13 +170,19 @@ public class HomeController extends EpoxyController {
                     })
                     .addTo(this);
         }
-
-        // bottom loading bar
-        loader.addIf(loadingMore, this);
     }
 
     private void initCategoryCarousel() {
 
+        categoryHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Categories for you")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> {
+                    NavHostFragment.findNavController(fragment).navigate(R.id.categoryFragment);
+                })
+                .addIf(rsCategoryList.size() > 0, this);
 
         List<DataBindingEpoxyModel> models = new ArrayList<>();
 
@@ -241,6 +193,7 @@ public class HomeController extends EpoxyController {
                     .image(item.getImageUrl())
                     .slug(item.getSlug())
                     .type(item.getType())
+                    .color("#255A82D3")
                     .clickListener((model, parentView, clickedView, position) -> {
                         Bundle bundle = new Bundle();
                         bundle.putString("slug", model.slug());
@@ -272,7 +225,17 @@ public class HomeController extends EpoxyController {
 
     private void initBrandsCarousel() {
 
-
+        brandsHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Brands for you")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> {
+                    Intent intent = new Intent(activity, GlobalSearchActivity.class);
+                    intent.putExtra("type", 2);
+                    activity.startActivity(intent);
+                })
+                .addIf(rsBrandList.size() > 0, this);
 
         List<DataBindingEpoxyModel> models = new ArrayList<>();
 
@@ -283,6 +246,7 @@ public class HomeController extends EpoxyController {
                     .image(item.getImageUrl())
                     .slug(item.getSlug())
                     .type(item.getType())
+                    .color("#1DA11818")
                     .clickListener((model, parentView, clickedView, position) -> {
                         Bundle bundle = new Bundle();
                         bundle.putString("brand_slug", model.slug());
@@ -315,6 +279,18 @@ public class HomeController extends EpoxyController {
 
     private void initShopCarousel() {
 
+        shopsHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Shops for you")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> {
+                    Intent intent = new Intent(activity, GlobalSearchActivity.class);
+                    intent.putExtra("type", 3);
+                    activity.startActivity(intent);
+                })
+                .addIf(rsShopList.size() > 0, this);
+
         List<DataBindingEpoxyModel> models = new ArrayList<>();
 
         for (RsEntity item : rsShopList) {
@@ -324,6 +300,7 @@ public class HomeController extends EpoxyController {
                     .image(item.getImageUrl())
                     .slug(item.getSlug())
                     .type(item.getType())
+                    .color("#2AECBC26")
                     .clickListener((model, parentView, clickedView, position) -> {
                         Bundle bundle = new Bundle();
                         bundle.putString("shop_slug", model.slug());
@@ -355,6 +332,13 @@ public class HomeController extends EpoxyController {
     private void initCampaignCarousel() {
         //campaign carousel
 
+        campaignHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Ongoing Campaigns")
+                .transparentBackground(false)
+                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.campaignFragment))
+                .addTo(this);
 
         List<DataBindingEpoxyModel> campaignSkeletonItemModels = new ArrayList<>();
         for (int i = 0; i < 3; i++)
@@ -395,7 +379,13 @@ public class HomeController extends EpoxyController {
 
     private void initExpressCarousel() {
         //express services carousel
-
+        expressHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Evaly Express")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> NavHostFragment.findNavController(fragment).navigate(R.id.expressProductSearchFragment))
+                .addTo(this);
 
         List<DataBindingEpoxyModel> expressItemModels = new ArrayList<>();
         int count = 0;
@@ -443,6 +433,23 @@ public class HomeController extends EpoxyController {
     private void initFlashSaleCarousel() {
         //flash sale carousel
 
+        flashSaleHeaderModel_
+                .activity(activity)
+                .showMore(true)
+                .title("Flash Sale")
+                .transparentBackground(true)
+                .clickListener((model, parentView, clickedView, position) -> {
+                    for (CampaignCategoryResponse s : campaignCategoryList) {
+                        if (s.getSlug().equals(Constants.FLASH_SALE_SLUG)) {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("model", s);
+                            NavHostFragment.findNavController(fragment).navigate(R.id.campaignDetails, bundle);
+                            return;
+                        }
+                    }
+                    ToastUtils.show("Please visit campaign page");
+                })
+                .addIf(flashSaleProducts.size() > 0, this);
 
         List<DataBindingEpoxyModel> flashSaleModels = new ArrayList<>();
 

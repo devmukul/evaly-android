@@ -206,10 +206,10 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void updateRecommender() {
-
+        if (shopDetailsModel == null)
+            return;
         long endTime = System.currentTimeMillis();
         long diff = endTime - startTime;
-
         recommenderViewModel.updateSpentTime("shop",
                 shopDetailsModel.getSlug(),
                 diff);
@@ -427,11 +427,11 @@ public class ShopFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        updateRecommender();
-    }
 
+    @Override
+    public void onDestroy() {
+        updateRecommender();
+        super.onDestroy();
+    }
 }
 

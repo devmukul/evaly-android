@@ -43,9 +43,11 @@ public abstract class HomeRsGridModel extends DataBindingEpoxyModel {
     @EpoxyAttribute
     String type;
 
+    @EpoxyAttribute
+    String color;
+
     @EpoxyAttribute(DoNotHash)
     View.OnClickListener clickListener;
-
 
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
@@ -74,6 +76,9 @@ public abstract class HomeRsGridModel extends DataBindingEpoxyModel {
                           }
                 )
                 .into(binding.image);
+
+        if (color != null)
+            binding.cardView.setCardBackgroundColor(Color.parseColor(color));
 
         binding.getRoot().setOnClickListener(clickListener);
 
