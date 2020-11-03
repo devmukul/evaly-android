@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Carousel;
-import com.airbnb.epoxy.CarouselModel_;
 import com.airbnb.epoxy.DataBindingEpoxyModel;
 import com.airbnb.epoxy.EpoxyController;
+import com.airbnb.epoxy.EpoxyModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +41,7 @@ import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressServiceSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeExpressSkeletonModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeProductGridModel_;
+import bd.com.evaly.evalyshop.ui.home.model.HomeRsCarouselModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeRsGridModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeSliderModel_;
 import bd.com.evaly.evalyshop.ui.home.model.HomeTabsModel_;
@@ -76,9 +77,15 @@ public class HomeController extends EpoxyController {
     @AutoModel
     HomeExpressSkeletonModel_ expressSkeletonBindingModel_;
     @AutoModel
-    CarouselModel_ campaignCategoryCarousel;
+    HomeRsCarouselModel_ campaignCategoryCarousel;
     @AutoModel
-    CarouselModel_ flashSaleCarousel;
+    HomeRsCarouselModel_ flashSaleCarousel;
+    @AutoModel
+    HomeRsCarouselModel_ categoryCarousel;
+    @AutoModel
+    HomeRsCarouselModel_ shopCarousel;
+    @AutoModel
+    HomeRsCarouselModel_ brandCarousel;
     @AutoModel
     HomeExpressHeaderModel_ flashSaleHeaderModel_;
     @AutoModel
@@ -121,11 +128,11 @@ public class HomeController extends EpoxyController {
                 .addTo(this);
 
 
-        initCampaignCarousel();
+//        initCampaignCarousel();
+//
+//        initFlashSaleCarousel();
 
-        initFlashSaleCarousel();
-
-        initExpressCarousel();
+      //  initExpressCarousel();
 
         initCategoryCarousel();
 
@@ -193,7 +200,7 @@ public class HomeController extends EpoxyController {
                     .image(item.getImageUrl())
                     .slug(item.getSlug())
                     .type(item.getType())
-                    .color("#255A82D3")
+                    .color("#175A82D3")
                     .clickListener((model, parentView, clickedView, position) -> {
                         Bundle bundle = new Bundle();
                         bundle.putString("slug", model.slug());
@@ -202,9 +209,9 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        new CarouselModel_()
-                .id("carousel", "rs_categories")
+        categoryCarousel
                 .models(models)
+                .initialPrefetchItemCount(5)
                 .onBind((model, view, position) -> {
                     StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -212,6 +219,12 @@ public class HomeController extends EpoxyController {
                     );
                     params.setFullSpan(true);
                     view.setLayoutParams(params);
+                })
+                .spanSizeOverride(new EpoxyModel.SpanSizeOverrideCallback() {
+                    @Override
+                    public int getSpanSize(int totalSpanCount, int position, int itemCount) {
+                        return 2;
+                    }
                 })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
@@ -246,7 +259,7 @@ public class HomeController extends EpoxyController {
                     .image(item.getImageUrl())
                     .slug(item.getSlug())
                     .type(item.getType())
-                    .color("#1DA11818")
+                    .color("#12A11818")
                     .clickListener((model, parentView, clickedView, position) -> {
                         Bundle bundle = new Bundle();
                         bundle.putString("brand_slug", model.slug());
@@ -256,17 +269,18 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        new CarouselModel_()
-                .id("carousel", "rs_brands")
+        brandCarousel
                 .models(models)
-                .onBind((model, view, position) -> {
-                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-                    params.setFullSpan(true);
-                    view.setLayoutParams(params);
-                })
+                .initialPrefetchItemCount(5)
+//                .onBind((model, view, position) -> {
+//                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+//                            ViewGroup.LayoutParams.MATCH_PARENT,
+//                            ViewGroup.LayoutParams.WRAP_CONTENT
+//                    );
+//                    params.setFullSpan(true);
+//                    view.setLayoutParams(params);
+//                    view.setMinimumHeight(1000);
+//                })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
                         (int) Utils.convertDpToPixel(12, activity),
@@ -300,7 +314,7 @@ public class HomeController extends EpoxyController {
                     .image(item.getImageUrl())
                     .slug(item.getSlug())
                     .type(item.getType())
-                    .color("#2AECBC26")
+                    .color("#1BECBC26")
                     .clickListener((model, parentView, clickedView, position) -> {
                         Bundle bundle = new Bundle();
                         bundle.putString("shop_slug", model.slug());
@@ -309,17 +323,18 @@ public class HomeController extends EpoxyController {
                     }));
         }
 
-        new CarouselModel_()
-                .id("carousel", "rs_shops")
+        shopCarousel
                 .models(models)
-                .onBind((model, view, position) -> {
-                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-                    params.setFullSpan(true);
-                    view.setLayoutParams(params);
-                })
+                .initialPrefetchItemCount(5)
+//                .onBind((model, view, position) -> {
+//                    StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(
+//                            ViewGroup.LayoutParams.MATCH_PARENT,
+//                            ViewGroup.LayoutParams.WRAP_CONTENT
+//                    );
+//                    params.setFullSpan(true);
+//                    view.setLayoutParams(params);
+//                    view.setMinimumHeight(1000);
+//                })
                 .padding(new Carousel.Padding(
                         (int) Utils.convertDpToPixel(15, activity),
                         (int) Utils.convertDpToPixel(12, activity),
