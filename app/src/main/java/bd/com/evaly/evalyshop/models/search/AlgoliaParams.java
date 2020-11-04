@@ -16,7 +16,7 @@ public class AlgoliaParams implements Serializable {
     private Gson gson;
     @NonNull
     private String query;
-    private String page;
+    private int page;
     private String maxValuesPerFacet;
     @NonNull
     private String highlightPreTag;
@@ -38,7 +38,7 @@ public class AlgoliaParams implements Serializable {
 
         query = "";
         maxValuesPerFacet = "20";
-        page = "1";
+        page = 1;
         highlightPreTag = "<ais-highlight-0000000000>";
         highlightPostTag = "</ais-highlight-0000000000>";
         tagFilters = "";
@@ -79,11 +79,11 @@ public class AlgoliaParams implements Serializable {
         this.numericFilters = numericFilters;
     }
 
-    public void setPage(String page) {
+    public void setPage(int page) {
         this.page = page;
     }
 
-    public String getPage() {
+    public int getPage() {
         return page;
     }
 
