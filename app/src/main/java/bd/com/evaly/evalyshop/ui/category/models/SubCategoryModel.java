@@ -9,6 +9,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -72,7 +73,7 @@ public abstract class SubCategoryModel extends DataBindingEpoxyModel {
                 })
                 .apply(new RequestOptions().override(260, 260))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_evaly_placeholder)
+                .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
                 .into(binding.image);
 
         binding.getRoot().setOnClickListener(clickListener);

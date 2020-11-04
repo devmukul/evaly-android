@@ -8,6 +8,7 @@ import android.text.Html;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.ViewDataBinding;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
@@ -60,7 +61,7 @@ public abstract class RootCategoryModel extends DataBindingEpoxyModel {
                 .skipMemoryCache(true)
                 .apply(new RequestOptions().override(260, 260))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_evaly_placeholder)
+                .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
                 .into(binding.image);
 
         binding.categoryItem.setOnClickListener(clickListener);

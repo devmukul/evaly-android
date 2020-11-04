@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.ViewDataBinding;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
@@ -64,7 +65,7 @@ public abstract class HomeRsGridModel extends DataBindingEpoxyModel {
                 .load(image)
                 .apply(new RequestOptions().override(260, 260))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_evaly_placeholder)
+                .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
                 .listener(new RequestListener<Drawable>() {
                               @Override
                               public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

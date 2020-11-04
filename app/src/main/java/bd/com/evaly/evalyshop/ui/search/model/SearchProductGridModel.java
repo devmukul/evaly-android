@@ -5,6 +5,7 @@ import android.text.Html;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -63,7 +64,7 @@ public abstract class SearchProductGridModel extends DataBindingEpoxyModel {
                 .apply(new RequestOptions().override(300, 300))
                 .load(image)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_evaly_placeholder)
+                .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
                 .into(binding.image);
 
 

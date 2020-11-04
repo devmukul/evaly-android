@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -63,7 +64,7 @@ public abstract class HomeProductGridModel extends DataBindingEpoxyModel {
                 .apply(new RequestOptions().override(300, 300))
                 .load(model.getImageUrls().get(0))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_evaly_placeholder)
+                .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
                 .into(binding.image);
 
         if (cashbackRate == 0)

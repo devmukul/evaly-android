@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -74,7 +75,7 @@ public abstract class ShopHeaderModel extends EpoxyModelWithHolder<ShopHeaderMod
             Glide.with(binding.getRoot())
                     .load(shop.getLogoImage())
                     .skipMemoryCache(true)
-                    .placeholder(R.drawable.ic_evaly_placeholder)
+                    .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.ic_evaly_placeholder))
                     .into(binding.logo);
 
             subCount = shopInfo.getData().getSubscriberCount();

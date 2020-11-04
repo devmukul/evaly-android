@@ -10,7 +10,7 @@
     <color name="transparent">@android:color/transparent</color>
 
     <color name="white">#1a1a1a</color>
-    <color name="black">#fafafa</color>
+    <color name="black">#eeeeee</color>
 
     <color name="c333">#ddd</color>
     <color name="productDetailsBtn">#C81A1A1A</color>

@@ -622,7 +622,7 @@ public class ViewProductActivity extends BaseActivity implements VariantsControl
 
         Glide.with(this)
                 .asBitmap()
-                .placeholder(R.drawable.ic_evaly_placeholder)
+                .placeholder(ContextCompat.getDrawable(this, R.drawable.ic_evaly_placeholder))
                 .load(shop.getShopImage())
                 .into(binding.shopLogo);
 

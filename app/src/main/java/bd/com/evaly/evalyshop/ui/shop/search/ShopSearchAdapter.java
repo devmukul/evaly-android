@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -99,7 +100,7 @@ public class ShopSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         .apply(new RequestOptions().override(260, 260))
                         .load(model.getItemImages().get(0))
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .placeholder(R.drawable.ic_evaly_placeholder)
+                        .placeholder(ContextCompat.getDrawable(context, R.drawable.ic_evaly_placeholder))
                         .into(holder.imageViewAndroid);
 
 

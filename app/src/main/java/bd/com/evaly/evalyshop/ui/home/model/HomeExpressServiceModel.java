@@ -4,6 +4,7 @@ import android.util.TypedValue;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.ViewDataBinding;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel;
@@ -35,7 +36,6 @@ public abstract class HomeExpressServiceModel extends DataBindingEpoxyModel {
         return model;
     }
 
-
     @Override
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
@@ -57,7 +57,7 @@ public abstract class HomeExpressServiceModel extends DataBindingEpoxyModel {
         Glide.with(binding.getRoot())
                 .asBitmap()
                 .load(model.getAppLogo() == null ? model.getImage() : model.getAppLogo())
-                .placeholder(R.drawable.bg_fafafa_round)
+                .placeholder(ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.bg_f8f8f8_round))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(binding.image);
 
@@ -69,9 +69,9 @@ public abstract class HomeExpressServiceModel extends DataBindingEpoxyModel {
         binding.getRoot().setOnClickListener(clickListener);
     }
 
-
     @Override
     protected void setDataBindingVariables(ViewDataBinding binding) {
+
     }
 
 }

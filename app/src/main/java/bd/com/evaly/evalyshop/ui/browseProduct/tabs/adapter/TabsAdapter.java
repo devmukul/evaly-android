@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -158,7 +159,7 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.MyViewHolder> 
                 .load(model.getImage())
                 .apply(new RequestOptions().override(240, 240))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_evaly_placeholder)
+                .placeholder(ContextCompat.getDrawable(context, R.drawable.ic_evaly_placeholder))
                 .listener(new RequestListener<Drawable>() {
                               @Override
                               public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

@@ -207,12 +207,12 @@ public class RatingReviews extends FrameLayout {
                 } else {
                     if (isRoundCorner) {
 
-                        view.findViewById(R.id.linear_bar_bg).setBackground(getRoundedBarDrawable(ContextCompat.getColor(AppController.getmContext(), R.color.f1f3f4), radius));
+                        view.findViewById(R.id.linear_bar_bg).setBackground(getRoundedBarDrawable(ContextCompat.getColor(getContext(), R.color.f1f3f4), radius));
                         view.findViewById(R.id.linear_bar).setBackground(getRoundedBarDrawable(bgColor, radius));
 
 
                     } else {
-                        view.findViewById(R.id.linear_bar_bg).setBackgroundColor(ContextCompat.getColor(AppController.getmContext(), R.color.f1f3f4));
+                        view.findViewById(R.id.linear_bar_bg).setBackgroundColor(ContextCompat.getColor(getContext(), R.color.f1f3f4));
                         view.findViewById(R.id.linear_bar).setBackgroundColor(bgColor);
                     }
                 }
@@ -300,24 +300,19 @@ public class RatingReviews extends FrameLayout {
                 });
     }
 
-
     public void setOnBarClickListener(OnBarClickListener onBarClickListener) {
         this.onBarClickListener = onBarClickListener;
     }
-
 
     public void addBar(final Bar bar) {
         addBar(mBars.size(), bar);
     }
 
-
     public void addBar(final int position, final Bar bar) {
         if (position > mNumOfBars) {
             return;
         }
-
         mBars.add(bar);
-
         if (bar != null) {
             if (mLinearParentLayout.getHeight() == 0) {
                 getDimension(mLinearParentLayout, dimension -> createBar(dimension, bar));
@@ -326,12 +321,10 @@ public class RatingReviews extends FrameLayout {
             }
         }
     }
-
-
+    
     public void clearAll() {
         mBars.clear();
         mLinearParentLayout.removeAllViews();
-
     }
 
     private interface DimensionReceivedCallback {

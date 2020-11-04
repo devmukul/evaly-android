@@ -4,6 +4,8 @@ import android.util.Base64;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.core.content.ContextCompat;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
@@ -11,7 +13,6 @@ import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.models.image.Background;
 import bd.com.evaly.evalyshop.models.image.CloudFrontRequest;
 import bd.com.evaly.evalyshop.models.image.Edits;
@@ -62,7 +63,7 @@ public class BindingUtils {
                     .asBitmap()
                     .load(generateResizeUrl(url, width, height, whiteBg))
                     .error(errorImage)
-                    .placeholder(placeHolder)
+                    .placeholder(ContextCompat.getDrawable(view.getContext(), placeHolder))
                     .into(view);
         else
             Glide.with(view.getContext())
@@ -70,7 +71,7 @@ public class BindingUtils {
                     .load(url)
                     .error(errorImage)
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .placeholder(placeHolder)
+                    .placeholder(ContextCompat.getDrawable(view.getContext(), placeHolder))
                     .into(view);
     }
 
