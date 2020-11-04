@@ -99,6 +99,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
         else {
             spinnerAdapter.add("bKash");
             spinnerAdapter.add("Bank");
+            spinnerAdapter.add("Nagad");
         }
 
         binding.spRefundOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -112,7 +113,7 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
                 if (paymentType.equals("Evaly Account") || paymentType.equals("Debit/Credit Card")) {
                     binding.llBkashHolder.setVisibility(View.GONE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
-                } else if (paymentType.equals("bKash")) {
+                } else if (paymentType.equals("bKash") || paymentType.equals("Nagad")) {
                     binding.llBkashHolder.setVisibility(View.VISIBLE);
                     binding.llBankInfoHolder.setVisibility(View.GONE);
                 } else if (paymentType.equals("Bank")) {
@@ -140,16 +141,27 @@ public class RefundBottomSheet extends BottomSheetDialogFragment {
             if (paymentType.equals("Evaly Account")) {
                 body.put("refund_type", "Balance");
             } else if (paymentType.equals("bKash")) {
-                String bkashNumber = binding.etbKashNumber.getText().toString().trim();
+                String bkashNumber = binding.etNumber.getText().toString().trim();
                 if (bkashNumber.equals("")) {
-                    Toast.makeText(getContext(), "Please enter bKash number.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please enter your bKash account number.", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (!Utils.isValidNumber(bkashNumber)) {
-                    Toast.makeText(getContext(), "Please enter valid bKash number.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please enter valid bKash account number.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 body.put("refund_type", "Bkash");
                 body.put("bkash_account", bkashNumber);
+            } else if (paymentType.equals("Nagad")) {
+                String number = binding.etNumber.getText().toString().trim();
+                if (number.equals("")) {
+                    Toast.makeText(getContext(), "Please enter your Nagad account number.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (!Utils.isValidNumber(number)) {
+                    Toast.makeText(getContext(), "Please enter valid Nagad account number.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                body.put("refund_type", "Nagad");
+                body.put("nagad_account ", number);
             } else if (paymentType.equals("Bank")) {
                 String bankName = binding.etBankName.getText().toString().trim();
                 String branchName = binding.etBranch.getText().toString().trim();

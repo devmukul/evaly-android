@@ -54,12 +54,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="bKash Number"
+                android:text="Account Number"
                 android:textColor="@color/c333" />
 
 
             <EditText
-                android:id="@+id/etbKashNumber"
+                android:id="@+id/etNumber"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="5dp"
