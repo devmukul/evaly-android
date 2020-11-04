@@ -57,6 +57,7 @@ import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
 import bd.com.evaly.evalyshop.models.shop.GroupShopModel;
 import bd.com.evaly.evalyshop.models.shop.shopDetails.ShopDetailsModel;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.models.transaction.TransactionItem;
 import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.UrlUtils;
@@ -76,9 +77,15 @@ import retrofit2.http.Url;
 
 public interface IApiClient {
 
+    //TabsItem
+
+    @GET(UrlUtils.BASE_URL + "public/brands/")
+    Call<CommonDataResponse<List<TabsItem>>> searchBrands(@Query("page") int page,
+                                                          @Query("limit") int limit,
+                                                          @Query("search") String search);
 
     @GET(UrlUtils.BASE_URL + "custom/shops/")
-    Call<CommonDataResponse<List<ShopItem>>> searchShop(@Query("page") int page,
+    Call<CommonDataResponse<List<TabsItem>>> searchShop(@Query("page") int page,
                                                         @Query("limit") int limit,
                                                         @Query("search") String search);
 

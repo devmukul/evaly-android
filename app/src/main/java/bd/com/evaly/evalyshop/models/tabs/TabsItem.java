@@ -1,13 +1,27 @@
 package bd.com.evaly.evalyshop.models.tabs;
 
-public class TabsItem {
+
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class TabsItem implements Serializable {
 
     private int type;
+
+    @SerializedName(value = "name", alternate = "shop_name")
     private String title;
+
+    @SerializedName(value = "image_url", alternate = "shop_image")
     private String image;
+
+    @SerializedName("slug")
     private String slug;
+
     private String category;
+
     private String campaignSlug = "";
+
     private boolean isSelected;
 
     public TabsItem() {

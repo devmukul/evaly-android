@@ -68,8 +68,8 @@
                     android:paddingTop="9dp"
                     android:paddingBottom="9dp"
                     android:tag="search"
-                    android:tint="@color/c444"
-                    app:srcCompat="@drawable/ic_search" />
+                    app:srcCompat="@drawable/ic_search"
+                    app:tint="@color/c444" />
 
             </LinearLayout>
 
@@ -125,8 +125,8 @@
                         android:layout_width="11dp"
                         android:layout_height="18dp"
                         android:layout_weight="0"
-                        android:tint="@color/c333"
-                        app:srcCompat="@drawable/ic_filter" />
+                        app:srcCompat="@drawable/ic_filter"
+                        app:tint="@color/c333" />
 
                     <TextView
                         android:id="@+id/textView17"
@@ -161,8 +161,8 @@
                         android:layout_width="14dp"
                         android:layout_height="20dp"
                         android:layout_weight="0"
-                        android:tint="@color/c333"
-                        app:srcCompat="@drawable/ic_up_down" />
+                        app:srcCompat="@drawable/ic_up_down"
+                        app:tint="@color/c333" />
 
                     <TextView
                         android:id="@+id/textView37"
@@ -201,120 +201,5 @@
             tools:listitem="@layout/home_model_product_grid" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-    <LinearLayout
-        android:id="@+id/drawer_rel"
-        android:layout_width="340dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="5dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView39"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_weight="0"
-                android:text="Price Range"
-                android:textColor="@color/c555"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="0"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/minimum"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/input_brd"
-                    android:hint="Minimum"
-                    android:inputType="number"
-                    android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-                <View
-                    android:id="@+id/view5"
-                    android:layout_width="6dp"
-                    android:layout_height="2dp"
-                    android:layout_weight="0"
-                    android:background="@color/c666" />
-
-                <EditText
-                    android:id="@+id/maximum"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-
-                    android:background="@drawable/input_brd"
-                    android:hint="Maximum"
-                    android:inputType="number"
-                    android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/filterRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="1"
-                android:nestedScrollingEnabled="false" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/clear"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#f45550"
-                android:padding="15dp"
-                android:text="CLEAR"
-                android:textAlignment="center"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/header"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#00c3aa"
-                android:padding="15dp"
-                android:text="Apply"
-                android:textAlignment="center"
-                android:textColor="@color/white" />
-        </LinearLayout>
-
-    </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

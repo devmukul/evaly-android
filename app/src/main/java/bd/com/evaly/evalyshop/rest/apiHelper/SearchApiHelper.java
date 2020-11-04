@@ -8,6 +8,7 @@ import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
 import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 
 public class SearchApiHelper extends BaseApiHelper {
 
@@ -17,8 +18,12 @@ public class SearchApiHelper extends BaseApiHelper {
                 "ca9abeea06c16b7d531694d6783a8f04", body).enqueue(getResponseCallBackDefault(listener));
     }
 
-    public static void searchShops(int page, String search, ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String> listener) {
+    public static void searchShops(int page, String search, ResponseListenerAuth<CommonDataResponse<List<TabsItem>>, String> listener) {
         getiApiClient().searchShop(page, 20, search).enqueue(getResponseCallBackDefault(listener));
+    }
+
+    public static void searchBrands(int page, String search, ResponseListenerAuth<CommonDataResponse<List<TabsItem>>, String> listener) {
+        getiApiClient().searchBrands(page, 20, search).enqueue(getResponseCallBackDefault(listener));
     }
 
 }

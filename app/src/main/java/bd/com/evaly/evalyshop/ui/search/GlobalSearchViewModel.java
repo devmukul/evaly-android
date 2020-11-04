@@ -23,7 +23,7 @@ import bd.com.evaly.evalyshop.models.search.AlgoliaParams;
 import bd.com.evaly.evalyshop.models.search.AlgoliaRequest;
 import bd.com.evaly.evalyshop.models.search.RequestsItem;
 import bd.com.evaly.evalyshop.models.search.SearchHitResponse;
-import bd.com.evaly.evalyshop.models.shop.shopItem.ShopItem;
+import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.SearchApiHelper;
 
 public class GlobalSearchViewModel {
@@ -103,11 +103,11 @@ public class GlobalSearchViewModel {
     }
 
 
-    public void getShops(){
+    public void getShops() {
 
-        SearchApiHelper.searchShops(page, query, new ResponseListenerAuth<CommonDataResponse<List<ShopItem>>, String>() {
+        SearchApiHelper.searchShops(page, query, new ResponseListenerAuth<CommonDataResponse<List<TabsItem>>, String>() {
             @Override
-            public void onDataFetched(CommonDataResponse<List<ShopItem>> response, int statusCode) {
+            public void onDataFetched(CommonDataResponse<List<TabsItem>> response, int statusCode) {
 
             }
 
@@ -122,6 +122,27 @@ public class GlobalSearchViewModel {
             }
         });
 
+
+    }
+
+    public void getBrands() {
+
+        SearchApiHelper.searchBrands(page, query, new ResponseListenerAuth<CommonDataResponse<List<TabsItem>>, String>() {
+            @Override
+            public void onDataFetched(CommonDataResponse<List<TabsItem>> response, int statusCode) {
+
+            }
+
+            @Override
+            public void onFailed(String errorBody, int errorCode) {
+
+            }
+
+            @Override
+            public void onAuthError(boolean logout) {
+
+            }
+        });
 
     }
 
