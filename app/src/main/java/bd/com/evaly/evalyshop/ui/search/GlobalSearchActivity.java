@@ -160,146 +160,122 @@ public class GlobalSearchActivity extends BaseActivity {
         filterRecyclerView.setAdapter(filterAdapter);
 
 
-        filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        filter.setOnClickListener(v -> {
 
 
-                if (searchType.getSelectedItemPosition() == 1 || searchType.getSelectedItemPosition() == 2) {
-                    Toast.makeText(GlobalSearchActivity.this, "You can use filters while searching for products", Toast.LENGTH_LONG).show();
-                    return;
-                }
+            if (searchType.getSelectedItemPosition() == 1 || searchType.getSelectedItemPosition() == 2) {
+                Toast.makeText(GlobalSearchActivity.this, "You can use filters while searching for products", Toast.LENGTH_LONG).show();
+                return;
+            }
 
 
-                if (mDrawerLayout.isDrawerOpen(drawerRel)) {
-                    mDrawerLayout.closeDrawer(drawerRel);
-                } else {
-                    mDrawerLayout.openDrawer(drawerRel);
-                }
+            if (mDrawerLayout.isDrawerOpen(drawerRel)) {
+                mDrawerLayout.closeDrawer(drawerRel);
+            } else {
+                mDrawerLayout.openDrawer(drawerRel);
             }
         });
 
-        applyFilterBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        applyFilterBtn.setOnClickListener(v -> {
+            // hide keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            //or try following:
+            //InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+            searchText.clearFocus();
 
+            // ["brand_name:Individual Collections","brand_name:Savlon"],["category_name:Casing","category_name:Sanitary Pads"]
 
-                // hide keyboard
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                //or try following:
-                //InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
-                searchText.clearFocus();
+            JSONArray category_name = new JSONArray();
+            JSONArray brand_name = new JSONArray();
+            JSONArray color = new JSONArray();
 
+            for (int i = 0; i < filterItemlist.size(); i++) {
 
-                // ["brand_name:Individual Collections","brand_name:Savlon"],["category_name:Casing","category_name:Sanitary Pads"]
+                SearchFilterItem item = filterItemlist.get(i);
+                if (item.isSelected()) {
 
-
-                JSONArray category_name = new JSONArray();
-                JSONArray brand_name = new JSONArray();
-                JSONArray color = new JSONArray();
-
-                for (int i = 0; i < filterItemlist.size(); i++) {
-
-                    SearchFilterItem item = filterItemlist.get(i);
-
-                    if (item.isSelected()) {
-
-
-                        if (item.getType().equals("category_name"))
-                            category_name.put("category_name:" + item.getName());
-                        else if (item.getType().equals("brand_name"))
-                            brand_name.put("brand_name:" + item.getName());
-                        else if (item.getType().equals("color"))
-                            color.put("color:" + item.getName());
-
-
-                    }
-
-
-                }
-
-                // filter json generator
-
-                JSONArray facetFiltersJSON = new JSONArray();
-
-                if (category_name.length() > 0)
-                    facetFiltersJSON.put(category_name);
-
-                if (brand_name.length() > 0)
-                    facetFiltersJSON.put(brand_name);
-
-                if (color.length() > 0)
-                    facetFiltersJSON.put(color);
-                filterJSON = facetFiltersJSON.toString();
-
-
-                // min max price filter generator
-
-                String min = minimum.getText().toString();
-                String max = maximum.getText().toString();
-
-                if (min.equals("") && max.equals(""))
-                    priceFilterJSON = "[\"price>=10\"]";
-                else if (min.equals(""))
-                    priceFilterJSON = "[\"price>=10\",\"price<=" + max + "\"]";
-                else if (max.equals(""))
-                    priceFilterJSON = "[\"price>=" + min + "\"]";
-                else
-                    priceFilterJSON = "[\"price>=" + min + "\",\"price<=" + max + "\"]";
-
-
-                Log.d("json price filter", priceFilterJSON);
-
-
-                itemListProduct.clear();
-
-
-                fromFilter = true;
-
-
-                page = 1;
-
-                getProducts(page);
-
-
-                if (mDrawerLayout.isDrawerOpen(drawerRel)) {
-                    mDrawerLayout.closeDrawer(drawerRel);
-                } else {
-                    mDrawerLayout.openDrawer(drawerRel);
+                    if (item.getType().equals("category_name"))
+                        category_name.put("category_name:" + item.getName());
+                    else if (item.getType().equals("brand_name"))
+                        brand_name.put("brand_name:" + item.getName());
+                    else if (item.getType().equals("color"))
+                        color.put("color:" + item.getName());
                 }
             }
-        });
 
-        clearFilters.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            // filter json generator
 
-                page = 1;
+            JSONArray facetFiltersJSON = new JSONArray();
 
-                filterJSON = "[]";
+            if (category_name.length() > 0)
+                facetFiltersJSON.put(category_name);
+
+            if (brand_name.length() > 0)
+                facetFiltersJSON.put(brand_name);
+
+            if (color.length() > 0)
+                facetFiltersJSON.put(color);
+            filterJSON = facetFiltersJSON.toString();
+
+
+            // min max price filter generator
+
+            String min = minimum.getText().toString();
+            String max = maximum.getText().toString();
+
+            if (min.equals("") && max.equals(""))
                 priceFilterJSON = "[\"price>=10\"]";
-                minimum.setText("");
-                maximum.setText("");
+            else if (min.equals(""))
+                priceFilterJSON = "[\"price>=10\",\"price<=" + max + "\"]";
+            else if (max.equals(""))
+                priceFilterJSON = "[\"price>=" + min + "\"]";
+            else
+                priceFilterJSON = "[\"price>=" + min + "\",\"price<=" + max + "\"]";
 
-                itemListProduct.clear();
-                page = 1;
-                getSearchedItems(page);
+            Log.d("json price filter", priceFilterJSON);
 
-                for (int i = 0; i < filterItemlist.size(); i++) {
+            itemListProduct.clear();
 
-                    SearchFilterItem item = filterItemlist.get(i);
-                    item.setSelected(false);
-                    filterAdapter.notifyItemChanged(i);
+            fromFilter = true;
 
-                }
+            page = 1;
+
+            getProducts(page);
+
+            if (mDrawerLayout.isDrawerOpen(drawerRel)) {
+                mDrawerLayout.closeDrawer(drawerRel);
+            } else {
+                mDrawerLayout.openDrawer(drawerRel);
+            }
+        });
+
+        clearFilters.setOnClickListener(v -> {
+
+            page = 1;
+
+            filterJSON = "[]";
+            priceFilterJSON = "[\"price>=10\"]";
+            minimum.setText("");
+            maximum.setText("");
+
+            itemListProduct.clear();
+            page = 1;
+            getSearchedItems(page);
+
+            for (int i = 0; i < filterItemlist.size(); i++) {
+
+                SearchFilterItem item = filterItemlist.get(i);
+                item.setSelected(false);
+                filterAdapter.notifyItemChanged(i);
+
+            }
 
 
-                if (mDrawerLayout.isDrawerOpen(drawerRel)) {
-                    mDrawerLayout.closeDrawer(drawerRel);
-                } else {
-                    mDrawerLayout.openDrawer(drawerRel);
-                }
+            if (mDrawerLayout.isDrawerOpen(drawerRel)) {
+                mDrawerLayout.closeDrawer(drawerRel);
+            } else {
+                mDrawerLayout.openDrawer(drawerRel);
             }
         });
 
@@ -322,15 +298,11 @@ public class GlobalSearchActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 progressBar.setVisibility(View.VISIBLE);
                 searchText.setText("");
-
                 fromFilter = false;
-
                 if (parent.getItemAtPosition(position).equals("Products")) {
                     searchSlug = "product";
                     filter.setVisibility(View.VISIBLE);
-
                     getProducts(1);
-
                 } else if (parent.getItemAtPosition(position).equals("Shops")) {
                     filterURL = "";
                     noFilterText();
@@ -419,12 +391,9 @@ public class GlobalSearchActivity extends BaseActivity {
             getSearchedItems(page);
         });
 
-        searchClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (searchClear.getTag().equals("clear"))
-                    searchText.setText("");
-            }
+        searchClear.setOnClickListener(v -> {
+            if (searchClear.getTag().equals("clear"))
+                searchText.setText("");
         });
 
         searchText.addTextChangedListener(new TextWatcher() {
@@ -550,35 +519,21 @@ public class GlobalSearchActivity extends BaseActivity {
             else if (sortIndexName.equals("products_price_desc"))
                 checkItem = 2;
 
-
             builder.setSingleChoiceItems(a, checkItem, (dialogInterface, i) -> {
-
                 if (i == 0)
                     sortIndexName = "products";
                 else if (i == 1)
                     sortIndexName = "products_price_asc";
                 else if (i == 2)
                     sortIndexName = "products_price_desc";
-
-
                 page = 1;
                 itemListProduct.clear();
                 getProducts(page);
-
-
                 dialogInterface.dismiss();
-
             });
-
-
             builder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
-
             builder.show();
-
-
         });
-
-
     }
 
 
@@ -617,8 +572,6 @@ public class GlobalSearchActivity extends BaseActivity {
 
             return;
         }
-
-
     }
 
 
@@ -627,8 +580,6 @@ public class GlobalSearchActivity extends BaseActivity {
         String searchQuery = searchText.getText().toString();
 
         progressBar.setVisibility(View.VISIBLE);
-
-
         Map<String, Object> paramsMap = new HashMap<String, Object>();
 
         paramsMap.put("query", searchQuery);
@@ -638,7 +589,6 @@ public class GlobalSearchActivity extends BaseActivity {
         paramsMap.put("highlightPostTag", "</ais-highlight-0000000000>");
         paramsMap.put("facets", "[\"price\",\"category_name\",\"brand_name\",\"color\"]");
         paramsMap.put("tagFilters", "");
-
 
         if (!filterJSON.equals("[]"))
             paramsMap.put("facetFilters", filterJSON);
@@ -665,13 +615,11 @@ public class GlobalSearchActivity extends BaseActivity {
 
         if (page < 2) {
 
-
             RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
             recyclerView.setAdapter(adapterProduct);
             recyclerView.setLayoutManager(mLayoutManager);
 
         }
-
 
         String url = "https://eza2j926q5-dsn.algolia.net/1/indexes/*/queries?x-algolia-application-id=EZA2J926Q5&x-algolia-api-key=ca9abeea06c16b7d531694d6783a8f04";
         Log.d("json", url);
@@ -686,14 +634,10 @@ public class GlobalSearchActivity extends BaseActivity {
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload,
                 response -> {
-
-
                     if (nestedSV != null)
                         nestedSV.fling(0);
 
                     Log.d("json search_result", response.toString());
-
-
                     try {
 
                         noResult.setVisibility(View.GONE);
@@ -725,12 +669,8 @@ public class GlobalSearchActivity extends BaseActivity {
                             }
                             itemListProduct.add(tabsItem);
                             adapterProduct.notifyItemInserted(itemListProduct.size());
-
-
                             slugStore.add(ob.getString("slug"));
-
                         }
-
 
                         if (jsonObject.getInt("nbHits") > 10) {
                             if (itemListProduct.size() < 10 && page < 4)
@@ -745,8 +685,6 @@ public class GlobalSearchActivity extends BaseActivity {
                             filterAdapter.notifyDataSetChanged();
 
                             JSONObject facets = jsonObject.getJSONObject("facets");
-
-
                             Iterator<String> iter;
 
                             if (facets.has("category_name")) {
@@ -767,7 +705,6 @@ public class GlobalSearchActivity extends BaseActivity {
                                     }
                                 }
                             }
-
 
                             if (facets.has("brand_name")) {
 
@@ -791,10 +728,7 @@ public class GlobalSearchActivity extends BaseActivity {
                             }
 
                             if (facets.has("color")) {
-
-
                                 JSONObject color = facets.getJSONObject("color");
-
                                 iter = color.keys();
                                 while (iter.hasNext()) {
                                     try {
@@ -813,16 +747,9 @@ public class GlobalSearchActivity extends BaseActivity {
                                 }
                             }
                             filterAdapter.notifyDataSetChanged();
-
-
                             //filterAdapter.notifyDataSetChanged();
-
-
                             Log.d("json filter added", filterItemlist.toString());
-
-
                             fromFilter = false;
-
                         }
 
                         progressBar.setVisibility(View.INVISIBLE);
@@ -842,8 +769,6 @@ public class GlobalSearchActivity extends BaseActivity {
 
                                     }
                                 }
-
-
                             } else {
 
                                 nestedSV.setBackgroundColor(ContextCompat.getColor(this, R.color.fafafa));
@@ -852,8 +777,6 @@ public class GlobalSearchActivity extends BaseActivity {
                         } catch (Exception e) {
 
                         }
-
-
                         progressBar.setVisibility(View.INVISIBLE);
                         if (!searchSlug.equals("product") && page == 1)
                             loadNextSearchPage();
@@ -861,8 +784,6 @@ public class GlobalSearchActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-
                 }, error -> {
             isLoading = false;
             progressBar.setVisibility(View.GONE);
@@ -873,8 +794,6 @@ public class GlobalSearchActivity extends BaseActivity {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         rq.add(request);
-
-
     }
 
 
@@ -887,7 +806,6 @@ public class GlobalSearchActivity extends BaseActivity {
         String query = "root";
         if (!searchText.getText().toString().equals(""))
             query = searchText.getText().toString();
-
 
         String url = UrlUtils.BASE_URL + "custom/shops/?page=" + p + "&limit=15";
         if (!query.equals("root"))

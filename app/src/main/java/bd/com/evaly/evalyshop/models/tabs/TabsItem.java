@@ -5,7 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class TabsItem implements Serializable {
+import bd.com.evaly.evalyshop.models.BaseModel;
+
+public class TabsItem extends BaseModel implements Serializable {
 
     private int type;
 

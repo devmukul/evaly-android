@@ -45,6 +45,7 @@ public class GlobalSearchViewModel {
         requestsItem = new RequestsItem();
         requestsItem.setIndexName("products");
         page = 1;
+        type = "product";
     }
 
     public AlgoliaParams getSearchParams() {
@@ -70,6 +71,18 @@ public class GlobalSearchViewModel {
     public void setPage(int page) {
         this.page = page;
     }
+
+    public void performSearch() {
+        page = 1;
+        productList.clear();
+        if (type.equals("product"))
+            searchOnAlogia();
+        else if (type.equals("brand"))
+            getBrands();
+        else if (type.equals("shop"))
+            getShops();
+    }
+
 
     public void searchOnAlogia() {
 

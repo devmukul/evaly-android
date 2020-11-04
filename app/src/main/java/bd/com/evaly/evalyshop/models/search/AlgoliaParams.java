@@ -47,6 +47,7 @@ public class AlgoliaParams implements Serializable {
         facets.add("category_name");
         facets.add("brand_name");
         facets.add("color");
+        facets.add("shop_name");
     }
 
     public Map<String, String> getMap() {
@@ -56,7 +57,7 @@ public class AlgoliaParams implements Serializable {
         paramsMap.put("page", String.valueOf(page));
         paramsMap.put("highlightPreTag", highlightPreTag);
         paramsMap.put("highlightPostTag", highlightPostTag);
-        paramsMap.put("facets", facets.toString());
+        paramsMap.put("facets", gson.toJson(facets));
         paramsMap.put("tagFilters", tagFilters);
         return paramsMap;
     }
