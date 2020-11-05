@@ -195,4 +195,12 @@ public class GlobalSearchViewModel {
     public LiveData<List<BaseModel>> getProductList() {
         return productListLive;
     }
+
+    public LiveData<List<FilterRootItem>> getFilterRootLiveList() {
+        return filterRootLiveList;
+    }
+
+    public LiveData<List<FilterSubItem>> getFilterSubLiveList() {
+        return filterSubLiveList;
+    }
 }

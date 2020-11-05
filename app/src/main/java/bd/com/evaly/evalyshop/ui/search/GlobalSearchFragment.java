@@ -21,7 +21,10 @@ import javax.inject.Inject;
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentGlobalSearchBinding;
 import bd.com.evaly.evalyshop.listener.PaginationScrollListener;
+import bd.com.evaly.evalyshop.ui.search.controller.FilterRootController;
+import bd.com.evaly.evalyshop.ui.search.controller.FilterSubController;
 import bd.com.evaly.evalyshop.ui.search.controller.GlobalSearchController;
+import bd.com.evaly.evalyshop.ui.search.filter.SearchFilterBottomSheet;
 import bd.com.evaly.evalyshop.util.Utils;
 import bd.com.evaly.evalyshop.views.GridSpacingItemDecoration;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -48,8 +51,17 @@ public class GlobalSearchFragment extends Fragment {
         initViews();
         initSearchViews();
         intRecyclerView();
+        clickListeners();
         liveEventObservers();
     }
+
+    private void clickListeners() {
+        binding.filter.setOnClickListener(view -> {
+            SearchFilterBottomSheet bottomSheet = new SearchFilterBottomSheet();
+            bottomSheet.show(getParentFragmentManager(), "filter");
+        });
+    }
+
 
     private void initSearchViews() {
 
@@ -98,18 +110,19 @@ public class GlobalSearchFragment extends Fragment {
 
     private void initViews() {
 
-
     }
 
     private void liveEventObservers() {
         viewModel.setSearchQuery("iphone");
         viewModel.searchOnAlogia();
+
         viewModel.getProductList().observe(getViewLifecycleOwner(), searchHitResponses -> {
             isLoading = false;
             controller.setLoadingMore(false);
             controller.setList(searchHitResponses);
             controller.requestModelBuild();
         });
+
     }
 
     private void intRecyclerView() {
