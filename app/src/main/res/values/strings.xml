@@ -363,5 +363,8 @@ It is a platform where people can purchase all kinds of goods from a single webs
 
     <string name="you_have_to_pay_delivery_fee_in_cash"><![CDATA[Please Pay <strong>Delivery Fee ৳ %1$s</strong> with Cash to Delivery Hero.]]></string>
     <string name="dark_mode">Dark Mode</string>
+    <string name="profile">Profile</string>
+    <string name="check_balance">Check Balance</string>
+    <string name="more">More</string>
 
 </resources>
