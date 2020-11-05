@@ -7,8 +7,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
 
@@ -46,10 +49,16 @@ public class SearchFilterBottomSheet extends BottomSheetDialogFragment {
         if (filterRootController == null)
             filterRootController = new FilterRootController();
         filterRootController.setFilterDuplicates(true);
+        filterRootController.setViewModel(viewModel);
+
+        binding.rvRoot.setAdapter(filterRootController.getAdapter());
 
         if (filterSubController == null)
             filterSubController = new FilterSubController();
         filterSubController.setFilterDuplicates(true);
+        filterSubController.setViewModel(viewModel);
+
+        binding.rvSub.setAdapter(filterSubController.getAdapter());
     }
 
     private void initViews() {
@@ -57,8 +66,8 @@ public class SearchFilterBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void liveEventObservers() {
-
         viewModel.getFilterRootLiveList().observe(getViewLifecycleOwner(), filterRootItems -> {
+            Logger.d(new Gson().toJson(filterRootItems));
             filterRootController.setList(filterRootItems);
             filterRootController.requestModelBuild();
         });
@@ -68,6 +77,10 @@ public class SearchFilterBottomSheet extends BottomSheetDialogFragment {
             filterSubController.requestModelBuild();
         });
 
+        viewModel.getReloadFilters().observe(getViewLifecycleOwner(), aVoid -> {
+            filterRootController.requestModelBuild();
+            filterSubController.requestModelBuild();
+        });
     }
 
 }

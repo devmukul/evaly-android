@@ -6,14 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.com.evaly.evalyshop.models.search.filter.FilterRootItem;
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
 import bd.com.evaly.evalyshop.ui.search.model.SearchFilterRootModel_;
+import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class FilterRootController extends EpoxyController {
 
+    private GlobalSearchViewModel viewModel;
     private List<FilterRootItem> list = new ArrayList<>();
 
     public void setList(List<FilterRootItem> list) {
         this.list = list;
+    }
+
+    public void setViewModel(GlobalSearchViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     @Override
@@ -24,7 +31,8 @@ public class FilterRootController extends EpoxyController {
                     .name(item.getName())
                     .selected(item.isSelected())
                     .clickListener((model, parentView, clickedView, position) -> {
-
+                        viewModel.setSelectedFilterRoot(model.name());
+                        viewModel.setReloadFilters();
                     })
                     .addTo(this);
         }

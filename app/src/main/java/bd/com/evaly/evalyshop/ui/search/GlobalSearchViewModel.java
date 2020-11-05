@@ -30,6 +30,7 @@ import bd.com.evaly.evalyshop.models.search.filter.FilterRootItem;
 import bd.com.evaly.evalyshop.models.search.filter.FilterSubItem;
 import bd.com.evaly.evalyshop.models.tabs.TabsItem;
 import bd.com.evaly.evalyshop.rest.apiHelper.SearchApiHelper;
+import bd.com.evaly.evalyshop.util.SingleLiveEvent;
 
 public class GlobalSearchViewModel {
 
@@ -40,19 +41,39 @@ public class GlobalSearchViewModel {
     private MutableLiveData<List<FilterRootItem>> filterRootLiveList = new MutableLiveData<>();
     private MutableLiveData<List<FilterSubItem>> filterSubLiveList = new MutableLiveData<>();
     private MutableLiveData<List<BaseModel>> productListLive = new MutableLiveData<>();
+    private SingleLiveEvent<Void> reloadFilters = new SingleLiveEvent<>();
     private int page;
     private String type;
-    private String query;
+    private String query = "";
+    private String selectedFilterRoot;
 
     @SuppressLint("DefaultLocale")
     @Inject
     public GlobalSearchViewModel() {
+        selectedFilterRoot = "hmtz_sorting";
         searchParams = new AlgoliaParams();
         searchParams.setPage(page);
         requestsItem = new RequestsItem();
         requestsItem.setIndexName("products");
         page = 1;
         type = "product";
+        searchOnAlogia();
+    }
+
+    public void setSelectedFilterRoot(String selectedFilterRoot) {
+        this.selectedFilterRoot = selectedFilterRoot;
+    }
+
+    public String getSelectedFilterRoot() {
+        return selectedFilterRoot;
+    }
+
+    public void setReloadFilters() {
+        reloadFilters.call();
+    }
+
+    public SingleLiveEvent<Void> getReloadFilters() {
+        return reloadFilters;
     }
 
     public AlgoliaParams getSearchParams() {

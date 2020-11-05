@@ -194,9 +194,5 @@
         app:spanCount="2"
         tools:listitem="@layout/home_model_product_grid" />
 
-    <include
-        android:id="@+id/filterModal"
-        layout="@layout/bottomsheet_search_filter"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

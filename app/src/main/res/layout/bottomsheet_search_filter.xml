@@ -1,44 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <bd.com.evaly.evalyshop.views.DisallowInterceptView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/white"
-            android:elevation="1dp"
-            app:menu="@menu/close_btn"
-            app:title="Filters and Sort" />
-
-        <LinearLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="56dp">
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/white"
+                android:elevation="1dp"
+                app:menu="@menu/close_btn"
+                app:title="Filters and Sort" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvCategory"
-                android:layout_width="135dp"
-                android:layout_height="match_parent"
-                android:background="@color/f8f8f8"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:paddingBottom="75dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_filter_root" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvProducts"
+                android:id="@+id/rvSub"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_marginStart="135dp"
+                android:layout_marginTop="56dp"
                 android:background="@color/fff"
                 android:clipToPadding="false"
                 android:paddingStart="15dp"
@@ -46,43 +35,61 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="75dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/rvRoot"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:listitem="@layout/item_filter_sub" />
 
-        </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvRoot"
+                android:layout_width="135dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="56dp"
+                android:background="@color/f8f8f8"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingBottom="75dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/item_filter_root" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@color/fff"
-            android:orientation="horizontal"
-            android:paddingStart="15dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="15dp"
-            android:paddingBottom="10dp"
-            android:translationZ="8dp">
 
-            <TextView
-                android:id="@+id/clear"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Clear All"
-                android:textColor="@color/c333"
-                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@color/fff"
+                android:orientation="horizontal"
+                android:paddingStart="15dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="10dp"
+                android:translationZ="8dp">
 
-            <TextView
-                android:id="@+id/apply"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:background="@drawable/input_btn_small"
-                android:gravity="center"
-                android:text="Apply"
-                android:textColor="@color/fff"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/clear"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Clear All"
+                    android:textColor="@color/c333"
+                    android:textStyle="bold" />
 
-        </LinearLayout>
-    </FrameLayout>
+                <TextView
+                    android:id="@+id/apply"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/input_btn_small"
+                    android:gravity="center"
+                    android:text="Apply"
+                    android:textColor="@color/fff"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </bd.com.evaly.evalyshop.views.DisallowInterceptView>
+
 </layout>

@@ -11,6 +11,7 @@ import com.airbnb.epoxy.EpoxyModelClass;
 
 import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.ItemFilterRootBinding;
+import bd.com.evaly.evalyshop.util.Utils;
 
 import static com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash;
 
@@ -33,7 +34,7 @@ public abstract class SearchFilterRootModel extends DataBindingEpoxyModel {
     public void bind(@NonNull DataBindingHolder holder) {
         super.bind(holder);
         ItemFilterRootBinding binding = (ItemFilterRootBinding) holder.getDataBinding();
-        binding.title.setText(name);
+        binding.title.setText(Utils.toFirstCharUpperAll(name.replace("_name", "")));
         binding.value.setText(subText);
 
         if (subText == null)

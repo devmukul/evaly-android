@@ -5,6 +5,7 @@ import android.content.Context;
 
 import javax.inject.Singleton;
 
+import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
@@ -29,4 +30,9 @@ public class AppModule {
 //    }
 
 
+    @Provides
+    @Singleton
+    GlobalSearchViewModel provideGlobalSearchViewModel() {
+        return new GlobalSearchViewModel();
+    }
 }

@@ -221,10 +221,10 @@ public class MainActivity extends BaseActivity {
         FirebaseMessaging.getInstance().subscribeToTopic("all_user");
 
         if (!CredentialManager.getToken().equals("")) {
-            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew).addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_" + strNew));
+            FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_" + strNew);
             FirebaseMessaging.getInstance().subscribeToTopic("USER." + CredentialManager.getUserName());
         }
-        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user").addOnCompleteListener(task -> Logger.d(task.isSuccessful() + " " + Constants.BUILD + "_all_user"));
+        FirebaseMessaging.getInstance().subscribeToTopic(Constants.BUILD + "_all_user");
 
         viewModel.getBackOnClick().observe(this, aBoolean -> {
             if (aBoolean)
