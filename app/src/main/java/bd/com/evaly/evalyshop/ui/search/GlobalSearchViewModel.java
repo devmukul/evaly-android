@@ -50,7 +50,7 @@ public class GlobalSearchViewModel {
     @SuppressLint("DefaultLocale")
     @Inject
     public GlobalSearchViewModel() {
-        selectedFilterRoot = "hmtz_sorting";
+        selectedFilterRoot = "Sort by_name";
         searchParams = new AlgoliaParams();
         searchParams.setPage(page);
         requestsItem = new RequestsItem();
@@ -135,7 +135,11 @@ public class GlobalSearchViewModel {
                 JsonObject filterJson = rootResponse.getAsJsonObject("facets");
 
                 List<FilterRootItem> filterRootItems = new ArrayList<>();
+                filterRootItems.add(new FilterRootItem("Sort by_name", false));
                 List<FilterSubItem> filterSubItems = new ArrayList<>();
+                filterSubItems.add(new FilterSubItem("Relevance", null, "Sort by_name", false));
+                filterSubItems.add(new FilterSubItem("Price: low to high", null, "Sort by_name", false));
+                filterSubItems.add(new FilterSubItem("Price: high to low", null, "Sort by_name", false));
 
                 Set<Map.Entry<String, JsonElement>> entries = filterJson.entrySet();
 

@@ -1,7 +1,6 @@
 package bd.com.evaly.evalyshop.ui.search.controller;
 
 import com.airbnb.epoxy.EpoxyController;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.List;
 import bd.com.evaly.evalyshop.models.search.filter.FilterSubItem;
 import bd.com.evaly.evalyshop.ui.search.GlobalSearchViewModel;
 import bd.com.evaly.evalyshop.ui.search.model.SearchFilterSubModel_;
-import bd.com.evaly.evalyshop.util.ToastUtils;
 
 public class FilterSubController extends EpoxyController {
 
@@ -39,4 +37,5 @@ public class FilterSubController extends EpoxyController {
                     .addIf(viewModel.getSelectedFilterRoot().equals(item.getRoot()), this);
         }
     }
+
 }

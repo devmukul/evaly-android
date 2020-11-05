@@ -83,12 +83,6 @@ public class NewsfeedPendingFragment extends Fragment implements SwipeRefreshLay
         swipeLayout.setRefreshing(false);
 
         getPosts(currentPage);
-
-        try {
-            ((NewsfeedActivity) getActivity()).getNotificationCount();
-        } catch (Exception e) {
-
-        }
     }
 
 

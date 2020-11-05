@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.Html;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +22,6 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -46,16 +43,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import bd.com.evaly.evalyshop.R;
-import bd.com.evaly.evalyshop.controller.AppController;
 import bd.com.evaly.evalyshop.listener.ResponseListenerAuth;
 import bd.com.evaly.evalyshop.manager.CredentialManager;
-import bd.com.evaly.evalyshop.models.db.RosterTable;
-import bd.com.evaly.evalyshop.models.newsfeed.FeedShareModel;
 import bd.com.evaly.evalyshop.models.newsfeed.NewsfeedItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.CommentItem;
 import bd.com.evaly.evalyshop.models.newsfeed.comment.RepliesItem;
@@ -63,7 +55,6 @@ import bd.com.evaly.evalyshop.rest.apiHelper.NewsfeedApiHelper;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.CommentAdapter;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.NewsfeedAdapter;
 import bd.com.evaly.evalyshop.ui.newsfeed.adapters.ReplyAdapter;
-import bd.com.evaly.evalyshop.util.Constants;
 import bd.com.evaly.evalyshop.util.ImagePreview;
 import bd.com.evaly.evalyshop.util.KeyboardUtil;
 import bd.com.evaly.evalyshop.util.ScreenUtils;
@@ -82,7 +73,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private NewsfeedAdapter adapter;
     private ArrayList<NewsfeedItem> itemsList;
     private Context context;
-    private NewsfeedActivity activity;
     private LinearLayout not, progressContainer;
     // newfeed scroller
     private boolean loading = true;
@@ -143,7 +133,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         super.onCreate(savedInstanceState);
 
         context = getContext();
-        activity = (NewsfeedActivity) getActivity();
         if (getArguments() != null) {
             type = getArguments().getString("type");
         }
@@ -158,7 +147,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-
         itemsList.clear();
         adapter.notifyDataSetChanged();
         currentPage = 1;
@@ -166,12 +154,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         selectedPostID = "";
         selectedCommentID = 0;
         getPosts(currentPage);
-
-        try {
-            ((NewsfeedActivity) Objects.requireNonNull(getActivity())).getNotificationCount();
-        } catch (Exception e) {
-        }
-
     }
 
 
@@ -1152,7 +1134,6 @@ public class NewsfeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         bottomSheetDialog.show();
     }
-
 
 
 }
