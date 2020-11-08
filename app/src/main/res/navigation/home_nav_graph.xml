@@ -274,6 +274,14 @@
         android:id="@+id/accountFragment"
         android:name="bd.com.evaly.evalyshop.ui.account.AccountFragment"
         android:label="AccountFragment" />
+    <fragment
+        android:id="@+id/appointmentFragment"
+        android:name="bd.com.evaly.evalyshop.ui.appointment.AppointmentFragment"
+        android:label="AppointmentFragment" />
+    <dialog
+        android:id="@+id/createAppointmentBottomSheet"
+        android:name="bd.com.evaly.evalyshop.ui.appointment.create.CreateAppointmentBottomSheet"
+        android:label="CreateAppointmentBottomSheet" />
 
 
     <!--    <activity-->
@@ -289,7 +297,6 @@
     <!--        android:id="@+id/orderListActivity"-->
     <!--        android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity"-->
     <!--        android:label="OrderListActivity" />-->
-
 
 
 

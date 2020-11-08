@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import javax.inject.Inject;
 
+import bd.com.evaly.evalyshop.R;
 import bd.com.evaly.evalyshop.databinding.FragmentAppointmentBinding;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -32,8 +34,13 @@ public class AppointmentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        clickListeners();
+    }
 
-
+    private void clickListeners() {
+        binding.createAppointment.setOnClickListener(v -> {
+            NavHostFragment.findNavController(this).navigate(R.id.createAppointmentBottomSheet);
+        });
     }
 
 

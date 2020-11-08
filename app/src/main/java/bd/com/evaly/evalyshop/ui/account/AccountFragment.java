@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -65,6 +66,9 @@ public class AccountFragment extends Fragment {
 
     private void clickListeners() {
 
+        binding.llAppointment.setOnClickListener(v -> {
+            NavHostFragment.findNavController(this).navigate(R.id.appointmentFragment);
+        });
 
         binding.btn1Image.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), OrderListActivity.class);

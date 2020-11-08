@@ -291,7 +291,7 @@
                     android:background="@color/separator_light" />
 
                 <LinearLayout
-                    android:id="@+id/llReviews"
+                    android:id="@+id/llAppointment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
