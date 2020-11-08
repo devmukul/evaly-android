@@ -156,11 +156,11 @@ public class MainActivity extends BaseActivity {
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
-                    if (item.getItemId() == R.id.userDashboardActivity) {
+                    if (item.getItemId() == R.id.accountFragment) {
                         if (CredentialManager.getToken().equals(""))
                             startActivity(new Intent(MainActivity.this, SignInActivity.class));
                         else
-                            startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
+                            return onNavDestinationSelected(item, navController);
                         return false;
                     } else if (item.getItemId() == R.id.homeFragment) {
                         navController.navigate(R.id.action_homeFragment_Pop);

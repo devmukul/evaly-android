@@ -270,6 +270,10 @@
         android:id="@+id/globalSearchFragment"
         android:name="bd.com.evaly.evalyshop.ui.search.GlobalSearchFragment"
         android:label="GlobalSearchFragment" />
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="bd.com.evaly.evalyshop.ui.account.AccountFragment"
+        android:label="AccountFragment" />
 
 
     <!--    <activity-->
@@ -285,6 +289,7 @@
     <!--        android:id="@+id/orderListActivity"-->
     <!--        android:name="bd.com.evaly.evalyshop.ui.order.orderList.OrderListActivity"-->
     <!--        android:label="OrderListActivity" />-->
+
 
 
 

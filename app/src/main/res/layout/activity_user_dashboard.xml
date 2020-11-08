@@ -156,7 +156,8 @@
                     android:text="0"
                     android:textColor="@color/fffh"
                     android:textSize="14sp"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
 
             </LinearLayout>
         </LinearLayout>

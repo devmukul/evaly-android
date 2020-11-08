@@ -27,8 +27,8 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/userDashboardActivity"
+        android:id="@+id/accountFragment"
         android:icon="@drawable/ic_user_nav_menu"
-        android:title="@string/dashboard"
+        android:title="@string/account"
         app:showAsAction="ifRoom" />
 </menu>

@@ -366,5 +366,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="profile">Profile</string>
     <string name="check_balance">Check Balance</string>
     <string name="more">More</string>
+    <string name="account">Account</string>
+    <string name="appointments">Appointments</string>
 
 </resources>
