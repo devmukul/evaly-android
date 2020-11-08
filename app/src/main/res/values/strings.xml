@@ -161,6 +161,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="location">Location</string>
     <string name="delivery">Delivery</string>
     <string name="reviews">Reviews</string>
+    <string name="category">Category</string>
     <string name="categories">Categories</string>
     <string name="all_products">All Products</string>
     <string name="wish_list">Wishlist</string>
@@ -368,5 +369,7 @@ It is a platform where people can purchase all kinds of goods from a single webs
     <string name="more">More</string>
     <string name="account">Account</string>
     <string name="appointments">Appointments</string>
+    <string name="create_appointment">Create Appointment</string>
+    <string name="time_slot">Time slots</string>
 
 </resources>

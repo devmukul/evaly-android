@@ -149,6 +149,7 @@
     <string name="location">অবস্থান</string>
     <string name="delivery">ডেলিভারি</string>
     <string name="categories">বিভাগ</string>
+    <string name="category">বিভাগ</string>
     <string name="all_products">সব প্রোডাক্ট</string>
     <string name="wish_list">ইচ্ছা তালিকা</string>
     <string name="comment">মন্তব্য</string>

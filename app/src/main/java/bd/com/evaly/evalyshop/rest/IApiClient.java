@@ -11,6 +11,10 @@ import bd.com.evaly.evalyshop.BuildConfig;
 import bd.com.evaly.evalyshop.data.roomdb.categories.CategoryEntity;
 import bd.com.evaly.evalyshop.models.CommonDataResponse;
 import bd.com.evaly.evalyshop.models.CommonResultResponse;
+import bd.com.evaly.evalyshop.models.appointment.AppointmentCategoryResponse;
+import bd.com.evaly.evalyshop.models.appointment.AppointmentRequest;
+import bd.com.evaly.evalyshop.models.appointment.AppointmentTimeSlotResponse;
+import bd.com.evaly.evalyshop.models.appointment.list.AppointmentResponse;
 import bd.com.evaly.evalyshop.models.auth.LoginBody;
 import bd.com.evaly.evalyshop.models.auth.LoginResponse;
 import bd.com.evaly.evalyshop.models.auth.RegisterBody;
@@ -76,6 +80,27 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface IApiClient {
+
+    // appointment
+
+    @GET(BuildConfig.APPOINTMENT_URL + "time-slots/{date}")
+    Call<CommonDataResponse<List<AppointmentTimeSlotResponse>>> getAppointmentTimeSlotList(@Header("Authorization") String token,
+                                                                                           @Path("date") String date);
+
+    @GET(BuildConfig.APPOINTMENT_URL + "users/categories")
+    Call<CommonDataResponse<List<AppointmentCategoryResponse>>> getAppointmentCategoryList(@Header("Authorization") String token);
+
+    @GET(BuildConfig.APPOINTMENT_URL + "users/appointments")
+    Call<CommonDataResponse<List<AppointmentResponse>>> getAppointmentList(@Header("Authorization") String token,
+                                                                           @Query("page") int page);
+
+    @POST(BuildConfig.APPOINTMENT_URL + "users/appointments")
+    Call<CommonDataResponse<AppointmentResponse>> createAppointment(@Header("Authorization") String token,
+                                                                        @Body AppointmentRequest body);
+
+    @POST(BuildConfig.APPOINTMENT_URL + "users/appointments/{id}/cancel")
+    Call<CommonDataResponse<AppointmentResponse>> cancelAppointment(@Header("Authorization") String token,
+                                                                        @Path("id") String id);
 
     //TabsItem
 

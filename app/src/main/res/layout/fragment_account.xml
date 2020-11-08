@@ -137,7 +137,7 @@
                     android:layout_weight="0"
                     android:background="@drawable/btn_circle_author"
                     android:clickable="false"
-                    android:padding="16dp"
+                    android:padding="15dp"
                     app:layout_constraintEnd_toStartOf="@+id/btn3Image"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/btn1Image"

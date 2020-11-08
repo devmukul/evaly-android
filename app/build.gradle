@@ -38,6 +38,7 @@ android {
             buildConfigField "String", 'BUILD', "\"prod\""
             buildConfigField "String", 'BKASH_URL', "\"https://evaly.com.bd/bkash_payment\""
             buildConfigField "String", 'NAGAD_URL', "\"https://nagad.evaly.com.bd/nagad\""
+            buildConfigField "String", "APPOINTMENT_URL", "\"https://eappointment.evaly.com.bd/api/v1/\""
         }
         debug {
             buildConfigField "String", 'BASE_URL', "\"https://api-dev.evaly.com.bd/\""
@@ -47,6 +48,7 @@ android {
             buildConfigField "String", 'BUILD', "\"dev\""
             buildConfigField "String", 'BKASH_URL', "\"https://beta.evaly.com.bd/bkash_payment\""
             buildConfigField "String", 'NAGAD_URL', "\"https://api-dev.evaly.com.bd/pay/nagad\""
+            buildConfigField "String", "APPOINTMENT_URL", "\"https://eappointment.evaly.com.bd/api/v1/\""
         }
 
         lintOptions {
